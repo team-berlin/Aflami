@@ -1,4 +1,4 @@
-package com.example.aflami.ui.theme
+package com.berlin.aflami.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

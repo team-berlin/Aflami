@@ -1,4 +1,4 @@
-package com.example.aflami
+package com.berlin.aflami
 
 import org.junit.Test
 

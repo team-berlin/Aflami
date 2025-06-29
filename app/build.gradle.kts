@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.aflami"
+    namespace = "com.berlin.aflami"
     compileSdk = 35
 
     defaultConfig {
