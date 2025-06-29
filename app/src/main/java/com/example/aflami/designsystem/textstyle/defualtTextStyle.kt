@@ -10,9 +10,9 @@ import com.example.aflami.R
 
 
 val loremIpsum = FontFamily(
-    Font(R.font.loremipsum, weight = FontWeight.Normal),
-    Font(R.font.loremipsum, weight = FontWeight.Medium),
-    Font(R.font.loremipsum, weight = FontWeight.SemiBold)
+    Font(R.font.poppins_regular, weight = FontWeight.Normal),
+    Font(R.font.poppins_medium, weight = FontWeight.Medium),
+    Font(R.font.poppins_semibold, weight = FontWeight.SemiBold)
 )
 
 
