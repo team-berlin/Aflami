@@ -1,4 +1,4 @@
-package com.example.aflami.designsystem.theme.color
+package com.example.aflami.designsystem.color
 
 import androidx.compose.ui.graphics.Color
 
@@ -6,7 +6,7 @@ data class AflamiColors(
     val primary: Color,
     val secondary: Color,
     val primaryVariant: Color,
-    val gradientColors:GradientColors,
+    val gradientColors: GradientColors,
     val textColors: TextColors,
     val statusColors: StatusColors,
 )
@@ -16,6 +16,7 @@ data class GradientColors(
     val streakGradient: List<Color>,
     val pointsOverly: List<Color>,
 )
+
 data class TextColors(
     val title: Color,
     val body: Color,
@@ -29,8 +30,8 @@ data class TextColors(
     val disable: Color,
     val iconBackground: Color,
     val blurOverlay: Color,
-    val onPrimaryButton :Color,
-    )
+    val onPrimaryButton: Color,
+)
 
 data class StatusColors(
     val redAccent: Color,

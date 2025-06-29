@@ -28,74 +28,63 @@ val defaultTextStyle: AflamiTextStyle = AflamiTextStyle(
             fontFamily = loremIpsum,
             lineHeight = 42.sp,
 
-            ),
-        medium = TextStyle(
+            ), medium = TextStyle(
             fontSize = 24.sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = loremIpsum,
             lineHeight = 36.sp,
-        ),
-        small = TextStyle(
+        ), small = TextStyle(
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = loremIpsum,
             lineHeight = 30.sp,
         )
-    ),
-    title = SizedTextStyle(
+    ), title = SizedTextStyle(
         large = TextStyle(
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = loremIpsum,
             lineHeight = 30.sp,
-        ),
-        medium = TextStyle(
+        ), medium = TextStyle(
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = loremIpsum,
             lineHeight = 28.sp,
-        ),
-        small = TextStyle(
+        ), small = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = loremIpsum,
             lineHeight = 24.sp,
         )
-    ),
-    body = SizedTextStyle(
+    ), body = SizedTextStyle(
         large = TextStyle(
             fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
             fontFamily = loremIpsum,
             lineHeight = 28.sp,
-        ),
-        medium = TextStyle(
+        ), medium = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
             fontFamily = loremIpsum,
             lineHeight = 24.sp,
-        ),
-        small = TextStyle(
+        ), small = TextStyle(
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
             fontFamily = loremIpsum,
             lineHeight = 22.sp,
         )
-    ),
-    label = SizedTextStyle(
+    ), label = SizedTextStyle(
         large = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             fontFamily = loremIpsum,
             lineHeight = 24.sp,
-        ),
-        medium = TextStyle(
+        ), medium = TextStyle(
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             fontFamily = loremIpsum,
             lineHeight = 22.sp,
-        ),
-        small = TextStyle(
+        ), small = TextStyle(
             fontSize = 10.sp,
             fontWeight = FontWeight.Medium,
             fontFamily = loremIpsum,
