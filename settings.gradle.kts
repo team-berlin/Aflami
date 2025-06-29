@@ -23,3 +23,4 @@ rootProject.name = "Aflami"
 include(":app")
 include(":presentation:ui")
 include(":presentation:viewModel")
+include(":domain:usecase")
