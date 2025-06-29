@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.berlin.mylibrary"
+    namespace = "com.berlin.viewModel"
     compileSdk = 35
 
     defaultConfig {
