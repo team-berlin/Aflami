@@ -1,9 +1,9 @@
-package com.example.aflami.design_system.theme
+package com.example.aflami.designsystem.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import com.example.aflami.design_system.textstyle.LocalAflamiTextStyle
-import com.example.aflami.design_system.textstyle.defaultTextStyle
+import com.example.aflami.designsystem.textstyle.LocalAflamiTextStyle
+import com.example.aflami.designsystem.textstyle.defaultTextStyle
 
 
 @Composable
