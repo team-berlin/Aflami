@@ -11,6 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -20,7 +21,22 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Give gradlew permission to execute
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/daemon
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Decode google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
+
+      - name: Grant gradlew permissions
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
