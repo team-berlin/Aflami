@@ -45,11 +45,14 @@ jobs:
 
       - name: Decode service account
         run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" | base64 --decode > service-account.json
+
       - name: Set Firebase credentials env var
         run: echo "GOOGLE_APPLICATION_CREDENTIALS=service-account.json" >> $GITHUB_ENV
 
       - name: Upload APK using Firebase CLI
         run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" | base64 --decode > service-account.json
+          export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
           npm install -g firebase-tools
           firebase appdistribution:distribute \
             app/build/outputs/apk/debug/app-debug.apk \
