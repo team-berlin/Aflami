@@ -1,10 +1,6 @@
 package com.example.aflami.designsystem.color
 
 import androidx.compose.ui.graphics.Color
-import com.example.aflami.designsystem.color.AflamiColors
-import com.example.aflami.designsystem.color.GradientColors
-import com.example.aflami.designsystem.color.StatusColors
-import com.example.aflami.designsystem.color.TextColors
 
 val AflamiDarkColors = AflamiColors(
     primary = Color(0xFFD85895),
@@ -18,9 +14,9 @@ val AflamiDarkColors = AflamiColors(
     onPrimaryButton = Color(0x14FFFFFF),
     surfaceHigh = Color(0xFF141112),
     gradientColors = GradientColors(
-        overly = listOf( Color(0x000D090B),Color(0xFF0D090B)),
-        streakGradient = listOf(Color(0x80FFFFFF),Color(0x1FFFFFFF)),
-        pointsOverly = listOf( Color(0xFF3B0D23),Color(0xFF7D1C4A))
+        overly = listOf(Color(0x000D090B), Color(0xFF0D090B)),
+        streakGradient = listOf(Color(0x80FFFFFF), Color(0x1FFFFFFF)),
+        pointsOverly = listOf(Color(0xFF3B0D23), Color(0xFF7D1C4A))
     ),
     textColors = TextColors(
         title = Color(0xDEFFFFFF),
@@ -30,7 +26,7 @@ val AflamiDarkColors = AflamiColors(
         onPrimaryBody = Color(0x7FFFFFFF),
         onPrimaryHint = Color(0x14FFFFFF),
 
-    ),
+        ),
     statusColors = StatusColors(
         redAccent = Color(0xFFA63A42),
         redVariant = Color(0xFF1F1213),
