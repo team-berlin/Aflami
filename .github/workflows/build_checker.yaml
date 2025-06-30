@@ -39,5 +39,19 @@ jobs:
       - name: Grant gradlew permissions
         run: chmod +x ./gradlew
 
+
       - name: Build with Gradle
-        run: ./gradlew build -x koverVerify
+        run: ./gradlew assembleDebug -x koverVerify
+
+      - name: Decode service account
+        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" | base64 --decode > service-account.json
+
+      - name: Upload APK using Firebase CLI
+        run: |
+          echo "GOOGLE_APPLICATION_CREDENTIALS=service-account.json" >> $GITHUB_ENV
+          npm install -g firebase-tools
+          firebase appdistribution:distribute \
+            app/build/outputs/apk/release/app-release.apk \
+            --app ${{ secrets.FIREBASE_APP_ID }} \
+            --groups "${{ secrets.FIREBASE_TESTER_GROUPS }}" \
+            --release-notes "CI Upload via service account"
