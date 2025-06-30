@@ -6,6 +6,13 @@ data class AflamiColors(
     val primary: Color,
     val secondary: Color,
     val primaryVariant: Color,
+    val disable: Color,
+    val iconBackground: Color,
+    val blurOverlay: Color,
+    val onPrimaryButton: Color,
+    val surface: Color,
+    val surfaceHigh: Color,
+    val stroke: Color,
     val gradientColors: GradientColors,
     val textColors: TextColors,
     val statusColors: StatusColors,
@@ -14,23 +21,17 @@ data class AflamiColors(
 data class GradientColors(
     val overly: List<Color>,
     val streakGradient: List<Color>,
-    val pointsOverly: List<Color>,
+    val pointsOverly: List<Color>
 )
 
 data class TextColors(
     val title: Color,
     val body: Color,
     val hint: Color,
-    val stroke: Color,
-    val surface: Color,
-    val surfaceHigh: Color,
     val onPrimary: Color,
     val onPrimaryBody: Color,
     val onPrimaryHint: Color,
-    val disable: Color,
-    val iconBackground: Color,
-    val blurOverlay: Color,
-    val onPrimaryButton: Color,
+
 )
 
 data class StatusColors(
