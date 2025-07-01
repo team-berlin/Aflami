@@ -27,6 +27,8 @@ object Dependencies {
 
     const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serialization}"
 
+    const val androidxMaterial3 = "androidx.compose.material3:material3"
+
     //test
     const val junit = "junit:junit:${Versions.junit}"
     const val kotlinxCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinxCoroutinesTest}"
@@ -50,6 +52,7 @@ fun DependencyHandler.androidxUi() {
     implementation(Dependencies.androidxUiFoundation)
     implementation(Dependencies.androidxUiGraphics)
     implementation(Dependencies.androidxUiToolingPreview)
+    implementation(Dependencies.androidxMaterial3)
 }
 
 fun DependencyHandler.ktor() {
