@@ -21,3 +21,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "Aflami"
 include(":app")
+include(":presentation:ui")
+include(":presentation:viewModel")
+include(":presentation:designSystem")
+include(":domain:usecase")
+include(":domain:entity")
+include(":data:repository")
+include(":data:local")
+include(":data:remote")
