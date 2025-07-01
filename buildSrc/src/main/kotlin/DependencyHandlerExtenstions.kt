@@ -1,6 +1,10 @@
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
+fun DependencyHandler.api(dependency: Dependency) {
+    add("api", dependency)
+}
+
 fun DependencyHandler.implementation(dependency: String) {
     add("implementation", dependency)
 }

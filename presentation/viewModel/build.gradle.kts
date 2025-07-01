@@ -38,4 +38,6 @@ dependencies {
     navigation()
     koin()
     test()
+
+    useCase()
 }

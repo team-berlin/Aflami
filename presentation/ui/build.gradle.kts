@@ -40,4 +40,7 @@ dependencies {
     koin()
     coil()
     composeUiDebug()
+
+    designSystem()
+    viewModel()
 }

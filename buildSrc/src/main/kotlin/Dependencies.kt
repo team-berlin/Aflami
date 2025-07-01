@@ -1,8 +1,7 @@
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.kotlin.dsl.project
 
 object Dependencies {
-    const val kotlin = "org.jetbrains.kotlin.android:${Versions.kotlin}" // do we need it here? or is it just a plugin?
-
     const val androidCoreKtx = "androidx.core:core-ktx:${Versions.androidCoreKtx}"
 
     //ui
@@ -14,31 +13,23 @@ object Dependencies {
     const val androidxUiGraphics = "androidx.compose.ui:ui-graphics"
     const val androidxUiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
 
-    const val compose = "org.jetbrains.kotlin.plugin.compose:${Versions.kotlin}" // do we need it here? or is it just a plugin?
-
-
     const val ktorAndroid = "io.ktor:ktor-client-android:${Versions.ktor}"
     const val ktorCore = "io.ktor:ktor-client-android:${Versions.ktor}"
     const val ktorserialization = "io.ktor:ktor-client-android:${Versions.ktor}"
     const val ktorlogging = "io.ktor:ktor-client-android:${Versions.ktor}"
 
-    const val koinAndroidxCompose =
-        "io.insert-koin:koin-androidx-compose:${Versions.koinAndroidxCompose}"
-    const val koinAndroidxComposeNavigation =
-        "io.insert-koin:koin-androidx-compose-navigation:${Versions.koinAndroidxCompose}"
+    const val koin = "io.insert-koin:koin-core:${Versions.koin}"
 
-    const val navigationCompose = "androidx.navigation:navigation-compose${Versions.navigationCompose}"
+    const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
 
     const val coilCompose = "io.coil-kt.coil3:coil-compose:${Versions.coil}"
     const val coilNtework = "io.coil-kt.coil3:coil-network-okhttp:${Versions.coil}"
 
-    const val kover = "org.jetbrains.kotlinx.kover:${Versions.kover}" // do we need it here? or is it just a plugin?
-
-    const val serialization = "org.jetbrains.kotlin.plugin.serialization:${Versions.kotlin}"
+    const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serialization}"
 
     //test
-    const val junit = "junit.junit:${Versions.junit}"
-    const val kotlinxCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test${Versions.kotlinxCoroutinesTest}"
+    const val junit = "junit:junit:${Versions.junit}"
+    const val kotlinxCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinxCoroutinesTest}"
 
     const val androidxUiTooling = "androidx.compose.ui:ui-tooling"
     const val androidxUiTestManifest = "androidx.compose.ui:ui-test-manifest"
@@ -69,8 +60,7 @@ fun DependencyHandler.ktor() {
 }
 
 fun DependencyHandler.koin() {
-    implementation(Dependencies.koinAndroidxCompose)
-    implementation(Dependencies.koinAndroidxComposeNavigation)
+    implementation(Dependencies.koin)
 }
 
 fun DependencyHandler.navigation() {
@@ -94,4 +84,28 @@ fun DependencyHandler.test() {
 fun DependencyHandler.composeUiDebug() {
     debugImplementation(Dependencies.androidxUiTooling)
     debugImplementation(Dependencies.androidxUiTestManifest)
+}
+
+fun DependencyHandler.designSystem() {
+    implementation(project(":presentation:designSystem"))
+}
+
+fun DependencyHandler.viewModel() {
+    implementation(project(":presentation:viewModel"))
+}
+
+fun DependencyHandler.useCase() {
+    implementation(project(":domain:usecase"))
+}
+
+fun DependencyHandler.entity() {
+    implementation(project(":domain:entity"))
+}
+
+fun DependencyHandler.repository() {
+    implementation(project(":data:repository"))
+}
+
+fun DependencyHandler.ui() {
+    api(project(":presentation:ui"))
 }

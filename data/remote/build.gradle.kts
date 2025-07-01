@@ -38,4 +38,6 @@ dependencies {
     koin()
     ktor()
     serialization()
+
+    repository()
 }
