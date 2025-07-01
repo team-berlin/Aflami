@@ -41,7 +41,8 @@ android {
 
 dependencies {
     androidCoreKtx()
+    lifecycleRuntimeKtx()
     androidxUi()
+    koin()
     test()
-    composeUiDebug()
 }
