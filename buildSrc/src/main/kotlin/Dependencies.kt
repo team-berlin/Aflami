@@ -84,8 +84,8 @@ fun DependencyHandler.serialization() {
 }
 
 fun DependencyHandler.test() {
-    testImplementation(Dependencies.kotlinxCoroutinesTest)
     testImplementation(Dependencies.junit)
+    testImplementation(Dependencies.kotlinxCoroutinesTest)
 }
 
 fun DependencyHandler.composeUiDebug() {
