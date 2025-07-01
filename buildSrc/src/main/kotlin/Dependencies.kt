@@ -48,8 +48,11 @@ fun DependencyHandler.androidCoreKtx() {
     implementation(Dependencies.androidCoreKtx)
 }
 
-fun DependencyHandler.androidxUi() {
+fun DependencyHandler.lifecycleRuntimeKtx() {
     implementation(Dependencies.lifecycleRuntimeKtx)
+}
+
+fun DependencyHandler.androidxUi() {
     implementation(Dependencies.activityCompose)
     implementation(platform(Dependencies.composeBom))
     implementation(Dependencies.androidxUi)
