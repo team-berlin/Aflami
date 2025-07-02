@@ -23,6 +23,8 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run tests and generate coverage report
+        run: ./gradlew koverVerify
+      - name: Run tests and generate coverage report
         run: ./gradlew koverHtmlReport
 
       - name: Upload Kover HTML report
