@@ -1,4 +1,4 @@
-package com.example.aflami.designsystem.theme
+package com.berlin.aflami.ui.theme.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
@@ -6,8 +6,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.berlin.aflami.ui.theme.textstyle.LocalAflamiTextStyle
 import com.berlin.aflami.ui.theme.textstyle.defaultTextStyle
 import com.berlin.aflami.ui.theme.color.AflamiDarkColors
-import com.example.aflami.designsystem.color.AflamiLightColors
-import com.example.aflami.designsystem.color.LocalAflamiColors
+import com.berlin.aflami.ui.theme.color.AflamiLightColors
+import com.berlin.aflami.ui.theme.color.LocalAflamiColors
 
 
 @Composable

@@ -1,11 +1,11 @@
-package com.example.aflami.designsystem.theme
+package com.berlin.aflami.ui.theme.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import com.berlin.aflami.ui.theme.textstyle.AflamiTextStyle
 import com.berlin.aflami.ui.theme.textstyle.LocalAflamiTextStyle
 import com.berlin.aflami.ui.theme.color.AflamiColors
-import com.example.aflami.designsystem.color.LocalAflamiColors
+import com.berlin.aflami.ui.theme.color.LocalAflamiColors
 
 object Theme {
     val color: AflamiColors

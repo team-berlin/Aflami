@@ -1,11 +1,7 @@
-package com.example.aflami.designsystem.color
+package com.berlin.aflami.ui.theme.color
 
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import com.berlin.aflami.ui.theme.color.AflamiColors
-import com.berlin.aflami.ui.theme.color.GradientColors
-import com.berlin.aflami.ui.theme.color.StatusColors
-import com.berlin.aflami.ui.theme.color.TextColors
 
 val LocalAflamiColors = staticCompositionLocalOf { AflamiLightColors }
 val AflamiLightColors = AflamiColors(
