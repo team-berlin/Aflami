@@ -39,4 +39,5 @@ android {
 dependencies {
     androidCoreKtx()
     androidxUi()
+    composeUiDebug()
 }
