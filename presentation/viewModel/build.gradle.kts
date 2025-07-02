@@ -32,7 +32,17 @@ android {
         jvmTarget = "11"
     }
 }
-
+kover {
+    reports {
+        verify {
+            rule {
+                bound {
+                    minValue = 80
+                }
+            }
+        }
+    }
+}
 dependencies {
     androidCoreKtx()
     lifecycleRuntimeKtx()

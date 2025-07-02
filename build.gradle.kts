@@ -7,25 +7,3 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     id("org.jetbrains.kotlinx.kover") version "0.9.0" apply true
 }
-
-kover {
-    reports {
-        filters {
-            includes {
-                projects=listOf(":domain:usecase,:presentation:viewModel")
-            }
-        }
-        verify {
-            rule {
-                bound {
-                    minValue = 80
-                }
-            }
-        }
-    }
-}
-
-dependencies {
-    kover(project(":domain:usecase"))
-    kover(project(":presentation:viewModel"))
-}

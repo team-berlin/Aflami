@@ -12,7 +12,17 @@ kotlin {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
     }
 }
-
+kover {
+    reports {
+        verify {
+            rule {
+                bound {
+                    minValue = 80
+                }
+            }
+        }
+    }
+}
 dependencies {
     koin()
     test()
