@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlinx.kover")
 }
 
 android {
@@ -31,7 +32,17 @@ android {
         jvmTarget = "11"
     }
 }
-
+kover {
+    reports {
+        verify {
+            rule {
+                bound {
+                    minValue = 80
+                }
+            }
+        }
+    }
+}
 dependencies {
     androidCoreKtx()
     lifecycleRuntimeKtx()
