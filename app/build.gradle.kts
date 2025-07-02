@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.aflami"
+    namespace = "com.berlin.aflami"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.aflami"
-        minSdk = 24
+        applicationId = "com.berlin.aflami"
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -41,6 +41,12 @@ android {
 }
 
 dependencies {
+    androidCoreKtx()
+    lifecycleRuntimeKtx()
+    androidxUi()
+    koin()
+    test()
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -77,4 +83,6 @@ kover {
             }
         }
     }
+    ui()
+
 }
