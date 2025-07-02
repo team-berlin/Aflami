@@ -1,4 +1,4 @@
-name: BuildChecker
+name: App Distribution
 
 on:
   push:
@@ -35,6 +35,9 @@ jobs:
 
       - name: Grant gradlew permissions
         run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew assembleDebug
 
       - name: Upload APK using Firebase CLI
         run: |
