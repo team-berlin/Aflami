@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
-    id("org.jetbrains.kotlinx.kover") version "0.9.0" apply true
+    id("org.jetbrains.kotlinx.kover") version "0.9.0" apply false
 }
 
 kover {
