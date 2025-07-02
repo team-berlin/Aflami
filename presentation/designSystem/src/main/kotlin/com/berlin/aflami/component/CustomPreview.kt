@@ -1,4 +1,4 @@
-package com.example.aflami.utils
+package com.berlin.aflami.component
 
 import android.content.res.Configuration
 import androidx.compose.ui.tooling.preview.Preview
