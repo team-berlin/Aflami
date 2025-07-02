@@ -1,4 +1,4 @@
-package com.example.aflami.designsystem.textstyle
+package com.berlin.aflami.ui.theme.textstyle
 
 import androidx.compose.ui.text.TextStyle
 

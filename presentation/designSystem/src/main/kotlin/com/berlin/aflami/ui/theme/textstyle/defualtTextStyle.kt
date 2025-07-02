@@ -1,4 +1,4 @@
-package com.example.aflami.designsystem.textstyle
+package com.berlin.aflami.ui.theme.textstyle
 
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
@@ -6,7 +6,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.aflami.R
+import com.berlin.designsystem.R
 
 
 val loremIpsum = FontFamily(

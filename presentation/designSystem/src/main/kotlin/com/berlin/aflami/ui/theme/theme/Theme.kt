@@ -2,9 +2,9 @@ package com.example.aflami.designsystem.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import com.example.aflami.designsystem.textstyle.AflamiTextStyle
-import com.example.aflami.designsystem.textstyle.LocalAflamiTextStyle
-import com.example.aflami.designsystem.color.AflamiColors
+import com.berlin.aflami.ui.theme.textstyle.AflamiTextStyle
+import com.berlin.aflami.ui.theme.textstyle.LocalAflamiTextStyle
+import com.berlin.aflami.ui.theme.color.AflamiColors
 import com.example.aflami.designsystem.color.LocalAflamiColors
 
 object Theme {

@@ -1,6 +1,7 @@
-package com.example.aflami.designsystem.color
+package com.berlin.aflami.ui.theme.color
 
 import androidx.compose.ui.graphics.Color
+
 
 data class AflamiColors(
     val primary: Color,
