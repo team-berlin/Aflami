@@ -1,4 +1,4 @@
-package com.berlin.aflami.ui.theme.color
+package com.berlin.aflami.ui.color
 
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
