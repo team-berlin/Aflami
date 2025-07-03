@@ -42,7 +42,7 @@ fun MediaCard(
         AsyncImage(
             modifier = Modifier,
             model = mediaImg,
-            contentDescription = stringResource(R.string.api_image_card),
+            contentDescription = stringResource(R.string.api_image_card_content),
             contentScale = ContentScale.Crop
         )
         Rating(modifier = Modifier.align(Alignment.TopEnd), rating)
