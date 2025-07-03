@@ -1,6 +1,5 @@
 package com.berlin.aflami.component
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,10 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -38,14 +34,12 @@ import com.berlin.designsystem.R
 @Composable
 fun MoodPicker(
     modifier: Modifier = Modifier,
+    selectedMood: Int? = null,
     onMoodSelected: (Int) -> Unit = {}
 ) {
-    var selectedMood by remember { mutableStateOf<Int?>(null) }
-
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 20.dp)
             .clip(RoundedCornerShape(24.dp))
             .border(
                 width = 1.dp,
@@ -75,13 +69,11 @@ fun MoodPicker(
         MoodPickerContent(
             modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
             selectedMood = selectedMood,
-            onMoodSelected = { mood ->
-                selectedMood = mood
-                onMoodSelected(mood)
-            }
+            onMoodSelected = onMoodSelected
         )
     }
 }
+
 @Composable
 private fun MoodPickerHeader(
     modifier: Modifier = Modifier
@@ -94,7 +86,7 @@ private fun MoodPickerHeader(
             text = stringResource(R.string.mood_picker_title),
             color = Theme.color.textColors.onPrimary,
             style = Theme.textStyle.label.medium,
-            modifier = Modifier.padding(start = 12.dp)
+            modifier = Modifier.padding(start = 12.dp, top = 8.dp)
         )
     }
 }
@@ -105,6 +97,17 @@ private fun MoodPickerContent(
     selectedMood: Int? = null,
     onMoodSelected: (Int) -> Unit
 ) {
+    val moodIcons = remember {
+        listOf(
+            R.drawable.ic_sad,
+            R.drawable.ic_look_top,
+            R.drawable.ic_love,
+            R.drawable.ic_angry,
+            R.drawable.ic_unhappy,
+            R.drawable.ic_sad_dizzy
+        )
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -122,16 +125,9 @@ private fun MoodPickerContent(
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            val moodIcons = listOf(
-                R.drawable.ic_sad,
-                R.drawable.ic_look_top,
-                R.drawable.ic_love,
-                R.drawable.ic_angry,
-                R.drawable.ic_unhappy,
-                R.drawable.ic_sad_dizzy
-            )
             moodIcons.forEach { iconRes ->
                 MoodIcon(
+                    modifier = Modifier,
                     iconRes = iconRes,
                     isSelected = selectedMood == iconRes,
                     onClick = { onMoodSelected(iconRes) }
@@ -153,6 +149,7 @@ private fun MoodPickerContent(
 
 @Composable
 private fun MoodIcon(
+    modifier: Modifier,
     iconRes: Int,
     isSelected: Boolean = false,
     onClick: () -> Unit
@@ -161,7 +158,7 @@ private fun MoodIcon(
         painter = painterResource(iconRes),
         contentDescription = stringResource(R.string.mood_picker_mood_icon_content_description),
         tint = if (isSelected) Theme.color.primary else Theme.color.textColors.body,
-        modifier = Modifier
+        modifier = modifier
             .padding(4.dp)
             .clip(CircleShape)
             .size(24.dp)
@@ -175,7 +172,7 @@ private fun BlurredIcon(
 ) {
     Box(
         modifier = modifier
-            .padding(start = 12.dp, top = 12.dp, bottom = 8.dp)
+            .padding(start = 12.dp, top = 12.dp)
             .size(24.dp)
     ) {
         Box(
@@ -202,7 +199,7 @@ private fun BlurredIcon(
 
 @ThemeAndLocalePreviews
 @Composable
-fun CustomMoodPickerPreview() {
+private fun MoodMoodPickerPreview() {
     AflamiTheme {
         MoodPicker()
     }
