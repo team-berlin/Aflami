@@ -1,4 +1,5 @@
-package com.berlin.aflami.modifier
+package com.berlin.aflami.component
+
 
 import android.graphics.BlurMaskFilter
 import androidx.compose.runtime.Stable
