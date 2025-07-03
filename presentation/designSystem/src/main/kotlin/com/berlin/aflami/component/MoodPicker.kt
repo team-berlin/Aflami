@@ -97,7 +97,6 @@ private fun MoodPickerContent(
     modifier: Modifier = Modifier,
     onGetNowClick: () -> Unit
 ) {
-    var selectedIcon by remember { mutableStateOf<Int?>(null) }
 
     val moodIcons = remember {
         listOf(
