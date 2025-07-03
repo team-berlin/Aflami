@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_home">الرئيسية</string>
+    <string name="label_lists">القوائم</string>
+    <string name="label_categories">التصنيفات</string>
+    <string name="label_lets_play">هيا نلعب</string>
+    <string name="label_profile">الملف الشخصي</string>
+
+
+</resources>
