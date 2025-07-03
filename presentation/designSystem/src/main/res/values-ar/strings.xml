@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">أفلامي</string>
+    <string name="mood_picker_title">منتقي المزاج (احصل على فيلم)</string>
+    <string name="mood_picker_prompt">ما هو شعورك اليوم؟</string>
+    <string name="mood_picker_get_now">احصل الآن</string>
+    <string name="mood_picker_clown_content_description">مهرج مضحك</string>
+    <string name="mood_picker_mood_icon_content_description">أيقونة المزاج</string>
+    <string name="mood_picker_favourite_icon_content_description">أيقونة المفضلة</string>
+</resources>
