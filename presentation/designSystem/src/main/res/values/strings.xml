@@ -3,6 +3,7 @@
 
     <string name="action">Action</string>
     <string name="category_img_content">category img</string>
+    <string name="api_image_card_content">api image card</string>
     <string name="icon_button">Icon button</string>
 
 </resources>
