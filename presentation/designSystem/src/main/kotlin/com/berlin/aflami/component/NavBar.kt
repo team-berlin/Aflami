@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,60 +53,67 @@ fun NavBar(
     indicatorHeight: Dp = 32.dp,
     indicatorCornerRadius: Dp = 16.dp,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(backgroundColor),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        navDestinations.forEach { item ->
-            val isSelected = currentRoute == item.route
-            val backgroundColor = if (isSelected) indicatorColor else Color.Unspecified
-            val iconTint = if (isSelected) selectedContentColor else inactiveContentColor
-            val labelColor = if (isSelected) selectedLabel else inactiveContentColor
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        enabled = true,
-                        onClick = { onNavDestinationClicked(item.route) }
-                    )
-                    .padding(vertical = 6.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
+    Column(modifier = modifier.fillMaxWidth()) {
+        HorizontalDivider(
+            color = Theme.color.stroke,
+            thickness = 1.dp
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(backgroundColor),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+
+            navDestinations.forEach { item ->
+                val isSelected = currentRoute == item.route
+                val backgroundColor = if (isSelected) indicatorColor else Color.Unspecified
+                val iconTint = if (isSelected) selectedContentColor else inactiveContentColor
+                val labelColor = if (isSelected) selectedLabel else inactiveContentColor
+                Column(
                     modifier = Modifier
-                        .size(
-                            width = indicatorWidth,
-                            height = indicatorHeight
+                        .weight(1f)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            enabled = true,
+                            onClick = { onNavDestinationClicked(item.route) }
                         )
-                        .background(
-                            color = backgroundColor,
-                            shape = RoundedCornerShape(indicatorCornerRadius)
-                        ),
-                    contentAlignment = Alignment.Center
+                        .padding(vertical = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(
-                        painter = item.icon,
-                        contentDescription = stringResource(id = item.labelRes),
-                        tint = iconTint,
-                        modifier = Modifier.size(24.dp)
+                    Box(
+                        modifier = Modifier
+                            .size(
+                                width = indicatorWidth,
+                                height = indicatorHeight
+                            )
+                            .background(
+                                color = backgroundColor,
+                                shape = RoundedCornerShape(indicatorCornerRadius)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = item.icon,
+                            contentDescription = stringResource(id = item.labelRes),
+                            tint = iconTint,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
+                        text = stringResource(id = item.labelRes),
+                        fontSize = 12.sp,
+                        color = labelColor,
+                        textAlign = TextAlign.Center,
+                        style = Theme.textStyle.label.small
                     )
                 }
-
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
-                    text = stringResource(id = item.labelRes),
-                    fontSize = 12.sp,
-                    color = labelColor,
-                    textAlign = TextAlign.Center,
-                    style = Theme.textStyle.label.small
-                )
             }
         }
     }
