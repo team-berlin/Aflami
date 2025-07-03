@@ -36,7 +36,7 @@ fun MoodPicker(
     modifier: Modifier = Modifier,
     selectedMood: Int? = null,
     onMoodSelected: (Int) -> Unit = {},
-    onGetNowClick: () -> Unit = {}
+    onGetNowClicked: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -71,7 +71,7 @@ fun MoodPicker(
             modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
             selectedMood = selectedMood,
             onMoodSelected = onMoodSelected,
-            onGetNowClick = onGetNowClick
+            onGetNowClick = onGetNowClicked
         )
     }
 }
