@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="world_tour">World Tour</string>
+    <string name="explore_world_cinema">Explore World Cinema</string>
+
+    <string name="find_by_actor">Find by Actor</string>
+    <string name="search_by_favorite_actor">Search by favorite Actor</string>
+</resources>
