@@ -4,11 +4,11 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,46 +28,43 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
 @Composable
-fun Slider(
+fun MoviesPosterSlider(
     modifier: Modifier,
-    moviesList: List<Movie>,
+    moviesList: List<MovieCardUiState>,
+    onClick: (String) -> Unit = { },
 ) {
     val pagerState = rememberPagerState(initialPage = 1, pageCount = { moviesList.size })
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val itemWidth = 244.dp
-    val itemHeight = 300.dp
     val contentPadding = (screenWidth - itemWidth) / 2
     HorizontalPager(
         state = pagerState,
         pageSize = PageSize.Fixed(itemWidth),
         contentPadding = PaddingValues(horizontal = contentPadding),
-        modifier = modifier
-            .aspectRatio(itemHeight / itemWidth)
-
+        modifier = modifier.fillMaxWidth()
     ) { pageIndex ->
-
         val movie = moviesList[pageIndex]
         MovieCard(
-            movie = movie,
-            isCentered = pageIndex == pagerState.currentPage
+            movieCardUiState = movie,
+            isCentered = pageIndex == pagerState.currentPage,
+            onClick = onClick
         )
 
     }
 }
 
-
 @Composable
 fun MovieCard(
-    movie: Movie,
+    movieCardUiState: MovieCardUiState,
     isCentered: Boolean,
+    onClick: (String) -> Unit,
 ) {
 
     val cardWidth = animateDpAsState(
@@ -82,7 +79,7 @@ fun MovieCard(
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(movie.image.toInt()),
+            painter = painterResource(movieCardUiState.posterImage.toInt()),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -93,9 +90,11 @@ fun MovieCard(
         if (isCentered) {
             RatingCard(
                 modifier = Modifier.align(Alignment.TopEnd),
-                rating = movie.rating,
+                rating = movieCardUiState.rating,
             )
-            PlayButton()
+            PlayButton(
+                onClick = { onClick(movieCardUiState.id) }
+            )
         }
     }
 }
@@ -149,7 +148,7 @@ fun RatingCard(
 }
 
 @Composable
-fun PlayButton() {
+fun PlayButton(onClick: () -> Unit) {
     Box(
         Modifier
             .size(64.dp)
@@ -157,10 +156,13 @@ fun PlayButton() {
             .background(
                 color = Theme.color.textColors.onPrimary.copy(alpha = .87f)
             )
+            .border(1.dp, color = Theme.color.stroke)
+            .clickable {
+                onClick()
+            }, contentAlignment = Alignment.Center
+    )
 
-            .border(1.dp, color = Theme.color.stroke), contentAlignment = Alignment.Center
-
-    ) {
+    {
         Icon(
             modifier = Modifier
                 .size(40.dp),
@@ -171,56 +173,54 @@ fun PlayButton() {
     }
 }
 
-data class Movie(
+data class MovieCardUiState(
     val id: String,
-    val image: Int,
+    val posterImage: String,
     val rating: String
 )
 
 @Composable
-@Preview(
-    showBackground = true,
-)
+@ThemeAndLocalePreviews
 fun SliderPreview() {
     AflamiTheme(
         isDarkTheme = true
     ) {
-        Slider(
+        MoviesPosterSlider(
             modifier = Modifier,
-            moviesList = moviesList,
+            moviesList = moviesLists,
         )
     }
 }
 
-val moviesList = listOf(
-    Movie(
-        id = "Test",
-        image = R.drawable.movie_poster2,
+val moviesLists = listOf(
+    MovieCardUiState(
+        id = "0",
+        posterImage = R.drawable.movie_poster2.toString(),
         "9.9",
     ),
-    Movie(
-        id = "wow",
-        image = R.drawable.movie_poster3,
+    MovieCardUiState(
+        id = "1",
+        posterImage = R.drawable.movie_poster3.toString(),
         rating = "9.9"
     ),
-    Movie(
-        id = "Test",
-        image = R.drawable.movie_poster2,
+    MovieCardUiState(
+        id = "2",
+        posterImage = R.drawable.movie_poster2.toString(),
         rating = "7.4"
     ),
-    Movie(
-        id = "Test",
-        image = R.drawable.movie_poster2,
+    MovieCardUiState(
+        id = "3",
+        posterImage = R.drawable.movie_poster2.toString(),
         "9.9",
     ),
-    Movie(
-        id = "wow",
-        image = R.drawable.movie_poster3,
+    MovieCardUiState(
+        id = "4",
+        posterImage = R.drawable.movie_poster3.toString(),
         rating = "9.9"
     ),
-    Movie(
-        id = "Test",
-        image = R.drawable.movie_poster2,
+    MovieCardUiState(
+        id = "5",
+        posterImage = R.drawable.movie_poster2.toString(),
         rating = "7.4"
     ),
 )
