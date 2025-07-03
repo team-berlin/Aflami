@@ -57,7 +57,7 @@ fun CategoryCard(
                 .height(71.dp)
                 .offset(y = (-8).dp),
             painter = painterResource(mediaImgId),
-            contentDescription = "category img",
+            contentDescription = stringResource(R.string.category_img),
         )
 
 
@@ -68,7 +68,7 @@ fun CategoryCard(
 
 @ThemeAndLocalePreviews
 @Composable
-fun Preview() {
+fun CategoryCardPreview() {
     AflamiTheme {
         CategoryCard(
             modifier = Modifier,
