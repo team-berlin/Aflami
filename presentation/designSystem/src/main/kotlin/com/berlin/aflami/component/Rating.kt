@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
@@ -37,8 +38,8 @@ fun Rating(
         modifier = modifier
             .padding(end = 4.dp, top = 4.dp)
             .size(width = 50.dp, height = 28.dp)
-            .border(1.dp, Theme.color.stroke, corner)
             .background(Theme.color.primaryVariant, corner)
+            .border(1.dp, Theme.color.stroke, corner)
             .padding(vertical = 6.dp, horizontal = 8.dp),
         horizontalArrangement = Arrangement.End,
     ) {
@@ -60,5 +61,14 @@ fun Rating(
         }
 
 
+    }
+}
+
+
+@ThemeAndLocalePreviews
+@Composable
+fun RatingPreview(){
+    AflamiTheme {
+        Rating(rating = 9.9)
     }
 }
