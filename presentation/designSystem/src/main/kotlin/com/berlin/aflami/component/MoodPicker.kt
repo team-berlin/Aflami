@@ -30,12 +30,13 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
 @Composable
 fun MoodPicker(
     modifier: Modifier = Modifier,
-    selectedMood: Int? = null,
-    onMoodSelected: (Int) -> Unit = {},
     onGetNowClicked: () -> Unit = {}
 ) {
     Box(
@@ -69,8 +70,6 @@ fun MoodPicker(
         MoodPickerHeader()
         MoodPickerContent(
             modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
-            selectedMood = selectedMood,
-            onMoodSelected = onMoodSelected,
             onGetNowClick = onGetNowClicked
         )
     }
@@ -96,10 +95,10 @@ private fun MoodPickerHeader(
 @Composable
 private fun MoodPickerContent(
     modifier: Modifier = Modifier,
-    selectedMood: Int? = null,
-    onMoodSelected: (Int) -> Unit,
     onGetNowClick: () -> Unit
 ) {
+    var selectedIcon by remember { mutableStateOf<Int?>(null) }
+
     val moodIcons = remember {
         listOf(
             R.drawable.ic_sad,
@@ -130,29 +129,30 @@ private fun MoodPickerContent(
         ) {
             moodIcons.forEach { iconRes ->
                 MoodIcon(
-                    modifier = Modifier,
                     iconRes = iconRes,
-                    isSelected = selectedMood == iconRes,
-                    onClick = { onMoodSelected(iconRes) }
+                    isSelected = selectedIcon == iconRes,
+                    onClick = {
+                        selectedIcon = if (selectedIcon == iconRes) null else iconRes
+                    }
                 )
             }
         }
         Text(
             text = stringResource(R.string.mood_picker_get_now),
             style = Theme.textStyle.body.medium,
-            color = if (selectedMood != null) Theme.color.primary else Theme.color.disable,
+            color = if (selectedIcon != null) Theme.color.primary else Theme.color.disable,
             modifier = Modifier
                 .padding(top = 12.dp, bottom = 4.dp)
-                .clickable(enabled = selectedMood != null, onClick = onGetNowClick)
+                .clickable(enabled = selectedIcon != null, onClick = onGetNowClick)
         )
     }
 }
 
 @Composable
 private fun MoodIcon(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     iconRes: Int,
-    isSelected: Boolean = false,
+    isSelected: Boolean,
     onClick: () -> Unit
 ) {
     Icon(
@@ -161,11 +161,11 @@ private fun MoodIcon(
         tint = if (isSelected) Theme.color.primary else Theme.color.textColors.body,
         modifier = modifier
             .padding(4.dp)
-            .clip(CircleShape)
             .size(24.dp)
             .clickable(onClick = onClick)
     )
 }
+
 
 @Composable
 private fun BlurredIcon(
