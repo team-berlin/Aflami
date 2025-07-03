@@ -1,12 +1,16 @@
-package com.example.aflami.component
+package com.berlin.aflami.component
 
+import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,12 +19,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -36,16 +42,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.aflami.R
-import com.example.aflami.designsystem.theme.AflamiTheme
-import com.example.aflami.designsystem.theme.Theme
+import com.berlin.aflami.ui.theme.AflamiTheme
+import com.berlin.aflami.ui.theme.Theme
+import com.berlin.designsystem.R
 
 @Composable
 fun CustomTextField(
@@ -53,52 +60,50 @@ fun CustomTextField(
     modifier: Modifier = Modifier,
     style: TextStyle = Theme.textStyle.body.medium,
     hintText: String = "",
-    maxLines: Int = 1,
-    height: Dp = Dp.Unspecified,
     isEnabled: Boolean = true,
     isError: Boolean = false,
+    maxLines: Int = 1,
+    isObscured: Boolean = false,
     errorMessage: String = "",
     maxCharacters: Int = Int.MAX_VALUE,
     @DrawableRes leadingIcon: Int? = null,
+    @DrawableRes trailingIcon: Int? = null,
     borderColor: Color = Theme.color.stroke,
     borderErrorColor: Color = Theme.color.statusColors.redAccent,
     borderFocusedColor: Color = Theme.color.primary,
+    onTrailingClick: (() -> Unit)? = null,
     onValueChange: (String) -> Unit = {}
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val canShowMaxCharacters = maxCharacters - text.length < 5
 
     val currentBorderColor by animateColorAsState(
-        targetValue = if (isError) borderErrorColor else if (isFocused) borderFocusedColor else borderColor
+        if (isError) borderErrorColor
+        else if (isFocused) borderFocusedColor
+        else borderColor
     )
-
-    val messageColor by animateColorAsState(
-        targetValue = if (isError) Theme.color.textColors.onPrimary
-        else if (canShowMaxCharacters) Theme.color.textColors.body
-        else Theme.color.primary
-    )
-
-    val message = if (isError) errorMessage
-    else if (canShowMaxCharacters) "${text.length}/$maxCharacters"
-    else ""
 
     Column {
         AnimatedMessage(
             isError = isError,
-            canShowMaxCharacters = canShowMaxCharacters,
-            message = message,
+            message = errorMessage,
             style = style,
-            messageColor = messageColor
         )
         Row(
             modifier = Modifier
                 .border(
                     width = 1.dp, color = currentBorderColor, shape = RoundedCornerShape(16.dp)
                 )
+                .clip(shape = RoundedCornerShape(16.dp))
+                .clipToBounds()
+                .background(Theme.color.surfaceHigh, shape = RoundedCornerShape(16.dp))
                 .defaultMinSize(minHeight = 56.dp)
-                .height(height)
-                .padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.Top
+                .then(
+                    if (leadingIcon == null) Modifier.padding(start = 4.dp) else Modifier
+                )
+                .then(
+                    if (trailingIcon == null) Modifier.padding(end = 4.dp) else Modifier
+                ), verticalAlignment = Alignment.Top
         ) {
             if (leadingIcon != null) {
                 val imageColor by animateColorAsState(
@@ -120,18 +125,30 @@ fun CustomTextField(
                 maxLines = maxLines,
                 enabled = isEnabled,
                 modifier = modifier
-                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
+                    .weight(1f)
                     .defaultMinSize(minHeight = 56.dp)
-                    .height(height)
                     .clip(RoundedCornerShape(16.dp))
                     .onFocusChanged { focusState -> isFocused = focusState.isFocused },
-                textStyle = style.copy(color = Theme.color.textColors.body),
+                textStyle = style.copy(color = Theme.color.textColors.title),
                 singleLine = maxLines == 1,
+                visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                 decorationBox = { innerTextField ->
-                    InnerTextFieldWithHint(innerTextField, text, hintText, maxLines, style)
+                    InnerTextFieldWithHint(innerTextField, text, hintText, style)
                 })
+            if (trailingIcon != null) {
+                val imageColor by animateColorAsState(
+                    targetValue = if (text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.title
+                )
+                VerticalDivider()
+                TrailingIcon(trailingIcon, imageColor, onTrailingClick)
+            }
         }
-
+        AnimatedMaxCharacters(
+            canShowMaxCharacters,
+            "${text.length}/$maxCharacters",
+            style,
+        )
     }
 }
 
@@ -144,6 +161,7 @@ private fun LeadingIcon(leadingIcon: Int, imageColor: Color) {
         contentScale = ContentScale.Fit,
         modifier = Modifier
             .padding(vertical = 16.dp)
+            .padding(start = 16.dp, end = 12.dp)
             .size(24.dp)
     )
 }
@@ -160,17 +178,13 @@ private fun VerticalDivider() {
 
 @Composable
 private fun RowScope.InnerTextFieldWithHint(
-    innerTextField: @Composable (() -> Unit),
-    text: String,
-    hintText: String,
-    maxLines: Int,
-    style: TextStyle
+    innerTextField: @Composable (() -> Unit), text: String, hintText: String, style: TextStyle
 ) {
     Box(
-        modifier = if (maxLines == 1) Modifier else Modifier
+        modifier = Modifier
             .padding(vertical = 5.dp)
             .padding(top = (if (LocalLayoutDirection.current == LayoutDirection.Rtl) 0 else 3).dp),
-        contentAlignment = if (maxLines == 1) Alignment.CenterStart else Alignment.TopStart,
+        contentAlignment = Alignment.CenterStart,
     ) {
         innerTextField()
         if (text.isEmpty()) {
@@ -186,45 +200,96 @@ private fun RowScope.InnerTextFieldWithHint(
     }
 }
 
+
 @Composable
 private fun ColumnScope.AnimatedMessage(
     isError: Boolean,
-    canShowMaxCharacters: Boolean,
     message: String,
     style: TextStyle,
-    messageColor: Color
 ) {
-    AnimatedVisibility(
-        visible = isError || canShowMaxCharacters
-    ) {
+    AnimatedVisibility(visible = isError) {
         Box(
             modifier = Modifier
-                .align(Alignment.Start)
-                .padding(top = 4.dp)
-                .animateContentSize()
+                .padding(bottom = 4.dp)
+                .wrapContentSize()
+                .background(
+                    color = Theme.color.statusColors.redAccent, shape = SpeechBubble(
+                        cornerRadius = 8.dp,
+                        tailWidth = 8.dp,
+                        tailHeight = 4.dp,
+                        tailOffsetDp = 8.dp
+                    )
+                )
+                .padding(bottom = 4.dp)
         ) {
-            Image(
-                painter = painterResource(R.drawable.container),
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.Center)
-            )
             Text(
                 text = message,
                 style = style,
-                fontSize = 14.sp,
-                lineHeight = 22.sp,
-                fontStyle = Theme.textStyle.label.medium.fontStyle,
-                color = messageColor,
+                color = Theme.color.textColors.onPrimary,
                 modifier = Modifier
-                    .padding(start = 12.dp)
-                    .padding(top = 8.dp)
+                    .padding(horizontal = 12.dp)
+                    .padding(vertical = 6.dp)
                     .animateContentSize()
             )
         }
     }
 }
 
-@Preview
+
+@Composable
+private fun ColumnScope.AnimatedMaxCharacters(
+    canShowMaxCharacters: Boolean,
+    message: String,
+    style: TextStyle,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp),
+        horizontalArrangement = Arrangement.End
+    ) {
+        AnimatedVisibility(visible = canShowMaxCharacters) {
+            Text(
+                text = message,
+                style = style,
+                fontSize = 12.sp,
+                color = Theme.color.textColors.title,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .padding(top = 4.dp)
+                    .animateContentSize()
+            )
+        }
+    }
+}
+
+@SuppressLint("UnrememberedMutableInteractionSource")
+@Composable
+private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Unit)? = null) {
+    Crossfade(targetState = leadingIcon) { state ->
+        Image(
+            painter = painterResource(id = state),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(imageColor),
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .then(
+                    if (onClick != null) Modifier.clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = ripple(color = Theme.color.textColors.hint),
+                        onClick = onClick
+                    )
+                    else Modifier
+                )
+                .padding(vertical = 16.dp)
+                .padding(start = 12.dp, end = 16.dp)
+                .size(24.dp)
+        )
+    }
+}
+
+
+@ThemeAndLocalePreviews
 @Composable
 private fun CustomTextFieldPreview() {
     AflamiTheme {
@@ -236,34 +301,38 @@ private fun CustomTextFieldPreview() {
         ) {
             CustomTextField(
                 "",
-                hintText = "Label",
+                hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
-                maxLines = 1,
                 isEnabled = false
             )
             CustomTextField(
                 "",
-                hintText = "Ali Ahmed Abdullah",
+                hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
-                maxLines = 1,
                 isError = true,
-                errorMessage = "incorrect password"
+                errorMessage = stringResource(R.string.incorrect_password)
+            )
+            CustomTextField(
+                "This is a test title for field",
+                hintText = stringResource(R.string.label),
+                leadingIcon = R.drawable.user,
+                maxCharacters = 32
             )
             CustomTextField(
                 "",
-                hintText = "Ali Ahmed Abdullah",
+                hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
-                maxLines = 1,
-                borderFocusedColor = Theme.color.primary,
+                isObscured = false
             )
             CustomTextField(
-                "Ali Ahmed Abdullah",
-                hintText = "",
-                leadingIcon = R.drawable.user,
-                maxLines = 1,
-                maxCharacters = 32
+                "",
+                hintText = stringResource(R.string.label),
+            )
+            CustomTextField(
+                "",
+                hintText = stringResource(R.string.label),
+                trailingIcon = R.drawable.filter_vertical,
             )
         }
     }
-
 }
