@@ -38,7 +38,7 @@ data class BottomNavItem(
 )
 
 @Composable
-fun CustomNavBar(
+fun NavBar(
     navDestinations: List<BottomNavItem>,
     currentRoute: String,
     modifier: Modifier = Modifier,
@@ -113,7 +113,7 @@ fun CustomNavBar(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun CustomNavBarPreview() {
+private fun NavBarPreview() {
     AflamiTheme {
         val items = listOf(
             BottomNavItem(
@@ -145,7 +145,7 @@ private fun CustomNavBarPreview() {
 
         val selectedRoute = remember { mutableStateOf("home") }
 
-        CustomNavBar(
+        NavBar(
             navDestinations = items,
             currentRoute = selectedRoute.value,
             onNavDestinationClicked = { selectedRoute.value = it }
