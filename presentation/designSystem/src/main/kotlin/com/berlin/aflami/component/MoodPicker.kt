@@ -141,9 +141,7 @@ private fun MoodPickerContent(
         Text(
             text = stringResource(R.string.mood_picker_get_now),
             style = Theme.textStyle.body.medium,
-            color = animateColorAsState(
-                if (selectedMood != null) Theme.color.primary else Theme.color.disable
-            ).value,
+            color = if (selectedMood != null) Theme.color.primary else Theme.color.disable,
             modifier = Modifier
                 .padding(top = 12.dp, bottom = 4.dp)
                 .clickable(enabled = selectedMood != null) {
@@ -159,13 +157,10 @@ private fun MoodIcon(
     isSelected: Boolean = false,
     onClick: () -> Unit
 ) {
-    val color by animateColorAsState(
-        if (isSelected) Theme.color.primary else Theme.color.textColors.body
-    )
     Icon(
         painter = painterResource(iconRes),
         contentDescription = stringResource(R.string.mood_picker_mood_icon_content_description),
-        tint = color,
+        tint = if (isSelected) Theme.color.primary else Theme.color.textColors.body,
         modifier = Modifier
             .padding(4.dp)
             .clip(CircleShape)
