@@ -35,7 +35,8 @@ import com.berlin.designsystem.R
 fun MoodPicker(
     modifier: Modifier = Modifier,
     selectedMood: Int? = null,
-    onMoodSelected: (Int) -> Unit = {}
+    onMoodSelected: (Int) -> Unit = {},
+    onGetNowClick: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -69,7 +70,8 @@ fun MoodPicker(
         MoodPickerContent(
             modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
             selectedMood = selectedMood,
-            onMoodSelected = onMoodSelected
+            onMoodSelected = onMoodSelected,
+            onGetNowClick = onGetNowClick
         )
     }
 }
@@ -95,7 +97,8 @@ private fun MoodPickerHeader(
 private fun MoodPickerContent(
     modifier: Modifier = Modifier,
     selectedMood: Int? = null,
-    onMoodSelected: (Int) -> Unit
+    onMoodSelected: (Int) -> Unit,
+    onGetNowClick: () -> Unit
 ) {
     val moodIcons = remember {
         listOf(
@@ -140,9 +143,7 @@ private fun MoodPickerContent(
             color = if (selectedMood != null) Theme.color.primary else Theme.color.disable,
             modifier = Modifier
                 .padding(top = 12.dp, bottom = 4.dp)
-                .clickable(enabled = selectedMood != null) {
-                    selectedMood?.let { onMoodSelected(it) }
-                }
+                .clickable(enabled = selectedMood != null, onClick = onGetNowClick)
         )
     }
 }
