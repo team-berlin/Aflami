@@ -40,4 +40,5 @@ dependencies {
     androidCoreKtx()
     androidxUi()
     composeUiDebug()
+    coil()
 }
