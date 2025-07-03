@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dark">Dark</string>
+    <string name="arabic">Arabic</string>
+    <string name="light">Light</string>
+    <string name="english">English</string>
+</resources>

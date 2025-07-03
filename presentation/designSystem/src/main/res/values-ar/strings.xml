@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dark">داكن</string>
+    <string name="arabic">عربي</string>
+    <string name="light">فاتح</string>
+    <string name="english">انجليزي</string>
+</resources>
