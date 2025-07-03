@@ -65,21 +65,10 @@ fun CategoryCard(
 
 }
 
-
 @ThemeAndLocalePreviews
 @Composable
-fun Preview1() {
-    CategoryCard(
-        modifier = Modifier,
-        "Western",
-        R.drawable.action_img
-    )
-}
-
-@ThemeAndLocalePreviews
-@Composable
-fun Preview2() {
-    AflamiTheme(isDarkTheme = true) {
+fun Preview() {
+    AflamiTheme {
         CategoryCard(
             modifier = Modifier,
             "Western",
