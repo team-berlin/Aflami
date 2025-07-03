@@ -32,7 +32,7 @@ fun CircularIConButton(
     dropShadowColor: Color = Theme.color.primary,
     dropShadowAlpha: Float = 0.03f,
     blur: Int = 4,
-    onClickPlay: () -> Unit
+    onClick: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -49,7 +49,7 @@ fun CircularIConButton(
                 else Modifier
             )
             .clip(RoundedCornerShape(50))
-            .clickable { onClickPlay() }
+            .clickable { onClick() }
             .background(backgroundColor)
             .border(
                 width = borderWidth.dp,
@@ -60,7 +60,7 @@ fun CircularIConButton(
     ) {
         Icon(
             painter = painter,
-            contentDescription = stringResource(R.string.play_button),
+            contentDescription = stringResource(R.string.icon_button),
             tint = Theme.color.primary,
             modifier = Modifier.size((size / 2).dp)
         )
@@ -69,28 +69,28 @@ fun CircularIConButton(
 
 @Composable
 @ThemeAndLocalePreviews
-private fun PlayButtonPreview() {
+private fun CircularIConButtonPreview() {
     AflamiTheme(isDarkTheme = false) {
         CircularIConButton(
             painter = painterResource(R.drawable.play),
             hasDropShadow = true,
             size = 64,
             borderWidth = 2,
-            onClickPlay = {}
+            onClick = {}
         )
     }
 }
 
 @Composable
 @ThemeAndLocalePreviews
-private fun DarkPlayButtonPreview() {
+private fun CircularIConButtonDarkPreview() {
     AflamiTheme(isDarkTheme = true) {
         CircularIConButton(
             painter = painterResource(R.drawable.play),
             hasDropShadow = true,
             size = 64,
             borderWidth = 2,
-            onClickPlay = {}
+            onClick = {}
         )
     }
 }
