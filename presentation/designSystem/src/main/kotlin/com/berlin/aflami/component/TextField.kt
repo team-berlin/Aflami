@@ -55,7 +55,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
 @Composable
-fun CustomTextField(
+fun TextField(
     text: String,
     modifier: Modifier = Modifier,
     style: TextStyle = Theme.textStyle.body.medium,
@@ -96,14 +96,14 @@ fun CustomTextField(
                 )
                 .clip(shape = RoundedCornerShape(16.dp))
                 .clipToBounds()
-                .background(Theme.color.surfaceHigh, shape = RoundedCornerShape(16.dp))
+                .background(Theme.color.surfaceHigh)
                 .defaultMinSize(minHeight = 56.dp)
                 .then(
                     if (leadingIcon == null) Modifier.padding(start = 4.dp) else Modifier
                 )
                 .then(
                     if (trailingIcon == null) Modifier.padding(end = 4.dp) else Modifier
-                ), verticalAlignment = Alignment.Top
+                ), verticalAlignment = Alignment.CenterVertically
         ) {
             if (leadingIcon != null) {
                 val imageColor by animateColorAsState(
@@ -125,7 +125,6 @@ fun CustomTextField(
                 maxLines = maxLines,
                 enabled = isEnabled,
                 modifier = modifier
-                    .padding(horizontal = 12.dp)
                     .weight(1f)
                     .defaultMinSize(minHeight = 56.dp)
                     .clip(RoundedCornerShape(16.dp))
@@ -161,7 +160,7 @@ private fun LeadingIcon(leadingIcon: Int, imageColor: Color) {
         contentScale = ContentScale.Fit,
         modifier = Modifier
             .padding(vertical = 16.dp)
-            .padding(start = 16.dp, end = 12.dp)
+            .padding(start = 16.dp)
             .size(24.dp)
     )
 }
@@ -282,7 +281,7 @@ private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Un
                     else Modifier
                 )
                 .padding(vertical = 16.dp)
-                .padding(start = 12.dp, end = 16.dp)
+                .padding(start = 12.dp)
                 .size(24.dp)
         )
     }
@@ -299,36 +298,36 @@ private fun CustomTextFieldPreview() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            CustomTextField(
+            TextField(
                 "",
                 hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
                 isEnabled = false
             )
-            CustomTextField(
+            TextField(
                 "",
                 hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
                 isError = true,
                 errorMessage = stringResource(R.string.incorrect_password)
             )
-            CustomTextField(
+            TextField(
                 "This is a test title for field",
                 hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
                 maxCharacters = 32
             )
-            CustomTextField(
+            TextField(
                 "",
                 hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
                 isObscured = false
             )
-            CustomTextField(
+            TextField(
                 "",
                 hintText = stringResource(R.string.label),
             )
-            CustomTextField(
+            TextField(
                 "",
                 hintText = stringResource(R.string.label),
                 trailingIcon = R.drawable.filter_vertical,
