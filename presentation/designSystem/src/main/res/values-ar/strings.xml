@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="icon_button">أيقونة</string>
+    <string name="api_image_card_content">api image card</string>
+
 </resources>
