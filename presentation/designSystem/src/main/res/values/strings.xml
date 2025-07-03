@@ -2,4 +2,5 @@
 <resources>
     <string name="aflami_title">Aflami</string>
     <string name="aflami_description">More than just watching.</string>
+    <string name="my_account">My account</string>
 </resources>
