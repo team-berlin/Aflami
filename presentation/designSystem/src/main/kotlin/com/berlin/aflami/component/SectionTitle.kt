@@ -1,6 +1,5 @@
 package com.berlin.aflami.component
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,17 +21,17 @@ import com.berlin.designsystem.R
 @Composable
 fun SectionTitle(
     modifier: Modifier,
-    @StringRes title: Int,
+    title: String,
     icon: @Composable (() -> Unit)? = null,
-    @StringRes trailingText: Int? = null
+    trailingText: String? = null
 ) {
     Row(
         modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            modifier = Modifier.padding(end = 8.dp),
-            text = stringResource(title),
+
+            text = title,
             style = Theme.textStyle.headline.small,
             color = Theme.color.textColors.title
         )
@@ -40,7 +39,7 @@ fun SectionTitle(
         trailingText?.run {
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = stringResource(trailingText),
+                text = trailingText,
                 style = Theme.textStyle.label.medium,
                 color = Theme.color.primary
             )
@@ -53,24 +52,26 @@ fun SectionTitle(
 private fun SectionTitlePreview() {
     AflamiTheme {
         SectionTitle(
-            modifier = Modifier.fillMaxWidth(), title = R.string.trending
+            modifier = Modifier.fillMaxWidth(), title = stringResource(R.string.trending)
         )
     }
 }
 
 @Composable
 @ThemeAndLocalePreviews
-fun SectionTitleWithIconPreview() {
+private fun SectionTitleWithIconPreview() {
     AflamiTheme {
         SectionTitle(
             modifier = Modifier.fillMaxWidth(),
-            title = R.string.trending,
+            title = stringResource(R.string.trending),
             icon = {
                 Icon(
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .size(20.dp),
                     painter = painterResource(R.drawable.trending),
                     tint = Theme.color.textColors.title,
-                    contentDescription = "trending"
+                    contentDescription = stringResource(R.string.trending)
                 )
             })
     }
@@ -78,21 +79,23 @@ fun SectionTitleWithIconPreview() {
 
 @Composable
 @ThemeAndLocalePreviews
-fun SectionTitleWithTrailingTextPreview() {
+private fun SectionTitleWithTrailingTextPreview() {
     AflamiTheme {
         SectionTitle(
             modifier = Modifier.fillMaxWidth(),
-            title = R.string.trending,
+            title = stringResource(R.string.trending),
             icon = {
                 Icon(
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .size(20.dp),
                     painter = painterResource(R.drawable.trending),
                     tint = Theme.color.textColors.title,
-                    contentDescription = "trending"
+                    contentDescription = stringResource(R.string.trending)
                 )
             },
             trailingText =
-                R.string.all,
+                stringResource(R.string.all),
         )
     }
 }
