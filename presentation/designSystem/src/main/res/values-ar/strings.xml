@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="action">أكشن</string>
     <string name="category_img_content">category img</string>
+    <string name="icon_button">أيقونة</string>
 
 </resources>
