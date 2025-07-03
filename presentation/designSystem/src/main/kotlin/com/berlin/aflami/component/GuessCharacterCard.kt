@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -82,8 +83,10 @@ fun CharacterCard(
             Box(
                 modifier = Modifier
                     .height(clampedImageHeight)
-                    .then(if(imageWidth != null) Modifier.width(imageWidth)
-                    else Modifier.fillMaxWidth())
+                    .then(
+                        if (imageWidth != null) Modifier.width(imageWidth)
+                        else Modifier.fillMaxWidth()
+                    )
                     .blur((blurAmount * 0.2f).dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -93,7 +96,7 @@ fun CharacterCard(
                             .data(imageUrl)
                             .crossfade(true)
                             .build(),
-                        contentDescription = "Character Image",
+                        contentDescription = stringResource(R.string.character_image),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
@@ -104,7 +107,7 @@ fun CharacterCard(
                 } else if (imageRes != null){
                     Image(
                         painter = painterResource(id = imageRes),
-                        contentDescription = "Character Image",
+                        contentDescription = stringResource(R.string.character_image),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
@@ -119,8 +122,10 @@ fun CharacterCard(
                 Box(
                     modifier = Modifier
                         .wrapContentHeight()
-                        .then(if(imageWidth != null) Modifier.width(imageWidth)
-                        else Modifier.fillMaxWidth())
+                        .then(
+                            if (imageWidth != null) Modifier.width(imageWidth)
+                            else Modifier.fillMaxWidth()
+                        )
                         .clickable { onHintClicked() },
                     contentAlignment = Alignment.Center
                 ) {
@@ -140,7 +145,7 @@ fun CharacterCard(
                             Icon(
                                 modifier = Modifier.size(clampedTextSize.value.dp),
                                 painter = painterResource(id = hintIcon),
-                                contentDescription = "Hint Icon",
+                                contentDescription = null,
                                 tint = hintTextColor,
                             )
                         }
