@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -32,11 +34,12 @@ fun HomeBar(
 ) {
     val iconBoxModifier = Modifier
         .size(40.dp)
+        .clip(RoundedCornerShape(12.dp))
         .background(
-            color = Theme.color.primaryVariant, shape = RoundedCornerShape(12.dp)
+            color = Theme.color.primaryVariant
         )
         .border(
-            1.dp, Theme.color.textColors.onPrimaryHint, shape = RoundedCornerShape(12.dp)
+            1.dp, Theme.color.stroke, shape = RoundedCornerShape(12.dp)
         )
 
     Row(
@@ -52,7 +55,6 @@ fun HomeBar(
                 contentDescription = "$title logo",
             )
         }
-
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start,
@@ -75,10 +77,11 @@ fun HomeBar(
             modifier = iconBoxModifier.clickable { onclickSearch() },
             contentAlignment = Alignment.Center,
         ) {
-            Image(
+            Icon(
                 modifier = Modifier.size(24.dp),
                 painter = painterResource(R.drawable.search),
-                contentDescription = "Search",
+                contentDescription = "Search Icon",
+                tint = Theme.color.textColors.body
             )
         }
     }
