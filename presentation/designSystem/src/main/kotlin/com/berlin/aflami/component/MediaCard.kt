@@ -1,7 +1,6 @@
 package com.berlin.aflami.component
 
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,20 +19,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
 @Composable
 fun MediaCard(
     modifier: Modifier = Modifier,
-    mediaImg:Any,
-    title:String,
-    description:String,
-    date:String,
-    rating:Double
+    mediaImg: Any,
+    title: String,
+    description: String,
+    date: String,
+    rating: Double
 ) {
     Box(
         modifier = modifier
@@ -47,7 +46,7 @@ fun MediaCard(
             contentDescription = "api image card",
             contentScale = ContentScale.Crop
         )
-        Rating(modifier = Modifier.align(Alignment.TopEnd),rating)
+        Rating(modifier = Modifier.align(Alignment.TopEnd), rating)
 
         Column(
             modifier = Modifier
@@ -135,44 +134,9 @@ fun Rating(
     }
 }
 
+@ThemeAndLocalePreviews
 @Composable
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-
-    )
 fun Preview1() {
-        MediaCard(
-            modifier = Modifier.size(width = 156.dp, height = 222.dp),
-            R.drawable.api_img,
-            "title",
-            "description",
-            "2016",
-            rating = 9.9
-        )
-}
-@Composable
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    )
-fun Preview2() {
-        MediaCard(
-            modifier = Modifier.size(width = 228.dp, height = 196.dp),
-            R.drawable.api_img2,
-            "title",
-            "description",
-            "2016",
-            rating = 9.9
-        )
-}
-@Composable
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-
-    )
-fun Preview3() {
     MediaCard(
         modifier = Modifier.size(width = 156.dp, height = 222.dp),
         R.drawable.api_img,
@@ -182,14 +146,12 @@ fun Preview3() {
         rating = 9.9
     )
 }
+
+@ThemeAndLocalePreviews
 @Composable
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
-fun Preview4() {
+fun Preview2() {
     MediaCard(
-        modifier = Modifier.size(width = 228.dp, height = 196.dp),
+        modifier = Modifier.size(width = 328.dp, height = 196.dp),
         R.drawable.api_img2,
         "title",
         "description",
@@ -197,6 +159,37 @@ fun Preview4() {
         rating = 9.9
     )
 }
+@ThemeAndLocalePreviews
+@Composable
+fun Preview3() {
+    AflamiTheme(isDarkTheme = true) {
+        MediaCard(
+            modifier = Modifier.size(width = 156.dp, height = 222.dp),
+            R.drawable.api_img,
+            "title",
+            "description",
+            "2016",
+            rating = 9.9
+        )
+    }
+}
+
+@ThemeAndLocalePreviews
+@Composable
+fun Preview4() {
+    AflamiTheme(isDarkTheme = true) {
+        MediaCard(
+            modifier = Modifier.size(width = 328.dp, height = 196.dp),
+            R.drawable.api_img2,
+            "title",
+            "description",
+            "2016",
+            rating = 9.9
+        )
+    }
+}
+
+
 
 
 
