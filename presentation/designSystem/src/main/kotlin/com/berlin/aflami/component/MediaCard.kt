@@ -27,7 +27,7 @@ import com.berlin.designsystem.R
 @Composable
 fun MediaCard(
     modifier: Modifier = Modifier,
-    mediaImg: Any,
+    mediaImg: String,
     title: String,
     typeOfMedia: String,
     date: String,
@@ -96,7 +96,7 @@ private fun MediaCardPreview1() {
     AflamiTheme {
         MediaCard(
             modifier = Modifier.size(width = 156.dp, height = 222.dp),
-            R.drawable.api_img,
+            "https://i.pinimg.com/736x/2d/4c/77/2d4c7718ccdf3d714654dbd3d66da00f.jpg",
             "Your Name",
             "TV show",
             "2016",
@@ -111,7 +111,7 @@ private fun MediaCardPreview2() {
     AflamiTheme {
         MediaCard(
             modifier = Modifier.size(width = 328.dp, height = 196.dp),
-            R.drawable.api_img2,
+            "https://i.pinimg.com/736x/2d/4c/77/2d4c7718ccdf3d714654dbd3d66da00f.jpg",
             "Grave of the Fireflies",
             "TV show",
             "2016",
