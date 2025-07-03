@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,8 +22,9 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
 @Composable
-fun PlayButton(
+fun CircularIConButton(
     modifier: Modifier = Modifier,
+    painter: Painter,
     hasDropShadow: Boolean = false,
     backgroundColor: Color = Theme.color.surfaceHigh,
     size: Int = 40,
@@ -57,7 +59,7 @@ fun PlayButton(
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            painter = painterResource(R.drawable.play),
+            painter = painter,
             contentDescription = stringResource(R.string.play_button),
             tint = Theme.color.primary,
             modifier = Modifier.size((size / 2).dp)
@@ -69,7 +71,8 @@ fun PlayButton(
 @ThemeAndLocalePreviews
 private fun PlayButtonPreview() {
     AflamiTheme(isDarkTheme = false) {
-        PlayButton(
+        CircularIConButton(
+            painter = painterResource(R.drawable.play),
             hasDropShadow = true,
             size = 64,
             borderWidth = 2,
@@ -82,7 +85,8 @@ private fun PlayButtonPreview() {
 @ThemeAndLocalePreviews
 private fun DarkPlayButtonPreview() {
     AflamiTheme(isDarkTheme = true) {
-        PlayButton(
+        CircularIConButton(
+            painter = painterResource(R.drawable.play),
             hasDropShadow = true,
             size = 64,
             borderWidth = 2,
