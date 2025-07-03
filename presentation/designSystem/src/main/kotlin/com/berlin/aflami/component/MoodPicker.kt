@@ -71,17 +71,6 @@ fun MoodPicker(
                 .height(121.dp)
                 .align(Alignment.TopEnd)
         )
-        Column {
-            BlurredIcon(
-                modifier = modifier
-            )
-            Text(
-                text = stringResource(R.string.mood_picker_title),
-                color = Theme.color.textColors.onPrimary,
-                style = Theme.textStyle.label.medium,
-                modifier = Modifier.padding(start = 12.dp)
-            )
-        }
         MoodPickerHeader()
         MoodPickerContent(
             modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
