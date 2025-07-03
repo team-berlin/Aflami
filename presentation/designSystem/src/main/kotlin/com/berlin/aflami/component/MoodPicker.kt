@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -63,7 +64,7 @@ fun MoodPicker(
     ) {
         Image(
             painter = painterResource(R.drawable.clown),
-            contentDescription = "funny clown",
+            contentDescription = stringResource(R.string.mood_picker_clown_content_description),
             contentScale = ContentScale.FillHeight,
             modifier = Modifier
                 .padding(top = 8.dp)
@@ -73,7 +74,7 @@ fun MoodPicker(
         Column {
             BlurredIcon()
             Text(
-                text = "Mood Picker (Get a Movie)",
+                text = stringResource(R.string.mood_picker_title),
                 color = Theme.color.textColors.onPrimary,
                 style = Theme.textStyle.label.medium,
                 modifier = Modifier.padding(start = 12.dp)
@@ -105,7 +106,7 @@ private fun MoodPickerContent(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "What’s your vibe today?",
+            text = stringResource(R.string.mood_picker_prompt),
             color = Theme.color.textColors.body,
             style = Theme.textStyle.body.small,
             modifier = Modifier.padding(12.dp)
@@ -130,7 +131,7 @@ private fun MoodPickerContent(
             }
         }
         Text(
-            text = "Get now",
+            text = stringResource(R.string.mood_picker_get_now),
             style = Theme.textStyle.body.medium,
             color = animateColorAsState(
                 if (selectedMood != null) Theme.color.primary else Theme.color.disable
@@ -155,7 +156,7 @@ private fun MoodIcon(
     )
     Icon(
         painter = painterResource(iconRes),
-        contentDescription = "mood icon",
+        contentDescription = stringResource(R.string.mood_picker_mood_icon_content_description),
         tint = color,
         modifier = Modifier
             .padding(4.dp)
@@ -187,7 +188,7 @@ private fun BlurredIcon(
         )
         Icon(
             painter = painterResource(R.drawable.ic_favourite),
-            contentDescription = "favourite icon",
+            contentDescription = stringResource(R.string.mood_picker_favourite_icon_content_description),
             tint = Theme.color.textColors.onPrimary,
             modifier = modifier
                 .padding(4.dp)
@@ -203,4 +204,3 @@ fun CustomMoodPickerPreview() {
         MoodPicker()
     }
 }
-
