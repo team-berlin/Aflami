@@ -96,6 +96,9 @@ fun DependencyHandler.designSystem() {
 fun DependencyHandler.viewModel() {
     implementation(project(":presentation:viewModel"))
 }
+fun DependencyHandler.safeImageViewer() {
+    implementation(project(":presentation:safeImageViewer"))
+}
 
 fun DependencyHandler.useCase() {
     implementation(project(":domain:usecase"))

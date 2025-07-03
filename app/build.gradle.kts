@@ -46,6 +46,7 @@ dependencies {
     koin()
     test()
 
+    safeImageViewer()
     ui()
     designSystem()
 }

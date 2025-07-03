@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
+import com.berlin.safeimageviewer.SafeImage
 
 
 class MainActivity : ComponentActivity() {
@@ -28,9 +29,8 @@ class MainActivity : ComponentActivity() {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Greeting(
-                        name = "Aflami",
-                        modifier = Modifier.padding(16.dp)
+                    SafeImage(
+                        "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=500"
                     )
                 }
             }
