@@ -10,15 +10,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.AflamiTheme
@@ -30,7 +28,7 @@ fun MediaCard(
     modifier: Modifier = Modifier,
     mediaImg: Any,
     title: String,
-    description: String,
+    typeOfMedia: String,
     date: String,
     rating: Double
 ) {
@@ -41,7 +39,7 @@ fun MediaCard(
 
     ) {
         AsyncImage(
-            modifier = modifier,
+            modifier = Modifier,
             model = mediaImg,
             contentDescription = "api image card",
             contentScale = ContentScale.Crop
@@ -56,15 +54,17 @@ fun MediaCard(
             Text(
                 text = title,
                 style = Theme.textStyle.label.large,
-                color = Theme.color.textColors.onPrimary
+                color = Theme.color.textColors.onPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = description,
-                    style = Theme.textStyle.label.large,
+                    text = typeOfMedia,
+                    style = Theme.textStyle.label.small,
                     color = Theme.color.textColors.onPrimaryBody
                 )
                 Box(
@@ -77,7 +77,7 @@ fun MediaCard(
                 )
                 Text(
                     text = date,
-                    style = Theme.textStyle.label.large,
+                    style = Theme.textStyle.label.small,
                     color = Theme.color.textColors.onPrimaryBody
                 )
 
@@ -89,80 +89,10 @@ fun MediaCard(
 
 
 }
-
-@Composable
-fun Rating(
-    modifier: Modifier = Modifier,
-    rating: Double
-) {
-
-    val corner = remember {
-        RoundedCornerShape(
-            topStart = 4.dp,
-            topEnd = 12.dp,
-            bottomEnd = 4.dp,
-            bottomStart = 12.dp
-        )
-    }
-    Row(
-        modifier = modifier
-            .padding(end = 4.dp, top = 4.dp)
-            .size(width = 50.dp, height = 28.dp)
-            .border(1.dp, Theme.color.stroke, corner)
-            .background(Theme.color.primaryVariant, corner)
-            .padding(vertical = 6.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.End,
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.star),
-                contentDescription = "card rate",
-                tint = Theme.color.statusColors.yellowAccent
-            )
-
-            Text(
-                text = rating.toString(),
-                style = Theme.textStyle.label.small,
-                color = Theme.color.textColors.body
-            )
-        }
-
-
-    }
-}
-
 @ThemeAndLocalePreviews
 @Composable
 fun Preview1() {
-    MediaCard(
-        modifier = Modifier.size(width = 156.dp, height = 222.dp),
-        R.drawable.api_img,
-        "title",
-        "description",
-        "2016",
-        rating = 9.9
-    )
-}
-
-@ThemeAndLocalePreviews
-@Composable
-fun Preview2() {
-    MediaCard(
-        modifier = Modifier.size(width = 328.dp, height = 196.dp),
-        R.drawable.api_img2,
-        "title",
-        "description",
-        "2016",
-        rating = 9.9
-    )
-}
-@ThemeAndLocalePreviews
-@Composable
-fun Preview3() {
-    AflamiTheme(isDarkTheme = true) {
+    AflamiTheme {
         MediaCard(
             modifier = Modifier.size(width = 156.dp, height = 222.dp),
             R.drawable.api_img,
@@ -176,8 +106,8 @@ fun Preview3() {
 
 @ThemeAndLocalePreviews
 @Composable
-fun Preview4() {
-    AflamiTheme(isDarkTheme = true) {
+fun Preview2() {
+    AflamiTheme {
         MediaCard(
             modifier = Modifier.size(width = 328.dp, height = 196.dp),
             R.drawable.api_img2,
