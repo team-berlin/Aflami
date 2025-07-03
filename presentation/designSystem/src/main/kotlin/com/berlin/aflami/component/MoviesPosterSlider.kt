@@ -1,7 +1,6 @@
 package com.berlin.aflami.component
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -78,8 +78,8 @@ fun MovieCard(
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(movieCardUiState.posterImage.toInt()),
+        AsyncImage(
+            model = movieCardUiState.posterImage,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -195,7 +195,7 @@ fun SliderPreview() {
 val moviesLists = listOf(
     MovieCardUiState(
         id = "0",
-        posterImage = R.drawable.movie_poster2.toString(),
+        posterImage =R.drawable.movie_poster2.toString(),
         "9.9",
     ),
     MovieCardUiState(
