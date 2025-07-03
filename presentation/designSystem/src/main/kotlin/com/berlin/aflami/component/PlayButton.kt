@@ -14,7 +14,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.modifier.dropShadow
 import com.berlin.aflami.ui.theme.AflamiTheme
@@ -67,7 +66,7 @@ fun PlayButton(
 }
 
 @Composable
-@Preview
+@ThemeAndLocalePreviews
 private fun PlayButtonPreview() {
     AflamiTheme(isDarkTheme = false) {
         PlayButton(
@@ -80,7 +79,7 @@ private fun PlayButtonPreview() {
 }
 
 @Composable
-@Preview
+@ThemeAndLocalePreviews
 private fun DarkPlayButtonPreview() {
     AflamiTheme(isDarkTheme = true) {
         PlayButton(
