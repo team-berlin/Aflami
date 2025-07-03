@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -41,7 +42,7 @@ fun MediaCard(
         AsyncImage(
             modifier = Modifier,
             model = mediaImg,
-            contentDescription = "api image card",
+            contentDescription = stringResource(R.string.api_image_card),
             contentScale = ContentScale.Crop
         )
         Rating(modifier = Modifier.align(Alignment.TopEnd), rating)
@@ -91,13 +92,13 @@ fun MediaCard(
 }
 @ThemeAndLocalePreviews
 @Composable
-fun Preview1() {
+private fun MediaCardPreview1() {
     AflamiTheme {
         MediaCard(
             modifier = Modifier.size(width = 156.dp, height = 222.dp),
             R.drawable.api_img,
-            "title",
-            "description",
+            "Your Name",
+            "TV show",
             "2016",
             rating = 9.9
         )
@@ -106,13 +107,13 @@ fun Preview1() {
 
 @ThemeAndLocalePreviews
 @Composable
-fun Preview2() {
+private fun MediaCardPreview2() {
     AflamiTheme {
         MediaCard(
             modifier = Modifier.size(width = 328.dp, height = 196.dp),
             R.drawable.api_img2,
-            "title",
-            "description",
+            "Grave of the Fireflies",
+            "TV show",
             "2016",
             rating = 9.9
         )
