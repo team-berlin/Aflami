@@ -50,7 +50,7 @@ fun SectionTitle(
 
 @Composable
 @ThemeAndLocalePreviews
-fun SectionTitlePreview() {
+private fun SectionTitlePreview() {
     AflamiTheme {
         SectionTitle(
             modifier = Modifier.fillMaxWidth(), title = R.string.trending
