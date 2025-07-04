@@ -47,4 +47,5 @@ dependencies {
     test()
 
     ui()
+    designSystem()
 }

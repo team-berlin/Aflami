@@ -1,0 +1,39 @@
+package com.berlin.aflami.component
+
+import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Preview
+
+
+@Preview(
+    name = "Light Theme - English",
+    group = "Themes and Locales",
+    showBackground = true,
+    backgroundColor = 0xFFFAF5F7,
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    locale = "en",
+)
+@Preview(
+    name = "Dark Theme - English",
+    group = "Themes and Locales",
+    showBackground = true,
+    backgroundColor = 0xFF0D090B,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    locale = "en",
+)
+@Preview(
+    name = "Light Theme - Arabic",
+    group = "Themes and Locales",
+    showBackground = true,
+    backgroundColor = 0xFFFAF5F7,
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    locale = "ar",
+)
+@Preview(
+    name = "Dark Theme - Arabic",
+    group = "Themes and Locales",
+    showBackground = true,
+    backgroundColor = 0xFF0D090B,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    locale = "ar",
+)
+annotation class ThemeAndLocalePreviews
