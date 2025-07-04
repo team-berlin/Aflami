@@ -82,8 +82,10 @@ fun ListCard(
 @ThemeAndLocalePreviews
 @Composable
 private fun ListCardPreview() {
-    ListCard(
-        title = "My favorite",
-        itemCount = "12 item"
-    )
+    AflamiTheme {
+        ListCard(
+            title = "My favorite",
+            itemCount = "12 item"
+        )
+    }
 }
