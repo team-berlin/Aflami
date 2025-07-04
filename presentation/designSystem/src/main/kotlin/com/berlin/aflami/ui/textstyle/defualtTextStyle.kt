@@ -15,6 +15,10 @@ val loremIpsum = FontFamily(
     Font(R.font.poppins_semibold, weight = FontWeight.SemiBold)
 )
 
+val nicomoji = FontFamily(
+    Font(R.font.nicomoji_regular, weight = FontWeight.Normal)
+)
+
 
 val LocalAflamiTextStyle = staticCompositionLocalOf { defaultTextStyle }
 

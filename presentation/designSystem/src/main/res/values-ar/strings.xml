@@ -6,5 +6,9 @@
     <string name="label_lets_play">هيا نلعب</string>
     <string name="label_profile">الملف الشخصي</string>
 
+    <string name="action">أكشن</string>
+    <string name="category_img_content">category img</string>
+    <string name="icon_button">أيقونة</string>
+    <string name="api_image_card_content">api image card</string>
 
 </resources>
