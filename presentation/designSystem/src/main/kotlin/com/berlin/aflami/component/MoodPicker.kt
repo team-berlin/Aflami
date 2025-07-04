@@ -36,8 +36,9 @@ fun MoodPicker(
     modifier: Modifier = Modifier,
     moodIcons: List<Int>,
     headerText: String,
+    promptText: String,
+    getNow: String,
     imagePainter: Painter,
-    contentDescription: String,
     selectedMood: Int? = null,
     onMoodSelected: (Int) -> Unit = {},
     onGetNowClicked: () -> Unit = {}
@@ -63,7 +64,7 @@ fun MoodPicker(
     ) {
         Image(
             painter = imagePainter,
-            contentDescription = contentDescription,
+            contentDescription = stringResource(R.string.mood_picker_clown_content_description),
             contentScale = ContentScale.FillHeight,
             modifier = Modifier
                 .padding(top = 8.dp)
@@ -74,6 +75,8 @@ fun MoodPicker(
         MoodPickerContent(
             modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
             moodIcons = moodIcons,
+            promptText = promptText,
+            getNowText = getNow,
             selectedMood = selectedMood,
             onMoodSelected = onMoodSelected,
             onGetNowClick = onGetNowClicked
@@ -100,6 +103,8 @@ private fun MoodPickerHeader(
 private fun MoodPickerContent(
     modifier: Modifier = Modifier,
     moodIcons: List<Int>,
+    promptText: String,
+    getNowText: String,
     selectedMood: Int? = null,
     onMoodSelected: (Int) -> Unit,
     onGetNowClick: () -> Unit
@@ -113,7 +118,7 @@ private fun MoodPickerContent(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = stringResource(R.string.mood_picker_prompt),
+            text = promptText,
             color = Theme.color.textColors.body,
             style = Theme.textStyle.body.small,
             modifier = Modifier.padding(12.dp)
@@ -131,7 +136,7 @@ private fun MoodPickerContent(
             }
         }
         Text(
-            text = stringResource(R.string.mood_picker_get_now),
+            text = getNowText,
             style = Theme.textStyle.body.medium,
             color = if (selectedMood != null) Theme.color.primary else Theme.color.disable,
             modifier = Modifier
@@ -203,11 +208,12 @@ private fun MoodMoodPickerPreview() {
             R.drawable.ic_unhappy,
             R.drawable.ic_sad_dizzy
         )
-        MoodPicker(
-            moodIcons = moodIcons,
-            headerText = stringResource(R.string.mood_picker_title),
-            imagePainter = painterResource(R.drawable.clown),
-            contentDescription = stringResource(R.string.mood_picker_clown_content_description)
-        )
+            MoodPicker(
+                moodIcons = moodIcons,
+                headerText = stringResource(R.string.mood_picker_title),
+                promptText = stringResource(R.string.mood_picker_prompt), // Pass prompt text
+                getNow = stringResource(R.string.mood_picker_get_now), // Pass get now text
+                imagePainter = painterResource(R.drawable.clown),
+            )
     }
 }
