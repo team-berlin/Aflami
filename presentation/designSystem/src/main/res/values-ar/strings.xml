@@ -37,7 +37,7 @@
     <string name="tv_shows">البرامج التلفزيونية</string>
     <string name="movies">الأفلام</string>
     <!--    content description-->
-    <string name="status_bar_icon_cd">أيقونة</string>
+    <string name="icon_cd">أيقونة</string>
     <string name="category_img_content">category img</string>
     <string name="api_image_card_content">api image card</string>
 </resources>
