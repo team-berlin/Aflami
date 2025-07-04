@@ -80,7 +80,7 @@ fun SnackBar(
     showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF0D090B,
 )
 @Composable
-fun SnackBarSuccessPreview() {
+private fun SnackBarSuccessPreview() {
     AflamiTheme {
         Box(
             Modifier
@@ -103,7 +103,7 @@ fun SnackBarSuccessPreview() {
     showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF0D090B
 )
 @Composable
-fun SnackBarErrorPreview() {
+private fun SnackBarErrorPreview() {
     AflamiTheme {
         Box(
             Modifier
