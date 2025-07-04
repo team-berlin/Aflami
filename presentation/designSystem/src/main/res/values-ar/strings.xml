@@ -22,22 +22,14 @@
     <string name="trending">رائج</string>
     <string name="all">الجميع</string>
 
-    <string name="icon_button">أيقونة</string>
-
-
-
-
     <string name="action">أكشن</string>
     <string name="icon_button">أيقونة</string>
-    <string name="category_img_content">صورة التصنيف</string>
 
 
     <string name="world_tour">جولة حول العالم</string>
     <string name="explore_world_cinema">استكشاف السينما العالمية</string>
     <string name="find_by_actor">البحث حسب الممثل</string>
     <string name="search_by_favorite_actor">ابحث حسب الممثل المفضل</string>
-
-    <string name="api_image_card_content">api image card</string>
 
     <string name="list_added_success">تمت إضافة القائمة بنجاح.</string>
     <string name="list_error">حدث خطأ ما.</string>
