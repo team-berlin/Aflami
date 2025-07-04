@@ -73,7 +73,6 @@ fun MoodPicker(
         )
         MoodPickerHeader(headerText = headerText)
         MoodPickerContent(
-            modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
             moodIcons = moodIcons,
             promptText = promptText,
             getNowText = actionButton,
@@ -101,7 +100,6 @@ private fun MoodPickerHeader(
 
 @Composable
 private fun MoodPickerContent(
-    modifier: Modifier = Modifier,
     moodIcons: List<Int>,
     promptText: String,
     getNowText: String,
@@ -110,8 +108,9 @@ private fun MoodPickerContent(
     onGetNowClick: () -> Unit
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
+            .padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(Theme.color.surface),
         horizontalAlignment = Alignment.CenterHorizontally,
