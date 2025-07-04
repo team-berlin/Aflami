@@ -11,6 +11,9 @@
 
     <string name="api_image_card_content">api image card</string>
 
+    <string name="aflami_title">Aflami</string>
+    <string name="aflami_description">More than just watching.</string>
+    <string name="my_account">My account</string>
     <string name="list_added_success">Added new list successfully.</string>
     <string name="list_error">Some error happened.</string>
 

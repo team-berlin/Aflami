@@ -20,6 +20,9 @@
     <string name="list_added_success">تمت إضافة القائمة بنجاح.</string>
     <string name="list_error">حدث خطأ ما.</string>
 
+    <string name="aflami_title">افلامى</string>
+    <string name="aflami_description">المزيد من المشاهدة.</string>
+    <string name="my_account">حسابى</string>
     <string name="label">ملصق</string>
     <string name="incorrect_password">خطا بكلمة السر</string>
     <!--    content description-->
