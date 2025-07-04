@@ -105,7 +105,7 @@ fun SelectionButton(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun LanguageSelectioButtonPreview() {
+private fun LanguageSelectionButtonPreview() {
 
     AflamiTheme {
         var language by remember { mutableStateOf("English") }
