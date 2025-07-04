@@ -113,7 +113,9 @@ fun TabBar(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     backgroundColor = 0xFF0D090B
 )
-@Preview(showBackground = true)
+@Preview(
+    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO,
+)
 @Composable
 private fun TabBarPreview() {
     AflamiTheme {
