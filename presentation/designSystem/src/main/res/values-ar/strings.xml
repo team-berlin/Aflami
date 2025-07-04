@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="action">أكشن</string>
+    <string name="category_img_content">category img</string>
+    <string name="icon_button">أيقونة</string>
+
+    <string name="app_name">Aflami</string>
+    <string name="trending">رائج</string>
+    <string name="all">الجميع</string>
+
+    <string name="api_image_card_content">api image card</string>
+
+
     <string name="label">ملصق</string>
     <string name="incorrect_password">خطا بكلمة السر</string>
 </resources>
