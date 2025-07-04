@@ -10,10 +10,9 @@
     <string name="trending">رائج</string>
     <string name="all">الجميع</string>
 
-    <string name="action">أكشن</string>
-    <string name="category_img_content">category img</string>
     <string name="icon_button">أيقونة</string>
-
+    <string name="action">أكشن</string>
+    <string name="category_img_content">صورة التصنيف</string>
 
 
     <string name="api_image_card_content">api image card</string>
@@ -24,6 +23,8 @@
     <string name="aflami_title">افلامى</string>
     <string name="aflami_description">المزيد من المشاهدة.</string>
     <string name="my_account">حسابى</string>
+    <string name="label">ملصق</string>
+    <string name="incorrect_password">خطا بكلمة السر</string>
     <!--    content description-->
     <string name="status_bar_icon_cd">أيقونة</string>
 </resources>
