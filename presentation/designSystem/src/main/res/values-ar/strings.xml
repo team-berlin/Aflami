@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_home">الرئيسية</string>
+    <string name="label_lists">القوائم</string>
+    <string name="label_categories">التصنيفات</string>
+    <string name="label_lets_play">هيا نلعب</string>
+    <string name="label_profile">الملف الشخصي</string>
+
+    <string name="app_name">Aflami</string>
+    <string name="trending">رائج</string>
+    <string name="all">الجميع</string>
+
+    <string name="icon_button">أيقونة</string>
+    <string name="action">أكشن</string>
+    <string name="category_img_content">صورة التصنيف</string>
+
+
+    <string name="api_image_card_content">api image card</string>
+
+    <string name="list_added_success">تمت إضافة القائمة بنجاح.</string>
+    <string name="list_error">حدث خطأ ما.</string>
+
+    <string name="aflami_title">افلامى</string>
+    <string name="aflami_description">المزيد من المشاهدة.</string>
+    <string name="my_account">حسابى</string>
+    <string name="label">ملصق</string>
+    <string name="incorrect_password">خطا بكلمة السر</string>
+    <!--    content description-->
+    <string name="status_bar_icon_cd">أيقونة</string>
+</resources>
