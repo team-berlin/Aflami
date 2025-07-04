@@ -24,8 +24,6 @@
 
     <string name="action">أكشن</string>
     <string name="icon_button">أيقونة</string>
-    <string name="action">أكشن</string>
-    <string name="category_img_content">صورة التصنيف</string>
 
     <string name="list_added_success">تمت إضافة القائمة بنجاح.</string>
     <string name="list_error">حدث خطأ ما.</string>
