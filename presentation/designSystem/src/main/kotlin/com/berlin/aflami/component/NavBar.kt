@@ -140,7 +140,7 @@ private fun NavBarPreview() {
                 labelRes = R.string.label_categories
             ),
             BottomNavItem(
-                icon = painterResource(id = R.drawable.play),
+                icon = painterResource(id = R.drawable.letsPlay),
                 route = "lets_play",
                 labelRes = R.string.label_lets_play
             ),
