@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,10 +30,9 @@ import com.berlin.designsystem.R
 
 @Composable
 fun SnackBar(
+    status: SnackBarStatus,
     text: String,
     iconPainter: Painter,
-    iconColor: Color,
-    shadowColor: Color,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -45,7 +43,10 @@ fun SnackBar(
                 offsetX = 0.dp,
                 offsetY = (4).dp,
                 blur = 6.dp,
-                color = shadowColor,
+                color = when (status) {
+                    SnackBarStatus.SUCCESS -> darkReddishGreen12
+                    SnackBarStatus.ERROR -> darkReddishPink12
+                },
             )
     ) {
         Row(
@@ -64,7 +65,10 @@ fun SnackBar(
             Icon(
                 painter = iconPainter,
                 contentDescription = stringResource(R.string.icon),
-                tint = iconColor,
+                tint = when (status) {
+                    SnackBarStatus.SUCCESS -> Theme.color.statusColors.greenAccent
+                    SnackBarStatus.ERROR -> Theme.color.statusColors.redAccent
+                },
             )
 
             Text(
@@ -74,6 +78,11 @@ fun SnackBar(
             )
         }
     }
+}
+
+enum class SnackBarStatus {
+    SUCCESS,
+    ERROR
 }
 
 @Preview(
@@ -88,11 +97,10 @@ private fun SnackBarSuccessPreview() {
                 .padding(16.dp)
         ) {
             SnackBar(
+                status = SnackBarStatus.SUCCESS,
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.list_added_success),
-                iconPainter = painterResource(id = R.drawable.success),
-                shadowColor = darkReddishGreen12,
-                iconColor = Theme.color.statusColors.greenAccent
+                iconPainter = painterResource(id = R.drawable.success)
             )
         }
 
@@ -111,11 +119,10 @@ private fun SnackBarErrorPreview() {
                 .padding(16.dp)
         ) {
             SnackBar(
+                status = SnackBarStatus.ERROR,
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.list_error),
-                iconPainter = painterResource(id = R.drawable.error),
-                iconColor = Theme.color.statusColors.redAccent,
-                shadowColor = darkReddishPink12
+                iconPainter = painterResource(id = R.drawable.error)
             )
         }
     }
