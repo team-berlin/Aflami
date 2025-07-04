@@ -9,17 +9,23 @@
     <string name="trending">Trending</string>
     <string name="all">All</string>
 
-    <string name="action">Action</string>
-    <string name="category_img_content">category img</string>
     <string name="api_image_card_content">api image card</string>
-    <string name="icon_button">Icon button</string>
 
+    <string name="aflami_title">Aflami</string>
+    <string name="aflami_description">More than just watching.</string>
+    <string name="my_account">My account</string>
     <string name="list_added_success">Added new list successfully.</string>
     <string name="list_error">Some error happened.</string>
+
+    <string name="icon_button">Icon button</string>
+    <string name="category_img_content">category img</string>
+    <string name="action">Action</string>
 
     <string name="tv_shows">TV Shows</string>
     <string name="movies">Movies</string>
 
     <!--    content description-->
     <string name="status_bar_icon_cd">icon</string>
+    <string name="label">Label</string>
+    <string name="incorrect_password">incorrect password</string>
 </resources>
