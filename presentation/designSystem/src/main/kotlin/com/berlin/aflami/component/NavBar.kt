@@ -48,7 +48,7 @@ fun NavBar(
     inactiveContentColor: Color = Theme.color.textColors.hint,
     indicatorColor: Color = Theme.color.primaryVariant,
     selectedContentColor: Color = Theme.color.primary,
-    selectedLabel: Color = Theme.color.textColors.body,
+    selectedLabelColor: Color = Theme.color.textColors.body,
     indicatorWidth: Dp = 56.dp,
     indicatorHeight: Dp = 32.dp,
     indicatorCornerRadius: Dp = 16.dp,
@@ -69,7 +69,7 @@ fun NavBar(
                 val isSelected = currentRoute == item.route
                 val backgroundColor = if (isSelected) indicatorColor else Color.Unspecified
                 val iconTint = if (isSelected) selectedContentColor else inactiveContentColor
-                val labelColor = if (isSelected) selectedLabel else inactiveContentColor
+                val labelColor = if (isSelected) selectedLabelColor else inactiveContentColor
                 Column(
                     modifier = Modifier
                         .weight(1f)
