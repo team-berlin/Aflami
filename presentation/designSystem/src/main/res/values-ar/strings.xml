@@ -10,6 +10,9 @@
     <string name="trending">رائج</string>
     <string name="all">الجميع</string>
 
+    <string name="icon_button">أيقونة</string>
+    <string name="action">أكشن</string>
+    <string name="category_img_content">صورة التصنيف</string>
 
 
     <string name="api_image_card_content">api image card</string>
