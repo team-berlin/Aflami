@@ -32,6 +32,9 @@
     <string name="list_error">Some error happened.</string>
 
 
+    <string name="tv_shows">TV Shows</string>
+    <string name="movies">Movies</string>
+
     <!--    content description-->
     <string name="icon_cd">icon</string>
     <string name="label">Label</string>
