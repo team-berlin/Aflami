@@ -33,6 +33,9 @@
     <string name="my_account">حسابى</string>
     <string name="label">ملصق</string>
     <string name="incorrect_password">خطا بكلمة السر</string>
+
+    <string name="tv_shows">البرامج التلفزيونية</string>
+    <string name="movies">الأفلام</string>
     <!--    content description-->
     <string name="icon_cd">أيقونة</string>
     <string name="category_img_content">category img</string>
