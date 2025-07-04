@@ -1,15 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="mood_picker_title">Mood Picker (Get a Movie)</string>
+    <string name="mood_picker_prompt">What’s your vibe today?</string>
+    <string name="mood_picker_get_now">Get now</string>
+    <string name="mood_picker_clown_content_description">funny clown</string>
+    <string name="mood_picker_mood_icon_content_description">mood icon</string>
+    <string name="mood_picker_favourite_icon_content_description">favourite icon</string>
+
+    <string name="dark">Dark</string>
+    <string name="arabic">Arabic</string>
+    <string name="light">Light</string>
+    <string name="english">English</string>
+    <string name="app_name">Aflami</string>
+    <string name="trending">Trending</string>
+    <string name="all">All</string>
     <string name="label_home">Home</string>
     <string name="label_lists">Lists</string>
     <string name="label_categories">Categories</string>
     <string name="label_lets_play">Let\'s Play</string>
     <string name="label_profile">Profile</string>
-    <string name="app_name">Aflami</string>
-    <string name="trending">Trending</string>
-    <string name="all">All</string>
 
-    <string name="api_image_card_content">api image card</string>
+    <string name="action">Action</string>
+
+    <string name="icon_button">Icon button</string>
 
     <string name="aflami_title">Aflami</string>
     <string name="aflami_description">More than just watching.</string>
@@ -17,9 +31,6 @@
     <string name="list_added_success">Added new list successfully.</string>
     <string name="list_error">Some error happened.</string>
 
-    <string name="icon_button">Icon button</string>
-    <string name="category_img_content">category img</string>
-    <string name="action">Action</string>
 
     <string name="tv_shows">TV Shows</string>
     <string name="movies">Movies</string>
@@ -28,4 +39,6 @@
     <string name="status_bar_icon_cd">icon</string>
     <string name="label">Label</string>
     <string name="incorrect_password">incorrect password</string>
+    <string name="category_img_content">category img</string>
+    <string name="api_image_card_content">api image card</string>
 </resources>

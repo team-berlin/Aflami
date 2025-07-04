@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="mood_picker_title">منتقي المزاج (احصل على فيلم)</string>
+    <string name="mood_picker_prompt">ما هو شعورك اليوم؟</string>
+    <string name="mood_picker_get_now">احصل الآن</string>
+    <string name="mood_picker_clown_content_description">مهرج مضحك</string>
+    <string name="mood_picker_mood_icon_content_description">أيقونة المزاج</string>
+    <string name="mood_picker_favourite_icon_content_description">أيقونة المفضلة</string>
+
+
+    <string name="dark">داكن</string>
+    <string name="arabic">عربي</string>
+    <string name="light">فاتح</string>
+    <string name="english">انجليزي</string>
     <string name="label_home">الرئيسية</string>
     <string name="label_lists">القوائم</string>
     <string name="label_categories">التصنيفات</string>
@@ -10,12 +22,8 @@
     <string name="trending">رائج</string>
     <string name="all">الجميع</string>
 
-    <string name="icon_button">أيقونة</string>
     <string name="action">أكشن</string>
-    <string name="category_img_content">صورة التصنيف</string>
-
-
-    <string name="api_image_card_content">api image card</string>
+    <string name="icon_button">أيقونة</string>
 
     <string name="list_added_success">تمت إضافة القائمة بنجاح.</string>
     <string name="list_error">حدث خطأ ما.</string>
@@ -30,4 +38,6 @@
     <string name="movies">الأفلام</string>
     <!--    content description-->
     <string name="status_bar_icon_cd">أيقونة</string>
+    <string name="category_img_content">category img</string>
+    <string name="api_image_card_content">api image card</string>
 </resources>
