@@ -33,7 +33,7 @@
 
 
     <!--    content description-->
-    <string name="status_bar_icon_cd">icon</string>
+    <string name="icon_cd">icon</string>
     <string name="label">Label</string>
     <string name="incorrect_password">incorrect password</string>
     <string name="category_img_content">category img</string>
