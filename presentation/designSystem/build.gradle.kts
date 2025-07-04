@@ -41,4 +41,5 @@ dependencies {
     androidxUi()
     coil()
     composeUiDebug()
+    coil()
 }
