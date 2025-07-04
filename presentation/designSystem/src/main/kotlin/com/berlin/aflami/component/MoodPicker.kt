@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -34,6 +33,7 @@ import com.berlin.designsystem.R
 @Composable
 fun MoodPicker(
     modifier: Modifier = Modifier,
+    moodIcons: List<Int>,
     selectedMood: Int? = null,
     onMoodSelected: (Int) -> Unit = {},
     onGetNowClicked: () -> Unit = {}
@@ -69,6 +69,7 @@ fun MoodPicker(
         MoodPickerHeader()
         MoodPickerContent(
             modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
+            moodIcons = moodIcons,
             selectedMood = selectedMood,
             onMoodSelected = onMoodSelected,
             onGetNowClick = onGetNowClicked
@@ -96,21 +97,11 @@ private fun MoodPickerHeader(
 @Composable
 private fun MoodPickerContent(
     modifier: Modifier = Modifier,
+    moodIcons: List<Int>,
     selectedMood: Int? = null,
     onMoodSelected: (Int) -> Unit,
     onGetNowClick: () -> Unit
 ) {
-    val moodIcons = remember {
-        listOf(
-            R.drawable.ic_sad,
-            R.drawable.ic_look_top,
-            R.drawable.ic_love,
-            R.drawable.ic_angry,
-            R.drawable.ic_unhappy,
-            R.drawable.ic_sad_dizzy
-        )
-    }
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -202,6 +193,14 @@ private fun BlurredIcon(
 @Composable
 private fun MoodMoodPickerPreview() {
     AflamiTheme {
-        MoodPicker()
+        val moodIcons = listOf(
+            R.drawable.ic_sad,
+            R.drawable.ic_look_top,
+            R.drawable.ic_love,
+            R.drawable.ic_angry,
+            R.drawable.ic_unhappy,
+            R.drawable.ic_sad_dizzy
+        )
+        MoodPicker(moodIcons = moodIcons)
     }
 }
