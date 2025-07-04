@@ -7,4 +7,15 @@
     <string name="mood_picker_clown_content_description">مهرج مضحك</string>
     <string name="mood_picker_mood_icon_content_description">أيقونة المزاج</string>
     <string name="mood_picker_favourite_icon_content_description">أيقونة المفضلة</string>
+
+    <string name="action">أكشن</string>
+    <string name="category_img_content">category img</string>
+    <string name="icon_button">أيقونة</string>
+
+    <string name="trending">رائج</string>
+    <string name="all">الجميع</string>
+
+    <string name="api_image_card_content">api image card</string>
+
+
 </resources>

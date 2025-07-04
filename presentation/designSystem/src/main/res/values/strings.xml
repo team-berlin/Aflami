@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Aflami</string>
+
     <string name="mood_picker_title">Mood Picker (Get a Movie)</string>
     <string name="mood_picker_prompt">What’s your vibe today?</string>
     <string name="mood_picker_get_now">Get now</string>
     <string name="mood_picker_clown_content_description">funny clown</string>
     <string name="mood_picker_mood_icon_content_description">mood icon</string>
     <string name="mood_picker_favourite_icon_content_description">favourite icon</string>
+
+    <string name="trending">Trending</string>
+    <string name="all">All</string>
+    <string name="action">Action</string>
+    <string name="category_img_content">category img</string>
+    <string name="api_image_card_content">api image card</string>
+
+    <string name="icon_button">Icon button</string>
+
 </resources>
