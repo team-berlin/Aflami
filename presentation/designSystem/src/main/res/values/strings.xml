@@ -17,6 +17,9 @@
     <string name="list_added_success">Added new list successfully.</string>
     <string name="list_error">Some error happened.</string>
 
+    <string name="tv_shows">TV Shows</string>
+    <string name="movies">Movies</string>
+
     <!--    content description-->
     <string name="status_bar_icon_cd">icon</string>
 </resources>
