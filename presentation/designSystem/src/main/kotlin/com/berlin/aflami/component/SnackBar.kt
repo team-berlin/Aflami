@@ -64,7 +64,7 @@ fun SnackBar(
         ) {
             Icon(
                 painter = iconPainter,
-                contentDescription = stringResource(R.string.icon),
+                contentDescription = stringResource(R.string.status_bar_icon_cd),
                 tint = when (status) {
                     SnackBarStatus.SUCCESS -> Theme.color.statusColors.greenAccent
                     SnackBarStatus.ERROR -> Theme.color.statusColors.redAccent

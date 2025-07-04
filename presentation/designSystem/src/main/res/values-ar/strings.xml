@@ -9,5 +9,5 @@
     <string name="list_error">حدث خطأ ما.</string>
 
     <!--    content description-->
-    <string name="icon">أيقونة</string>
+    <string name="status_bar_icon_cd">أيقونة</string>
 </resources>
