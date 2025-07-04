@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 
@@ -41,7 +40,7 @@ fun SnackBar(
     Box(
         modifier = Modifier
             .dropShadow(
-                shape = CircleShape,
+                shape = RoundedCornerShape(16.dp),
                 alpha = 0.12f,
                 offsetX = 0.dp,
                 offsetY = (4).dp,
