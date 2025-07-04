@@ -24,7 +24,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.animation.animateColor
+import com.berlin.aflami.animation.animatedConditionalColor
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -79,10 +79,10 @@ fun TabBar(
     ) {
         items.forEachIndexed { index, status ->
             val isSelected = selectedTabIndex == index
-            val titleColor = animateColor(
-                condition = isSelected,
-                trueColor = Theme.color.textColors.title,
-                falseColor = Theme.color.textColors.hint
+            val titleColor = animatedConditionalColor(
+                isActive = isSelected,
+                activeColor = Theme.color.textColors.title,
+                inactiveColor = Theme.color.textColors.hint
             )
             val titleStyle =
                 if (isSelected) Theme.textStyle.title.medium else Theme.textStyle.title.small
