@@ -24,59 +24,58 @@ fun ListCard(
     title: String,
     itemCount: String
 ) {
-    AflamiTheme(isDarkTheme = false) {
+    Box(
+        modifier = Modifier
+            .size(width = 160.dp, height = 147.dp)
+    ) {
         Box(
             modifier = Modifier
-                .size(width = 160.dp, height = 147.dp)
+                .size(width = 160.dp, height = 135.dp)
+                .clip(
+                    RoundedCornerShape(
+                        bottomEnd = 24.dp,
+                        bottomStart = 24.dp,
+                        topEnd = 16.dp,
+                        topStart = 16.dp
+                    )
+                )
+                .background(Theme.color.surfaceHigh)
+                .align(Alignment.BottomEnd)
         ) {
-            Box(
+            Column(
                 modifier = Modifier
-                    .size(width = 160.dp, height = 135.dp)
-                    .clip(
-                        RoundedCornerShape(
-                            bottomEnd = 24.dp,
-                            bottomStart = 24.dp,
-                            topEnd = 16.dp,
-                            topStart = 16.dp
-                        )
-                    )
-                    .background(Theme.color.surfaceHigh)
-                    .align(Alignment.BottomEnd)
+                    .padding(start = 8.dp)
+                    .align(Alignment.CenterStart)
+                    .offset(y = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .align(Alignment.CenterStart)
-                        .offset(y = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        title,
-                        color = Theme.color.textColors.title,
-                        style = Theme.textStyle.title.medium
-                    )
-                    Text(
-                        itemCount,
-                        color = Theme.color.textColors.hint,
-                        style = Theme.textStyle.label.large
-                    )
-                }
-
+                Text(
+                    title,
+                    color = Theme.color.textColors.title,
+                    style = Theme.textStyle.title.medium
+                )
+                Text(
+                    itemCount,
+                    color = Theme.color.textColors.hint,
+                    style = Theme.textStyle.label.large
+                )
             }
 
-            Box(
-                modifier = Modifier
-                    .size(width = 80.dp, height = 33.dp)
-                    .clip(
-                        RoundedCornerShape(
-                            topEnd = 16.dp,
-                            topStart = 24.dp
-                        )
-                    )
-                    .background(Theme.color.surfaceHigh)
-            )
         }
+
+        Box(
+            modifier = Modifier
+                .size(width = 80.dp, height = 33.dp)
+                .clip(
+                    RoundedCornerShape(
+                        topEnd = 16.dp,
+                        topStart = 24.dp
+                    )
+                )
+                .background(Theme.color.surfaceHigh)
+        )
     }
+
 }
 
 @ThemeAndLocalePreviews
