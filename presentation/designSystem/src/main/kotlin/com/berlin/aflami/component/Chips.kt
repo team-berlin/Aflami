@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
@@ -93,8 +94,10 @@ fun Chips(
 @ThemeAndLocalePreviews
 @Composable
 private fun ChipsPreview() {
-    Chips(
-        title = "All",
-        icon = painterResource(R.drawable.all_movies)
-    )
+    AflamiTheme {
+        Chips(
+            title = "All",
+            icon = painterResource(R.drawable.all_movies)
+        )
+    }
 }
