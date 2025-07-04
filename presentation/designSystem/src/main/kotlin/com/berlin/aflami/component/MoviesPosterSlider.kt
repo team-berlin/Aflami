@@ -33,6 +33,14 @@ import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
+
+
+data class MovieCardUiState(
+    val id: String,
+    val posterImage: String,
+    val rating: String
+)
+
 @Composable
 fun MoviesPosterSlider(
     modifier: Modifier,
@@ -172,12 +180,6 @@ fun PlayButton(onClick: () -> Unit) {
         )
     }
 }
-
-data class MovieCardUiState(
-    val id: String,
-    val posterImage: String,
-    val rating: String
-)
 
 @Composable
 @ThemeAndLocalePreviews
