@@ -18,5 +18,9 @@
 
     <string name="api_image_card_content">api image card</string>
 
+    <string name="list_added_success">تمت إضافة القائمة بنجاح.</string>
+    <string name="list_error">حدث خطأ ما.</string>
 
+    <!--    content description-->
+    <string name="status_bar_icon_cd">أيقونة</string>
 </resources>
