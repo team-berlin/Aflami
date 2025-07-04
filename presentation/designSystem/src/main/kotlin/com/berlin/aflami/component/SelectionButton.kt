@@ -32,7 +32,8 @@ fun SelectionButton(
     selected: Boolean,
     onClick: () -> Unit,
     iconId: Int,
-    selectionTitleId: Int
+    selectionTitleId: Int,
+    subTitleId:Int?=null
 
 ) {
 
@@ -67,12 +68,23 @@ fun SelectionButton(
                 tint = iconColor
             )
 
-            Text(
-                text = stringResource(selectionTitleId),
-                style = Theme.textStyle.label.large,
-                color = Theme.color.textColors.body,
-                modifier = Modifier.padding(end = 184.dp)
-            )
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = stringResource(selectionTitleId),
+                    style = Theme.textStyle.label.large,
+                    color = Theme.color.textColors.body,
+                )
+                subTitleId?.let {
+                    Text(
+                        text = stringResource(subTitleId),
+                        style = Theme.textStyle.label.small,
+                        color = Theme.color.textColors.hint,
+                    )
+                }
+
+            }
             RadioButton(
                 selected = selected,
                 onClick = { onClick() },
@@ -93,7 +105,7 @@ fun SelectionButton(
 
 @ThemeAndLocalePreviews
 @Composable
-fun LanguageSelectioButtonPreview() {
+private fun LanguageSelectioButtonPreview() {
 
     AflamiTheme {
         var language by remember { mutableStateOf("English") }
@@ -119,7 +131,7 @@ fun LanguageSelectioButtonPreview() {
 
 @ThemeAndLocalePreviews
 @Composable
-fun ThemeSelectionButtonPreview() {
+private fun ThemeSelectionButtonPreview() {
     AflamiTheme {
         var theme by remember { mutableStateOf("Light") }
 
