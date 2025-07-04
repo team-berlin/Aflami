@@ -37,11 +37,11 @@ fun MoodPicker(
     moodIcons: List<Int>,
     headerText: String,
     promptText: String,
-    getNow: String,
+    moveToPage: String,
     imagePainter: Painter,
     selectedMood: Int? = null,
     onMoodSelected: (Int) -> Unit = {},
-    onGetNowClicked: () -> Unit = {}
+    onMoveToPageClicked: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -76,10 +76,10 @@ fun MoodPicker(
             modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
             moodIcons = moodIcons,
             promptText = promptText,
-            getNowText = getNow,
+            getNowText = moveToPage,
             selectedMood = selectedMood,
             onMoodSelected = onMoodSelected,
-            onGetNowClick = onGetNowClicked
+            onGetNowClick = onMoveToPageClicked
         )
     }
 }
@@ -212,7 +212,7 @@ private fun MoodMoodPickerPreview() {
                 moodIcons = moodIcons,
                 headerText = stringResource(R.string.mood_picker_title),
                 promptText = stringResource(R.string.mood_picker_prompt), // Pass prompt text
-                getNow = stringResource(R.string.mood_picker_get_now), // Pass get now text
+                moveToPage = stringResource(R.string.mood_picker_get_now), // Pass get now text
                 imagePainter = painterResource(R.drawable.clown),
             )
     }
