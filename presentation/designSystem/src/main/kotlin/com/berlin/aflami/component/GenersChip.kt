@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.designsystem.R
 
 @Composable
 fun GenersChip(
@@ -63,8 +65,8 @@ fun GenersChip(
 
 @ThemeAndLocalePreviews
 @Composable
-fun GenersChipPreview(){
+private fun GenersChipPreview(){
     AflamiTheme {
-        GenersChip(label = "Drama")
+        GenersChip(label = stringResource(R.string.drama))
     }
 }
