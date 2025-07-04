@@ -28,8 +28,6 @@
     <string name="list_error">Some error happened.</string>
 
     <string name="icon_button">Icon button</string>
-    <string name="category_img_content">category img</string>
-    <string name="action">Action</string>
 
     <!--    content description-->
     <string name="status_bar_icon_cd">icon</string>

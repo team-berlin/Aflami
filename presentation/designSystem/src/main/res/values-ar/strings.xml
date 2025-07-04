@@ -7,9 +7,7 @@
     <string name="mood_picker_mood_icon_content_description">أيقونة المزاج</string>
     <string name="mood_picker_favourite_icon_content_description">أيقونة المفضلة</string>
 
-    <string name="action">أكشن</string>
-    <string name="category_img_content">category img</string>
-    <string name="icon_button">أيقونة</string>
+
     <string name="label_home">الرئيسية</string>
     <string name="label_lists">القوائم</string>
     <string name="label_categories">التصنيفات</string>
