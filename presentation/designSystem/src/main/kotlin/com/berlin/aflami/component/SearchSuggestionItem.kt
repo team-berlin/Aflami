@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.modifier.dropShadow
 import com.berlin.aflami.ui.theme.Theme
@@ -29,22 +30,20 @@ fun SearchSuggestionItem(
     modifier: Modifier = Modifier,
     title: String,
     subtitle: String,
-    backgroundColor: List<Color>,
+    contentDescription: String,
+    gradientBackground: Brush,
     painter: Painter,
+    size: Dp = 56.dp
 ) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(
-                Brush.linearGradient(
-                    backgroundColor,
-                    end = Offset(0f, Float.POSITIVE_INFINITY),
-                ),
-            )
-    ) {
+            .background(gradientBackground),
+
+        ) {
         Box(
             modifier = Modifier
-                .size(56.dp)
+                .size(size)
                 .align(Alignment.TopEnd)
                 .dropShadow(
                     blur = 32.dp,
@@ -58,7 +57,7 @@ fun SearchSuggestionItem(
         ) {
             Image(
                 painter = painter,
-                contentDescription = "search suggest photo",
+                contentDescription = contentDescription,
                 modifier = Modifier
                     .padding(bottom = 4.dp)
                     .height(40.dp),

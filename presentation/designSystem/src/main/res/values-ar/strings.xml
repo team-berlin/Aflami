@@ -14,7 +14,11 @@
     <string name="category_img_content">category img</string>
     <string name="icon_button">أيقونة</string>
 
+    <string name="world_tour">جولة حول العالم</string>
+    <string name="explore_world_cinema">استكشاف السينما العالمية</string>
 
+    <string name="find_by_actor">البحث حسب الممثل</string>
+    <string name="search_by_favorite_actor">ابحث حسب الممثل المفضل</string>
 
     <string name="api_image_card_content">api image card</string>
 

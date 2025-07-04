@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.ui.color.ExtraColors.blueLinearGradient
+import com.berlin.aflami.ui.color.ExtraColors.darkPurpleLinearGradient
 import com.berlin.designsystem.R
 
 @Composable
@@ -22,22 +22,18 @@ fun SearchSuggestionHub() {
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.world_tour),
             subtitle = stringResource(R.string.explore_world_cinema),
-            backgroundColor = listOf(
-                Theme.color.primary,
-                Color(0xFF803559)
-            ),
-            painter = painterResource(R.drawable.news_img)
+            gradientBackground = darkPurpleLinearGradient,
+            painter = painterResource(R.drawable.news_img),
+            contentDescription = "world tour"
         )
         SearchSuggestionItem(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.find_by_actor),
             subtitle = stringResource(R.string.search_by_favorite_actor),
-            backgroundColor =
-                listOf(
-                    Color(0xFF53ABF9),
-                    Color(0xFF336490),
-                ),
-            painter = painterResource(R.drawable.find_by_actor)
+            gradientBackground = blueLinearGradient,
+            painter = painterResource(R.drawable.find_by_actor),
+            contentDescription = "Find by actor"
+
         )
     }
 }
