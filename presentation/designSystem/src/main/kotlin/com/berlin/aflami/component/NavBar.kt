@@ -1,6 +1,5 @@
 package com.berlin.aflami.component
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -35,7 +34,7 @@ import com.berlin.designsystem.R
 data class BottomNavItem(
     val icon: Painter,
     val route: String,
-    @StringRes val labelRes: Int
+    val labelText: String
 )
 
 @Composable
@@ -96,7 +95,7 @@ fun NavBar(
                     ) {
                         Icon(
                             painter = item.icon,
-                            contentDescription = stringResource(id = item.labelRes),
+                            contentDescription = item.labelText,
                             tint = iconTint,
                             modifier = Modifier.size(24.dp)
                         )
@@ -107,7 +106,7 @@ fun NavBar(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 4.dp),
-                        text = stringResource(id = item.labelRes),
+                        text = item.labelText,
                         fontSize = 12.sp,
                         color = labelColor,
                         textAlign = TextAlign.Center,
@@ -127,27 +126,27 @@ private fun NavBarPreview() {
             BottomNavItem(
                 icon = painterResource(id = R.drawable.home),
                 route = "home",
-                labelRes = R.string.label_home
+                labelText = stringResource(R.string.label_home)
             ),
             BottomNavItem(
                 icon = painterResource(id = R.drawable.lists),
                 route = "lists",
-                labelRes = R.string.label_lists
+                labelText = stringResource(R.string.label_lists)
             ),
             BottomNavItem(
                 icon = painterResource(id = R.drawable.categories),
                 route = "categories",
-                labelRes = R.string.label_categories
+                labelText = stringResource(R.string.label_categories)
             ),
             BottomNavItem(
                 icon = painterResource(id = R.drawable.letsplay),
                 route = "lets_play",
-                labelRes = R.string.label_lets_play
+                labelText = stringResource(R.string.label_lets_play)
             ),
             BottomNavItem(
                 icon = painterResource(id = R.drawable.profile),
                 route = "profile",
-                labelRes = R.string.label_profile
+                labelText = stringResource(R.string.label_profile)
             )
         )
 
