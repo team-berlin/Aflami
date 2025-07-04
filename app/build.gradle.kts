@@ -47,14 +47,9 @@ dependencies {
     lifecycleRuntimeKtx()
     androidxUi()
     koin()
+    firebase()
     test()
 
     ui()
     designSystem()
-
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics.ktx)
-    implementation(libs.firebase.perf.ktx)
-    implementation(libs.firebase.crashlytics.ktx)
 }
