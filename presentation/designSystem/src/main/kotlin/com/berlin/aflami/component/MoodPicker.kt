@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,6 +35,9 @@ import com.berlin.designsystem.R
 fun MoodPicker(
     modifier: Modifier = Modifier,
     moodIcons: List<Int>,
+    headerText: String,
+    imagePainter: Painter,
+    contentDescription: String,
     selectedMood: Int? = null,
     onMoodSelected: (Int) -> Unit = {},
     onGetNowClicked: () -> Unit = {}
@@ -58,15 +62,15 @@ fun MoodPicker(
             )
     ) {
         Image(
-            painter = painterResource(R.drawable.clown),
-            contentDescription = stringResource(R.string.mood_picker_clown_content_description),
+            painter = imagePainter,
+            contentDescription = contentDescription,
             contentScale = ContentScale.FillHeight,
             modifier = Modifier
                 .padding(top = 8.dp)
                 .height(121.dp)
                 .align(Alignment.TopEnd)
         )
-        MoodPickerHeader()
+        MoodPickerHeader(headerText = headerText)
         MoodPickerContent(
             modifier = Modifier.padding(top = 76.dp, start = 2.dp, end = 2.dp, bottom = 2.dp),
             moodIcons = moodIcons,
@@ -79,14 +83,12 @@ fun MoodPicker(
 
 @Composable
 private fun MoodPickerHeader(
-    modifier: Modifier = Modifier
+    headerText: String
 ) {
-    Column(
-        modifier = modifier
-    ) {
+    Column {
         BlurredIcon()
         Text(
-            text = stringResource(R.string.mood_picker_title),
+            text = headerText,
             color = Theme.color.textColors.onPrimary,
             style = Theme.textStyle.label.medium,
             modifier = Modifier.padding(start = 12.dp, top = 8.dp)
@@ -201,6 +203,11 @@ private fun MoodMoodPickerPreview() {
             R.drawable.ic_unhappy,
             R.drawable.ic_sad_dizzy
         )
-        MoodPicker(moodIcons = moodIcons)
+        MoodPicker(
+            moodIcons = moodIcons,
+            headerText = stringResource(R.string.mood_picker_title),
+            imagePainter = painterResource(R.drawable.clown),
+            contentDescription = stringResource(R.string.mood_picker_clown_content_description)
+        )
     }
 }
