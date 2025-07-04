@@ -1,4 +1,4 @@
-name: build_test_publish_apk
+name: build and test checker
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    name: build_test
     runs-on: ubuntu-latest
     steps:
 
