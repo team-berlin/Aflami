@@ -125,6 +125,7 @@ fun TextField(
                 maxLines = maxLines,
                 enabled = isEnabled,
                 modifier = modifier
+                    .padding(start = 12.dp)
                     .weight(1f)
                     .defaultMinSize(minHeight = 56.dp)
                     .clip(RoundedCornerShape(16.dp))
@@ -160,7 +161,7 @@ private fun LeadingIcon(leadingIcon: Int, imageColor: Color) {
         contentScale = ContentScale.Fit,
         modifier = Modifier
             .padding(vertical = 16.dp)
-            .padding(start = 16.dp)
+            .padding(start = 16.dp,)
             .size(24.dp)
     )
 }
@@ -169,7 +170,7 @@ private fun LeadingIcon(leadingIcon: Int, imageColor: Color) {
 private fun VerticalDivider() {
     Box(
         Modifier
-            .padding(horizontal = 12.dp, vertical = 13.dp)
+            .padding(start = 12.dp, top = 13.dp, bottom = 13.dp)
             .size(1.dp, 30.dp)
             .background(Theme.color.stroke)
     )
@@ -273,15 +274,17 @@ private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Un
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .then(
-                    if (onClick != null) Modifier.clickable(
-                        interactionSource = MutableInteractionSource(),
-                        indication = ripple(color = Theme.color.textColors.hint),
-                        onClick = onClick
-                    )
-                    else Modifier
+                    if (onClick != null)
+                        Modifier.clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = ripple(color = Theme.color.textColors.hint),
+                            onClick = onClick
+                        )
+                    else
+                        Modifier
                 )
                 .padding(vertical = 16.dp)
-                .padding(start = 12.dp)
+                .padding(start = 12.dp, end = 16.dp)
                 .size(24.dp)
         )
     }
