@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="action">أكشن</string>
     <string name="category_img_content">category img</string>
     <string name="icon_button">أيقونة</string>
     <string name="api_image_card_content">api image card</string>
 
+    <string name="list_added_success">تمت إضافة القائمة بنجاح.</string>
+    <string name="list_error">حدث خطأ ما.</string>
+
+    <!--    content description-->
+    <string name="icon">أيقونة</string>
 </resources>
