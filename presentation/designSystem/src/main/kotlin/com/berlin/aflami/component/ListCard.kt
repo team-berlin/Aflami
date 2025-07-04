@@ -22,10 +22,11 @@ import com.berlin.aflami.ui.theme.Theme
 @Composable
 fun ListCard(
     title: String,
-    itemCount: String
+    itemCount: String,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(width = 160.dp, height = 147.dp)
     ) {
         Box(
