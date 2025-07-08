@@ -37,9 +37,8 @@ android {
 }
 
 dependencies {
-    androidCoreKtx()
-    androidxUi()
-    coil()
-    composeUiDebug()
-    coil()
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.bundles.androidxUi)
+    implementation(libs.bundles.coil)
+    implementation(libs.bundles.composeUiDebug)
 }

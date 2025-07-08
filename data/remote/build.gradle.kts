@@ -34,10 +34,10 @@ android {
 }
 
 dependencies {
-    androidCoreKtx()
-    koin()
-    ktor()
-    serialization()
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.koin.core)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.bundles.ktor)
 
-    repository()
+    implementation(project(":data:repository"))
 }

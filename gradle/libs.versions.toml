@@ -1,12 +1,51 @@
 [versions]
 agp = "8.10.1"
 kotlin = "2.0.21"
+coreKtx = "1.16.0"
+junit = "4.13.2"
+kotlinx-coroutines-test = "1.8.1"
+lifecycleRuntimeKtx = "2.9.1"
+activityCompose = "1.10.1"
+composeBom = "2024.09.00"
+ktor = "1.5.0"
+coil = "3.2.0"
+navigation-compose = "2.9.0"
+koin = "4.0.1"
+serialization = "1.8.1"
+firebase-bom = "33.16.0"
 firebaseCrashlytics = "3.0.4"
 firebasePerformance = "1.4.2"
 firebaseService = "4.4.3"
-
-
 jetbrainsKotlinJvm = "2.0.21"
+material3Android = "1.3.2"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
+ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
+firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -18,3 +57,42 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerformance" }
 firebase-gms-service = { id = "com.google.gms.google-services", version.ref = "firebaseService" }
+
+[bundles]
+androidxUi = [
+    "androidx-activity-compose",
+    "androidx-compose-bom",
+    "androidx-ui",
+    "androidx-ui-foundation",
+    "androidx-ui-graphics",
+    "androidx-ui-tooling-preview",
+    "androidx-material3-android"
+]
+
+coil = [
+    "coil-compose",
+    "coil-network"
+]
+
+composeUiDebug = [
+    "androidx-ui-tooling",
+    "androidx-ui-test-manifest"
+]
+
+ktor = [
+    "ktor-android",
+    "ktor-core",
+    "ktor-serialization",
+    "ktor-logging"
+]
+
+test = [
+    "junit",
+    "kotlinx-coroutines-test"
+]
+
+firebase = [
+    "firebase-analytics-ktx",
+    "firebase-crashlytics-ktx",
+    "firebase-perf-ktx"
+]

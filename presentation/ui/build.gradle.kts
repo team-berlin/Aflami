@@ -33,14 +33,14 @@ android {
 }
 
 dependencies {
-    androidCoreKtx()
-    lifecycleRuntimeKtx()
-    androidxUi()
-    navigation()
-    koin()
-    coil()
-    composeUiDebug()
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.bundles.androidxUi)
+    implementation(libs.bundles.coil)
+    implementation(libs.bundles.composeUiDebug)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.navigation.compose)
+    implementation(libs.koin.core)
 
-    designSystem()
-    viewModel()
+    implementation(project(":presentation:designSystem"))
+    implementation(project(":presentation:viewModel"))
 }

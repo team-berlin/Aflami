@@ -43,13 +43,14 @@ android {
 }
 
 dependencies {
-    androidCoreKtx()
-    lifecycleRuntimeKtx()
-    androidxUi()
-    koin()
-    firebase()
-    test()
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.bundles.androidxUi)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.koin.core)
+    implementation(libs.bundles.test)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 
-    ui()
-    designSystem()
+    api(project(":presentation:ui"))
+    implementation(project(":presentation:designSystem"))
 }

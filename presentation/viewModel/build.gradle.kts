@@ -44,11 +44,11 @@ kover {
     }
 }
 dependencies {
-    androidCoreKtx()
-    lifecycleRuntimeKtx()
-    navigation()
-    koin()
-    test()
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.navigation.compose)
+    implementation(libs.koin.core)
+    implementation(libs.bundles.test)
 
-    useCase()
+    implementation(project(":domain:usecase"))
 }

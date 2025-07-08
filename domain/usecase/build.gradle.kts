@@ -24,7 +24,8 @@ kover {
     }
 }
 dependencies {
-    koin()
-    test()
-    entity()
+    implementation(libs.koin.core)
+    implementation(libs.bundles.test)
+
+    implementation(project(":domain:entity"))
 }

@@ -13,5 +13,5 @@ kotlin {
 }
 
 dependencies {
-    useCase()
+    api(project(":domain:usecase"))
 }

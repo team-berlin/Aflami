@@ -33,9 +33,9 @@ android {
 }
 
 dependencies {
-    androidCoreKtx()
-    koin()
-    serialization()
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.koin.core)
+    implementation(libs.kotlinx.serialization.json)
 
-    repository()
+    implementation(project(":data:repository"))
 }
