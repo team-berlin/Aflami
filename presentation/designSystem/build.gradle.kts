@@ -37,8 +37,10 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.androidxUi)
     implementation(libs.bundles.coil)
-    implementation(libs.bundles.composeUiDebug)
+    debugImplementation(libs.bundles.composeUiDebug)
+    implementation(libs.androidx.material3)
 }
