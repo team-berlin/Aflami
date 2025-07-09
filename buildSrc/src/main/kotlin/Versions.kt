@@ -17,4 +17,7 @@ object Versions {
     // test
     const val junit = "4.13.2"
     const val kotlinxCoroutinesTest = "1.8.1"
+
+    //utils
+    const val kotlinDateX = "0.4.0"
 }
