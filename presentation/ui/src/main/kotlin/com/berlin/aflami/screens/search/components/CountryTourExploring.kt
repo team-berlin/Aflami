@@ -29,7 +29,7 @@ fun CountryTourExploring(
 ){
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

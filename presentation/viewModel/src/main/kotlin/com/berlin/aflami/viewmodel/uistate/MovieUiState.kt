@@ -1,11 +1,11 @@
-package com.berlin.aflami.screens.search.uistate
+package com.berlin.aflami.viewmodel.uistate
 
 data class MovieUIState(
     val id: Long=0L,
     val title: String="",
-    val rating: Float=0.0f,
+    val rating: String="",
     val releaseYear: String="",
     val description: String="",
-    val genre: List<String> = emptyList(),
+    val genre: List<Int> = emptyList(),
     val poster: String =""
 )

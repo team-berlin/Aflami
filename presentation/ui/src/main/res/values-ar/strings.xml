@@ -2,8 +2,9 @@
 <resources>
     <string name="world_tour">جولة حول العالم</string>
     <string name="country_name">أسم البلد</string>
-    <string name="start_exploring_the_world_movie_by_enter_your_favorite_country_in_search_bar">Start exploring the world movie by enter your favorite country in search bar</string>
-    <string name="country_tour">Country tour</string>
-    <string name="no_search_result">No search result</string>
-    <string name="please_try_with_another_keyword">please try with another keyword.</string>
+    <string name="start_exploring_the_world_movie_by_enter_your_favorite_country_in_search_bar">ابدأ استكشاف أفلام العالم عن طريق إدخال دولتك المفضلة في شريط البحث</string>
+    <string name="country_tour">جولة حول البلاد</string>
+    <string name="no_search_result">لا توجد نتائج للبحث</string>
+    <string name="please_try_with_another_keyword">يرجى المحاولة بكلمة مفتاحية أخرى</string>
+
 </resources>
