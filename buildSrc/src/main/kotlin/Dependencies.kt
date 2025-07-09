@@ -13,12 +13,16 @@ object Dependencies {
     const val androidxUiGraphics = "androidx.compose.ui:ui-graphics"
     const val androidxUiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
 
+    const val ktorCore = "io.ktor:ktor-client-core:${Versions.ktor}"
     const val ktorAndroid = "io.ktor:ktor-client-android:${Versions.ktor}"
-    const val ktorCore = "io.ktor:ktor-client-android:${Versions.ktor}"
-    const val ktorserialization = "io.ktor:ktor-client-android:${Versions.ktor}"
+    const val ktorserialization = "io.ktor:ktor-serialization-kotlinx-json:${Versions.ktor}"
     const val ktorlogging = "io.ktor:ktor-client-android:${Versions.ktor}"
+    const val ktorCio = "io.ktor:ktor-client-cio:${Versions.ktor}"
+    const val ktorContentNegotiation = "io.ktor:ktor-client-content-negotiation:${Versions.ktor}"
 
     const val koin = "io.insert-koin:koin-core:${Versions.koin}"
+    const val koinAndroid = "io.insert-koin:koin-android:${Versions.koin}"
+    const val koinCompose = "io.insert-koin:koin-androidx-compose:${Versions.koin}"
 
     const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
 
@@ -66,10 +70,14 @@ fun DependencyHandler.ktor() {
     implementation(Dependencies.ktorCore)
     implementation(Dependencies.ktorserialization)
     implementation(Dependencies.ktorlogging)
+    implementation(Dependencies.ktorCio)
+    implementation(Dependencies.ktorContentNegotiation)
 }
 
 fun DependencyHandler.koin() {
     implementation(Dependencies.koin)
+    implementation(Dependencies.koinAndroid)
+    implementation(Dependencies.koinCompose)
 }
 
 fun DependencyHandler.navigation() {
@@ -115,7 +123,7 @@ fun DependencyHandler.useCase() {
 }
 
 fun DependencyHandler.entity() {
-    implementation(project(":domain:entity"))
+    api(project(":domain:entity"))
 }
 
 fun DependencyHandler.repository() {
@@ -124,4 +132,8 @@ fun DependencyHandler.repository() {
 
 fun DependencyHandler.ui() {
     api(project(":presentation:ui"))
+}
+
+fun DependencyHandler.remote() {
+    implementation(project(":data:remote"))
 }

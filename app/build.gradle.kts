@@ -47,9 +47,16 @@ dependencies {
     lifecycleRuntimeKtx()
     androidxUi()
     koin()
+    ktor()
     firebase()
     test()
 
+
+    useCase()
+    repository()
+    remote()
+
+    viewModel()
     ui()
     designSystem()
 }
