@@ -23,7 +23,7 @@ import com.berlin.designsystem.R
 @Composable
 fun Rating(
     modifier: Modifier = Modifier,
-    rating: Double
+    rating:String
 ) {
 
     val corner = remember {
@@ -54,7 +54,7 @@ fun Rating(
             )
 
             Text(
-                text = rating.toString(),
+                text = rating,
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.body
             )
@@ -69,6 +69,6 @@ fun Rating(
 @Composable
 fun RatingPreview(){
     AflamiTheme {
-        Rating(rating = 9.9)
+        Rating(rating ="9.9")
     }
 }

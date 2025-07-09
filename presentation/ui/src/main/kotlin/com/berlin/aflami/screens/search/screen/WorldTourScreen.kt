@@ -1,12 +1,15 @@
 package com.berlin.aflami.screens.search.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,9 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,9 +43,8 @@ fun WorldTourScreen(
     viewModel: WorldTourViewModel = koinViewModel()
 ) {
     val worldTourState by viewModel.uiState.collectAsState()
-    var countryName by remember { mutableStateOf("") }
 
-    WorldTourContent(worldTourState,viewModel)
+    WorldTourContent(worldTourState, viewModel)
 
 }
 
@@ -104,7 +103,8 @@ fun WorldTourContent(
                 maxLines = 1,
                 borderColor = Theme.color.stroke,
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search),
+                    imeAction = ImeAction.Search
+                ),
                 keyboardActions = KeyboardActions(onSearch = {
                     listener.onSearchClick()
                 }),
@@ -122,23 +122,29 @@ fun WorldTourContent(
                 messageId = R.string.start_exploring_the_world_movie_by_enter_your_favorite_country_in_search_bar
             )
         }
-//        if (worldTourState.error){
+//        if (worldTourState.error) {
+//            CountryTourExploring(
+//                image = painterResource(R.drawable.no_search_result),
+//                titleId = R.string.no_search_result,
+//                messageId = R.string.please_try_with_another_keyword
+//            )
 //
 //        }
-
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            modifier = Modifier.padding(16.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(worldTourState.movies.size) { index ->
                 val movie = worldTourState.movies[index]
                 MediaCard(
-                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
+                    modifier = Modifier.size(width = 160.dp, height = 222.dp),
                     mediaImg = movie.poster,
                     title = movie.title,
                     typeOfMedia = movie.description,
                     date = movie.releaseYear,
-                    rating = movie.rating.toDouble()
+                    rating = movie.rating
                 )
             }
         }

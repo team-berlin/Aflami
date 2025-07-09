@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,7 +32,7 @@ fun MediaCard(
     title: String,
     typeOfMedia: String,
     date: String,
-    rating: Double
+    rating: String
 ) {
     Box(
         modifier = modifier
@@ -40,7 +41,7 @@ fun MediaCard(
 
     ) {
         AsyncImage(
-            modifier = Modifier,
+            modifier = Modifier.fillMaxSize(),
             model = mediaImg,
             contentDescription = stringResource(R.string.api_image_card_content),
             contentScale = ContentScale.Crop
@@ -66,7 +67,9 @@ fun MediaCard(
                 Text(
                     text = typeOfMedia,
                     style = Theme.textStyle.label.small,
-                    color = Theme.color.textColors.onPrimaryBody
+                    color = Theme.color.textColors.onPrimaryBody,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Box(
                     modifier = Modifier
@@ -95,12 +98,12 @@ fun MediaCard(
 private fun MediaCardPreview1() {
     AflamiTheme {
         MediaCard(
-            modifier = Modifier.size(width = 156.dp, height = 222.dp),
+            modifier = Modifier.size(width = 100.dp, height = 150.dp),
             "https://i.pinimg.com/736x/2d/4c/77/2d4c7718ccdf3d714654dbd3d66da00f.jpg",
             "Your Name",
             "TV show",
             "2016",
-            rating = 9.9
+            rating = "9.9"
         )
     }
 }
@@ -115,7 +118,7 @@ private fun MediaCardPreview2() {
             "Grave of the Fireflies",
             "TV show",
             "2016",
-            rating = 9.9
+            rating = "9.9"
         )
     }
 }
