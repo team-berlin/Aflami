@@ -12,7 +12,7 @@ import repository.SearchRepository
 class SearchByCountryUseCaseTest {
 
     private val searchRepository = mockk<SearchRepository>()
-    lateinit var searchByCountryUseCase: SearchByCountryUseCase
+    private lateinit var searchByCountryUseCase: SearchByCountryUseCase
 
     @Before
     fun setUp() {
@@ -22,7 +22,7 @@ class SearchByCountryUseCaseTest {
     @Test
     fun `When search by valid country name and movies not found, then return empty list`() = runTest {
         // Given
-        val countryName = "Egypt"
+        val countryName = "Eg"
         coEvery { searchRepository.searchByCountry(countryName) } returns emptyList()
 
         // When
@@ -35,7 +35,7 @@ class SearchByCountryUseCaseTest {
     @Test
     fun `When search by valid country name, then return list of movies relate to country`() = runTest {
         // Given
-        val countryName = "Egypt"
+        val countryName = "Eg"
         coEvery { searchRepository.searchByCountry(countryName) } returns getMoviesByCountry()
 
         // When
