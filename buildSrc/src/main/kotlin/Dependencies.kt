@@ -48,6 +48,9 @@ object Dependencies {
 
     const val androidxUiTooling = "androidx.compose.ui:ui-tooling"
     const val androidxUiTestManifest = "androidx.compose.ui:ui-test-manifest"
+
+    //utils
+    const val kotlinDateX="org.jetbrains.kotlinx:kotlinx-datetime:${Versions.kotlinDateX}"
 }
 
 fun DependencyHandler.androidCoreKtx() {
@@ -116,12 +119,19 @@ fun DependencyHandler.composeUiDebug() {
     debugImplementation(Dependencies.androidxUiTestManifest)
 }
 
+fun DependencyHandler.kotlinDateX() {
+    implementation(Dependencies.kotlinDateX)
+}
+
 fun DependencyHandler.designSystem() {
     implementation(project(":presentation:designSystem"))
 }
 
 fun DependencyHandler.viewModel() {
     implementation(project(":presentation:viewModel"))
+}
+fun DependencyHandler.safeImageViewer() {
+    implementation(project(":presentation:safeImageViewer"))
 }
 
 fun DependencyHandler.useCase() {

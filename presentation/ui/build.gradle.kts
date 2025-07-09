@@ -43,6 +43,7 @@ dependencies {
     coil()
     composeUiDebug()
 
+    safeImageViewer()
     designSystem()
     viewModel()
 }

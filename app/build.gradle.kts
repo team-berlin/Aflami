@@ -57,10 +57,10 @@ dependencies {
     lifecycleRuntimeKtx()
     androidxUi()
     koin()
-    ktor()
     firebase()
     test()
 
+    safeImageViewer()
 
     useCase()
     repository()
