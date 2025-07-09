@@ -27,4 +27,5 @@ dependencies {
     koin()
     test()
     entity()
+    kotlinDateX()
 }
