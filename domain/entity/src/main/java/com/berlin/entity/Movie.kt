@@ -1,6 +1,5 @@
 package com.berlin.entity
 
-
 data class Movie(
     val id :Long,
     val title:String,

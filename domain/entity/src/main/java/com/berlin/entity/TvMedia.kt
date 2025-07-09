@@ -1,7 +1,6 @@
 package com.berlin.entity
 
-
-data class Tv(
+data class TvMedia(
     val id :Long,
     val title:String,
     val rating:Float,
