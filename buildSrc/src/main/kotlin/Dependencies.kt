@@ -13,16 +13,12 @@ object Dependencies {
     const val androidxUiGraphics = "androidx.compose.ui:ui-graphics"
     const val androidxUiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
 
-    const val ktorCore = "io.ktor:ktor-client-core:${Versions.ktor}"
     const val ktorAndroid = "io.ktor:ktor-client-android:${Versions.ktor}"
-    const val ktorserialization = "io.ktor:ktor-serialization-kotlinx-json:${Versions.ktor}"
+    const val ktorCore = "io.ktor:ktor-client-android:${Versions.ktor}"
+    const val ktorserialization = "io.ktor:ktor-client-android:${Versions.ktor}"
     const val ktorlogging = "io.ktor:ktor-client-android:${Versions.ktor}"
-    const val ktorCio = "io.ktor:ktor-client-cio:${Versions.ktor}"
-    const val ktorContentNegotiation = "io.ktor:ktor-client-content-negotiation:${Versions.ktor}"
 
     const val koin = "io.insert-koin:koin-core:${Versions.koin}"
-    const val koinAndroid = "io.insert-koin:koin-android:${Versions.koin}"
-    const val koinCompose = "io.insert-koin:koin-androidx-compose:${Versions.koin}"
 
     const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
 
@@ -42,12 +38,12 @@ object Dependencies {
     //test
     const val junit = "junit:junit:${Versions.junit}"
     const val kotlinxCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinxCoroutinesTest}"
-    const val mockk = "io.mockk:mockk:${Versions.mockk}"
-    const val truth = "com.google.truth:truth:${Versions.truth}"
-    const val jupiter = "org.junit.jupiter:junit-jupiter:${Versions.jupiter}"
 
     const val androidxUiTooling = "androidx.compose.ui:ui-tooling"
     const val androidxUiTestManifest = "androidx.compose.ui:ui-test-manifest"
+
+    //utils
+    const val kotlinDateX="org.jetbrains.kotlinx:kotlinx-datetime:${Versions.kotlinDateX}"
 }
 
 fun DependencyHandler.androidCoreKtx() {
@@ -73,14 +69,10 @@ fun DependencyHandler.ktor() {
     implementation(Dependencies.ktorCore)
     implementation(Dependencies.ktorserialization)
     implementation(Dependencies.ktorlogging)
-    implementation(Dependencies.ktorCio)
-    implementation(Dependencies.ktorContentNegotiation)
 }
 
 fun DependencyHandler.koin() {
     implementation(Dependencies.koin)
-    implementation(Dependencies.koinAndroid)
-    implementation(Dependencies.koinCompose)
 }
 
 fun DependencyHandler.navigation() {
@@ -106,16 +98,15 @@ fun DependencyHandler.firebase() {
 fun DependencyHandler.test() {
     testImplementation(Dependencies.junit)
     testImplementation(Dependencies.kotlinxCoroutinesTest)
-    testImplementation(Dependencies.mockk)
-    testImplementation(Dependencies.truth)
-    testImplementation(Dependencies.jupiter)
 }
 
 fun DependencyHandler.composeUiDebug() {
     debugImplementation(Dependencies.androidxUiTooling)
     debugImplementation(Dependencies.androidxUiTestManifest)
 }
-
+fun DependencyHandler.kotlinDateX() {
+    implementation(Dependencies.kotlinDateX)
+}
 fun DependencyHandler.designSystem() {
     implementation(project(":presentation:designSystem"))
 }
@@ -123,13 +114,16 @@ fun DependencyHandler.designSystem() {
 fun DependencyHandler.viewModel() {
     implementation(project(":presentation:viewModel"))
 }
+fun DependencyHandler.safeImageViewer() {
+    implementation(project(":presentation:safeImageViewer"))
+}
 
 fun DependencyHandler.useCase() {
     implementation(project(":domain:usecase"))
 }
 
 fun DependencyHandler.entity() {
-    api(project(":domain:entity"))
+    implementation(project(":domain:entity"))
 }
 
 fun DependencyHandler.repository() {
@@ -138,8 +132,4 @@ fun DependencyHandler.repository() {
 
 fun DependencyHandler.ui() {
     api(project(":presentation:ui"))
-}
-
-fun DependencyHandler.remote() {
-    implementation(project(":data:remote"))
 }
