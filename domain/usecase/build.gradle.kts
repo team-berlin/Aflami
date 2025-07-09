@@ -24,7 +24,7 @@ kover {
     }
 }
 dependencies {
-    koin()
-    test()
     entity()
+    implementation(Dependencies.koin)
+    test()
 }
