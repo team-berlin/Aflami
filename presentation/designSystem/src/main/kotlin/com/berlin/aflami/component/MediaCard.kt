@@ -1,12 +1,13 @@
 package com.berlin.aflami.component
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,14 +40,28 @@ fun MediaCard(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(16.dp))
-
     ) {
         AsyncImage(
-            modifier = Modifier,
             model = mediaImg,
             contentDescription = stringResource(R.string.api_image_card_content),
             contentScale = ContentScale.Crop
         )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .align(Alignment.BottomCenter)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color(0xFF0D090B)
+                        )
+                    )
+                ),
+        )
+
         Rating(modifier = Modifier.align(Alignment.TopEnd), rating)
 
         Column(
@@ -59,6 +76,7 @@ fun MediaCard(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -68,6 +86,7 @@ fun MediaCard(
                     style = Theme.textStyle.label.small,
                     color = Theme.color.textColors.onPrimaryBody
                 )
+
                 Box(
                     modifier = Modifier
                         .size(3.dp)
@@ -76,20 +95,17 @@ fun MediaCard(
                             RoundedCornerShape(3.dp)
                         )
                 )
+
                 Text(
                     text = date,
                     style = Theme.textStyle.label.small,
                     color = Theme.color.textColors.onPrimaryBody
                 )
-
             }
-
         }
-
     }
-
-
 }
+
 @ThemeAndLocalePreviews
 @Composable
 private fun MediaCardPreview1() {
@@ -119,10 +135,3 @@ private fun MediaCardPreview2() {
         )
     }
 }
-
-
-
-
-
-
-
