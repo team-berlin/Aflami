@@ -1,4 +1,4 @@
-name: build_test_publish_apk
+name: build and test checker
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    name: build_test
     runs-on: ubuntu-latest
     steps:
 
@@ -39,10 +40,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew -x koverVerify
-
-      - name: Run tests and verify coverage percentage
-        run: ./gradlew koverVerify
+        run: ./gradlew build  koverVerify
 
       - name: Run tests and generate coverage report
         run: ./gradlew koverHtmlReport
@@ -55,16 +53,4 @@ jobs:
                 domain/usecase/build/reports/kover/html
                 presentation/viewModel/build/reports/kover/html
            
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug
-
-      - name: Upload APK using Firebase CLI
-        if: github.event_name == 'push'
-        run: |
-          npm install -g firebase-tools
-          firebase appdistribution:distribute \
-          app/build/outputs/apk/debug/app-debug.apk \
-          --app ${{ secrets.FIREBASE_APP_ID }} \
-          --token ${{ secrets.FIREBASE_TOKEN }} \
-          --groups "${{ secrets.FIREBASE_TESTER_GROUPS }}" \
-          --release-notes "CI upload using auth token"
+    

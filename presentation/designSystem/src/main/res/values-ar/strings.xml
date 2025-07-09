@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mood_picker_title">منتقي المزاج (احصل على فيلم)</string>
+    <string name="mood_picker_prompt">ما هو شعورك اليوم؟</string>
+    <string name="mood_picker_get_now">احصل الآن</string>
+    <string name="mood_picker_clown_content_description">مهرج مضحك</string>
+    <string name="mood_picker_mood_icon_content_description">أيقونة المزاج</string>
+    <string name="mood_picker_favourite_icon_content_description">أيقونة المفضلة</string>
+
+
+    <string name="dark">داكن</string>
+    <string name="arabic">عربي</string>
+    <string name="light">فاتح</string>
+    <string name="english">انجليزي</string>
+    <string name="label_home">الرئيسية</string>
+    <string name="label_lists">القوائم</string>
+    <string name="label_categories">التصنيفات</string>
+    <string name="label_lets_play">هيا نلعب</string>
+    <string name="label_profile">الملف الشخصي</string>
+
+    <string name="app_name">Aflami</string>
+    <string name="trending">رائج</string>
+    <string name="all">الجميع</string>
+
+    <string name="action">أكشن</string>
+    <string name="icon_button">أيقونة</string>
+
+
+    <string name="world_tour">جولة حول العالم</string>
+    <string name="explore_world_cinema">استكشاف السينما العالمية</string>
+    <string name="find_by_actor">البحث حسب الممثل</string>
+    <string name="search_by_favorite_actor">ابحث حسب الممثل المفضل</string>
+
+    <string name="list_added_success">تمت إضافة القائمة بنجاح.</string>
+    <string name="list_error">حدث خطأ ما.</string>
+
+    <string name="aflami_title">افلامى</string>
+    <string name="aflami_description">المزيد من المشاهدة.</string>
+    <string name="my_account">حسابى</string>
+    <string name="label">ملصق</string>
+    <string name="incorrect_password">خطا بكلمة السر</string>
+
+    <string name="tv_shows">البرامج التلفزيونية</string>
+    <string name="movies">الأفلام</string>
+    <!--    content description-->
+    <string name="icon_cd">أيقونة</string>
+    <string name="category_img_content">category img</string>
+    <string name="api_image_card_content">api image card</string>
+    <string name="drama">أثارة</string>
+
+</resources>

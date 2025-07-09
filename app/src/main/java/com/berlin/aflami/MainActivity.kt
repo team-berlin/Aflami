@@ -13,10 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.aflami.designsystem.theme.AflamiTheme
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.ui.theme.AflamiTheme
-import com.berlin.safeimageviewer.SafeImage
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,8 +27,9 @@ class MainActivity : ComponentActivity() {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    SafeImage(
-                        "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=500"
+                    Greeting(
+                        name = "Aflami",
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }

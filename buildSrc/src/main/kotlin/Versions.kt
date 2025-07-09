@@ -12,6 +12,8 @@ object Versions {
     const val koin = "4.0.1"
     const val coil = "3.2.0"
 
+    const val firebaseBom = "33.16.0"
+
     // test
     const val junit = "4.13.2"
     const val kotlinxCoroutinesTest = "1.8.1"
