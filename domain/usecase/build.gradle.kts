@@ -24,11 +24,7 @@ kover {
     }
 }
 dependencies {
-    test()
-    implementation(Dependencies.koin)
     entity()
-
-    testImplementation("io.mockk:mockk:1.14.0")
-    testImplementation("com.google.truth:truth:1.4.4")
-
+    implementation(Dependencies.koin)
+    test()
 }

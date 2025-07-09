@@ -42,6 +42,8 @@ object Dependencies {
     //test
     const val junit = "junit:junit:${Versions.junit}"
     const val kotlinxCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinxCoroutinesTest}"
+    const val mockk = "io.mockk:mockk:${Versions.mockk}"
+    const val truth = "com.google.truth:truth:${Versions.truth}"
 
     const val androidxUiTooling = "androidx.compose.ui:ui-tooling"
     const val androidxUiTestManifest = "androidx.compose.ui:ui-test-manifest"
@@ -103,6 +105,8 @@ fun DependencyHandler.firebase() {
 fun DependencyHandler.test() {
     testImplementation(Dependencies.junit)
     testImplementation(Dependencies.kotlinxCoroutinesTest)
+    testImplementation(Dependencies.mockk)
+    testImplementation(Dependencies.truth)
 }
 
 fun DependencyHandler.composeUiDebug() {

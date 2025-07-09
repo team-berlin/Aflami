@@ -17,4 +17,6 @@ object Versions {
     // test
     const val junit = "4.13.2"
     const val kotlinxCoroutinesTest = "1.8.1"
+    const val mockk = "1.14.0"
+    const val truth = "1.4.4"
 }

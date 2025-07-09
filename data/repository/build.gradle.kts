@@ -15,6 +15,7 @@ kotlin {
 
 dependencies {
     useCase()
-
     serialization()
+
+    test()
 }
