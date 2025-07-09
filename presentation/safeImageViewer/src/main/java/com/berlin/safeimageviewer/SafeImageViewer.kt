@@ -1,14 +1,7 @@
 package com.berlin.safeimageviewer
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -40,8 +32,8 @@ import java.nio.ByteOrder
 @Composable
 fun SafeImage(
     imageUri: String,
-
-    ) {
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -73,27 +65,20 @@ fun SafeImage(
 
         }
     }
+    isSafe?.let { safe ->
+        bitmap?.let { image ->
+            Image(
+                bitmap = image.asImageBitmap(),
+                contentDescription = null,
+                modifier = modifier
+                    .blur(
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        isSafe?.let { safe ->
-            bitmap?.let { image ->
-                Image(
-                    bitmap = image.asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(240.dp)
-                        
-                        .blur(
-
-                            radius = if (!safe) 40.dp else 0.dp,
-                            edgeTreatment = BlurredEdgeTreatment.Unbounded
-                        )
-                        .shadow(elevation = if (!safe) 1.dp else 0.dp)
-                    ,
-                    contentScale = ContentScale.Crop
-                )
-            }
+                        radius = if (!safe) 40.dp else 0.dp,
+                        edgeTreatment = BlurredEdgeTreatment.Unbounded
+                    )
+                    .shadow(elevation = if (!safe) 1.dp else 0.dp),
+                contentScale = ContentScale.Crop
+            )
         }
     }
 }
@@ -124,7 +109,7 @@ fun bitmapToByteBuffer(bitmap: Bitmap): ByteBuffer {
 
 @Composable
 @Preview(showBackground = true)
-fun SafeImagePrev(){
+fun SafeImagePrev() {
     SafeImage(
         imageUri = "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=500",
     )
