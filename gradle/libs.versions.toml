@@ -1,6 +1,10 @@
 [versions]
 agp = "8.10.1"
 kotlin = "2.0.21"
+firebaseCrashlytics = "3.0.4"
+firebasePerformance = "1.4.2"
+firebaseService = "4.4.3"
+
 
 jetbrainsKotlinJvm = "2.0.21"
 coreKtx = "1.16.0"
@@ -26,3 +30,6 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
+firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerformance" }
+firebase-gms-service = { id = "com.google.gms.google-services", version.ref = "firebaseService" }

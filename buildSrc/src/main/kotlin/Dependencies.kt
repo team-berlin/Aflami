@@ -29,6 +29,12 @@ object Dependencies {
 
     const val androidxMaterial3 = "androidx.compose.material3:material3"
 
+    //firebase
+    const val firebaseBom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
+    const val firebaseAnalyticsKtx = "com.google.firebase:firebase-analytics-ktx"
+    const val firebaseCrashlyticsktx = "com.google.firebase:firebase-crashlytics-ktx"
+    const val firebasePerfKtx = "com.google.firebase:firebase-perf-ktx"
+
     //test
     const val junit = "junit:junit:${Versions.junit}"
     const val kotlinxCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinxCoroutinesTest}"
@@ -77,6 +83,13 @@ fun DependencyHandler.coil() {
 
 fun DependencyHandler.serialization() {
     implementation(Dependencies.serialization)
+}
+
+fun DependencyHandler.firebase() {
+    implementation(platform(Dependencies.firebaseBom))
+    implementation(Dependencies.firebaseAnalyticsKtx)
+    implementation(Dependencies.firebasePerfKtx)
+    implementation(Dependencies.firebaseCrashlyticsktx)
 }
 
 fun DependencyHandler.test() {

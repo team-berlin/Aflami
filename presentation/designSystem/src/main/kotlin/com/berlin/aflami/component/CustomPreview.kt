@@ -8,6 +8,7 @@ import androidx.compose.ui.tooling.preview.Preview
     name = "Light Theme - English",
     group = "Themes and Locales",
     showBackground = true,
+    backgroundColor = 0xFFFAF5F7,
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     locale = "en",
 )
@@ -15,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
     name = "Dark Theme - English",
     group = "Themes and Locales",
     showBackground = true,
+    backgroundColor = 0xFF0D090B,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     locale = "en",
 )
@@ -22,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
     name = "Light Theme - Arabic",
     group = "Themes and Locales",
     showBackground = true,
+    backgroundColor = 0xFFFAF5F7,
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     locale = "ar",
 )
@@ -29,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
     name = "Dark Theme - Arabic",
     group = "Themes and Locales",
     showBackground = true,
+    backgroundColor = 0xFF0D090B,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     locale = "ar",
 )
