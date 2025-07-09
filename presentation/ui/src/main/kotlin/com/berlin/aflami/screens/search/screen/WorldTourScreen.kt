@@ -1,14 +1,17 @@
 package com.berlin.aflami.screens.search.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,9 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,29 +42,26 @@ import org.koin.androidx.compose.koinViewModel
 fun WorldTourScreen(
     viewModel: WorldTourViewModel = koinViewModel()
 ) {
-    val worldTourState by viewModel.uiState.collectAsState()
-    var countryName by remember { mutableStateOf("") }
-
-    WorldTourContent(worldTourState,viewModel)
-
+    val state by viewModel.uiState.collectAsState()
+    WorldTourContent(
+        state = state,
+        listener = viewModel
+    )
 }
 
 
 @Composable
 fun WorldTourContent(
-    worldTourState: WorldTourUiState,
+    state: WorldTourUiState,
     listener: WorldTourInteractionListener,
 ) {
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface),
     ) {
-
         TopBar(
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier.statusBarsPadding(),
             title = {
                 Text(
                     text = stringResource(R.string.world_tour),
@@ -86,36 +83,32 @@ fun WorldTourContent(
                         tint = Theme.color.textColors.title
                     )
                 }
-            },
+            }
         )
 
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            TextField(
-                text = worldTourState.countryName,
-                modifier = Modifier
-                    .padding(vertical = 8.dp, horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Theme.color.surfaceHigh),
-                hintText = stringResource(R.string.country_name),
-                isEnabled = true,
-                maxLines = 1,
-                borderColor = Theme.color.stroke,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = {
-                    listener.onSearchClick()
-                }),
-                onValueChange = listener::onCountryNameChanged
-            )
-        }
+        TextField(
+            text = state.countryName,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            hintText = stringResource(R.string.country_name),
+            isEnabled = true,
+            maxLines = 1,
+            borderColor = Theme.color.stroke,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(onSearch = {
+                listener.onSearchClick()
+            }),
+            onValueChange = listener::onCountryNameChanged
+        )
 
-        if (worldTourState.isLoading) {
+        if (state.isLoading) {
 
         }
-        if (worldTourState.movies.isEmpty()) {
+
+        if (state.movies.isEmpty()) {
             CountryTourExploring(
                 image = painterResource(R.drawable.world_tour),
                 titleId = R.string.country_tour,
@@ -127,22 +120,24 @@ fun WorldTourContent(
 //        }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.padding(16.dp)
+            columns = GridCells.Adaptive(minSize = 160.dp),
+            modifier = Modifier,
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(worldTourState.movies.size) { index ->
-                val movie = worldTourState.movies[index]
+            items(
+                items = state.movies,
+                key = { it.id }
+            ) { movie ->
                 MediaCard(
-                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
+                    modifier = Modifier.padding(bottom = 8.dp),
                     mediaImg = movie.poster,
                     title = movie.title,
-                    typeOfMedia = movie.description,
+                    typeOfMedia = stringResource(R.string.movie),
                     date = movie.releaseYear,
                     rating = movie.rating.toDouble()
                 )
             }
         }
     }
-
-
 }
