@@ -94,7 +94,7 @@ fun TextField(
             style = style,
         )
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .border(
                     width = 1.dp, color = currentBorderColor, shape = RoundedCornerShape(16.dp)
                 )
@@ -130,7 +130,7 @@ fun TextField(
                 keyboardActions = keyboardActions,
                 maxLines = maxLines,
                 enabled = isEnabled,
-                modifier = modifier
+                modifier = Modifier
                     .padding(start = 12.dp)
                     .weight(1f)
                     .defaultMinSize(minHeight = 56.dp)
