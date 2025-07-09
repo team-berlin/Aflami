@@ -9,7 +9,7 @@ fun Movie.toUIState(): MovieUIState {
         id = id,
         title = title,
         rating = rating.toString(),
-        releaseYear = releaseYear,
+        releaseYear = releaseYear.year.toString(),
         description = description,
         genre = genre,
         poster =poster
