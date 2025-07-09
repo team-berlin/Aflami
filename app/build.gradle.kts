@@ -50,6 +50,7 @@ dependencies {
     firebase()
     test()
 
+    safeImageViewer()
     ui()
     designSystem()
 }
