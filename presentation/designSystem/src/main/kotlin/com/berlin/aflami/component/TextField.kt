@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -72,6 +74,8 @@ fun TextField(
     borderErrorColor: Color = Theme.color.statusColors.redAccent,
     borderFocusedColor: Color = Theme.color.primary,
     onTrailingClick: (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     onValueChange: (String) -> Unit = {}
 ) {
     var isFocused by remember { mutableStateOf(false) }
@@ -122,6 +126,8 @@ fun TextField(
                         )
                     )
                 },
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
                 maxLines = maxLines,
                 enabled = isEnabled,
                 modifier = modifier

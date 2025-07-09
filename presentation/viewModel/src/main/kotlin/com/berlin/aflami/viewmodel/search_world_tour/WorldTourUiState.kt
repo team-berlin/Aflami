@@ -6,5 +6,5 @@ data class WorldTourUiState(
     val isLoading: Boolean = false,
     val countryName: String = "",
     val movies: List<MovieUIState> = emptyList(),
-    val error: String = ""
+    val error: String?=null
 )

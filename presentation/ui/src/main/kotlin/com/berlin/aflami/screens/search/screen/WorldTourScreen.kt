@@ -10,22 +10,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.search_world_tour.WorldTourInteractionListener
 import com.berlin.aflami.viewmodel.search_world_tour.WorldTourUiState
 import com.berlin.aflami.viewmodel.search_world_tour.WorldTourViewModel
 import com.berlin.ui.R
@@ -35,15 +42,18 @@ import org.koin.androidx.compose.koinViewModel
 fun WorldTourScreen(
     viewModel: WorldTourViewModel = koinViewModel()
 ) {
-    val worldTourState by viewModel.worldTourUiState.collectAsState()
+    val worldTourState by viewModel.uiState.collectAsState()
+    var countryName by remember { mutableStateOf("") }
 
-    WorldTourContent(worldTourState)
+    WorldTourContent(worldTourState,viewModel)
+
 }
 
 
 @Composable
 fun WorldTourContent(
-    worldTourState: WorldTourUiState
+    worldTourState: WorldTourUiState,
+    listener: WorldTourInteractionListener,
 ) {
 
 
@@ -83,7 +93,7 @@ fun WorldTourContent(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             TextField(
-                text = "",
+                text = worldTourState.countryName,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 16.dp)
                     .fillMaxWidth()
@@ -93,9 +103,12 @@ fun WorldTourContent(
                 isEnabled = true,
                 maxLines = 1,
                 borderColor = Theme.color.stroke,
-                onValueChange = {
-
-                }
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = {
+                    listener.onSearchClick()
+                }),
+                onValueChange = listener::onCountryNameChanged
             )
         }
 

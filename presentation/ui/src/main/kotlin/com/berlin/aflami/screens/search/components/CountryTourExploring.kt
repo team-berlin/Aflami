@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,6 +38,7 @@ fun CountryTourExploring(
         Image(
             painter =image ,
             contentDescription = "Country tour exploring",
+            modifier = Modifier.size(width = 100.dp, height = 82.dp)
         )
         Text(
             text = stringResource(titleId),
