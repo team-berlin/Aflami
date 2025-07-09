@@ -42,6 +42,7 @@ fun Rating(
             .border(1.dp, Theme.color.stroke, corner)
             .padding(vertical = 6.dp, horizontal = 8.dp),
         horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(2.dp),
