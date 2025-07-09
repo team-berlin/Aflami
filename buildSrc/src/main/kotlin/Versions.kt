@@ -19,4 +19,5 @@ object Versions {
     const val kotlinxCoroutinesTest = "1.8.1"
     const val mockk = "1.14.0"
     const val truth = "1.4.4"
+    const val jupiter = "5.10.2"
 }

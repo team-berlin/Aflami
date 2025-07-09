@@ -44,6 +44,7 @@ object Dependencies {
     const val kotlinxCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinxCoroutinesTest}"
     const val mockk = "io.mockk:mockk:${Versions.mockk}"
     const val truth = "com.google.truth:truth:${Versions.truth}"
+    const val jupiter = "org.junit.jupiter:junit-jupiter:${Versions.jupiter}"
 
     const val androidxUiTooling = "androidx.compose.ui:ui-tooling"
     const val androidxUiTestManifest = "androidx.compose.ui:ui-test-manifest"
@@ -107,6 +108,7 @@ fun DependencyHandler.test() {
     testImplementation(Dependencies.kotlinxCoroutinesTest)
     testImplementation(Dependencies.mockk)
     testImplementation(Dependencies.truth)
+    testImplementation(Dependencies.jupiter)
 }
 
 fun DependencyHandler.composeUiDebug() {
