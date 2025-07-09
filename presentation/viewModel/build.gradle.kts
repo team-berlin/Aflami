@@ -49,6 +49,6 @@ dependencies {
     navigation()
     koin()
     test()
-
+    kotlinDateX()
     useCase()
 }

@@ -49,4 +49,7 @@
     <string name="category_img_content">category img</string>
     <string name="api_image_card_content">api image card</string>
     <string name="drama">Drama</string>
+    <string name="search_by_actor">Find by actor</string>
+    <string name="actor_name_hint">Actor name</string>
+    <string name="find_by_actor_quotation">Start exploring your favorite actor’s movies and enjoy it.</string>
 </resources>

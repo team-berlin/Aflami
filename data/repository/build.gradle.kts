@@ -16,7 +16,7 @@ kotlin {
 dependencies {
     useCase()
     serialization()
-
+    kotlinDateX()
     test()
 }
 
