@@ -29,12 +29,21 @@ object Dependencies {
 
     const val androidxMaterial3 = "androidx.compose.material3:material3"
 
+    //firebase
+    const val firebaseBom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
+    const val firebaseAnalyticsKtx = "com.google.firebase:firebase-analytics-ktx"
+    const val firebaseCrashlyticsktx = "com.google.firebase:firebase-crashlytics-ktx"
+    const val firebasePerfKtx = "com.google.firebase:firebase-perf-ktx"
+
     //test
     const val junit = "junit:junit:${Versions.junit}"
     const val kotlinxCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinxCoroutinesTest}"
 
     const val androidxUiTooling = "androidx.compose.ui:ui-tooling"
     const val androidxUiTestManifest = "androidx.compose.ui:ui-test-manifest"
+
+    //utils
+    const val kotlinDateX="org.jetbrains.kotlinx:kotlinx-datetime:${Versions.kotlinDateX}"
 }
 
 fun DependencyHandler.androidCoreKtx() {
@@ -79,6 +88,13 @@ fun DependencyHandler.serialization() {
     implementation(Dependencies.serialization)
 }
 
+fun DependencyHandler.firebase() {
+    implementation(platform(Dependencies.firebaseBom))
+    implementation(Dependencies.firebaseAnalyticsKtx)
+    implementation(Dependencies.firebasePerfKtx)
+    implementation(Dependencies.firebaseCrashlyticsktx)
+}
+
 fun DependencyHandler.test() {
     testImplementation(Dependencies.junit)
     testImplementation(Dependencies.kotlinxCoroutinesTest)
@@ -88,13 +104,18 @@ fun DependencyHandler.composeUiDebug() {
     debugImplementation(Dependencies.androidxUiTooling)
     debugImplementation(Dependencies.androidxUiTestManifest)
 }
-
+fun DependencyHandler.kotlinDateX() {
+    implementation(Dependencies.kotlinDateX)
+}
 fun DependencyHandler.designSystem() {
     implementation(project(":presentation:designSystem"))
 }
 
 fun DependencyHandler.viewModel() {
     implementation(project(":presentation:viewModel"))
+}
+fun DependencyHandler.safeImageViewer() {
+    implementation(project(":presentation:safeImageViewer"))
 }
 
 fun DependencyHandler.useCase() {

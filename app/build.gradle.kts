@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.firebase.gms.service)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.firebase.performance)
 }
 
 android {
@@ -44,8 +47,10 @@ dependencies {
     lifecycleRuntimeKtx()
     androidxUi()
     koin()
+    firebase()
     test()
 
+    safeImageViewer()
     ui()
     designSystem()
 }
