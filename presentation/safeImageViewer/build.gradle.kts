@@ -51,6 +51,4 @@ dependencies {
     test()
 
     coil()
-
-    designSystem()
 }

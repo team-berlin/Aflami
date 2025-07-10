@@ -25,8 +25,8 @@ object Dependencies {
     const val koinCompose = "io.insert-koin:koin-androidx-compose:${Versions.koin}"
 
     const val room = "androidx.room:room-runtime:${Versions.room}"
-    const val roomCompiler = "androidx.room:room-compiler:${Versions.room}"
     const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
+    const val roomCompiler = "androidx.room:room-compiler:${Versions.room}"
 
     const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
 
@@ -93,7 +93,6 @@ fun DependencyHandler.koin() {
 fun DependencyHandler.room(){
     implementation(Dependencies.room)
     implementation(Dependencies.roomKtx)
-    implementation(Dependencies.roomCompiler)
     ksp(Dependencies.roomCompiler)
 }
 

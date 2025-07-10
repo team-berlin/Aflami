@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.firebase.gms.service)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.performance)
+    alias(libs.plugins.ksp)
 }
 
 android {
