@@ -25,18 +25,14 @@ class SearchRemoteDataSourceImpl(
     }
 
     override suspend fun searchMovies(query: String): MovieResponse {
-        return client.get(BASE_URL + ApiConstants.SEARCH_MOVIE) {
+        return client.get(ApiConstants.SEARCH_MOVIE) {
             parameter(ApiConstants.QUERY, query)
         }.body()
     }
 
     override suspend fun searchTvShows(query: String): TvShowResponse {
-        return client.get(BASE_URL + ApiConstants.SEARCH_TV) {
+        return client.get(ApiConstants.SEARCH_TV) {
             parameter(ApiConstants.QUERY, query)
         }.body()
-    }
-
-    companion object {
-        const val BASE_URL = "https://api.themoviedb.org/3/"
     }
 }
