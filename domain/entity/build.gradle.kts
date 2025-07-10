@@ -12,6 +12,6 @@ kotlin {
     }
 
     dependencies{
-        kotlinDateX()
+        implementation(libs.kotlin.datex)
     }
 }

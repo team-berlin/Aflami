@@ -52,5 +52,6 @@ dependencies {
     implementation(libs.bundles.firebase)
 
     api(project(":presentation:ui"))
+    implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:designSystem"))
 }
