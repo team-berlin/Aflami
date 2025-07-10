@@ -1,16 +1,15 @@
 package com.berlin.aflami.viewmodel.search_world_tour
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
-import com.berlin.aflami.viewmodel.util.countryNameToIsoCode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.SearchByCountryUseCase
+import java.util.Locale
 
 class WorldTourViewModel(
     private val searchByCountry: SearchByCountryUseCase
@@ -18,6 +17,20 @@ class WorldTourViewModel(
 
     private val _uiState = MutableStateFlow(WorldTourUiState())
     val uiState = _uiState.asStateFlow()
+
+    init {
+        getCountriesWithCode()
+    }
+
+    private fun getCountriesWithCode() {
+        val countries = Locale.getISOCountries()
+        val countriesWithCode = mutableMapOf<String, String>()
+        for (country in countries) {
+            val locale = Locale("", country)
+            countriesWithCode[locale.displayCountry] = country
+        }
+        _uiState.update { it.copy(countriesWithCode = countriesWithCode) }
+    }
 
     override fun onBackClick() {
         // TODO: ("Not yet implemented")
@@ -30,20 +43,23 @@ class WorldTourViewModel(
     override fun onSearchClick() {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            val countryIsoCode = countryNameToIsoCode(uiState.value.countryName)
-            if (countryIsoCode == null) {
+            val countryName = _uiState.value.countriesWithCode[_uiState.value.countryName]
+            if (countryName == null) {
                 onSearchError("Invalid country name") // Todo:
                 return@launch
             }
             try {
-                val result = searchByCountry(countryIsoCode).map {
+                val locale = Locale.getDefault()
+                val languageCode = "${locale.language}-${locale.country}"
+                val result = searchByCountry(
+                    countryName = countryName,
+                    language = languageCode
+                ).map {
                     it.toUIState()
                 }
-                Log.e("response",result.toString())
                 onSearchSuccess(result)
             } catch (exception: Exception) {
                 // TODO: msg resId
-                Log.e("error",exception.message.toString())
                 onSearchError(exception.message ?: "Unknown error")
             }
         }

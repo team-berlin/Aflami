@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.firebase.gms.service)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.performance)
+    alias(libs.plugins.ksp)
 }
 
 val properties = Properties().apply {
@@ -58,16 +59,16 @@ dependencies {
     androidxUi()
     koin()
     ktor()
+    room()
     firebase()
     test()
 
     safeImageViewer()
-
+    designSystem()
+    viewModel()
+    ui()
     useCase()
     repository()
     remote()
-
-    viewModel()
-    ui()
-    designSystem()
+    local()
 }

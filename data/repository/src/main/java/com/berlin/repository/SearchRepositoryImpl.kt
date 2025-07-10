@@ -8,8 +8,8 @@ import repository.SearchRepository
 class SearchRepositoryImpl(
     private val remoteDataSource: SearchRemoteDataSource
 ) : SearchRepository {
-    override suspend fun searchByCountry(countryName: String): List<Movie> {
-        return remoteDataSource.searchMoviesByCountry(countryName).results
+    override suspend fun searchByCountry(countryName: String, language: String): List<Movie> {
+        return remoteDataSource.searchMoviesByCountry(countryName, language).results
             ?.filterNotNull()
             ?.map { movieDto -> movieDto.toDomain() }
             ?: emptyList()

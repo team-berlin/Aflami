@@ -24,10 +24,11 @@ class SearchByCountryUseCaseTest {
     fun `When search by valid country name and movies not found, then return empty list`() = runTest {
         // Given
         val countryName = "Eg"
-        coEvery { searchRepository.searchByCountry(countryName) } returns emptyList()
+        val language = "en-US"
+        coEvery { searchRepository.searchByCountry(countryName, language) } returns emptyList()
 
         // When
-        val result = searchByCountryUseCase.invoke(countryName)
+        val result = searchByCountryUseCase.invoke(countryName, language)
 
         // Then
         assertThat(result).isEmpty()
@@ -37,10 +38,11 @@ class SearchByCountryUseCaseTest {
     fun `When search by valid country name, then return list of movies relate to country`() = runTest {
         // Given
         val countryName = "Eg"
-        coEvery { searchRepository.searchByCountry(countryName) } returns getMoviesByCountry()
+        val language = "en-US"
+        coEvery { searchRepository.searchByCountry(countryName, language) } returns getMoviesByCountry()
 
         // When
-        val result = searchByCountryUseCase.invoke(countryName)
+        val result = searchByCountryUseCase.invoke(countryName, language)
 
         // Then
         assertThat(result).isNotEmpty()
@@ -50,10 +52,11 @@ class SearchByCountryUseCaseTest {
     fun `When search by invalid country name, then return list of movies relate to country`() = runTest {
         // Given
         val countryName = "abcd"
-        coEvery { searchRepository.searchByCountry(countryName) } returns emptyList()
+        val language = "en-US"
+        coEvery { searchRepository.searchByCountry(countryName, language) } returns emptyList()
 
         // When
-        val result = searchByCountryUseCase.invoke(countryName)
+        val result = searchByCountryUseCase.invoke(countryName, language)
 
         // Then
         assertThat(result).isEmpty()
@@ -63,6 +66,5 @@ class SearchByCountryUseCaseTest {
         return (0..5).map {
             Movie(it.toLong(), "Filmy", 5.0, LocalDate(2024, 6, 23), "description", emptyList(), "path")
         }
-
     }
 }
