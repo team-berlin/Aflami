@@ -1,11 +1,13 @@
 package com.berlin.entity
 
+import kotlinx.datetime.LocalDate
+
 data class TvShow(
-    val id :Long,
-    val title:String,
-    val rating:Float,
-    val releaseYear: String,
-    val description: String,
-    val genre:List<Int>,
-    val poster:String,
-)
+    override val id :Long,
+    override val title:String,
+    override val rating: Double,
+    override val releaseYear: LocalDate,
+    override val description: String,
+    override val genre:List<Int>,
+    override val poster:String,
+): MediaTypeEntity()
