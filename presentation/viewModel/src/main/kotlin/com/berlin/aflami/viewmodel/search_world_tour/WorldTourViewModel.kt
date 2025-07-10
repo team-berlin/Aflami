@@ -19,6 +19,20 @@ class WorldTourViewModel(
     private val _uiState = MutableStateFlow(WorldTourUiState())
     val uiState = _uiState.asStateFlow()
 
+    init {
+        getCountriesWithCode()
+    }
+
+    private fun getCountriesWithCode(){
+        val countries = Locale.getISOCountries()
+        val countriesWithCode = mutableMapOf<String, String>()
+        for (country in countries) {
+            val locale = Locale("", country)
+            countriesWithCode[locale.displayCountry] = country
+        }
+        _uiState.update { it.copy(countriesWithCode = countriesWithCode) }
+    }
+
     override fun onBackClick() {
         // TODO: ("Not yet implemented")
     }
