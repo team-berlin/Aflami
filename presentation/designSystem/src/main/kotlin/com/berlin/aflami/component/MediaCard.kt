@@ -49,7 +49,7 @@ fun MediaCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxHeight(0.5f)
                 .align(Alignment.BottomCenter)
                 .background(
                     Brush.verticalGradient(
@@ -58,7 +58,7 @@ fun MediaCard(
                             Color(0xFF0D090B)
                         )
                     )
-                ),
+                )
         )
 
         Rating(modifier = Modifier.align(Alignment.TopEnd), rating)
