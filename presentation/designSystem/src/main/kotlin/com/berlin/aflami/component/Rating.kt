@@ -25,7 +25,6 @@ fun Rating(
     modifier: Modifier = Modifier,
     rating: Double
 ) {
-
     val corner = remember {
         RoundedCornerShape(
             topStart = 4.dp,
@@ -37,38 +36,30 @@ fun Rating(
     Row(
         modifier = modifier
             .padding(end = 4.dp, top = 4.dp)
-            .size(width = 50.dp, height = 28.dp)
             .background(Theme.color.primaryVariant, corner)
             .border(1.dp, Theme.color.stroke, corner)
             .padding(vertical = 6.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.star),
-                contentDescription = "card rate",
-                tint = Theme.color.statusColors.yellowAccent
-            )
+        Icon(
+            painter = painterResource(R.drawable.star),
+            contentDescription = "card rate",
+            tint = Theme.color.statusColors.yellowAccent
+        )
 
-            Text(
-                text = rating.toString(),
-                style = Theme.textStyle.label.small,
-                color = Theme.color.textColors.body
-            )
-        }
-
-
+        Text(
+            text = rating.toString(),
+            style = Theme.textStyle.label.small,
+            color = Theme.color.textColors.body
+        )
     }
 }
 
 
 @ThemeAndLocalePreviews
 @Composable
-fun RatingPreview(){
+fun RatingPreview() {
     AflamiTheme {
         Rating(rating = 9.9)
     }
