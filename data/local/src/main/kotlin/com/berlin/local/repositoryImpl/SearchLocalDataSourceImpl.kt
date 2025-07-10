@@ -7,12 +7,19 @@ import com.berlin.repository.datasource.local.model.SearchCaching
 class SearchLocalDataSourceImpl(
     private val dao: SearchDao,
     ): SearchLocalDataSource {
-    override suspend fun getCachedSearch(query: String): SearchCaching? {
-        return dao.getCachedSearch(query)?.let{
+    override suspend fun getCachedSearch(query: String, type: String): SearchCaching? {
+        return dao.getCachedSearch(query,type)?.let{
             SearchCaching(
                 query = it.query,
-                history = it.history,
-                time = it.time
+                time = it.time,
+                type = it.type,
+                id = it.id,
+                title = it.title,
+                rating = it.rating,
+                releaseYear = it.releaseYear,
+                description = it.description,
+                genre = it.genre,
+                poster = it.poster
             )
         }
     }
