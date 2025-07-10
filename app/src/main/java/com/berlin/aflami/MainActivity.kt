@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.aflami.designsystem.theme.AflamiTheme
+import com.berlin.aflami.ui.theme.AflamiTheme
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.screens.search.screen.WorldTourScreen
 
