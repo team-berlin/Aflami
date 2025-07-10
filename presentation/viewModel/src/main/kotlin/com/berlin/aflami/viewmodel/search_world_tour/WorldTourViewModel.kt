@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.search_world_tour
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIState
@@ -12,28 +11,14 @@ import kotlinx.coroutines.launch
 import usecase.SearchByCountryUseCase
 
 class WorldTourViewModel(
-    private val searchByCountry:SearchByCountryUseCase
-
-) : ViewModel(),WorldTourInteractionListener {
+    private val searchByCountry: SearchByCountryUseCase
+) : ViewModel(), WorldTourInteractionListener {
 
     private val _uiState = MutableStateFlow(WorldTourUiState())
     val uiState = _uiState.asStateFlow()
 
-//
-//   fun getMovieByCountry(country: String) {
-//
-//        _worldTourUiState.update { it.copy(isLoading = true) }
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val movies= searchByCountry(country).map { movie ->
-//                movie.toUIState()
-//            }
-//            _worldTourUiState.update { it.copy(movies = movies, isLoading = false) }
-//
-//        }
-//    }
-
     override fun onBackClick() {
-//        TODO("Not yet implemented")
+        // TODO: ("Not yet implemented")
     }
 
     override fun onCountryNameChanged(countryName: CharSequence) {
@@ -49,31 +34,22 @@ class WorldTourViewModel(
                     it.toUIState()
                 }
                 onSearchSuccess(result)
-                Log.e("result",result.toString())
             } catch (exception: Exception) {
                 // TODO: msg resId
-                Log.e("error",exception.toString())
-
                 onSearchError(exception.message ?: "Unknown error")
             }
         }
     }
 
     override fun onClickMovie(id: Int) {
-//        TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 
     private fun onSearchSuccess(movies: List<MovieUIState>) {
-
         _uiState.update { it.copy(movies = movies, isLoading = false) }
     }
 
     private fun onSearchError(message: String) {
         _uiState.update { it.copy(error = message, isLoading = false) }
-
     }
-
-
-
-
 }

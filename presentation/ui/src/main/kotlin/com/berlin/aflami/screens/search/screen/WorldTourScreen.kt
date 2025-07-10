@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -61,7 +63,6 @@ fun WorldTourContent(
             .background(Theme.color.surface),
     ) {
         TopBar(
-            modifier = Modifier.statusBarsPadding(),
             title = {
                 Text(
                     text = stringResource(R.string.world_tour),
@@ -86,6 +87,7 @@ fun WorldTourContent(
             }
         )
 
+        val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
             text = state.countryName,
             modifier = Modifier
@@ -98,9 +100,12 @@ fun WorldTourContent(
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Search
             ),
-            keyboardActions = KeyboardActions(onSearch = {
-                listener.onSearchClick()
-            }),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    listener.onSearchClick()
+                    keyboardController?.hide()
+                },
+            ),
             onValueChange = listener::onCountryNameChanged
         )
 
@@ -130,7 +135,9 @@ fun WorldTourContent(
                 key = { it.id }
             ) { movie ->
                 MediaCard(
-                    modifier = Modifier.padding(bottom = 8.dp),
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .height(222.dp),
                     mediaImg = movie.poster,
                     title = movie.title,
                     typeOfMedia = stringResource(R.string.movie),
