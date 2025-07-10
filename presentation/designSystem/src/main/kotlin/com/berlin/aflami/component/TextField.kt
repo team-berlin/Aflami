@@ -144,7 +144,7 @@ fun TextField(
                 })
             if (trailingIcon != null) {
                 val imageColor by animateColorAsState(
-                    targetValue = if (text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.title
+                    targetValue = if (text.isEmpty()) Theme.color.textColors.title else Theme.color.textColors.hint
                 )
                 VerticalDivider()
                 TrailingIcon(trailingIcon, imageColor, onTrailingClick)

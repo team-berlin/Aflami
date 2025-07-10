@@ -69,7 +69,8 @@ fun SearchByActorScreenContent(padding: PaddingValues) {
                         Icon(
                             modifier = Modifier.size(20.dp),
                             painter = painterResource(R.drawable.arrow_left),
-                            contentDescription = stringResource(R.string.icon_cd)
+                            contentDescription = stringResource(R.string.icon_cd),
+                            tint = Theme.color.textColors.title
                         )
                     }
                 }
