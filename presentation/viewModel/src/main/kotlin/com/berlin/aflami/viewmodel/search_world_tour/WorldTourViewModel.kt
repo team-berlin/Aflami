@@ -37,11 +37,24 @@ class WorldTourViewModel(
     }
 
     override fun onCountryNameChanged(countryName: CharSequence) {
-        _uiState.update { it.copy(countryName = countryName.toString()) }
+        _uiState.update {
+            it.copy(
+                countryName = countryName.toString(),
+                filteredCountries = it.countriesWithCode.filter { country ->
+                    country.key.startsWith(countryName, ignoreCase = true)
+                },
+                dropDownExpanded = countryName.length > 1
+            )
+        }
     }
 
     override fun onSearchClick() {
-        _uiState.update { it.copy(isLoading = true) }
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                dropDownExpanded = false
+            )
+        }
         viewModelScope.launch {
             val countryName = _uiState.value.countriesWithCode[_uiState.value.countryName]
             if (countryName == null) {
@@ -67,6 +80,10 @@ class WorldTourViewModel(
 
     override fun onClickMovie(id: Int) {
         // TODO("Not yet implemented")
+    }
+
+    override fun onDismissDropDown() {
+        _uiState.update { it.copy(dropDownExpanded = false) }
     }
 
     private fun onSearchSuccess(movies: List<MovieUIState>) {

@@ -28,9 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,25 +55,13 @@ fun WorldTourScreen(
     val worldTourState by viewModel.uiState.collectAsState()
 
     WorldTourContent(worldTourState, viewModel)
-
 }
-
 
 @Composable
 fun WorldTourContent(
     state: WorldTourUiState,
     listener: WorldTourInteractionListener,
 ) {
-
-    var expanded by remember { mutableStateOf(false) }
-
-
-    val filteredCountries = remember(state.countryName) {
-        state.countriesWithCode.filter {
-            it.key.startsWith(state.countryName, ignoreCase = true)
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -112,7 +97,6 @@ fun WorldTourContent(
         )
 
         val keyboardController = LocalSoftwareKeyboardController.current
-        val bottomPadding = if (expanded) 0.dp else 8.dp
 
         Column {
             TextField(
@@ -120,19 +104,15 @@ fun WorldTourContent(
                 hintText = stringResource(R.string.country_name),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = bottomPadding),
-                onValueChange = {
-                    expanded = it.isNotEmpty()
-                    listener.onCountryNameChanged(it)
-                },
+                    .padding(start = 16.dp, end = 16.dp, top = 4.dp),
+                onValueChange = { listener.onCountryNameChanged(it) },
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search
+                    imeAction = ImeAction.Done
                 ),
-                keyboardActions = KeyboardActions(onSearch = {
-                    listener.onSearchClick()
-                    keyboardController?.hide()
-                    expanded = false
-                }),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                    }),
                 isEnabled = true,
                 borderColor = Theme.color.stroke,
                 maxLines = 1,
@@ -141,10 +121,10 @@ fun WorldTourContent(
             val screenHeight = LocalConfiguration.current.screenHeightDp.dp
             val quarterHeight = screenHeight * 0.25f
 
-            AnimatedVisibility(visible = expanded) {
+            AnimatedVisibility(visible = state.dropDownExpanded) {
                 DropdownMenu(
-                    expanded = expanded && filteredCountries.isNotEmpty(),
-                    onDismissRequest = { expanded = false },
+                    expanded = state.dropDownExpanded && state.filteredCountries.isNotEmpty(),
+                    onDismissRequest = { listener.onDismissDropDown() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
@@ -155,7 +135,7 @@ fun WorldTourContent(
                             .heightIn(max = quarterHeight)
                             .verticalScroll(rememberScrollState())
                     ) {
-                        filteredCountries.forEach { country ->
+                        state.filteredCountries.forEach { country ->
                             DropdownMenuItem(
                                 text = {
                                     Text(
@@ -167,7 +147,6 @@ fun WorldTourContent(
                                 onClick = {
                                     listener.onCountryNameChanged(country.key)
                                     listener.onSearchClick()
-                                    expanded = false
                                 }
                             )
                         }
