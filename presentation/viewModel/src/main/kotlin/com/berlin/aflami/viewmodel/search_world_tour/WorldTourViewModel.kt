@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.aflami.viewmodel.util.countryNameToIsoCode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,9 +29,13 @@ class WorldTourViewModel(
     override fun onSearchClick() {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
+            val countryIsoCode = countryNameToIsoCode(uiState.value.countryName)
+            if (countryIsoCode == null) {
+                onSearchError("Invalid country name") // Todo:
+                return@launch
+            }
             try {
-                // TODO: Country name need to be mapped to country code
-                val result = searchByCountry(uiState.value.countryName).map {
+                val result = searchByCountry(countryIsoCode).map {
                     it.toUIState()
                 }
                 onSearchSuccess(result)
