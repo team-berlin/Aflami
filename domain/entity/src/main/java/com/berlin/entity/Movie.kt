@@ -11,5 +11,3 @@ data class Movie(
     val genre:List<Int>,
     val poster:String,
 )
-
-

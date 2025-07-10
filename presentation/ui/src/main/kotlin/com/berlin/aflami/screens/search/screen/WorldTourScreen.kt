@@ -1,15 +1,12 @@
 package com.berlin.aflami.screens.search.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,8 +43,9 @@ fun WorldTourScreen(
     viewModel: WorldTourViewModel = koinViewModel()
 ) {
     val worldTourState by viewModel.uiState.collectAsState()
+    var countryName by remember { mutableStateOf("") }
 
-    WorldTourContent(worldTourState, viewModel)
+    WorldTourContent(worldTourState,viewModel)
 
 }
 
@@ -88,6 +89,21 @@ fun WorldTourContent(
             },
         )
 
+        val keyboardController = LocalSoftwareKeyboardController.current
+        TextField(
+            text = state.countryName,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            hintText = stringResource(R.string.country_name),
+            isEnabled = true,
+            maxLines = 1,
+            borderColor = Theme.color.stroke,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
@@ -107,42 +123,49 @@ fun WorldTourContent(
                 ),
                 keyboardActions = KeyboardActions(onSearch = {
                     listener.onSearchClick()
-                }),
-                onValueChange = listener::onCountryNameChanged
-            )
+                    keyboardController?.hide()
+                },
+            ),
+            onValueChange = listener::onCountryNameChanged
+        )
+
+        if (state.isLoading) {
+
         }
 
-        if (worldTourState.isLoading) {
-
-        }
-        if (worldTourState.movies.isEmpty()) {
+        if (state.movies.isEmpty()) {
             CountryTourExploring(
                 image = painterResource(R.drawable.world_tour),
                 titleId = R.string.country_tour,
                 messageId = R.string.start_exploring_the_world_movie_by_enter_your_favorite_country_in_search_bar
             )
         }
-//        if (worldTourState.error) {
-//            CountryTourExploring(
-//                image = painterResource(R.drawable.no_search_result),
-//                titleId = R.string.no_search_result,
-//                messageId = R.string.please_try_with_another_keyword
-//            )
+//        if (worldTourState.error){
 //
 //        }
+
         LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 160.dp),
+            modifier = Modifier,
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(worldTourState.movies.size) { index ->
-                val movie = worldTourState.movies[index]
+            items(
+                items = state.movies,
+                key = { it.id }
+            ) { movie ->
                 MediaCard(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .height(222.dp),
                     modifier = Modifier.size(width = 160.dp, height = 222.dp),
                     mediaImg = movie.poster,
                     title = movie.title,
-                    typeOfMedia = movie.description,
+                    typeOfMedia = stringResource(R.string.movie),
                     date = movie.releaseYear,
                     rating = movie.rating
                 )

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,11 +40,27 @@ fun MediaCard(
 
     ) {
         AsyncImage(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier,
             model = mediaImg,
             contentDescription = stringResource(R.string.api_image_card_content),
             contentScale = ContentScale.Crop
         )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .align(Alignment.BottomCenter)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color(0xFF0D090B)
+                        )
+                    )
+                ),
+        )
+
         Rating(modifier = Modifier.align(Alignment.TopEnd), rating)
 
         Column(
@@ -98,12 +113,12 @@ fun MediaCard(
 private fun MediaCardPreview1() {
     AflamiTheme {
         MediaCard(
-            modifier = Modifier.size(width = 100.dp, height = 150.dp),
+            modifier = Modifier.size(width = 156.dp, height = 222.dp),
             "https://i.pinimg.com/736x/2d/4c/77/2d4c7718ccdf3d714654dbd3d66da00f.jpg",
             "Your Name",
             "TV show",
             "2016",
-            rating = "9.9"
+            rating = 9.9
         )
     }
 }

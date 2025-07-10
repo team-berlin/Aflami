@@ -41,17 +41,14 @@ fun Rating(
             .background(Theme.color.primaryVariant, corner)
             .border(1.dp, Theme.color.stroke, corner)
             .padding(vertical = 6.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.star),
-                contentDescription = "card rate",
-                tint = Theme.color.statusColors.yellowAccent
-            )
+        Icon(
+            painter = painterResource(R.drawable.star),
+            contentDescription = "card rate",
+            tint = Theme.color.statusColors.yellowAccent
+        )
 
             Text(
                 text = rating,

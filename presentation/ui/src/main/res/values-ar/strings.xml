@@ -6,5 +6,6 @@
     <string name="country_tour">جولة حول البلاد</string>
     <string name="no_search_result">لا توجد نتائج للبحث</string>
     <string name="please_try_with_another_keyword">يرجى المحاولة بكلمة مفتاحية أخرى</string>
+    <string name="movie">فيلم</string>
 
 </resources>
