@@ -5,6 +5,6 @@ import com.berlin.aflami.viewmodel.uistate.TvShowUiState
 data class TvShowUiState(
     val isLoading: Boolean = false,
     val tvShowName: String = "",
-    val movies: List<TvShowUiState> = emptyList(),
+    val tvShow: List<TvShowUiState> = emptyList(),
     val error: String? = null
 )
