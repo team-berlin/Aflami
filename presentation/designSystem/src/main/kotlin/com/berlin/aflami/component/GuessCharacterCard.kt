@@ -1,6 +1,7 @@
 package com.berlin.aflami.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +32,9 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +49,7 @@ import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 @Composable
 fun CharacterCard(
@@ -129,6 +133,7 @@ fun CharacterCard(
                         .clickable { onHintClicked() },
                     contentAlignment = Alignment.Center
                 ) {
+                    HorizontalDiagonalRepeatResponsive()
                     Row(
                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -156,7 +161,34 @@ fun CharacterCard(
     }
 }
 
+@Composable
+fun HorizontalDiagonalRepeatResponsive(
+    modifier: Modifier = Modifier,
+    color: Color = Theme.color.primary,
+) {
+    val image = painterResource(id = R.drawable.diagonal_stripe)
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val itemSize = 64.dp
+    val itemCount = screenWidth.value.toInt()
 
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(32.dp),
+        horizontalArrangement = Arrangement.spacedBy(0.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(itemCount) {
+            Icon(
+                painter = image,
+                contentDescription = null,
+                tint = color,
+                modifier= Modifier.size(40.dp)
+
+            )
+        }
+    }
+}
 
 @ThemeAndLocalePreviews
 @Composable
