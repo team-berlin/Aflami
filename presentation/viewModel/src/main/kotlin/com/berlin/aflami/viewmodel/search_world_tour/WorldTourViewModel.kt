@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.SearchByCountryUseCase
+import java.util.Locale
 
 class WorldTourViewModel(
     private val searchByCountry: SearchByCountryUseCase
@@ -35,7 +36,9 @@ class WorldTourViewModel(
                 return@launch
             }
             try {
-                val result = searchByCountry(countryIsoCode).map {
+                val locale = Locale.getDefault()
+                val languageCode = "${locale.language}-${locale.country}"
+                val result = searchByCountry(countryIsoCode, languageCode).map {
                     it.toUIState()
                 }
                 onSearchSuccess(result)

@@ -6,6 +6,6 @@ fun countryNameToIsoCode(countryName: String): String? {
     val locales = Locale.getAvailableLocales()
     return locales
         .filter { it.displayCountry.isNotEmpty() }
-        .firstOrNull { it.getDisplayCountry(Locale.ENGLISH).equals(countryName, ignoreCase = true) }
+        .firstOrNull { it.getDisplayCountry(Locale.getDefault()).equals(countryName, ignoreCase = true) }
         ?.country
 }

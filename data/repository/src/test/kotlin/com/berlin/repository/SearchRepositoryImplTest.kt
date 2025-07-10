@@ -26,14 +26,15 @@ class SearchRepositoryImplTest {
     fun `searchByCountry should return mapped movies when results are valid`() = runTest {
         // Given
         val country = "EG"
+        val language = "en-US"
         val movieDto = dummyMovieDto
         val movie = movieDto.toDomain()
 
         val response = MovieResponse(results = listOf(movieDto, movieDto, movieDto))
-        coEvery { remoteDataSource.searchMoviesByCountry(country) } returns response
+        coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
 
         // When
-        val result = repository.searchByCountry(country)
+        val result = repository.searchByCountry(country, language)
 
         // Then
         assertThat(result).containsExactly(movie, movie, movie)
@@ -43,11 +44,12 @@ class SearchRepositoryImplTest {
     fun `searchByCountry should return empty list when results is null`() = runTest {
         // Given
         val country = "EG"
+        val language = "en-US"
         val response = MovieResponse(1, 10, results = null, 2)
-        coEvery { remoteDataSource.searchMoviesByCountry(country) } returns response
+        coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
 
         // When
-        val result = repository.searchByCountry(country)
+        val result = repository.searchByCountry(country, language)
 
         // Then
         assertThat(result).isEmpty()
@@ -57,14 +59,15 @@ class SearchRepositoryImplTest {
     fun `searchByCountry should filter out null entries`() = runTest {
         // Given
         val country = "EG"
+        val language = "en-US"
         val movieDto = dummyMovieDto
         val movie = movieDto.toDomain()
 
         val response = MovieResponse(results = listOf(movieDto, null, movieDto))
-        coEvery { remoteDataSource.searchMoviesByCountry(country) } returns response
+        coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
 
         // When
-        val result = repository.searchByCountry(country)
+        val result = repository.searchByCountry(country, language)
 
         // Then
         assertThat(result).containsExactly(movie, movie)
