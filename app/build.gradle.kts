@@ -47,10 +47,17 @@ dependencies {
     lifecycleRuntimeKtx()
     androidxUi()
     koin()
+    ktor()
+    room()
     firebase()
     test()
 
     safeImageViewer()
-    ui()
     designSystem()
+    viewModel()
+    ui()
+    useCase()
+    repository()
+    remote()
+    local()
 }

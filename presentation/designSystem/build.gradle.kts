@@ -41,5 +41,6 @@ dependencies {
     androidxUi()
     coil()
     composeUiDebug()
-    coil()
+
+    safeImageViewer()
 }

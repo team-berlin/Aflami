@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
+    alias(libs.plugins.ksp)
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -12,6 +13,15 @@ kotlin {
     }
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
 dependencies {
+    room()
+    serialization()
+    kotlinDateX()
+    test()
+
     useCase()
 }
