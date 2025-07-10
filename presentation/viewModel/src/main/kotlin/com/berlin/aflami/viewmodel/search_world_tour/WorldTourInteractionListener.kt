@@ -6,4 +6,5 @@ interface WorldTourInteractionListener {
     fun onSearchClick()
     fun onClickMovie(id: Int)
     fun onDismissDropDown()
+    fun onCountrySelected(countryName: String)
 }

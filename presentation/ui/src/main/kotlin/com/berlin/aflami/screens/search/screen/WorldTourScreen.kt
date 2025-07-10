@@ -7,22 +7,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -68,7 +66,6 @@ fun WorldTourContent(
             .statusBarsPadding()
             .background(Theme.color.surface),
     ) {
-
         TopBar(
             modifier = Modifier.padding(vertical = 8.dp),
             title = {
@@ -98,102 +95,114 @@ fun WorldTourContent(
 
         val keyboardController = LocalSoftwareKeyboardController.current
 
-        Column {
-            TextField(
-                text = state.countryName,
-                hintText = stringResource(R.string.country_name),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                onValueChange = { listener.onCountryNameChanged(it) },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        keyboardController?.hide()
-                    }),
-                isEnabled = true,
-                borderColor = Theme.color.stroke,
-                maxLines = 1,
-            )
 
-            val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-            val quarterHeight = screenHeight * 0.25f
+        TextField(
+            text = state.countryName,
+            hintText = stringResource(R.string.country_name),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 4.dp),
+            onValueChange = listener::onCountryNameChanged,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }),
+            isEnabled = true,
+            borderColor = Theme.color.stroke,
+            maxLines = 1,
+        )
 
-            AnimatedVisibility(visible = state.dropDownExpanded) {
-                DropdownMenu(
-                    expanded = state.dropDownExpanded && state.filteredCountries.isNotEmpty(),
-                    onDismissRequest = { listener.onDismissDropDown() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .background(Theme.color.surfaceHigh),
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            if (state.movies.isEmpty()) {
+                CountryTourExploring(
+                    modifier = Modifier.padding(top = 143.dp),
+                    image = painterResource(R.drawable.world_tour),
+                    titleId = R.string.country_tour,
+                    messageId = R.string.start_exploring_the_world_movie_by_enter_your_favorite_country_in_search_bar
+                )
+            }
+
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 160.dp),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                items(
+                    items = state.movies,
+                    key = { it.id }
+                ) { movie ->
+                    MediaCard(
+                        modifier = Modifier.height(222.dp),
+                        mediaImg = movie.poster,
+                        title = movie.title,
+                        typeOfMedia = stringResource(R.string.movie),
+                        date = movie.releaseYear,
+                        rating = movie.rating
+                    )
+                }
+            }
+
+            Column {
+                AnimatedVisibility(
+                    visible = state.dropDownExpanded
                 ) {
-                    Column(
+                    LazyColumn(
+                        contentPadding = PaddingValues(top = 16.dp),
                         modifier = Modifier
-                            .heightIn(max = quarterHeight)
-                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 16.dp)
+                            .imePadding()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Theme.color.surfaceHigh)
                     ) {
-                        state.filteredCountries.forEach { country ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        text = country.key,
-                                        style = Theme.textStyle.body.medium,
-                                        color = Theme.color.textColors.title,
-                                    )
-                                },
-                                onClick = {
-                                    listener.onCountryNameChanged(country.key)
-                                    listener.onSearchClick()
-                                }
+                        item {
+                            Text(
+                                text = stringResource(R.string.countries),
+                                style = Theme.textStyle.label.medium,
+                                modifier = Modifier.padding(start = 16.dp)
                             )
+                        }
+                        itemsIndexed(
+                            items = state.filteredCountries.toList(),
+                            key = { _, countryWithCode -> countryWithCode.second }
+                        ) { index, it ->
+                            Row(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .clickable {
+                                        listener.onCountrySelected(it.first)
+                                        listener.onSearchClick()
+                                    }
+                                    .padding(start = 16.dp)
+                                    .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 0.dp, vertical = 16.dp)
+                            ) {
+                                Text(
+                                    text = it.first,
+                                    style = Theme.textStyle.body.medium,
+                                    color = Theme.color.secondary
+                                )
+                            }
+                            if (index != state.filteredCountries.size - 1) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(1.dp)
+                                        .fillMaxWidth()
+                                        .background(Theme.color.stroke)
+                                )
+                            }
                         }
                     }
                 }
-            }
-        }
-        if (state.isLoading) {
-
-        }
-
-        if (state.movies.isEmpty()) {
-            CountryTourExploring(
-                image = painterResource(R.drawable.world_tour),
-                titleId = R.string.country_tour,
-                messageId = R.string.start_exploring_the_world_movie_by_enter_your_favorite_country_in_search_bar
-            )
-        }
-//        if (state.error){
-//            CountryTourExploring(
-//                image = painterResource(R.drawable.no_search_result),
-//                titleId = R.string.no_search_result,
-//                messageId =R.string.please_try_with_another_keyword
-//            )
-//        }
-
-
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 160.dp),
-            modifier = Modifier,
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(
-                items = state.movies,
-                key = { it.id }
-            ) { movie ->
-                MediaCard(
-                    modifier = Modifier
-                        .height(222.dp),
-                    mediaImg = movie.poster,
-                    title = movie.title,
-                    typeOfMedia = stringResource(R.string.movie),
-                    date = movie.releaseYear,
-                    rating = movie.rating
-                )
             }
         }
     }

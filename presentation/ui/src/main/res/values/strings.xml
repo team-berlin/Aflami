@@ -7,4 +7,5 @@
     <string name="no_search_result">No search result</string>
     <string name="please_try_with_another_keyword">please try with another keyword.</string>
     <string name="movie">Movie</string>
+    <string name="countries">Countries</string>
 </resources>

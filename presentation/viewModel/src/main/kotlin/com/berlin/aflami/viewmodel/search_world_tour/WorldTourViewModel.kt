@@ -37,15 +37,22 @@ class WorldTourViewModel(
     }
 
     override fun onCountryNameChanged(countryName: CharSequence) {
+        val name = countryName.toString()
+        val filtered = _uiState.value.countriesWithCode.filter {
+            it.key.startsWith(name, ignoreCase = true)
+        }
+
         _uiState.update {
             it.copy(
-                countryName = countryName.toString(),
-                filteredCountries = it.countriesWithCode.filter { country ->
-                    country.key.startsWith(countryName, ignoreCase = true)
-                },
-                dropDownExpanded = countryName.length > 1
+                countryName = name,
+                filteredCountries = filtered,
+                dropDownExpanded = name.isNotEmpty() && filtered.isNotEmpty()
             )
         }
+    }
+
+    override fun onCountrySelected(countryName: String) {
+        _uiState.update { it.copy(countryName = countryName) }
     }
 
     override fun onSearchClick() {
