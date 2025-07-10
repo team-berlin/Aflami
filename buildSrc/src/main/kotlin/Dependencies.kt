@@ -24,6 +24,10 @@ object Dependencies {
     const val koinAndroid = "io.insert-koin:koin-android:${Versions.koin}"
     const val koinCompose = "io.insert-koin:koin-androidx-compose:${Versions.koin}"
 
+    const val room = "androidx.room:room-runtime:${Versions.room}"
+    const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
+    const val roomCompiler = "androidx.room:room-compiler:${Versions.room}"
+
     const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
 
     const val coilCompose = "io.coil-kt.coil3:coil-compose:${Versions.coil}"
@@ -84,6 +88,12 @@ fun DependencyHandler.koin() {
     implementation(Dependencies.koin)
     implementation(Dependencies.koinAndroid)
     implementation(Dependencies.koinCompose)
+}
+
+fun DependencyHandler.room(){
+    implementation(Dependencies.room)
+    implementation(Dependencies.roomKtx)
+    ksp(Dependencies.roomCompiler)
 }
 
 fun DependencyHandler.navigation() {
@@ -150,4 +160,8 @@ fun DependencyHandler.ui() {
 
 fun DependencyHandler.remote() {
     implementation(project(":data:remote"))
+}
+
+fun DependencyHandler.local() {
+    implementation(project(":data:local"))
 }

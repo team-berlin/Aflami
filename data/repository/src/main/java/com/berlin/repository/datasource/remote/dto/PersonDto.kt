@@ -1,27 +1,28 @@
 package com.berlin.repository.datasource.remote.dto
 
+import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class PersonDto(
     @SerialName("adult")
-val overview: String? = null,
+val adult: Boolean? = null,
     @SerialName("gender")
-val originalLanguage: Int? = null,
+val gender: Int? = null,
     @SerialName("id")
 val id: Int? = null,
     @SerialName("known_for_department")
-val originalTitle: String? = null,
+val knownForDepartment: String? = null,
     @SerialName("name")
-val video: Boolean? = null,
+val name: String? = null,
     @SerialName("original_name")
-val title: String? = null,
+val originalName: String? = null,
     @SerialName("popularity")
-val genreIds: Float? = null,
+val popularity: Float? = null,
     @SerialName("profile_path")
-val releaseDate: String? = null,
+val profilePath: String? = null,
     @SerialName("known_for")
-val popularity: List<MediaDto> ? = null,
+val knownFor: List<@Polymorphic MediaItem> ? = null,
 )
 

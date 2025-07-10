@@ -42,5 +42,6 @@ dependencies {
     coil()
     safeImageViewer()
     composeUiDebug()
-    coil()
+
+    safeImageViewer()
 }

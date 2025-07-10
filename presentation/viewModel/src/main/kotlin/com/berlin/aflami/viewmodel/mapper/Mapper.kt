@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.mapper
 
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.entity.MediaTypeEntity
 import com.berlin.entity.Movie
 
 
@@ -12,6 +13,18 @@ fun Movie.toUIState(): MovieUIState {
         releaseYear = releaseYear.toString(),
         description = description,
         genre = genre,
-        poster =poster
+        poster = poster
+    )
+}
+
+fun MediaTypeEntity.toUiState(): MovieUIState {
+    return MovieUIState(
+        id = id,
+        title = title,
+        rating = rating.toString(),
+        releaseYear = releaseYear.toString(),
+        description = description,
+        genre = genre,
+        poster = "https://image.tmdb.org/t/p/w500${this.poster.orEmpty()}"
     )
 }
