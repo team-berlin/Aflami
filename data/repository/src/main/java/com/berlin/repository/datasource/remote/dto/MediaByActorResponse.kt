@@ -12,7 +12,7 @@ data class MediaByActorResponse(
     val totalPages: Int? = null,
 
     @SerialName("results")
-    val results: PersonDto?? = null,
+    val results: List<PersonDto>? = null,
 
     @SerialName("total_results")
     val totalResults: Int? = null

@@ -3,10 +3,9 @@ package com.berlin.aflami.viewmodel.search_by_actor
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.berlin.aflami.viewmodel.mapper.toUIState
+import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.entity.MediaTypeEntity
-import com.berlin.entity.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -35,8 +34,6 @@ class SearchByActorViewModel(
 //    }
 
 
-
-
     override fun onBackClick() {
 
     }
@@ -49,17 +46,15 @@ class SearchByActorViewModel(
         _searchByActorUiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             try {
-                val result = searchByActorNameUseCase(searchByActorUiState.value.actorName).map {
-                    when(this){
-                        is Movie -> it.toUIState()
-                        is TvShow -> it.toUIState()
+                val result = searchByActorNameUseCase(searchByActorUiState.value.actorName)
+                    .map {
+                        it.toUiState()
                     }
-                }
                 onSearchSuccess(result)
-                Log.e("result",result.toString())
+                Log.e("WOW", result.toString())
             } catch (exception: Exception) {
                 // TODO: msg resId
-                Log.e("error",exception.toString())
+                Log.e("error", exception.toString())
 
                 onSearchError(exception.message ?: "Unknown error")
             }
@@ -79,8 +74,6 @@ class SearchByActorViewModel(
         _searchByActorUiState.update { it.copy(error = message, isLoading = false) }
 
     }
-
-
 
 
 }

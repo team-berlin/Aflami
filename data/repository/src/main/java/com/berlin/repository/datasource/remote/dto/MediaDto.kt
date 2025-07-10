@@ -2,7 +2,8 @@ package com.berlin.repository.datasource.remote.dto
 
 import com.berlin.entity.MediaTypeEntity
 import com.berlin.entity.Movie
-import com.berlin.entity.TvShow
+import com.berlin.entity.TvShowEntity
+
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -59,15 +60,17 @@ data class MediaDto(
 @Serializable
 sealed class MediaItem {
     abstract val id: Long
-    abstract val mediaType: String
+
+    // abstract val mediaType: String
     abstract val posterPath: String?
     abstract val overview: String
 }
+
 @Serializable
 @SerialName("movie")
 data class MovieItem(
     override val id: Long,
-    @SerialName("media_type") override val mediaType: String,
+    // @SerialName("media_type") override val mediaType: String,
     @SerialName("poster_path") override val posterPath: String?,
     override val overview: String,
     @SerialName("release_date") val releaseDate: String?,
@@ -83,11 +86,12 @@ data class MovieItem(
     @SerialName("adult") val adult: Boolean? = null,
     @SerialName("video") val video: Boolean? = null
 ) : MediaItem()
+
 @Serializable
 @SerialName("tv")
 data class TvItem(
     override val id: Long,
-    @SerialName("media_type") override val mediaType: String,
+    //@SerialName("media_type") override val mediaType: String,
     @SerialName("poster_path") override val posterPath: String?,
     override val overview: String,
     @SerialName("first_air_date") val firstAirDate: String?,
@@ -105,24 +109,25 @@ data class TvItem(
 ) : MediaItem()
 
 fun MediaItem.toEntity(): MediaTypeEntity {
-    return when(this){
+    return when (this) {
         is MovieItem -> Movie(
-            id =this.id,
-            title=this.title?:"" ,
-            rating = this.voteAverage?:0.0 ,
-            releaseYear= LocalDate.parse(releaseDate?:"") ,
-            description= this.overview ,
-            genre = this.genreIds?: emptyList(),
-             poster = this.posterPath?:"",
+            id = this.id,
+            title = this.title ?: "",
+            rating = this.voteAverage ?: 0.0,
+            releaseYear = LocalDate.parse(releaseDate ?: ""),
+            description = this.overview,
+            genre = this.genreIds ?: emptyList(),
+            poster = this.posterPath ?: "",
         )
-        is TvItem -> TvShow(
-            id =this.id,
-            title=this.name?:"" ,
-            rating = this.voteAverage?.toFloat()?: 0.0f ,
-            releaseYear= LocalDate.parse(this.firstAirDate?:"").toString() ,
-            description= this.overview ,
-            genre = this.genreIds?: emptyList(),
-            poster = this.posterPath?:"",
+
+        is TvItem -> TvShowEntity(
+            id = this.id,
+            title = this.name ?: "",
+            rating = this.voteAverage ?: 0.0,
+            releaseYear = LocalDate.parse(this.firstAirDate ?: ""),
+            description = this.overview,
+            genre = this.genreIds ?: emptyList(),
+            poster = this.posterPath ?: "",
         )
     }
 }

@@ -24,7 +24,4 @@ object Versions {
 
     //utils
     const val kotlinDateX = "0.4.0"
-    const val mockk = "1.14.0"
-    const val truth = "1.4.4"
-    const val jupiter = "5.10.2"
 }

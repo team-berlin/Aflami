@@ -2,7 +2,7 @@ package com.berlin.entity
 
 import kotlinx.datetime.LocalDate
 
-data class TvShow(
+data class TvShowEntity(
     override val id :Long,
     override val title:String,
     override val rating: Double,

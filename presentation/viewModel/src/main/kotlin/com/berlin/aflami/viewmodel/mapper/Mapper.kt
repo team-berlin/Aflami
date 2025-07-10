@@ -13,7 +13,7 @@ fun Movie.toUIState(): MovieUIState {
         releaseYear = releaseYear.toString(),
         description = description,
         genre = genre,
-        poster =poster
+        poster = poster
     )
 }
 
@@ -25,6 +25,6 @@ fun MediaTypeEntity.toUiState(): MovieUIState {
         releaseYear = releaseYear.toString(),
         description = description,
         genre = genre,
-        poster = poster
+        poster = "https://image.tmdb.org/t/p/w500${this.poster.orEmpty()}"
     )
 }
