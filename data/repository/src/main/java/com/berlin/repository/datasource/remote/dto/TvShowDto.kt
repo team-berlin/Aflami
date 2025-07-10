@@ -6,14 +6,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TvShowDto(
 
+    @SerialName("id")
     val id: Int? = null,
 
+    @SerialName("overview")
     val overview: String? = null,
 
+    @SerialName("name")
     val name: String? = null,
 
+    @SerialName("adult")
     val adult: Boolean? = null,
 
+    @SerialName("popularity")
     val popularity: Double? = null,
 
     @SerialName("original_name")

@@ -6,11 +6,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TvShowResponse(
 
+    @SerialName("page")
     val page: Int? = null,
 
     @SerialName("total_pages")
     val totalPages: Int? = null,
 
+    @SerialName("results")
     val results: List<TvShowDto?>? = null,
 
     @SerialName("total_results")
