@@ -25,7 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.component.SearchSuggestionHub
+import com.berlin.aflami.component.TabBar
+import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.ui.theme.AflamiTheme
@@ -72,28 +73,43 @@ private fun SearchScreenContent() {
 
         Box(modifier = Modifier.padding(horizontal = 16.dp)) {
             TextField(
-                text = "search...",
+                text = "",
                 hintText = stringResource(R.string.search_hint_text),
                 trailingIcon = R.drawable.filter_vertical,
             )
         }
 
-        Text(
-            stringResource(R.string.search_suggestions_hub),
-            color = Theme.color.textColors.title,
-            style = Theme.textStyle.title.medium,
-            modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
+        TabBar(
+            containerColor = Theme.color.surface,
+            items = listOf(
+                TabBarItem(
+                    text = stringResource(R.string.movies),
+                    isSelected = true
+                ),
+                TabBarItem(
+                    text = stringResource(R.string.tv_shows),
+                    isSelected = false
+                )
+            ),
+            onTabChange = {},
         )
 
-        SearchSuggestionHub(
-            Modifier.padding(horizontal = 16.dp),
-            onWorldTourClick = {},
-            onFindActorClick = {}
-        )
+//        Text(
+//            stringResource(R.string.search_suggestions_hub),
+//            color = Theme.color.textColors.title,
+//            style = Theme.textStyle.title.medium,
+//            modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
+//        )
+
+//        SearchSuggestionHub(
+//            Modifier.padding(horizontal = 16.dp),
+//            onWorldTourClick = {},
+//            onFindActorClick = {}
+//        )
 
         // NoDataSearch()
 
-        SearchData("Fauda")
+        //   SearchData("Fauda")
 
     }
 }

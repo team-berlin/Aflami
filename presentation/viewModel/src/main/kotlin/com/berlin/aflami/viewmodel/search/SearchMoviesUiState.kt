@@ -2,7 +2,7 @@ package com.berlin.aflami.viewmodel.search
 
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 
-data class MoviesUiState(
+data class SearchMoviesUiState(
     val isLoading: Boolean = false,
     val movieName: String = "",
     val movies: List<MovieUIState> = emptyList(),
