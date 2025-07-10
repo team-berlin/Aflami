@@ -1,14 +1,14 @@
 package com.berlin.repository.mapper
 
-import com.berlin.entity.TvShow
+import com.berlin.entity.Television
 import com.berlin.repository.datasource.remote.dto.TvShowDto
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-fun TvShowDto.toDomain(): TvShow {
-    return TvShow(
+fun TvShowDto.toDomain(): Television {
+    return Television(
         id = this.id?.toLong() ?: 0L,
         title = this.name.orEmpty(),
         rating = (this.voteAverage ?: 0.0),

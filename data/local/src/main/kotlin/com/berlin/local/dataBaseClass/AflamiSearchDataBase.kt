@@ -5,17 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.berlin.local.dao.SearchDao
-import com.berlin.local.model.SearchCaching
-import com.berlin.local.model.SearchHistory
 
 @Database(
-    entities = [SearchCaching::class, SearchHistory::class],
+    entities = [SearchCaching::class,],
     version = 1
 )
 abstract class SearchDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
-
-
     companion object {
         @Volatile
         private var instance: SearchDatabase? = null
