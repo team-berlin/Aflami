@@ -8,3 +8,9 @@ data class WorldTourUiState(
     val movies: List<MovieUIState> = emptyList(),
     val error: String?=null
 )
+
+data class Country(
+    val name_en: String,
+    val name_ar: String,
+    val code: String
+)

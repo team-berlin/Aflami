@@ -1,17 +1,31 @@
 package com.berlin.aflami.screens.search.screen
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,9 +37,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TextField
@@ -35,6 +55,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search_world_tour.WorldTourInteractionListener
 import com.berlin.aflami.viewmodel.search_world_tour.WorldTourUiState
 import com.berlin.aflami.viewmodel.search_world_tour.WorldTourViewModel
+import com.berlin.aflami.viewmodel.util.loadCountriesFromAssets
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -43,23 +64,37 @@ fun WorldTourScreen(
     viewModel: WorldTourViewModel = koinViewModel()
 ) {
     val worldTourState by viewModel.uiState.collectAsState()
-    var countryName by remember { mutableStateOf("") }
 
-    WorldTourContent(worldTourState,viewModel)
+    WorldTourContent(worldTourState, viewModel)
 
 }
 
 
 @Composable
 fun WorldTourContent(
-    worldTourState: WorldTourUiState,
+    state: WorldTourUiState,
     listener: WorldTourInteractionListener,
 ) {
 
+    val context = LocalContext.current
+
+    val countries = remember { context.loadCountriesFromAssets() }
+
+    var query by remember { mutableStateOf(state.countryName) }
+    var expanded by remember { mutableStateOf(false) }
+
+
+    val filteredCountries = remember(query) {
+            countries.filter {
+                it.name_ar.startsWith(query, ignoreCase = true) ||
+                        it.name_en.startsWith(query, ignoreCase = true)
+            }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .background(Theme.color.surface),
     ) {
 
@@ -77,6 +112,7 @@ fun WorldTourContent(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(Theme.color.surfaceHigh)
+                        .clickable {}
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -90,45 +126,73 @@ fun WorldTourContent(
         )
 
         val keyboardController = LocalSoftwareKeyboardController.current
-        TextField(
-            text = state.countryName,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            hintText = stringResource(R.string.country_name),
-            isEnabled = true,
-            maxLines = 1,
-            borderColor = Theme.color.stroke,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        ) {
+        val bottomPadding = if (expanded) 0.dp else 8.dp
+
+        Column{
             TextField(
-                text = worldTourState.countryName,
-                modifier = Modifier
-                    .padding(vertical = 8.dp, horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Theme.color.surfaceHigh),
+                text = query,
                 hintText = stringResource(R.string.country_name),
-                isEnabled = true,
-                maxLines = 1,
-                borderColor = Theme.color.stroke,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = bottomPadding),
+                onValueChange = {
+                    query = it
+                    expanded = it.isNotEmpty()
+                    listener.onCountryNameChanged(it)
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Search
                 ),
                 keyboardActions = KeyboardActions(onSearch = {
                     listener.onSearchClick()
                     keyboardController?.hide()
-                },
-            ),
-            onValueChange = listener::onCountryNameChanged
-        )
+                    expanded = false
+                }),
+                isEnabled = true,
+                borderColor = Theme.color.stroke,
+                maxLines = 1,
+            )
 
+            val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+            val quarterHeight = screenHeight * 0.25f
+
+            AnimatedVisibility(visible = expanded) {
+                DropdownMenu(
+                    expanded = expanded && filteredCountries.isNotEmpty(),
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .background(Theme.color.surfaceHigh),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .heightIn(max = quarterHeight)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        filteredCountries.forEach { country ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = "${country.name_ar} (${country.name_en})",
+                                        style = Theme.textStyle.body.medium,
+                                        color = Theme.color.textColors.title,
+                                    )
+                                },
+                                onClick = {
+                                    query = country.name_en
+                                    listener.onCountryNameChanged(country.name_en)
+                                    listener.onSearchClick()
+                                    expanded = false
+
+                                    Log.e("Selected Country Code =", country.code)
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
         if (state.isLoading) {
 
         }
@@ -140,19 +204,21 @@ fun WorldTourContent(
                 messageId = R.string.start_exploring_the_world_movie_by_enter_your_favorite_country_in_search_bar
             )
         }
-//        if (worldTourState.error){
-//
+//        if (state.error){
+//            CountryTourExploring(
+//                image = painterResource(R.drawable.no_search_result),
+//                titleId = R.string.no_search_result,
+//                messageId =R.string.please_try_with_another_keyword
+//            )
 //        }
+
 
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 160.dp),
             modifier = Modifier,
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
                 items = state.movies,
@@ -160,9 +226,7 @@ fun WorldTourContent(
             ) { movie ->
                 MediaCard(
                     modifier = Modifier
-                        .padding(bottom = 8.dp)
                         .height(222.dp),
-                    modifier = Modifier.size(width = 160.dp, height = 222.dp),
                     mediaImg = movie.poster,
                     title = movie.title,
                     typeOfMedia = stringResource(R.string.movie),
@@ -172,6 +236,4 @@ fun WorldTourContent(
             }
         }
     }
-
-
 }

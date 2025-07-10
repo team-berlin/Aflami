@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.search_world_tour
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIState
@@ -38,9 +39,11 @@ class WorldTourViewModel(
                 val result = searchByCountry(countryIsoCode).map {
                     it.toUIState()
                 }
+                Log.e("response",result.toString())
                 onSearchSuccess(result)
             } catch (exception: Exception) {
                 // TODO: msg resId
+                Log.e("error",exception.message.toString())
                 onSearchError(exception.message ?: "Unknown error")
             }
         }
