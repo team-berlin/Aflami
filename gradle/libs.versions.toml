@@ -46,6 +46,8 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+android-tools-build-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -57,6 +59,8 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerformance" }
 firebase-gms-service = { id = "com.google.gms.google-services", version.ref = "firebaseService" }
+
+aflami-custom-plugin = { id = "com.berlin.plugin" }
 
 [bundles]
 androidxUi = [
