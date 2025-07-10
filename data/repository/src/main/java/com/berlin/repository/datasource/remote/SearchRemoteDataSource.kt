@@ -1,7 +1,10 @@
 package com.berlin.repository.datasource.remote
 
+import com.berlin.repository.datasource.remote.dto.MediaByActorResponse
 import com.berlin.repository.datasource.remote.dto.MovieResponse
 
 interface SearchRemoteDataSource {
     suspend fun searchMoviesByCountry(countryName: String): MovieResponse
+    suspend fun searchMoviesByActorName(actorName: String): MediaByActorResponse
+
 }

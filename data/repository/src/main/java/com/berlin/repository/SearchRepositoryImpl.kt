@@ -14,4 +14,8 @@ class SearchRepositoryImpl(
             ?.map { movieDto -> movieDto.toDomain() }
             ?: emptyList()
     }
+
+    override suspend fun searchByActorName(actorName: String): List<Movie> {
+        TODO("Not yet implemented")
+    }
 }

@@ -1,6 +1,7 @@
 package com.berlin.remote
 
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
+import com.berlin.repository.datasource.remote.dto.MediaByActorResponse
 import com.berlin.repository.datasource.remote.dto.MovieResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -13,6 +14,12 @@ class SearchRemoteDataSourceImpl(
     override suspend fun searchMoviesByCountry(countryName: String): MovieResponse {
         return client.get(ApiConstants.SEARCH_BY_COUNTRY) {
             parameter(ApiConstants.WITH_ORIGIN_COUNTRY, countryName)
+        }.body()
+    }
+
+    override suspend fun searchMoviesByActorName(actorName: String): MediaByActorResponse {
+        return client.get(ApiConstants.SEARCH_BY_ACTOR_NAME) {
+            parameter(ApiConstants.ACTOR_NAME, actorName)
         }.body()
     }
 }
