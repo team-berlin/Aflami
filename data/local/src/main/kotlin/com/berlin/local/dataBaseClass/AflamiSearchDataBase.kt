@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.berlin.local.dao.SearchDao
+import com.berlin.repository.datasource.local.model.SearchCaching
 
 @Database(
     entities = [SearchCaching::class,],

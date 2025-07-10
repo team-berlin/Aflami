@@ -1,10 +1,10 @@
 package com.berlin.local.dao
 
-import SearchCaching
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.berlin.repository.datasource.local.model.SearchCaching
 
 @Dao
     interface SearchDao {

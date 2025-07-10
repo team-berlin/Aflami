@@ -1,6 +1,6 @@
 package com.berlin.repository.datasource.local
 
-import SearchCaching
+import com.berlin.repository.datasource.local.model.SearchCaching
 
 interface SearchLocalDataSource {
         suspend fun getCachedSearch(query: String): SearchCaching?
