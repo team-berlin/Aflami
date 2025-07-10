@@ -1,4 +1,6 @@
 package com.berlin.repository
 
-class MyClass {
+
+
+class Class {
 }
