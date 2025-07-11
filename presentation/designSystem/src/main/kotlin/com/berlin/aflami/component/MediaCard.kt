@@ -18,14 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.designsystem.R
 
 @Composable
 fun MediaCard(
@@ -40,11 +41,10 @@ fun MediaCard(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(16.dp))
-
     ) {
         AsyncImage(
             model = mediaImg,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.api_image_card_content),
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
@@ -54,14 +54,7 @@ fun MediaCard(
                 .fillMaxWidth()
                 .fillMaxHeight(0.5f)
                 .align(Alignment.BottomCenter)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color(0xFF0D090B)
-                        )
-                    )
-                )
+                .background(ExtraColors.overlayGradient)
         )
 
         Rating(modifier = Modifier.align(Alignment.TopEnd), rating)
@@ -102,14 +95,9 @@ fun MediaCard(
                     style = Theme.textStyle.label.small,
                     color = Theme.color.textColors.onPrimaryBody
                 )
-
             }
-
         }
-
     }
-
-
 }
 
 @ThemeAndLocalePreviews
@@ -141,10 +129,3 @@ private fun MediaCardPreview2() {
         )
     }
 }
-
-
-
-
-
-
-

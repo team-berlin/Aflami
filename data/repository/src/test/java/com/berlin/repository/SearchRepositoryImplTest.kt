@@ -1,9 +1,10 @@
 package com.berlin.repository
 
+import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.MovieDto
-import com.berlin.repository.datasource.remote.dto.MovieResponse
-import com.berlin.repository.mapper.toDomain
+import com.berlin.repository.datasource.remote.dto.BaseResponse
+import com.berlin.repository.mapper.toLocal
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -12,14 +13,19 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class SearchRepositoryImplTest {
-
     private lateinit var remoteDataSource: SearchRemoteDataSource
+    private lateinit var localDataSource: SearchLocalDataSource
+
     private lateinit var repository: SearchRepositoryImpl
 
     @BeforeEach
     fun setup() {
+        localDataSource = mockk(relaxed = true)
         remoteDataSource = mockk(relaxed = true)
-        repository = SearchRepositoryImpl(remoteDataSource)
+        repository = SearchRepositoryImpl(
+            localDataSource = localDataSource,
+            remoteDataSource = remoteDataSource
+        )
     }
 
     @Test
@@ -28,9 +34,9 @@ class SearchRepositoryImplTest {
         val country = "EG"
         val language = "en-US"
         val movieDto = dummyMovieDto
-        val movie = movieDto.toDomain()
+        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis())
 
-        val response = MovieResponse(results = listOf(movieDto, movieDto, movieDto))
+        val response = BaseResponse(results = listOf(movieDto, movieDto, movieDto))
         coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
 
         // When
@@ -45,7 +51,7 @@ class SearchRepositoryImplTest {
         // Given
         val country = "EG"
         val language = "en-US"
-        val response = MovieResponse(1, 10, results = null, 2)
+        val response = BaseResponse<MovieDto>(1, 10, results = null, 2)
         coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
 
         // When
@@ -61,9 +67,9 @@ class SearchRepositoryImplTest {
         val country = "EG"
         val language = "en-US"
         val movieDto = dummyMovieDto
-        val movie = movieDto.toDomain()
+        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis())
 
-        val response = MovieResponse(results = listOf(movieDto, null, movieDto))
+        val response = BaseResponse(results = listOf(movieDto, null, movieDto))
         coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
 
         // When
@@ -75,19 +81,12 @@ class SearchRepositoryImplTest {
 
     private val dummyMovieDto = MovieDto(
         id = 101,
-        overview = "An epic movie about courage and friendship.",
-        originalLanguage = "en",
-        originalTitle = "Epic Original Title",
-        video = false,
         title = "Epic Movie",
         genreIds = listOf(12, 18),
         posterPath = "/poster/path.jpg",
-        backdropPath = "/backdrop/path.jpg",
         releaseDate = "2023-05-15",
         popularity = 123.45,
         voteAverage = 8.7,
-        adult = false,
-        voteCount = 2345
-    )
 
+    )
 }

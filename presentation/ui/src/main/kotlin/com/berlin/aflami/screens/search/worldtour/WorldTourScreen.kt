@@ -24,9 +24,9 @@ import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.components.SearchTopBar
 import com.berlin.aflami.screens.search.worldtour.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.search_world_tour.WorldTourInteractionListener
-import com.berlin.aflami.viewmodel.search_world_tour.WorldTourUiState
-import com.berlin.aflami.viewmodel.search_world_tour.WorldTourViewModel
+import com.berlin.aflami.viewmodel.searchworldtour.WorldTourInteractionListener
+import com.berlin.aflami.viewmodel.searchworldtour.WorldTourUiState
+import com.berlin.aflami.viewmodel.searchworldtour.WorldTourViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -54,9 +54,24 @@ private fun WorldTourContent(
             onBackClick = listener::onBackClick
         )
 
-        SearchTextField(
-            countryName = state.countryName,
-            onCountryNameChanged = listener::onCountryNameChanged
+        val keyboardController = LocalSoftwareKeyboardController.current
+        TextField(
+            text = state.countryName,
+            hintText = stringResource(R.string.country_name),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 4.dp),
+            onValueChange = listener::onCountryNameChanged,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }),
+            isEnabled = true,
+            borderColor = Theme.color.stroke,
+            maxLines = 1,
         )
 
         Box(
@@ -75,39 +90,15 @@ private fun WorldTourContent(
 
             MoviesList(
                 movies = state.movies,
-                onMovieClick = listener::onClickMovie
+                onMovieClick = listener::onMovieClick
             )
 
             AnimatedCountriesList(
-                state = state,
-                listener = listener
+                visible = state.dropDownExpanded,
+                filteredCountries = state.filteredCountries,
+                onCountryNameChanged = listener::onCountryNameChanged,
+                onCountryClick = listener::onCountrySelected
             )
         }
     }
-}
-
-@Composable
-private fun SearchTextField(
-    countryName: String,
-    onCountryNameChanged: (CharSequence) -> Unit
-) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    TextField(
-        text = countryName,
-        hintText = stringResource(R.string.country_name),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 4.dp),
-        onValueChange = onCountryNameChanged,
-        keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                keyboardController?.hide()
-            }),
-        isEnabled = true,
-        borderColor = Theme.color.stroke,
-        maxLines = 1,
-    )
 }

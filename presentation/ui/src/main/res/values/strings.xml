@@ -8,4 +8,6 @@
     <string name="please_try_with_another_keyword">please try with another keyword.</string>
     <string name="movie">Movie</string>
     <string name="countries">Countries</string>
+    <string name="country_tour_exploring">♦Country tour exploring</string>
+    <string name="arrow_back">arrow back</string>
 </resources>

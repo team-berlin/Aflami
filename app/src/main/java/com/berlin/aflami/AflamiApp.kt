@@ -2,6 +2,7 @@ package com.berlin.aflami
 
 import android.app.Application
 import com.berlin.aflami.di.appModule
+import com.berlin.aflami.di.daoModule
 import com.berlin.aflami.di.dataSourceModule
 import com.berlin.aflami.di.repositoryModule
 import com.berlin.aflami.di.useCaseModule
@@ -17,6 +18,7 @@ class AflamiApp: Application() {
             modules(
                 appModule,
                 dataSourceModule,
+                daoModule,
                 repositoryModule,
                 useCaseModule,
                 viewModelModule

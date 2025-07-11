@@ -18,12 +18,13 @@ import com.berlin.ui.R
 
 @Composable
 fun MoviesList(
+    modifier: Modifier = Modifier,
     movies: List<MovieUIState>,
     onMovieClick: (Int) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 160.dp),
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),

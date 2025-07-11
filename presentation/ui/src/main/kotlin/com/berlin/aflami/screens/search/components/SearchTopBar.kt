@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.ui.theme.Theme
@@ -19,11 +20,12 @@ import com.berlin.ui.R
 
 @Composable
 fun SearchTopBar(
+    modifier: Modifier = Modifier,
     title: String,
     onBackClick: () -> Unit
 ) {
     TopBar(
-        modifier = Modifier.padding(vertical = 8.dp),
+        modifier = modifier.padding(vertical = 8.dp),
         title = {
             Text(
                 text = title,
@@ -42,7 +44,7 @@ fun SearchTopBar(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.arrow_left),
-                    contentDescription = "arrow back from world tour search",
+                    contentDescription = stringResource(R.string.arrow_back),
                     tint = Theme.color.textColors.title
                 )
             }

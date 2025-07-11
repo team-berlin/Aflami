@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -23,9 +24,8 @@ import com.berlin.designsystem.R
 @Composable
 fun Rating(
     modifier: Modifier = Modifier,
-    rating:String
+    rating: String
 ) {
-
     val corner = remember {
         RoundedCornerShape(
             topStart = 4.dp,
@@ -46,7 +46,7 @@ fun Rating(
     ) {
         Icon(
             painter = painterResource(R.drawable.star),
-            contentDescription = "card rate",
+            contentDescription = stringResource(R.string.card_rate),
             tint = Theme.color.statusColors.yellowAccent
         )
 
@@ -56,14 +56,12 @@ fun Rating(
             color = Theme.color.textColors.body
         )
     }
-    
 }
-
 
 @ThemeAndLocalePreviews
 @Composable
-fun RatingPreview(){
+fun RatingPreview() {
     AflamiTheme {
-        Rating(rating ="9.9")
+        Rating(rating = "9.9")
     }
 }

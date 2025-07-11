@@ -1,5 +1,6 @@
-package com.berlin.aflami.viewmodel.search_world_tour
+package com.berlin.aflami.viewmodel.searchworldtour
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIState
@@ -19,18 +20,20 @@ class WorldTourViewModel(
     private val _uiState = MutableStateFlow(WorldTourUiState())
     val uiState = _uiState.asStateFlow()
 
+    lateinit var countriesWithCodeMap: Map<String, String>
+
     init {
         getCountriesWithCode()
     }
 
     private fun getCountriesWithCode() {
-        val countries = Locale.getISOCountries()
+        val countriesCodes = Locale.getISOCountries()
         val countriesWithCode = mutableMapOf<String, String>()
-        for (country in countries) {
-            val locale = Locale("", country)
-            countriesWithCode[locale.displayCountry] = country
+        for (countryCode in countriesCodes) {
+            val locale = Locale("", countryCode)
+            countriesWithCode[locale.displayCountry] = countryCode
         }
-        _uiState.update { it.copy(countriesWithCode = countriesWithCode) }
+        countriesWithCodeMap = countriesWithCode.toMap()
     }
 
     override fun onBackClick() {
@@ -39,13 +42,13 @@ class WorldTourViewModel(
 
     override fun onCountryNameChanged(countryName: CharSequence) {
         val name = countryName.toString()
-        val filtered = _uiState.value.countriesWithCode.filter {
+        val filtered = countriesWithCodeMap.filter {
             it.key.startsWith(name, ignoreCase = true)
         }
 
         _uiState.update {
             it.copy(
-                countryName = name,
+                countryName = countryName.toString(),
                 filteredCountries = filtered,
                 dropDownExpanded = name.isNotEmpty() && filtered.isNotEmpty()
             )
@@ -56,7 +59,7 @@ class WorldTourViewModel(
         _uiState.update { it.copy(countryName = countryName) }
     }
 
-    override fun onSearchClick() {
+    override fun onCountrySelected() {
         _uiState.update {
             it.copy(
                 isLoading = true,
@@ -64,7 +67,7 @@ class WorldTourViewModel(
             )
         }
         viewModelScope.launch(Dispatchers.IO) {
-            val countryName = _uiState.value.countriesWithCode[_uiState.value.countryName]
+            val countryName = countriesWithCodeMap[_uiState.value.countryName]
             if (countryName == null) {
                 onSearchError("Invalid country name") // Todo:
                 return@launch
@@ -72,21 +75,18 @@ class WorldTourViewModel(
             try {
                 val locale = Locale.getDefault()
                 val languageCode = "${locale.language}-${locale.country}"
-                val result = searchByCountry(
-                    countryName = countryName,
-                    language = languageCode
-                ).map {
-                    it.toUIState()
-                }
+                val result = searchByCountry(countryName, languageCode).map { it.toUIState() }
+                Log.e("WorldTourViewModel", result.toString())
                 onSearchSuccess(result)
             } catch (exception: Exception) {
                 // TODO: msg resId
+                Log.e("WorldTourViewModel", exception.message ?: "Unknown error")
                 onSearchError(exception.message ?: "Unknown error")
             }
         }
     }
 
-    override fun onClickMovie(id: Int) {
+    override fun onMovieClick(id: Int) {
         // TODO("Not yet implemented")
     }
 

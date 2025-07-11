@@ -8,5 +8,7 @@
     <string name="please_try_with_another_keyword">يرجى المحاولة بكلمة مفتاحية أخرى</string>
     <string name="movie">فيلم</string>
     <string name="countries">الدول</string>
+    <string name="country_tour_exploring">جولة حول العالم</string>
+    <string name="arrow_back">سهم للخلف</string>
 
 </resources>

@@ -5,7 +5,6 @@ data class MovieUIState(
     val title: String="",
     val rating: String="",
     val releaseYear: String="",
-    val description: String="",
     val genre: List<Int> = emptyList(),
     val poster: String =""
 )

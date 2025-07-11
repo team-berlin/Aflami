@@ -1,11 +1,11 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.Movie
-import com.berlin.repository.datasource.local.dto.MovieEntity
+import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import kotlinx.datetime.LocalDate
 
-fun MovieEntity.toDomain(): Movie {
+fun SearchingEntity.toDomain(): Movie {
     return Movie(
         id = this.id,
         title = this.title,
@@ -16,15 +16,15 @@ fun MovieEntity.toDomain(): Movie {
     )
 }
 
-fun MovieDto.toLocal(query: String, time: Long): MovieEntity {
-    return MovieEntity(
+fun MovieDto.toLocal(query: String, time: Long): SearchingEntity {
+    return SearchingEntity(
         query = query,
         type = "movie",
         time = time,
         id = this.id?.toLong() ?: 0L,
         title = this.title ?: "",
         rating = this.voteAverage ?: 0.0,
-        releaseYear = releaseDate ?: "1960-1-1",
+        releaseYear = releaseDate ?: "1960-01-01",
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}"
     )

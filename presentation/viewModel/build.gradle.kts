@@ -52,5 +52,4 @@ dependencies {
     kotlinDateX()
 
     useCase()
-
 }
