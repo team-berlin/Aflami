@@ -4,15 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.berlin.aflami.screens.search.screen.SearchScreen
 import com.example.aflami.designsystem.theme.AflamiTheme
-import screens.SearchByActorScreen
-import androidx.compose.ui.unit.dp
-import com.berlin.aflami.screens.search.screen.WorldTourScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,12 +19,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AflamiTheme {
-                Scaffold { padding->
-                    SearchByActorScreen(padding)
-            }
+                Scaffold(
+                    modifier = Modifier.statusBarsPadding(),
+                ) { padding ->
+                    SearchScreen()
+                }
             }
         }
-
     }
 }
 
