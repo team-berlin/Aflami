@@ -1,0 +1,36 @@
+package com.berlin.repository
+
+import com.berlin.entity.Movie
+import com.berlin.repository.datasource.local.SearchLocalDataSource
+import com.berlin.repository.datasource.remote.SearchRemoteDataSource
+import com.berlin.repository.mapper.toDomain
+import com.berlin.repository.mapper.toLocal
+import repository.SearchRepository
+
+class SearchRepositoryImpl(
+    private val localDataSource: SearchLocalDataSource,
+    private val remoteDataSource: SearchRemoteDataSource
+) : SearchRepository {
+    override suspend fun searchByCountry(countryName: String, language: String): List<Movie> {
+        val searchCaching = localDataSource.getCachedSearch(countryName)
+        val oneHourPassed =
+            searchCaching.find {
+                it.time < (System.currentTimeMillis() + ONE_HOUR_IN_MILLIS)
+            } == null
+
+        if (searchCaching.isEmpty() || oneHourPassed) {
+            val result = remoteDataSource.searchMoviesByCountry(countryName, language).results
+                ?.filterNotNull()
+                ?.map { movieDto -> movieDto.toLocal(countryName, System.currentTimeMillis()) }
+                ?: emptyList()
+
+            localDataSource.cacheSearch(result)
+        }
+
+        return localDataSource.getCachedSearch(countryName).map { it.toDomain() }
+    }
+
+    companion object {
+        const val ONE_HOUR_IN_MILLIS = 3600000L
+    }
+}

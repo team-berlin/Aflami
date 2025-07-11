@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="world_tour">جولة حول العالم</string>
+    <string name="country_name">أسم البلد</string>
+    <string name="country_tour_description">ابدأ استكشاف أفلام العالم عن طريق إدخال دولتك المفضلة في شريط البحث</string>
+    <string name="country_tour">جولة حول البلاد</string>
+    <string name="no_search_result">لا توجد نتائج للبحث</string>
+    <string name="please_try_with_another_keyword">يرجى المحاولة بكلمة مفتاحية أخرى</string>
+    <string name="movie">فيلم</string>
+    <string name="countries">الدول</string>
+    <string name="country_tour_exploring">جولة حول العالم</string>
+    <string name="arrow_back">سهم للخلف</string>
+
+</resources>

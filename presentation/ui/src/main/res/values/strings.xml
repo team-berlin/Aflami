@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="world_tour">World Tour</string>
+    <string name="country_name">Country name</string>
+    <string name="country_tour_description">Start exploring the world movie by enter your favorite country in search bar</string>
+    <string name="country_tour">Country tour</string>
+    <string name="no_search_result">No search result</string>
+    <string name="please_try_with_another_keyword">please try with another keyword.</string>
+    <string name="movie">Movie</string>
+    <string name="countries">Countries</string>
+    <string name="country_tour_exploring">♦Country tour exploring</string>
+    <string name="arrow_back">arrow back</string>
+</resources>
