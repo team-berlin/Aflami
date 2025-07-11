@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.search
 
-import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -9,13 +9,15 @@ import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
-import com.berlin.aflami.viewmodel.uistate.TvShowUiState
+import com.berlin.aflami.viewmodel.uistate.TVShowUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
+import java.util.Locale
 
 class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
@@ -23,7 +25,7 @@ class SearchViewModel(
 ) : ViewModel(), SearchInteractionListener {
 
     private val _moviesUiState = MutableStateFlow(SearchMoviesUiState())
-    val movieUiState = _moviesUiState.asStateFlow()
+    val moviesUiState = _moviesUiState.asStateFlow()
 
     private val _tvShowUiState = MutableStateFlow(SearchTvShowUiState())
     val tvShowUiState = _tvShowUiState.asStateFlow()
@@ -35,7 +37,7 @@ class SearchViewModel(
         isSearching = isFocus
     }
 
-    var selectTabIndex by mutableStateOf(0)
+    var selectTabIndex by mutableIntStateOf(0)
         private set
 
     fun onTabChange(index: Int) {
@@ -46,44 +48,48 @@ class SearchViewModel(
         TODO("Not yet implemented")
     }
 
-    override fun onQuerySearchChanged(query: CharSequence) {
-        if (selectTabIndex == 0) {
-            _moviesUiState.update { it.copy(movieName = query.toString(), searchCompleted = false) }
-        } else {
-            _tvShowUiState.update {
+    override fun onQuerySearchChange(query: CharSequence) {
+        when (selectTabIndex) {
+            0 -> _moviesUiState.update {
                 it.copy(
-                    tvShowName = query.toString(),
-                    searchCompleted = false
+                    movieName = query.toString(), searchCompleted = false
+                )
+            }
+
+            1 -> _tvShowUiState.update {
+                it.copy(
+                    tvShowName = query.toString(), searchCompleted = false
                 )
             }
         }
     }
 
     override fun onSearchClick() {
-        if (selectTabIndex == 0) {
-            searchMovies()
-        } else {
-            searchTvShows()
+        when (selectTabIndex) {
+            0 -> searchMovies()
+            1 -> searchTvShows()
         }
     }
 
-    override fun onClickMovie(id: Int) {
+    override fun onMovieClick(id: Int) {
         TODO("Not yet implemented")
     }
 
     private fun searchMovies() {
-        val query = movieUiState.value.movieName
+        val query = moviesUiState.value.movieName
         if (query.isBlank()) return
 
         _moviesUiState.update { it.copy(isLoading = true, error = null, searchCompleted = false) }
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = searchMoviesUseCase(query).map { it.toUIState() }
+                val locale = Locale.getDefault()
+                val languageCode = "${locale.language}-${locale.country}"
+                val result = searchMoviesUseCase(
+                    query, languageCode
+                ).map { it.toUIState() }
                 onSearchMoviesSuccess(result)
-                Log.e("onSearchMoviesSuccessResult", result.toString())
             } catch (e: Exception) {
-                Log.e("onSearchMoviesError", e.toString())
                 onSearchMoviesError(e.message ?: "Unknown error")
             }
         }
@@ -95,13 +101,15 @@ class SearchViewModel(
 
         _tvShowUiState.update { it.copy(isLoading = true, error = null, searchCompleted = false) }
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = searchTvShowsUseCase(query).map { it.toUiState() }
+                val locale = Locale.getDefault()
+                val languageCode = "${locale.language}-${locale.country}"
+                val result = searchTvShowsUseCase(
+                    query, languageCode
+                ).map { it.toUiState() }
                 onSearchTvShowsSuccess(result)
-                Log.e("onSearchTvShowsSuccessResult", result.toString())
             } catch (e: Exception) {
-                Log.e("onSearchTvShowsError", e.toString())
                 onSearchTvShowsError(e.message ?: "Unknown error")
             }
         }
@@ -120,7 +128,7 @@ class SearchViewModel(
         _moviesUiState.update { it.copy(error = error, isLoading = false) }
     }
 
-    private fun onSearchTvShowsSuccess(tvShows: List<TvShowUiState>) {
+    private fun onSearchTvShowsSuccess(tvShows: List<TVShowUiState>) {
         _tvShowUiState.update {
             it.copy(
                 tvShow = tvShows,
@@ -134,8 +142,8 @@ class SearchViewModel(
     }
 
     fun clearSearchState() {
-        if (selectTabIndex == 0) {
-            _moviesUiState.update {
+        when (selectTabIndex) {
+            0 -> _moviesUiState.update {
                 it.copy(
                     movieName = "",
                     movies = emptyList(),
@@ -144,8 +152,8 @@ class SearchViewModel(
                     searchCompleted = false
                 )
             }
-        } else {
-            _tvShowUiState.update {
+
+            1 -> _tvShowUiState.update {
                 it.copy(
                     tvShowName = "",
                     tvShow = emptyList(),
@@ -155,8 +163,6 @@ class SearchViewModel(
                 )
             }
         }
-
         isSearching = false
     }
-
 }
