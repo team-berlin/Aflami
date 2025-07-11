@@ -5,11 +5,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.berlin.local.converters.Converters
 import com.berlin.local.dao.SearchDao
-import com.berlin.repository.datasource.local.dto.MovieEntity
+import com.berlin.repository.datasource.local.dto.SearchingEntity
 
 @TypeConverters(Converters::class)
 @Database(
-    entities = [MovieEntity::class],
+    entities = [SearchingEntity::class],
     version = 1
 )
 abstract class SearchDatabase : RoomDatabase() {

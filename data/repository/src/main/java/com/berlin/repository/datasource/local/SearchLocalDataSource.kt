@@ -1,8 +1,8 @@
 package com.berlin.repository.datasource.local
 
-import com.berlin.repository.datasource.local.dto.MovieEntity
+import com.berlin.repository.datasource.local.dto.SearchingEntity
 
 interface SearchLocalDataSource {
-    suspend fun getCachedSearch(query: String, type: String): List<MovieEntity>
-    suspend fun cacheSearch(searchCaching: List<MovieEntity>)
+    suspend fun getCachedSearch(query: String): List<SearchingEntity>
+    suspend fun cacheSearch(movies: List<SearchingEntity>)
 }

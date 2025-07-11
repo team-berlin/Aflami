@@ -1,10 +1,10 @@
-package com.berlin.aflami.viewmodel.search_world_tour
+package com.berlin.aflami.viewmodel.searchworldtour
 
 interface WorldTourInteractionListener {
     fun onBackClick()
     fun onCountryNameChanged(countryName: CharSequence)
-    fun onSearchClick()
-    fun onClickMovie(id: Int)
+    fun onCountrySelected()
+    fun onMovieClick(id: Int)
     fun onDismissDropDown()
     fun onCountrySelected(countryName: String)
 }

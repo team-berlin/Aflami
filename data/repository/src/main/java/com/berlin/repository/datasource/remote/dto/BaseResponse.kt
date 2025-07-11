@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MovieResponse<T>(
+data class BaseResponse<T>(
 
     @SerialName("page")
 	val page: Int? = null,
