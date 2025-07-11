@@ -24,7 +24,8 @@ kover {
     }
 }
 dependencies {
-    koin()
+    implementation(Dependencies.koin)
     test()
     entity()
+    kotlinDateX()
 }

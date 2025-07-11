@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.firebase.gms.service)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.performance)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -47,9 +48,17 @@ dependencies {
     lifecycleRuntimeKtx()
     androidxUi()
     koin()
+    ktor()
+    room()
     firebase()
     test()
 
-    ui()
+    safeImageViewer()
     designSystem()
+    viewModel()
+    ui()
+    useCase()
+    repository()
+    remote()
+    local()
 }

@@ -4,9 +4,11 @@ kotlin = "2.0.21"
 firebaseCrashlytics = "3.0.4"
 firebasePerformance = "1.4.2"
 firebaseService = "4.4.3"
-
-
 jetbrainsKotlinJvm = "2.0.21"
+tensorflowLiteMetadata = "0.1.0"
+
+[libraries]
+tensorflow-lite-metadata = { group = "org.tensorflow", name = "tensorflow-lite-metadata", version.ref = "tensorflowLiteMetadata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -18,3 +20,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerformance" }
 firebase-gms-service = { id = "com.google.gms.google-services", version.ref = "firebaseService" }
+ksp = { id = "com.google.devtools.ksp", version = "2.0.21-1.0.27" }

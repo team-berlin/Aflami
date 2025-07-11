@@ -24,6 +24,13 @@
     <string name="action">Action</string>
 
     <string name="icon_button">Icon button</string>
+  
+    <string name="world_tour">World Tour</string>
+    <string name="explore_world_cinema">Explore World Cinema</string>
+
+    <string name="find_by_actor">Find by Actor</string>
+    <string name="search_by_favorite_actor">Search by favorite Actor</string>
+
 
     <string name="aflami_title">Aflami</string>
     <string name="aflami_description">More than just watching.</string>
@@ -32,10 +39,14 @@
     <string name="list_error">Some error happened.</string>
 
 
+    <string name="tv_shows">TV Shows</string>
+    <string name="movies">Movies</string>
+
     <!--    content description-->
-    <string name="status_bar_icon_cd">icon</string>
+    <string name="icon_cd">icon</string>
     <string name="label">Label</string>
     <string name="incorrect_password">incorrect password</string>
     <string name="category_img_content">category img</string>
     <string name="api_image_card_content">api image card</string>
+    <string name="drama">Drama</string>
 </resources>
