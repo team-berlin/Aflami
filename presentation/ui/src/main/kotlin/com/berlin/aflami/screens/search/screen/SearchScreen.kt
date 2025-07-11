@@ -1,13 +1,10 @@
 package com.berlin.aflami.screens.search.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -54,10 +50,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
-    padding: PaddingValues,
     viewModel: SearchViewModel = koinViewModel()
 ) {
-    val movieState by viewModel.movieUiState.collectAsState()
+    val movieState by viewModel.moviesUiState.collectAsState()
     val tvShowState by viewModel.tvShowUiState.collectAsState()
 
     val isSearching = viewModel.isSearching
@@ -90,45 +85,37 @@ private fun SearchScreenContent(
     onTabChange: (Int) -> Unit,
     clearSearchState: () -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
             .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) {
-                focusManager.clearFocus()
+                indication = null, interactionSource = remember { MutableInteractionSource() }) {
                 clearSearchState()
             },
     ) {
-        TopBar(
-            modifier = Modifier.padding(vertical = 8.dp),
-            title = {
-                Text(
-                    text = stringResource(R.string.search),
-                    style = Theme.textStyle.title.large,
-                    color = Theme.color.textColors.title
+        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+            Text(
+                text = stringResource(R.string.search),
+                style = Theme.textStyle.title.large,
+                color = Theme.color.textColors.title
+            )
+        }, leadingIcon = {
+            Box(
+                Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Theme.color.surfaceHigh), contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    painter = painterResource(R.drawable.arrow_left),
+                    contentDescription = stringResource(R.string.icon_cd),
+                    tint = Theme.color.textColors.title
                 )
-            }, leadingIcon = {
-                Box(
-                    Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Theme.color.surfaceHigh),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        painter = painterResource(R.drawable.arrow_left),
-                        contentDescription = stringResource(R.string.icon_cd),
-                        tint = Theme.color.textColors.title
-                    )
-                }
             }
-        )
+        })
 
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
@@ -153,7 +140,7 @@ private fun SearchScreenContent(
                 keyboardActions = KeyboardActions(onSearch = {
                     listener.onSearchClick()
                 }),
-                onValueChange = listener::onQuerySearchChanged,
+                onValueChange = listener::onQuerySearchChange,
                 trailingIcon = R.drawable.filter_vertical,
             )
         }
@@ -163,17 +150,14 @@ private fun SearchScreenContent(
                 containerColor = Theme.color.surface,
                 items = listOf(
                     TabBarItem(
-                        text = stringResource(R.string.movies),
-                        isSelected = selectedTabIndex == 0
-                    ),
-                    TabBarItem(
-                        text = stringResource(R.string.tv_shows),
-                        isSelected = selectedTabIndex == 1
+                        text = stringResource(R.string.movies), isSelected = selectedTabIndex == 0
+                    ), TabBarItem(
+                        text = stringResource(R.string.tv_shows), isSelected = selectedTabIndex == 1
                     )
                 ),
                 onTabChange = {
                     onTabChange(it)
-                   //  clearSearchState()
+                    //  clearSearchState()
                 },
             )
 
@@ -274,6 +258,6 @@ private fun SearchScreenContent(
 @Composable
 private fun SearchScreenPreview() {
     AflamiTheme {
-        // SearchScreen()
+        SearchScreen()
     }
 }
