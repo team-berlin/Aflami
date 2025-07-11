@@ -20,7 +20,7 @@ import usecase.GetSearchTvShowsUseCase
 class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
     private val searchTvShowsUseCase: GetSearchTvShowsUseCase
-) : ViewModel(), SearchInteractor {
+) : ViewModel(), SearchInteractionListener {
 
     private val _moviesUiState = MutableStateFlow(SearchMoviesUiState())
     val movieUiState = _moviesUiState.asStateFlow()
@@ -48,9 +48,14 @@ class SearchViewModel(
 
     override fun onQuerySearchChanged(query: CharSequence) {
         if (selectTabIndex == 0) {
-            _moviesUiState.update { it.copy(movieName = query.toString()) }
+            _moviesUiState.update { it.copy(movieName = query.toString(), searchCompleted = false) }
         } else {
-            _tvShowUiState.update { it.copy(tvShowName = query.toString()) }
+            _tvShowUiState.update {
+                it.copy(
+                    tvShowName = query.toString(),
+                    searchCompleted = false
+                )
+            }
         }
     }
 
@@ -70,7 +75,7 @@ class SearchViewModel(
         val query = movieUiState.value.movieName
         if (query.isBlank()) return
 
-        _moviesUiState.update { it.copy(isLoading = true, error = null) }
+        _moviesUiState.update { it.copy(isLoading = true, error = null, searchCompleted = false) }
 
         viewModelScope.launch {
             try {
@@ -88,7 +93,7 @@ class SearchViewModel(
         val query = tvShowUiState.value.tvShowName
         if (query.isBlank()) return
 
-        _tvShowUiState.update { it.copy(isLoading = true, error = null) }
+        _tvShowUiState.update { it.copy(isLoading = true, error = null, searchCompleted = false) }
 
         viewModelScope.launch {
             try {
@@ -103,7 +108,12 @@ class SearchViewModel(
     }
 
     private fun onSearchMoviesSuccess(movies: List<MovieUIState>) {
-        _moviesUiState.update { it.copy(movies = movies, isLoading = false) }
+        _moviesUiState.update {
+            it.copy(
+                movies = movies,
+                isLoading = false,
+            )
+        }
     }
 
     private fun onSearchMoviesError(error: String) {
@@ -111,10 +121,42 @@ class SearchViewModel(
     }
 
     private fun onSearchTvShowsSuccess(tvShows: List<TvShowUiState>) {
-        _tvShowUiState.update { it.copy(tvShow = tvShows, isLoading = false) }
+        _tvShowUiState.update {
+            it.copy(
+                tvShow = tvShows,
+                isLoading = false,
+            )
+        }
     }
 
     private fun onSearchTvShowsError(error: String) {
         _tvShowUiState.update { it.copy(error = error, isLoading = false) }
     }
+
+    fun clearSearchState() {
+        if (selectTabIndex == 0) {
+            _moviesUiState.update {
+                it.copy(
+                    movieName = "",
+                    movies = emptyList(),
+                    isLoading = false,
+                    error = null,
+                    searchCompleted = false
+                )
+            }
+        } else {
+            _tvShowUiState.update {
+                it.copy(
+                    tvShowName = "",
+                    tvShow = emptyList(),
+                    isLoading = false,
+                    error = null,
+                    searchCompleted = false
+                )
+            }
+        }
+
+        isSearching = false
+    }
+
 }

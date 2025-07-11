@@ -38,7 +38,7 @@ data class TabBarItem(
 @Composable
 fun TabBar(
     items: List<TabBarItem>,
-    onTabChange: (TabBarItem) -> Unit,
+    onTabChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
     containerColor: Color = Theme.color.surfaceHigh
 ) {
@@ -92,7 +92,7 @@ fun TabBar(
                 selected = isSelected,
                 onClick = {
                     selectedTabIndex = index
-                    onTabChange(status)
+                    onTabChange(index)
                 },
             ) {
                 Text(

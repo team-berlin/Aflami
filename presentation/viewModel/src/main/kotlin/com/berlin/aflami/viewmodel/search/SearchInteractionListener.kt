@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.search
 
 
-interface SearchInteractor {
+interface SearchInteractionListener {
     fun onBackClick()
     fun onQuerySearchChanged(query: CharSequence)
     fun onSearchClick()

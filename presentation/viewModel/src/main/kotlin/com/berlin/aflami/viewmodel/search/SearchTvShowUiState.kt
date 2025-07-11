@@ -6,5 +6,6 @@ data class SearchTvShowUiState(
     val isLoading: Boolean = false,
     val tvShowName: String = "",
     val tvShow: List<TvShowUiState> = emptyList(),
-    val error: String? = null
+    val error: String? = null,
+    val searchCompleted: Boolean = false
 )
