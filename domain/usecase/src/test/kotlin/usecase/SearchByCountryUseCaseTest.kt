@@ -64,7 +64,7 @@ class SearchByCountryUseCaseTest {
 
     private fun getMoviesByCountry(): List<Movie> {
         return (0..5).map {
-            Movie(it.toLong(), "Filmy", 5.0, LocalDate(2024, 6, 23), "description", emptyList(), "path")
+            Movie(it.toLong(), "Filmy", 5.0, LocalDate(2024, 6, 23), emptyList(), "path")
         }
     }
 }
