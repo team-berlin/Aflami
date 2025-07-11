@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.safeimageviewer.SafeImage
+import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun MediaCard(
@@ -42,7 +41,7 @@ fun MediaCard(
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(16.dp))
 
     ) {
-        SafeImage(
+        SafeImageViewer(
             modifier = Modifier.fillMaxSize(),
             imageUri = mediaImg,
         )

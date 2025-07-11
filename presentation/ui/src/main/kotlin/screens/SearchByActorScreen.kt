@@ -1,7 +1,5 @@
-package screens
+package com.berlin.aflami.screens.search.screen
 
-import MediaUiState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,16 +25,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.screens.search.components.FindByActorCard
+import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search_by_actor.SearchByActorUiState
 import com.berlin.aflami.viewmodel.search_by_actor.SearchByActorViewModel
-import com.berlin.aflami.viewmodel.search_by_actor.SearchByNameInteractor
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.designsystem.R
 import org.koin.androidx.compose.koinViewModel
@@ -44,14 +42,13 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SearchByActorScreen(padding: PaddingValues) {
 
-
     val searchByActorViewModel: SearchByActorViewModel = koinViewModel()
     val searchByActorUiState by searchByActorViewModel.searchByActorUiState.collectAsState()
-    //var countryName by remember { mutableStateOf("") }
 
     SearchByActorScreenContent(
-        padding,
-        searchByActorUiState, searchByActorViewModel
+        padding, searchByActorUiState,
+        searchByActorViewModel,
+        //searchByActorViewModel::onImageSuccess
     )
 
 }
@@ -60,107 +57,78 @@ fun SearchByActorScreen(padding: PaddingValues) {
 fun SearchByActorScreenContent(
     padding: PaddingValues,
     searchByActorUiState: SearchByActorUiState,
-    searchByNameListner: SearchByNameInteractor,
-
+    searchByNameListener: SearchByActorViewModel,
+    //onImageSuccess: ()->Unit,
 
     ) {
-    Box(
+
+    Column(
         Modifier
             .padding(padding)
             .fillMaxSize()
             .background(Theme.color.surface)
-
     ) {
-        Column(
-
-        ) {
-            TopBar(
-                modifier = Modifier.padding(vertical = 8.dp),
-                title = {
-                    Text(
-                        text = stringResource(R.string.search_by_actor),
-                        style = Theme.textStyle.title.large,
-                        color = Theme.color.textColors.title
-                    )
-                }, leadingIcon = {
-                    Box(
-                        Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Theme.color.surfaceHigh),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            painter = painterResource(R.drawable.arrow_left),
-                            contentDescription = stringResource(R.string.icon_cd)
-                        )
-                    }
-                }
+        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+            Text(
+                text = stringResource(R.string.search_by_actor),
+                style = Theme.textStyle.title.large,
+                color = Theme.color.textColors.title
             )
+        }, leadingIcon = {
             Box(
-                Modifier.padding(horizontal = 16.dp)
+                Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Theme.color.surfaceHigh), contentAlignment = Alignment.Center
             ) {
-                TextField(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    text = searchByActorUiState.actorName,
-                    onValueChange = searchByNameListner::onActorNameChanged,
-                    isEnabled = true,
-                    maxLines = 1,
-                    borderColor = Theme.color.stroke,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Search
-                    ),
-                    keyboardActions = KeyboardActions(onSearch = {
-                        searchByNameListner.onSearchClick()
-                    }),
-                    hintText = stringResource(R.string.actor_name_hint),
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    tint = Theme.color.textColors.title,
+                    painter = painterResource(R.drawable.arrow_left),
+                    contentDescription = stringResource(R.string.icon_cd)
                 )
             }
-
-            MoviesList(searchByActorUiState.media)
-
+        })
+        Box(
+            Modifier.padding(horizontal = 16.dp)
+        ) {
+            TextField(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                text = searchByActorUiState.actorName,
+                onValueChange = searchByNameListener::onActorNameChanged,
+                isEnabled = true,
+                maxLines = 1,
+                borderColor = Theme.color.stroke,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(onSearch = {
+                    searchByNameListener.onSearchClick()
+                }),
+                hintText = stringResource(R.string.actor_name_hint),
+            )
         }
+
+        MoviesList(
+            searchByActorUiState.media,
+            //onSuccess = onImageSuccess,
+           // searchByActorUiState.isImageProcessing
+        )
+
         if (searchByActorUiState.media.isEmpty()) {
             FindByActorCard(
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier.padding(top = 144.dp)
             )
         }
     }
-
 }
 
-@Composable
-fun FindByActorCard(modifier: Modifier) {
-    Column(
-        modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Image(
-            modifier = Modifier.size(width = 76.dp, height = 80.dp),
-            painter = painterResource(R.drawable.find_by_actor),
-            contentDescription = ""
-        )
-        Text(
-            modifier = Modifier.padding(top = 8.dp),
-            text = stringResource(R.string.find_by_actor),
-            style = Theme.textStyle.title.medium,
-            color = Theme.color.textColors.title
-        )
-        Text(
-            text = stringResource(R.string.find_by_actor_quotation),
-            style = Theme.textStyle.title.small,
-            color = Theme.color.textColors.body,
-            textAlign = TextAlign.Center
-        )
-    }
-}
 
 @Composable
 fun MoviesList(
-    listOfShows: List<MovieUIState>
+    listOfShows: List<MovieUIState>,
+//    onSuccess: () -> Unit,
+//    imageProcessing: Boolean
 ) {
     LazyVerticalGrid(
         GridCells.Adaptive(minSize = 160.dp),
@@ -175,16 +143,17 @@ fun MoviesList(
                 title = show.title,
                 typeOfMedia = show.mediaType,
                 date = show.releaseYear,
-                rating = show.rating.toDouble()
+                rating = show.rating,
             )
         }
     }
 }
 
 
-
 @ThemeAndLocalePreviews
 @Composable
 fun SearchByActorScreenContentPreview() {
-    SearchByActorScreen(PaddingValues())
+    AflamiTheme {
+        SearchByActorScreen(PaddingValues())
+    }
 }

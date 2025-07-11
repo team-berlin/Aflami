@@ -4,9 +4,7 @@ import androidx.room.Room
 import com.berlin.aflami.BuildConfig
 import com.berlin.local.SearchDatabase
 import com.berlin.local.dao.SearchDao
-import com.berlin.repository.datasource.remote.dto.MediaItem
-import com.berlin.repository.datasource.remote.dto.MovieItem
-import com.berlin.repository.datasource.remote.dto.TvItem
+
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -19,8 +17,7 @@ import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
+
 import org.koin.dsl.module
 
 val appModule = module {

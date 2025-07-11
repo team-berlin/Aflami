@@ -20,19 +20,6 @@ class SearchByActorViewModel(
     private val _searchByActorUiState = MutableStateFlow(SearchByActorUiState())
     val searchByActorUiState = _searchByActorUiState.asStateFlow()
 
-//
-//   fun getMovieByCountry(country: String) {
-//
-//        _worldTourUiState.update { it.copy(isLoading = true) }
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val movies= searchByCountry(country).map { movie ->
-//                movie.toUIState()
-//            }
-//            _worldTourUiState.update { it.copy(movies = movies, isLoading = false) }
-//
-//        }
-//    }
-
 
     override fun onBackClick() {
 
@@ -51,11 +38,10 @@ class SearchByActorViewModel(
                         it.toUiState()
                     }
                 onSearchSuccess(result)
-                Log.e("WOW", result.toString())
+                Log.d("WOW", result.toString())
             } catch (exception: Exception) {
                 // TODO: msg resId
                 Log.e("error", exception.toString())
-
                 onSearchError(exception.message ?: "Unknown error")
             }
         }

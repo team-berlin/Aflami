@@ -12,7 +12,7 @@ fun MovieEntity.toDomain(): Movie {
         rating = this.rating,
         releaseYear = releaseYear.toLocalDate(),
         description = this.description,
-        genre = this.genre,
+        // genre = this.genre,
         poster = this.poster
     )
 }
@@ -27,8 +27,9 @@ fun MovieDto.toLocal(query: String, time: Long): MovieEntity {
         rating = this.voteAverage ?: 0.0,
         releaseYear = releaseDate ?: "1960-1-1",
         description = this.overview.orEmpty(),
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}"
+        // genre = this.genreIds?.filterNotNull() ?: emptyList(),
+        poster = "https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}",
+        mediaType = "movie"
     )
 }
 

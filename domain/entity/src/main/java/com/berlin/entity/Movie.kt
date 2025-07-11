@@ -8,9 +8,10 @@ data class Movie(
     val rating:Double,
     val releaseYear: LocalDate,
     val description: String,
-    val genre:List<Int>,
+    //val genre:List<Int>,
     val poster:String,
 )
+
 //data class Movie (
 //    override val id :Long,
 //    override val title:String,
