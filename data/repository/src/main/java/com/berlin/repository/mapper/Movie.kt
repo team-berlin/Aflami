@@ -11,7 +11,6 @@ fun MovieEntity.toDomain(): Movie {
         title = this.title,
         rating = this.rating,
         releaseYear = releaseYear.toLocalDate(),
-        description = this.description,
         genre = this.genre,
         poster = this.poster
     )
@@ -23,10 +22,9 @@ fun MovieDto.toLocal(query: String, time: Long): MovieEntity {
         type = "movie",
         time = time,
         id = this.id?.toLong() ?: 0L,
-        title = this.title.orEmpty(),
+        title = this.title ?: "",
         rating = this.voteAverage ?: 0.0,
         releaseYear = releaseDate ?: "1960-1-1",
-        description = this.overview.orEmpty(),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}"
     )
