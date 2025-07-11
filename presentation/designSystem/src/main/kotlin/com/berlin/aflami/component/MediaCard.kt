@@ -20,11 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.safeimageviewer.SafeImage
 
 @Composable
 fun MediaCard(
@@ -41,9 +42,11 @@ fun MediaCard(
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(16.dp))
 
     ) {
-        SafeImage(
+        AsyncImage(
+            model = mediaImg,
+            contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            imageUri = mediaImg,
+            contentScale = ContentScale.Crop
         )
 
         Box(
