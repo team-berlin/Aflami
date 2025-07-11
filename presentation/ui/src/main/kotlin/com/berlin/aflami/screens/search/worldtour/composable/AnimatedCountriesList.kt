@@ -46,6 +46,7 @@ fun AnimatedCountriesList(
                     Text(
                         text = stringResource(R.string.countries),
                         style = Theme.textStyle.label.medium,
+                        color = Theme.color.textColors.title,
                         modifier = Modifier.padding(start = 16.dp)
                     )
                 }
@@ -90,7 +91,7 @@ private fun CountryItem(
         Text(
             text = countryWithCode.first,
             style = Theme.textStyle.body.medium,
-            color = Theme.color.secondary
+            color = Theme.color.textColors.body
         )
     }
 }

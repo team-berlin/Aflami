@@ -3,7 +3,7 @@ package com.berlin.repository.mapper
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.MovieDto
-import kotlinx.datetime.LocalDate
+import com.berlin.repository.util.toLocalDate
 
 fun SearchingEntity.toDomain(): Movie {
     return Movie(
@@ -24,13 +24,8 @@ fun MovieDto.toLocal(query: String, time: Long): SearchingEntity {
         id = this.id?.toLong() ?: 0L,
         title = this.title ?: "",
         rating = this.voteAverage ?: 0.0,
-        releaseYear = releaseDate ?: "1960-01-01",
+        releaseYear = releaseDate ?: "",
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}"
     )
-}
-
-fun String.toLocalDate(): LocalDate {
-    return if (this.isNotEmpty()) LocalDate.parse(this)
-    else LocalDate(1960, 1, 1)
 }

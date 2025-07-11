@@ -59,7 +59,7 @@ private fun CountryTourExploringPreview() {
         modifier = Modifier,
         painterResource(R.drawable.world_tour),
         R.string.world_tour,
-        R.string.start_exploring_the_world_movie_by_enter_your_favorite_country_in_search_bar
+        R.string.country_tour_description
 
     )
 }

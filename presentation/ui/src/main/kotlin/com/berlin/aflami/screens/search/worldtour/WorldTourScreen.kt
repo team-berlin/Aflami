@@ -1,27 +1,32 @@
 package com.berlin.aflami.screens.search.worldtour
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.TextField
+import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
-import com.berlin.aflami.screens.search.components.SearchTopBar
 import com.berlin.aflami.screens.search.worldtour.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.searchworldtour.WorldTourInteractionListener
@@ -46,12 +51,33 @@ private fun WorldTourContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
             .background(Theme.color.surface),
     ) {
-        SearchTopBar(
-            title = stringResource(R.string.world_tour),
-            onBackClick = listener::onBackClick
+        TopBar(
+            modifier = Modifier.padding(vertical = 8.dp),
+            title = {
+                Text(
+                    text = stringResource(R.string.country_tour),
+                    style = Theme.textStyle.title.large,
+                    color = Theme.color.textColors.title,
+                )
+            },
+            leadingIcon = {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Theme.color.surfaceHigh)
+                        .clickable { listener::onBackClick }
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.arrow_left),
+                        contentDescription = stringResource(R.string.arrow_back),
+                        tint = Theme.color.textColors.title
+                    )
+                }
+            }
         )
 
         val keyboardController = LocalSoftwareKeyboardController.current
@@ -77,14 +103,15 @@ private fun WorldTourContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .weight(1f),
+            contentAlignment = Alignment.TopCenter
         ) {
             if (state.movies.isEmpty()) {
                 CountryTourExploring(
                     modifier = Modifier.padding(top = 143.dp),
                     image = painterResource(R.drawable.world_tour),
                     titleId = R.string.country_tour,
-                    messageId = R.string.start_exploring_the_world_movie_by_enter_your_favorite_country_in_search_bar
+                    messageId = R.string.country_tour_description
                 )
             }
 
