@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.worldtour
+package com.berlin.aflami.screens.search.actor
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,26 +22,25 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.components.SearchTopBar
-import com.berlin.aflami.screens.search.worldtour.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.search_world_tour.WorldTourInteractionListener
-import com.berlin.aflami.viewmodel.search_world_tour.WorldTourUiState
-import com.berlin.aflami.viewmodel.search_world_tour.WorldTourViewModel
+import com.berlin.aflami.viewmodel.search_actor.SearchByActorInteractionListener
+import com.berlin.aflami.viewmodel.search_actor.SearchByActorScreenUiState
+import com.berlin.aflami.viewmodel.search_actor.SearchByActorViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun WorldTourScreen(
-    viewModel: WorldTourViewModel = koinViewModel()
+fun SearchByActorNameScreen(
+    viewModel: SearchByActorViewModel = koinViewModel()
 ) {
-    val worldTourState by viewModel.uiState.collectAsState()
-    WorldTourContent(worldTourState, viewModel)
+    val uiState by viewModel.uiState.collectAsState()
+    SearchByActorNameContent(uiState, viewModel)
 }
 
 @Composable
-private fun WorldTourContent(
-    state: WorldTourUiState,
-    listener: WorldTourInteractionListener,
+private fun SearchByActorNameContent(
+    state: SearchByActorScreenUiState,
+    listener: SearchByActorInteractionListener
 ) {
     Column(
         modifier = Modifier
@@ -55,9 +54,10 @@ private fun WorldTourContent(
         )
 
         SearchTextField(
-            countryName = state.countryName,
-            hint = stringResource(R.string.country_tour),
-            onCountryNameChanged = listener::onCountryNameChanged
+            countryName = state.actorName,
+            hint = stringResource(R.string.actor_name),
+            onActorNameChanged = listener::onActorNameChanged,
+            onSearchClick = listener::onSearchClick
         )
 
         Box(
@@ -68,20 +68,15 @@ private fun WorldTourContent(
             if (state.movies.isEmpty()) {
                 CountryTourExploring(
                     modifier = Modifier.padding(top = 143.dp),
-                    image = painterResource(R.drawable.world_tour),
-                    titleId = R.string.country_tour,
-                    messageId = R.string.start_exploring_the_world_movie_by_enter_your_favorite_country_in_search_bar
+                    image = painterResource(R.drawable.find_by_actor),
+                    titleId = R.string.find_by_actor,
+                    messageId = R.string.start_exploring_your_favorite_actor_s_movies_and_enjoy_it
                 )
             }
 
             MoviesList(
                 movies = state.movies,
                 onMovieClick = listener::onClickMovie
-            )
-
-            AnimatedCountriesList(
-                state = state,
-                listener = listener
             )
         }
     }
@@ -91,7 +86,8 @@ private fun WorldTourContent(
 private fun SearchTextField(
     countryName: String,
     hint: String = "",
-    onCountryNameChanged: (CharSequence) -> Unit
+    onActorNameChanged: (CharSequence) -> Unit,
+    onSearchClick: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     TextField(
@@ -100,14 +96,16 @@ private fun SearchTextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 4.dp),
-        onValueChange = onCountryNameChanged,
+        onValueChange = onActorNameChanged,
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done
+            imeAction = ImeAction.Search
         ),
         keyboardActions = KeyboardActions(
-            onDone = {
+            onSearch = {
+                onSearchClick()
                 keyboardController?.hide()
-            }),
+            }
+        ),
         isEnabled = true,
         borderColor = Theme.color.stroke,
         maxLines = 1,
