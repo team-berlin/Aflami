@@ -1,6 +1,6 @@
 package com.berlin.remote
 
-object ApiConstants  {
+object ApiConstants {
 
     // endPoints
     const val SEARCH_BY_COUNTRY = "discover/movie"
@@ -17,5 +17,7 @@ object ApiConstants  {
     const val ACTOR_NAME = "query"
 
     const val QUERY = "query"
+
+    const val LANGUAGE = "language"
 
 }
