@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.SearchByActorNameUseCase
+import java.util.Locale
 
 class SearchByActorViewModel(
     private val searchByActorName: SearchByActorNameUseCase
@@ -34,9 +35,11 @@ class SearchByActorViewModel(
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                val locale = Locale.getDefault()
+                val languageCode = "${locale.language}-${locale.country}"
                 val result = searchByActorName(
-                    actorName = "Tom",
-                    language = "en-US" // TODO
+                    actorName = _uiState.value.actorName,
+                    language = languageCode
                 ).map { it.toUIState() }
                 Log.i("findByActor", result.toString())
                 onSearchSuccess(result)
