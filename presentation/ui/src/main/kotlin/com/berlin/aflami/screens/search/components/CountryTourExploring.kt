@@ -30,7 +30,7 @@ fun CountryTourExploring(
 ){
 
     Column(
-        modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
+        modifier = modifier.padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -38,7 +38,7 @@ fun CountryTourExploring(
         Image(
             painter =image ,
             contentDescription = "Country tour exploring",
-            modifier = Modifier.size(width = 100.dp, height = 82.dp)
+            modifier = Modifier
         )
         Text(
             text = stringResource(titleId),

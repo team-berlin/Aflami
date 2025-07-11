@@ -6,6 +6,6 @@ import repository.SearchRepository
 
 val repositoryModule = module {
 
-    single<SearchRepository> { SearchRepositoryImpl(get()) }
+    single<SearchRepository> { SearchRepositoryImpl(get(), get()) }
 
 }

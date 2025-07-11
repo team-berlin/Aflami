@@ -4,19 +4,18 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.berlin.repository.datasource.local.dto.MovieEntity
 import com.berlin.repository.datasource.local.model.SearchCaching
 
 @Dao
-    interface SearchDao {
+interface SearchDao {
+    @Query("SELECT * FROM search_cache WHERE `query` = :query")
+    suspend fun getCachedSearch(query: String, type: String): List<MovieEntity>
 
-        @Query("SELECT * FROM search_cache WHERE `query` = :query AND type = :type")
-        suspend fun getCachedSearch(query: String, type: String): SearchCaching?
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun cacheSearch(searchCaching: List<MovieEntity>)
 
-        @Insert(onConflict = OnConflictStrategy.REPLACE)
-        suspend fun cacheSearch(entity: SearchCaching)
+    @Query("DELETE FROM search_cache WHERE time < :expirationTime")
+    suspend fun clearExpiredCache(expirationTime: Long)
 
-        @Query("DELETE FROM search_cache WHERE time < :expirationTime")
-        suspend fun clearExpiredCache(expirationTime: Long)
-
-    }
-
+}

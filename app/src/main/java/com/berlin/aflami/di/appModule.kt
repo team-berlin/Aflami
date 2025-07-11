@@ -1,6 +1,9 @@
 package com.berlin.aflami.di
 
+import androidx.room.Room
 import com.berlin.aflami.BuildConfig
+import com.berlin.local.SearchDatabase
+import com.berlin.local.dao.SearchDao
 import com.berlin.repository.datasource.remote.dto.MediaItem
 import com.berlin.repository.datasource.remote.dto.MovieItem
 import com.berlin.repository.datasource.remote.dto.TvItem
@@ -8,9 +11,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.ANDROID
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.koin.android.ext.koin.androidContext
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.koin.dsl.module
@@ -22,21 +30,30 @@ val appModule = module {
                 url { takeFrom(BuildConfig.BASE_URL) }
                 url { parameters.append("api_key", BuildConfig.API_KEY) }
             }
+            install(Logging) {
+                logger = Logger.ANDROID
+                level = LogLevel.BODY
+            }
+
             install(ContentNegotiation) {
                 json(
                     Json {
                         ignoreUnknownKeys = true
-                        classDiscriminator = "media_type"
-                        serializersModule = SerializersModule {
-                            polymorphic(MediaItem::class) {
-                                subclass(MovieItem::class, MovieItem.serializer())
-                                subclass(TvItem::class, TvItem.serializer())
-                            }
-
-                        }
                     }
                 )
             }
         }
+    }
+
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            SearchDatabase::class.java,
+            "Aflami_Database"
+        ).fallbackToDestructiveMigration(false).build()
+    }
+
+    single<SearchDao> {
+        get<SearchDatabase>().searchDao()
     }
 }

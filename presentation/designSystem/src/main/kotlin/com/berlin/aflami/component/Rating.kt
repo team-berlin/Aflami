@@ -23,7 +23,7 @@ import com.berlin.designsystem.R
 @Composable
 fun Rating(
     modifier: Modifier = Modifier,
-    rating: Double
+    rating:String
 ) {
 
     val corner = remember {
@@ -41,27 +41,22 @@ fun Rating(
             .background(Theme.color.primaryVariant, corner)
             .border(1.dp, Theme.color.stroke, corner)
             .padding(vertical = 6.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.star),
-                contentDescription = "card rate",
-                tint = Theme.color.statusColors.yellowAccent
-            )
+        Icon(
+            painter = painterResource(R.drawable.star),
+            contentDescription = "card rate",
+            tint = Theme.color.statusColors.yellowAccent
+        )
 
-            Text(
-                text = rating.toString(),
-                style = Theme.textStyle.label.small,
-                color = Theme.color.textColors.body
-            )
-        }
-
-
+        Text(
+            text = rating,
+            style = Theme.textStyle.label.small,
+            color = Theme.color.textColors.body
+        )
     }
+    
 }
 
 
@@ -69,6 +64,6 @@ fun Rating(
 @Composable
 fun RatingPreview(){
     AflamiTheme {
-        Rating(rating = 9.9)
+        Rating(rating ="9.9")
     }
 }
