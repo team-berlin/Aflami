@@ -16,15 +16,15 @@ fun MovieEntity.toDomain(): Movie {
     )
 }
 
-fun MovieDto.toLocal(query: String, time: Long): MovieEntity {
+fun MovieDto.toLocal(query: String, type: String,time: Long): MovieEntity {
     return MovieEntity(
         query = query,
-        type = "movie",
+        type = type,
         time = time,
         id = this.id?.toLong() ?: 0L,
         title = this.title ?: "",
         rating = this.voteAverage ?: 0.0,
-        releaseYear = releaseDate ?: "1960-1-1",
+        releaseYear = releaseDate ?: "1960-11-11",
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}"
     )
@@ -32,5 +32,5 @@ fun MovieDto.toLocal(query: String, time: Long): MovieEntity {
 
 fun String.toLocalDate(): LocalDate {
     return if (this.isNotEmpty()) LocalDate.parse(this)
-    else LocalDate(1960, 1, 1)
+    else LocalDate(1960, 11, 11)
 }
