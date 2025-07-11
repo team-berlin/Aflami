@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MovieResponse(
+data class TVShowResponse(
     @SerialName("results")
-    val results: List<MovieDto?>? = null,
+    val results: List<TVShowDto?>? = null,
 )
