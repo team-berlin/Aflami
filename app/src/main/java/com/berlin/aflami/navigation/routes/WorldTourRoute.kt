@@ -1,4 +1,4 @@
-package com.berlin.aflami.routes
+package com.berlin.aflami.navigation.routes
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
