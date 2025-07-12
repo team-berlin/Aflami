@@ -12,8 +12,7 @@ fun TVShowDto.toDomain(): TVShow {
         id = this.id?.toLong() ?: 0L,
         title = this.name.orEmpty(),
         rating = (this.voteAverage ?: 0.0),
-        releaseYear = (this.firstAirDate ?: Clock.System.now()
-            .toLocalDateTime(TimeZone.currentSystemDefault()).date) as LocalDate,
+        releaseYear = (((this.firstAirDate ?: "")).toLocalDate()),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster ="https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}",
     )

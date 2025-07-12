@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,6 +43,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.SearchInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchMoviesUiState
 import com.berlin.aflami.viewmodel.search.SearchTvShowUiState
+import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.designsystem.R
 import org.koin.androidx.compose.koinViewModel
@@ -52,20 +52,18 @@ import org.koin.androidx.compose.koinViewModel
 fun SearchScreen(
     viewModel: SearchViewModel = koinViewModel()
 ) {
+    val searchState by viewModel.searchUIState.collectAsState()
     val movieState by viewModel.moviesUiState.collectAsState()
     val tvShowState by viewModel.tvShowUiState.collectAsState()
 
-    val isSearching = viewModel.isSearching
     val selectedTabIndex = viewModel.selectTabIndex
 
     val textValue = if (selectedTabIndex == 0) movieState.movieName else tvShowState.tvShowName
 
     SearchScreenContent(
-        searchMoviesUiState = movieState,
-        searchTvShowUiState = tvShowState,
+        searchState = searchState,
         listener = viewModel,
         textValue = textValue,
-        isSearching = isSearching,
         selectedTabIndex = selectedTabIndex,
         onFocusChanged = viewModel::onFocusChanged,
         onTabChange = viewModel::onTabChange,
@@ -75,9 +73,7 @@ fun SearchScreen(
 
 @Composable
 private fun SearchScreenContent(
-    searchMoviesUiState: SearchMoviesUiState,
-    searchTvShowUiState: SearchTvShowUiState,
-    isSearching: Boolean,
+    searchState: SearchUiState,
     listener: SearchInteractionListener,
     selectedTabIndex: Int,
     textValue: String,
@@ -121,63 +117,91 @@ private fun SearchScreenContent(
             }
         )
 
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            TextField(
-                text = textValue,
-                modifier = Modifier
-                    .padding(vertical = 8.dp, horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Theme.color.surfaceHigh)
-                    .onFocusChanged {
-                        onFocusChanged(it.isFocused)
-                    },
-                hintText = stringResource(R.string.search_hint_text),
-                isEnabled = true,
-                maxLines = 1,
-                borderColor = Theme.color.stroke,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search
-                ),
-                keyboardActions = KeyboardActions(onSearch = {
-                    listener.onSearchClick()
-                }),
-                onValueChange = listener::onQuerySearchChange,
-                trailingIcon = R.drawable.filter_vertical,
-            )
-        }
-
-        if (isSearching) {
-            TabBar(
-                containerColor = Theme.color.surface,
-                items = listOf(
-                    TabBarItem(
-                        text = stringResource(R.string.movies), isSelected = selectedTabIndex == 0
-                    ), TabBarItem(
-                        text = stringResource(R.string.tv_shows), isSelected = selectedTabIndex == 1
-                    )
-                ),
-                onTabChange = {
-                    onTabChange(it)
-                    //  clearSearchState()
+        TextField(
+            text = textValue,
+            modifier = Modifier
+                .padding(vertical = 8.dp, horizontal = 16.dp),
+            innerModifier = Modifier
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(Theme.color.surfaceHigh)
+                .onFocusChanged {
+                    onFocusChanged(it.isFocused)
                 },
-            )
+            hintText = stringResource(R.string.search_hint_text),
+            isEnabled = true,
+            maxLines = 1,
+            borderColor = Theme.color.stroke,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(onSearch = {
+                listener::onSearchClick
+            }),
+            onValueChange = listener::onSearchClick,
+            trailingIcon = R.drawable.filter_vertical,
+        )
 
-            if (selectedTabIndex == 0) {
-                when {
-                    searchMoviesUiState.isLoading -> {
+        when (searchState) {
+            is SearchUiState.Init -> {
+                Text(
+                    stringResource(R.string.search_suggestions_hub),
+                    color = Theme.color.textColors.title,
+                    style = Theme.textStyle.title.medium,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
+                )
+
+                SearchSuggestionHub(
+                    Modifier.padding(horizontal = 16.dp),
+                    onWorldTourClick = {},
+                    onFindActorClick = {}
+                )
+
+                NoDataSearch()
+
+            }
+
+            is SearchUiState.Searching -> {
+                // Handle success state if needed
+                TabBar(
+                    containerColor = Theme.color.surface,
+                    items = listOf(
+                        TabBarItem(
+                            text = stringResource(R.string.movies),
+                            isSelected = selectedTabIndex == 0
+                        ), TabBarItem(
+                            text = stringResource(R.string.tv_shows),
+                            isSelected = selectedTabIndex == 1
+                        )
+                    ),
+                    onTabChange = {
+                        onTabChange(it)
+                    },
+                )
+
+                when (searchState) {
+                    is SearchUiState.Searching.Loading -> {
                         Loading(Modifier)
                     }
 
-                    searchMoviesUiState.error != null -> {
-                        ErrorMessage(Modifier, searchMoviesUiState.error.toString())
-                    }
-
-                    searchMoviesUiState.searchCompleted && searchMoviesUiState.movies.isNotEmpty() -> {
+                    is SearchUiState.Searching.Success -> {
                         ResultGridList(
-                            items = searchMoviesUiState.movies
+                            modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
+                            items = searchState.data
+                        ) { media ->
+                            MediaCard(
+                                modifier = Modifier.size(width = 160.dp, height = 222.dp),
+                                mediaImg = media.poster,
+                                title = media.title,
+                                typeOfMedia = if (selectedTabIndex == 0) "Movies" else "Tv Show",
+                                date = media.releaseYear,
+                                rating = media.rating.toDouble()
+                            )
+                        }
+
+                        ResultGridList(
+                            items = searchState.data
                         ) { media ->
                             MediaCard(
                                 modifier = Modifier.size(width = 160.dp, height = 222.dp),
@@ -188,9 +212,7 @@ private fun SearchScreenContent(
                                 rating = media.rating.toDouble()
                             )
                         }
-                    }
 
-                    searchMoviesUiState.searchCompleted -> {
                         CountryTourExploring(
                             modifier = Modifier,
                             painterResource(com.berlin.ui.R.drawable.no_search_result),
@@ -198,62 +220,17 @@ private fun SearchScreenContent(
                             com.berlin.ui.R.string.please_try_with_another_keyword
                         )
                     }
-                }
-            } else {
-                when {
-                    searchTvShowUiState.isLoading -> {
-                        Loading(Modifier)
-                    }
 
-                    searchTvShowUiState.error != null -> {
-                        ErrorMessage(Modifier, searchMoviesUiState.error.toString())
-                    }
-
-                    searchTvShowUiState.searchCompleted && searchTvShowUiState.tvShow.isNotEmpty() -> {
-                        ResultGridList(
-                            items = searchTvShowUiState.tvShow
-                        ) { media ->
-                            MediaCard(
-                                modifier = Modifier.size(width = 160.dp, height = 222.dp),
-                                mediaImg = media.poster,
-                                title = media.title,
-                                typeOfMedia = "Tv Show",
-                                date = media.releaseYear,
-                                rating = media.rating.toDouble()
-                            )
-                        }
-                    }
-
-                    searchTvShowUiState.searchCompleted -> {
-                        CountryTourExploring(
-                            modifier = Modifier,
-                            painterResource(com.berlin.ui.R.drawable.no_search_result),
-                            com.berlin.ui.R.string.no_search_result,
-                            com.berlin.ui.R.string.please_try_with_another_keyword
-                        )
+                    is SearchUiState.Searching.Error -> {
+                        ErrorMessage(Modifier, searchState.errorMessage)
                     }
                 }
+
             }
 
-
-        } else {
-            Text(
-                stringResource(R.string.search_suggestions_hub),
-                color = Theme.color.textColors.title,
-                style = Theme.textStyle.title.medium,
-                modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
-            )
-
-            SearchSuggestionHub(
-                Modifier.padding(horizontal = 16.dp),
-                onWorldTourClick = {},
-                onFindActorClick = {}
-            )
-
-            NoDataSearch()
-
-            //  SearchData("Fauda")
-
+            is SearchUiState.NoResult -> {
+                // Handle no result state if needed
+            }
         }
     }
 }

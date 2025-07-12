@@ -60,6 +60,7 @@ import com.berlin.designsystem.R
 fun TextField(
     text: String,
     modifier: Modifier = Modifier,
+    innerModifier: Modifier = Modifier,
     style: TextStyle = Theme.textStyle.body.medium,
     hintText: String = "",
     isEnabled: Boolean = true,
@@ -87,7 +88,7 @@ fun TextField(
         else borderColor
     )
 
-    Column {
+    Column (modifier = modifier) {
         AnimatedMessage(
             isError = isError,
             message = errorMessage,
@@ -130,7 +131,7 @@ fun TextField(
                 keyboardActions = keyboardActions,
                 maxLines = maxLines,
                 enabled = isEnabled,
-                modifier = modifier
+                modifier = innerModifier
                     .padding(start = 12.dp)
                     .weight(1f)
                     .defaultMinSize(minHeight = 56.dp)
