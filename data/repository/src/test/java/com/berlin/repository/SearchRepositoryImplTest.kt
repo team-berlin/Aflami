@@ -40,7 +40,7 @@ class SearchRepositoryImplTest {
         coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
 
         // When
-        val result = repository.searchByCountry(country, language)
+        val result = repository.getMoviesByCountry(country, language)
 
         // Then
         assertThat(result).containsExactly(movie, movie, movie)
@@ -55,7 +55,7 @@ class SearchRepositoryImplTest {
         coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
 
         // When
-        val result = repository.searchByCountry(country, language)
+        val result = repository.getMoviesByCountry(country, language)
 
         // Then
         assertThat(result).isEmpty()
@@ -73,7 +73,7 @@ class SearchRepositoryImplTest {
         coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
 
         // When
-        val result = repository.searchByCountry(country, language)
+        val result = repository.getMoviesByCountry(country, language)
 
         // Then
         assertThat(result).containsExactly(movie, movie)
