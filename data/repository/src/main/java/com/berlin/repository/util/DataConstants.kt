@@ -3,6 +3,7 @@ package com.berlin.repository.util
 enum class QueryType(){
     ACTOR,
     COUNTRY,
-    TV
+    TV,
+    MOVIE,
 }
 const val ActingDepartment="Acting"
