@@ -225,7 +225,7 @@ private fun SearchScreenContent(
                         }
 
                         CountryTourExploring(
-                            modifier = Modifier,
+                            modifier = Modifier.fillMaxSize(),
                             painterResource(com.berlin.ui.R.drawable.no_search_result),
                             com.berlin.ui.R.string.no_search_result,
                             com.berlin.ui.R.string.please_try_with_another_keyword
