@@ -24,11 +24,12 @@ fun MovieDto.toLocal(query: String, time: Long, type: String): SearchingEntity {
         id = this.id?.toLong() ?: 0L,
         title = this.title ?: "",
         rating = this.voteAverage ?: 0.0,
-        releaseYear = releaseDate ?: "",
+        releaseYear = (releaseDate ?: "").substringBefore("-"),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
+
 fun MovieDto.toDomain(): Movie {
     return Movie(
         id = this.id?.toLong() ?: 0L,
