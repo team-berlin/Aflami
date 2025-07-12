@@ -34,32 +34,22 @@ android {
 }
 kover {
     reports {
-        filters {
-            includes {
-                classes("**ViewModel")
-                classes("**viewModel")
-                classes("**viewmodel")
-                classes("**Viewmodel")
-            }
-        }
         verify {
             rule {
                 bound {
                     minValue = 80
                 }
-
             }
         }
     }
 }
-    dependencies {
-        androidCoreKtx()
-        lifecycleRuntimeKtx()
-        navigation()
-        koin()
-        test()
-        kotlinDateX()
+dependencies {
+    androidCoreKtx()
+    lifecycleRuntimeKtx()
+    navigation()
+    koin()
+    test()
+    kotlinDateX()
 
-        useCase()
-    }
-
+    useCase()
+}
