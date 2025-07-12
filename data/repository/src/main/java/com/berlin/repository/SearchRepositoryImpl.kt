@@ -61,8 +61,22 @@ class SearchRepositoryImpl(
 
 
     override suspend fun searchMovie(query: String, language: String): List<Movie> {
-        return remoteDataSource.searchMovies(query, language).results?.filterNotNull()
-            ?.map { movieDto -> movieDto.toDomain() } ?: emptyList()
+        val searchCaching = localDataSource.getCachedSearch(query, QueryType.MOVIE.name)
+        val oneHourPassed = searchCaching.find {
+            it.time < (System.currentTimeMillis() + ONE_HOUR_IN_MILLIS)
+        } == null
+        if (searchCaching.isEmpty() || oneHourPassed) {
+            val result = remoteDataSource.searchMovies(query, language).results?.filterNotNull()
+                ?.map { movieDto ->
+                    movieDto.toLocal(
+                        query, System.currentTimeMillis(), QueryType.MOVIE.name
+                    )
+                } ?: emptyList()
+            localDataSource.cacheSearch(result)
+        }
+        return localDataSource.getCachedSearch(query, QueryType.MOVIE.name).map {
+            it.toDomain()
+        }
     }
 
     override suspend fun searchTVShow(query: String, language: String): List<TVShow> {
