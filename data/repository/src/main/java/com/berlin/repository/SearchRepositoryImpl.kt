@@ -1,8 +1,8 @@
 package com.berlin.repository
 
 import com.berlin.entity.Movie
-import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.entity.TVShow
+import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
@@ -23,18 +23,18 @@ class SearchRepositoryImpl(
 
         if (searchCaching.isEmpty() || oneHourPassed) {
             val result = remoteDataSource.searchMoviesByCountry(
-                countryName,
-                language
+                countryName, language
             ).results?.filterNotNull()?.map { movieDto ->
-                    movieDto.toLocal(
-                        countryName, System.currentTimeMillis(), QueryType.COUNTRY.name
-                    )
-                } ?: emptyList()
+                movieDto.toLocal(
+                    countryName, System.currentTimeMillis(), QueryType.COUNTRY.name
+                )
+            } ?: emptyList()
 
             localDataSource.cacheSearch(result)
         }
 
-        return localDataSource.getCachedSearch(countryName, QueryType.COUNTRY.name).map { it.toDomain() }
+        return localDataSource.getCachedSearch(countryName, QueryType.COUNTRY.name)
+            .map { it.toDomain() }
     }
 
     override suspend fun getMoviesByActorName(actorName: String, language: String): List<Movie> {
@@ -47,17 +47,18 @@ class SearchRepositoryImpl(
                 remoteDataSource.searchMoviesByActor(actorName, language).results?.filterNotNull()
                     ?.filter { it.knownForDepartment == ActingDepartment }?.flatMap { person ->
                         person.knownFor?.filterNotNull()?.map {
-                                it.toLocal(
-                                    query = actorName,
-                                    type = QueryType.ACTOR.name,
-                                    time = System.currentTimeMillis()
-                                )
-                            } ?: emptyList()
+                            it.toLocal(
+                                query = actorName,
+                                type = QueryType.ACTOR.name,
+                                time = System.currentTimeMillis()
+                            )
+                        } ?: emptyList()
                     } ?: emptyList()
             localDataSource.cacheSearch(result)
         }
 
-        return localDataSource.getCachedSearch(actorName, QueryType.ACTOR.name).map { it.toDomain() }
+        return localDataSource.getCachedSearch(actorName, QueryType.ACTOR.name)
+            .map { it.toDomain() }
     }
 
 
@@ -82,15 +83,14 @@ class SearchRepositoryImpl(
 
     override suspend fun searchTVShow(query: String, language: String): List<TVShow> {
         val searchCaching = localDataSource.getCachedSearch(query, QueryType.TV.name)
-        val isCacheStale = searchCaching.any { it.time < System.currentTimeMillis() - ONE_HOUR_IN_MILLIS }
+        val isCacheStale =
+            searchCaching.any { it.time < System.currentTimeMillis() - ONE_HOUR_IN_MILLIS }
 
         if (searchCaching.isEmpty() || isCacheStale) {
             val result = remoteDataSource.searchTvShows(query, language).results?.filterNotNull()
                 ?.map { tvShowDto ->
                     tvShowDto.toLocal(
-                        query = query,
-                        type = QueryType.TV.name,
-                        time = System.currentTimeMillis()
+                        query = query, type = QueryType.TV.name, time = System.currentTimeMillis()
                     )
                 } ?: emptyList()
 
@@ -99,7 +99,6 @@ class SearchRepositoryImpl(
 
         return localDataSource.getCachedSearch(query, QueryType.TV.name).map { it.toTVShow() }
     }
-
 
 
     companion object {

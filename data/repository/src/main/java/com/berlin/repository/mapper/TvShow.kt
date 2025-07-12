@@ -14,7 +14,6 @@ fun TVShowDto.toDomain(): TVShow {
         releaseYear = (((this.firstAirDate ?: "")).toLocalDate()),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster ="https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}",
-        description = ""
     )
 }
 
@@ -39,6 +38,5 @@ fun SearchingEntity.toTVShow(): TVShow {
         releaseYear = this.releaseYear.toLocalDate(),
         genre = this.genre,
         poster = this.poster,
-        description = ""
     )
 }
