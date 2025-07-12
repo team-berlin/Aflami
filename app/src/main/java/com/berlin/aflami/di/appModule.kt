@@ -33,6 +33,7 @@ val appModule = module {
                 json(
                     Json {
                         ignoreUnknownKeys = true
+                        classDiscriminator = "media_type"
                     }
                 )
             }

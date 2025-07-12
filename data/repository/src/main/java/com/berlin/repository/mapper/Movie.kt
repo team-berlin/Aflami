@@ -29,5 +29,14 @@ fun MovieDto.toLocal(query: String, time: Long, type: String): SearchingEntity {
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
-
+fun MovieDto.toDomain(): Movie {
+    return Movie(
+        id = this.id?.toLong() ?: 0L,
+        title = this.title.orEmpty(),
+        rating = (this.voteAverage ?: 0.0),
+        releaseYear = (((this.releaseDate ?: "")).toLocalDate()),
+        genre = this.genreIds?.filterNotNull() ?: emptyList(),
+        poster = "https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}"
+    )
+}
 const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
