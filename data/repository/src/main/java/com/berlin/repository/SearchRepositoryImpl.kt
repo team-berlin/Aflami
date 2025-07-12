@@ -6,6 +6,7 @@ import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
+import com.berlin.repository.mapper.toTVShow
 import com.berlin.repository.util.ActingDepartment
 import com.berlin.repository.util.QueryType
 import repository.SearchRepository
@@ -66,9 +67,26 @@ class SearchRepositoryImpl(
     }
 
     override suspend fun searchTVShow(query: String, language: String): List<TVShow> {
-        return remoteDataSource.searchTvShows(query, language).results?.filterNotNull()
-            ?.map { tvShowDto -> tvShowDto.toDomain() } ?: emptyList()
+        val searchCaching = localDataSource.getCachedSearch(query, QueryType.TV.name)
+        val isCacheStale = searchCaching.any { it.time < System.currentTimeMillis() - ONE_HOUR_IN_MILLIS }
+
+        if (searchCaching.isEmpty() || isCacheStale) {
+            val result = remoteDataSource.searchTvShows(query, language).results?.filterNotNull()
+                ?.map { tvShowDto ->
+                    tvShowDto.toLocal(
+                        query = query,
+                        type = QueryType.TV.name,
+                        time = System.currentTimeMillis()
+                    )
+                } ?: emptyList()
+
+            localDataSource.cacheSearch(result)
+        }
+
+        return localDataSource.getCachedSearch(query, QueryType.TV.name).map { it.toTVShow() }
     }
+
+
 
     companion object {
         const val ONE_HOUR_IN_MILLIS = 3600000L
