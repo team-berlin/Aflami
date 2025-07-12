@@ -47,5 +47,14 @@
     <string name="category_img_content">category img</string>
     <string name="api_image_card_content">api image card</string>
     <string name="drama">أثارة</string>
+    <string name="card_rate">card rate</string>
 
+    <string name="search">البحث</string>
+    <string name="search_hint_text">البحث...</string>
+    <string name="search_suggestions_hub">اقتراحات البحث</string>
+    <string name="recent_searches">عمليات البحث الأخيرة</string>
+    <string name="clear_all">مسح الكل</string>
+    <string name="search_by_actor">ابحث بأسم الممثل</string>
+    <string name="actor_name_hint">اسم الممثل"</string>
+    <string name="find_by_actor_quotation">ابدأ بأكتشاف افلام ممثليك المفضلين واستمتع بها</string>
 </resources>

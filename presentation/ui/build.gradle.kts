@@ -37,12 +37,13 @@ dependencies {
     androidCoreKtx()
     lifecycleRuntimeKtx()
     androidxUi()
-    navigation()
+    navigationCompose()
     koin()
     coil()
     composeUiDebug()
-
     safeImageViewer()
+
     designSystem()
     viewModel()
+    navigation()
 }
