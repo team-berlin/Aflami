@@ -95,27 +95,31 @@ private fun SearchScreenContent(
                 clearSearchState()
             },
     ) {
-        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
-            Text(
-                text = stringResource(R.string.search),
-                style = Theme.textStyle.title.large,
-                color = Theme.color.textColors.title
-            )
-        }, leadingIcon = {
-            Box(
-                Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Theme.color.surfaceHigh), contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    painter = painterResource(R.drawable.arrow_left),
-                    contentDescription = stringResource(R.string.icon_cd),
-                    tint = Theme.color.textColors.title
+        TopBar(
+            modifier = Modifier.padding(vertical = 8.dp),
+            title = {
+                Text(
+                    text = stringResource(R.string.search),
+                    style = Theme.textStyle.title.large,
+                    color = Theme.color.textColors.title
                 )
+            },
+            leadingIcon = {
+                Box(
+                    Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Theme.color.surfaceHigh), contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        painter = painterResource(R.drawable.arrow_left),
+                        contentDescription = stringResource(R.string.icon_cd),
+                        tint = Theme.color.textColors.title
+                    )
+                }
             }
-        })
+        )
 
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
