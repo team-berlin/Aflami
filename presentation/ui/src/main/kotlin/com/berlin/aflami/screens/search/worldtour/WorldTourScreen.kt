@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.CountryTourExploring
@@ -37,6 +38,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WorldTourScreen(
+    navController : NavController,
     viewModel: WorldTourViewModel = koinViewModel()
 ) {
     val worldTourState by viewModel.uiState.collectAsState()

@@ -17,7 +17,7 @@ import com.berlin.designsystem.R
 fun SearchSuggestionHub(
     modifier: Modifier = Modifier,
     onWorldTourClick: () -> Unit,
-    onFindActorClick: () -> Unit
+    onSearchByActorClick: () -> Unit
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -36,7 +36,7 @@ fun SearchSuggestionHub(
         SearchSuggestionItem(
             modifier = Modifier
                 .weight(1f)
-                .clickable { onFindActorClick() },
+                .clickable { onSearchByActorClick() },
             title = stringResource(R.string.find_by_actor),
             subtitle = stringResource(R.string.search_by_favorite_actor),
             gradientBackground = blueLinearGradient,
