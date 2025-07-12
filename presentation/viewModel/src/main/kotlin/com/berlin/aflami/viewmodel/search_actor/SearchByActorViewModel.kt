@@ -32,7 +32,6 @@ class SearchByActorViewModel(
     }
 
     override fun onSearchClicked() {
-        Log.d("findByActor", "onSearchClick")
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -46,7 +45,6 @@ class SearchByActorViewModel(
                 onSearchSuccess(result)
             } catch (exception: Exception) {
                 // TODO:
-                Log.i("findByActorError", exception.message ?: "" )
                 onSearchError(exception.message ?: "Unknown error")
             }
         }
