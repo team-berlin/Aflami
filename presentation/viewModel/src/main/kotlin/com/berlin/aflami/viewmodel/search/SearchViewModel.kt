@@ -34,11 +34,7 @@ class SearchViewModel(
     private val _tvShowUiState = MutableStateFlow(SearchTvShowUiState())
     val tvShowUiState = _tvShowUiState.asStateFlow()
 
-    var isSearching by mutableStateOf(false)
-        private set
-
     fun onFocusChanged(isFocus: Boolean) {
-        isSearching = isFocus
         if (isFocus) {
             _searchUIState.update {
                 SearchUiState.Searching.Loading
@@ -178,5 +174,7 @@ class SearchViewModel(
 
     fun clearSearchState() {
         _searchUIState.update { SearchUiState.Init }
+        _moviesUiState.update { it.copy(movieName = "") }
+        _tvShowUiState.update { it.copy(tvShowName = "") }
     }
 }
