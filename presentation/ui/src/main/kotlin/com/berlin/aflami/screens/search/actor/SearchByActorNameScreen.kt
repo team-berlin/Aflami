@@ -41,13 +41,14 @@ fun SearchByActorNameScreen(
     viewModel: SearchByActorViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    SearchByActorNameContent(uiState, viewModel)
+    SearchByActorNameContent(uiState, viewModel,navController)
 }
 
 @Composable
 private fun SearchByActorNameContent(
     state: SearchByActorScreenUiState,
-    listener: SearchByActorInteractionListener
+    listener: SearchByActorInteractionListener,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -68,7 +69,9 @@ private fun SearchByActorNameContent(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(Theme.color.surfaceHigh)
-                        .clickable { listener::onBackClicked }
+                        .clickable {
+                            navController.popBackStack()
+                        }
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {

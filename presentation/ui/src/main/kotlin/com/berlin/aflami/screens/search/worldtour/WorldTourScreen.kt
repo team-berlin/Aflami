@@ -42,13 +42,14 @@ fun WorldTourScreen(
     viewModel: WorldTourViewModel = koinViewModel()
 ) {
     val worldTourState by viewModel.uiState.collectAsState()
-    WorldTourContent(worldTourState, viewModel)
+    WorldTourContent(worldTourState, viewModel,navController)
 }
 
 @Composable
 private fun WorldTourContent(
     state: WorldTourUiState,
     listener: WorldTourInteractionListener,
+    navController: NavController,
 ) {
     Column(
         modifier = Modifier
@@ -69,7 +70,9 @@ private fun WorldTourContent(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(Theme.color.surfaceHigh)
-                        .clickable { listener::onBackClicked }
+                        .clickable {
+                            navController.popBackStack()
+                        }
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
