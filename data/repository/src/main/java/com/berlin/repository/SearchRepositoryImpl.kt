@@ -13,7 +13,7 @@ class SearchRepositoryImpl(
     private val localDataSource: SearchLocalDataSource,
     private val remoteDataSource: SearchRemoteDataSource
 ) : SearchRepository {
-    override suspend fun searchByCountry(countryName: String, language: String): List<Movie> {
+    override suspend fun getMoviesByCountry(countryName: String, language: String): List<Movie> {
         val searchCaching = localDataSource.getCachedSearch(countryName, QueryType.COUNTRY.name)
         val oneHourPassed = searchCaching.find {
             it.time < (System.currentTimeMillis() + ONE_HOUR_IN_MILLIS)
@@ -35,7 +35,7 @@ class SearchRepositoryImpl(
         return localDataSource.getCachedSearch(countryName, QueryType.COUNTRY.name).map { it.toDomain() }
     }
 
-    override suspend fun searchByActor(actorName: String, language: String): List<Movie> {
+    override suspend fun getMoviesByActorName(actorName: String, language: String): List<Movie> {
         val searchCaching = localDataSource.getCachedSearch(actorName, QueryType.ACTOR.name)
         val isCacheStale =
             searchCaching.any { it.time < System.currentTimeMillis() - 60 * 60 * 1000 }

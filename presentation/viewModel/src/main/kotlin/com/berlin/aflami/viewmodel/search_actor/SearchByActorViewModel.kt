@@ -20,9 +20,9 @@ class SearchByActorViewModel(
     private val _uiState = MutableStateFlow(SearchByActorScreenUiState())
     val uiState = _uiState.asStateFlow()
 
-    init { }
 
-    override fun onBackClick() {
+
+    override fun onBackClicked() {
         //TODO("Not yet implemented")
     }
 
@@ -31,7 +31,7 @@ class SearchByActorViewModel(
 
     }
 
-    override fun onSearchClick() {
+    override fun onSearchClicked() {
         Log.d("findByActor", "onSearchClick")
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
@@ -60,7 +60,7 @@ class SearchByActorViewModel(
         _uiState.update { it.copy(error = message, isLoading = false) }
     }
 
-    override fun onClickMovie(id: Int) {
+    override fun onMovieClicked(id: Int) {
         //TODO("Not yet implemented")
     }
 }

@@ -18,15 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImage
 
 @Composable
 fun MediaCard(
@@ -42,13 +39,16 @@ fun MediaCard(
             .clip(RoundedCornerShape(16.dp))
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(16.dp))
     ) {
-        AsyncImage(
-            model = mediaImg,
-            contentDescription = stringResource(R.string.api_image_card_content),
+//        AsyncImage(
+//            model = mediaImg,
+//            contentDescription = stringResource(R.string.api_image_card_content),
+//            modifier = Modifier.fillMaxSize(),
+//            contentScale = ContentScale.Crop
+//        )
+        SafeImage(
+            imageUri = mediaImg,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
         )
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()

@@ -36,7 +36,7 @@ class WorldTourViewModel(
         countriesWithCodeMap = countriesWithCode.toMap()
     }
 
-    override fun onBackClick() {
+    override fun onBackClicked() {
         // TODO: ("Not yet implemented")
     }
 
@@ -86,7 +86,7 @@ class WorldTourViewModel(
         }
     }
 
-    override fun onMovieClick(id: Int) {
+    override fun onMovieClicked(id: Int) {
         // TODO("Not yet implemented")
     }
 

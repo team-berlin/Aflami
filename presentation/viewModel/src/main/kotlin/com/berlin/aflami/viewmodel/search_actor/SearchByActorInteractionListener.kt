@@ -1,8 +1,8 @@
 package com.berlin.aflami.viewmodel.search_actor
 
 interface SearchByActorInteractionListener {
-    fun onBackClick()
+    fun onBackClicked()
     fun onActorNameChanged(actorName: CharSequence)
-    fun onSearchClick()
-    fun onClickMovie(id: Int)
+    fun onSearchClicked()
+    fun onMovieClicked(id: Int)
 }

@@ -67,7 +67,7 @@ private fun WorldTourContent(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(Theme.color.surfaceHigh)
-                        .clickable { listener::onBackClick }
+                        .clickable { listener::onBackClicked }
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -117,7 +117,7 @@ private fun WorldTourContent(
 
             MoviesList(
                 movies = state.movies,
-                onMovieClick = listener::onMovieClick
+                onMovieClick = listener::onMovieClicked
             )
 
             AnimatedCountriesList(

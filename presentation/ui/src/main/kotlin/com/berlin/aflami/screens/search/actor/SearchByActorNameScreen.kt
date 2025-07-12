@@ -66,7 +66,7 @@ private fun SearchByActorNameContent(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(Theme.color.surfaceHigh)
-                        .clickable { listener::onBackClick }
+                        .clickable { listener::onBackClicked }
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -92,7 +92,7 @@ private fun SearchByActorNameContent(
             ),
             keyboardActions = KeyboardActions(
                 onSearch = {
-                    listener.onSearchClick()
+                    listener.onSearchClicked()
                     keyboardController?.hide()
                 }
             ),
@@ -117,7 +117,7 @@ private fun SearchByActorNameContent(
 
             MoviesList(
                 movies = state.movies,
-                onMovieClick = listener::onClickMovie
+                onMovieClick = listener::onMovieClicked
             )
         }
     }
