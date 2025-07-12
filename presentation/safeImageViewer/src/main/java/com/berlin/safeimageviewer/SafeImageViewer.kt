@@ -30,7 +30,7 @@ import java.nio.ByteOrder
 
 
 @Composable
-fun SafeImage(
+fun SafeImageViewer(
     imageUri: String,
     modifier: Modifier = Modifier
 ) {
@@ -110,7 +110,7 @@ fun bitmapToByteBuffer(bitmap: Bitmap): ByteBuffer {
 @Composable
 @Preview(showBackground = true)
 fun SafeImagePrev() {
-    SafeImage(
+    SafeImageViewer(
         imageUri = "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=500",
     )
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.berlin.aflami.screens.search.screen.SearchScreen
 import com.berlin.aflami.screens.search.worldtour.WorldTourScreen
 import com.berlin.aflami.ui.theme.AflamiTheme
 
@@ -17,7 +18,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AflamiTheme {
-                WorldTourScreen()
+                SearchScreen()
+                //WorldTourScreen()
                 //SearchByActorNameScreen()
             }
         }

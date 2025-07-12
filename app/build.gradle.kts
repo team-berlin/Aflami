@@ -14,6 +14,8 @@ val properties = Properties().apply {
     load(rootProject.file("local.properties").inputStream())
 }
 
+
+
 android {
     namespace = "com.berlin.aflami"
     compileSdk = 35

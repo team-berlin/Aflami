@@ -40,6 +40,7 @@ dependencies {
     androidCoreKtx()
     androidxUi()
     coil()
+    safeImageViewer()
     composeUiDebug()
 
     safeImageViewer()

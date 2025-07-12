@@ -41,7 +41,6 @@ dependencies {
     koin()
     coil()
     composeUiDebug()
-
     safeImageViewer()
     designSystem()
     viewModel()
