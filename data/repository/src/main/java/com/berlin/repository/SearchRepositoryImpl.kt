@@ -5,6 +5,8 @@ import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
+import com.berlin.repository.util.ActingDepartment
+import com.berlin.repository.util.QueryType
 import repository.SearchRepository
 
 class SearchRepositoryImpl(
@@ -12,7 +14,7 @@ class SearchRepositoryImpl(
     private val remoteDataSource: SearchRemoteDataSource
 ) : SearchRepository {
     override suspend fun searchByCountry(countryName: String, language: String): List<Movie> {
-        val searchCaching = localDataSource.getCachedSearch(countryName, "country")
+        val searchCaching = localDataSource.getCachedSearch(countryName, QueryType.COUNTRY.name)
         val oneHourPassed = searchCaching.find {
             it.time < (System.currentTimeMillis() + ONE_HOUR_IN_MILLIS)
         } == null
@@ -23,29 +25,29 @@ class SearchRepositoryImpl(
                 language
             ).results?.filterNotNull()?.map { movieDto ->
                     movieDto.toLocal(
-                        countryName, System.currentTimeMillis(), "country"
+                        countryName, System.currentTimeMillis(), QueryType.COUNTRY.name
                     )
                 } ?: emptyList()
 
             localDataSource.cacheSearch(result)
         }
 
-        return localDataSource.getCachedSearch(countryName, "country").map { it.toDomain() }
+        return localDataSource.getCachedSearch(countryName, QueryType.COUNTRY.name).map { it.toDomain() }
     }
 
     override suspend fun searchByActor(actorName: String, language: String): List<Movie> {
-        val searchCaching = localDataSource.getCachedSearch(actorName, "actor")
+        val searchCaching = localDataSource.getCachedSearch(actorName, QueryType.ACTOR.name)
         val isCacheStale =
             searchCaching.any { it.time < System.currentTimeMillis() - 60 * 60 * 1000 }
 
         if (searchCaching.isEmpty() || isCacheStale) {
             val result =
                 remoteDataSource.searchMoviesByActor(actorName, language).results?.filterNotNull()
-                    ?.filter { it.knownForDepartment == "Acting" }?.flatMap { person ->
+                    ?.filter { it.knownForDepartment == ActingDepartment }?.flatMap { person ->
                         person.knownFor?.filterNotNull()?.map {
                                 it.toLocal(
                                     query = actorName,
-                                    type = "actor",
+                                    type = QueryType.ACTOR.name,
                                     time = System.currentTimeMillis()
                                 )
                             } ?: emptyList()
@@ -53,10 +55,11 @@ class SearchRepositoryImpl(
             localDataSource.cacheSearch(result)
         }
 
-        return localDataSource.getCachedSearch(actorName, "actor").map { it.toDomain() }
+        return localDataSource.getCachedSearch(actorName, QueryType.ACTOR.name).map { it.toDomain() }
     }
 
     companion object {
         const val ONE_HOUR_IN_MILLIS = 3600000L
     }
 }
+
