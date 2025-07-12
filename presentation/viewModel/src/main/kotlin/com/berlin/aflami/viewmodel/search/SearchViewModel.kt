@@ -37,7 +37,7 @@ class SearchViewModel(
     fun onFocusChanged(isFocus: Boolean) {
         if (isFocus) {
             _searchUIState.update {
-                SearchUiState.Searching.Loading
+                SearchUiState.Searching.Init
             }
         }
     }
