@@ -49,6 +49,7 @@
     <string name="category_img_content">category img</string>
     <string name="api_image_card_content">api image card</string>
     <string name="drama">Drama</string>
+    <string name="card_rate">card rate</string>
     <string name="search">Search</string>
     <string name="search_hint_text">Search...</string>
     <string name="search_suggestions_hub">Search Suggestions Hub</string>

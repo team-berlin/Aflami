@@ -60,7 +60,6 @@ import com.berlin.designsystem.R
 fun TextField(
     text: String,
     modifier: Modifier = Modifier,
-    innerModifier: Modifier = Modifier,
     style: TextStyle = Theme.textStyle.body.medium,
     hintText: String = "",
     isEnabled: Boolean = true,
@@ -88,14 +87,14 @@ fun TextField(
         else borderColor
     )
 
-    Column (modifier = modifier) {
+    Column {
         AnimatedMessage(
             isError = isError,
             message = errorMessage,
             style = style,
         )
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .border(
                     width = 1.dp, color = currentBorderColor, shape = RoundedCornerShape(16.dp)
                 )
@@ -131,7 +130,7 @@ fun TextField(
                 keyboardActions = keyboardActions,
                 maxLines = maxLines,
                 enabled = isEnabled,
-                modifier = innerModifier
+                modifier = Modifier
                     .padding(start = 12.dp)
                     .weight(1f)
                     .defaultMinSize(minHeight = 56.dp)
@@ -145,7 +144,7 @@ fun TextField(
                 })
             if (trailingIcon != null) {
                 val imageColor by animateColorAsState(
-                    targetValue = if (text.isEmpty()) Theme.color.textColors.title else Theme.color.textColors.hint
+                    targetValue = if (text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.title
                 )
                 VerticalDivider()
                 TrailingIcon(trailingIcon, imageColor, onTrailingClick)

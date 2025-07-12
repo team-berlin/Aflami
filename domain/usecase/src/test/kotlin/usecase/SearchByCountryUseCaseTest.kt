@@ -5,6 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalDate
 import org.junit.Before
 import org.junit.Test
 import repository.SearchRepository
@@ -23,10 +24,11 @@ class SearchByCountryUseCaseTest {
     fun `When search by valid country name and movies not found, then return empty list`() = runTest {
         // Given
         val countryName = "Eg"
-        coEvery { searchRepository.searchByCountry(countryName) } returns emptyList()
+        val language = "en-US"
+        coEvery { searchRepository.getMoviesByCountry(countryName, language) } returns emptyList()
 
         // When
-        val result = searchByCountryUseCase.invoke(countryName)
+        val result = searchByCountryUseCase.invoke(countryName, language)
 
         // Then
         assertThat(result).isEmpty()
@@ -36,10 +38,11 @@ class SearchByCountryUseCaseTest {
     fun `When search by valid country name, then return list of movies relate to country`() = runTest {
         // Given
         val countryName = "Eg"
-        coEvery { searchRepository.searchByCountry(countryName) } returns getMoviesByCountry()
+        val language = "en-US"
+        coEvery { searchRepository.getMoviesByCountry(countryName, language) } returns getMoviesByCountry()
 
         // When
-        val result = searchByCountryUseCase.invoke(countryName)
+        val result = searchByCountryUseCase.invoke(countryName, language)
 
         // Then
         assertThat(result).isNotEmpty()
@@ -49,22 +52,19 @@ class SearchByCountryUseCaseTest {
     fun `When search by invalid country name, then return list of movies relate to country`() = runTest {
         // Given
         val countryName = "abcd"
-        coEvery { searchRepository.searchByCountry(countryName) } returns emptyList()
+        val language = "en-US"
+        coEvery { searchRepository.getMoviesByCountry(countryName, language) } returns emptyList()
 
         // When
-        val result = searchByCountryUseCase.invoke(countryName)
+        val result = searchByCountryUseCase.invoke(countryName, language)
 
         // Then
         assertThat(result).isEmpty()
     }
 
-    fun getMoviesByCountry(): List<Movie> {
-        return listOf(
-            Movie(0, "a", 0f, "a", "a", emptyList(), "a"),
-            Movie(1, "b", 0f, "b", "b", emptyList(), "b"),
-            Movie(2, "c", 0f, "c", "c", emptyList(), "c"),
-            Movie(3, "d", 0f, "d", "d", emptyList(), "d"),
-            Movie(4, "e", 0f, "e", "e", emptyList(), "e")
-        )
+    private fun getMoviesByCountry(): List<Movie> {
+        return (0..5).map {
+            Movie(it.toLong(), "Filmy", 5.0, LocalDate(2024, 6, 23), emptyList(), "path")
+        }
     }
 }

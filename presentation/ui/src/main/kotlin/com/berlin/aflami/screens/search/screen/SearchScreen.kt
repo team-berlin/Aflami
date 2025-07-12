@@ -118,8 +118,7 @@ private fun SearchScreenContent(
         TextField(
             text = textValue,
             modifier = Modifier
-                .padding(vertical = 8.dp, horizontal = 16.dp),
-            innerModifier = Modifier
+                .padding(vertical = 8.dp, horizontal = 16.dp)
                 .padding(vertical = 8.dp, horizontal = 16.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
@@ -198,7 +197,7 @@ private fun SearchScreenContent(
                                 title = media.title,
                                 typeOfMedia = if (selectedTabIndex == 0) "Movies" else "Tv Show",
                                 date = media.releaseYear,
-                                rating = media.rating.toDouble()
+                                rating = media.rating.toDouble().toString()
                             )
                         }
 
@@ -211,7 +210,7 @@ private fun SearchScreenContent(
                                 title = media.title,
                                 typeOfMedia = "Movies",
                                 date = media.releaseYear,
-                                rating = media.rating.toDouble()
+                                rating = media.rating.toDouble().toString()
                             )
                         }
 

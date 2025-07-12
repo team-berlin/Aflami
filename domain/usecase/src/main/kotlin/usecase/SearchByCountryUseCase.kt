@@ -6,7 +6,7 @@ import repository.SearchRepository
 class SearchByCountryUseCase(
     private val searchRepository: SearchRepository
 ) {
-    suspend operator fun invoke(countryName: String): List<Movie> {
-        return searchRepository.searchByCountry(countryName)
+    suspend operator fun invoke(countryName: String, language: String): List<Movie> {
+        return searchRepository.getMoviesByCountry(countryName, language)
     }
 }

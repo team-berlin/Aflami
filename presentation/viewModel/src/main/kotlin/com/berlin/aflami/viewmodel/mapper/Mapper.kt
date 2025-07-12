@@ -7,10 +7,9 @@ fun Movie.toUIState(): MovieUIState {
     return MovieUIState(
         id = id,
         title = title,
-        rating = rating.toString(),
-        releaseYear = releaseYear.toString(),
-        description = description,
+        rating = rating.toString().take(3),
+        releaseYear = releaseYear.year.toString(),
         genre = genre,
-        poster = poster
+        poster =poster
     )
 }

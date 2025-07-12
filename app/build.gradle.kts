@@ -7,11 +7,14 @@ plugins {
     alias(libs.plugins.firebase.gms.service)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.performance)
+    alias(libs.plugins.ksp)
 }
 
 val properties = Properties().apply {
     load(rootProject.file("local.properties").inputStream())
 }
+
+
 
 android {
     namespace = "com.berlin.aflami"
@@ -58,16 +61,16 @@ dependencies {
     androidxUi()
     koin()
     ktor()
+    room()
     firebase()
     test()
 
-
+    safeImageViewer()
+    designSystem()
+    viewModel()
+    ui()
     useCase()
     repository()
     remote()
-
-    viewModel()
-    safeImageViewer()
-    ui()
-    designSystem()
+    local()
 }
