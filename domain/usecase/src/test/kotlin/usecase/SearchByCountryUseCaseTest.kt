@@ -25,7 +25,7 @@ class SearchByCountryUseCaseTest {
         // Given
         val countryName = "Eg"
         val language = "en-US"
-        coEvery { searchRepository.searchByCountry(countryName, language) } returns emptyList()
+        coEvery { searchRepository.getMoviesByCountry(countryName, language) } returns emptyList()
 
         // When
         val result = searchByCountryUseCase.invoke(countryName, language)
@@ -39,7 +39,7 @@ class SearchByCountryUseCaseTest {
         // Given
         val countryName = "Eg"
         val language = "en-US"
-        coEvery { searchRepository.searchByCountry(countryName, language) } returns getMoviesByCountry()
+        coEvery { searchRepository.getMoviesByCountry(countryName, language) } returns getMoviesByCountry()
 
         // When
         val result = searchByCountryUseCase.invoke(countryName, language)
@@ -53,7 +53,7 @@ class SearchByCountryUseCaseTest {
         // Given
         val countryName = "abcd"
         val language = "en-US"
-        coEvery { searchRepository.searchByCountry(countryName, language) } returns emptyList()
+        coEvery { searchRepository.getMoviesByCountry(countryName, language) } returns emptyList()
 
         // When
         val result = searchByCountryUseCase.invoke(countryName, language)

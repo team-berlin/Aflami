@@ -8,8 +8,8 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 
 @Dao
 interface SearchDao {
-    @Query("SELECT * FROM search_cache WHERE `query` = :query")
-    suspend fun getCachedSearch(query: String): List<SearchingEntity>
+    @Query("SELECT * FROM search_cache WHERE `query` = :query And `type` = :type")
+    suspend fun getCachedSearch(query: String, type: String): List<SearchingEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun cacheSearch(searchCaching: List<SearchingEntity>)

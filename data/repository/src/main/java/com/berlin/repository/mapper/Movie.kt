@@ -16,16 +16,18 @@ fun SearchingEntity.toDomain(): Movie {
     )
 }
 
-fun MovieDto.toLocal(query: String, time: Long): SearchingEntity {
+fun MovieDto.toLocal(query: String, time: Long, type: String): SearchingEntity {
     return SearchingEntity(
         query = query,
-        type = "movie",
+        type = type,
         time = time,
         id = this.id?.toLong() ?: 0L,
         title = this.title ?: "",
         rating = this.voteAverage ?: 0.0,
         releaseYear = releaseDate ?: "",
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}"
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
+
+const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"

@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.worldtour
+package com.berlin.aflami.screens.search.actor
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,26 +27,25 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
-import com.berlin.aflami.screens.search.worldtour.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.searchworldtour.WorldTourInteractionListener
-import com.berlin.aflami.viewmodel.searchworldtour.WorldTourUiState
-import com.berlin.aflami.viewmodel.searchworldtour.WorldTourViewModel
+import com.berlin.aflami.viewmodel.search_actor.SearchByActorInteractionListener
+import com.berlin.aflami.viewmodel.search_actor.SearchByActorScreenUiState
+import com.berlin.aflami.viewmodel.search_actor.SearchByActorViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun WorldTourScreen(
-    viewModel: WorldTourViewModel = koinViewModel()
+fun SearchByActorNameScreen(
+    viewModel: SearchByActorViewModel = koinViewModel()
 ) {
-    val worldTourState by viewModel.uiState.collectAsState()
-    WorldTourContent(worldTourState, viewModel)
+    val uiState by viewModel.uiState.collectAsState()
+    SearchByActorNameContent(uiState, viewModel)
 }
 
 @Composable
-private fun WorldTourContent(
-    state: WorldTourUiState,
-    listener: WorldTourInteractionListener,
+private fun SearchByActorNameContent(
+    state: SearchByActorScreenUiState,
+    listener: SearchByActorInteractionListener
 ) {
     Column(
         modifier = Modifier
@@ -57,7 +56,7 @@ private fun WorldTourContent(
             modifier = Modifier.padding(vertical = 8.dp),
             title = {
                 Text(
-                    text = stringResource(R.string.country_tour),
+                    text = stringResource(R.string.find_by_actor),
                     style = Theme.textStyle.title.large,
                     color = Theme.color.textColors.title,
                 )
@@ -82,19 +81,21 @@ private fun WorldTourContent(
 
         val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
-            text = state.countryName,
-            hintText = stringResource(R.string.country_name),
+            text = state.actorName,
+            hintText = stringResource(R.string.find_by_actor),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 4.dp),
-            onValueChange = listener::onCountryNameChanged,
+            onValueChange = listener::onActorNameChanged,
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
+                imeAction = ImeAction.Search
             ),
             keyboardActions = KeyboardActions(
-                onDone = {
+                onSearch = {
+                    listener.onSearchClicked()
                     keyboardController?.hide()
-                }),
+                }
+            ),
             isEnabled = true,
             borderColor = Theme.color.stroke,
             maxLines = 1,
@@ -103,15 +104,14 @@ private fun WorldTourContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
-            contentAlignment = Alignment.TopCenter
+                .weight(1f)
         ) {
             if (state.movies.isEmpty()) {
                 CountryTourExploring(
                     modifier = Modifier.padding(top = 143.dp),
-                    image = painterResource(R.drawable.world_tour),
-                    titleId = R.string.country_tour,
-                    messageId = R.string.country_tour_description
+                    image = painterResource(R.drawable.find_by_actor),
+                    titleId = R.string.find_by_actor,
+                    messageId = R.string.find_by_actor_quotation
                 )
             }
 
@@ -119,13 +119,7 @@ private fun WorldTourContent(
                 movies = state.movies,
                 onMovieClick = listener::onMovieClicked
             )
-
-            AnimatedCountriesList(
-                visible = state.dropDownExpanded,
-                filteredCountries = state.filteredCountries,
-                onCountryNameChanged = listener::onCountryNameChanged,
-                onCountryClick = listener::onCountrySelected
-            )
         }
     }
 }
+
