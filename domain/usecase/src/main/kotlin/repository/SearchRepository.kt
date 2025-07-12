@@ -1,7 +1,7 @@
 package repository
 
 import com.berlin.entity.Movie
-import com.berlin.entity.TvShow
+import com.berlin.entity.TVShow
 
 interface SearchRepository {
     suspend fun searchByCountry(countryName: String): List<Movie>
@@ -9,5 +9,5 @@ interface SearchRepository {
 
     suspend fun searchMovie(query: String): List<Movie>
 
-    suspend fun searchTvShow(query: String): List<TvShow>
+    suspend fun searchTvShow(query: String): List<TVShow>
 }

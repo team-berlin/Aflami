@@ -1,9 +1,9 @@
 package com.berlin.aflami.viewmodel.mapper
 
 import com.berlin.aflami.viewmodel.uistate.TvShowUiState
-import com.berlin.entity.TvShow
+import com.berlin.entity.TVShow
 
-fun TvShow.toUiState(): TvShowUiState {
+fun TVShow.toUiState(): TvShowUiState {
     return TvShowUiState(
         id = id,
         title = title,

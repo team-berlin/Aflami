@@ -2,7 +2,7 @@ package com.berlin.entity
 
 import kotlinx.datetime.LocalDate
 
-data class TvShow(
+data class TVShow(
     val id :Long,
     val title:String,
     val rating:Double,

@@ -1,7 +1,7 @@
 package com.berlin.repository
 
 import com.berlin.entity.Movie
-import com.berlin.entity.TvShow
+import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import repository.SearchRepository
@@ -27,7 +27,7 @@ class SearchRepositoryImpl(
             ?: emptyList()
     }
 
-    override suspend fun searchTvShow(query: String): List<TvShow> {
+    override suspend fun searchTvShow(query: String): List<TVShow> {
         return remoteDataSource.searchTvShows(query).results
             ?.filterNotNull()
             ?.map { tvShowDto -> tvShowDto.toDomain() }
