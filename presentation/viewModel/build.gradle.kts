@@ -46,7 +46,6 @@ kover {
 dependencies {
     androidCoreKtx()
     lifecycleRuntimeKtx()
-    navigation()
     koin()
     test()
     kotlinDateX()

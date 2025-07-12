@@ -1,11 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "com.berlin.ui"
+    namespace = "com.berlin.navigation"
     compileSdk = 35
 
     defaultConfig {
@@ -34,16 +33,12 @@ android {
 }
 
 dependencies {
+
     androidCoreKtx()
     lifecycleRuntimeKtx()
     androidxUi()
     navigationCompose()
     koin()
-    coil()
-    composeUiDebug()
-    safeImageViewer()
+    ktor()
 
-    designSystem()
-    viewModel()
-    navigation()
 }

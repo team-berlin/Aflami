@@ -58,6 +58,7 @@ android {
 dependencies {
     androidCoreKtx()
     lifecycleRuntimeKtx()
+    navigationCompose()
     androidxUi()
     koin()
     ktor()
@@ -68,6 +69,7 @@ dependencies {
     safeImageViewer()
     designSystem()
     viewModel()
+    navigation()
     ui()
     useCase()
     repository()

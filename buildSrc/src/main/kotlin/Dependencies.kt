@@ -96,7 +96,7 @@ fun DependencyHandler.room(){
     ksp(Dependencies.roomCompiler)
 }
 
-fun DependencyHandler.navigation() {
+fun DependencyHandler.navigationCompose() {
     implementation(Dependencies.navigationCompose)
 }
 
@@ -138,6 +138,11 @@ fun DependencyHandler.designSystem() {
 fun DependencyHandler.viewModel() {
     implementation(project(":presentation:viewModel"))
 }
+
+fun DependencyHandler.navigation() {
+    implementation(project(":presentation:navigation"))
+}
+
 fun DependencyHandler.safeImageViewer() {
     implementation(project(":presentation:safeImageViewer"))
 }

@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.SearchSuggestionHub
 import com.berlin.aflami.component.TabBar
@@ -44,10 +45,12 @@ import com.berlin.aflami.viewmodel.search.SearchInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.designsystem.R
+import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
+    navController : NavController,
     viewModel: SearchViewModel = koinViewModel()
 ) {
     val searchState by viewModel.searchUIState.collectAsState()
@@ -59,6 +62,7 @@ fun SearchScreen(
     val textValue = if (selectedTabIndex == 0) movieState.movieName else tvShowState.tvShowName
 
     SearchScreenContent(
+        navController = navController,
         searchState = searchState,
         listener = viewModel,
         textValue = textValue,
@@ -71,6 +75,7 @@ fun SearchScreen(
 
 @Composable
 private fun SearchScreenContent(
+    navController: NavController,
     searchState: SearchUiState,
     listener: SearchInteractionListener,
     selectedTabIndex: Int,
@@ -125,7 +130,6 @@ private fun SearchScreenContent(
             text = textValue,
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 16.dp)
-                .padding(vertical = 8.dp, horizontal = 16.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
                 .background(Theme.color.surfaceHigh)
@@ -157,8 +161,8 @@ private fun SearchScreenContent(
 
                 SearchSuggestionHub(
                     Modifier.padding(horizontal = 16.dp),
-                    onWorldTourClick = {},
-                    onFindActorClick = {}
+                    onWorldTourClick = {navController.navigate(Destination.WorldTourScreen.route)},
+                    onSearchByActorClick = {navController.navigate(Destination.SearchByActorNameScreen.route)}
                 )
 
                 NoDataSearch()
@@ -246,6 +250,6 @@ private fun SearchScreenContent(
 @Composable
 private fun SearchScreenPreview() {
     AflamiTheme {
-        SearchScreen()
+//        SearchScreen()
     }
 }

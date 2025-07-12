@@ -12,8 +12,8 @@ fun TVShowDto.toDomain(): TVShow {
     return TVShow(
         id = this.id?.toLong() ?: 0L,
         title = this.name.orEmpty(),
-        rating = this.voteAverage?.toFloat() ?: 0.0f,
-        releaseYear = (((this.firstAirDate ?: "")).toLocalDate()).toString(),
+        rating = this.voteAverage?.toDouble() ?: 0.0,
+        releaseYear = (((this.firstAirDate ?: "")).toLocalDate()),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster ="https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}",
     )
