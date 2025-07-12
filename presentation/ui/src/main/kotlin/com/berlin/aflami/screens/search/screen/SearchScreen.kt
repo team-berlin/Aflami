@@ -86,7 +86,6 @@ private fun SearchScreenContent(
             .background(Theme.color.surface)
             .clickable(
                 indication = null, interactionSource = remember { MutableInteractionSource() }) {
-                clearSearchState()
             },
     ) {
         TopBar(
@@ -103,7 +102,14 @@ private fun SearchScreenContent(
                     Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Theme.color.surfaceHigh), contentAlignment = Alignment.Center
+                        .background(Theme.color.surfaceHigh)
+                        .clickable {
+                            clearSearchState()
+                        }
+                        .onFocusChanged {
+                            onFocusChanged(it.isFocused)
+                        }, contentAlignment = Alignment.Center
+
                 ) {
                     Icon(
                         modifier = Modifier.size(20.dp),

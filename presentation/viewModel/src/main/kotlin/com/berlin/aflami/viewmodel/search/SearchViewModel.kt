@@ -178,5 +178,7 @@ class SearchViewModel(
 
     fun clearSearchState() {
         _searchUIState.update { SearchUiState.Init }
+        _moviesUiState.update { it.copy(movieName = "") }
+        _tvShowUiState.update { it.copy(tvShowName = "") }
     }
 }
