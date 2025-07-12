@@ -21,7 +21,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +45,7 @@ import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.ResultGridList
+import com.berlin.aflami.screens.search.components.SearchData
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.SearchInteractionListener
@@ -64,6 +67,7 @@ fun SearchScreen(
     val selectedTabIndex = viewModel.selectTabIndex
 
     val textValue = if (selectedTabIndex == 0) movieState.movieName else tvShowState.tvShowName
+    var showFilterDialog by remember { mutableStateOf(false) }
 
     SearchScreenContent(
         searchMoviesUiState = movieState,
@@ -72,6 +76,8 @@ fun SearchScreen(
         textValue = textValue,
         isSearching = isSearching,
         selectedTabIndex = selectedTabIndex,
+        showFilterDialog = showFilterDialog,
+        onShowFilterDialogChange = { showFilterDialog = it },
         onFocusChanged = viewModel::onFocusChanged,
         onTabChange = viewModel::onTabChange,
         clearSearchState = viewModel::clearSearchState
@@ -86,6 +92,8 @@ private fun SearchScreenContent(
     listener: SearchInteractionListener,
     selectedTabIndex: Int,
     textValue: String,
+    showFilterDialog: Boolean,
+    onShowFilterDialogChange: (Boolean) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
     onTabChange: (Int) -> Unit,
     clearSearchState: () -> Unit
@@ -155,6 +163,7 @@ private fun SearchScreenContent(
                 }),
                 onValueChange = listener::onQuerySearchChanged,
                 trailingIcon = R.drawable.filter_vertical,
+                onTrailingClick = { onShowFilterDialogChange(true) }
             )
         }
 
@@ -173,7 +182,7 @@ private fun SearchScreenContent(
                 ),
                 onTabChange = {
                     onTabChange(it)
-                   //  clearSearchState()
+                    // clearSearchState()
                 },
             )
 
@@ -246,8 +255,6 @@ private fun SearchScreenContent(
                     }
                 }
             }
-
-
         } else {
             Text(
                 stringResource(R.string.search_suggestions_hub),
@@ -263,9 +270,13 @@ private fun SearchScreenContent(
             )
 
             NoDataSearch()
+            SearchData("No Good")
+        }
 
-            //  SearchData("Fauda")
-
+        if (showFilterDialog) {
+            FilterDialog(
+                onDismiss = { onShowFilterDialogChange(false) }
+            )
         }
     }
 }
