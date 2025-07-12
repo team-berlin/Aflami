@@ -12,14 +12,19 @@ import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import java.util.Locale
 
+@OptIn(FlowPreview::class)
 class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
     private val searchTvShowsUseCase: GetSearchTvShowsUseCase
@@ -34,6 +39,20 @@ class SearchViewModel(
     private val _tvShowUiState = MutableStateFlow(SearchTvShowUiState())
     val tvShowUiState = _tvShowUiState.asStateFlow()
 
+    private val _queryFlow = MutableStateFlow("")
+
+    init{
+        viewModelScope.launch {
+            _queryFlow
+                .debounce(300)
+                .filter { it.isNotEmpty() }
+                .distinctUntilChanged()
+                .collect { query ->
+                    onSearchClick(query)
+                }
+        }
+    }
+
     fun onFocusChanged(isFocus: Boolean) {
         if (isFocus) {
             _searchUIState.update {
@@ -41,6 +60,7 @@ class SearchViewModel(
             }
         }
     }
+
 
     var selectTabIndex by mutableIntStateOf(0)
         private set
@@ -52,11 +72,15 @@ class SearchViewModel(
             1 -> moviesUiState.value.movieName
             else -> ""
         }
-        onSearchClick(query)
+       updateSearchQuery(query)
     }
 
     override fun onBackClick() {
         TODO("Not yet implemented")
+    }
+
+    fun updateSearchQuery(query: String) {
+        _queryFlow.value = query
     }
 
     override fun onSearchClick(query: CharSequence) {

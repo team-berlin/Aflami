@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -85,42 +86,38 @@ private fun SearchScreenContent(
             .fillMaxSize()
             .background(Theme.color.surface)
             .clickable(
-                indication = null, interactionSource = remember { MutableInteractionSource() }) {
-            },
+                indication = null, interactionSource = remember { MutableInteractionSource() }) {},
     ) {
-        TopBar(
-            modifier = Modifier.padding(vertical = 8.dp),
-            title = {
-                Text(
-                    text = stringResource(R.string.search),
-                    style = Theme.textStyle.title.large,
-                    color = Theme.color.textColors.title
+        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+            Text(
+                text = stringResource(R.string.search),
+                style = Theme.textStyle.title.large,
+                color = Theme.color.textColors.title
+            )
+        }, leadingIcon = {
+            Box(
+                Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Theme.color.surfaceHigh)
+                    .clickable {
+                        clearSearchState()
+                    }
+                    .onFocusChanged {
+                        onFocusChanged(it.isFocused)
+                    }, contentAlignment = Alignment.Center
+
+            ) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    painter = painterResource(R.drawable.arrow_left),
+                    contentDescription = stringResource(R.string.icon_cd),
+                    tint = Theme.color.textColors.title
                 )
-            },
-            leadingIcon = {
-                Box(
-                    Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Theme.color.surfaceHigh)
-                        .clickable {
-                            clearSearchState()
-                        }
-                        .onFocusChanged {
-                            onFocusChanged(it.isFocused)
-                        }, contentAlignment = Alignment.Center
-
-                ) {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        painter = painterResource(R.drawable.arrow_left),
-                        contentDescription = stringResource(R.string.icon_cd),
-                        tint = Theme.color.textColors.title
-                    )
-                }
             }
-        )
+        })
 
+        val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
             text = textValue,
             modifier = Modifier
@@ -139,9 +136,11 @@ private fun SearchScreenContent(
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Search
             ),
-            keyboardActions = KeyboardActions(onSearch = {
-                listener::onSearchClick
-            }),
+            keyboardActions = KeyboardActions(
+                onDone = { keyboardController?.hide() },
+                onSearch = {
+                    listener::onSearchClick
+                }),
             onValueChange = listener::onSearchClick,
             trailingIcon = R.drawable.filter_vertical,
         )
@@ -158,8 +157,7 @@ private fun SearchScreenContent(
                 SearchSuggestionHub(
                     Modifier.padding(horizontal = 16.dp),
                     onWorldTourClick = {},
-                    onFindActorClick = {}
-                )
+                    onFindActorClick = {})
 
                 NoDataSearch()
 
@@ -221,7 +219,7 @@ private fun SearchScreenContent(
                         }
 
                         CountryTourExploring(
-                            modifier = Modifier,
+                            modifier = Modifier.fillMaxSize().align(Alignment.CenterHorizontally),
                             painterResource(com.berlin.ui.R.drawable.no_search_result),
                             com.berlin.ui.R.string.no_search_result,
                             com.berlin.ui.R.string.please_try_with_another_keyword
