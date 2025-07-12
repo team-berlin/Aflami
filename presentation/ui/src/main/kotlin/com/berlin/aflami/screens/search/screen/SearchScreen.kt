@@ -41,8 +41,6 @@ import com.berlin.aflami.screens.search.components.ResultGridList
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.SearchInteractionListener
-import com.berlin.aflami.viewmodel.search.SearchMoviesUiState
-import com.berlin.aflami.viewmodel.search.SearchTvShowUiState
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.designsystem.R
@@ -181,6 +179,10 @@ private fun SearchScreenContent(
                 )
 
                 when (searchState) {
+                    is SearchUiState.Searching.Init -> {
+                        NoDataSearch()
+                    }
+
                     is SearchUiState.Searching.Loading -> {
                         Loading(Modifier)
                     }

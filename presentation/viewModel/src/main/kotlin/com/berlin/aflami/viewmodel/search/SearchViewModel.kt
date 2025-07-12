@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.search
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -64,8 +65,12 @@ class SearchViewModel(
     }
 
     override fun onSearchClick(query: CharSequence) {
-        if (query.isBlank()) {
-            _searchUIState.update { SearchUiState.Init }
+        if (query.toString().isBlank()) {
+            _searchUIState.update { SearchUiState.Searching.Init }
+            when (selectTabIndex) {
+                0 -> _moviesUiState.update { it.copy(movieName = "") }
+                1 -> _tvShowUiState.update { it.copy(tvShowName = "") }
+            }
             return
         }
         when (selectTabIndex) {
