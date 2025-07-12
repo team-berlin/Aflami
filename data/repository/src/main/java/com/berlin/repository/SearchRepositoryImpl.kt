@@ -6,13 +6,14 @@ import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
 import repository.SearchRepository
+import kotlin.collections.filterNotNull
 
 class SearchRepositoryImpl(
     private val localDataSource: SearchLocalDataSource,
     private val remoteDataSource: SearchRemoteDataSource
 ) : SearchRepository {
     override suspend fun searchByCountry(countryName: String, language: String): List<Movie> {
-        val searchCaching = localDataSource.getCachedSearch(countryName)
+        val searchCaching = localDataSource.getCachedSearch(countryName, "country")
         val oneHourPassed =
             searchCaching.find {
                 it.time < (System.currentTimeMillis() + ONE_HOUR_IN_MILLIS)
@@ -21,7 +22,7 @@ class SearchRepositoryImpl(
         if (searchCaching.isEmpty() || oneHourPassed) {
             val result = remoteDataSource.searchMoviesByCountry(countryName, language).results
                 ?.filterNotNull()
-                ?.map { movieDto -> movieDto.toLocal(countryName, System.currentTimeMillis()) }
+                ?.map { movieDto -> movieDto.toLocal(countryName, System.currentTimeMillis(), "country") }
                 ?: emptyList()
 
             localDataSource.cacheSearch(result)
@@ -51,6 +52,7 @@ class SearchRepositoryImpl(
                 } ?: emptyList()
             localDataSource.cacheSearch(result)
         }
+
         return localDataSource.getCachedSearch(actorName, "actor").map { it.toDomain() }
     }
 

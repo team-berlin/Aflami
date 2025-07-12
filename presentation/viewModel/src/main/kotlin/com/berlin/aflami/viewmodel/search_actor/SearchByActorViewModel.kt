@@ -28,10 +28,11 @@ class SearchByActorViewModel(
 
     override fun onActorNameChanged(actorName: CharSequence) {
         _uiState.update { it.copy(actorName = actorName.toString()) }
-        Log.i("findByActor", _uiState.value.actorName)
+
     }
 
     override fun onSearchClick() {
+        Log.d("findByActor", "onSearchClick")
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             try {

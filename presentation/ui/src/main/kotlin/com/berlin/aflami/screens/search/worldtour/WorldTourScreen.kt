@@ -29,9 +29,9 @@ import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.worldtour.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.search_world_tour.WorldTourInteractionListener
-import com.berlin.aflami.viewmodel.search_world_tour.WorldTourUiState
-import com.berlin.aflami.viewmodel.search_world_tour.WorldTourViewModel
+import com.berlin.aflami.viewmodel.searchworldtour.WorldTourInteractionListener
+import com.berlin.aflami.viewmodel.searchworldtour.WorldTourUiState
+import com.berlin.aflami.viewmodel.searchworldtour.WorldTourViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 

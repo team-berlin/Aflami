@@ -7,8 +7,8 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 class SearchLocalDataSourceImpl(
     private val searchDao: SearchDao
 ) : SearchLocalDataSource {
-    override suspend fun getCachedSearch(query: String): List<SearchingEntity> {
-        return searchDao.getCachedSearch(query)
+    override suspend fun getCachedSearch(query: String,type:String): List<SearchingEntity> {
+        return searchDao.getCachedSearch(query,type)
     }
 
     override suspend fun cacheSearch(movies: List<SearchingEntity>) {

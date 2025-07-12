@@ -10,8 +10,8 @@
     <string name="countries">الدول</string>
     <string name="country_tour_exploring">جولة حول العالم</string>
     <string name="arrow_back">سهم للخلف</string>
-    <string name="actor_name">Actor name</string>
-    <string name="find_by_actor">Find by actor</string>
-    <string name="start_exploring_your_favorite_actor_s_movies_and_enjoy_it">Start exploring your favorite actor’s movies and enjoy it.</string>
-
+    <string name="actor_name">اسم الممثل</string>
+    <string name="find_by_actor">ابحث باسم الممثل</string>
+    <string name="find_by_actor_quotation">ابدأ باستكشاف افلام لممثلك المفضل واستمتع بها.</string>
+    Start exploring your favorite actor’s movies and enjoy it.
 </resources>

@@ -16,10 +16,10 @@ fun SearchingEntity.toDomain(): Movie {
     )
 }
 
-fun MovieDto.toLocal(query: String, time: Long): SearchingEntity {
+fun MovieDto.toLocal(query: String, time: Long,type:String): SearchingEntity {
     return SearchingEntity(
         query = query,
-        type = "movie",
+        type = type,
         time = time,
         id = this.id?.toLong() ?: 0L,
         title = this.title ?: "",
