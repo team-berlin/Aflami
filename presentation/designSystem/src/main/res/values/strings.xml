@@ -24,7 +24,7 @@
     <string name="action">Action</string>
 
     <string name="icon_button">Icon button</string>
-  
+
     <string name="world_tour">World Tour</string>
     <string name="explore_world_cinema">Explore World Cinema</string>
 
@@ -49,4 +49,5 @@
     <string name="category_img_content">category img</string>
     <string name="api_image_card_content">api image card</string>
     <string name="drama">Drama</string>
+    <string name="character_image">Character Image</string>
 </resources>
