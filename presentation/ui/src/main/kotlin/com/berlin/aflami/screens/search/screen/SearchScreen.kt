@@ -201,39 +201,29 @@ private fun SearchScreenContent(
                     }
 
                     is SearchUiState.Searching.Success -> {
-                        ResultGridList(
-                            modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
-                            items = searchState.data
-                        ) { media ->
-                            MediaCard(
-                                modifier = Modifier.size(width = 160.dp, height = 222.dp),
-                                mediaImg = media.poster,
-                                title = media.title,
-                                typeOfMedia = if (selectedTabIndex == 0) "Movies" else "Tv Show",
-                                date = media.releaseYear,
-                                rating = media.rating.toDouble().toString()
+                        if (searchState.data.size == 0) {
+                            CountryTourExploring(
+                                modifier = Modifier.fillMaxSize().align(Alignment.CenterHorizontally),
+                                painterResource(com.berlin.ui.R.drawable.no_search_result),
+                                com.berlin.ui.R.string.no_search_result,
+                                com.berlin.ui.R.string.please_try_with_another_keyword
                             )
+                        } else {
+                            ResultGridList(
+                                modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
+                                items = searchState.data
+                            ) { media ->
+                                MediaCard(
+                                    modifier = Modifier.size(width = 160.dp, height = 222.dp),
+                                    mediaImg = media.poster,
+                                    title = media.title,
+                                    typeOfMedia = if (selectedTabIndex == 0) "Movies" else "Tv Show",
+                                    date = media.releaseYear.substringBefore("-"),
+                                    rating = media.rating.toDouble().toString()
+                                )
+                            }
                         }
 
-                        ResultGridList(
-                            items = searchState.data
-                        ) { media ->
-                            MediaCard(
-                                modifier = Modifier.size(width = 160.dp, height = 222.dp),
-                                mediaImg = media.poster,
-                                title = media.title,
-                                typeOfMedia = "Movies",
-                                date = media.releaseYear,
-                                rating = media.rating.toDouble().toString()
-                            )
-                        }
-
-                        CountryTourExploring(
-                            modifier = Modifier.fillMaxSize().align(Alignment.CenterHorizontally),
-                            painterResource(com.berlin.ui.R.drawable.no_search_result),
-                            com.berlin.ui.R.string.no_search_result,
-                            com.berlin.ui.R.string.please_try_with_another_keyword
-                        )
                     }
 
                     is SearchUiState.Searching.Error -> {
@@ -244,7 +234,12 @@ private fun SearchScreenContent(
             }
 
             is SearchUiState.NoResult -> {
-                // Handle no result state if needed
+                CountryTourExploring(
+                    modifier = Modifier.fillMaxSize().align(Alignment.CenterHorizontally),
+                    painterResource(com.berlin.ui.R.drawable.no_search_result),
+                    com.berlin.ui.R.string.no_search_result,
+                    com.berlin.ui.R.string.please_try_with_another_keyword
+                )
             }
         }
     }
