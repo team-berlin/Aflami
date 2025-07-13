@@ -1,8 +1,9 @@
-package com.berlin.aflami.viewmodel.mediaDetails
+package com.berlin.aflami.viewmodel.mediadetails
 
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.addtofavourite.AddToFavouriteInteractionListener
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.createnewlist.CreateNewListInteractionListener
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.rate.RateInteractionListener
+import com.berlin.aflami.viewmodel.mediadetails.TVShowSeasonsInteractionListener
 
 interface MediaInteractionListener :
     RateInteractionListener,
@@ -17,9 +18,15 @@ interface MediaInteractionListener :
 
 }
 
-interface ExtraMediaContentInteractionListener {
+interface ExtraMediaContentInteractionListener : TVShowSeasonsInteractionListener  {
     fun onShowMoreMediaLikeThisClicked()
     fun onShowReviewsClicked()
     fun onShowMediaGalleryClicked()
-    fun onShowComponyProductionClicked()
+    fun onShowCompanyProductionClicked()
+}
+
+interface TVShowSeasonsInteractionListener {
+    fun onShowAllSeasonsClicked()
+    fun onShowSeasonEpisodesClicked(tvShowId: Long, seasonId: Long)
+    fun onHideSeasonEpisodesClicked(seasonId: Long)
 }
