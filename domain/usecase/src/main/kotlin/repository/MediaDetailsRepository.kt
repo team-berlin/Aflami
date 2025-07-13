@@ -1,5 +1,0 @@
-package repository
-
-interface MediaDetailsRepository {
-
-}
