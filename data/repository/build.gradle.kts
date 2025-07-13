@@ -41,4 +41,5 @@ dependencies {
     test()
 
     useCase()
+    testImplementation(kotlin("test"))
 }

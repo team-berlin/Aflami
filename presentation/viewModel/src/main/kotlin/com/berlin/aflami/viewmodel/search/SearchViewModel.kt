@@ -240,9 +240,7 @@ class SearchViewModel(
     fun applyFilters(onDismiss: () -> Unit) {
         viewModelScope.launch {
             if (selectTabIndex == 0) {
-                _searchUIState.update {
-                    //it.succed
-                }
+
             } else {
 
             }
