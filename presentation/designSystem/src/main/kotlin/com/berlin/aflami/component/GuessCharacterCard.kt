@@ -1,7 +1,6 @@
 package com.berlin.aflami.component
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,10 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -49,12 +48,11 @@ import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 import kotlin.math.max
-import kotlin.math.roundToInt
 
 @Composable
 fun CharacterCard(
     modifier: Modifier = Modifier,
-    imageRes: Int? = null,
+    imageRes: Painter? = null,
     imageUrl: String? = null,
     blurAmount: Float,
     onHintClicked: () -> Unit,
@@ -73,6 +71,7 @@ fun CharacterCard(
     val imageCornerRadius = if(showHintBar) RoundedCornerShape(topEnd = cornerRadius,
         topStart = cornerRadius) else RoundedCornerShape(cornerRadius)
     val clampedImageHeight = imageHeight.coerceIn(120.dp, 320.dp)
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
     Card(
         modifier = modifier
@@ -110,7 +109,7 @@ fun CharacterCard(
                     )
                 } else if (imageRes != null){
                     Image(
-                        painter = painterResource(id = imageRes),
+                        painter = imageRes,
                         contentDescription = stringResource(R.string.character_image),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -133,7 +132,9 @@ fun CharacterCard(
                         .clickable { onHintClicked() },
                     contentAlignment = Alignment.Center
                 ) {
-                    HorizontalDiagonalRepeatResponsive()
+                    HorizontalDiagonalRepeatResponsive(
+                        icon = painterResource(id = R.drawable.diagonal_stripe),
+                        placeHolderWidth = screenWidth)
                     Row(
                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -165,25 +166,24 @@ fun CharacterCard(
 fun HorizontalDiagonalRepeatResponsive(
     modifier: Modifier = Modifier,
     color: Color = Theme.color.primary,
+    icon: Painter,
+    placeHolderWidth:Dp
 ) {
-    val image = painterResource(id = R.drawable.diagonal_stripe)
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val itemSize = 64.dp
-    val itemCount = screenWidth.value.toInt()
+    val itemCount = placeHolderWidth.value.toInt()
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(32.dp),
-        horizontalArrangement = Arrangement.spacedBy(0.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
+        verticalAlignment = Alignment.Top
     ) {
         repeat(itemCount) {
             Icon(
-                painter = image,
+                painter = icon,
                 contentDescription = null,
                 tint = color,
-                modifier= Modifier.size(40.dp)
+                modifier= Modifier
+                    .height(32.dp)
+                    .width(40.dp),
 
             )
         }
@@ -197,7 +197,7 @@ fun CharacterCardPreview() {
         var blur by remember { mutableFloatStateOf(20f) }
 
         CharacterCard(
-            imageRes = R.drawable.guess_char_img,
+            imageRes = painterResource(id = R.drawable.guess_char_img),
             blurAmount = blur,
             hintIcon = R.drawable.hint_star,
             onHintClicked = {
