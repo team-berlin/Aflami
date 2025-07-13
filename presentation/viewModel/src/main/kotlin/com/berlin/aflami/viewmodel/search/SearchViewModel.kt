@@ -3,7 +3,6 @@ package com.berlin.aflami.viewmodel.search
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,10 +39,16 @@ class SearchViewModel(
     private val _tvShowUiState = MutableStateFlow(SearchTvShowUiState())
     val tvShowUiState = _tvShowUiState.asStateFlow()
 
-    private val _queryFlow = MutableStateFlow("")
-     val queryFlow =_queryFlow
+    private val _filterUiState = MutableStateFlow(FilterUiState())
+    val filterUiState = _filterUiState.asStateFlow()
 
-    init{
+    private val _filterDialogState = MutableStateFlow(false)
+    val filterDialogState = _filterDialogState.asStateFlow()
+
+    private val _queryFlow = MutableStateFlow("")
+    val queryFlow = _queryFlow
+
+    init {
         viewModelScope.launch {
             _queryFlow
                 .debounce(300)
@@ -52,6 +57,28 @@ class SearchViewModel(
                 .collect { query ->
                     onSearchClick(query)
                 }
+        }
+    }
+
+    fun updateRating(rating: Float) {
+        viewModelScope.launch {
+            _filterUiState.update { it.copy(selectedRating = rating) }
+        }
+    }
+
+    fun toggleGenre(genre: GenreType) {
+        viewModelScope.launch {
+            _filterUiState.update { current ->
+                val currentGenres = current.selectedGenre.type
+                val updatedGenres = if (genre == GenreType.ALL) {
+                    GenreType.ALL
+                } else if (currentGenres == GenreType.ALL) {
+                    genre
+                } else {
+                    if (currentGenres == genre) GenreType.ALL else genre
+                }
+                current.copy(selectedGenre = current.selectedGenre.copy(type = updatedGenres))
+            }
         }
     }
 
@@ -74,7 +101,7 @@ class SearchViewModel(
             else -> ""
         }
         Log.d("SearchViewModel", "onTabChange insided viewmoddel: $query")
-       updateSearchQuery(query)
+        updateSearchQuery(query)
     }
 
     override fun onBackClick() {
@@ -119,6 +146,11 @@ class SearchViewModel(
 
     override fun onMovieClick(id: Int) {
         TODO("Not yet implemented")
+    }
+
+    override fun onFilterIconClicked() {
+
+        _filterDialogState.update { true }
     }
 
     private fun searchMedia(mediaType: MediaType) {
@@ -183,6 +215,7 @@ class SearchViewModel(
             )
         }
     }
+
     private fun onSearchTvShowsSuccess(tvShows: List<TVShowUiState>) {
         _searchUIState.update {
             SearchUiState.Searching.Success(
@@ -199,15 +232,77 @@ class SearchViewModel(
             )
         }
     }
+
     private fun onSearchError(error: String) {
         _searchUIState.update { SearchUiState.Searching.Error(error) }
     }
 
+    fun applyFilters(onDismiss: () -> Unit) {
+        viewModelScope.launch {
+            if (selectTabIndex == 0) {
+                _searchUIState.update {
+                    //it.succed
+                }
+            } else {
 
+            }
+            onDismiss()
+        }
+    }
+
+    fun onDismiss() {
+        _filterDialogState.update { false }
+    }
+
+    fun clearFilters() {
+        viewModelScope.launch {
+            _filterUiState.update {
+                FilterUiState()
+            }
+
+        }
+    }
+
+    fun hide() {
+
+    }
 
     fun clearSearchState() {
         _searchUIState.update { SearchUiState.Init }
         _moviesUiState.update { it.copy(movieName = "") }
         _tvShowUiState.update { it.copy(tvShowName = "") }
     }
+}
+
+data class FilterUiState(
+    val selectedRating: Float = 1f,
+    val selectedGenre: GenreUiState = GenreUiState(),
+)
+
+data class GenreUiState(
+    val type: GenreType = GenreType.ALL,
+    val isSelected: Boolean = true
+)
+
+enum class GenreType {
+    ALL,
+    ROMANCE,
+    SCIENCE_FICTION,
+    FAMILY,
+    MYSTERY,
+    HISTORY,
+    WAR,
+    ACTION,
+    CRIME,
+    COMEDY,
+    HORROR,
+    WESTERN,
+    MUSIC,
+    ADVENTURE,
+    TV_MOVIE,
+    FANTASY,
+    THRILLER,
+    DRAMA,
+    DOCUMENTARY,
+    ANIMATION
 }

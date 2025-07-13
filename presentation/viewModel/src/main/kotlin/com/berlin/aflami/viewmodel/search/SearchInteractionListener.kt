@@ -5,4 +5,5 @@ interface SearchInteractionListener {
     fun onBackClick()
     fun onSearchClick(query: CharSequence)
     fun onMovieClick(id: Int)
+    fun onFilterIconClicked()
 }

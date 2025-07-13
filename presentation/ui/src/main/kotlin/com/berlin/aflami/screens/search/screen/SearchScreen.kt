@@ -62,17 +62,23 @@ fun SearchScreen(
     val selectedTabIndex = viewModel.selectTabIndex
 
     val textValue by viewModel.queryFlow.collectAsState()
+    val filterDialogsState=viewModel.filterDialogState.collectAsState()
 
     SearchScreenContent(
         navController = navController,
         searchState = searchState,
         listener = viewModel,
+        filterDialogsState=filterDialogsState.value,
         textValue = textValue,
         selectedTabIndex = selectedTabIndex,
         onFocusChanged = viewModel::onFocusChanged,
         onTabChange = viewModel::onTabChange,
         clearSearchState = viewModel::clearSearchState,
-        updateSearchQuery=viewModel::updateSearchQuery
+        clearFilters = viewModel::clearFilters,
+        applyFilters = viewModel::applyFilters,
+        onDismissFilterDialog=viewModel::onDismiss,
+        updateSearchQuery=viewModel::updateSearchQuery,
+
     )
 }
 
@@ -86,10 +92,14 @@ private fun SearchScreenContent(
     onFocusChanged: (Boolean) -> Unit,
     onTabChange: (Int) -> Unit,
     clearSearchState: () -> Unit,
-    updateSearchQuery: (String) -> Unit
+    updateSearchQuery: (String) -> Unit,
+    filterDialogsState: Boolean,
+    clearFilters: () -> Unit,
+    applyFilters: (() -> Unit) -> Unit,
+    onDismissFilterDialog: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
@@ -98,165 +108,177 @@ private fun SearchScreenContent(
                 interactionSource = remember { MutableInteractionSource() }) {
                 focusManager.clearFocus()
 
-            }.focusable()
-
-        ,
+            }
+            .focusable(),
     ) {
-        TopBar(
-            modifier = Modifier.padding(vertical = 8.dp),
-            title = {
-                Text(
-                    text = stringResource(R.string.search),
-                    style = Theme.textStyle.title.large,
-                    color = Theme.color.textColors.title
-                )
-            },
-            leadingIcon = {
-                Box(
-                    Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Theme.color.surfaceHigh)
-                        .clickable {
-                            clearSearchState()
-                        }
-                        .onFocusChanged {
-                            onFocusChanged(it.isFocused)
-                        }, contentAlignment = Alignment.Center
+        Column(
 
-                ) {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        painter = painterResource(R.drawable.arrow_left),
-                        contentDescription = stringResource(R.string.icon_cd),
-                        tint = Theme.color.textColors.title
+        ) {
+            TopBar(
+                modifier = Modifier.padding(vertical = 8.dp),
+                title = {
+                    Text(
+                        text = stringResource(R.string.search),
+                        style = Theme.textStyle.title.large,
+                        color = Theme.color.textColors.title
+                    )
+                },
+                leadingIcon = {
+                    Box(
+                        Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Theme.color.surfaceHigh)
+                            .clickable {
+                                listener::onBackClick
+                            }
+                            .onFocusChanged {
+                                clearSearchState
+                            }, contentAlignment = Alignment.Center
+
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(20.dp),
+                            painter = painterResource(R.drawable.arrow_left),
+                            contentDescription = stringResource(R.string.icon_cd),
+                            tint = Theme.color.textColors.title
+                        )
+                    }
+                }
+            )
+
+            val keyboardController = LocalSoftwareKeyboardController.current
+            TextField(
+                text = textValue,
+                modifier = Modifier
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Theme.color.surfaceHigh)
+                    .onFocusChanged {
+                        onFocusChanged(it.isFocused)
+                    },
+                hintText = stringResource(R.string.search_hint_text),
+                isEnabled = true,
+                maxLines = 1,
+                borderColor = Theme.color.stroke,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { keyboardController?.hide() },
+                    onSearch = {
+                        listener::onSearchClick
+                    }),
+                onValueChange = updateSearchQuery,
+                trailingIcon = R.drawable.filter_vertical,
+                onTrailingClick = listener::onFilterIconClicked
+            )
+
+            when (searchState) {
+                is SearchUiState.Init -> {
+                    Text(
+                        stringResource(R.string.search_suggestions_hub),
+                        color = Theme.color.textColors.title,
+                        style = Theme.textStyle.title.medium,
+                        modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
+                    )
+
+                    SearchSuggestionHub(
+                        Modifier.padding(horizontal = 16.dp),
+                        onWorldTourClick = { navController.navigate(Destination.WorldTourScreen.route) },
+                        onSearchByActorClick = { navController.navigate(Destination.SearchByActorNameScreen.route) }
+                    )
+
+                    NoDataSearch()
+
+                }
+
+                is SearchUiState.Searching -> {
+                    // Handle success state if needed
+                    TabBar(
+                        containerColor = Theme.color.surface,
+                        items = listOf(
+                            TabBarItem(
+                                text = stringResource(R.string.movies),
+                                isSelected = selectedTabIndex == 0
+                            ), TabBarItem(
+                                text = stringResource(R.string.tv_shows),
+                                isSelected = selectedTabIndex == 1
+                            )
+                        ),
+                        onTabChange = {
+                            Log.d("SearchViewModel", "onTabChange: $it")
+                            onTabChange(it)
+                        },
+                    )
+
+                    when (searchState) {
+                        is SearchUiState.Searching.Init -> {
+                            NoDataSearch()
+                        }
+
+                        is SearchUiState.Searching.Loading -> {
+                            Loading(Modifier)
+                        }
+
+                        is SearchUiState.Searching.Success -> {
+                            if (searchState.data.isEmpty()) {
+                                CountryTourExploring(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .align(Alignment.CenterHorizontally),
+                                    painterResource(com.berlin.ui.R.drawable.no_search_result),
+                                    com.berlin.ui.R.string.no_search_result,
+                                    com.berlin.ui.R.string.please_try_with_another_keyword
+                                )
+                            } else {
+                                ResultGridList(
+                                    modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
+                                    items = searchState.data
+                                ) { media ->
+                                    MediaCard(
+                                        modifier = Modifier.size(width = 160.dp, height = 222.dp),
+                                        mediaImg = media.poster,
+                                        title = media.title,
+                                        typeOfMedia = if (selectedTabIndex == 0) "Movies" else "Tv Show",
+                                        date = media.releaseYear.substringBefore("-"),
+                                        rating = media.rating.toDouble().toString()
+                                    )
+                                }
+                            }
+
+                        }
+
+                        is SearchUiState.Searching.Error -> {
+                            ErrorMessage(Modifier, searchState.errorMessage)
+                        }
+                    }
+
+                }
+
+                is SearchUiState.NoResult -> {
+                    CountryTourExploring(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .align(Alignment.CenterHorizontally),
+                        painterResource(com.berlin.ui.R.drawable.no_search_result),
+                        com.berlin.ui.R.string.no_search_result,
+                        com.berlin.ui.R.string.please_try_with_another_keyword
                     )
                 }
             }
-        )
-
-        val keyboardController = LocalSoftwareKeyboardController.current
-        TextField(
-            text = textValue,
-            modifier = Modifier
-                .padding(vertical = 8.dp, horizontal = 16.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .background(Theme.color.surfaceHigh)
-                .onFocusChanged {
-                    onFocusChanged(it.isFocused)
-                },
-            hintText = stringResource(R.string.search_hint_text),
-            isEnabled = true,
-            maxLines = 1,
-            borderColor = Theme.color.stroke,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() },
-                onSearch = {
-                    listener::onSearchClick
-                }),
-            onValueChange = updateSearchQuery,
-            trailingIcon = R.drawable.filter_vertical,
-        )
-
-        when (searchState) {
-            is SearchUiState.Init -> {
-                Text(
-                    stringResource(R.string.search_suggestions_hub),
-                    color = Theme.color.textColors.title,
-                    style = Theme.textStyle.title.medium,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
-                )
-
-                SearchSuggestionHub(
-                    Modifier.padding(horizontal = 16.dp),
-                    onWorldTourClick = { navController.navigate(Destination.WorldTourScreen.route) },
-                    onSearchByActorClick = { navController.navigate(Destination.SearchByActorNameScreen.route) }
-                )
-
-                NoDataSearch()
-
-            }
-
-            is SearchUiState.Searching -> {
-                // Handle success state if needed
-                TabBar(
-                    containerColor = Theme.color.surface,
-                    items = listOf(
-                        TabBarItem(
-                            text = stringResource(R.string.movies),
-                            isSelected = selectedTabIndex == 0
-                        ), TabBarItem(
-                            text = stringResource(R.string.tv_shows),
-                            isSelected = selectedTabIndex == 1
-                        )
-                    ),
-                    onTabChange = {
-                        Log.d("SearchViewModel", "onTabChange: $it")
-                        onTabChange(it)
-                    },
-                )
-
-                when (searchState) {
-                    is SearchUiState.Searching.Init -> {
-                        NoDataSearch()
-                    }
-
-                    is SearchUiState.Searching.Loading -> {
-                        Loading(Modifier)
-                    }
-
-                    is SearchUiState.Searching.Success -> {
-                        if (searchState.data.isEmpty()) {
-                            CountryTourExploring(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .align(Alignment.CenterHorizontally),
-                                painterResource(com.berlin.ui.R.drawable.no_search_result),
-                                com.berlin.ui.R.string.no_search_result,
-                                com.berlin.ui.R.string.please_try_with_another_keyword
-                            )
-                        } else {
-                            ResultGridList(
-                                modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
-                                items = searchState.data
-                            ) { media ->
-                                MediaCard(
-                                    modifier = Modifier.size(width = 160.dp, height = 222.dp),
-                                    mediaImg = media.poster,
-                                    title = media.title,
-                                    typeOfMedia = if (selectedTabIndex == 0) "Movies" else "Tv Show",
-                                    date = media.releaseYear.substringBefore("-"),
-                                    rating = media.rating.toDouble().toString()
-                                )
-                            }
-                        }
-
-                    }
-
-                    is SearchUiState.Searching.Error -> {
-                        ErrorMessage(Modifier, searchState.errorMessage)
-                    }
-                }
-
-            }
-
-            is SearchUiState.NoResult -> {
-                CountryTourExploring(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.CenterHorizontally),
-                    painterResource(com.berlin.ui.R.drawable.no_search_result),
-                    com.berlin.ui.R.string.no_search_result,
-                    com.berlin.ui.R.string.please_try_with_another_keyword
-                )
-            }
+        }
+        if (filterDialogsState) {
+            FilterDialog(
+                onDismiss = { applyFilters { onDismissFilterDialog } },
+                viewModel = view,
+            )
         }
     }
-}
+
+    }
+
 
 @Preview
 @Composable
