@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.search_actor
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.mapper.toMessage
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import kotlinx.coroutines.Dispatchers
@@ -43,9 +44,9 @@ class SearchByActorViewModel(
                 ).map { it.toUIState() }
                 Log.i("findByActor", result.toString())
                 onSearchSuccess(result)
-            } catch (exception: Exception) {
-                // TODO:
-                onSearchError(exception.message ?: "Unknown error")
+            } catch (e: Exception) {
+                val message = e.toMessage()
+                onSearchError(message)
             }
         }
     }

@@ -10,11 +10,13 @@ import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.RedirectResponseException
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
+import java.nio.channels.UnresolvedAddressException
 
 
 fun Throwable.toAppException(): AppException = when (this) {
     is UnknownHostException -> NoInternetException()
     is HttpRequestTimeoutException -> TimeoutException()
+    is UnresolvedAddressException -> NoInternetException()
     is RedirectResponseException -> AppException("Redirection Error")
     is ClientRequestException -> AppException("Request Error")
     is ServerResponseException -> ServerException("Server Error")

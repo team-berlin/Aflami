@@ -1,11 +1,13 @@
 package com.berlin.aflami.viewmodel.search
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.mapper.toMessage
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.uistate.MediaUiState
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import java.util.Locale
+import kotlin.math.log
 
 @OptIn(FlowPreview::class)
 class SearchViewModel(
@@ -132,15 +135,27 @@ class SearchViewModel(
                 val languageCode = "${locale.language}-${locale.country}"
                 val result = when (mediaType) {
                     MediaType.MOVIE -> {
-                        searchMoviesUseCase(
-                            query, languageCode
-                        ).map { it.toUIState() }
+                        try{
+                            searchMoviesUseCase(
+                                query, languageCode
+                            ).map { it.toUIState() }
+                        } catch (e:Exception){
+                            val message = e.toMessage()
+                            onSearchError(message)
+                        }
+
                     }
 
                     MediaType.TV_SHOW -> {
-                        searchTvShowsUseCase(
-                            query, languageCode
-                        ).map { it.toUiState() }
+                        try {
+                            searchTvShowsUseCase(
+                                query, languageCode
+                            ).map { it.toUiState() }
+                        } catch (e:Exception){
+                            val message = e.toMessage()
+                            onSearchError(message)
+                        }
+
                     }
                 }
                 when (mediaType) {
@@ -149,7 +164,8 @@ class SearchViewModel(
                 }
 
             } catch (e: Exception) {
-                onSearchError(e.message ?: "Unknown error")
+                val message = e.toMessage()
+                onSearchError(message)
             }
         }
     }

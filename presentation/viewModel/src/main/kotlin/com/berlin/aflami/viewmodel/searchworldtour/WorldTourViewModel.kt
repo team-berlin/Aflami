@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.searchworldtour
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.mapper.toMessage
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import kotlinx.coroutines.Dispatchers
@@ -78,10 +79,9 @@ class WorldTourViewModel(
                 val result = searchByCountry(countryName, languageCode).map { it.toUIState() }
                 Log.e("WorldTourViewModel", result.toString())
                 onSearchSuccess(result)
-            } catch (exception: Exception) {
-                // TODO: msg resId
-                Log.e("WorldTourViewModel", exception.message ?: "Unknown error")
-                onSearchError(exception.message ?: "Unknown error")
+            } catch (e: Exception) {
+                val message = e.toMessage()
+                onSearchError(message)
             }
         }
     }
