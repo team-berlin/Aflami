@@ -39,6 +39,7 @@ dependencies {
     serialization()
     kotlinDateX()
     test()
+    ktor()
 
     useCase()
 }
