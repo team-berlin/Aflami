@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.search
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -72,6 +73,7 @@ class SearchViewModel(
             1 -> moviesUiState.value.movieName
             else -> ""
         }
+        Log.d("SearchViewModel", "onTabChange insided viewmoddel: $query")
        updateSearchQuery(query)
     }
 
@@ -81,6 +83,8 @@ class SearchViewModel(
 
     fun updateSearchQuery(query: String) {
         _queryFlow.value = query
+        onSearchClick(query)
+        Log.d("SearchViewModel", "updateSearchQuery After update query : $query")
     }
 
     override fun onSearchClick(query: CharSequence) {
@@ -122,8 +126,9 @@ class SearchViewModel(
             MediaType.MOVIE -> moviesUiState.value.movieName
             MediaType.TV_SHOW -> tvShowUiState.value.tvShowName
         }
+        Log.d("SearchViewModel", "inside searchMedia before return  Query: $query")
         if (query.isBlank()) return
-
+        Log.d("SearchViewModel", "searchMedia Didn't return $query")
         _searchUIState.update { SearchUiState.Searching.Loading }
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -132,15 +137,19 @@ class SearchViewModel(
                 val languageCode = "${locale.language}-${locale.country}"
                 val result = when (mediaType) {
                     MediaType.MOVIE -> {
+                        Log.d("SearchViewModel", "searchMedia: Movied with query $query")
                         searchMoviesUseCase(
                             query, languageCode
                         ).map { it.toUIState() }
+
                     }
 
                     MediaType.TV_SHOW -> {
+                        Log.d("SearchViewModel", "searchMedia: TV Show with query $query")
                         searchTvShowsUseCase(
                             query, languageCode
                         ).map { it.toUiState() }
+
                     }
                 }
                 when (mediaType) {
@@ -174,11 +183,6 @@ class SearchViewModel(
             )
         }
     }
-
-    private fun onSearchError(error: String) {
-        _searchUIState.update { SearchUiState.Searching.Error(error) }
-    }
-
     private fun onSearchTvShowsSuccess(tvShows: List<TVShowUiState>) {
         _searchUIState.update {
             SearchUiState.Searching.Success(
@@ -195,6 +199,11 @@ class SearchViewModel(
             )
         }
     }
+    private fun onSearchError(error: String) {
+        _searchUIState.update { SearchUiState.Searching.Error(error) }
+    }
+
+
 
     fun clearSearchState() {
         _searchUIState.update { SearchUiState.Init }

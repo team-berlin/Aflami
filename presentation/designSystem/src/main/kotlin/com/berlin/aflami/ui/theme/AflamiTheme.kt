@@ -1,17 +1,22 @@
 package com.berlin.aflami.ui.theme
 
 import android.app.Activity
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalView
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.berlin.aflami.ui.textstyle.LocalAflamiTextStyle
 import com.berlin.aflami.ui.textstyle.defaultTextStyle
 import com.berlin.aflami.ui.color.AflamiDarkColors
 import com.berlin.aflami.ui.color.AflamiLightColors
 import com.berlin.aflami.ui.color.LocalAflamiColors
+import com.berlin.designsystem.R
 
 
 @Composable
@@ -21,13 +26,31 @@ fun AflamiTheme(
 ) {
     val colors = if (isDarkTheme) AflamiDarkColors else AflamiLightColors
     val view = LocalView.current
-
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDarkTheme
+    DisposableEffect(isDarkTheme) {
+        val activity = view.context as Activity
+        WindowCompat.getInsetsController(activity.window, view).apply {
+            isAppearanceLightStatusBars = !isDarkTheme
+            isAppearanceLightNavigationBars = !isDarkTheme
         }
+
+        onDispose { }
     }
+
+//    if (!view.isInEditMode) {
+//        SideEffect {
+//            val window = (view.context as Activity).window
+//            WindowCompat.getInsetsController(window, view)
+//                .isAppearanceLightStatusBars = !isDarkTheme
+//
+//            window.decorView.setBackgroundColor(
+//                ContextCompat.getColor(
+//                    view.context,
+//                    if(isDarkTheme) R.color.windowcolor else R.color.windowcolor
+//                   )
+//            )
+//        }
+//    }
+
 
     CompositionLocalProvider(
         LocalAflamiColors provides colors,

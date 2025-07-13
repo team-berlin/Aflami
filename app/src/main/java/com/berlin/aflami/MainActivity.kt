@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.navigation.AflamiNavGraph
@@ -20,21 +21,21 @@ import com.berlin.aflami.ui.theme.AflamiTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
+        //window.setBackgroundDrawableResource(android.R.color.transparent)
         enableEdgeToEdge()
+
         setContent {
             val navController = rememberNavController()
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
-
             AflamiTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize().navigationBarsPadding().statusBarsPadding(),
-                    bottomBar = {
-
-                    }) { innerPadding ->
-                    AflamiNavGraph(navController)
-                }
+                        AflamiNavGraph(navController, Modifier
+                            .fillMaxSize()
+                            .navigationBarsPadding()
+                            .statusBarsPadding(),)
             }
         }
     }

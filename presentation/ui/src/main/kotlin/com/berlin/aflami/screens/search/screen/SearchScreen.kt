@@ -1,7 +1,9 @@
 package com.berlin.aflami.screens.search.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,7 +54,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
-    navController : NavController,
+    navController: NavController,
     viewModel: SearchViewModel = koinViewModel()
 ) {
     val searchState by viewModel.searchUIState.collectAsState()
@@ -85,14 +88,19 @@ private fun SearchScreenContent(
     onTabChange: (Int) -> Unit,
     clearSearchState: () -> Unit
 ) {
-
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
             .clickable(
-                indication = null, interactionSource = remember { MutableInteractionSource() }) {
-            },
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                focusManager.clearFocus()
+
+            }.focusable()
+
+        ,
     ) {
         TopBar(
             modifier = Modifier.padding(vertical = 8.dp),
@@ -165,8 +173,8 @@ private fun SearchScreenContent(
 
                 SearchSuggestionHub(
                     Modifier.padding(horizontal = 16.dp),
-                    onWorldTourClick = {navController.navigate(Destination.WorldTourScreen.route)},
-                    onSearchByActorClick = {navController.navigate(Destination.SearchByActorNameScreen.route)}
+                    onWorldTourClick = { navController.navigate(Destination.WorldTourScreen.route) },
+                    onSearchByActorClick = { navController.navigate(Destination.SearchByActorNameScreen.route) }
                 )
 
                 NoDataSearch()
@@ -187,6 +195,7 @@ private fun SearchScreenContent(
                         )
                     ),
                     onTabChange = {
+                        Log.d("SearchViewModel", "onTabChange: $it")
                         onTabChange(it)
                     },
                 )
@@ -201,9 +210,11 @@ private fun SearchScreenContent(
                     }
 
                     is SearchUiState.Searching.Success -> {
-                        if (searchState.data.size == 0) {
+                        if (searchState.data.isEmpty()) {
                             CountryTourExploring(
-                                modifier = Modifier.fillMaxSize().align(Alignment.CenterHorizontally),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .align(Alignment.CenterHorizontally),
                                 painterResource(com.berlin.ui.R.drawable.no_search_result),
                                 com.berlin.ui.R.string.no_search_result,
                                 com.berlin.ui.R.string.please_try_with_another_keyword
@@ -235,7 +246,9 @@ private fun SearchScreenContent(
 
             is SearchUiState.NoResult -> {
                 CountryTourExploring(
-                    modifier = Modifier.fillMaxSize().align(Alignment.CenterHorizontally),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.CenterHorizontally),
                     painterResource(com.berlin.ui.R.drawable.no_search_result),
                     com.berlin.ui.R.string.no_search_result,
                     com.berlin.ui.R.string.please_try_with_another_keyword
