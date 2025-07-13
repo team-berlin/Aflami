@@ -58,12 +58,10 @@ fun SearchScreen(
     viewModel: SearchViewModel = koinViewModel()
 ) {
     val searchState by viewModel.searchUIState.collectAsState()
-    val movieState by viewModel.moviesUiState.collectAsState()
-    val tvShowState by viewModel.tvShowUiState.collectAsState()
 
     val selectedTabIndex = viewModel.selectTabIndex
 
-    val textValue = if (selectedTabIndex == 0) movieState.movieName else tvShowState.tvShowName
+    val textValue by viewModel.queryFlow.collectAsState()
 
     SearchScreenContent(
         navController = navController,
@@ -73,7 +71,8 @@ fun SearchScreen(
         selectedTabIndex = selectedTabIndex,
         onFocusChanged = viewModel::onFocusChanged,
         onTabChange = viewModel::onTabChange,
-        clearSearchState = viewModel::clearSearchState
+        clearSearchState = viewModel::clearSearchState,
+        updateSearchQuery=viewModel::updateSearchQuery
     )
 }
 
@@ -86,7 +85,8 @@ private fun SearchScreenContent(
     textValue: String,
     onFocusChanged: (Boolean) -> Unit,
     onTabChange: (Int) -> Unit,
-    clearSearchState: () -> Unit
+    clearSearchState: () -> Unit,
+    updateSearchQuery: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     Column(
@@ -158,7 +158,7 @@ private fun SearchScreenContent(
                 onSearch = {
                     listener::onSearchClick
                 }),
-            onValueChange = listener::onSearchClick,
+            onValueChange = updateSearchQuery,
             trailingIcon = R.drawable.filter_vertical,
         )
 

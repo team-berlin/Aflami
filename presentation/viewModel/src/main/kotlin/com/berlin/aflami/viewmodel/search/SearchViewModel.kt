@@ -41,6 +41,7 @@ class SearchViewModel(
     val tvShowUiState = _tvShowUiState.asStateFlow()
 
     private val _queryFlow = MutableStateFlow("")
+     val queryFlow =_queryFlow
 
     init{
         viewModelScope.launch {
@@ -62,15 +63,14 @@ class SearchViewModel(
         }
     }
 
-
     var selectTabIndex by mutableIntStateOf(0)
         private set
 
     fun onTabChange(index: Int) {
         selectTabIndex = index
         val query = when (index) {
-            0 -> tvShowUiState.value.tvShowName
-            1 -> moviesUiState.value.movieName
+            0 -> _queryFlow.value
+            1 -> _queryFlow.value
             else -> ""
         }
         Log.d("SearchViewModel", "onTabChange insided viewmoddel: $query")
@@ -78,7 +78,7 @@ class SearchViewModel(
     }
 
     override fun onBackClick() {
-        TODO("Not yet implemented")
+        clearSearchState()
     }
 
     fun updateSearchQuery(query: String) {
@@ -123,8 +123,8 @@ class SearchViewModel(
 
     private fun searchMedia(mediaType: MediaType) {
         val query = when (mediaType) {
-            MediaType.MOVIE -> moviesUiState.value.movieName
-            MediaType.TV_SHOW -> tvShowUiState.value.tvShowName
+            MediaType.MOVIE -> _queryFlow.value
+            MediaType.TV_SHOW -> _queryFlow.value
         }
         Log.d("SearchViewModel", "inside searchMedia before return  Query: $query")
         if (query.isBlank()) return
