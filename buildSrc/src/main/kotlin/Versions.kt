@@ -23,5 +23,6 @@ object Versions {
     const val jupiter = "5.10.2"
 
     //utils
+    const val  accompanistSystemuicontroller = "0.20.3"
     const val kotlinDateX = "0.4.0"
 }

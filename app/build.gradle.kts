@@ -60,6 +60,7 @@ dependencies {
     lifecycleRuntimeKtx()
     navigationCompose()
     androidxUi()
+        implementation(libs.accompanist.systemuicontroller)
     koin()
     ktor()
     room()

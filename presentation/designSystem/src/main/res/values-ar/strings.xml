@@ -57,4 +57,24 @@
     <string name="search_by_actor">ابحث بأسم الممثل</string>
     <string name="actor_name_hint">اسم الممثل"</string>
     <string name="find_by_actor_quotation">ابدأ بأكتشاف افلام ممثليك المفضلين واستمتع بها</string>
+    <string name="imdb_rating">IMDb تقييم</string>
+    <string name="Genre">الأنواع</string>
+    <string name="romance">رومانسي</string>
+    <string name="science_fiction">خيال علمي</string>
+    <string name="family">عائلي</string>
+    <string name="mystery">غموض</string>
+    <string name="history">تاريخي</string>
+    <string name="war">حرب</string>
+    <string name="crime">جريمة</string>
+    <string name="comedy">كوميدي</string>
+    <string name="horror">رعب</string>
+    <string name="western">غربي</string>
+    <string name="music">موسيقي</string>
+    <string name="adventure">مغامرة</string>
+    <string name="tv_movie">منوعات</string>
+    <string name="fantasy">فانتازيا</string>
+    <string name="thriller">اثارة</string>
+    <string name="documentary">وثائقي</string>
+    <string name="animation">انمي</string>
+
 </resources>

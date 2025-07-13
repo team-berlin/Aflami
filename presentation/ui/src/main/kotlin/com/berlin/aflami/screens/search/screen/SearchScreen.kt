@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.search.screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -62,22 +61,20 @@ fun SearchScreen(
     val selectedTabIndex = viewModel.selectTabIndex
 
     val textValue by viewModel.queryFlow.collectAsState()
-    val filterDialogsState=viewModel.filterDialogState.collectAsState()
+    val filterDialogsState = viewModel.filterDialogState.collectAsState()
 
     SearchScreenContent(
         navController = navController,
         searchState = searchState,
         listener = viewModel,
-        filterDialogsState=filterDialogsState.value,
+        filterDialogsState = filterDialogsState.value,
         textValue = textValue,
         selectedTabIndex = selectedTabIndex,
         onFocusChanged = viewModel::onFocusChanged,
         onTabChange = viewModel::onTabChange,
         clearSearchState = viewModel::clearSearchState,
-        clearFilters = viewModel::clearFilters,
-        applyFilters = viewModel::applyFilters,
-        onDismissFilterDialog=viewModel::onDismiss,
-        updateSearchQuery=viewModel::updateSearchQuery,
+        updateSearchQuery = viewModel::updateSearchQuery,
+        viewModedl = viewModel
 
     )
 }
@@ -94,9 +91,7 @@ private fun SearchScreenContent(
     clearSearchState: () -> Unit,
     updateSearchQuery: (String) -> Unit,
     filterDialogsState: Boolean,
-    clearFilters: () -> Unit,
-    applyFilters: (() -> Unit) -> Unit,
-    onDismissFilterDialog: () -> Unit
+    viewModedl: SearchViewModel
 ) {
     val focusManager = LocalFocusManager.current
     Box(
@@ -130,7 +125,7 @@ private fun SearchScreenContent(
                             .clip(RoundedCornerShape(12.dp))
                             .background(Theme.color.surfaceHigh)
                             .clickable {
-                                listener::onBackClick
+                                navController.popBackStack()
                             }
                             .onFocusChanged {
                                 clearSearchState
@@ -208,7 +203,6 @@ private fun SearchScreenContent(
                             )
                         ),
                         onTabChange = {
-                            Log.d("SearchViewModel", "onTabChange: $it")
                             onTabChange(it)
                         },
                     )
@@ -271,13 +265,12 @@ private fun SearchScreenContent(
         }
         if (filterDialogsState) {
             FilterDialog(
-                onDismiss = { applyFilters { onDismissFilterDialog } },
-                viewModel = view,
+                viewModedl
             )
         }
     }
 
-    }
+}
 
 
 @Preview

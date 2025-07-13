@@ -33,12 +33,6 @@ class SearchViewModel(
     private val _searchUIState = MutableStateFlow<SearchUiState>(SearchUiState.Init)
     val searchUIState = _searchUIState.asStateFlow()
 
-    private val _moviesUiState = MutableStateFlow(SearchMoviesUiState())
-    val moviesUiState = _moviesUiState.asStateFlow()
-
-    private val _tvShowUiState = MutableStateFlow(SearchTvShowUiState())
-    val tvShowUiState = _tvShowUiState.asStateFlow()
-
     private val _filterUiState = MutableStateFlow(FilterUiState())
     val filterUiState = _filterUiState.asStateFlow()
 
@@ -51,7 +45,7 @@ class SearchViewModel(
     init {
         viewModelScope.launch {
             _queryFlow
-                .debounce(300)
+                .debounce(600)
                 .filter { it.isNotEmpty() }
                 .distinctUntilChanged()
                 .collect { query ->
@@ -95,13 +89,7 @@ class SearchViewModel(
 
     fun onTabChange(index: Int) {
         selectTabIndex = index
-        val query = when (index) {
-            0 -> _queryFlow.value
-            1 -> _queryFlow.value
-            else -> ""
-        }
-        Log.d("SearchViewModel", "onTabChange insided viewmoddel: $query")
-        updateSearchQuery(query)
+        updateSearchQuery(_queryFlow.value)
     }
 
     override fun onBackClick() {
@@ -109,87 +97,84 @@ class SearchViewModel(
     }
 
     fun updateSearchQuery(query: String) {
-        _queryFlow.value = query
+        _queryFlow.update { query }
         onSearchClick(query)
-        Log.d("SearchViewModel", "updateSearchQuery After update query : $query")
     }
 
     override fun onSearchClick(query: CharSequence) {
         if (query.toString().isBlank()) {
             _searchUIState.update { SearchUiState.Searching.Init }
-            when (selectTabIndex) {
-                0 -> _moviesUiState.update { it.copy(movieName = "") }
-                1 -> _tvShowUiState.update { it.copy(tvShowName = "") }
-            }
             return
         }
         when (selectTabIndex) {
-            0 -> {
-                _moviesUiState.update {
-                    it.copy(
-                        movieName = query.toString()
-                    )
-                }
-                searchMedia(MediaType.MOVIE)
-            }
-
-            1 -> {
-                _tvShowUiState.update {
-                    it.copy(
-                        tvShowName = query.toString()
-                    )
-                }
-                searchMedia(MediaType.TV_SHOW)
-            }
+            0 -> searchMedia(MediaType.MOVIE)
+            1 -> searchMedia(MediaType.TV_SHOW)
         }
     }
 
     override fun onMovieClick(id: Int) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onFilterIconClicked() {
-
         _filterDialogState.update { true }
     }
 
     private fun searchMedia(mediaType: MediaType) {
-        val query = when (mediaType) {
-            MediaType.MOVIE -> _queryFlow.value
-            MediaType.TV_SHOW -> _queryFlow.value
-        }
-        Log.d("SearchViewModel", "inside searchMedia before return  Query: $query")
-        if (query.isBlank()) return
-        Log.d("SearchViewModel", "searchMedia Didn't return $query")
-        _searchUIState.update { SearchUiState.Searching.Loading }
 
+        Log.d("Search", queryFlow.value)
+        if (queryFlow.value.isBlank()) return
+        _searchUIState.update { SearchUiState.Searching.Loading }
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val locale = Locale.getDefault()
                 val languageCode = "${locale.language}-${locale.country}"
                 val result = when (mediaType) {
                     MediaType.MOVIE -> {
-                        Log.d("SearchViewModel", "searchMedia: Movied with query $query")
                         searchMoviesUseCase(
-                            query, languageCode
-                        ).map { it.toUIState() }
-
+                            queryFlow.value, languageCode
+                        ).map {
+                            it.toUIState()
+                        }.filter {
+                            Log.d("Search", it.rating)
+                            (it.rating.toDouble() >= _filterUiState.value.selectedRating.toDouble())
+                                    &&
+                                    (if (genreToId(_filterUiState.value.selectedGenre.type) > 0) {
+                                        it.genre.contains(
+                                            genreToId(_filterUiState.value.selectedGenre.type)
+                                        )
+                                    } else {
+                                        true
+                                    }
+                                            )
+                        }
                     }
 
                     MediaType.TV_SHOW -> {
-                        Log.d("SearchViewModel", "searchMedia: TV Show with query $query")
-                        searchTvShowsUseCase(
-                            query, languageCode
-                        ).map { it.toUiState() }
-
+                        searchTvShowsUseCase(queryFlow.value, languageCode)
+                            .map { it.toUiState() }
+                            .filter {
+                                Log.d("Search", it.rating)
+                                (it.rating.toDouble() >= _filterUiState.value.selectedRating.toDouble())
+                                        &&
+                                        if (genreToId(_filterUiState.value.selectedGenre.type) > 0) {
+                                            it.genre.contains(
+                                                genreToId(_filterUiState.value.selectedGenre.type)
+                                            )
+                                        } else {
+                                            true
+                                        }
+                            }
                     }
                 }
+                Log.d("Search", result.toString())
                 when (mediaType) {
                     MediaType.MOVIE -> onSearchMoviesSuccess(result as List<MovieUIState>)
                     MediaType.TV_SHOW -> onSearchTvShowsSuccess(result as List<TVShowUiState>)
                 }
 
             } catch (e: Exception) {
+                Log.e("Search", e.message.toString())
                 onSearchError(e.message ?: "Unknown error")
             }
         }
@@ -238,16 +223,7 @@ class SearchViewModel(
     }
 
     fun applyFilters(onDismiss: () -> Unit) {
-        viewModelScope.launch {
-            if (selectTabIndex == 0) {
-                _searchUIState.update {
-                    //it.succed
-                }
-            } else {
-
-            }
-            onDismiss()
-        }
+        onDismiss()
     }
 
     fun onDismiss() {
@@ -259,18 +235,12 @@ class SearchViewModel(
             _filterUiState.update {
                 FilterUiState()
             }
-
         }
-    }
-
-    fun hide() {
-
     }
 
     fun clearSearchState() {
         _searchUIState.update { SearchUiState.Init }
-        _moviesUiState.update { it.copy(movieName = "") }
-        _tvShowUiState.update { it.copy(tvShowName = "") }
+        _queryFlow.value = ""
     }
 }
 
@@ -284,7 +254,7 @@ data class GenreUiState(
     val isSelected: Boolean = true
 )
 
-enum class GenreType {
+enum class GenreType() {
     ALL,
     ROMANCE,
     SCIENCE_FICTION,
@@ -305,4 +275,29 @@ enum class GenreType {
     DRAMA,
     DOCUMENTARY,
     ANIMATION
+}
+
+private fun genreToId(genre: GenreType): Int {
+    return when (genre) {
+        GenreType.ALL -> 0
+        GenreType.ROMANCE -> 10749
+        GenreType.SCIENCE_FICTION -> 878
+        GenreType.FAMILY -> 10751
+        GenreType.MYSTERY -> 9648
+        GenreType.HISTORY -> 36
+        GenreType.WAR -> 10752
+        GenreType.ACTION -> 28
+        GenreType.CRIME -> 80
+        GenreType.COMEDY -> 35
+        GenreType.HORROR -> 27
+        GenreType.WESTERN -> 37
+        GenreType.MUSIC -> 10402
+        GenreType.ADVENTURE -> 12
+        GenreType.TV_MOVIE -> 10770
+        GenreType.FANTASY -> 14
+        GenreType.THRILLER -> 53
+        GenreType.DRAMA -> 18
+        GenreType.DOCUMENTARY -> 99
+        GenreType.ANIMATION -> 16
+    }
 }
