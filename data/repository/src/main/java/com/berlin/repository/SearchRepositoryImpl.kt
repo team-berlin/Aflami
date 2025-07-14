@@ -3,6 +3,7 @@ package com.berlin.repository
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.SearchLocalDataSource
+import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
@@ -99,6 +100,25 @@ class SearchRepositoryImpl(
 
         return localDataSource.getCachedSearch(query, QueryType.TV.name).map { it.toTVShow() }
     }
+
+    override suspend fun getRecentSearchQueries(): List<String>{
+        return localDataSource.getRecentSearchQueries()
+    }
+    override suspend fun saveRecentHistory(query: String){
+        val entity = SearchingEntity(
+            id = query.hashCode().toLong(),
+            query = query,
+            type = "RECENT_QUERY",
+            time = System.currentTimeMillis(),
+            title = "",
+            rating = 0.0,
+            releaseYear = "",
+            genre = emptyList(),
+            poster = ""
+        )
+        localDataSource.insertQueryOnly(entity)
+    }
+
 
 
     companion object {

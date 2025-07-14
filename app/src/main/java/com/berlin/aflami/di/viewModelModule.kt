@@ -11,6 +11,6 @@ val viewModelModule = module {
     viewModelOf(::WorldTourViewModel)
     viewModelOf(::SearchByActorViewModel)
     viewModel { WorldTourViewModel(get()) }
-    viewModel { SearchViewModel(get(), get()) }
+    viewModel { SearchViewModel(get(), get(),get(),get()) }
 
 }

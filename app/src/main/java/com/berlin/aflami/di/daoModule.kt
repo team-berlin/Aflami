@@ -7,6 +7,5 @@ import org.koin.dsl.module
 
 val daoModule = module{
     single<SearchDao> { get<SearchDatabase>().searchDao() }
-    single<SearchHistoryDao> { get<SearchDatabase>().searchHistoryDao() }
 
 }

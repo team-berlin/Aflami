@@ -15,6 +15,5 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 )
 abstract class SearchDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
-    abstract fun searchHistoryDao(): SearchHistoryDao
 
 }

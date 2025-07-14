@@ -19,7 +19,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
 @Composable
-fun SearchData(text: String) {
+fun SearchData(recentSearch: List<String>) {
     LazyColumn() {
         item {
             Row(
@@ -42,31 +42,36 @@ fun SearchData(text: String) {
                     modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
                 )
             }
+            recentSearch.forEach {
+                Row(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.clock),
+                        contentDescription = "Clock",
+                    )
 
-            Row(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.clock),
-                    contentDescription = "Clock"
-                )
+                    Text(text = it, modifier = Modifier.padding(start = 8.dp)
+                    )
 
-                Text(text, modifier = Modifier.padding(start = 8.dp))
+                    Spacer(modifier = Modifier.weight(1f))
 
-                Spacer(modifier = Modifier.weight(1f))
+                    Image(
+                        painter = painterResource(R.drawable.cancel),
+                        contentDescription = "cancel"
+                    )
+                }
 
-                Image(
-                    painter = painterResource(R.drawable.cancel),
-                    contentDescription = "cancel"
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    color = Theme.color.stroke
                 )
             }
 
-            HorizontalDivider(
-                thickness = 1.dp,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = Theme.color.stroke
-            )
+
+
         }
     }
 }

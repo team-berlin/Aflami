@@ -5,6 +5,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.SearchingHistory
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SearchDao {
@@ -13,4 +15,11 @@ interface SearchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun cacheSearch(searchCaching: List<SearchingEntity>)
+
+    @Query("SELECT DISTINCT `query` FROM search_cache ORDER BY time DESC LIMIT 10")
+    suspend fun getRecentSearchQueries(): List<String>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertQueryOnly(searchingEntity: SearchingEntity)
+
 }

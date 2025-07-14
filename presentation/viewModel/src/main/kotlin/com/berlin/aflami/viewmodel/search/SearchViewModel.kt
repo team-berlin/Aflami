@@ -23,14 +23,19 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import usecase.GetRecentHistoryUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
+import usecase.SaveRecentHistoryUseCase
 import java.util.Locale
 
 @OptIn(FlowPreview::class)
 class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
-    private val searchTvShowsUseCase: GetSearchTvShowsUseCase
+    private val searchTvShowsUseCase: GetSearchTvShowsUseCase,
+    private val getRecentHistoryUseCase: GetRecentHistoryUseCase,
+    private val saveRecentHistoryUseCase: SaveRecentHistoryUseCase
+
 ) : ViewModel(), SearchInteractionListener {
 
     private val _searchUIState = MutableStateFlow<SearchUiState>(SearchUiState.Init)
@@ -45,6 +50,10 @@ class SearchViewModel(
     private val _queryFlow = MutableStateFlow("")
     val queryFlow = _queryFlow
 
+    private val _recentSearchState = MutableStateFlow<List<String>>(emptyList())
+    val recentSearchState = _recentSearchState.asStateFlow()
+
+
     init {
         viewModelScope.launch {
             _queryFlow
@@ -55,6 +64,8 @@ class SearchViewModel(
                     onSearchClick(query)
                 }
         }
+
+        loadRecentSearches()
     }
 
     fun updateRating(rating: Float) {
@@ -101,7 +112,6 @@ class SearchViewModel(
 
     fun updateSearchQuery(query: String) {
         _queryFlow.update { query }
-        onSearchClick(query)
     }
 
     override fun onSearchClick(query: CharSequence) {
@@ -109,6 +119,7 @@ class SearchViewModel(
             _searchUIState.update { SearchUiState.Searching.Init }
             return
         }
+
         when (selectTabIndex) {
             0 -> searchMedia(MediaType.MOVIE)
             1 -> searchMedia(MediaType.TV_SHOW)
@@ -194,7 +205,13 @@ class SearchViewModel(
                     )
                 }
             )
+
         }
+        viewModelScope.launch {
+            saveRecentHistoryUseCase(queryFlow.value)
+            loadRecentSearches()
+        }
+
     }
 
     private fun onSearchTvShowsSuccess(tvShows: List<TVShowUiState>) {
@@ -212,7 +229,12 @@ class SearchViewModel(
                 }
             )
         }
+        viewModelScope.launch {
+            saveRecentHistoryUseCase(queryFlow.value)
+            loadRecentSearches()
+        }
     }
+
 
     private fun onSearchError(error: String) {
         _searchUIState.update { SearchUiState.Searching.Error(error) }
@@ -233,6 +255,13 @@ class SearchViewModel(
     fun clearSearchState() {
         _searchUIState.update { SearchUiState.Init }
         _queryFlow.value = ""
+    }
+
+    fun loadRecentSearches() {
+        viewModelScope.launch {
+            val result = getRecentHistoryUseCase()
+            _recentSearchState.value = result
+        }
     }
 }
 
