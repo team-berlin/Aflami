@@ -50,6 +50,10 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build  koverVerify
+        env:
+         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+         KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+         KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
 
       - name: Run tests and generate coverage report
         run: ./gradlew koverHtmlReport
