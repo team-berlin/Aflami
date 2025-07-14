@@ -34,7 +34,7 @@ class SearchRepositoryImplTest {
         val country = "EG"
         val language = "en-US"
         val movieDto = dummyMovieDto
-        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis())
+        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis(), type = "country")
 
         val response = BaseResponse(results = listOf(movieDto, movieDto, movieDto))
         coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
@@ -67,7 +67,7 @@ class SearchRepositoryImplTest {
         val country = "EG"
         val language = "en-US"
         val movieDto = dummyMovieDto
-        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis())
+        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis(),"country")
 
         val response = BaseResponse(results = listOf(movieDto, null, movieDto))
         coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
