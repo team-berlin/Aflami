@@ -3,8 +3,6 @@ package com.berlin.local.datasource
 import com.berlin.local.dao.SearchDao
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.local.dto.SearchingEntity
-import kotlinx.coroutines.flow.Flow
-
 class SearchLocalDataSourceImpl(
     private val searchDao: SearchDao
 ) : SearchLocalDataSource {

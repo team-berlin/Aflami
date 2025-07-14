@@ -5,8 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.berlin.repository.datasource.local.dto.SearchingEntity
-import com.berlin.repository.datasource.local.dto.SearchingHistory
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SearchDao {

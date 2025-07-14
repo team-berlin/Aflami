@@ -51,10 +51,8 @@ fun SearchData(recentSearch: List<String>) {
                         painter = painterResource(R.drawable.clock),
                         contentDescription = "Clock",
                     )
-
                     Text(text = it, modifier = Modifier.padding(start = 8.dp)
                     )
-
                     Spacer(modifier = Modifier.weight(1f))
 
                     Image(
@@ -62,7 +60,6 @@ fun SearchData(recentSearch: List<String>) {
                         contentDescription = "cancel"
                     )
                 }
-
                 HorizontalDivider(
                     thickness = 1.dp,
                     modifier = Modifier.padding(horizontal = 16.dp),
