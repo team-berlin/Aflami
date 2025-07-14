@@ -14,6 +14,14 @@ kotlin {
 }
 kover {
     reports {
+        filters {
+            includes {
+                classes("**UseCase")
+                classes("**useCase")
+                classes("**usecase")
+                classes("**Usecase")
+            }
+        }
         verify {
             rule {
                 bound {

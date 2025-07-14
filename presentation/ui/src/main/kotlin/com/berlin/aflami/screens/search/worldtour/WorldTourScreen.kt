@@ -104,7 +104,6 @@ private fun WorldTourContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth(),
-            contentAlignment = Alignment.Center
         ) {
             if (state.movies.isEmpty()) {
                 CountryTourExploring(
@@ -114,10 +113,8 @@ private fun WorldTourContent(
                     messageId = R.string.country_tour_description
                 )
             }
-
             MoviesList(
                 movies = state.movies,
-                onMovieClick = listener::onMovieClicked
             )
 
             AnimatedCountriesList(

@@ -77,4 +77,5 @@
     <string name="thriller">thriller</string>
     <string name="documentary">documentary</string>
     <string name="animation">animation</string>
+    <string name="filter_result">Filter Result</string>
 </resources>

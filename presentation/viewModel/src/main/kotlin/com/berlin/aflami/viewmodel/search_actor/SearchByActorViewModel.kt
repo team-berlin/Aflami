@@ -39,9 +39,7 @@ class SearchByActorViewModel(
         }
     }
 
-    override fun onBackClicked() {
-        //TODO("Not yet implemented")
-    }
+
 
     override fun onActorNameChanged(actorName: CharSequence) {
         _queryFlow.update { actorName.toString() }
@@ -49,6 +47,7 @@ class SearchByActorViewModel(
     }
 
     override fun onSearchClicked() {
+
         _uiState.update { it.copy(isLoading = true) }
         searchMovies()
     }
@@ -67,6 +66,7 @@ class SearchByActorViewModel(
                 onSearchError(exception.message ?: "Unknown error")
             }
         }
+
     }
 
     private fun onSearchSuccess(movies: List<MovieUIState>) {
@@ -77,7 +77,5 @@ class SearchByActorViewModel(
         _uiState.update { it.copy(error = message, isLoading = false) }
     }
 
-    override fun onMovieClicked(id: Int) {
-        //TODO("Not yet implemented")
-    }
+
 }
