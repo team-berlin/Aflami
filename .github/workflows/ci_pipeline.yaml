@@ -1,8 +1,6 @@
 name: build and test checker
 
 on:
-  push:
-    branches: [ main, develop, epic/** ]
   pull_request:
     branches: [ main, develop, epic/** ]
   workflow_dispatch:
