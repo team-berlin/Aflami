@@ -6,14 +6,11 @@ firebasePerformance = "1.4.2"
 firebaseService = "4.4.3"
 jetbrainsKotlinJvm = "2.0.21"
 tensorflowLiteMetadata = "0.1.0"
-accompanistSystemuicontroller = "0.20.3"
 
 [libraries]
 tensorflow-lite-metadata = { group = "org.tensorflow", name = "tensorflow-lite-metadata", version.ref = "tensorflowLiteMetadata" }
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 
 [plugins]
-
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
