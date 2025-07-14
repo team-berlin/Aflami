@@ -18,7 +18,6 @@ object ApiConstants  {
     const val QUERY = "query"
 
     const val ACTOR_NAME = "query"
-
-
-
+    const val SERIES_CAST="tv/{series_id}/credits"
+    const val MOVIE_CAST="movie/{movie_id}/credits"
 }

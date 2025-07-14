@@ -14,6 +14,6 @@ import org.koin.dsl.module
 val dataSourceModule = module {
     single<SearchRemoteDataSource> { SearchRemoteDataSourceImpl(get()) }
     single<SearchLocalDataSource> { SearchLocalDataSourceImpl(get<SearchDao>()) }
-    single<MovieDetailsRemoteDataSource> { MovieDetailsRemoteDataSourceImpl() }
-    single<SeriesDetailsRemoteDataSource> { SeriesDetailsRemoteDataSourceImpl() }
+    single<MovieDetailsRemoteDataSource> { MovieDetailsRemoteDataSourceImpl(get()) }
+    single<SeriesDetailsRemoteDataSource> { SeriesDetailsRemoteDataSourceImpl(get()) }
 }
