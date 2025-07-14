@@ -7,6 +7,13 @@ data class Movie(
     val title:String,
     val rating:Double,
     val releaseYear: LocalDate,
-    val genre:List<Int>,
+    val genre:List<GenreEntity>,
     val poster:String,
+
+    val backdropPath: String? = null,
+    val overview: String? = null,
+    val releaseDate: String? = null,
+    val runtime: Int? = null,
 )
+
+data class GenreEntity(val id: Int, val name: String)
