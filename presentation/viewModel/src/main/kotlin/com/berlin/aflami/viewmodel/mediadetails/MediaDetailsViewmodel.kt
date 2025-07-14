@@ -1,17 +1,68 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.review.ReviewState
+import com.berlin.aflami.viewmodel.review.ReviewUiState
+import com.berlin.aflami.viewmodel.review.toUiState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import usecase.GetMovieReviewUseCase
+import usecase.GetSeriesReviewUseCase
 
-class MediaDetailsViewmodel : ViewModel(), MediaInteractionListener {
+class MediaDetailsViewmodel(
+    private val movieReviewUseCase: GetMovieReviewUseCase,
+    private val seriesReviewUseCase: GetSeriesReviewUseCase
+) : ViewModel(), MediaInteractionListener {
+
+    private val _reviewsUiState = MutableStateFlow<ReviewState>(ReviewState.Reviewing.Loading)
+    val reviewsUiState = _reviewsUiState.asStateFlow()
+
+    fun getReviews(id: Long, mediaType: MediaType) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _reviewsUiState.update { ReviewState.Reviewing.Loading }
+
+            try {
+                val result = when (mediaType) {
+                    MediaType.MOVIE -> movieReviewUseCase(id).map { it.toUiState() }
+                    MediaType.SERIES -> seriesReviewUseCase(id).map { it.toUiState() }
+                }
+
+                if (result.isEmpty()) {
+                    _reviewsUiState.update { ReviewState.NoReviewFound }
+                } else {
+                    onReviewSuccess(result)
+                }
+
+            } catch (error: Exception) {
+                onReviewError(error.message ?: "Unknown error")
+            }
+        }
+    }
+
+    private fun onReviewSuccess(reviews: List<ReviewUiState>) {
+        _reviewsUiState.update {
+            ReviewState.Reviewing.Success(reviews)
+        }
+    }
+
+    private fun onReviewError(error: String) {
+        _reviewsUiState.update { ReviewState.Reviewing.Error(error) }
+    }
+
+    override fun onReadMoreDescriptionClicked(id: Long) {
+        TODO("Not yet implemented")
+    }
+
     override fun onBackClicked() {
         TODO("Not yet implemented")
     }
 
     override fun onPlayClicked(id: Long) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onReadMoreDescriptionClicked(id: Long) {
         TODO("Not yet implemented")
     }
 
@@ -74,7 +125,7 @@ class MediaDetailsViewmodel : ViewModel(), MediaInteractionListener {
         TODO("Not yet implemented")
     }
 
-    override fun onShowMediaGalleryClicked() {
+    override fun onShowMediaGalleryClicked(id: Long) {
         TODO("Not yet implemented")
     }
 
@@ -94,4 +145,7 @@ class MediaDetailsViewmodel : ViewModel(), MediaInteractionListener {
         TODO("Not yet implemented")
     }
 
+    enum class MediaType {
+        MOVIE, SERIES
+    }
 }
