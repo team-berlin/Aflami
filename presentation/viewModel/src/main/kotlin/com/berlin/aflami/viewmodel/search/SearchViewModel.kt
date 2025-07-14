@@ -8,6 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.search_actor.FilterUiState
+import com.berlin.aflami.viewmodel.search_actor.GenreType
+import com.berlin.aflami.viewmodel.search_actor.genreToId
 import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
@@ -112,9 +115,6 @@ class SearchViewModel(
         }
     }
 
-    override fun onMovieClick(id: Int) {
-
-    }
 
     override fun onFilterIconClicked() {
         _filterDialogState.update { true }
@@ -122,7 +122,6 @@ class SearchViewModel(
 
     private fun searchMedia(mediaType: MediaType) {
 
-        Log.d("Search", queryFlow.value)
         if (queryFlow.value.isBlank()) return
         _searchUIState.update { SearchUiState.Searching.Loading }
         viewModelScope.launch(Dispatchers.IO) {
@@ -154,7 +153,6 @@ class SearchViewModel(
                         searchTvShowsUseCase(queryFlow.value, languageCode)
                             .map { it.toUiState() }
                             .filter {
-                                Log.d("Search", it.rating)
                                 (it.rating.toDouble() >= _filterUiState.value.selectedRating.toDouble())
                                         &&
                                         if (genreToId(_filterUiState.value.selectedGenre.type) > 0) {
@@ -167,14 +165,12 @@ class SearchViewModel(
                             }
                     }
                 }
-                Log.d("Search", result.toString())
                 when (mediaType) {
                     MediaType.MOVIE -> onSearchMoviesSuccess(result as List<MovieUIState>)
                     MediaType.TV_SHOW -> onSearchTvShowsSuccess(result as List<TVShowUiState>)
                 }
 
             } catch (e: Exception) {
-                Log.e("Search", e.message.toString())
                 onSearchError(e.message ?: "Unknown error")
             }
         }
@@ -222,10 +218,6 @@ class SearchViewModel(
         _searchUIState.update { SearchUiState.Searching.Error(error) }
     }
 
-    fun applyFilters(onDismiss: () -> Unit) {
-        onDismiss()
-    }
-
     fun onDismiss() {
         _filterDialogState.update { false }
     }
@@ -244,60 +236,3 @@ class SearchViewModel(
     }
 }
 
-data class FilterUiState(
-    val selectedRating: Float = 1f,
-    val selectedGenre: GenreUiState = GenreUiState(),
-)
-
-data class GenreUiState(
-    val type: GenreType = GenreType.ALL,
-    val isSelected: Boolean = true
-)
-
-enum class GenreType() {
-    ALL,
-    ROMANCE,
-    SCIENCE_FICTION,
-    FAMILY,
-    MYSTERY,
-    HISTORY,
-    WAR,
-    ACTION,
-    CRIME,
-    COMEDY,
-    HORROR,
-    WESTERN,
-    MUSIC,
-    ADVENTURE,
-    TV_MOVIE,
-    FANTASY,
-    THRILLER,
-    DRAMA,
-    DOCUMENTARY,
-    ANIMATION
-}
-
-private fun genreToId(genre: GenreType): Int {
-    return when (genre) {
-        GenreType.ALL -> 0
-        GenreType.ROMANCE -> 10749
-        GenreType.SCIENCE_FICTION -> 878
-        GenreType.FAMILY -> 10751
-        GenreType.MYSTERY -> 9648
-        GenreType.HISTORY -> 36
-        GenreType.WAR -> 10752
-        GenreType.ACTION -> 28
-        GenreType.CRIME -> 80
-        GenreType.COMEDY -> 35
-        GenreType.HORROR -> 27
-        GenreType.WESTERN -> 37
-        GenreType.MUSIC -> 10402
-        GenreType.ADVENTURE -> 12
-        GenreType.TV_MOVIE -> 10770
-        GenreType.FANTASY -> 14
-        GenreType.THRILLER -> 53
-        GenreType.DRAMA -> 18
-        GenreType.DOCUMENTARY -> 99
-        GenreType.ANIMATION -> 16
-    }
-}

@@ -22,9 +22,7 @@ class SearchByActorViewModel(
 
 
 
-    override fun onBackClicked() {
-        //TODO("Not yet implemented")
-    }
+
 
     override fun onActorNameChanged(actorName: CharSequence) {
         _uiState.update { it.copy(actorName = actorName.toString()) }
@@ -32,6 +30,7 @@ class SearchByActorViewModel(
     }
 
     override fun onSearchClicked() {
+
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -41,13 +40,13 @@ class SearchByActorViewModel(
                     actorName = _uiState.value.actorName,
                     language = languageCode
                 ).map { it.toUIState() }
-                Log.i("findByActor", result.toString())
                 onSearchSuccess(result)
             } catch (exception: Exception) {
                 // TODO:
                 onSearchError(exception.message ?: "Unknown error")
             }
         }
+
     }
 
     private fun onSearchSuccess(movies: List<MovieUIState>) {
@@ -58,7 +57,5 @@ class SearchByActorViewModel(
         _uiState.update { it.copy(error = message, isLoading = false) }
     }
 
-    override fun onMovieClicked(id: Int) {
-        //TODO("Not yet implemented")
-    }
+
 }
