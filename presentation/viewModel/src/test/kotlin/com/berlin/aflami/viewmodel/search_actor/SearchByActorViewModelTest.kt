@@ -4,7 +4,6 @@ import android.util.Log
 import com.berlin.aflami.viewmodel.search_actor.SearchByActorViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -72,13 +71,13 @@ class SearchByActorViewModelTest {
         val actorName = "Tom"
         val language = "Tom"
         viewModel.onActorNameChanged(actorName)
-        coEvery { searchByActorNameUseCase(actorName,language) } returns emptyList()
+        coEvery { searchByActorNameUseCase(actorName, language) } returns emptyList()
 
-         //When
+        //When
         viewModel.onSearchClicked()
         val initialUiState = viewModel.uiState.value
 
-         //Then
+        //Then
         assertThat(initialUiState.isLoading).isTrue()
         advanceUntilIdle()
     }
@@ -88,7 +87,7 @@ class SearchByActorViewModelTest {
         // Given
         val actorName = "Tom "
         val errorMessage = "error"
-        coEvery { searchByActorNameUseCase(any(),any()) } throws Exception(errorMessage)
+        coEvery { searchByActorNameUseCase(any(), any()) } throws Exception(errorMessage)
         viewModel.onActorNameChanged(actorName)
 
         // When

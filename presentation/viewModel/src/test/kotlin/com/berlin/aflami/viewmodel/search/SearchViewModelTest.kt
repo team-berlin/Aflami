@@ -2,10 +2,8 @@ package com.berlin.aflami.viewmodel.search
 
 
 import android.util.Log
-import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.search_actor.GenreType
 import com.berlin.aflami.viewmodel.uistate.MediaUiState
-import com.berlin.aflami.viewmodel.uistate.TVShowUiState
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import com.google.common.truth.Truth.assertThat
@@ -140,10 +138,12 @@ class SearchViewModelTest {
         assertThat(viewModel.searchUIState.value).isEqualTo(SearchUiState.Init)
         assertThat(viewModel.queryFlow.value).isEmpty()
     }
+
     @Test
     fun `onSearchClick should call searchMedia with TV_SHOW when tab index is 1`() = runTest {
         // Given
-        val domainTvShow = TVShow(1, "Breaking Bad", 8.5, LocalDate(2008, 1, 20), listOf(18), "bb.jpg")
+        val domainTvShow =
+            TVShow(1, "Breaking Bad", 8.5, LocalDate(2008, 1, 20), listOf(18), "bb.jpg")
         val expectedUi = MediaUiState(
             id = 1,
             title = "Breaking Bad",

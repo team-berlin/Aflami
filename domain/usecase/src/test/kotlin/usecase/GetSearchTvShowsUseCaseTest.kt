@@ -1,34 +1,39 @@
 package usecase
+
 import com.berlin.entity.TVShow
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Test
-import repository.SearchRepository
-import com.google.common.truth.Truth.assertThat
-import io.mockk.coVerify
 import kotlinx.datetime.LocalDate
 import org.junit.Before
-import org.junit.jupiter.api.BeforeEach
+import org.junit.Test
 import org.junit.jupiter.api.assertThrows
+import repository.SearchRepository
+
 class GetSearchTvShowsUseCaseTest {
 
 
     private lateinit var repository: SearchRepository
     private lateinit var useCase: GetSearchTvShowsUseCase
+
     @Before
     fun setup() {
         repository = mockk()
         useCase = GetSearchTvShowsUseCase(repository)
     }
+
     @Test
     fun `should return list of tv shows`() = runTest {
         val query = "breaking"
         val language = "en-US"
-        val expected = listOf(TVShow(
-            1, "Breaking Bad",
-            7.5, LocalDate(2020, 1, 1), emptyList(), "img"
-        ))
+        val expected = listOf(
+            TVShow(
+                1, "Breaking Bad",
+                7.5, LocalDate(2020, 1, 1), emptyList(), "img"
+            )
+        )
 
         coEvery { repository.searchTVShow(query, language) } returns expected
 
