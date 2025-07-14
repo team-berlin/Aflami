@@ -23,6 +23,8 @@ import coil3.request.SuccessResult
 import coil3.request.allowHardware
 import coil3.toBitmap
 import com.berlin.safeimageviewer.ml.SavedModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.nio.ByteBuffer
@@ -42,6 +44,7 @@ fun SafeImageViewer(
     LaunchedEffect(imageUri) {
         val request = ImageRequest.Builder(context)
             .data(imageUri)
+            .size(224)
             .allowHardware(false)
             .build()
 
@@ -50,19 +53,26 @@ fun SafeImageViewer(
         val bmp = drawable?.toBitmap()
 
         if (bmp != null) {
-            bitmap = bmp
+            withContext(Dispatchers.Default) {
+                bitmap = bmp
 
-            val byteBuffer = bitmapToByteBuffer(bmp)
-            val input = TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
-            input.loadBuffer(byteBuffer)
+                val byteBuffer = bitmapToByteBuffer(bmp)
+                val input =
+                    TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
+                input.loadBuffer(byteBuffer)
 
-            val model = SavedModel.newInstance(context)
-            val output = model.process(input).outputFeature0AsTensorBuffer.floatArray
-            model.close()
+                val model = SavedModel.newInstance(context)
+                val output = model.process(input).outputFeature0AsTensorBuffer.floatArray
+                model.close()
 
-            val highest = output.indices.maxByOrNull { output[it] } ?: -1
-            isSafe = highest == 2
+                val highest = output.indices.maxByOrNull { output[it] } ?: -1
+                val safeResult = highest == 2
+                withContext(Dispatchers.Main) {
+                    bitmap = bmp
+                    isSafe = safeResult
+                }
 
+            }
         }
     }
     isSafe?.let { safe ->
@@ -72,7 +82,6 @@ fun SafeImageViewer(
                 contentDescription = null,
                 modifier = modifier
                     .blur(
-
                         radius = if (!safe) 40.dp else 0.dp,
                         edgeTreatment = BlurredEdgeTreatment.Unbounded
                     )

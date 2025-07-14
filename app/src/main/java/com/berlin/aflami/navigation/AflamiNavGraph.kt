@@ -1,8 +1,12 @@
 package com.berlin.aflami.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.berlin.aflami.navigation.routes.mediaDetailsRoute
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchRoute
 import com.berlin.aflami.navigation.routes.worldTourRoute
@@ -21,11 +25,22 @@ import com.example.navigation.Destination
  */
 
 @Composable
-fun AflamiNavGraph(navController: NavHostController) {
-    NavHost(navController = navController,
-        startDestination = Destination.SearchScreen.route) {
+fun AflamiNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
+
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = Destination.SearchScreen.route,
+        enterTransition = {
+            EnterTransition.None
+        },
+        exitTransition = {
+            ExitTransition.None
+        }
+    ) {
         searchRoute(navController)
         worldTourRoute(navController)
         searchByActorNameRoute(navController)
+        mediaDetailsRoute(navController)
     }
 }

@@ -4,7 +4,6 @@ import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.BaseResponse
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
-import com.berlin.repository.datasource.remote.dto.MediaByActorResponse
 import com.berlin.repository.datasource.remote.dto.MovieResponse
 import com.berlin.repository.datasource.remote.dto.TVShowResponse
 import io.ktor.client.HttpClient

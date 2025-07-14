@@ -80,7 +80,7 @@ class MediaDetailsViewmodel(
         TODO("Not yet implemented")
     }
 
-    override fun onShowMediaGalleryClicked() {
+    override fun onShowMediaGalleryClicked(id: Long) {
         TODO("Not yet implemented")
     }
 

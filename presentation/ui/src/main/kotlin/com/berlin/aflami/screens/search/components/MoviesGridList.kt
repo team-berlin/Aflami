@@ -20,7 +20,6 @@ import com.berlin.ui.R
 fun MoviesList(
     modifier: Modifier = Modifier,
     movies: List<MovieUIState>,
-    onMovieClick: (Int) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 160.dp),
@@ -36,7 +35,7 @@ fun MoviesList(
             MediaCard(
                 modifier = Modifier
                     .height(222.dp)
-                    .clickable { onMovieClick(movie.id.toInt()) },
+                   ,
                 mediaImg = movie.poster,
                 title = movie.title,
                 typeOfMedia = stringResource(R.string.movie),
