@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.search.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,9 +17,14 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
 @Composable
-fun SearchData(recentSearch: List<String>) {
+fun SearchData(
+    modifier: Modifier = Modifier,
+    recentSearch: List<String>,
+    onDeleteItem: (String) -> Unit,
+    onClearAll: () -> Unit
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 24.dp, bottom = 12.dp, start = 16.dp, end = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -29,17 +35,23 @@ fun SearchData(recentSearch: List<String>) {
             color = Theme.color.textColors.title,
             style = Theme.textStyle.title.medium,
             modifier = Modifier.padding(top = 8.dp, bottom = 12.dp)
+
         )
         Text(
             stringResource(R.string.clear_all),
             color = Theme.color.primary,
             style = Theme.textStyle.label.medium,
-            modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
+            modifier = Modifier
+                .padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
+                .clickable { onClearAll() }
         )
     }
     LazyColumn() {
-        items(recentSearch) {
-            SearchItem(it)
+        items(recentSearch) { currentQuery ->
+            SearchItem(
+                text = currentQuery,
+                onDeleteClick = { onDeleteItem(currentQuery) }
+            )
         }
     }
 }

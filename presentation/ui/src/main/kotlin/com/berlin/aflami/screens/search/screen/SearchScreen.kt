@@ -76,8 +76,9 @@ fun SearchScreen(
         clearSearchState = viewModel::clearSearchState,
         updateSearchQuery = viewModel::updateSearchQuery,
         viewModel = viewModel,
-        recentSearchState = recentSearchState.value
-
+        recentSearchState = recentSearchState.value,
+        onDeleteItem = viewModel::deleteQueryFromHistory,
+        onClearAll = viewModel::clearSearchHistory
     )
 }
 
@@ -94,7 +95,9 @@ private fun SearchScreenContent(
     updateSearchQuery: (String) -> Unit,
     filterDialogsState: Boolean,
     viewModel: SearchViewModel,
-    recentSearchState: List<String>
+    recentSearchState: List<String>,
+    onDeleteItem: (String) -> Unit,
+    onClearAll: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     Box(
@@ -183,7 +186,11 @@ private fun SearchScreenContent(
 
 
                     if (recentSearchState.isNotEmpty()) {
-                        SearchData(recentSearchState)
+                        SearchData(
+                            recentSearch = recentSearchState,
+                            onDeleteItem = onDeleteItem,
+                            onClearAll = onClearAll
+                        )
 
                     }else{
                         NoDataSearch()

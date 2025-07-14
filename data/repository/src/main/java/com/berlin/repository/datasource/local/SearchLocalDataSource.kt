@@ -10,4 +10,9 @@ interface SearchLocalDataSource {
 
     suspend fun insertQueryOnly(searchingEntity: SearchingEntity)
 
+    suspend fun deleteQueryFromHistory(query: String)
+
+    suspend fun clearSearchHistory()
+
+
 }

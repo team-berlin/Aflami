@@ -20,4 +20,11 @@ interface SearchDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertQueryOnly(searchingEntity: SearchingEntity)
 
+    @Query("DELETE FROM search_cache WHERE `query` = :query")
+    suspend fun deleteQueryFromHistory(query: String)
+
+    @Query("DELETE FROM search_cache")
+    suspend fun clearSearchHistory()
+
+
 }

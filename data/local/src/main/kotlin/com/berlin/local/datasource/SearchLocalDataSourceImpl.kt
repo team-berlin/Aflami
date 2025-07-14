@@ -19,4 +19,12 @@ class SearchLocalDataSourceImpl(
     override suspend fun insertQueryOnly(searchingEntity: SearchingEntity) {
         searchDao.insertQueryOnly(searchingEntity)
     }
+    override suspend fun deleteQueryFromHistory(query: String) {
+        searchDao.deleteQueryFromHistory(query)
+    }
+
+    override suspend fun clearSearchHistory() {
+        searchDao.clearSearchHistory()
+    }
+
 }

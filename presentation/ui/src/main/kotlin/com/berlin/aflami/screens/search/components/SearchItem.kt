@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.search.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -16,9 +17,13 @@ import com.berlin.designsystem.R
 
 
 @Composable
-fun SearchItem(string: String) {
+fun SearchItem(
+    modifier: Modifier = Modifier,
+    text: String,
+    onDeleteClick: () -> Unit
+) {
     Row(
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp, top = 12.dp),
+        modifier = modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp, top = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     )
     {
@@ -28,7 +33,7 @@ fun SearchItem(string: String) {
             tint = Theme.color.textColors.hint
         )
         Text(
-            text = string,
+            text = text,
             modifier = Modifier.padding(start = 8.dp),
             style = Theme.textStyle.body.medium,
             color = Theme.color.textColors.title
@@ -38,7 +43,8 @@ fun SearchItem(string: String) {
         Icon(
             painter = painterResource(R.drawable.cancel),
             contentDescription = "cancel",
-            tint = Theme.color.textColors.hint
+            tint = Theme.color.textColors.hint,
+            modifier = Modifier.clickable { onDeleteClick() }
 
         )
     }

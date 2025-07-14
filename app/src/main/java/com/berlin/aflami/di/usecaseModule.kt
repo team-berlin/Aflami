@@ -1,11 +1,13 @@
 package com.berlin.aflami.di
 
 import org.koin.dsl.module
+import usecase.ClearSearchHistoryUseCase
+import usecase.DeleteQueryFromHistoryUseCase
 import usecase.GetRecentHistoryUseCase
-import usecase.SearchByActorNameUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
+import usecase.SearchByActorNameUseCase
 import usecase.SearchByCountryUseCase
 
 val useCaseModule = module {
@@ -15,5 +17,7 @@ val useCaseModule = module {
     single { GetSearchTvShowsUseCase(get()) }
     single { GetRecentHistoryUseCase(get()) }
     single { SaveRecentHistoryUseCase(get()) }
+    single { ClearSearchHistoryUseCase(get()) }
+    single { DeleteQueryFromHistoryUseCase(get()) }
 
 }

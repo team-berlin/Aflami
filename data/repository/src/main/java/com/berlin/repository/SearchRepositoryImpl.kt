@@ -108,7 +108,7 @@ class SearchRepositoryImpl(
         val entity = SearchingEntity(
             id = query.hashCode().toLong(),
             query = query,
-            type = "RECENT_QUERY",
+            type = QueryType.HISTORY.name,
             time = System.currentTimeMillis(),
             title = "",
             rating = 0.0,
@@ -119,7 +119,13 @@ class SearchRepositoryImpl(
         localDataSource.insertQueryOnly(entity)
     }
 
+    override suspend fun deleteQueryFromHistory(query: String) {
+        localDataSource.deleteQueryFromHistory(query)
+    }
 
+    override suspend fun clearSearchHistory() {
+        localDataSource.clearSearchHistory()
+    }
 
     companion object {
         const val ONE_HOUR_IN_MILLIS = 3600000L

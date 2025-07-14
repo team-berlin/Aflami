@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import usecase.ClearSearchHistoryUseCase
+import usecase.DeleteQueryFromHistoryUseCase
 import usecase.GetRecentHistoryUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
@@ -34,9 +36,11 @@ class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
     private val searchTvShowsUseCase: GetSearchTvShowsUseCase,
     private val getRecentHistoryUseCase: GetRecentHistoryUseCase,
-    private val saveRecentHistoryUseCase: SaveRecentHistoryUseCase
+    private val saveRecentHistoryUseCase: SaveRecentHistoryUseCase,
+    private val deleteQueryFromHistoryUseCase: DeleteQueryFromHistoryUseCase,
+    private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase,
 
-) : ViewModel(), SearchInteractionListener {
+    ) : ViewModel(), SearchInteractionListener {
 
     private val _searchUIState = MutableStateFlow<SearchUiState>(SearchUiState.Init)
     val searchUIState = _searchUIState.asStateFlow()
@@ -263,5 +267,19 @@ class SearchViewModel(
             _recentSearchState.value = result
         }
     }
+    fun deleteQueryFromHistory(query: String) {
+        viewModelScope.launch {
+            deleteQueryFromHistoryUseCase(query)
+            loadRecentSearches()
+        }
+    }
+
+    fun clearSearchHistory() {
+        viewModelScope.launch {
+            clearSearchHistoryUseCase()
+            loadRecentSearches()
+        }
+    }
+
 }
 

@@ -5,5 +5,7 @@ enum class QueryType(){
     COUNTRY,
     TV,
     MOVIE,
+
+    HISTORY
 }
 const val ActingDepartment="Acting"
