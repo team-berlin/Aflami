@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.search.screen
 
-import androidx.compose.runtime.Composable
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -42,17 +42,15 @@ import com.berlin.aflami.viewmodel.search.GenreType
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.designsystem.R
 
-import org.koin.androidx.compose.koinViewModel
 @Composable
 fun FilterDialog(
-    onDismiss: () -> Unit,
     viewModel: SearchViewModel
 ) {
     val filterState by viewModel.filterUiState.collectAsState()
     val selectedRating = filterState.selectedRating
     val selectedGenre = filterState.selectedGenre.type
 
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = viewModel::onDismiss) {
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = Theme.color.surface
@@ -65,10 +63,11 @@ fun FilterDialog(
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Filter result",
+                        text = stringResource(com.berlin.ui.R.string.filter_result),
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title
                     )
@@ -76,15 +75,15 @@ fun FilterDialog(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Theme.color.surfaceHigh),
+                            .background(Theme.color.surfaceHigh)
+                            .clickable { viewModel.onDismiss() },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.cancel),
                             contentDescription = stringResource(R.string.icon_cd),
                             modifier = Modifier
-                                .size(24.dp)
-                                .clickable { onDismiss() },
+                                .size(24.dp),
                             tint = Theme.color.textColors.title
                         )
                     }
@@ -94,15 +93,19 @@ fun FilterDialog(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "IMDb rating",
-                        style = Theme.textStyle.title.small
+                        text = stringResource(R.string.imdb_rating),
+                        style = Theme.textStyle.title.small,
+                        color = Theme.color.textColors.title
                     )
                     RatingBar(
                         modifier = Modifier,
                         onValueChange = { viewModel.updateRating(it) },
                         currentRating = selectedRating
                     )
-                    Text(text = "Genre", style = Theme.textStyle.title.small)
+                    Text(
+                        text = stringResource(R.string.Genre),
+                        style = Theme.textStyle.title.small, color = Theme.color.textColors.title
+                    )
                     LazyRow(
                         modifier = Modifier
                             .height(96.dp)
@@ -111,8 +114,7 @@ fun FilterDialog(
                     ) {
                         items(GenreType.entries) { genre ->
                             Chips(
-                                title = genre.name.replace("_", " ").lowercase()
-                                    .replaceFirstChar { it.uppercase() },
+                                title = stringResource(genreMapper(genre)),
                                 icon = painterResource(getGenreIcon(genre)),
                                 isSelected = selectedGenre == genre,
                                 onClick = { viewModel.toggleGenre(genre) }
@@ -125,12 +127,15 @@ fun FilterDialog(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     PrimaryButton(
-                        onClick = { onDismiss() },
+                        onClick = {
+                            viewModel.onSearchClick(viewModel.queryFlow.value)
+                            viewModel.onDismiss()
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
                         containerColor = Theme.color.primary,
-                        gradientColor = Color(0xFF973A66)
+                        gradientColor = Theme.color.primaryButton
                     ) {
                         Text(
                             "Apply",
@@ -156,9 +161,10 @@ fun FilterDialog(
         }
     }
 }
+
 fun getGenreIcon(genre: GenreType): Int {
     return when (genre) {
-        GenreType.ALL ->R.drawable.all_movies
+        GenreType.ALL -> R.drawable.all_movies
         GenreType.ROMANCE -> R.drawable.romance
         GenreType.SCIENCE_FICTION -> R.drawable.science_fiction
         GenreType.FAMILY -> R.drawable.family
@@ -180,6 +186,7 @@ fun getGenreIcon(genre: GenreType): Int {
         GenreType.ANIMATION -> R.drawable.animation
     }
 }
+
 @Composable
 fun Chips(
     title: String,
@@ -235,6 +242,7 @@ fun Chips(
         )
     }
 }
+
 @Composable
 fun RatingBar(
     onValueChange: (Float) -> Unit,
@@ -272,7 +280,10 @@ fun PrimaryButton(
             .background(
                 brush = Brush.verticalGradient(
                     colors = if (gradientColor != null)
-                        listOf(containerColor, gradientColor) else listOf(containerColor,containerColor)
+                        listOf(containerColor, gradientColor) else listOf(
+                        containerColor,
+                        containerColor
+                    )
                 )
             )
             .clickable(onClick = onClick)
@@ -287,10 +298,36 @@ fun PrimaryButton(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun FilterDialogPreview() {
     AflamiTheme {
 
+    }
+}
+
+fun genreMapper(genre: GenreType): Int {
+    return when (genre) {
+        GenreType.ALL -> R.string.all
+        GenreType.ROMANCE -> R.string.romance
+        GenreType.SCIENCE_FICTION -> R.string.science_fiction
+        GenreType.FAMILY -> R.string.family
+        GenreType.MYSTERY -> R.string.mystery
+        GenreType.HISTORY -> R.string.history
+        GenreType.WAR -> R.string.war
+        GenreType.ACTION -> R.string.action
+        GenreType.CRIME -> R.string.crime
+        GenreType.COMEDY -> R.string.comedy
+        GenreType.HORROR -> R.string.horror
+        GenreType.WESTERN -> R.string.western
+        GenreType.MUSIC -> R.string.music
+        GenreType.ADVENTURE -> R.string.adventure
+        GenreType.TV_MOVIE -> R.string.tv_movie
+        GenreType.FANTASY -> R.string.fantasy
+        GenreType.THRILLER -> R.string.thriller
+        GenreType.DRAMA -> R.string.drama
+        GenreType.DOCUMENTARY -> R.string.documentary
+        GenreType.ANIMATION -> R.string.animation
     }
 }

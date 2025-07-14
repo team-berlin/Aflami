@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.search.actor
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,26 +36,30 @@ import com.berlin.aflami.viewmodel.search_actor.SearchByActorViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SearchByActorNameScreen(
-    navController : NavController,
+    navController: NavController,
     viewModel: SearchByActorViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    SearchByActorNameContent(uiState, viewModel,navController)
+    SearchByActorNameContent(
+        state = uiState,
+        listener = viewModel,
+        navController = navController,
+        viewModel.queryFlow.value
+    )
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 private fun SearchByActorNameContent(
     state: SearchByActorScreenUiState,
     listener: SearchByActorInteractionListener,
-    navController: NavController
+    navController: NavController,
+    value: String
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Theme.color.surface),
-    ) {
+    Column {
         TopBar(
             modifier = Modifier.padding(vertical = 8.dp),
             title = {
@@ -86,7 +91,7 @@ private fun SearchByActorNameContent(
 
         val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
-            text = state.actorName,
+            text = value,
             hintText = stringResource(R.string.find_by_actor),
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,12 +113,12 @@ private fun SearchByActorNameContent(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
             if (state.movies.isEmpty()) {
                 CountryTourExploring(
-                    modifier = Modifier.padding(top = 143.dp),
+                    modifier = Modifier.fillMaxSize(),
                     image = painterResource(R.drawable.find_by_actor),
                     titleId = R.string.find_by_actor,
                     messageId = R.string.find_by_actor_quotation

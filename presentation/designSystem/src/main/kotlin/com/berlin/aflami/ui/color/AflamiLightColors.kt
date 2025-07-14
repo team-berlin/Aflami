@@ -8,17 +8,18 @@ val AflamiLightColors = AflamiColors(
     primary = Color(0xFFF564A9),
     secondary = Color(0xFF7D1C4A),
     primaryVariant = Color(0xFFFAE6EF),
-    stroke = Color(0x141F1F1F),
-    surface = Color(0xFFFAF5F7),
-    surfaceHigh = Color(0xFFFFFFFF),
     disable = Color(0xFFE1E4E5),
     iconBackground = Color(0xB30D090B),
     blurOverlay = Color(0x80FFFFFF),
     onPrimaryButton = Color(0x70FFFFFF),
+    surface = Color(0xFFFAF5F7),
+    surfaceHigh = Color(0xFFFFFFFF),
+    stroke = Color(0x141F1F1F),
+    primaryButton=  Color(0xFF973A66),
     gradientColors = GradientColors(
         overly = listOf(Color(0x00FAF5F7),Color(0xFFFAF5F7)),
         streakGradient = listOf(Color(0xFFD85895),Color(0x52D85895)),
-        pointsOverly = listOf(Color(0xFFD02C7A),Color(0xFF7D1C4A))
+        pointsOverly = listOf(Color(0xFFD02C7A),Color(0xFF7D1C4A)),
     ),
     textColors = TextColors(
         title = Color(0xDE1F1F1F),
@@ -41,5 +42,5 @@ val AflamiLightColors = AflamiColors(
         yellowCard = Color(0x3DFAD291),
         backgroundCircles = Color(0x3DD85895),
         profileOverly = Color(0x80FAF5F7)
-    )
+    ),
 )

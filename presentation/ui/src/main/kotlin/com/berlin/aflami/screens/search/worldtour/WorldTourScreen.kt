@@ -51,11 +51,7 @@ private fun WorldTourContent(
     listener: WorldTourInteractionListener,
     navController: NavController,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Theme.color.surface),
-    ) {
+    Column{
         TopBar(
             modifier = Modifier.padding(vertical = 8.dp),
             title = {
@@ -107,13 +103,12 @@ private fun WorldTourContent(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            contentAlignment = Alignment.TopCenter
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
             if (state.movies.isEmpty()) {
                 CountryTourExploring(
-                    modifier = Modifier.padding(top = 143.dp),
+                    modifier = Modifier.fillMaxSize(),
                     image = painterResource(R.drawable.world_tour),
                     titleId = R.string.country_tour,
                     messageId = R.string.country_tour_description

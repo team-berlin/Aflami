@@ -54,6 +54,7 @@ object Dependencies {
     const val androidxUiTestManifest = "androidx.compose.ui:ui-test-manifest"
 
     //utils
+
     const val kotlinDateX="org.jetbrains.kotlinx:kotlinx-datetime:${Versions.kotlinDateX}"
 }
 
