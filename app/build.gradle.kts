@@ -17,6 +17,8 @@ val properties = Properties().apply {
 
 
 android {
+
+
     namespace = "com.berlin.aflami"
     compileSdk = 35
 
@@ -33,6 +35,8 @@ android {
         buildConfigField("String", "API_KEY", "\"${properties["API_KEY"]}\"")
     }
 
+
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -42,6 +46,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -53,6 +58,8 @@ android {
         compose = true
         buildConfig = true
     }
+
+
 }
 
 dependencies {

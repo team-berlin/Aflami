@@ -48,7 +48,7 @@ fun SearchData(text: String) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(com.berlin.ui.R.drawable.clock),
+                    painter = painterResource(R.drawable.clock),
                     contentDescription = "Clock"
                 )
 
@@ -57,7 +57,7 @@ fun SearchData(text: String) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 Image(
-                    painter = painterResource(com.berlin.ui.R.drawable.cancel),
+                    painter = painterResource(R.drawable.cancel),
                     contentDescription = "cancel"
                 )
             }

@@ -36,9 +36,7 @@ class WorldTourViewModel(
         countriesWithCodeMap = countriesWithCode.toMap()
     }
 
-    override fun onBackClicked() {
-        // TODO: ("Not yet implemented")
-    }
+
 
     override fun onCountryNameChanged(countryName: CharSequence) {
         val name = countryName.toString()
@@ -79,15 +77,10 @@ class WorldTourViewModel(
                 Log.e("WorldTourViewModel", result.toString())
                 onSearchSuccess(result)
             } catch (exception: Exception) {
-                // TODO: msg resId
-                Log.e("WorldTourViewModel", exception.message ?: "Unknown error")
+
                 onSearchError(exception.message ?: "Unknown error")
             }
         }
-    }
-
-    override fun onMovieClicked(id: Int) {
-        // TODO("Not yet implemented")
     }
 
     override fun onDismissDropDown() {
