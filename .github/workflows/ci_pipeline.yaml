@@ -42,7 +42,7 @@ jobs:
 
       - name: Restore firebase_release_key
         run: |
-          echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > > firebase_release_key.jks    
+          echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > firebase_release_key.jks    
       
 
       - name: Grant gradlew permissions
