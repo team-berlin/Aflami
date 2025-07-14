@@ -11,7 +11,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-class SearchRemoteDataSourceImp(
+class SearchRemoteDataSourceImpl(
     private val client: HttpClient
 ) : SearchRemoteDataSource {
     override suspend fun searchMoviesByCountry(
