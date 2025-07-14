@@ -104,7 +104,6 @@ private fun WorldTourContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth(),
-            contentAlignment = Alignment.Center
         ) {
             if (state.movies.isEmpty()) {
                 CountryTourExploring(
