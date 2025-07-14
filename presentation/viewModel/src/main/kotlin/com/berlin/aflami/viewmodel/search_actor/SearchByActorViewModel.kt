@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.search_actor
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.mapper.toMessage
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import kotlinx.coroutines.Dispatchers
@@ -27,9 +28,6 @@ class SearchByActorViewModel(
 
     private val _queryFlow = MutableStateFlow("")
     val queryFlow = _queryFlow
-    override fun onBackClicked() {
-        TODO("Not yet implemented")
-    }
 
     init {
         viewModelScope.launch {
@@ -68,7 +66,7 @@ class SearchByActorViewModel(
                 Log.i("findByActor", result.toString())
                 onSearchSuccess(result)
             } catch (exception: Exception) {
-                onSearchError(exception.message ?: "Unknown error")
+                onSearchError(exception.toMessage())
             }
         }
     }
@@ -81,7 +79,4 @@ class SearchByActorViewModel(
         _uiState.update { it.copy(error = message, isLoading = false) }
     }
 
-    override fun onMovieClicked(id: Int) {
-        //TODO("Not yet implemented")
-    }
 }

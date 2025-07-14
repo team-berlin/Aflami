@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.searchworldtour
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.mapper.toMessage
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import kotlinx.coroutines.Dispatchers
@@ -36,9 +37,7 @@ class WorldTourViewModel(
         countriesWithCodeMap = countriesWithCode.toMap()
     }
 
-    override fun onBackClicked() {
-        // TODO: ("Not yet implemented")
-    }
+
 
     override fun onCountryNameChanged(countryName: CharSequence) {
         val name = countryName.toString()
@@ -80,14 +79,11 @@ class WorldTourViewModel(
                 onSearchSuccess(result)
             } catch (exception: Exception) {
 
-                onSearchError(exception.message ?: "Unknown error")
+                onSearchError(exception.toMessage())
             }
         }
     }
 
-    override fun onMovieClicked(id: Int) {
-        // TODO("Not yet implemented")
-    }
 
     override fun onDismissDropDown() {
         _uiState.update { it.copy(dropDownExpanded = false) }

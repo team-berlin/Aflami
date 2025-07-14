@@ -1,6 +1,5 @@
 package com.berlin.repository
 
-import android.annotation.SuppressLint
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.SearchLocalDataSource
@@ -81,7 +80,7 @@ class SearchRepositoryImpl(
         } == null
         if (searchCaching.isEmpty() || oneHourPassed) {
             try{
-            val result = remoteDataSource.searchMovies(query, language).results?.filterNotNull()
+                val result = remoteDataSource.searchMovies(query, language).results?.filterNotNull()
                 ?.map { movieDto ->
                     movieDto.toLocal(
                         query, System.currentTimeMillis(), QueryType.MOVIE.name

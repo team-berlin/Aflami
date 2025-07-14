@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.mapper.toMessage
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.search_actor.FilterUiState
@@ -171,7 +172,7 @@ class SearchViewModel(
                 }
 
             } catch (e: Exception) {
-                onSearchError(e.message ?: "Unknown error")
+                onSearchError(e.toMessage())
             }
         }
     }
