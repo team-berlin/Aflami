@@ -10,7 +10,7 @@ import kotlinx.datetime.toLocalDateTime
 fun ReviewDto.toDomain(): Review {
     return Review(
         id = this.id?.toLong() ?: 0L,
-        name = this.author ?: "",
+        name = this.author ?: this.authorDetails?.name ?: "",
         userName = this.authorDetails?.userName ?: "",
         avatarImage = this.authorDetails?.avatarPath ?: "",
         rating = this.authorDetails?.rating ?: 0.0,
