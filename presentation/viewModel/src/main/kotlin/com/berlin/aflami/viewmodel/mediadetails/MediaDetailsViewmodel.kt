@@ -1,8 +1,14 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.ViewModel
+import usecase.GetMovieCastUseCase
+import usecase.GetSeriesCastUseCase
 
-class MediaDetailsViewmodel : ViewModel(), MediaInteractionListener {
+class MediaDetailsViewmodel(
+    private val getMovieCastUseCase:GetMovieCastUseCase,
+    private val getSeriesCastUseCase: GetSeriesCastUseCase
+) : ViewModel(), MediaInteractionListener {
+
     override fun onBackClicked() {
         TODO("Not yet implemented")
     }
@@ -16,7 +22,7 @@ class MediaDetailsViewmodel : ViewModel(), MediaInteractionListener {
     }
 
     override fun onShowCastClicked(id: Long) {
-        TODO("Not yet implemented")
+        TODO("Not yet ")
     }
 
     override fun onRateIconClicked(id: Long) {

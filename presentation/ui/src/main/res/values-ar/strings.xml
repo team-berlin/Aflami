@@ -13,5 +13,8 @@
     <string name="actor_name">اسم الممثل</string>
     <string name="find_by_actor">ابحث باسم الممثل</string>
     <string name="find_by_actor_quotation">ابدأ باستكشاف افلام لممثلك المفضل واستمتع بها.</string>
+    <string name="cast_image">Cast Image</string>
+    <string name="cast">Cast</string>
+    <string name="all">All</string>
     Start exploring your favorite actor’s movies and enjoy it.
 </resources>
