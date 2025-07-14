@@ -121,8 +121,6 @@ class SearchViewModel(
     }
 
     private fun searchMedia(mediaType: MediaType) {
-
-        Log.d("Search", queryFlow.value)
         if (queryFlow.value.isBlank()) return
         _searchUIState.update { SearchUiState.Searching.Loading }
         viewModelScope.launch(Dispatchers.IO) {
@@ -220,10 +218,6 @@ class SearchViewModel(
 
     private fun onSearchError(error: String) {
         _searchUIState.update { SearchUiState.Searching.Error(error) }
-    }
-
-    fun applyFilters(onDismiss: () -> Unit) {
-        onDismiss()
     }
 
     fun onDismiss() {

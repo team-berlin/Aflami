@@ -10,9 +10,6 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-val properties = Properties().apply {
-    load(rootProject.file("local.properties").inputStream())
-}
 
 
 
@@ -60,7 +57,6 @@ dependencies {
     lifecycleRuntimeKtx()
     navigationCompose()
     androidxUi()
-        implementation(libs.accompanist.systemuicontroller)
     koin()
     ktor()
     room()

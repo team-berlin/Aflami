@@ -53,8 +53,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
-    navController: NavController,
-    viewModel: SearchViewModel = koinViewModel()
+    navController: NavController, viewModel: SearchViewModel = koinViewModel()
 ) {
     val searchState by viewModel.searchUIState.collectAsState()
 
@@ -74,7 +73,7 @@ fun SearchScreen(
         onTabChange = viewModel::onTabChange,
         clearSearchState = viewModel::clearSearchState,
         updateSearchQuery = viewModel::updateSearchQuery,
-        viewModedl = viewModel
+        viewModel = viewModel
 
     )
 }
@@ -91,56 +90,47 @@ private fun SearchScreenContent(
     clearSearchState: () -> Unit,
     updateSearchQuery: (String) -> Unit,
     filterDialogsState: Boolean,
-    viewModedl: SearchViewModel
+    viewModel: SearchViewModel
 ) {
     val focusManager = LocalFocusManager.current
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Theme.color.surface)
             .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }) {
+                indication = null, interactionSource = remember { MutableInteractionSource() }) {
                 focusManager.clearFocus()
-
             }
             .focusable(),
     ) {
-        Column(
+        Column {
+            TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+                Text(
+                    text = stringResource(R.string.search),
+                    style = Theme.textStyle.title.large,
+                    color = Theme.color.textColors.title
+                )
+            }, leadingIcon = {
+                Box(
+                    Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Theme.color.surfaceHigh)
+                        .clickable {
+                            navController.popBackStack()
+                        }
+                        .onFocusChanged {
+                            clearSearchState
+                        }, contentAlignment = Alignment.Center
 
-        ) {
-            TopBar(
-                modifier = Modifier.padding(vertical = 8.dp),
-                title = {
-                    Text(
-                        text = stringResource(R.string.search),
-                        style = Theme.textStyle.title.large,
-                        color = Theme.color.textColors.title
+                ) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        painter = painterResource(R.drawable.arrow_left),
+                        contentDescription = stringResource(R.string.icon_cd),
+                        tint = Theme.color.textColors.title
                     )
-                },
-                leadingIcon = {
-                    Box(
-                        Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Theme.color.surfaceHigh)
-                            .clickable {
-                                navController.popBackStack()
-                            }
-                            .onFocusChanged {
-                                clearSearchState
-                            }, contentAlignment = Alignment.Center
-
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            painter = painterResource(R.drawable.arrow_left),
-                            contentDescription = stringResource(R.string.icon_cd),
-                            tint = Theme.color.textColors.title
-                        )
-                    }
                 }
-            )
+            })
 
             val keyboardController = LocalSoftwareKeyboardController.current
             TextField(
@@ -151,6 +141,7 @@ private fun SearchScreenContent(
                     .clip(RoundedCornerShape(16.dp))
                     .background(Theme.color.surfaceHigh)
                     .onFocusChanged {
+                        clearSearchState()
                         onFocusChanged(it.isFocused)
                     },
                 hintText = stringResource(R.string.search_hint_text),
@@ -182,8 +173,7 @@ private fun SearchScreenContent(
                     SearchSuggestionHub(
                         Modifier.padding(horizontal = 16.dp),
                         onWorldTourClick = { navController.navigate(Destination.WorldTourScreen.route) },
-                        onSearchByActorClick = { navController.navigate(Destination.SearchByActorNameScreen.route) }
-                    )
+                        onSearchByActorClick = { navController.navigate(Destination.SearchByActorNameScreen.route) })
 
                     NoDataSearch()
 
@@ -265,7 +255,7 @@ private fun SearchScreenContent(
         }
         if (filterDialogsState) {
             FilterDialog(
-                viewModedl
+                viewModel
             )
         }
     }

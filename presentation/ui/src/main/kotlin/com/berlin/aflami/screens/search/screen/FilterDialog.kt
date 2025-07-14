@@ -44,7 +44,6 @@ import com.berlin.designsystem.R
 
 @Composable
 fun FilterDialog(
-    //onDismiss: () -> Unit,
     viewModel: SearchViewModel
 ) {
     val filterState by viewModel.filterUiState.collectAsState()
@@ -64,10 +63,11 @@ fun FilterDialog(
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Filter result",
+                        text = stringResource(com.berlin.ui.R.string.filter_result),
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title
                     )
@@ -75,15 +75,15 @@ fun FilterDialog(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Theme.color.surfaceHigh),
+                            .background(Theme.color.surfaceHigh)
+                            .clickable { viewModel.onDismiss() },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.cancel),
                             contentDescription = stringResource(R.string.icon_cd),
                             modifier = Modifier
-                                .size(24.dp)
-                                .clickable { viewModel::onDismiss },
+                                .size(24.dp),
                             tint = Theme.color.textColors.title
                         )
                     }
