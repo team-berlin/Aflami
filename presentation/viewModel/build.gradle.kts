@@ -33,7 +33,17 @@ android {
     }
 }
 kover {
+
     reports {
+        filters {
+            includes {
+                classes("**ViewModel")
+                classes("**viewModel")
+                classes("**viewmodel")
+                classes("**Viewmodel")
+            }
+
+        }
         verify {
             rule {
                 bound {
@@ -49,6 +59,6 @@ dependencies {
     navigation()
     koin()
     test()
-
+    kotlinDateX()
     useCase()
 }

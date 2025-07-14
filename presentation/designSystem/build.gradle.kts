@@ -39,6 +39,9 @@ android {
 dependencies {
     androidCoreKtx()
     androidxUi()
-    composeUiDebug()
     coil()
+    safeImageViewer()
+    composeUiDebug()
+
+    safeImageViewer()
 }

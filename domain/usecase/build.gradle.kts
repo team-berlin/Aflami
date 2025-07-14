@@ -14,6 +14,14 @@ kotlin {
 }
 kover {
     reports {
+        filters {
+            includes {
+                classes("**UseCase")
+                classes("**useCase")
+                classes("**usecase")
+                classes("**Usecase")
+            }
+        }
         verify {
             rule {
                 bound {
@@ -24,7 +32,9 @@ kover {
     }
 }
 dependencies {
-    koin()
+    implementation(Dependencies.koin)
     test()
     entity()
+    kotlinDateX()
+
 }

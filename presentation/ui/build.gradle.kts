@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -36,11 +37,13 @@ dependencies {
     androidCoreKtx()
     lifecycleRuntimeKtx()
     androidxUi()
-    navigation()
+    navigationCompose()
     koin()
     coil()
     composeUiDebug()
+    safeImageViewer()
 
     designSystem()
     viewModel()
+    navigation()
 }

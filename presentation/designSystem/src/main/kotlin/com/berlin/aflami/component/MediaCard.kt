@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,14 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun MediaCard(
@@ -31,20 +33,31 @@ fun MediaCard(
     title: String,
     typeOfMedia: String,
     date: String,
-    rating: Double
+    rating: String
 ) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(16.dp))
-
     ) {
-        AsyncImage(
-            modifier = Modifier,
-            model = mediaImg,
-            contentDescription = stringResource(R.string.api_image_card_content),
-            contentScale = ContentScale.Crop
+//        AsyncImage(
+//            model = mediaImg,
+//            contentDescription = stringResource(R.string.api_image_card_content),
+//            modifier = Modifier.fillMaxSize(),
+//            contentScale = ContentScale.Crop
+//        )
+        SafeImageViewer(
+            imageUri = mediaImg,
+            modifier = Modifier.fillMaxSize(),
         )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.5f)
+                .align(Alignment.BottomCenter)
+                .background(ExtraColors.overlayGradient)
+        )
+
         Rating(modifier = Modifier.align(Alignment.TopEnd), rating)
 
         Column(
@@ -66,7 +79,9 @@ fun MediaCard(
                 Text(
                     text = typeOfMedia,
                     style = Theme.textStyle.label.small,
-                    color = Theme.color.textColors.onPrimaryBody
+                    color = Theme.color.textColors.onPrimaryBody,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Box(
                     modifier = Modifier
@@ -81,15 +96,11 @@ fun MediaCard(
                     style = Theme.textStyle.label.small,
                     color = Theme.color.textColors.onPrimaryBody
                 )
-
             }
-
         }
-
     }
-
-
 }
+
 @ThemeAndLocalePreviews
 @Composable
 private fun MediaCardPreview1() {
@@ -100,7 +111,7 @@ private fun MediaCardPreview1() {
             "Your Name",
             "TV show",
             "2016",
-            rating = 9.9
+            rating = "9.9"
         )
     }
 }
@@ -115,14 +126,7 @@ private fun MediaCardPreview2() {
             "Grave of the Fireflies",
             "TV show",
             "2016",
-            rating = 9.9
+            rating = "9.9"
         )
     }
 }
-
-
-
-
-
-
-
