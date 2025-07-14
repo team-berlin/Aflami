@@ -35,16 +35,9 @@ jobs:
             echo "KEYSTORE_PASSWORD exists = false"
           fi
 
-      - name: Restore firebase_release_key
-        run: |
-          echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > firebase_release_key.jks    
 
       - name: Build release AAB
-        run: ./gradlew bundleRelease
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
-          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: ./gradlew  assembleDebug
 
       - name: Set Firebase tester group
         id: tester_group
@@ -59,7 +52,7 @@ jobs:
         run: |
           npm install -g firebase-tools
           firebase appdistribution:distribute \
-          app/build/outputs/bundle/release/app-release.aab \
+          app/build/outputs/apk/debug/app-debug.apk \
           --app ${{ secrets.FIREBASE_APP_ID }} \
           --token ${{ secrets.FIREBASE_TOKEN }} \
           --groups "${{ steps.tester_group.outputs.group }}" \
