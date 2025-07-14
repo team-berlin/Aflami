@@ -27,6 +27,13 @@ jobs:
       - name: Restore keys.properties
         run: |
           echo "${{ secrets.API_KEYS_FILE }}" > local.properties
+      - name: Check if secret exists
+        run: |
+          if [ -n "${{ secrets.KEYSTORE_PASSWORD }}" ]; then
+            echo "KEYSTORE_PASSWORD exists = true"
+          else
+            echo "KEYSTORE_PASSWORD exists = false"
+          fi
 
       - name: Restore firebase_release_key
         run: |
@@ -34,6 +41,10 @@ jobs:
 
       - name: Build release AAB
         run: ./gradlew bundleRelease
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
 
       - name: Set Firebase tester group
         id: tester_group
