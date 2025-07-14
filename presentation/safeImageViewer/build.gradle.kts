@@ -11,17 +11,15 @@ android {
 
 dependencies {
 
-    //implementation("org.tensorflow:tensorflow-lite:2.14.0")
-    implementation("org.tensorflow:tensorflow-lite-support:0.4.3")
+    implementation(libs.tensorflow.lite.support)
     implementation(libs.tensorflow.lite.metadata)
-
     implementation(libs.androidx.core.ktx)
     implementation (libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.bundles.androidxUi)
+    implementation(libs.androidx.material3)
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.koin.core)
-    implementation(libs.bundles.test)
+    testImplementation(libs.bundles.test)
 
     implementation(libs.bundles.coil)
-
-    implementation(project(":presentation:designSystem"))
 }

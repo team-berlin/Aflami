@@ -19,6 +19,14 @@ firebaseService = "4.4.3"
 jetbrainsKotlinJvm = "2.0.21"
 tensorflowLiteMetadata = "0.1.0"
 kotlinDateX = "0.4.0"
+kover = "0.9.0"
+ksp = "2.0.21-1.0.27"
+room = "2.7.2"
+navigation = "2.9.0"
+tensorflowLiteSupport = "0.4.3"
+mockk = "1.14.0"
+truth = "1.4.4"
+jupiter = "5.10.2"
 
 
 
@@ -40,10 +48,16 @@ ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+#koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin" }
+#koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "ksp" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
@@ -53,6 +67,16 @@ kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-p
 android-tools-build-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 tensorflow-lite-metadata = { group = "org.tensorflow", name = "tensorflow-lite-metadata", version.ref = "tensorflowLiteMetadata" }
 kotlin-datex = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinDateX" }
+room = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+roomKtx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+roomCompiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+tensorflow-lite-support = { module = "org.tensorflow:tensorflow-lite-support", version.ref = "tensorflowLiteSupport" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+jupiter = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jupiter" }
+jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "jupiter" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -64,9 +88,8 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerformance" }
 firebase-gms-service = { id = "com.google.gms.google-services", version.ref = "firebaseService" }
-ksp = { id = "com.google.devtools.ksp", version = "2.0.21-1.0.27" }
-
-
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 aflami-custom-plugin = { id = "com.berlin.plugin" }
 
 [bundles]
@@ -84,6 +107,14 @@ coil = [
     "coil-network"
 ]
 
+koin = [
+    "koin-core",
+    "koin-android",
+    "koin-android-compose",
+#    "koin-annotations",
+#    "koin-ksp-compiler"
+]
+
 composeUiDebug = [
     "androidx-ui-tooling",
     "androidx-ui-test-manifest"
@@ -93,16 +124,28 @@ ktor = [
     "ktor-android",
     "ktor-core",
     "ktor-serialization",
-    "ktor-logging"
+    "ktor-logging",
+    "ktor-content-negotiation",
+    "ktor-cio"
 ]
 
 test = [
     "junit",
-    "kotlinx-coroutines-test"
+    "kotlinx-coroutines-test",
+    "mockk",
+    "truth",
+    "jupiter",
+    "jupiter-engine"
 ]
 
 firebase = [
     "firebase-analytics-ktx",
     "firebase-crashlytics-ktx",
     "firebase-perf-ktx"
+]
+
+room = [
+    "room",
+    "roomKtx",
+    "roomCompiler"
 ]

@@ -57,14 +57,27 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.androidxUi)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.koin.core)
-    implementation(libs.bundles.test)
+    testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+    implementation(libs.bundles.room)
+    ksp(libs.roomCompiler)
+    implementation(libs.androidx.navigation)
+
+
 
     api(project(":presentation:ui"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:designSystem"))
+    implementation(project(":presentation:viewModel"))
+    implementation(project(":presentation:navigation"))
+    implementation(project(":domain:usecase"))
+    implementation(project(":data:repository"))
+    implementation(project(":presentation:safeImageViewer"))
+    implementation(project(":data:local"))
+    implementation(project(":data:remote"))
 }

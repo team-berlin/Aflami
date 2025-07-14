@@ -1,15 +1,26 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kover)
     alias(libs.plugins.aflami.custom.plugin)
-    id("org.jetbrains.kotlinx.kover")
 }
 
 android {
     namespace = "com.berlin.viewModel"
 }
+
 kover {
+
     reports {
+        filters {
+            includes {
+                classes("**ViewModel")
+                classes("**viewModel")
+                classes("**viewmodel")
+                classes("**Viewmodel")
+            }
+
+        }
         verify {
             rule {
                 bound {
@@ -24,7 +35,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
     implementation(libs.koin.core)
-    implementation(libs.bundles.test)
+    testImplementation(libs.bundles.test)
+    implementation(libs.kotlin.datex)
 
     implementation(project(":domain:usecase"))
 }

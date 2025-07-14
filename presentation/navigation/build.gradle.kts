@@ -1,44 +1,21 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.aflami.custom.plugin)
 }
 
 android {
     namespace = "com.berlin.navigation"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 26
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
 }
 
 dependencies {
 
-    androidCoreKtx()
-    lifecycleRuntimeKtx()
-    androidxUi()
-    navigationCompose()
-    koin()
-    ktor()
-
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.core.ktx)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.androidxUi)
+    implementation(libs.androidx.navigation)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.bundles.ktor)
+    implementation(libs.bundles.koin)
 }

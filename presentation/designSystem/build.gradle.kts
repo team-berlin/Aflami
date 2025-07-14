@@ -16,4 +16,7 @@ dependencies {
     implementation(libs.bundles.coil)
     debugImplementation(libs.bundles.composeUiDebug)
     implementation(libs.androidx.material3)
+
+    implementation(project(":presentation:safeImageViewer"))
+
 }
