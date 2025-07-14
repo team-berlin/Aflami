@@ -114,10 +114,8 @@ private fun WorldTourContent(
                     messageId = R.string.country_tour_description
                 )
             }
-
             MoviesList(
                 movies = state.movies,
-                onMovieClick = listener::onMovieClicked
             )
 
             AnimatedCountriesList(

@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.search.GenreType
 import com.berlin.aflami.viewmodel.search.SearchViewModel
+import com.berlin.aflami.viewmodel.search_actor.GenreType
 import com.berlin.designsystem.R
 
 @Composable
@@ -67,7 +67,7 @@ fun FilterDialog(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = stringResource(com.berlin.ui.R.string.filter_result),
+                        text = stringResource(R.string.filter_result),
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title
                     )

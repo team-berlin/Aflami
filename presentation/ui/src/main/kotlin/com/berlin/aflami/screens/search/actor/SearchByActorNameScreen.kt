@@ -127,7 +127,7 @@ private fun SearchByActorNameContent(
 
             MoviesList(
                 movies = state.movies,
-                onMovieClick = listener::onMovieClicked
+
             )
         }
     }

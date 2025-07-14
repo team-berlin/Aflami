@@ -116,7 +116,8 @@ private fun SearchScreenContent(
                         .clip(RoundedCornerShape(12.dp))
                         .background(Theme.color.surfaceHigh)
                         .clickable {
-                            navController.popBackStack()
+                            clearSearchState()
+                            focusManager.clearFocus()
                         }
                         .onFocusChanged {
                             clearSearchState

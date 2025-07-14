@@ -76,5 +76,6 @@
     <string name="thriller">اثارة</string>
     <string name="documentary">وثائقي</string>
     <string name="animation">انمي</string>
+    <string name="filter_result">فرز النتائج</string>
 
 </resources>
