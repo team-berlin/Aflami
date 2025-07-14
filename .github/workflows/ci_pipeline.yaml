@@ -38,20 +38,12 @@ jobs:
         run: |
           echo "${{ secrets.API_KEYS_FILE }}" > local.properties
 
-      - name: Restore firebase_release_key
-        run: |
-          echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > firebase_release_key.jks    
-      
-
       - name: Grant gradlew permissions
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
         run: ./gradlew build  koverVerify
-        env:
-         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-         KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
-         KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+
 
       - name: Run tests and generate coverage report
         run: ./gradlew koverHtmlReport
