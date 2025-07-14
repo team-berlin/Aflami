@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kover)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.aflami.custom.plugin)
 }
 
@@ -34,7 +35,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
-    implementation(libs.koin.core)
+    implementation(libs.bundles.koin)
     testImplementation(libs.bundles.test)
     implementation(libs.kotlin.datex)
 

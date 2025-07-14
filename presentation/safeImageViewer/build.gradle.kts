@@ -7,6 +7,10 @@ plugins {
 
 android {
     namespace = "com.berlin.safeimageviewer"
+
+    buildFeatures {
+        mlModelBinding = true
+    }
 }
 
 dependencies {
@@ -14,12 +18,10 @@ dependencies {
     implementation(libs.tensorflow.lite.support)
     implementation(libs.tensorflow.lite.metadata)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.bundles.composeUiDebug)
+    implementation(platform(libs.androidx.compose.bom))
     implementation (libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.bundles.androidxUi)
-    implementation(libs.androidx.material3)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.koin.core)
-    testImplementation(libs.bundles.test)
-
     implementation(libs.bundles.coil)
+    testImplementation(libs.bundles.test)
 }

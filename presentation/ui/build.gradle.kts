@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.aflami.custom.plugin)
 }
 
@@ -17,7 +18,7 @@ dependencies {
     implementation(libs.bundles.composeUiDebug)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
-    implementation(libs.koin.core)
+    implementation(libs.bundles.koin)
 
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:safeImageViewer"))
