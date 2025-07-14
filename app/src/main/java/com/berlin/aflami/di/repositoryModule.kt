@@ -10,6 +10,6 @@ import repository.SeriesDetailsRepository
 
 val repositoryModule = module {
     single<SearchRepository> { SearchRepositoryImpl(get(), get()) }
-    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl() }
-    single<SeriesDetailsRepository> { SeriesDetailsRepositoryImpl() }
+    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get()) }
+    single<SeriesDetailsRepository> { SeriesDetailsRepositoryImpl(get()) }
 }
