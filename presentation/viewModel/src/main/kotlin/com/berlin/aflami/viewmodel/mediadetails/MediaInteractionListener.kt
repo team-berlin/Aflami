@@ -21,7 +21,7 @@ interface MediaInteractionListener :
 interface ExtraMediaContentInteractionListener : TVShowSeasonsInteractionListener  {
     fun onShowMoreMediaLikeThisClicked()
     fun onShowReviewsClicked()
-    fun onShowMediaGalleryClicked()
+    fun onShowMediaGalleryClicked(id:Long)
     fun onShowCompanyProductionClicked()
 }
 
