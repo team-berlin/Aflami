@@ -1,24 +1,94 @@
 package com.berlin.aflami.screens.search.mediadetails
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.berlin.aflami.screens.search.components.ErrorMessage
+import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.AflamiTheme
+import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
+import com.berlin.aflami.viewmodel.review.ReviewState
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MediaDetailsScreen() {
+fun MediaDetailsScreen(
+    viewModel: MediaDetailsViewmodel = koinViewModel()
+) {
+    val review by viewModel.reviewsUiState.collectAsState()
+
+    // I know we need change this when edit navigation
+    LaunchedEffect(Unit) {
+        viewModel.getReviews(id = 79L, mediaType = MediaDetailsViewmodel.MediaType.SERIES)
+    }
+
+    MediaDetailsContent(
+        reviewState = review
+    )
 
 }
 
 @Composable
-fun MediaDetailsContent() {
-    Text("Hello Media!")
+fun MediaDetailsContent(
+    reviewState: ReviewState
+) {
+
+    when (reviewState) {
+
+        is ReviewState.Reviewing.Loading -> {
+            Loading(Modifier)
+        }
+
+        is ReviewState.Reviewing.Success -> {
+            val reviews = reviewState.data
+            LazyColumn {
+                itemsIndexed(reviews) { index, review ->
+                    val isLast = index == reviews.lastIndex
+                    ReviewItem(
+                        review = review,
+                        isLastItem = isLast
+                    )
+                }
+            }
+        }
+
+        is ReviewState.NoReviewFound -> {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "No Reviews Found",
+                    color = Theme.color.textColors.title,
+                    style = Theme.textStyle.title.medium,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        is ReviewState.Reviewing.Error -> {
+            ErrorMessage(Modifier, reviewState.errorMessage)
+        }
+
+    }
 }
 
 @Preview
 @Composable
 fun MediaDetailsContentPreview() {
     AflamiTheme {
-        MediaDetailsContent()
+        MediaDetailsContent(
+            reviewState = TODO()
+        )
     }
 }
