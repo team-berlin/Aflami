@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,8 +39,9 @@ data class TabBarItem(
 @Composable
 fun TabBar(
     items: List<TabBarItem>,
-    onTabChange: (TabBarItem) -> Unit,
+    onTabChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    containerColor: Color = Theme.color.surfaceHigh
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val borderColor = Theme.color.stroke
@@ -48,34 +51,24 @@ fun TabBar(
         modifier =
             modifier
                 .fillMaxWidth()
-                .drawBehind {
-                    val strokeWidth = 1.dp.toPx()
-                    drawLine(
-                        color = borderColor,
-                        start = Offset(
-                            0f,
-                            size.height - strokeWidth / 2
-                        ),
-                        end = Offset(
-                            size.width,
-                            size.height - strokeWidth / 2
-                        ),
-                        strokeWidth = strokeWidth,
-                    )
-                },
+                ,
+        divider = {
+            HorizontalDivider(thickness = 1.dp, color = borderColor)
+        }
+        ,
         indicator = @Composable { tabPositions ->
             val currentTabPosition = tabPositions[selectedTabIndex]
             Box(
                 modifier =
                     Modifier
                         .tabIndicatorOffset(currentTabPosition)
-                        .height(4.dp)
-                        .padding(horizontal = 16.dp)
-                        .clip(RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp))
+                        .height(5.dp)
+                        .padding(horizontal = 24.dp)
+                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                         .background(Theme.color.secondary),
             )
         },
-        containerColor = Theme.color.surfaceHigh,
+        containerColor = containerColor,
     ) {
         items.forEachIndexed { index, status ->
             val isSelected = selectedTabIndex == index
@@ -90,7 +83,7 @@ fun TabBar(
                 selected = isSelected,
                 onClick = {
                     selectedTabIndex = index
-                    onTabChange(status)
+                    onTabChange(index)
                 },
             ) {
                 Text(

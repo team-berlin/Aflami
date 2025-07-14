@@ -3,7 +3,6 @@ package com.berlin.aflami.ui.color
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import com.berlin.aflami.ui.theme.Theme
 
 object ExtraColors {
     val darkReddishPink12 = Color(0x1FBF434C)
@@ -23,5 +22,12 @@ object ExtraColors {
             Color(0xFF803559)
         ),
         end = Offset(0f, Float.POSITIVE_INFINITY),
+    )
+
+    val overlayGradient = Brush.verticalGradient(
+        colors = listOf(
+            Color.Transparent,
+            Color(0xFF0D090B)
+        )
     )
 }
