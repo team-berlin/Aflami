@@ -18,6 +18,18 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: Restore google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
+
+      - name: Restore keys.properties
+        run: |
+          echo "${{ secrets.API_KEYS_FILE }}" > local.properties
+
+      - name: Restore firebase_release_key
+        run: |
+          echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > > firebase_release_key.jks    
+
       - name: Build release AAB
         run: ./gradlew bundleRelease
 
