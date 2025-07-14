@@ -24,13 +24,14 @@ jobs:
       - name: Set Firebase tester group
         id: tester_group
         run: |
-            if [[ "${{ github.ref_name }}" == "main" ]]; then
-              echo "group=${{ secrets.TESTERS_RELEASE }}" >> $GITHUB_OUTPUT
-            elif [[ "${{ github.ref_name }}" == "develop" ]]; then
-              echo "group=${{ secrets.TESTERS_RELEASE }}" >> $GITHUB_OUTPUT
-            else
-              echo "group=${{ secrets.TESTERS_BETA }}" >> $GITHUB_OUTPUT
-            fi
+          if [[ "$GITHUB_REF_NAME" == "main" || "$GITHUB_REF_NAME" == "develop" ]]; then
+            echo "group=${{ secrets.TESTERS_RELEASE }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "group=${{ secrets.TESTERS_BETA }}" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+
       - name: Upload APK using Firebase CLI
         run: |
           npm install -g firebase-tools
