@@ -17,8 +17,6 @@ val properties = Properties().apply {
 
 
 android {
-
-
     namespace = "com.berlin.aflami"
     compileSdk = 35
 
@@ -68,7 +66,7 @@ android {
         buildConfig = true
     }
 
-
+    configurations { implementation.get().exclude(mapOf("group" to "org.jetbrains", "module" to "annotations"))}
 }
 
 dependencies {
