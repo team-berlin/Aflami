@@ -17,6 +17,8 @@ val properties = Properties().apply {
 
 
 android {
+
+
     namespace = "com.berlin.aflami"
     compileSdk = 35
 
@@ -33,6 +35,16 @@ android {
         buildConfigField("String", "API_KEY", "\"${properties["API_KEY"]}\"")
     }
 
+
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file("firebase_release_key.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("KEYSTORE_ALIAS")
+            keyPassword = System.getenv("KEYSTORE_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -40,8 +52,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -53,6 +67,8 @@ android {
         compose = true
         buildConfig = true
     }
+
+
 }
 
 dependencies {
