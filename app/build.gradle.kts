@@ -34,14 +34,6 @@ android {
     }
 
 
-    signingConfigs {
-        create("release") {
-            storeFile = rootProject.file("firebase_release_key.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("KEYSTORE_ALIAS")
-            keyPassword = System.getenv("KEYSTORE_PASSWORD")
-        }
-    }
 
     buildTypes {
         release {
@@ -50,7 +42,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
         }
     }
 

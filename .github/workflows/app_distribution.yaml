@@ -27,13 +27,17 @@ jobs:
       - name: Restore keys.properties
         run: |
           echo "${{ secrets.API_KEYS_FILE }}" > local.properties
-
-      - name: Restore firebase_release_key
+      - name: Check if secret exists
         run: |
-          echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > firebase_release_key.jks    
+          if [ -n "${{ secrets.KEYSTORE_PASSWORD }}" ]; then
+            echo "KEYSTORE_PASSWORD exists = true"
+          else
+            echo "KEYSTORE_PASSWORD exists = false"
+          fi
+
 
       - name: Build release AAB
-        run: ./gradlew bundleRelease
+        run: ./gradlew  assembleDebug
 
       - name: Set Firebase tester group
         id: tester_group
@@ -48,7 +52,7 @@ jobs:
         run: |
           npm install -g firebase-tools
           firebase appdistribution:distribute \
-          app/build/outputs/bundle/release/app-release.aab \
+          app/build/outputs/apk/debug/app-debug.apk \
           --app ${{ secrets.FIREBASE_APP_ID }} \
           --token ${{ secrets.FIREBASE_TOKEN }} \
           --groups "${{ steps.tester_group.outputs.group }}" \
