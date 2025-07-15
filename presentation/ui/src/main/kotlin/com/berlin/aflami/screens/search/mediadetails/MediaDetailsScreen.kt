@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.AflamiTheme
@@ -23,6 +24,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MediaDetailsScreen(
+    navController : NavController,
     viewModel: MediaDetailsViewmodel = koinViewModel()
 ) {
     val review by viewModel.reviewsUiState.collectAsState()
@@ -33,14 +35,18 @@ fun MediaDetailsScreen(
     }
 
     MediaDetailsContent(
-        reviewState = review
+        reviewState = review,
+        onToggleExpand = { viewModel.onReadMoreDescriptionClicked(id = 79L) },
+        isExpanded = viewModel.isDescriptionExpanded(id = 79L)
     )
 
 }
 
 @Composable
 fun MediaDetailsContent(
-    reviewState: ReviewState
+    reviewState: ReviewState,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
 ) {
 
     when (reviewState) {
@@ -56,7 +62,9 @@ fun MediaDetailsContent(
                     val isLast = index == reviews.lastIndex
                     ReviewItem(
                         review = review,
-                        isLastItem = isLast
+                        isLastItem = isLast,
+                        isExpanded =isExpanded,
+                        onToggleExpand = onToggleExpand
                     )
                 }
             }
@@ -88,7 +96,9 @@ fun MediaDetailsContent(
 fun MediaDetailsContentPreview() {
     AflamiTheme {
         MediaDetailsContent(
-            reviewState = TODO()
+            reviewState = TODO(),
+            isExpanded = TODO(),
+            onToggleExpand = TODO()
         )
     }
 }
