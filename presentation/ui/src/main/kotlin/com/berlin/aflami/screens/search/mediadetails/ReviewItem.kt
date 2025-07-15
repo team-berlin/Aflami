@@ -31,6 +31,8 @@ fun ReviewItem(
     modifier: Modifier = Modifier,
     review: ReviewUiState,
     isLastItem: Boolean = false,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -81,6 +83,8 @@ fun ReviewItem(
 
         ExpandableText(
             text = review.content,
+            isExpanded = isExpanded,
+            onToggleExpand = onToggleExpand,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 12.dp),
