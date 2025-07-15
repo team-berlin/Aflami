@@ -3,6 +3,7 @@ package com.berlin.aflami.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.berlin.aflami.navigation.routes.mediaDetailsRoute
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchRoute
 import com.berlin.aflami.navigation.routes.worldTourRoute
@@ -27,5 +28,6 @@ fun AflamiNavGraph(navController: NavHostController) {
         searchRoute(navController)
         worldTourRoute(navController)
         searchByActorNameRoute(navController)
+        mediaDetailsRoute(navController)
     }
 }
