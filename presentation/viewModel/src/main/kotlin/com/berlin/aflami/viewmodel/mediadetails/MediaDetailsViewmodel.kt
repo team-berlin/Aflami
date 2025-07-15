@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.review.ReviewState
@@ -18,8 +19,15 @@ class MediaDetailsViewmodel(
     private val seriesReviewUseCase: GetSeriesReviewUseCase
 ) : ViewModel(), MediaInteractionListener {
 
+   // val args: MediaDetailsArgs = MediaDetailsArgs(savedStateHandle)
     private val _reviewsUiState = MutableStateFlow<ReviewState>(ReviewState.Reviewing.Loading)
     val reviewsUiState = _reviewsUiState.asStateFlow()
+
+    private val _expandedUiStates = mutableStateMapOf<Long, Boolean>()
+
+    init {
+        getReviews(id = 79L, mediaType = MediaType.SERIES)
+    }
 
     fun getReviews(id: Long, mediaType: MediaType) {
 
@@ -54,8 +62,12 @@ class MediaDetailsViewmodel(
         _reviewsUiState.update { ReviewState.Reviewing.Error(error) }
     }
 
+    fun isDescriptionExpanded(id: Long): Boolean {
+        return _expandedUiStates[id] ?: false
+    }
+
     override fun onReadMoreDescriptionClicked(id: Long) {
-        TODO("Not yet implemented")
+        _expandedUiStates[id] = !(_expandedUiStates[id] ?: false)
     }
 
     override fun onBackClicked() {
