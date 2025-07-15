@@ -4,5 +4,5 @@ import com.berlin.repository.datasource.remote.dto.MediaCastResponse
 
 
 interface MovieDetailsRemoteDataSource {
-    suspend fun getMovieCastDetails(movieId: Long):MediaCastResponse
+    suspend fun getMovieCastDetails(movieId: Long, language: String): MediaCastResponse
 }

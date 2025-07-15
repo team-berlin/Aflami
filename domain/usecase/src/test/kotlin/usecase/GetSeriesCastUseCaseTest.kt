@@ -23,10 +23,16 @@ class GetSeriesCastUseCaseTest {
     fun `should return media cast related to media id when invoke is called`() = runTest {
         // given
         val mediaId = 0L
-        coEvery { seriesDetailsRepository.getSeriesCastDetails(mediaId) } returns getSeriesCast()
+        val language = "en-US"
+        coEvery {
+            seriesDetailsRepository.getSeriesCastDetails(
+                mediaId,
+                language
+            )
+        } returns getSeriesCast()
 
         //when
-        val result = getSeriesCastUseCase.invoke(mediaId)
+        val result = getSeriesCastUseCase.invoke(mediaId, language)
 
         // then
         assertThat(result).isEqualTo(getSeriesCast())
@@ -36,10 +42,16 @@ class GetSeriesCastUseCaseTest {
     fun `should return empty list when media cast is not found`() = runTest {
         //given
         val seriesId = 2L
-        coEvery { seriesDetailsRepository.getSeriesCastDetails(seriesId) } returns emptyList()
+        val language = "en-US"
+        coEvery {
+            seriesDetailsRepository.getSeriesCastDetails(
+                seriesId,
+                language
+            )
+        } returns emptyList()
 
         //when
-        val result = getSeriesCastUseCase.invoke(seriesId)
+        val result = getSeriesCastUseCase.invoke(seriesId, language)
 
         //then
         assertThat(result).isEmpty()

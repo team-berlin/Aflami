@@ -5,3 +5,6 @@ data class MediaCastUiState(
     val name:String="",
     val poster:String=""
 )
+data class MediaDetailsUiState(
+    val castState:List<MediaCastUiState> = emptyList()
+)

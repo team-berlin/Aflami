@@ -8,10 +8,13 @@ import repository.SeriesDetailsRepository
 class SeriesDetailsRepositoryImpl(
     private val remoteDataSource: SeriesDetailsRemoteDataSource
 ) : SeriesDetailsRepository {
-    override suspend fun getSeriesCastDetails(seriesId: Long): List<MediaCast> {
-        return remoteDataSource.getSeriesCastDetails(seriesId).cast?.mapNotNull {castItemDto ->
+    override suspend fun getSeriesCastDetails(seriesId: Long, language: String): List<MediaCast> {
+        return remoteDataSource.getSeriesCastDetails(
+            seriesId,
+            language
+        ).cast?.mapNotNull { castItemDto ->
             castItemDto?.toDomain()
-        }?: emptyList()
+        } ?: emptyList()
     }
 
 }

@@ -1,13 +1,28 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
+import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import usecase.GetMovieCastUseCase
 import usecase.GetSeriesCastUseCase
 
 class MediaDetailsViewmodel(
-    private val getMovieCastUseCase:GetMovieCastUseCase,
+    private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getSeriesCastUseCase: GetSeriesCastUseCase
 ) : ViewModel(), MediaInteractionListener {
+
+    private val _uiState = MutableStateFlow(MediaDetailsUiState())
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            getMovieCast()
+        }
+    }
 
     override fun onBackClicked() {
         TODO("Not yet implemented")
@@ -98,6 +113,19 @@ class MediaDetailsViewmodel(
 
     override fun onHideSeasonEpisodesClicked(seasonId: Long) {
         TODO("Not yet implemented")
+    }
+
+
+    private suspend fun getMovieCast() {
+        _uiState.value = _uiState.value.copy(
+            castState = getMovieCastUseCase(505, "ar-EG").map {
+                MediaCastUiState(
+                    mediaId = it.mediaId,
+                    name = it.name,
+                    poster = it.poster
+                )
+            })
+
     }
 
 }

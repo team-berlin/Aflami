@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.navigation.AflamiNavGraph
+import com.berlin.aflami.screens.mediadetails.screen.MediaDetailsScreen
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 
@@ -25,14 +27,17 @@ class MainActivity : ComponentActivity() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
             AflamiTheme {
-                AflamiNavGraph(
-                    navController,
-                    Modifier
-                        .fillMaxSize()
-                        .background(Theme.color.surface)
-                        .statusBarsPadding()
-                        .navigationBarsPadding()
+                MediaDetailsScreen(
+                    navController = navController
                 )
+//                AflamiNavGraph(
+//                    navController,
+//                    Modifier
+//                        .fillMaxSize()
+//                        .background(Theme.color.surface)
+//                        .statusBarsPadding()
+//                        .navigationBarsPadding()
+//                )
             }
         }
     }

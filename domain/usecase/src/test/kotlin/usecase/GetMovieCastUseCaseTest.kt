@@ -1,15 +1,15 @@
 package usecase
 
 import com.berlin.entity.MediaCast
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import com.google.common.truth.Truth.assertThat
 import repository.MovieDetailsRepository
 
-class GetMediaCastUseCaseTest {
+class GetMovieCastUseCaseTest {
 
     private val movieDetailsRepository = mockk<MovieDetailsRepository>()
     private lateinit var getMovieCastUseCase: GetMovieCastUseCase
@@ -23,10 +23,16 @@ class GetMediaCastUseCaseTest {
     fun `should return media cast related to media id when invoke is called`() = runTest {
         // given
         val mediaId = 0L
-        coEvery { movieDetailsRepository.getMovieCastDetails(mediaId) } returns getMovieCast()
+        val language = "en-US"
+        coEvery {
+            movieDetailsRepository.getMovieCastDetails(
+                mediaId,
+                language
+            )
+        } returns getMovieCast()
 
         //when
-        val result = getMovieCastUseCase.invoke(mediaId)
+        val result = getMovieCastUseCase.invoke(mediaId, language)
 
         // then
         assertThat(result).isEqualTo(getMovieCast())
@@ -36,10 +42,16 @@ class GetMediaCastUseCaseTest {
     fun `should return empty list when media cast is not found`() = runTest {
         //given
         val mediaId = 2L
-        coEvery { movieDetailsRepository.getMovieCastDetails(mediaId) } returns emptyList()
+        val language = "en-US"
+        coEvery {
+            movieDetailsRepository.getMovieCastDetails(
+                mediaId,
+                language
+            )
+        } returns emptyList()
 
         //when
-        val result = getMovieCastUseCase.invoke(mediaId)
+        val result = getMovieCastUseCase.invoke(mediaId, language)
 
         //then
         assertThat(result).isEmpty()
