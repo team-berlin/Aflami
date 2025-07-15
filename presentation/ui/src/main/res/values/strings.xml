@@ -13,4 +13,5 @@
     <string name="actor_name">Actor name</string>
     <string name="find_by_actor">Find by actor</string>
     <string name="find_by_actor_quotation">Start exploring your favorite actor’s movies and enjoy it.</string>
+    <string name="media_image">Media Image</string>
 </resources>

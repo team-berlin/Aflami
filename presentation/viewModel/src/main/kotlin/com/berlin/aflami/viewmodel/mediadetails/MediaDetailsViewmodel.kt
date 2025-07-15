@@ -74,8 +74,8 @@ class MediaDetailsViewmodel : ViewModel(), MediaInteractionListener {
         TODO("Not yet implemented")
     }
 
-    override fun onShowMediaGalleryClicked() {
-        TODO("Not yet implemented")
+    override fun onShowMediaGalleryClicked(id: Long) {
+
     }
 
     override fun onShowCompanyProductionClicked() {
