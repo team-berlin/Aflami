@@ -27,17 +27,14 @@ class MainActivity : ComponentActivity() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
             AflamiTheme {
-                MediaDetailsScreen(
-                    navController = navController
+                AflamiNavGraph(
+                    navController,
+                    Modifier
+                        .fillMaxSize()
+                        .background(Theme.color.surface)
+                        .statusBarsPadding()
+                        .navigationBarsPadding()
                 )
-//                AflamiNavGraph(
-//                    navController,
-//                    Modifier
-//                        .fillMaxSize()
-//                        .background(Theme.color.surface)
-//                        .statusBarsPadding()
-//                        .navigationBarsPadding()
-//                )
             }
         }
     }

@@ -3,9 +3,13 @@ package com.berlin.aflami.viewmodel.mediadetails
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
-import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.uistate.MediaDetailsScreenUiState
+import com.berlin.aflami.viewmodel.uistate.MediaType
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.GetMovieCastUseCase
 import usecase.GetSeriesCastUseCase
@@ -15,12 +19,15 @@ class MediaDetailsViewmodel(
     private val getSeriesCastUseCase: GetSeriesCastUseCase
 ) : ViewModel(), MediaInteractionListener {
 
-    private val _uiState = MutableStateFlow(MediaDetailsUiState())
+    private val _uiState = MutableStateFlow(MediaDetailsScreenUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _castDetailsNavigationState = MutableSharedFlow<Long>(replay = 0)
+    val castDetailsNavigationState = _castDetailsNavigationState.asSharedFlow()
 
     init {
         viewModelScope.launch {
-            getMovieCast()
+            getMovieCast(505,MediaType.MOVIE,"ar-EG")
         }
     }
 
@@ -37,7 +44,9 @@ class MediaDetailsViewmodel(
     }
 
     override fun onShowCastClicked(id: Long) {
-        TODO("Not yet ")
+        viewModelScope.launch {
+            _castDetailsNavigationState.emit(id)
+        }
     }
 
     override fun onRateIconClicked(id: Long) {
@@ -116,16 +125,32 @@ class MediaDetailsViewmodel(
     }
 
 
-    private suspend fun getMovieCast() {
-        _uiState.value = _uiState.value.copy(
-            castState = getMovieCastUseCase(505, "ar-EG").map {
-                MediaCastUiState(
-                    mediaId = it.mediaId,
-                    name = it.name,
-                    poster = it.poster
-                )
-            })
+    private fun getMovieCast(mediaId: Long, mediaType: MediaType,language:String) {
+        viewModelScope.launch {
+            val cast = when (mediaType) {
+                MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map {
+                    MediaCastUiState(
+                        mediaId = it.mediaId,
+                        name = it.name,
+                        poster = it.poster
+                    )
+                }
 
+                MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId, language).map {
+                    MediaCastUiState(
+                        mediaId = it.mediaId,
+                        name = it.name,
+                        poster = it.poster
+                    )
+                }
+            }
+            _uiState.update { newCastState ->
+                newCastState.copy(
+                    mediaCast = cast,
+                    mediaType = mediaType
+                )
+            }
+        }
     }
 
 }
