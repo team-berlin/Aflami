@@ -4,10 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,7 +37,7 @@ fun MediaCast(
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        when(state) {
+        when (state) {
             is AsyncImagePainter.State.Success -> {
                 AsyncImage(
                     modifier = modifier
@@ -51,11 +48,14 @@ fun MediaCast(
                     contentScale = ContentScale.Crop
                 )
             }
-            else ->{
+
+            else -> {
                 Image(
                     painter = painterResource(R.drawable.place_holder),
-                    contentDescription = stringResource(com.berlin.ui.R.string.episode_image),
-                    modifier = modifier.size(48.dp).clip(RoundedCornerShape(16.dp))
+                    contentDescription = stringResource(R.string.episode_image),
+                    modifier = modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(16.dp))
                         .border(1.dp, color = Theme.color.stroke, RoundedCornerShape(16.dp))
                         .align(Alignment.CenterHorizontally)
                 )
