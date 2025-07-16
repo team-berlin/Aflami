@@ -20,6 +20,7 @@ import com.berlin.designsystem.R
 fun SearchItem(
     modifier: Modifier = Modifier,
     text: String,
+    onTextClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
     Row(
@@ -34,7 +35,9 @@ fun SearchItem(
         )
         Text(
             text = text,
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .clickable { onTextClick() },
             style = Theme.textStyle.body.medium,
             color = Theme.color.textColors.title
         )

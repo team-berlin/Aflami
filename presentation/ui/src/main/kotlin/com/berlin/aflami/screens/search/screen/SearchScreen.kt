@@ -78,7 +78,8 @@ fun SearchScreen(
         viewModel = viewModel,
         recentSearchState = recentSearchState.value,
         onDeleteItem = viewModel::deleteQueryFromHistory,
-        onClearAll = viewModel::clearSearchHistory
+        onClearAll = viewModel::clearSearchHistory,
+        onItemClick = viewModel::updateSearchQuery
     )
 }
 
@@ -96,6 +97,7 @@ private fun SearchScreenContent(
     filterDialogsState: Boolean,
     viewModel: SearchViewModel,
     recentSearchState: List<String>,
+    onItemClick: (String) -> Unit,
     onDeleteItem: (String) -> Unit,
     onClearAll: () -> Unit,
 ) {
@@ -189,6 +191,7 @@ private fun SearchScreenContent(
                         SearchData(
                             recentSearch = recentSearchState,
                             onDeleteItem = onDeleteItem,
+                            onItemClick = onItemClick,
                             onClearAll = onClearAll
                         )
 

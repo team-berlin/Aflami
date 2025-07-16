@@ -20,6 +20,7 @@ import com.berlin.designsystem.R
 fun SearchData(
     modifier: Modifier = Modifier,
     recentSearch: List<String>,
+    onItemClick: (String) -> Unit,
     onDeleteItem: (String) -> Unit,
     onClearAll: () -> Unit
 ) {
@@ -50,6 +51,7 @@ fun SearchData(
         items(recentSearch) { currentQuery ->
             SearchItem(
                 text = currentQuery,
+                onTextClick = { onItemClick(currentQuery) },
                 onDeleteClick = { onDeleteItem(currentQuery) }
             )
         }
