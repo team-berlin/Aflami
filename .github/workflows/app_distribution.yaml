@@ -2,12 +2,14 @@ name: app_distribution
 
 on:
   push:
-    branches: [ develop, main ]
+    branches: [ main, develop, epic/** ]
   workflow_dispatch:
 jobs:
   build:
     name: app_publish
     runs-on: ubuntu-latest
+    env:
+      GITHUB_REF_NAME: ${{ github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,40 +20,33 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Cache Gradle
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ~/.gradle/daemon
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Decode google-services.json
+      - name: Restore google-services.json
         run: |
           echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
 
-      - name: Grant gradlew permissions
-        run: chmod +x ./gradlew
+      - name: Restore keys.properties
+        run: |
+          echo "${{ secrets.API_KEYS_FILE }}" > local.properties
+      - name: Check if secret exists
+        run: |
+          if [ -n "${{ secrets.KEYSTORE_PASSWORD }}" ]; then
+            echo "KEYSTORE_PASSWORD exists = true"
+          else
+            echo "KEYSTORE_PASSWORD exists = false"
+          fi
 
-      - name: Build with Gradle
-        run: ./gradlew build  koverVerify
 
-      - name: Run tests and generate coverage report
-        run: ./gradlew koverHtmlReport
+      - name: Build release AAB
+        run: ./gradlew  assembleDebug
 
-      - name: Upload Kover HTML report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: |
-            domain/usecase/build/reports/kover/html
-            presentation/viewModel/build/reports/kover/html
-
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug
+      - name: Set Firebase tester group
+        id: tester_group
+        run: |
+          if [[ "$GITHUB_REF_NAME" == "main" || "$GITHUB_REF_NAME" == "develop" ]]; then
+            echo "group=${{ secrets.TESTERS_RELEASE }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "group=${{ secrets.TESTERS_BETA }}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload APK using Firebase CLI
         run: |
@@ -60,5 +55,5 @@ jobs:
           app/build/outputs/apk/debug/app-debug.apk \
           --app ${{ secrets.FIREBASE_APP_ID }} \
           --token ${{ secrets.FIREBASE_TOKEN }} \
-          --groups "${{ secrets.FIREBASE_TESTER_GROUPS }}" \
+          --groups "${{ steps.tester_group.outputs.group }}" \
           --release-notes "CI upload using auth token"

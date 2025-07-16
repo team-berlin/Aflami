@@ -4,7 +4,6 @@ import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.BaseResponse
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
-import com.berlin.repository.datasource.remote.dto.MediaByActorResponse
 import com.berlin.repository.datasource.remote.dto.MovieResponse
 import com.berlin.repository.datasource.remote.dto.TVShowResponse
 import io.ktor.client.HttpClient
@@ -12,7 +11,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-class SearchRemoteDataSourceImpl(
+class SearchRemoteDataSourceImp(
     private val client: HttpClient
 ) : SearchRemoteDataSource {
     override suspend fun searchMoviesByCountry(
