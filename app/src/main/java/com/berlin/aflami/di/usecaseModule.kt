@@ -4,6 +4,8 @@ import org.koin.dsl.module
 import usecase.SearchByActorNameUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
+import usecase.GetSimilarMoviesUseCase
+import usecase.GetSimilarSeriesUseCase
 import usecase.SearchByCountryUseCase
 
 val useCaseModule = module {
@@ -11,4 +13,6 @@ val useCaseModule = module {
     single { SearchByActorNameUseCase(get()) }
     single { GetSearchMoviesUseCase(get()) }
     single { GetSearchTvShowsUseCase(get()) }
+    single { GetSimilarMoviesUseCase(get()) }
+    single { GetSimilarSeriesUseCase(get()) }
 }
