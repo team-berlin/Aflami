@@ -1,5 +1,6 @@
 package com.berlin.aflami.di
 
+import android.util.Log
 import androidx.room.Room
 import com.berlin.aflami.BuildConfig
 import com.berlin.local.SearchDatabase

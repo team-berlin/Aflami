@@ -1,8 +1,15 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import usecase.GetMovieGalleryUseCase
 
-class MediaDetailsViewmodel : ViewModel(), MediaInteractionListener {
+class MediaDetailsViewmodel(
+    private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
+    private val getSerGalleryUseCase: GetMovieGalleryUseCase,
+) : ViewModel(), MediaInteractionListener {
+
     override fun onBackClicked() {
         TODO("Not yet implemented")
     }
@@ -20,7 +27,7 @@ class MediaDetailsViewmodel : ViewModel(), MediaInteractionListener {
     }
 
     override fun onRateIconClicked(id: Long) {
-        TODO("Not yet implemented")
+        TODO("KNot yet implemented")
     }
 
     override fun onSelectRateClicked(rate: Float) {
@@ -37,7 +44,7 @@ class MediaDetailsViewmodel : ViewModel(), MediaInteractionListener {
 
     override fun onAddMediaToFavouriteListClicked(
         favouriteListId: Int,
-        mediaId: Int
+        mediaId: Int,
     ) {
         TODO("Not yet implemented")
     }
@@ -75,7 +82,10 @@ class MediaDetailsViewmodel : ViewModel(), MediaInteractionListener {
     }
 
     override fun onShowMediaGalleryClicked(id: Long) {
-
+        viewModelScope.launch {
+            getSerGalleryUseCase(505)
+            getMovieGalleryUseCase(505)
+        }
     }
 
     override fun onShowCompanyProductionClicked() {

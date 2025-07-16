@@ -1,8 +1,7 @@
-package com.berlin.repository.datasource.local.dto
+package com.berlin.repository.datasource.remote.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-
 
 @Serializable
 data class MediaImagesResponse(

@@ -49,7 +49,7 @@ fun MediaGallery(modifier: Modifier = Modifier, mediaImages: List<String>) {
                 modifier = Modifier
                     .width(160.dp)
                     .height(145.dp),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Fit,
 //                placeholder = ,
 //                error = ,
             )
