@@ -12,7 +12,9 @@ object ApiConstants  {
 
     const val SEARCH_TV = "search/tv"
 
-    const val REVIEW = "/reviews"
+    const val  SERIES_REVIEW = "tv/{series_id}/reviews"
+    const val  MOVIE_REVIEW = "movie/{movie_id}/reviews"
+
 
     // parameters
     const val LANGUAGE = "language"
@@ -20,7 +22,6 @@ object ApiConstants  {
     const val QUERY = "query"
 
     const val ACTOR_NAME = "query"
-
 
 
 }

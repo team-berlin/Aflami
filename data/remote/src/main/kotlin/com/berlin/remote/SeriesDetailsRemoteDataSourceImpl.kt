@@ -10,6 +10,6 @@ class SeriesDetailsRemoteDataSourceImpl (
     private val client: HttpClient
 ): SeriesDetailsRemoteDataSource {
     override suspend fun getReviews(id: Long): ReviewResponse {
-        return client.get("tv/$id${ApiConstants.REVIEW}").body()
-    }
+        return client.get(ApiConstants.SERIES_REVIEW
+            .replace("{series_id}", id.toString())).body()    }
 }
