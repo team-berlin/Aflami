@@ -33,14 +33,14 @@ fun MediaDetailsScreen(
 
     MediaDetailsContent(
         reviewState = review,
-        onToggleExpand = { viewModel.onReadMoreDescriptionClicked(id = TODO()) },
-        isExpanded = viewModel.isDescriptionExpanded(id = TODO()),
+        onToggleExpand = { viewModel.onReadMoreDescriptionClicked(id = 550) },
+        isExpanded = viewModel.isDescriptionExpanded(id = 550),
         isSelectedTab = tabSelected.tab,
         onChipClick = { tab ->
             viewModel.toggleMovieDetailsTab(
                 tab = tab,
-                mediaId = TODO(),
-                mediaType = TODO()
+                mediaId = 550,
+                mediaType = MediaDetailsViewmodel.MediaType.MOVIE
             )
         }
     )
@@ -81,19 +81,19 @@ fun MediaDetailsContent(
     }
 }
 
-@Preview
-@Composable
-fun MediaDetailsContentPreview() {
-    AflamiTheme {
-        MediaDetailsContent(
-            reviewState = TODO(),
-            isExpanded = TODO(),
-            onToggleExpand = TODO(),
-            isSelectedTab = TODO(),
-            onChipClick = TODO()
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun MediaDetailsContentPreview() {
+//    AflamiTheme {
+//        MediaDetailsContent(
+//            reviewState = TODO(),
+//            isExpanded = TODO(),
+//            onToggleExpand = TODO(),
+//            isSelectedTab = TODO(),
+//            onChipClick = TODO()
+//        )
+//    }
+//}
 
 private fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
     return when (tab) {

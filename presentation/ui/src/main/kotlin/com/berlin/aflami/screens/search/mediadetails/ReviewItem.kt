@@ -48,7 +48,8 @@ fun ReviewItem(
                 .padding(bottom = 12.dp),
         ) {
             AsyncImage(
-                model = review.avatarImage ?: painterResource(R.drawable.no_image),
+                placeholder = painterResource(R.drawable.film_roll_02),
+                model = review.avatarImage,
                 contentDescription = "Avatar Image",
                 modifier = Modifier
                     .size(48.dp)
