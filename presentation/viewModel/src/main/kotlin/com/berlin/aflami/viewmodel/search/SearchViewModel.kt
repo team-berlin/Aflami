@@ -263,8 +263,8 @@ class SearchViewModel(
 
     fun loadRecentSearches() {
         viewModelScope.launch {
-            val result = getRecentHistoryUseCase()
-            _recentSearchState.value = result
+            val recentHistoryQueries = getRecentHistoryUseCase()
+            _recentSearchState.value = recentHistoryQueries
         }
     }
     fun deleteQueryFromHistory(query: String) {
