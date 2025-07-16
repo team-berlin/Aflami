@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,6 +49,7 @@ fun MediaGallery(modifier: Modifier = Modifier, mediaImages: List<String>) {
                 modifier = Modifier
                     .width(160.dp)
                     .height(145.dp),
+                contentScale = ContentScale.Fit
 //                placeholder = ,
 //                error = ,
             )
