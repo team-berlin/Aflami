@@ -10,16 +10,6 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModelOf(::WorldTourViewModel)
     viewModelOf(::SearchByActorViewModel)
+    viewModelOf(::SearchViewModel)
     viewModel { WorldTourViewModel(get()) }
-    viewModel {
-        SearchViewModel(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-        )
-    }
-
 }
