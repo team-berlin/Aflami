@@ -19,6 +19,6 @@ object ApiConstants  {
 
     const val ACTOR_NAME = "query"
 
-
-
+    const val SERIES_MORE_LIKE_THIS="tv/{series_id}/similar"
+    const val MOVIE_MORE_LIKE_THIS="movie/{movie_id}/similar"
 }
