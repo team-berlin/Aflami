@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,34 +23,36 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.worldtour.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.searchworldtour.WorldTourInteractionListener
 import com.berlin.aflami.viewmodel.searchworldtour.WorldTourUiState
 import com.berlin.aflami.viewmodel.searchworldtour.WorldTourViewModel
+import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WorldTourScreen(
-    navController : NavController,
+    navController: NavController,
     viewModel: WorldTourViewModel = koinViewModel()
 ) {
     val worldTourState by viewModel.uiState.collectAsState()
-    WorldTourContent(worldTourState, viewModel,navController)
+    WorldTourContent(worldTourState, viewModel, navController)
 }
 
 @Composable
 private fun WorldTourContent(
     state: WorldTourUiState,
     listener: WorldTourInteractionListener,
-    navController: NavController,
+    navController: NavController
 ) {
-    Column{
+    Column {
         TopBar(
             modifier = Modifier.padding(vertical = 8.dp),
             title = {
@@ -105,17 +106,22 @@ private fun WorldTourContent(
             modifier = Modifier
                 .fillMaxWidth(),
         ) {
-            if (state.movies.isEmpty()) {
-                CountryTourExploring(
-                    modifier = Modifier.fillMaxSize(),
-                    image = painterResource(R.drawable.world_tour),
-                    titleId = R.string.country_tour,
-                    messageId = R.string.country_tour_description
-                )
-            }
-            MoviesList(
-                movies = state.movies,
-            )
+//            val movies = state.movies.collectAsLazyPagingItems()
+
+//            if (state.movies.isEmpty()) {
+//                CountryTourExploring(
+//                    modifier = Modifier.fillMaxSize(),
+//                    image = painterResource(R.drawable.world_tour),
+//                    titleId = R.string.country_tour,
+//                    messageId = R.string.country_tour_description
+//                )
+//            }
+
+            val movies = state.movies.collectAsLazyPagingItems()
+            MoviesList(movies = movies)
+//            MoviesList(
+//                movies = moviesssss,
+//            )
 
             AnimatedCountriesList(
                 visible = state.dropDownExpanded,

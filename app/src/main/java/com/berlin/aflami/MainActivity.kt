@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.navigation.AflamiNavGraph
+import com.berlin.aflami.screens.search.worldtour.WorldTourScreen
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 
@@ -25,13 +26,16 @@ class MainActivity : ComponentActivity() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
             AflamiTheme {
-                AflamiNavGraph(
-                    navController,
-                    Modifier
-                        .fillMaxSize()
-                        .background(Theme.color.surface)
-                        .statusBarsPadding()
-                        .navigationBarsPadding()
+//                AflamiNavGraph(
+//                    navController,
+//                    Modifier
+//                        .fillMaxSize()
+//                        .background(Theme.color.surface)
+//                        .statusBarsPadding()
+//                        .navigationBarsPadding()
+//                )
+                WorldTourScreen(
+                    navController = navController
                 )
             }
         }
