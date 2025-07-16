@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsScreenUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
@@ -125,24 +126,11 @@ class MediaDetailsViewmodel(
     }
 
 
-    private fun getMovieCast(mediaId: Long, mediaType: MediaType,language:String) {
+     fun getMovieCast(mediaId: Long, mediaType: MediaType,language:String) {
         viewModelScope.launch {
             val cast = when (mediaType) {
-                MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map {
-                    MediaCastUiState(
-                        mediaId = it.mediaId,
-                        name = it.name,
-                        poster = it.poster
-                    )
-                }
-
-                MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId, language).map {
-                    MediaCastUiState(
-                        mediaId = it.mediaId,
-                        name = it.name,
-                        poster = it.poster
-                    )
-                }
+                MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
+                MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId, language).map {it.toUiState()}
             }
             _uiState.update { newCastState ->
                 newCastState.copy(

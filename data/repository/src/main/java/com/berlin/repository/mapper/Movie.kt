@@ -37,7 +37,7 @@ fun MovieDto.toDomain(): Movie {
         rating = (this.voteAverage ?: 0.0),
         releaseYear = (((this.releaseDate ?: "")).toLocalDate()),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}"
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
 const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
