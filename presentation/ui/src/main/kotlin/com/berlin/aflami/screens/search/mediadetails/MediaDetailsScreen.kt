@@ -16,6 +16,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.berlin.aflami.screens.search.components.ErrorMessage
+import com.berlin.aflami.screens.search.components.Loading
+import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
 import com.berlin.aflami.viewmodel.mediadetails.SimilarMediaUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
@@ -56,28 +59,23 @@ fun MediaDetailsContent(
         }
 
         when (similarMediaState) {
-            is SimilarMediaUiState.Init -> {
-                Text("Click the button to load similar media")
-            }
             is SimilarMediaUiState.Loading -> {
-                CircularProgressIndicator()
+                Loading(Modifier)
             }
             is SimilarMediaUiState.Success -> {
-                val similarMedia = (similarMediaState as SimilarMediaUiState.Success).data
+                val similarMedia = (similarMediaState).data
                 MoreLikeThisScreen(
                     mediaList = similarMedia,
                     mediaType = mediaType
                 )
             }
             is SimilarMediaUiState.Error -> {
-                val errorMessage = (similarMediaState as SimilarMediaUiState.Error).errorMessage
-                Text(
-                    text = "Error: $errorMessage",
-                    color = MaterialTheme.colorScheme.error
-                )
+                val errorMessage = (similarMediaState).errorMessage
+                ErrorMessage(Modifier, errorMessage)
+
             }
             is SimilarMediaUiState.Empty -> {
-                val message = (similarMediaState as SimilarMediaUiState.Empty).message
+                val message = (similarMediaState ).message
                 Text(text = message)
             }
         }
