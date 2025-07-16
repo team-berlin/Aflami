@@ -24,7 +24,6 @@ import com.berlin.aflami.component.Rating
 import com.berlin.aflami.screens.search.components.ExpandableText
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.review.ReviewUiState
-import com.berlin.ui.R
 
 @Composable
 fun ReviewItem(
@@ -48,7 +47,9 @@ fun ReviewItem(
                 .padding(bottom = 12.dp),
         ) {
             AsyncImage(
-                placeholder = painterResource(R.drawable.film_roll_02),
+                placeholder = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+                error = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+                fallback = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
                 model = review.avatarImage,
                 contentDescription = "Avatar Image",
                 modifier = Modifier
