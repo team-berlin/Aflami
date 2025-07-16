@@ -79,7 +79,7 @@ fun SearchScreen(
         recentSearchState = recentSearchState.value,
         onDeleteItem = viewModel::deleteQueryFromHistory,
         onClearAll = viewModel::clearSearchHistory,
-        onItemClick = viewModel::updateSearchQuery
+        onItemClick = viewModel::onItemClicked
     )
 }
 

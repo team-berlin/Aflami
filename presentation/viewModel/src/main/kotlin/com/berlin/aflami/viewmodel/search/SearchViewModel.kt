@@ -119,11 +119,12 @@ class SearchViewModel(
     }
 
     override fun onSearchClick(query: CharSequence) {
+        val queryData = query.toString().trim()
         if (query.toString().isBlank()) {
             _searchUIState.update { SearchUiState.Searching.Init }
             return
         }
-
+        _queryFlow.update { queryData }
         when (selectTabIndex) {
             0 -> searchMedia(MediaType.MOVIE)
             1 -> searchMedia(MediaType.TV_SHOW)
@@ -133,6 +134,11 @@ class SearchViewModel(
 
     override fun onFilterIconClicked() {
         _filterDialogState.update { true }
+    }
+
+    fun onItemClicked(query: String) {
+        updateSearchQuery(query)
+        onSearchClick(query)
     }
 
     private fun searchMedia(mediaType: MediaType) {
