@@ -5,7 +5,6 @@ import repository.SearchRepository
 class SaveRecentHistoryUseCase(
     private val searchRepository: SearchRepository
 ) {
-    suspend operator fun invoke(query: String) {
-        return searchRepository.saveRecentHistory(query)
-    }
+    suspend operator fun invoke(query: String) = searchRepository.saveRecentHistory(query)
+
 }

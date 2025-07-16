@@ -17,7 +17,7 @@ interface SearchDao {
     @Query("SELECT DISTINCT `query` FROM search_cache ORDER BY time DESC LIMIT 10")
     suspend fun getRecentSearchQueries(): List<String>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQueryOnly(searchingEntity: SearchingEntity)
 
     @Query("DELETE FROM search_cache WHERE `query` = :query")
