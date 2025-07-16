@@ -2,13 +2,13 @@ package com.berlin.aflami.viewmodel.search
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.uistate.MediaUiState
+import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.uistate.MediaScreenState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
 import kotlinx.coroutines.Dispatchers
@@ -154,21 +154,22 @@ class SearchViewModel(
         }
     }
 
-    enum class MediaType {
-        MOVIE, TV_SHOW
-    }
+//    enum class MediaType {
+//        MOVIE, TV_SHOW
+//    }
 
     private fun onSearchMoviesSuccess(movies: List<MovieUIState>) {
         _searchUIState.update {
             SearchUiState.Searching.Success(
                 movies.map {
-                    MediaUiState(
+                    MediaScreenState(
                         id = it.id,
                         title = it.title,
                         rating = it.rating,
                         releaseYear = it.releaseYear,
                         genre = it.genre,
-                        poster = it.poster
+                        poster = it.poster,
+                        mediaType = MediaType.MOVIE
                     )
                 }
             )
@@ -183,13 +184,14 @@ class SearchViewModel(
         _searchUIState.update {
             SearchUiState.Searching.Success(
                 tvShows.map {
-                    MediaUiState(
+                    MediaScreenState(
                         id = it.id,
                         title = it.title,
                         rating = it.rating,
                         releaseYear = it.releaseYear,
                         genre = it.genre,
-                        poster = it.poster
+                        poster = it.poster,
+                        mediaType = MediaType.TV_SHOW
                     )
                 }
             )

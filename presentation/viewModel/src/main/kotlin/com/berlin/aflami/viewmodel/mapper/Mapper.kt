@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.mapper
 
 import com.berlin.aflami.viewmodel.uistate.MediaType
-import com.berlin.aflami.viewmodel.uistate.MediaUiState
+import com.berlin.aflami.viewmodel.uistate.MediaScreenState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
@@ -12,34 +12,34 @@ fun Movie.toUIState(): MovieUIState {
         title = title,
         rating = rating.toString().take(3),
         releaseYear = releaseYear.year.toString(),
-        genre = genre.map { it.name },
+        genre = genre,
         poster =poster
     )
 }
 
-fun Movie.toUiModel(): MediaUiState {
-    return MediaUiState(
+fun Movie.toUiModel(): MediaScreenState {
+    return MediaScreenState(
         id = id,
         title = title,
         mediaType = MediaType.MOVIE,
         poster = poster,
         backdrop = backdropPath,
         overview = overview.orEmpty(),
-        genre = genre.map { it.name } ,
-        runtime = runtime?.let { "${it / 60}h ${it % 60}m" } ?: "",
+        genre = genre ,
+        mediaDuration = runtime?.let { "${it / 60}h ${it % 60}m" } ?: "",
         releaseYear = releaseYear.year.toString(),
         country ="",
         isFavorite =false,
-        showReadMore =false,
+        isOverviewExpanded =false,
     )
 }
 
-fun TVShow.toUiModel() = MediaUiState(
+fun TVShow.toUiModel() = MediaScreenState(
     id = id,
     title = title,
     mediaType = MediaType.TV_SHOW,
     poster = poster,
     backdrop = backdropPath,
     overview = overview.orEmpty(),
-    genre = genre.map { it.name } ,
+    genre = genre ,
 )

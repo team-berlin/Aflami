@@ -9,7 +9,7 @@ fun TVShow.toUiState(): TVShowUiState {
         title = title,
         rating = rating.toString(),
         releaseYear = releaseYear.toString(),
-        genre = genre.map { it.name },
+        genre = genre,
         poster =poster
     )
 }
