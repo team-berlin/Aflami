@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -49,90 +51,58 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.Rating
+import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.ExpandableText
+import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.textstyle.IBM
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.review.ReviewState
 import com.berlin.ui.R
 import java.time.format.TextStyle
 
 @Composable
 fun ReviewSection(
-    modifier: Modifier = Modifier,
-    avatarImage: Painter,
-    name: String,
-    userName: String,
-    rating: String,
-    content: String,
-    date: String,
+    reviewState: ReviewState,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Theme.color.surface)
-    ) {
-        items(7) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-            ) {
-                Image(
-                    painter = avatarImage,
-                    contentDescription = "Avatar Image",
-                    modifier = Modifier
-                        .size(48.dp)
-                        .border(
-                            BorderStroke(1.dp, Theme.color.stroke),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop,
-                )
-                Column(
-                    modifier = Modifier.padding(start = 8.dp)
-                ) {
-                    Text(
-                        text = name,
-                        color = Theme.color.textColors.title,
-                        style = Theme.textStyle.title.medium
-                    )
-                    Text(
-                        text = "@$userName",
-                        color = Theme.color.textColors.hint,
-                        style = Theme.textStyle.label.small
+    when (reviewState) {
+        is ReviewState.Reviewing.Loading -> {
+            Loading(Modifier)
+        }
+
+        is ReviewState.Reviewing.Success -> {
+            val reviews = reviewState.data
+            LazyColumn {
+                itemsIndexed(reviews) { index, review ->
+                    val isLast = index == reviews.lastIndex
+                    ReviewItem(
+                        review = review,
+                        isLastItem = isLast,
+                        isExpanded = isExpanded,
+                        onToggleExpand = onToggleExpand
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                Rating(
-                    modifier = Modifier
-                        .offset(y = -(4).dp, x = 4.dp),
-                    rating
+            }
+        }
+
+        is ReviewState.NoReviewFound -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "There is no reviews!",
+                    color = Theme.color.textColors.body,
+                    style = Theme.textStyle.label.large,
+                    textAlign = TextAlign.Center
                 )
             }
+        }
 
-//            ExpandableText(
-//                text = content,
-//                modifier = Modifier
-//                    .padding(horizontal = 16.dp)
-//                    .padding(bottom = 12.dp),
-//            )
-
-            Text(
-                date,
-                color = Theme.color.textColors.hint,
-                style = Theme.textStyle.label.small,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 12.dp),
-            )
-
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp,
-                color = Theme.color.stroke
-            )
+        is ReviewState.Reviewing.Error -> {
+            ErrorMessage(Modifier, reviewState.errorMessage)
         }
     }
 }
