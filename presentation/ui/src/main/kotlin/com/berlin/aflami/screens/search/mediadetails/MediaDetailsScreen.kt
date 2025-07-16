@@ -46,11 +46,7 @@ fun MediaDetailsContent(
 ) {
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+        modifier = Modifier) {
         Button(
             onClick = {
                 viewModel.onShowMoreMediaLikeThisClicked(mediaId, mediaType)
