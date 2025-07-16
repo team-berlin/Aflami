@@ -19,15 +19,14 @@ class MediaDetailsViewmodel(
     private val seriesReviewUseCase: GetSeriesReviewUseCase
 ) : ViewModel(), MediaInteractionListener {
 
-   // val args: MediaDetailsArgs = MediaDetailsArgs(savedStateHandle)
+    // val args: MediaDetailsArgs = MediaDetailsArgs(savedStateHandle)
     private val _reviewsUiState = MutableStateFlow<ReviewState>(ReviewState.Reviewing.Loading)
     val reviewsUiState = _reviewsUiState.asStateFlow()
 
-    private val _expandedUiStates = mutableStateMapOf<Long, Boolean>()
+    private val _tabSelectedUiState = MutableStateFlow(MovieDetailsTabsUiState())
+    val tabSelectedUiState = _tabSelectedUiState.asStateFlow()
 
-    init {
-        getReviews(id = 79L, mediaType = MediaType.SERIES)
-    }
+    private val _expandedUiStates = mutableStateMapOf<Long, Boolean>()
 
     fun getReviews(id: Long, mediaType: MediaType) {
 
@@ -68,6 +67,38 @@ class MediaDetailsViewmodel(
 
     override fun onReadMoreDescriptionClicked(id: Long) {
         _expandedUiStates[id] = !(_expandedUiStates[id] ?: false)
+    }
+
+    fun toggleMovieDetailsTab(
+        tab: MovieDetailsTabs,
+        mediaId: Long,
+        mediaType: MediaType
+    ) {
+        viewModelScope.launch {
+            _tabSelectedUiState.update { current ->
+                val newSelectedTab = if (current.tab == tab) {
+                    MovieDetailsTabs.REVIEWS
+                } else {
+                    tab
+                }
+
+                when (newSelectedTab) {
+                    MovieDetailsTabs.MORE_LIKE_THIS -> TODO()
+                    MovieDetailsTabs.REVIEWS -> getReviews(
+                        id = mediaId,
+                        mediaType = mediaType
+                    )
+
+                    MovieDetailsTabs.GALLERY -> TODO()
+                    MovieDetailsTabs.COMPANY_PRODUCTION -> TODO()
+                }
+
+                MovieDetailsTabsUiState(
+                    tab = newSelectedTab,
+                    isSelected = true
+                )
+            }
+        }
     }
 
     override fun onBackClicked() {
