@@ -10,6 +10,6 @@ fun Review.toUiState(): ReviewUiState {
         avatarImage = avatarImage,
         rating = rating,
         content = content,
-        date = date.toString()
+        date = date
     )
 }

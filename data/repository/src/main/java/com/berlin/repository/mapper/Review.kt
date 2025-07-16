@@ -9,14 +9,12 @@ import kotlinx.datetime.toLocalDateTime
 
 fun ReviewDto.toDomain(): Review {
     return Review(
-        id = this.id?.toLong() ?: 0L,
+        id = this.id ?: "",
         name = this.author ?: this.authorDetails?.name ?: "",
         userName = this.authorDetails?.userName ?: "",
-        avatarImage = this.authorDetails?.avatarPath ?: "",
+        avatarImage = "https://image.tmdb.org/t/p/w500${this.authorDetails?.avatarPath}" ?: "",
         rating = this.authorDetails?.rating ?: 0.0,
         content = this.content ?: "",
-        date = (this.createdAt ?: Clock.System.now()
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-            .date) as LocalDate,
+        date =   this.createdAt ?:""
     )
 }
