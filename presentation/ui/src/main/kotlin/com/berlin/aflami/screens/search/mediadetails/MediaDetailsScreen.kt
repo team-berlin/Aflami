@@ -13,12 +13,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import androidx.navigation.NavController
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.ui.R
 
 @Composable
-fun MediaDetailsScreen() {
-
+fun MediaDetailsScreen(navController : NavController) {
+    MediaDetailsContent()
 }
 
 @Composable
