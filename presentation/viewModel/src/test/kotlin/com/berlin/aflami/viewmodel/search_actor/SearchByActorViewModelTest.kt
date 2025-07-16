@@ -4,10 +4,10 @@ import android.util.Log
 import com.berlin.aflami.viewmodel.search_actor.SearchByActorViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -34,8 +34,13 @@ class SearchByActorViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
+
+        mockkStatic(Dispatchers::class)
+        every { Dispatchers.IO } returns testDispatcher
+
         searchByActorNameUseCase = mockk()
         viewModel = SearchByActorViewModel(searchByActorNameUseCase)
+
         mockkStatic(Log::class)
         every { Log.e(any(), any()) } returns 0
     }
@@ -43,6 +48,7 @@ class SearchByActorViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkAll()
     }
 
     @Test
@@ -65,35 +71,33 @@ class SearchByActorViewModelTest {
         val actorName = "Tom"
         val language = "Tom"
         viewModel.onActorNameChanged(actorName)
-        coEvery { searchByActorNameUseCase(actorName,language) } returns emptyList()
+        coEvery { searchByActorNameUseCase(actorName, language) } returns emptyList()
 
-         //When
+        //When
         viewModel.onSearchClicked()
-        val initialUiState = viewModel.uiState.first()
+        val initialUiState = viewModel.uiState.value
 
-         //Then
+        //Then
         assertThat(initialUiState.isLoading).isTrue()
         advanceUntilIdle()
     }
 
-//    @Test
-//    fun `when onSearchClick should update uiState with error on failure`() = runTest {
-//        // Given
-//        val actorName = "Tom "
-//        val language = "Tom"
-//        val errorMessage = "error"
-//        coEvery { searchByActorNameUseCase(any(),any()) } throws Exception(errorMessage)
-//        viewModel.onActorNameChanged(actorName)
-//
-//        // When
-//        viewModel.onSearchClicked()
-//        advanceUntilIdle()
-//
-//        // Then
-//        val uiState = viewModel.uiState.first()
-//        assertThat(uiState.isLoading).isFalse()
-//        assertThat(uiState.error).isEqualTo(errorMessage)
-//        assertThat(uiState.movies).isEmpty()
-//        //coVerify(exactly = 1) { searchByActorNameUseCase(actorName,language) }
-//    }
+    @Test
+    fun `when onSearchClick should update uiState with error on failure`() = runTest {
+        // Given
+        val actorName = "Tom "
+        val errorMessage = "error"
+        coEvery { searchByActorNameUseCase(any(), any()) } throws Exception(errorMessage)
+        viewModel.onActorNameChanged(actorName)
+
+        // When
+        viewModel.onSearchClicked()
+        advanceUntilIdle()
+
+        // Then
+        val uiState = viewModel.uiState.value
+        assertThat(uiState.isLoading).isFalse()
+        assertThat(uiState.error).isEqualTo(errorMessage)
+        assertThat(uiState.movies).isEmpty()
+    }
 }

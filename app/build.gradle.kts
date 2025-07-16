@@ -33,6 +33,8 @@ android {
         buildConfigField("String", "API_KEY", "\"${properties["API_KEY"]}\"")
     }
 
+
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -42,6 +44,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -53,26 +56,34 @@ android {
         compose = true
         buildConfig = true
     }
+
+    configurations { implementation.get().exclude(mapOf("group" to "org.jetbrains", "module" to "annotations"))}
 }
 
 dependencies {
-    androidCoreKtx()
-    lifecycleRuntimeKtx()
-    navigationCompose()
-    androidxUi()
-    koin()
-    ktor()
-    room()
-    firebase()
-    test()
+    implementation(libs.androidx.core.ktx)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.androidxUi)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.bundles.koin)
+    implementation(libs.bundles.ktor)
+    testImplementation(libs.bundles.test)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
+    implementation(libs.bundles.room)
+    ksp(libs.roomCompiler)
+    implementation(libs.androidx.navigation)
 
-    safeImageViewer()
-    designSystem()
-    viewModel()
-    navigation()
-    ui()
-    useCase()
-    repository()
-    remote()
-    local()
+
+
+    api(project(":presentation:ui"))
+    implementation(project(":presentation:safeImageViewer"))
+    implementation(project(":presentation:designSystem"))
+    implementation(project(":presentation:viewModel"))
+    implementation(project(":presentation:navigation"))
+    implementation(project(":domain:usecase"))
+    implementation(project(":data:repository"))
+    implementation(project(":presentation:safeImageViewer"))
+    implementation(project(":data:local"))
+    implementation(project(":data:remote"))
 }
