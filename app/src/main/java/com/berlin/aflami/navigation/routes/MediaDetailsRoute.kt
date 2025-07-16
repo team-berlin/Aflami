@@ -11,6 +11,7 @@ fun NavGraphBuilder.mediaDetailsRoute(
     navController: NavController
 ) {
     composable(route = MediaDetailsScreen.route) {
-        MediaDetailsScreen(navController = navController)
+        MediaDetailsScreen(
+            navController = navController)
     }
 }
