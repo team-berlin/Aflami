@@ -10,6 +10,6 @@ class MovieDetailsRemoteDataSourceImpl(
     private val client: HttpClient
 ): MovieDetailsRemoteDataSource {
     override suspend fun getReviews(id: Long): ReviewResponse {
-        return client.get("movie/$id${ApiConstants.REVIEW}").body()
-    }
+        return client.get(ApiConstants.MOVIE_REVIEW
+            .replace("{movie_id}", id.toString())).body()    }
 }
