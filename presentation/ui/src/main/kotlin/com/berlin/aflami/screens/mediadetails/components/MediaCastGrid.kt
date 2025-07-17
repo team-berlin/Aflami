@@ -26,9 +26,6 @@ fun MoviesCastGrid(
     ) {
         items(
             items = mediaCast,
-            key = {
-                it.mediaId
-            }
         ) { cast ->
             MediaCast(
                 modifier = Modifier.size(104.dp),

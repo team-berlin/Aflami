@@ -23,8 +23,8 @@ class MediaDetailsViewmodel(
     private val _uiState = MutableStateFlow(MediaDetailsScreenUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _castDetailsNavigationState = MutableSharedFlow<Long>(replay = 0)
-    val castDetailsNavigationState = _castDetailsNavigationState.asSharedFlow()
+    private val _uiEffect = MutableSharedFlow<MediaDetailsScreenEffect>()
+    val uiEffect = _uiEffect.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -44,9 +44,9 @@ class MediaDetailsViewmodel(
         TODO("Not yet implemented")
     }
 
-    override fun onShowCastClicked(id: Long) {
+    override fun onShowCastClicked() {
         viewModelScope.launch {
-            _castDetailsNavigationState.emit(id)
+            _uiEffect.emit(MediaDetailsScreenEffect.NavigateToShowAllCastScreen)
         }
     }
 
@@ -127,6 +127,7 @@ class MediaDetailsViewmodel(
 
 
      fun getMovieCast(mediaId: Long, mediaType: MediaType,language:String) {
+
         viewModelScope.launch {
             val cast = when (mediaType) {
                 MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
@@ -135,10 +136,12 @@ class MediaDetailsViewmodel(
             _uiState.update { newCastState ->
                 newCastState.copy(
                     mediaCast = cast,
-                    mediaType = mediaType
+                    mediaType = mediaType,
+                    isLoading = false
                 )
             }
         }
     }
+
 
 }

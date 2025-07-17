@@ -4,11 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import com.berlin.aflami.component.TopBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.mediadetails.components.MoviesCastGrid
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
@@ -29,8 +31,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CastScreen(
     navController: NavController,
-    viewModel: MediaDetailsViewmodel= koinViewModel()
-){
+    viewModel: MediaDetailsViewmodel = koinViewModel()
+) {
     val castState by viewModel.uiState.collectAsState()
     CastContent(
         navController = navController,
@@ -43,7 +45,7 @@ fun CastScreen(
 fun CastContent(
     navController: NavController,
     castState: MediaDetailsScreenUiState
-){
+) {
     Column {
         TopBar(
             modifier = Modifier.padding(vertical = 8.dp),
@@ -73,10 +75,21 @@ fun CastContent(
                 }
             }
         )
-        MoviesCastGrid(
-             mediaCast = castState.mediaCast
+        if (castState.isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = Theme.color.primary,
+                )
+            }
+        } else {
+            MoviesCastGrid(
+                mediaCast = castState.mediaCast
 
-        )
+            )
+        }
     }
 
 

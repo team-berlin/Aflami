@@ -21,6 +21,7 @@ data class MediaDetailsScreenUiState(
     val rating: String = "",
     val backdrop: String? = "",
     val isFavorite: Boolean = false,
+    val isLoading: Boolean = true,
 )
 
 data class SeasonState(
@@ -45,7 +46,6 @@ data class MediaOptions(
 )
 
 data class MediaCastUiState(
-    val mediaId:Long =0L,
     val name:String="",
     val poster:String=""
 )

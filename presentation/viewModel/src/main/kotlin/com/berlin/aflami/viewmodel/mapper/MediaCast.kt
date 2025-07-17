@@ -5,7 +5,6 @@ import com.berlin.entity.MediaCast
 
 fun MediaCast.toUiState():MediaCastUiState{
     return MediaCastUiState(
-        mediaId = mediaId,
         name = name,
         poster = poster
     )

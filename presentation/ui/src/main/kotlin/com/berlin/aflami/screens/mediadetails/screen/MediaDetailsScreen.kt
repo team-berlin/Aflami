@@ -2,14 +2,13 @@ package com.berlin.aflami.screens.mediadetails.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.berlin.aflami.screens.mediadetails.components.MediaCast
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
 import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsScreenUiState
@@ -39,10 +39,14 @@ fun MediaDetailsScreen(
         detailsState = mediaCastState,
         listener = viewModel,
     )
-    LaunchedEffect(viewModel.castDetailsNavigationState) {
-        viewModel.castDetailsNavigationState.collect {
-            navController.navigate(Destination.CastScreen.route)
-        }
+    LaunchedEffect(Unit) {
+       viewModel.uiEffect.collect {effect->
+           when (effect) {
+               MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
+                   navController.navigate(Destination.CastScreen.route)
+               }
+           }
+       }
     }
 
 
@@ -80,25 +84,37 @@ fun MediaDetailsContent(
                     color = Theme.color.primary,
                     modifier = Modifier
                         .clickable {
-                            listener.onShowCastClicked(505)
+                            listener.onShowCastClicked()
                         }
                 )
             }
 
-            LazyRow(
-                contentPadding = PaddingValues(start = 16.dp, end = 8.dp),
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(detailsState.mediaCast.size) {
-                    MediaCast(
-                        modifier = Modifier.size(78.dp),
-                        name = detailsState.mediaCast[it].name,
-                        poster = detailsState.mediaCast[it].poster
-                    )
-                }
+            BoxWithConstraints {
+                val screenWidth = maxWidth
+                val cardSize = 78.dp
+                val spaceBetween = 8.dp
+                val totalCardWidth = cardSize + spaceBetween
 
+                val maxCardsInRow = (screenWidth / totalCardWidth).toInt()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(spaceBetween)
+                ) {
+                    detailsState.mediaCast
+                        .take(maxCardsInRow)
+                        .forEach {
+                            MediaCast(
+                                modifier = Modifier.size(cardSize),
+                                name = it.name,
+                                poster = it.poster
+                            )
+                        }
+                }
             }
+
         }
     }
 }
