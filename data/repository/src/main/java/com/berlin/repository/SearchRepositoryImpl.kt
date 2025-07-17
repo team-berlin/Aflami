@@ -34,29 +34,37 @@ class SearchRepositoryImpl(
             ?: emptyList()
     }
 
-    override suspend fun getMoviesByActorName(actorName: String, language: String): List<Movie> {
-//        val searchCaching = localDataSource.getCachedSearch(actorName, QueryType.ACTOR.name)
-//        val isCacheStale =
-//            searchCaching.any { it.time < System.currentTimeMillis() - 60 * 60 * 1000 }
-//
-//        if (searchCaching.isEmpty() || isCacheStale) {
-//            val result =
-//                remoteDataSource.searchMoviesByActor(actorName, language).results?.filterNotNull()
-//                    ?.filter { it.knownForDepartment == ActingDepartment }?.flatMap { person ->
-//                        person.knownFor?.filterNotNull()?.map {
-//                            it.toLocal(
-//                                query = actorName,
-//                                type = QueryType.ACTOR.name,
-//                                time = System.currentTimeMillis()
-//                            )
-//                        } ?: emptyList()
-//                    } ?: emptyList()
-//            localDataSource.cacheSearch(result)
-//        }
-//
-//        return localDataSource.getCachedSearch(actorName, QueryType.ACTOR.name)
-//            .map { it.toDomain() }
-        return emptyList()
+    override suspend fun getMoviesByActorName(actorName: String ,page:Int): List<Movie> {
+        val searchCaching = localDataSource.getCachedSearch(
+            actorName,
+            QueryType.ACTOR,
+            pageSize = 20,
+            page = page
+        )
+        val isCacheStale =
+            searchCaching.any { it.time < System.currentTimeMillis() - 60 * 60 * 1000 }
+        if (searchCaching.isEmpty() || isCacheStale) {
+            val result =
+                remoteDataSource.searchMoviesByActor(actorName, language,page).results?.filterNotNull()
+                    ?.filter { it.knownForDepartment == ACTING_DEPARTMENT }?.flatMap { person ->
+                        person.knownFor?.filterNotNull()?.map {
+                            it.toLocal(
+                                query = actorName,
+                                type = QueryType.ACTOR,
+                            )
+                        } ?: emptyList()
+                    } ?: emptyList()
+            localDataSource.cacheSearch(result)
+        }
+
+        return localDataSource.getCachedSearch(
+            actorName,
+            QueryType.ACTOR,
+            pageSize = 20,
+            page = page
+        )
+            .map { it.toDomain() }
+
     }
 
 

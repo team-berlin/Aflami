@@ -2,15 +2,23 @@ package com.berlin.aflami.viewmodel.search_actor
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.berlin.aflami.viewmodel.mapper.toUIState
+import com.berlin.aflami.viewmodel.searchworldtour.BasePagingSource
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.SearchByActorNameUseCase
@@ -57,11 +65,23 @@ class SearchByActorViewModel(
             try {
                 val locale = Locale.getDefault()
                 val languageCode = "${locale.language}-${locale.country}"
-                val result = searchByActorName(
-                    actorName = _uiState.value.actorName,
-                    language = languageCode
-                ).map { it.toUIState() }
-                onSearchSuccess(result)
+                val movies = Pager(
+                    config = PagingConfig(
+                        pageSize = 20,
+                        initialLoadSize = 20
+                    ),
+                    pagingSourceFactory = {
+                        BasePagingSource { page ->
+                            searchByActorName(
+                                actorName = uiState.value.actorName,
+                                page
+                            )
+                        }
+                    },
+                ).flow.map {
+                    it.map { it.toUIState() }
+                }.cachedIn(viewModelScope)
+                onSearchSuccess(movies)
             } catch (exception: Exception) {
                 onSearchError(exception.message ?: "Unknown error")
             }
@@ -69,7 +89,7 @@ class SearchByActorViewModel(
 
     }
 
-    private fun onSearchSuccess(movies: List<MovieUIState>) {
+    private fun onSearchSuccess(movies: Flow<PagingData<MovieUIState>>) {
         _uiState.update { it.copy(movies = movies, isLoading = false) }
     }
 

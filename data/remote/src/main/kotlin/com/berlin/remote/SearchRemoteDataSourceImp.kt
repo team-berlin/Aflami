@@ -26,10 +26,12 @@ class SearchRemoteDataSourceImp(
         }.body()
     }
 
-    override suspend fun searchMoviesByActor(actorName: String, language: String): BaseResponse<PersonDto> {
+    override suspend fun searchMoviesByActor(actorName: String,
+                                             language: String,page: Int): BaseResponse<PersonDto> {
         return client.get(ApiConstants.SEARCH_BY_ACTOR) {
             parameter(ApiConstants.QUERY, actorName)
             parameter(ApiConstants.LANGUAGE, language)
+            parameter("page", page)
         }.body()
     }
 

@@ -25,6 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.CountryTourExploring
@@ -33,6 +35,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search_actor.SearchByActorInteractionListener
 import com.berlin.aflami.viewmodel.search_actor.SearchByActorScreenUiState
 import com.berlin.aflami.viewmodel.search_actor.SearchByActorViewModel
+import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -43,11 +46,13 @@ fun SearchByActorNameScreen(
     viewModel: SearchByActorViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val pagedMovies=uiState.movies.collectAsLazyPagingItems()
     SearchByActorNameContent(
         state = uiState,
         listener = viewModel,
         navController = navController,
-        viewModel.queryFlow.value
+        viewModel.queryFlow.value,
+        pagedMovies
     )
 }
 
@@ -57,7 +62,8 @@ private fun SearchByActorNameContent(
     state: SearchByActorScreenUiState,
     listener: SearchByActorInteractionListener,
     navController: NavController,
-    value: String
+    value: String,
+    pagedMovies: LazyPagingItems<MovieUIState>
 ) {
     Column {
         TopBar(
@@ -116,7 +122,7 @@ private fun SearchByActorNameContent(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            if (state.movies.isEmpty()) {
+            if (pagedMovies.itemCount<0) {
                 CountryTourExploring(
                     modifier = Modifier.fillMaxSize(),
                     image = painterResource(R.drawable.find_by_actor),
@@ -125,10 +131,10 @@ private fun SearchByActorNameContent(
                 )
             }
 
-//            MoviesList(
-//                movies = state.movies,
-//
-//            )
+            MoviesList(
+                movies = pagedMovies,
+
+            )
         }
     }
 }

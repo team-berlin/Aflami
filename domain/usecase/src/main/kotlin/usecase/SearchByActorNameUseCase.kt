@@ -6,7 +6,7 @@ import repository.SearchRepository
 class SearchByActorNameUseCase(
     private val searchRepository: SearchRepository
 ) {
-    suspend operator fun invoke(actorName: String, language: String): List<Movie> {
-        return searchRepository.getMoviesByActorName(actorName, language)
+    suspend operator fun invoke(actorName: String,page:Int): List<Movie> {
+        return searchRepository.getMoviesByActorName(actorName,page )
     }
 }

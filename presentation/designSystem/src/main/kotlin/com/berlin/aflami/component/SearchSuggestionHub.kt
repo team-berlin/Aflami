@@ -1,10 +1,12 @@
 package com.berlin.aflami.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,7 +28,10 @@ fun SearchSuggestionHub(
         SearchSuggestionItem(
             modifier = Modifier
                 .weight(1f)
-                .clickable { onWorldTourClick() },
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { onWorldTourClick() },
             title = stringResource(R.string.world_tour),
             subtitle = stringResource(R.string.explore_world_cinema),
             gradientBackground = darkPurpleLinearGradient,
@@ -36,7 +41,10 @@ fun SearchSuggestionHub(
         SearchSuggestionItem(
             modifier = Modifier
                 .weight(1f)
-                .clickable { onSearchByActorClick() },
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { onSearchByActorClick() },
             title = stringResource(R.string.find_by_actor),
             subtitle = stringResource(R.string.search_by_favorite_actor),
             gradientBackground = blueLinearGradient,
