@@ -1,238 +1,333 @@
 package com.berlin.aflami.viewmodel.search
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
+import com.berlin.aflami.viewmodel.base.BasePagingSource
+import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.mapper.selectByGenre
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.search_actor.FilterUiState
-import com.berlin.aflami.viewmodel.search_actor.GenreType
-import com.berlin.aflami.viewmodel.search_actor.genreToId
-import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
-import java.util.Locale
 
-@OptIn(FlowPreview::class)
 class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
-    private val searchTvShowsUseCase: GetSearchTvShowsUseCase
-) : ViewModel(), SearchInteractionListener {
-
-    private val _searchUIState = MutableStateFlow<SearchUiState>(SearchUiState.Init)
-    val searchUIState = _searchUIState.asStateFlow()
-
-    private val _filterUiState = MutableStateFlow(FilterUiState())
-    val filterUiState = _filterUiState.asStateFlow()
-
-    private val _filterDialogState = MutableStateFlow(false)
-    val filterDialogState = _filterDialogState.asStateFlow()
-
-    private val _queryFlow = MutableStateFlow("")
-    val queryFlow = _queryFlow
+    private val searchTvShowsUseCase: GetSearchTvShowsUseCase,
+) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()), SearchInteractionListener,
+    FilterInteractionListener {
 
     init {
-        viewModelScope.launch {
-            _queryFlow
-                .debounce(600)
-                .filter { it.isNotEmpty() }
-                .distinctUntilChanged()
-                .collect { query ->
-                    onSearchClick(query)
+//            observeSearchKeywordChanges()
+//            fetchMoviesByQuery("Spider")
+        fetchTvShowsByQuery("Spider")
+    }
+
+    //not completed
+    private fun loadRecentSearches() {
+        startLoading()
+        tryToCall(
+            call = {
+                //getRecentSearchesUseCase()
+                TODO() // Replace with actual use case to getRecentSearchesUseCase
+            },
+            onSuccess = {
+                onLoadRecentSearchesSuccess(it)
+            },
+            onError = {
+                updateState {
+                    it.copy(
+                        errorMessage = it.errorMessage ?: "Failed to load recent searches",
+                        isLoading = false
+                    )
                 }
-        }
+            },
+        )
     }
 
-    fun updateRating(rating: Float) {
-        viewModelScope.launch {
-            _filterUiState.update { it.copy(selectedRating = rating) }
-        }
+    private fun onLoadRecentSearchesSuccess(recentSearches: List<String>) {
+        updateState { it.copy(recentSearches = recentSearches, errorMessage = null) }
     }
 
-    fun toggleGenre(genre: GenreType) {
-        viewModelScope.launch {
-            _filterUiState.update { current ->
-                val currentGenres = current.selectedGenre.type
-                val updatedGenres = if (genre == GenreType.ALL) {
-                    GenreType.ALL
-                } else if (currentGenres == GenreType.ALL) {
-                    genre
-                } else {
-                    if (currentGenres == genre) GenreType.ALL else genre
-                }
-                current.copy(selectedGenre = current.selectedGenre.copy(type = updatedGenres))
-            }
-        }
+    private fun onClearAllRecentSearchesSuccess(unit: Unit) {
+        updateState { it.copy(recentSearches = emptyList()) }
+        return unit
     }
 
-    fun onFocusChanged(isFocus: Boolean) {
-        if (isFocus) {
-            _searchUIState.update {
-                SearchUiState.Searching.Init
-            }
-        }
-    }
-
-    var selectTabIndex by mutableIntStateOf(0)
-        private set
-
-    fun onTabChange(index: Int) {
-        selectTabIndex = index
-        updateSearchQuery(_queryFlow.value)
-    }
-
-    override fun onBackClick() {
-        clearSearchState()
-    }
-
-    fun updateSearchQuery(query: String) {
-        _queryFlow.update { query }
-        onSearchClick(query)
-    }
-
-    override fun onSearchClick(query: CharSequence) {
-        if (query.toString().isBlank()) {
-            _searchUIState.update { SearchUiState.Searching.Init }
-            return
-        }
-        when (selectTabIndex) {
-            0 -> searchMedia(MediaType.MOVIE)
-            1 -> searchMedia(MediaType.TV_SHOW)
-        }
-    }
-
-
-    override fun onFilterIconClicked() {
-        _filterDialogState.update { true }
-    }
-
-    private fun searchMedia(mediaType: MediaType) {
-
-        if (queryFlow.value.isBlank()) return
-        _searchUIState.update { SearchUiState.Searching.Loading }
+    private fun observeSearchKeywordChanges() {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val locale = Locale.getDefault()
-                val languageCode = "${locale.language}-${locale.country}"
-                val result = when (mediaType) {
-                    MediaType.MOVIE -> {
-                        searchMoviesUseCase(
-                            queryFlow.value, languageCode
-                        ).map {
-                            it.toUIState()
-                        }.filter {
-                            Log.d("Search", it.rating)
-                            (it.rating.toDouble() >= _filterUiState.value.selectedRating.toDouble())
-                                    &&
-                                    (if (genreToId(_filterUiState.value.selectedGenre.type) > 0) {
-                                        it.genre.contains(
-                                            genreToId(_filterUiState.value.selectedGenre.type)
-                                        )
-                                    } else {
-                                        true
-                                    }
-                                            )
-                        }
-                    }
-
-                    MediaType.TV_SHOW -> {
-                        searchTvShowsUseCase(queryFlow.value, languageCode)
-                            .map { it.toUiState() }
-                            .filter {
-                                (it.rating.toDouble() >= _filterUiState.value.selectedRating.toDouble())
-                                        &&
-                                        if (genreToId(_filterUiState.value.selectedGenre.type) > 0) {
-                                            it.genre.contains(
-                                                genreToId(_filterUiState.value.selectedGenre.type)
-                                            )
-                                        } else {
-                                            true
-                                        }
-                            }
-                    }
+            _state.map { it.searchQuery.trim() }.debounce(300).filter(String::isNotBlank)
+                .collectLatest { query ->
+                    onSearchKeywordChanged(query)
                 }
-                when (mediaType) {
-                    MediaType.MOVIE -> onSearchMoviesSuccess(result as List<MovieUIState>)
-                    MediaType.TV_SHOW -> onSearchTvShowsSuccess(result as List<TVShowUiState>)
-                }
-
-            } catch (e: Exception) {
-                onSearchError(e.message ?: "Unknown error")
-            }
         }
     }
 
-    enum class MediaType {
-        MOVIE, TV_SHOW
+    private fun onSearchKeywordChanged(query: String) {
+        when (state.value.selectedTabOption) {
+            TabOption.MOVIES -> fetchMoviesByQuery(query)
+            TabOption.TV_SHOWS -> fetchTvShowsByQuery(query)
+        }
     }
 
-    private fun onSearchMoviesSuccess(movies: List<MovieUIState>) {
-        _searchUIState.update {
-            SearchUiState.Searching.Success(
-                movies.map {
-                    MediaUiState(
-                        id = it.id,
-                        title = it.title,
-                        rating = it.rating,
-                        releaseYear = it.releaseYear,
-                        genre = it.genre,
-                        poster = it.poster
+    private fun fetchTvShowsByQuery(query: String) {
+        startLoading()
+        tryToCall(
+            call = {
+                Pager(
+                    config = PagingConfig(pageSize = 20, initialLoadSize = 20),
+                    pagingSourceFactory = {
+                        BasePagingSource(
+                            call = { page ->
+                                searchTvShowsUseCase.invoke(
+                                    query = query, page = page
+                                )
+                            })
+                    }).flow.map { it.map { it.toUiState() } }.cachedIn(viewModelScope)
+            },
+            onSuccess = ::onFetchTvShowsSuccess,
+            onError = { error ->
+                updateState {
+                    it.copy(
+                        errorMessage = error.message, isLoading = false, isDialogVisible = false
                     )
                 }
+            },
+        )
+    }
+
+    private fun fetchMoviesByQuery(query: String) {
+        startLoading()
+        tryToCall(
+            call = {
+                Pager(
+                    config = PagingConfig(pageSize = 20, initialLoadSize = 20),
+                    pagingSourceFactory = {
+                        BasePagingSource(
+                            call = { page ->
+                                searchMoviesUseCase.invoke(
+                                    query = query, page = page
+                                )
+                            })
+                    }).flow.map { it.map { it.toUIState() } }.cachedIn(viewModelScope)
+            },
+            onSuccess = ::onFetchMoviesSuccess,
+            onError = { error ->
+                updateState {
+                    it.copy(
+                        errorMessage = error.message, isLoading = false, isDialogVisible = false
+                    )
+                }
+            },
+        )
+    }
+
+    private fun onFetchTvShowsSuccess(tvShowsFlow: Flow<PagingData<TVShowUiState>>) {
+        updateState { it.copy(tvShows = tvShowsFlow, errorMessage = null, isLoading = false) }
+    }
+
+    private fun onFetchMoviesSuccess(moviesFlow: Flow<PagingData<MovieUIState>>) {
+        updateState { it.copy(movies = moviesFlow, errorMessage = null, isLoading = false) }
+    }
+
+    private fun applyFilter() {
+        val currentItemUiState = state.value.filterItemUiState.mediaGenres
+        tryToCall(
+            call = {
+                searchMoviesUseCase(
+                    query = state.value.searchQuery,
+                    page = 1,
+//                    genre = currentItemUiState.getSelectedGenreType(),
+//                    rating = state.value.filterItemUiState.selectedRating
+                )
+            },
+            onSuccess = {
+                updateState {
+                    it.copy(
+
+                        isLoading = false,
+                        filterItemUiState = it.filterItemUiState.copy(isLoading = false)
+                    )
+                }
+            },
+            onError = { error ->
+                updateState {
+                    it.copy(
+                        errorMessage = error.message, isLoading = false, isDialogVisible = false
+                    )
+                }
+            },
+        )
+    }
+
+
+    override fun onSearchActionClicked() {
+        onSearchQueryChanged(state.value.searchQuery)
+        tryToCall(call = {
+            //addRecentSearchUseCase
+            TODO()
+        }, onSuccess = { result ->
+            updateState { it.copy(isLoading = false) }
+        }, onError = { error ->
+            updateState { it.copy(errorMessage = error.message, isLoading = false) }
+        })
+    }
+
+    override fun onSearchQueryChanged(query: String) {
+        updateState { it.copy(searchQuery = query, isLoading = false) }
+    }
+
+    override fun onBackClicked() {
+        sendNewEffect(SearchUiEffect.NavigatedBack)
+    }
+
+    override fun onWorldSearchCardClicked() {
+        sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
+    }
+
+    override fun onActorSearchCardClicked() {
+        sendNewEffect(SearchUiEffect.NavigateToActorSearch)
+
+    }
+
+    private fun startLoading() {
+        updateState {
+            it.copy(
+                isLoading = false,
             )
         }
     }
 
-    private fun onSearchTvShowsSuccess(tvShows: List<TVShowUiState>) {
-        _searchUIState.update {
-            SearchUiState.Searching.Success(
-                tvShows.map {
-                    MediaUiState(
-                        id = it.id,
-                        title = it.title,
-                        rating = it.rating,
-                        releaseYear = it.releaseYear,
-                        genre = it.genre,
-                        poster = it.poster
-                    )
-                }
+    override fun onTabOptionClicked(tabOption: TabOption) {
+        observeSearchKeywordChanges()
+        updateState {
+            it.copy(
+                selectedTabOption = tabOption,
+                movies = state.value.movies,
+                tvShows = state.value.tvShows,
+                isLoading = false,
+                filterItemUiState = FilterItemUiState()
             )
         }
     }
 
-    private fun onSearchError(error: String) {
-        _searchUIState.update { SearchUiState.Searching.Error(error) }
+    override fun onCardClicked(id: Int) {
+        sendNewEffect(
+            SearchUiEffect.NavigatedToMovieDetailsScreen(
+                id = id
+            )
+        )
     }
 
-    fun onDismiss() {
-        _filterDialogState.update { false }
+    override fun onRecentSearchClicked(keyword: String) {
+        onSearchQueryChanged(keyword)
+        observeSearchKeywordChanges()
     }
 
-    fun clearFilters() {
-        viewModelScope.launch {
-            _filterUiState.update {
-                FilterUiState()
-            }
+    //not completed
+    override fun onRecentSearchCleared(keyword: String) {
+        updateState { it.copy(isLoading = false) }
+        tryToCall(
+            call = {
+                //clearRecentSearchUseCase(keyword)
+                TODO()
+            },
+            onSuccess = { loadRecentSearches() },
+            onError = { error ->
+                updateState {
+                    it.copy(
+                        errorMessage = error.message, isLoading = false, isDialogVisible = false
+                    )
+                }
+            },
+        )
+    }
+
+    //not completed
+    override fun onAllRecentSearchesCleared() {
+        updateState { it.copy(isLoading = false) }
+        tryToCall(
+            call = {
+                //clearAllRecentSearchesUseCase()
+                TODO()
+            },
+            onSuccess = ::onClearAllRecentSearchesSuccess,
+            onError = { error ->
+                updateState {
+                    it.copy(
+                        errorMessage = error.message, isLoading = false, isDialogVisible = false
+                    )
+                }
+            },
+        )
+    }
+
+    override fun onFilterButtonClicked() {
+        updateState { it.copy(isDialogVisible = true, isLoading = false) }
+    }
+
+    override fun onSearchCleared() {
+        updateState {
+            it.copy(
+                searchQuery = "",
+                isLoading = false,
+                isDialogVisible = false,
+                filterItemUiState = FilterItemUiState()
+            )
         }
     }
 
-    fun clearSearchState() {
-        _searchUIState.update { SearchUiState.Init }
-        _queryFlow.value = ""
+    override fun onCancelButtonClicked() {
+        updateState {
+            it.copy(
+                isDialogVisible = false,
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false)
+            )
+        }
+    }
+
+    override fun onRatingStarChanged(ratingIndex: Float) {
+        updateState { it.copy(filterItemUiState = it.filterItemUiState.copy(selectedRating = ratingIndex)) }
+    }
+
+    override fun onGenreButtonChanged(genreType: GenreType) {
+        updateState {
+            it.copy(
+                filterItemUiState = state.value.filterItemUiState.copy(
+                    mediaGenres = it.filterItemUiState.mediaGenres.selectByGenre(genreType)
+                )
+            )
+        }
+    }
+
+    override fun onApplyButtonClicked() {
+        updateState {
+            it.copy(
+                isDialogVisible = false,
+                isLoading = true,
+                filterItemUiState = it.filterItemUiState.copy(isLoading = false)
+            )
+        }
+        when (state.value.selectedTabOption) {
+            TabOption.MOVIES -> {}
+            TabOption.TV_SHOWS -> {}
+        }
+    }
+
+    override fun onClearButtonClicked() {
+        updateState { it.copy(filterItemUiState = FilterItemUiState()) }
     }
 }
 
