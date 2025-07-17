@@ -40,8 +40,7 @@ fun MediaDetailsContent(
     similarMediaState:SimilarMediaUiState
 ) {
 
-    Column(
-        modifier = Modifier) {
+    Column(modifier = Modifier) {
         //i will delete it after merge
         Button(
             onClick = {
@@ -66,10 +65,6 @@ fun MediaDetailsContent(
                 val errorMessage = (similarMediaState).errorMessage
                 ErrorMessage(Modifier, errorMessage)
 
-            }
-            is SimilarMediaUiState.Empty -> {
-                val message = (similarMediaState ).message
-                Text(text = message)
             }
         }
     }

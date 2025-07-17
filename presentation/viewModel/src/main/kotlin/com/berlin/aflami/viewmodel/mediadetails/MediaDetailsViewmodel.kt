@@ -81,7 +81,7 @@ class MediaDetailsViewmodel(
         TODO("Not yet implemented")
     }
 
-    private val _similarMedia = MutableStateFlow<SimilarMediaUiState>(SimilarMediaUiState.Init)
+    private val _similarMedia = MutableStateFlow<SimilarMediaUiState>(SimilarMediaUiState.Loading)
     val similarMedia: StateFlow<SimilarMediaUiState> = _similarMedia.asStateFlow()
 
     override fun onShowMoreMediaLikeThisClicked(mediaId: Long, mediaType: MediaType) {
@@ -92,11 +92,7 @@ class MediaDetailsViewmodel(
                     MediaType.MOVIE -> getSimilarMoviesUseCase(mediaId).map { it.toUIStateMedia() }
                     MediaType.TV_SHOW -> getSimilarTVShowsUseCase(mediaId).map { it.toUIStateMedia() }
                 }
-                _similarMedia.value = if (similar.isEmpty()) {
-                    SimilarMediaUiState.Empty("No similar media found")
-                } else {
                     SimilarMediaUiState.Success(similar)
-                }
             } catch (e: Exception) {
                 _similarMedia.value = SimilarMediaUiState.Error("Failed to load similar media: ${e.message}")
             }

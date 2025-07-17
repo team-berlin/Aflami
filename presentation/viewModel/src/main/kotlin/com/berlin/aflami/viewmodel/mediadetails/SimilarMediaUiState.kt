@@ -7,5 +7,4 @@ sealed class SimilarMediaUiState {
     object Loading : SimilarMediaUiState()
     data class Success(val data: List<MediaUiState>) : SimilarMediaUiState()
     data class Error(val errorMessage: String) : SimilarMediaUiState()
-    data class Empty(val message: String) : SimilarMediaUiState()
 }
