@@ -9,8 +9,7 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 
 @TypeConverters(Converters::class)
 @Database(
-    entities = [SearchingEntity::class],
-    version = 1
+    entities = [SearchingEntity::class], version = 1
 )
 abstract class SearchDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
