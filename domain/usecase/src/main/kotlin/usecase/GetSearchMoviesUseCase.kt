@@ -6,6 +6,6 @@ import repository.SearchRepository
 class GetSearchMoviesUseCase(
     private val searchRepository: SearchRepository
 ) {
-    suspend operator fun invoke(query: String, language: String): List<Movie> =
-        searchRepository.searchMovie(query, language)
+    suspend operator fun invoke(query: String, page: Int): List<Movie> =
+        searchRepository.searchMovie(query, page)
 }

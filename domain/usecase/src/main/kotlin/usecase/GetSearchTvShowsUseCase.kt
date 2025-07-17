@@ -6,6 +6,6 @@ import repository.SearchRepository
 class GetSearchTvShowsUseCase(
     private val searchRepository: SearchRepository
 ) {
-    suspend operator fun invoke(query: String, language: String): List<TVShow> =
-        searchRepository.searchTVShow(query, language)
+    suspend operator fun invoke(query: String, page: Int): List<TVShow> =
+        searchRepository.searchTVShow(query, page)
 }
