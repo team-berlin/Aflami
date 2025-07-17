@@ -18,7 +18,7 @@ fun SearchingEntity.toDomain(): Movie {
     )
 }
 
-fun MovieDto.toLocal(query: String, type: QueryType): SearchingEntity {
+fun MovieDto.toLocal(query: String, type: QueryType, page: Int): SearchingEntity {
     return SearchingEntity(
         query = query,
         type = type,
@@ -28,7 +28,8 @@ fun MovieDto.toLocal(query: String, type: QueryType): SearchingEntity {
         rating = this.voteAverage ?: 0.0,
         releaseYear = (releaseDate ?: ""),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        page = page
     )
 }
 

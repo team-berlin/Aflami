@@ -9,6 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -115,7 +116,7 @@ fun FilterDialog(
                             .height(96.dp)
                             .fillMaxWidth()
 
-                        ,
+                        , contentPadding = PaddingValues(horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(GenreType.entries) { genre ->
@@ -129,7 +130,7 @@ fun FilterDialog(
                     }
                 }
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     PrimaryButton(
@@ -153,7 +154,7 @@ fun FilterDialog(
                         onClick = { viewModel.clearFilters() },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 12.dp)
+
                             .height(56.dp),
                         containerColor = Theme.color.primaryVariant
                     ) {

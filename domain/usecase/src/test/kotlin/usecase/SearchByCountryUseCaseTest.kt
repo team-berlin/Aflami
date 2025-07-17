@@ -25,10 +25,10 @@ class SearchByCountryUseCaseTest {
         // Given
         val countryName = "Eg"
         val language = "en-US"
-        coEvery { searchRepository.getMoviesByCountry(countryName, language) } returns emptyList()
+        coEvery { searchRepository.getMoviesByCountry(countryName, 1) } returns emptyList()
 
         // When
-        val result = searchByCountryUseCase.invoke(countryName, language)
+        val result = searchByCountryUseCase.invoke(countryName, 1)
 
         // Then
         assertThat(result).isEmpty()
@@ -39,10 +39,10 @@ class SearchByCountryUseCaseTest {
         // Given
         val countryName = "Eg"
         val language = "en-US"
-        coEvery { searchRepository.getMoviesByCountry(countryName, language) } returns getMoviesByCountry()
+        coEvery { searchRepository.getMoviesByCountry(countryName, 1) } returns getMoviesByCountry()
 
         // When
-        val result = searchByCountryUseCase.invoke(countryName, language)
+        val result = searchByCountryUseCase.invoke(countryName, 1)
 
         // Then
         assertThat(result).isNotEmpty()
@@ -53,10 +53,10 @@ class SearchByCountryUseCaseTest {
         // Given
         val countryName = "abcd"
         val language = "en-US"
-        coEvery { searchRepository.getMoviesByCountry(countryName, language) } returns emptyList()
+        coEvery { searchRepository.getMoviesByCountry(countryName, 1) } returns emptyList()
 
         // When
-        val result = searchByCountryUseCase.invoke(countryName, language)
+        val result = searchByCountryUseCase.invoke(countryName, 1)
 
         // Then
         assertThat(result).isEmpty()

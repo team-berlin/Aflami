@@ -44,17 +44,24 @@ class SearchByCountryViewModel(
     }
 
     override fun onCountryClicked() {
-        _state.update { it.copy(
-            isLoading = true,
-            isCountrySelected = true,
-            dropDownExpanded = false,
-            error = null
-        ) }
+        _state.update {
+            it.copy(
+                isLoading = true,
+                isCountrySelected = true,
+                dropDownExpanded = false,
+                error = null
+            )
+        }
 
         tryToCall(
             call = {
                 Pager(
-                    config = PagingConfig(pageSize = 10, initialLoadSize = 20),
+                    config = PagingConfig(
+                        pageSize = 10,
+                        initialLoadSize = 20,
+                        enablePlaceholders = false,
+                        maxSize = 40
+                    ),
                     pagingSourceFactory = ::moviesPagingSourceFactory,
                 ).flow
                     .map { it.map { it.toUIState() } }

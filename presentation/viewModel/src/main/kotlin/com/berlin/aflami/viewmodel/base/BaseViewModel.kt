@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.base
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,7 +31,7 @@ abstract class BaseViewModel<S, E>(
                 val result = call()
                 onSuccess(result)
             } catch (exception: Exception) {
-                // TODO: Handle exceptions
+                Log.e("CATCH", "tryToCall: ", exception)
             }
         }
     }

@@ -6,6 +6,7 @@ import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
+import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
 import repository.SearchRepository
@@ -28,43 +29,42 @@ class SearchRepositoryImpl(
             ?.map { it.toDomain() }
             ?: remoteDataSource.searchMoviesByCountry(query, language, page).results
                 ?.filterNotNull()
-                ?.map { it.toLocal(query, QueryType.MOVIE) }
-                .also { localDataSource.cacheSearch(it ?: emptyList()) }
+                ?.map { it.toLocal(query, QueryType.COUNTRY, page) }
+                ?.also { localDataSource.cacheSearch(it) }
                 ?.map { it.toDomain() }
             ?: emptyList()
     }
 
     override suspend fun getMoviesByActorName(actorName: String ,page:Int): List<Movie> {
-        val searchCaching = localDataSource.getCachedSearch(
-            actorName,
-            QueryType.ACTOR,
-            pageSize = 20,
-            page = page
-        )
-        val isCacheStale =
-            searchCaching.any { it.time < System.currentTimeMillis() - 60 * 60 * 1000 }
-        if (searchCaching.isEmpty() || isCacheStale) {
-            val result =
-                remoteDataSource.searchMoviesByActor(actorName, language,page).results?.filterNotNull()
-                    ?.filter { it.knownForDepartment == ACTING_DEPARTMENT }?.flatMap { person ->
-                        person.knownFor?.filterNotNull()?.map {
-                            it.toLocal(
-                                query = actorName,
-                                type = QueryType.ACTOR,
-                            )
-                        } ?: emptyList()
-                    } ?: emptyList()
-            localDataSource.cacheSearch(result)
-        }
-
         return localDataSource.getCachedSearch(
             actorName,
             QueryType.ACTOR,
             pageSize = 20,
             page = page
-        )
-            .map { it.toDomain() }
+        ).takeIf { !isExpiredOrEmpty(it) }
+            ?.map { it.toDomain() }
+            ?:remoteDataSource.searchMoviesByActor(actorName, language,page).results
+                ?.filterNotNull()
+                ?.also { getActingDepartment(it) }
+                ?.let { getMoviesByActorName(actorName,page,it)}
+                ?.also {localDataSource.cacheSearch(it) }
+                ?.map { it.toDomain() }
+            ?:emptyList()
+    }
 
+
+    private fun getActingDepartment(listOfPersons:List<PersonDto>): List<PersonDto> {
+        return listOfPersons.filter { it.knownForDepartment == ACTING_DEPARTMENT }
+    }
+
+    private fun getMoviesByActorName(actorName: String,page:Int,listOfPersons:List<PersonDto>): List<SearchingEntity> {
+        return listOfPersons.flatMap { it.knownFor?.filterNotNull()
+            ?.map { it.toLocal(
+                actorName,
+                QueryType.ACTOR,
+                page,
+            ) }?:emptyList()
+        }
     }
 
 
