@@ -42,12 +42,3 @@ fun MoreLikeThisScreen(
         }
     }
 }
-@Composable
-fun NoDataSimilarMedia(){
-    Text(
-        "No Data SimilarMedia",
-        textAlign = TextAlign.Center,
-        color = Theme.color.textColors.body,
-        style = Theme.textStyle.body.small,
-    )
-}
