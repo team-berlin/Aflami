@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
@@ -138,7 +137,7 @@ private fun WorldTourContent(
                     )
                 }
 
-                state.isCountrySelected && movies.itemCount == 0  && movies.loadState.refresh is LoadState.NotLoading-> {
+                state.isCountrySelected && movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
                         image = painterResource(R.drawable.no_search_result),
