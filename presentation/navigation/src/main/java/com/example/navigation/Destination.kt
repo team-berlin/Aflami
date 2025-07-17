@@ -4,6 +4,7 @@ sealed class Destination(val route: String) {
     object SearchScreen : Destination("searchScreen")
     object WorldTourScreen : Destination("worldTourScreen")
     object SearchByActorNameScreen : Destination("searchByActorNameScreen")
-    object MediaDetailsScreen : Destination("mediaDetailsScreen/{mediaId}/{mediaType}")
+    object MediaDetailsScreen : Destination("mediaDetailsScreen")
+    object CastScreen : Destination("castScreen")
 }
 

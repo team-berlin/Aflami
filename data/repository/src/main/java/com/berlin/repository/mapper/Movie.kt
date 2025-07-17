@@ -1,7 +1,11 @@
 package com.berlin.repository.mapper
 
+import com.berlin.entity.GenreEntity
 import com.berlin.entity.Movie
+import com.berlin.entity.MovieDetails
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.remote.dto.Genre
+import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import com.berlin.repository.util.toLocalDate
 
@@ -37,7 +41,28 @@ fun MovieDto.toDomain(): Movie {
         rating = (this.voteAverage ?: 0.0),
         releaseYear = (((this.releaseDate ?: "")).toLocalDate()),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "https://image.tmdb.org/t/p/w500${this.posterPath.orEmpty()}"
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
+
+fun MovieDetailsDto.toDomain(): MovieDetails {
+    return MovieDetails(
+        id = this.id?.toLong() ?: 0L,
+        title = this.title.orEmpty(),
+        overview = this.overview.orEmpty(),
+        posterUrl = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        backdropUrl = "$BACKDROP_PREFIX${this.backdropPath.orEmpty()}",
+        releaseDate = this.releaseDate.orEmpty(),
+        rating = this.voteAverage ?: 0.0,
+        runtime = this.runtime ?: 0,
+        genres = this.genres?.map { it.toEntity() } ?: emptyList()
+    )
+}
+
+fun Genre.toEntity() = GenreEntity(
+    id = this.id ?: 0,
+    name = this.name.orEmpty()
+)
+
 const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
+const val BACKDROP_PREFIX = "https://image.tmdb.org/t/p/original"

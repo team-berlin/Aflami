@@ -3,7 +3,8 @@ package com.berlin.aflami.navigation.routes
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.berlin.aflami.screens.mediadetails.MediaDetailsScreen
+import com.berlin.aflami.screens.mediadetails.screen.MediaDetailsScreen
+import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.example.navigation.Destination.MediaDetailsScreen
 
 
@@ -12,6 +13,9 @@ fun NavGraphBuilder.mediaDetailsRoute(
 ) {
     composable(route = MediaDetailsScreen.route) {
         MediaDetailsScreen(
-            navController = navController)
+            navController = navController,
+            mediaId = 505,
+            mediaType = MediaType.MOVIE
+        )
     }
 }

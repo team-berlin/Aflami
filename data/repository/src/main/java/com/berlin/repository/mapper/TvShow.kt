@@ -1,7 +1,11 @@
 package com.berlin.repository.mapper
 
+import com.berlin.entity.SeasonEntity
 import com.berlin.entity.TVShow
+import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.remote.dto.Season
+import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.util.toLocalDate
 
@@ -20,6 +24,16 @@ fun TVShowDto.toLocal(query: String, time: Long, type: String): SearchingEntity 
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
+fun TVShowDto.toTVShow(): TVShow {
+    return TVShow(
+        id = this.id?.toLong() ?: 0L,
+        title = this.name ?: "",
+        rating = this.voteAverage ?: 0.0,
+        releaseYear = (this.firstAirDate ?: "").toLocalDate(),
+        genre = this.genreIds?.filterNotNull() ?: emptyList(),
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+    )
+}
 fun SearchingEntity.toTVShow(): TVShow {
     return TVShow(
         id = this.id,
@@ -30,3 +44,29 @@ fun SearchingEntity.toTVShow(): TVShow {
         poster = this.poster,
     )
 }
+
+fun TVShowDetailsDto.toDomain(): TvShowDetails {
+    return TvShowDetails(
+        id = this.id?.toLong() ?: 0L,
+        title = this.name.orEmpty(),
+        overview = this.overview.orEmpty(),
+        posterUrl = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        backdropUrl = "$BACKDROP_PREFIX${this.backdropPath.orEmpty()}",
+        releaseDate = this.firstAirDate.orEmpty(),
+        rating = this.voteAverage ?: 0.0,
+        runtime = this.episodeRunTime?.firstOrNull() ?: 0,
+        genres = this.genres?.map { it.toEntity() } ?: emptyList(),
+        seasons = this.seasons?.map { it.toEntity() } ?: emptyList()
+        )
+}
+
+fun Season.toEntity() = SeasonEntity(
+    airDate = airDate,
+    episodeCount = episodeCount,
+    id = id,
+    name = name,
+    overview = overview,
+    posterUrl = posterPath,
+    seasonNumber = seasonNumber,
+    voteAverage = voteAverage
+)
