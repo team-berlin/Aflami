@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.review
+package com.berlin.aflami.viewmodel.uistate
 
 data class ReviewUiState(
     val id: String = "",

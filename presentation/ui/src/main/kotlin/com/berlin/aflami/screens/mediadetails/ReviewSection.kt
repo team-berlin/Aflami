@@ -15,7 +15,7 @@ import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.review.ReviewState
+import com.berlin.aflami.viewmodel.uistate.ReviewState
 
 @Composable
 fun ReviewSection(

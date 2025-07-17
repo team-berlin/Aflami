@@ -23,7 +23,7 @@ import coil3.compose.AsyncImage
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.screens.search.components.ExpandableText
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.review.ReviewUiState
+import com.berlin.aflami.viewmodel.uistate.ReviewUiState
 
 @Composable
 fun ReviewItem(

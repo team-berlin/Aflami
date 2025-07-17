@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.review
+package com.berlin.aflami.viewmodel.uistate
 
 sealed class ReviewState {
     sealed class Reviewing : ReviewState() {
