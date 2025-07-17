@@ -19,6 +19,8 @@ object ApiConstants  {
 
     const val ACTOR_NAME = "query"
 
+    const val PAGE = "page"
+
 
 
 }
