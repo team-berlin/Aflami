@@ -1,24 +1,16 @@
-package com.berlin.aflami.screens.search.mediadetails
+package com.berlin.aflami.screens.mediadetails.screen
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisScreen
 import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
-import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
 import com.berlin.aflami.viewmodel.mediadetails.SimilarMediaUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
@@ -50,6 +42,7 @@ fun MediaDetailsContent(
 
     Column(
         modifier = Modifier) {
+        //i will delete it after merge
         Button(
             onClick = {
                 viewModel.onShowMoreMediaLikeThisClicked(mediaId, mediaType)
@@ -81,16 +74,3 @@ fun MediaDetailsContent(
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun MediaDetailsContentPreview() {
-//    AflamiTheme {
-//        MediaDetailsContent(
-//            navController = rememberNavController(),
-//            viewModel = viewModel(),
-//            mediaId = 1L,
-//            mediaType = MediaType.MOVIE
-//        )
-//    }
-//}

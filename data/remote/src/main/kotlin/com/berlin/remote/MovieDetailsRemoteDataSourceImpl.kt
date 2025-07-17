@@ -11,6 +11,6 @@ class MovieDetailsRemoteDataSourceImpl(
 ) : MovieDetailsRemoteDataSource {
     override suspend fun getMovieSimilar(movieId: Long): MovieResponse {
         return client.get(ApiConstants.MOVIE_MORE_LIKE_THIS
-            .replace("{movie_id}", movieId.toString())).body()
+            .replace(ApiConstants.MOVIE_ID, movieId.toString())).body()
     }
 }

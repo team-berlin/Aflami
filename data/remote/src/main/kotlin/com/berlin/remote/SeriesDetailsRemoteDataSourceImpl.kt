@@ -11,6 +11,6 @@ class SeriesDetailsRemoteDataSourceImpl(
 ) : SeriesDetailsRemoteDataSource {
     override suspend fun getSeriesSimilar(seriesId: Long): TVShowResponse {
         return client.get(ApiConstants.SERIES_MORE_LIKE_THIS
-            .replace("{series_id}", seriesId.toString())).body()
+            .replace(ApiConstants.SERIES_ID, seriesId.toString())).body()
     }
 }
