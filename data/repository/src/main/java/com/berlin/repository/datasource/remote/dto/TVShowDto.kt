@@ -24,9 +24,6 @@ data class TVShowDto(
     @SerialName("vote_average")
     val voteAverage: Double? = null,
 
-    @SerialName("seasons")
-    val seasons: List<Season?>? = null,
-
-    @SerialName("episode")
-    val lastEpisodeToAir: Episode? = null,
+    @SerialName("number_of_seasons")
+    val EpisodeDto: Int? = 0,
 )

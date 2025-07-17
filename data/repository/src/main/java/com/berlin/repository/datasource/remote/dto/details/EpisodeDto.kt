@@ -1,17 +1,15 @@
-package com.berlin.repository.datasource.remote.dto
+package com.berlin.repository.datasource.remote.dto.details
 
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Episode(
+data class EpisodeDto(
     @SerialName("air_date")
     val airDate: String? = null,
     @SerialName("episode_number")
     val episodeNumber: Int? = null,
-    @SerialName("episode_type")
-    val episodeType: String? = null,
     @SerialName("id")
     val id: Int? = null,
     @SerialName("name")
@@ -32,4 +30,9 @@ data class Episode(
     val voteAverage: Double? = null,
     @SerialName("vote_count")
     val voteCount: Int? = null
+)
+@Serializable
+data class EpisodeResponse(
+    @SerialName("results")
+    val results: List<EpisodeDto?>? = null,
 )
