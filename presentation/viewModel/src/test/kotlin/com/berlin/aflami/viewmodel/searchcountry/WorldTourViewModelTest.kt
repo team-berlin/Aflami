@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.searchworldtour
+package com.berlin.aflami.viewmodel.searchcountry
 
 import android.util.Log
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
@@ -23,7 +23,7 @@ import usecase.SearchByCountryUseCase
 
 class WorldTourViewModelTest {
 
-    private lateinit var viewModel: WorldTourViewModel
+    private lateinit var viewModel: SearchByCountryViewModel
     private lateinit var searchByCountryUseCase: SearchByCountryUseCase
     private val testDispatcher = StandardTestDispatcher()
 
@@ -38,7 +38,7 @@ class WorldTourViewModelTest {
         every { Log.e(any(), any()) } returns 0
 
         searchByCountryUseCase = mockk()
-        viewModel = WorldTourViewModel(searchByCountryUseCase)
+        viewModel = SearchByCountryViewModel(searchByCountryUseCase)
     }
 
     @AfterEach
