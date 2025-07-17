@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,13 +26,13 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.uistate.EpisodeUi
-import com.berlin.aflami.viewmodel.uistate.SeasonUi
+import com.berlin.aflami.viewmodel.uistate.SeasonUiState
 import com.berlin.designsystem.R
 
 
 @Composable
 fun SeasonsScreen(
-    seasons: List<SeasonUi>,
+    seasons: List<SeasonUiState>,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -142,7 +141,7 @@ fun SeasonsScreenPreview() {
     }
 }
 val sampleSeasons = listOf(
-    SeasonUi(
+    SeasonUiState(
         seasonNumber = "1",
         episodes = listOf(
             EpisodeUi(
@@ -167,7 +166,7 @@ val sampleSeasons = listOf(
             )
         )
     ),
-    SeasonUi(
+    SeasonUiState(
         seasonNumber = "2",
         episodes = listOf(
             EpisodeUi(
@@ -192,7 +191,7 @@ val sampleSeasons = listOf(
             )
         )
     ),
-    SeasonUi(
+    SeasonUiState(
         seasonNumber = "3",
         episodes = listOf(
             EpisodeUi(

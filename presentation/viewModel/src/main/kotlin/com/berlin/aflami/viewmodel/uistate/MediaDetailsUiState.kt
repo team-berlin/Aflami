@@ -23,19 +23,21 @@ data class MediaDetailsScreenUiState(
     val isFavorite: Boolean = false,
 )
 
-data class SeasonState(
-    val id: Long = 0L,
-    val numberOfEpisodes: Int = 0,
-    val seasonTitle: String = "",
-    val episodeTitle: String= "",
-    val episodeDuration: Int = 0,
-    val airDate: String = "",
-    val episodeDescription: String = "",
-    val poster: String = "",
-    val rate: Float = 0f,
-    val seasonNumber: Int = 0,
+data class EpisodeUi(
+    val id: Int,
+    val episodeNumber: Int,
+    val title: String,
+    val description: String,
+    val imageUrl: String,
+    val time: String,
+    val date: String,
+    val rating: String,
     val isPlaying: Boolean = false,
     val isExpanded: Boolean = false,
+)
+data class SeasonUiState(
+    val seasonNumber: String,
+    val episodes: List<EpisodeUi>
 )
 
 data class MediaOptions(
