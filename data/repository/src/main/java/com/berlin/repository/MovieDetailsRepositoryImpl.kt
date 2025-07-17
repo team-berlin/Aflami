@@ -4,7 +4,6 @@ import com.berlin.entity.MovieDetails
 import com.berlin.repository.datasource.remote.MovieDetailsRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import exceptions.AflamiExceptions
-import com.berlin.repository.datasource.remote.MovieDetailsRemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import repository.MovieDetailsRepository
 
@@ -14,7 +13,7 @@ class MovieDetailsRepositoryImpl(
 
     override suspend fun getMovieImages(movieId: Long): List<String> {
         return try {
-            movieDetailsRemoteDataSource
+            remoteDataSource
                 .getMovieImages(movieId)
                 .posters
                 ?.map { POSTER_PREFIX + it.filePath }

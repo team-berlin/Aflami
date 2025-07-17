@@ -15,15 +15,15 @@ class MovieDetailsRemoteDataSourceImpl(
 
     override suspend fun getMovieImages(movieId: Long): MediaImagesResponse {
         Log.d("Khairy", "getMovieImages from remote data source...")
-        return ktorClient.get(
+        return client.get(
             ApiConstants.MOVIE_IMAGES
                 .replace("id", "$movieId")
         ) {}.body<MediaImagesResponse>()
-
-    override suspend fun getMovieDetails(id: Long, language: String): MovieDetailsDto {
-        return client.get("movie/$id"){
-            parameter(ApiConstants.LANGUAGE, language)
-        }.body()
     }
-}
+
+        override suspend fun getMovieDetails(id: Long, language: String): MovieDetailsDto {
+            return client.get("movie/$id") {
+                parameter(ApiConstants.LANGUAGE, language)
+            }.body()
+        }
 }

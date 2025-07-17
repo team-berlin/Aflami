@@ -10,16 +10,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import repository.MovieDetailsRepository
 import repository.TvShowDetailsRepository
-
-class MediaDetailsViewmodel(
-    private val movieRepo: MovieDetailsRepository,
-    private val tvShowRepo: TvShowDetailsRepository
-) : ViewModel(), MediaInteractionListener {
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import usecase.GetMovieGalleryUseCase
 
 class MediaDetailsViewmodel(
+    private val movieRepo: MovieDetailsRepository,
+    private val tvShowRepo: TvShowDetailsRepository,
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
     private val getSerGalleryUseCase: GetMovieGalleryUseCase,
 ) : ViewModel(), MediaInteractionListener {

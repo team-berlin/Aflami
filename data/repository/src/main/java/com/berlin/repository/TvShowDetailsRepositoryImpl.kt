@@ -2,6 +2,7 @@ package com.berlin.repository
 
 import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.remote.TvShowDetailsRemoteDataSource
+import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
 import exceptions.AflamiExceptions
 import repository.TvShowDetailsRepository
@@ -14,6 +15,18 @@ class TvShowDetailsRepositoryImpl(
             remoteDataSource.getTvShowDetails(id, language).toDomain()
         } catch (exception: AflamiExceptions) {
             throw exception
+        }
+    }
+
+    override suspend fun getSeriesImages(id: Long): List<String> {
+        return try {
+            remoteDataSource
+                .getSeriesImages(id = id)
+                .posters
+                ?.map { POSTER_PREFIX + it.filePath }
+                ?: throw Exception()
+        } catch (e: Exception) {
+            throw e
         }
     }
 }
