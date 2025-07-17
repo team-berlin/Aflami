@@ -78,4 +78,9 @@
     <string name="animation">انمي</string>
     <string name="filter_result">فرز النتائج</string>
 
+    <string name="more_like_this">اقتراحات مشابهة</string>
+    <string name="reviews">تقييمات</string>
+    <string name="gallery">المعرض</string>
+    <string name="company_production">إنتاج الشركة</string>
+
 </resources>

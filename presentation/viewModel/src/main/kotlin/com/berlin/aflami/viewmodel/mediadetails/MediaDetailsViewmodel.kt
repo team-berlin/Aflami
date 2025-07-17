@@ -1,11 +1,16 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.review.ReviewState
+import com.berlin.aflami.viewmodel.review.ReviewUiState
+import com.berlin.aflami.viewmodel.review.toUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.uistate.MediaType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +22,9 @@ import repository.MovieDetailsRepository
 import repository.TvShowDetailsRepository
 import usecase.GetMovieCastUseCase
 import usecase.GetMovieGalleryUseCase
+import usecase.GetMovieReviewUseCase
 import usecase.GetSeriesCastUseCase
+import usecase.GetSeriesReviewUseCase
 import usecase.GetSimilarMoviesUseCase
 import usecase.GetSimilarSeriesUseCase
 
@@ -29,7 +36,9 @@ class MediaDetailsViewmodel(
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
     private val getSerGalleryUseCase: GetMovieGalleryUseCase,
     private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
-    private val getSimilarTVShowsUseCase: GetSimilarSeriesUseCase
+    private val getSimilarTVShowsUseCase: GetSimilarSeriesUseCase,
+    private val movieReviewUseCase: GetMovieReviewUseCase,
+    private val seriesReviewUseCase: GetSeriesReviewUseCase
 ) : ViewModel(), MediaInteractionListener {
 
     private val _uiState = MutableStateFlow(MediaDetailsUiState())
@@ -68,6 +77,84 @@ class MediaDetailsViewmodel(
         }
     }
 
+    private val _reviewsUiState = MutableStateFlow<ReviewState>(ReviewState.Reviewing.Loading)
+    val reviewsUiState = _reviewsUiState.asStateFlow()
+
+    private val _tabSelectedUiState = MutableStateFlow(MovieDetailsTabsUiState())
+    val tabSelectedUiState = _tabSelectedUiState.asStateFlow()
+
+    private val _expandedUiStates = mutableStateMapOf<Long, Boolean>()
+
+    fun getReviews(id: Long, mediaType:MediaType) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _reviewsUiState.update { ReviewState.Reviewing.Loading }
+
+            try {
+                val result = when (mediaType) {
+                    MediaType.MOVIE -> movieReviewUseCase(id).map { it.toUiState() }
+                    MediaType.TV_SHOW -> seriesReviewUseCase(id).map { it.toUiState() }
+                }
+
+                if (result.isEmpty()) {
+                    _reviewsUiState.update { ReviewState.NoReviewFound }
+                } else {
+                    onReviewSuccess(result)
+                }
+
+            } catch (error: Exception) {
+                onReviewError(error.message ?: "Unknown error")
+            }
+        }
+    }
+
+    private fun onReviewSuccess(reviews: List<ReviewUiState>) {
+        _reviewsUiState.update {
+            ReviewState.Reviewing.Success(reviews)
+        }
+    }
+
+    private fun onReviewError(error: String) {
+        _reviewsUiState.update { ReviewState.Reviewing.Error(error) }
+    }
+
+    fun isDescriptionExpanded(id: Long): Boolean {
+        return _expandedUiStates[id] ?: false
+    }
+
+
+    fun toggleMovieDetailsTab(
+        tab: MovieDetailsTabs,
+        mediaId: Long,
+        mediaType:MediaType
+    ) {
+        viewModelScope.launch {
+            _tabSelectedUiState.update { current ->
+                val newSelectedTab = if (current.tab == tab) {
+                    MovieDetailsTabs.REVIEWS
+                } else {
+                    tab
+                }
+
+                when (newSelectedTab) {
+                    MovieDetailsTabs.MORE_LIKE_THIS -> TODO()
+                    MovieDetailsTabs.REVIEWS -> getReviews(
+                        id = mediaId,
+                        mediaType = mediaType
+                    )
+
+                    MovieDetailsTabs.GALLERY -> TODO()
+                    MovieDetailsTabs.COMPANY_PRODUCTION -> TODO()
+                }
+
+                MovieDetailsTabsUiState(
+                    tab = newSelectedTab,
+                    isSelected = true
+                )
+            }
+        }
+    }
+
     override fun onBackClicked() {
         TODO("Not yet implemented")
     }
@@ -79,7 +166,6 @@ class MediaDetailsViewmodel(
     override fun onReadMoreDescriptionClicked(id: Long) {
         _uiState.value = _uiState.value.copy(isOverviewExpanded = true)
     }
-
     override fun onShowCastClicked() {
         viewModelScope.launch {
             _uiEffect.emit(MediaDetailsScreenEffect.NavigateToShowAllCastScreen)

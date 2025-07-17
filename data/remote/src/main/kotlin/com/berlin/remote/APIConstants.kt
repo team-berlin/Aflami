@@ -12,6 +12,10 @@ object ApiConstants  {
 
     const val SEARCH_TV = "search/tv"
 
+    const val  SERIES_REVIEW = "tv/{series_id}/reviews"
+    const val  MOVIE_REVIEW = "movie/{movie_id}/reviews"
+
+
     // parameters
     const val LANGUAGE = "language"
     const val WITH_ORIGIN_COUNTRY = "with_origin_country"
