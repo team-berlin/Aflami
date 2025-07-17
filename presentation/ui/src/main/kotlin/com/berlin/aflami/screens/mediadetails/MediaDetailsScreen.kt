@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -112,6 +113,7 @@ fun MediaDetailsContent(
                 )
 
             DefaultBar(
+                modifier = Modifier.statusBarsPadding(),
                 firstOption = painterResource(R.drawable.ic_rounded_star),
                 lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             )
