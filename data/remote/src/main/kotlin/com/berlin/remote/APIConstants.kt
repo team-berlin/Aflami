@@ -24,4 +24,9 @@ object ApiConstants  {
     const val MOVIE_ID = "{movie_id}"
     const val SERIES_ID="{series_id}"
 
+    const val MOVIE_IMAGES = "movie/id/images"
+    const val SERIES_IMAGES = "tv/id/images"
+
+    const val SERIES_CAST="tv/{series_id}/credits"
+    const val MOVIE_CAST="movie/{movie_id}/credits"
 }
