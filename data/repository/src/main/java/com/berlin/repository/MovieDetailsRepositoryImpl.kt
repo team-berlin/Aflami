@@ -18,9 +18,7 @@ class MovieDetailsRepositoryImpl(
             language
         ).cast?.mapNotNull { castItemDto ->
             castItemDto?.toDomain()
-        }.also {
-            Log.e("Domain cast response", "$it")
-        } ?: emptyList()
+        }?: emptyList()
     }
 
     override suspend fun getMovieImages(movieId: Long): List<String> {

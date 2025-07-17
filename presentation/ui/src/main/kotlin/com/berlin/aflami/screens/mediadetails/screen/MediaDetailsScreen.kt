@@ -45,7 +45,7 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
-import com.berlin.aflami.screens.mediadetails.components.MediaCast
+import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
@@ -356,7 +356,7 @@ fun Cast(
                     horizontalArrangement = Arrangement.spacedBy(spaceBetween)
                 ) {
                     castState.take(maxCardsInRow).forEach {
-                        MediaCast(
+                        MediaCastItem(
                             modifier = Modifier.size(cardSize),
                             name = it.name,
                             poster = it.poster

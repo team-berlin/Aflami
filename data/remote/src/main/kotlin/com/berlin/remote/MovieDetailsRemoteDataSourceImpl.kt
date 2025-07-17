@@ -16,12 +16,9 @@ class MovieDetailsRemoteDataSourceImpl(
     override suspend fun getMovieCastDetails(movieId: Long, language: String): MediaCastResponse {
         return client.get(ApiConstants.MOVIE_CAST.replace("{movie_id}", movieId.toString())) {
             parameter("language", language)
-        }.body<MediaCastResponse>().also {
-            Log.e("Remote cast response", "${it.cast}")
-        }
+        }.body<MediaCastResponse>()
     }
     override suspend fun getMovieImages(movieId: Long): MediaImagesResponse {
-        Log.d("Khairy", "getMovieImages from remote data source...")
         return client.get(
             ApiConstants.MOVIE_IMAGES
                 .replace("id", "$movieId")

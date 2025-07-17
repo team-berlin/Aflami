@@ -27,7 +27,7 @@ fun MoviesCastGrid(
         items(
             items = mediaCast,
         ) { cast ->
-            MediaCast(
+            MediaCastItem(
                 modifier = Modifier.size(104.dp),
                 name = cast.name,
                 poster = cast.poster,

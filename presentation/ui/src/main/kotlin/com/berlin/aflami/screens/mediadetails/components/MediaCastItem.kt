@@ -19,7 +19,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 
 @Composable
-fun MediaCast(
+fun MediaCastItem(
     modifier: Modifier = Modifier,
     name: String,
     poster: String,
@@ -53,7 +53,7 @@ fun MediaCast(
 @Preview(showBackground = true)
 @Composable
 private fun MediaCastPreview() {
-    MediaCast(
+    MediaCastItem(
         name = "Tom Hanks",
         poster = "https://i.pinimg.com/736x/2d/4c/77/2d4c7718ccdf3d714654dbd3d66da00f.jpg",
 
