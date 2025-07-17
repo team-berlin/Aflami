@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.screen
+package com.berlin.aflami.screens.search.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

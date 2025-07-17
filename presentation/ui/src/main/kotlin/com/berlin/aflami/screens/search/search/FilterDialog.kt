@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.screen
+package com.berlin.aflami.screens.search.search
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
@@ -41,7 +41,7 @@ import androidx.compose.ui.window.Dialog
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.SearchViewModel
-import com.berlin.aflami.viewmodel.search_actor.GenreType
+import com.berlin.aflami.viewmodel.search.GenreType
 import com.berlin.designsystem.R
 
 @Composable

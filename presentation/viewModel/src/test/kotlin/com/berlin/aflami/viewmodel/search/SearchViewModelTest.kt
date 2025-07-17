@@ -2,7 +2,6 @@ package com.berlin.aflami.viewmodel.search
 
 
 import android.util.Log
-import com.berlin.aflami.viewmodel.search_actor.GenreType
 import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow

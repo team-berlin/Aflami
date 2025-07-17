@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.search_by_actor
 
 import android.util.Log
-import com.berlin.aflami.viewmodel.search_actor.SearchByActorViewModel
+import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.every
