@@ -11,7 +11,7 @@ data class MovieDetailsDto(
     @SerialName("backdrop_path")
     val backdropPath: String?,
     @SerialName("belongs_to_collection")
-    val belongsToCollection: String?,
+    val belongsToCollection: Collection?,
     @SerialName("budget")
     val budget: Int?,
     @SerialName("genres")

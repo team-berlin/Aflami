@@ -4,6 +4,15 @@ import androidx.compose.ui.graphics.painter.Painter
 
 enum class MediaType { MOVIE, TV_SHOW }
 
+data class MediaUiState(
+    val id: Long = 0L,
+    val title: String = "",
+    val rating: String = "",
+    val releaseYear: String = "",
+    val genre: List<Int> = emptyList(),
+    val poster: String = ""
+)
+
 data class MediaScreenState(
     val id: Long = 0L,
     val poster: String = "",

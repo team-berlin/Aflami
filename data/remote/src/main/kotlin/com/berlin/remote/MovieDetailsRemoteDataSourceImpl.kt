@@ -10,7 +10,7 @@ import io.ktor.client.request.parameter
 class MovieDetailsRemoteDataSourceImpl(
     private val client: HttpClient
 ) : MovieDetailsRemoteDataSource {
-    override suspend fun getMovieDetails(id: Int, language: String): MovieDetailsDto {
+    override suspend fun getMovieDetails(id: Long, language: String): MovieDetailsDto {
         return client.get("movie/$id"){
             parameter(ApiConstants.LANGUAGE, language)
         }.body()

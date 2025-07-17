@@ -6,10 +6,10 @@ import com.berlin.repository.TvShowDetailsRepositoryImpl
 import org.koin.dsl.module
 import repository.MovieDetailsRepository
 import repository.SearchRepository
-import repository.SeriesDetailsRepository
+import repository.TvShowDetailsRepository
 
 val repositoryModule = module {
     single<SearchRepository> { SearchRepositoryImpl(get(), get()) }
     single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get()) }
-    single<SeriesDetailsRepository> { TvShowDetailsRepositoryImpl(get()) }
+    single<TvShowDetailsRepository> { TvShowDetailsRepositoryImpl(get()) }
 }

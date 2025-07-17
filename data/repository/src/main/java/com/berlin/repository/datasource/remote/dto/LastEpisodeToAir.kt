@@ -29,7 +29,7 @@ data class LastEpisodeToAir(
     @SerialName("still_path")
     val stillPath: String?,
     @SerialName("vote_average")
-    val voteAverage: Int?,
+    val voteAverage: Float?,
     @SerialName("vote_count")
     val voteCount: Int?
 )

@@ -1,33 +1,30 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.berlin.aflami.viewmodel.mapper.toUiModel
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.aflami.viewmodel.uistate.MediaScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import repository.MovieDetailsRepository
-import repository.SeriesDetailsRepository
+import repository.TvShowDetailsRepository
 
 class MediaDetailsViewmodel(
     private val movieRepo: MovieDetailsRepository,
-    private val tvShowRepo: SeriesDetailsRepository
+    private val tvShowRepo: TvShowDetailsRepository
 ) : ViewModel(), MediaInteractionListener {
 
     private val _uiState = MutableStateFlow(MediaScreenState(mediaType = MediaType.MOVIE)) // placeholder, set appropriately!
     val uiState: StateFlow<MediaScreenState> = _uiState
 
-    fun loadMediaDetails(id: Long, mediaType: MediaType) {
-        viewModelScope.launch {
-            val detailsUiState = when (mediaType) {
-                MediaType.MOVIE -> movieRepo.getMovieDetails(id)?.toUiModel()
-                MediaType.TV_SHOW -> tvShowRepo.getSeriesDetails(id)?.toUiModel()
-            }
-            detailsUiState ?.let { _uiState.value = it }
-        }
-    }
+//    fun loadMediaDetails(id: Long, mediaType: MediaType) {
+//        viewModelScope.launch {
+//            val detailsUiState = when (mediaType) {
+//                MediaType.MOVIE -> movieRepo.getMovieDetails(id,"en-US")?.toUiModel()
+//                MediaType.TV_SHOW -> tvShowRepo.getSeriesDetails(id,"en-US")?.toUiModel()
+//            }
+//            detailsUiState ?.let { _uiState.value = it }
+//        }
+//    }
 
     override fun onBackClicked() {
         TODO("Not yet implemented")
