@@ -32,18 +32,10 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.uistate.EpisodeUi
 import com.berlin.designsystem.R
 
-data class EpisodeUi(
-    val id: Int,
-    val episodeNumber: Int,
-    val title: String,
-    val description: String,
-    val imageUrl: String,
-    val time: String,
-    val date: String,
-    val rating: String,
-)
+
 
 @Composable
 fun EpisodeCard(
