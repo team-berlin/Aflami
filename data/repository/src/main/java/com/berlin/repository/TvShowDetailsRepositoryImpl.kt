@@ -24,7 +24,7 @@ class TvShowDetailsRepositoryImpl(
     override suspend fun getSeriesImages(id: Long): List<String> {
         return try {
             remoteDataSource
-                .getSeriesImages(id = id)
+                .getSeriesImages(seriesId = id)
                 .posters
                 ?.map { POSTER_PREFIX + it.filePath }
                 ?: throw Exception()
