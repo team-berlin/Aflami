@@ -84,7 +84,7 @@ private fun SearchByCountryContent(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(Theme.color.surfaceHigh)
-                        .clickable { listener::onBackClicked }
+                        .clickable { listener.onBackClicked() }
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
