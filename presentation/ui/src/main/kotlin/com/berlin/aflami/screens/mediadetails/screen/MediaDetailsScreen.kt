@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,15 +43,19 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import com.berlin.aflami.component.Chips
 import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
+import com.berlin.aflami.screens.mediadetails.ReviewSection
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
 import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
+import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
+import com.berlin.aflami.viewmodel.review.ReviewState
 import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
@@ -67,6 +73,8 @@ fun MediaDetailsScreen(
     val uiState by viewModel.uiState.collectAsState()
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val review by viewModel.reviewsUiState.collectAsState()
+    val tabSelected by viewModel.tabSelectedUiState.collectAsState()
 
     LaunchedEffect(mediaId, mediaType) {
         viewModel.loadMediaDetails(mediaId, mediaType)
@@ -98,6 +106,17 @@ fun MediaDetailsScreen(
             onPlay = { viewModel.onPlayClicked(uiState.id) },
             onReadMore = { viewModel.onReadMoreDescriptionClicked(uiState.id) },
             listener= viewModel,
+            reviewState = review,
+            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(id = 550) },
+            isExpanded = viewModel.isDescriptionExpanded(id = 550),
+            isSelectedTab = tabSelected.tab,
+            onChipClick = { tab ->
+                viewModel.toggleMovieDetailsTab(
+                    tab = tab,
+                    mediaId = 550,
+                    mediaType =MediaType.MOVIE
+                )
+            }
         )
     }
 }
@@ -110,7 +129,12 @@ fun MediaDetailsContent(
     onAdd: () -> Unit = {},
     onPlay: () -> Unit = {},
     onReadMore: () -> Unit = {},
-    listener: MediaInteractionListener
+    listener: MediaInteractionListener,
+    reviewState: ReviewState,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
+    isSelectedTab: MovieDetailsTabs,
+    onChipClick: (MovieDetailsTabs) -> Unit
 
     ) {
     Column(
@@ -249,6 +273,29 @@ fun MediaDetailsContent(
             castState = state.mediaCast,
             listener = listener
         )
+        LazyRow(
+            modifier = Modifier
+                .height(96.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(MovieDetailsTabs.entries) { tab ->
+                Chips(
+                    title = stringResource(movieDetailsTabsMapper(tab)),
+                    icon = painterResource(getMovieDetailsTabsIcon(tab)),
+                    isSelected = tab == isSelectedTab,
+                    onClick = { onChipClick(tab) }
+                )
+            }
+        }
+
+        if (isSelectedTab == MovieDetailsTabs.REVIEWS) {
+            ReviewSection(
+                reviewState = reviewState,
+                isExpanded = isExpanded,
+                onToggleExpand = onToggleExpand
+            )
+        }
     }
 
 
@@ -392,25 +439,21 @@ fun MediaGallery(modifier: Modifier = Modifier, mediaImages: List<String>) {
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewMediaDetailsScreen() {
-//    MediaDetailsContent(
-//        state = MediaDetailsUiState(
-//            id = 1L,
-//            title = "The Green Mile",
-//            overview = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile,the death row section of Cold Mountain Penitentiary, alongside officers Brutus Howell, Dean Stanton, Harry Terwilliger, and the sadistic\nIn 1935, corrections officer Paul Edgecomb oversees The Green Mile,the death row section of Cold Mountain Penitentiary, alongside officers Brutus Howell, Dean Stanton, Harry Terwilliger, and the sadistic",
-//            mediaType = MediaType.MOVIE,
-//            rating = 9.7,
-//            releaseYear = "10-09-2016",
-//            genres = listOf("comedy", "drama", "action"),
-//            posterUrl = "",
-//            backdropUrl = "https://image.tmdb.org/t/p/w780/6A2w0neIqdFJAaXe2wv5hE1GUOa.jpg",
-//            mediaDuration = "1h 34m",
-//            country = "US",
-//            isFavorite = true,
-//            isOverviewExpanded = false
-//        )
-//        ,
-//    )
-//}
+
+private fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
+    return when (tab) {
+        MovieDetailsTabs.MORE_LIKE_THIS -> R.string.more_like_this
+        MovieDetailsTabs.REVIEWS -> R.string.reviews
+        MovieDetailsTabs.GALLERY -> R.string.gallery
+        MovieDetailsTabs.COMPANY_PRODUCTION -> R.string.company_production
+    }
+}
+
+private fun getMovieDetailsTabsIcon(tab: MovieDetailsTabs): Int {
+    return when (tab) {
+        MovieDetailsTabs.MORE_LIKE_THIS -> com.berlin.ui.R.drawable.camera_video
+        MovieDetailsTabs.REVIEWS -> R.drawable.star
+        MovieDetailsTabs.GALLERY -> com.berlin.ui.R.drawable.album
+        MovieDetailsTabs.COMPANY_PRODUCTION -> com.berlin.ui.R.drawable.city
+    }
+}

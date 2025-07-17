@@ -20,6 +20,7 @@ class MovieDetailsRemoteDataSourceImpl(
             parameter("language", language)
         }.body<MediaCastResponse>()
     }
+
     override suspend fun getMovieImages(movieId: Long): MediaImagesResponse {
         return client.get(
             ApiConstants.MOVIE_IMAGES
@@ -32,12 +33,18 @@ class MovieDetailsRemoteDataSourceImpl(
             parameter(ApiConstants.LANGUAGE, language)
         }.body()
     }
+
     override suspend fun getMovieSimilar(movieId: Long): MovieResponse {
-        return client.get(ApiConstants.MOVIE_MORE_LIKE_THIS
-            .replace(ApiConstants.MOVIE_ID, movieId.toString())).body()
+        return client.get(
+            ApiConstants.MOVIE_MORE_LIKE_THIS
+                .replace(ApiConstants.MOVIE_ID, movieId.toString())
+        ).body()
     }
 
     override suspend fun getReviews(id: Long): ReviewResponse {
-        return client.get(ApiConstants.MOVIE_REVIEW
-            .replace("{movie_id}", id.toString())).body()    }
+        return client.get(
+            ApiConstants.MOVIE_REVIEW
+                .replace("{movie_id}", id.toString())
+        ).body()
+    }
 }

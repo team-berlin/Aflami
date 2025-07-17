@@ -1,11 +1,16 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.review.ReviewState
+import com.berlin.aflami.viewmodel.review.ReviewUiState
+import com.berlin.aflami.viewmodel.review.toUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.uistate.MediaType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +36,7 @@ class MediaDetailsViewmodel(
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
     private val getSerGalleryUseCase: GetMovieGalleryUseCase,
     private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
-    private val getSimilarTVShowsUseCase: GetSimilarSeriesUseCase
+    private val getSimilarTVShowsUseCase: GetSimilarSeriesUseCase,
     private val movieReviewUseCase: GetMovieReviewUseCase,
     private val seriesReviewUseCase: GetSeriesReviewUseCase
 ) : ViewModel(), MediaInteractionListener {
@@ -72,7 +77,6 @@ class MediaDetailsViewmodel(
         }
     }
 
-    // val args: MediaDetailsArgs = MediaDetailsArgs(savedStateHandle)
     private val _reviewsUiState = MutableStateFlow<ReviewState>(ReviewState.Reviewing.Loading)
     val reviewsUiState = _reviewsUiState.asStateFlow()
 
@@ -81,7 +85,7 @@ class MediaDetailsViewmodel(
 
     private val _expandedUiStates = mutableStateMapOf<Long, Boolean>()
 
-    fun getReviews(id: Long, mediaType: MediaType) {
+    fun getReviews(id: Long, mediaType:MediaType) {
 
         viewModelScope.launch(Dispatchers.IO) {
             _reviewsUiState.update { ReviewState.Reviewing.Loading }
@@ -89,7 +93,7 @@ class MediaDetailsViewmodel(
             try {
                 val result = when (mediaType) {
                     MediaType.MOVIE -> movieReviewUseCase(id).map { it.toUiState() }
-                    MediaType.SERIES -> seriesReviewUseCase(id).map { it.toUiState() }
+                    MediaType.TV_SHOW -> seriesReviewUseCase(id).map { it.toUiState() }
                 }
 
                 if (result.isEmpty()) {
@@ -118,14 +122,11 @@ class MediaDetailsViewmodel(
         return _expandedUiStates[id] ?: false
     }
 
-    override fun onReadMoreDescriptionClicked(id: Long) {
-        _expandedUiStates[id] = !(_expandedUiStates[id] ?: false)
-    }
 
     fun toggleMovieDetailsTab(
         tab: MovieDetailsTabs,
         mediaId: Long,
-        mediaType: MediaType
+        mediaType:MediaType
     ) {
         viewModelScope.launch {
             _tabSelectedUiState.update { current ->
@@ -165,7 +166,6 @@ class MediaDetailsViewmodel(
     override fun onReadMoreDescriptionClicked(id: Long) {
         _uiState.value = _uiState.value.copy(isOverviewExpanded = true)
     }
-
     override fun onShowCastClicked() {
         viewModelScope.launch {
             _uiEffect.emit(MediaDetailsScreenEffect.NavigateToShowAllCastScreen)
@@ -280,8 +280,5 @@ class MediaDetailsViewmodel(
                 )
             }
         }
-    }
-    enum class MediaType {
-        MOVIE, SERIES
     }
 }

@@ -3,6 +3,7 @@ package com.berlin.remote
 import com.berlin.repository.datasource.remote.TvShowDetailsRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.MediaCastResponse
 import com.berlin.repository.datasource.remote.dto.MediaImagesResponse
+import com.berlin.repository.datasource.remote.dto.ReviewResponse
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowResponse
 import io.ktor.client.HttpClient
@@ -35,5 +36,9 @@ class TvShowDetailsRemoteDataSourceImpl(
     override suspend fun getSeriesSimilar(seriesId: Long): TVShowResponse {
         return client.get(ApiConstants.SERIES_MORE_LIKE_THIS
             .replace(ApiConstants.SERIES_ID, seriesId.toString())).body()
+    }
+    override suspend fun getReviews(id: Long): ReviewResponse {
+        return client.get(ApiConstants.SERIES_REVIEW
+            .replace("{series_id}", id.toString())).body()
     }
 }

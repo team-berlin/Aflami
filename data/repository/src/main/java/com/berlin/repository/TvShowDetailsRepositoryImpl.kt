@@ -1,6 +1,7 @@
 package com.berlin.repository
 
 import com.berlin.entity.MediaCast
+import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.remote.TvShowDetailsRemoteDataSource
@@ -45,5 +46,11 @@ class TvShowDetailsRepositoryImpl(
         return remoteDataSource.getSeriesSimilar(seriesId).results?.mapNotNull { tvShowDto ->
             tvShowDto?.toTVShow()
         } ?: emptyList()
+    }
+    override suspend fun getReviews(id: Long): List<Review> {
+        return remoteDataSource.getReviews(id).results
+            ?.filterNotNull()
+            ?.map {  reviewDto -> reviewDto.toDomain() }
+            ?: emptyList()
     }
 }
