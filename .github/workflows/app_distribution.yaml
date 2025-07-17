@@ -60,7 +60,7 @@ jobs:
 
       - name: Rename output with version
         run: |
-          mv app/build/outputs/bundle/release/app-release.aab app-${{ env.NEW_TAG }}.aab
+          mv app/build/outputs/apk/debug/app-debug.apk app-${{ env.NEW_TAG }}.aab
 
 
       - name: Create and push Git tag
