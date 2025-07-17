@@ -12,7 +12,7 @@ fun ReviewDto.toDomain(): Review {
         id = this.id ?: "",
         name = this.author ?: this.authorDetails?.name ?: "",
         userName = this.authorDetails?.userName ?: "",
-        avatarImage = "https://image.tmdb.org/t/p/w500${this.authorDetails?.avatarPath}" ?: "",
+        avatarImage = "$POSTER_PREFIX${this.authorDetails?.avatarPath}" ?: "",
         rating = this.authorDetails?.rating ?: 0.0,
         content = this.content ?: "",
         date =   this.createdAt ?:""
