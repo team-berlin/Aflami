@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
@@ -17,6 +18,8 @@ import repository.TvShowDetailsRepository
 import usecase.GetMovieCastUseCase
 import usecase.GetMovieGalleryUseCase
 import usecase.GetSeriesCastUseCase
+import usecase.GetSimilarMoviesUseCase
+import usecase.GetSimilarSeriesUseCase
 
 class MediaDetailsViewmodel(
     private val getMovieCastUseCase: GetMovieCastUseCase,
@@ -25,6 +28,8 @@ class MediaDetailsViewmodel(
     private val tvShowRepo: TvShowDetailsRepository,
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
     private val getSerGalleryUseCase: GetMovieGalleryUseCase,
+    private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
+    private val getSimilarTVShowsUseCase: GetSimilarSeriesUseCase
 ) : ViewModel(), MediaInteractionListener {
 
     private val _uiState = MutableStateFlow(MediaDetailsUiState())
@@ -128,10 +133,24 @@ class MediaDetailsViewmodel(
         TODO("Not yet implemented")
     }
 
-    override fun onShowMoreMediaLikeThisClicked() {
-        TODO("Not yet implemented")
-    }
+    private val _similarMedia = MutableStateFlow<SimilarMediaUiState>(SimilarMediaUiState.Init)
+    val similarMedia: StateFlow<SimilarMediaUiState> = _similarMedia.asStateFlow()
 
+    override fun onShowMoreMediaLikeThisClicked(mediaId: Long, mediaType: MediaType) {
+        viewModelScope.launch {
+            _similarMedia.value = SimilarMediaUiState.Loading
+            try {
+                val similar = when (mediaType) {
+                    MediaType.MOVIE -> getSimilarMoviesUseCase(mediaId).map { it.toUIStateMedia() }
+                    MediaType.TV_SHOW -> getSimilarTVShowsUseCase(mediaId).map { it.toUIStateMedia() }
+                }
+                _similarMedia.value = SimilarMediaUiState.Success(similar)
+            } catch (e: Exception) {
+                _similarMedia.value =
+                    SimilarMediaUiState.Error("Failed to load similar media: ${e.message}")
+            }
+        }
+    }
     override fun onShowReviewsClicked() {
         TODO("Not yet implemented")
     }

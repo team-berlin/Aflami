@@ -1,10 +1,12 @@
 package com.berlin.repository
 
 import com.berlin.entity.MediaCast
+import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.remote.TvShowDetailsRemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
+import com.berlin.repository.mapper.toTVShow
 import exceptions.AflamiExceptions
 import repository.TvShowDetailsRepository
 
@@ -22,7 +24,7 @@ class TvShowDetailsRepositoryImpl(
     override suspend fun getSeriesImages(id: Long): List<String> {
         return try {
             remoteDataSource
-                .getSeriesImages(id = id)
+                .getSeriesImages(seriesId = id)
                 .posters
                 ?.map { POSTER_PREFIX + it.filePath }
                 ?: throw Exception()
@@ -37,6 +39,11 @@ class TvShowDetailsRepositoryImpl(
             language
         ).cast?.mapNotNull { castItemDto ->
             castItemDto?.toDomain()
+        } ?: emptyList()
+    }
+    override suspend fun getSeriesSimilar(seriesId: Long): List<TVShow> {
+        return remoteDataSource.getSeriesSimilar(seriesId).results?.mapNotNull { tvShowDto ->
+            tvShowDto?.toTVShow()
         } ?: emptyList()
     }
 }

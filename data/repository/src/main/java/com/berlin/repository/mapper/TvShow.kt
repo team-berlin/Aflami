@@ -24,6 +24,16 @@ fun TVShowDto.toLocal(query: String, time: Long, type: String): SearchingEntity 
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
+fun TVShowDto.toTVShow(): TVShow {
+    return TVShow(
+        id = this.id?.toLong() ?: 0L,
+        title = this.name ?: "",
+        rating = this.voteAverage ?: 0.0,
+        releaseYear = (this.firstAirDate ?: "").toLocalDate(),
+        genre = this.genreIds?.filterNotNull() ?: emptyList(),
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+    )
+}
 fun SearchingEntity.toTVShow(): TVShow {
     return TVShow(
         id = this.id,

@@ -9,6 +9,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.MediaImagesResponse
+import com.berlin.repository.datasource.remote.dto.MovieResponse
 
 class MovieDetailsRemoteDataSourceImpl(
     private val client: HttpClient
@@ -29,6 +30,10 @@ class MovieDetailsRemoteDataSourceImpl(
         return client.get("movie/$id") {
             parameter(ApiConstants.LANGUAGE, language)
         }.body()
+    }
+    override suspend fun getMovieSimilar(movieId: Long): MovieResponse {
+        return client.get(ApiConstants.MOVIE_MORE_LIKE_THIS
+            .replace(ApiConstants.MOVIE_ID, movieId.toString())).body()
     }
 
 }
