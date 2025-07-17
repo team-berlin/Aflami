@@ -3,32 +3,63 @@ package com.berlin.aflami.viewmodel.mediadetails
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
-import com.berlin.aflami.viewmodel.uistate.MediaDetailsScreenUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import repository.MovieDetailsRepository
+import repository.TvShowDetailsRepository
 import usecase.GetMovieCastUseCase
+import usecase.GetMovieGalleryUseCase
 import usecase.GetSeriesCastUseCase
 
 class MediaDetailsViewmodel(
     private val getMovieCastUseCase: GetMovieCastUseCase,
-    private val getSeriesCastUseCase: GetSeriesCastUseCase
+    private val getSeriesCastUseCase: GetSeriesCastUseCase,
+    private val movieRepo: MovieDetailsRepository,
+    private val tvShowRepo: TvShowDetailsRepository,
+    private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
+    private val getSerGalleryUseCase: GetMovieGalleryUseCase,
 ) : ViewModel(), MediaInteractionListener {
 
-    private val _uiState = MutableStateFlow(MediaDetailsScreenUiState())
+    private val _uiState = MutableStateFlow(MediaDetailsUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _uiEffect = MutableSharedFlow<MediaDetailsScreenEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
 
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> = _loading
+
     init {
         viewModelScope.launch {
-            getMovieCast(505,MediaType.MOVIE,"ar-EG")
+            getMovieCast(505, MediaType.MOVIE, "ar-EG")
+        }
+    }
+
+    fun loadMediaDetails(mediaId: Long, mediaType: MediaType, language: String = "en-US") {
+        viewModelScope.launch {
+            _loading.value = true
+            _error.value = null
+            val uiState = try {
+                when (mediaType) {
+                    MediaType.MOVIE -> movieRepo.getMovieDetails(mediaId, language)?.toUiState()
+                    MediaType.TV_SHOW -> tvShowRepo.getTvShowDetails(mediaId, language)?.toUiState()
+                }
+            } catch (e: Exception) {
+                _error.value = "Failed to load details: ${e.message}"
+                null
+            }
+            uiState?.let { _uiState.value = it }
+            _loading.value = false
         }
     }
 
@@ -37,11 +68,11 @@ class MediaDetailsViewmodel(
     }
 
     override fun onPlayClicked(id: Long) {
-        TODO("Not yet implemented")
+        _uiState.value = _uiState.value.copy(isPlaying = true)
     }
 
     override fun onReadMoreDescriptionClicked(id: Long) {
-        TODO("Not yet implemented")
+        _uiState.value = _uiState.value.copy(isOverviewExpanded = true)
     }
 
     override fun onShowCastClicked() {
@@ -51,7 +82,7 @@ class MediaDetailsViewmodel(
     }
 
     override fun onRateIconClicked(id: Long) {
-        TODO("Not yet implemented")
+        TODO("KNot yet implemented")
     }
 
     override fun onSelectRateClicked(rate: Float) {
@@ -68,7 +99,7 @@ class MediaDetailsViewmodel(
 
     override fun onAddMediaToFavouriteListClicked(
         favouriteListId: Int,
-        mediaId: Int
+        mediaId: Int,
     ) {
         TODO("Not yet implemented")
     }
@@ -106,7 +137,10 @@ class MediaDetailsViewmodel(
     }
 
     override fun onShowMediaGalleryClicked(id: Long) {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            getSerGalleryUseCase(505)
+            getMovieGalleryUseCase(505)
+        }
     }
 
     override fun onShowCompanyProductionClicked() {
@@ -126,12 +160,12 @@ class MediaDetailsViewmodel(
     }
 
 
-     fun getMovieCast(mediaId: Long, mediaType: MediaType,language:String) {
+    private fun getMovieCast(mediaId: Long, mediaType: MediaType, language: String) {
 
         viewModelScope.launch {
             val cast = when (mediaType) {
                 MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
-                MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId, language).map {it.toUiState()}
+                MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId, language).map { it.toUiState() }
             }
             _uiState.update { newCastState ->
                 newCastState.copy(
@@ -142,6 +176,4 @@ class MediaDetailsViewmodel(
             }
         }
     }
-
-
 }

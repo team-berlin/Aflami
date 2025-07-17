@@ -4,27 +4,38 @@ import androidx.compose.ui.graphics.painter.Painter
 
 enum class MediaType { MOVIE, TV_SHOW }
 
-data class MediaDetailsScreenUiState(
+data class MediaUiState(
     val id: Long = 0L,
-    val poster: String = "",
-    val isPlaying: Boolean = false,
     val title: String = "",
-    val genre: List<Int> = emptyList(),
+    val rating: String = "",
     val releaseYear: String = "",
-    val mediaDuration: String = "",
+    val genre: List<Int> = emptyList(),
+    val poster: String = ""
+)
+
+data class MediaDetailsUiState(
+    val id: Long = 0L,
+    val title: String = "",
     val overview: String = "",
+    val posterUrl: String = "",
+    val backdropUrl: String? = "",
+    val genres: List<String> = emptyList(),
+    val releaseYear: String = "",
+    val rating: Double = 0.0,
+    val runtime: String = "",
+    val seasons: List<SeasonUiState> = emptyList(),
+    val isFavorite: Boolean = false,
     val isOverviewExpanded: Boolean = false,
+    val mediaType: MediaType = MediaType.MOVIE,
+    val isPlaying: Boolean = false,
+    val mediaDuration: String = "",
     val mediaCast: List<MediaCastUiState> = emptyList(),
     val country: String = "",
     val options: List<MediaOptions> = emptyList(),
-    val mediaType: MediaType=MediaType.MOVIE,
-    val rating: String = "",
-    val backdrop: String? = "",
-    val isFavorite: Boolean = false,
     val isLoading: Boolean = true,
 )
 
-data class SeasonState(
+data class SeasonUiState(
     val id: Long = 0L,
     val numberOfEpisodes: Int = 0,
     val seasonTitle: String = "",
@@ -32,12 +43,12 @@ data class SeasonState(
     val episodeDuration: Int = 0,
     val airDate: String = "",
     val episodeDescription: String = "",
-    val poster: String = "",
+    val posterUrl: String = "",
     val rate: Float = 0f,
     val seasonNumber: Int = 0,
-    val isPlaying: Boolean = false,
+    //val isPlaying: Boolean = false,
     val isExpanded: Boolean = false,
-)
+    )
 
 data class MediaOptions(
     val isSelected: Boolean,

@@ -24,12 +24,12 @@ import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.mediadetails.components.MoviesCastGrid
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
-import com.berlin.aflami.viewmodel.uistate.MediaDetailsScreenUiState
+import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CastScreen(
+fun CastDetailsScreen(
     navController: NavController,
     viewModel: MediaDetailsViewmodel = koinViewModel()
 ) {
@@ -44,7 +44,7 @@ fun CastScreen(
 @Composable
 fun CastContent(
     navController: NavController,
-    castState: MediaDetailsScreenUiState
+    castState: MediaDetailsUiState
 ) {
     Column {
         TopBar(

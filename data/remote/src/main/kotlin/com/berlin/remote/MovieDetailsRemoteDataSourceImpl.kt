@@ -7,6 +7,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
+import com.berlin.repository.datasource.remote.dto.MediaImagesResponse
 
 class MovieDetailsRemoteDataSourceImpl(
     private val client: HttpClient
@@ -17,6 +19,19 @@ class MovieDetailsRemoteDataSourceImpl(
         }.body<MediaCastResponse>().also {
             Log.e("Remote cast response", "${it.cast}")
         }
+    }
+    override suspend fun getMovieImages(movieId: Long): MediaImagesResponse {
+        Log.d("Khairy", "getMovieImages from remote data source...")
+        return client.get(
+            ApiConstants.MOVIE_IMAGES
+                .replace("id", "$movieId")
+        ) {}.body<MediaImagesResponse>()
+    }
+
+    override suspend fun getMovieDetails(id: Long, language: String): MovieDetailsDto {
+        return client.get("movie/$id") {
+            parameter(ApiConstants.LANGUAGE, language)
+        }.body()
     }
 
 }

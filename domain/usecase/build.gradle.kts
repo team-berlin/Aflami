@@ -1,7 +1,7 @@
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
-    id("org.jetbrains.kotlinx.kover")
+    alias(libs.plugins.kover)
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -32,9 +32,9 @@ kover {
     }
 }
 dependencies {
-    implementation(Dependencies.koin)
-    test()
-    entity()
-    kotlinDateX()
+    implementation(libs.koin.core)
+    testImplementation(libs.bundles.test)
+    implementation(libs.kotlin.datex)
 
+    api(project(":domain:entity"))
 }

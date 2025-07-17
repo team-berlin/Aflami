@@ -7,11 +7,11 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import repository.SeriesDetailsRepository
+import repository.TvShowDetailsRepository
 
 class GetSeriesCastUseCaseTest {
 
-    private val seriesDetailsRepository = mockk<SeriesDetailsRepository>()
+    private val seriesDetailsRepository = mockk<TvShowDetailsRepository>()
     private lateinit var getSeriesCastUseCase: GetSeriesCastUseCase
 
     @Before
