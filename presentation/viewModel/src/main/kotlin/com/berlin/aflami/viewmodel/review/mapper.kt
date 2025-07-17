@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.review
 
+import com.berlin.aflami.viewmodel.uistate.ReviewUiState
 import com.berlin.entity.Review
 
 fun Review.toUiState(): ReviewUiState {
