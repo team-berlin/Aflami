@@ -1,8 +1,10 @@
 package com.berlin.repository.mapper
 
+import com.berlin.entity.Episode
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.TVShowDto
+import com.berlin.repository.datasource.remote.dto.details.EpisodeDto
 import com.berlin.repository.util.toLocalDate
 
 
@@ -28,5 +30,20 @@ fun SearchingEntity.toTVShow(): TVShow {
         releaseYear = this.releaseYear.toLocalDate(),
         genre = this.genre,
         poster = this.poster,
+    )
+}
+
+fun EpisodeDto.toEpisode(): Episode {
+    return Episode(
+        airDate = airDate,
+        episodeNumber = episodeNumber,
+        id = id,
+        name = name,
+        overview = overview,
+        runtime = runtime,
+        seasonNumber = seasonNumber,
+        showId = showId,
+        stillPath = stillPath,
+        voteAverage = voteAverage
     )
 }
