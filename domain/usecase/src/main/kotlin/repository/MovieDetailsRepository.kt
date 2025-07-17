@@ -3,6 +3,7 @@ package repository
 import com.berlin.entity.MovieDetails
 
 import com.berlin.entity.MediaCast
+import com.berlin.entity.Movie
 
 interface MovieDetailsRepository {
     suspend fun getMovieImages(movieId: Long): List<String>

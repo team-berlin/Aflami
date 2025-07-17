@@ -6,16 +6,7 @@ import com.berlin.aflami.viewmodel.uistate.TVShowUiState
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 
-fun Movie.toUIState(): MovieUIState {
-    return MovieUIState(
-        id = id,
-        title = title,
-        rating = rating.toString().take(3),
-        releaseYear = releaseYear.year.toString(),
-        genre = genre,
-        poster = poster
-    )
-}
+
 fun Movie.toUIStateMedia(): MediaUiState {
     return MediaUiState(
         id = id,

@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState

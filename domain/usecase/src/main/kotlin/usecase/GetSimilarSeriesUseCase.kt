@@ -1,11 +1,11 @@
 package usecase
 
 import com.berlin.entity.TVShow
-import repository.SeriesDetailsRepository
+import repository.TvShowDetailsRepository
 
 class GetSimilarSeriesUseCase(
-    private val seriesDetailsRepository: SeriesDetailsRepository
+    private val tvShowDetailsRepository: TvShowDetailsRepository
 ) {
     suspend operator fun invoke(seriesId: Long): List<TVShow> =
-        seriesDetailsRepository.getSeriesSimilar(seriesId)
+        tvShowDetailsRepository.getSeriesSimilar(seriesId)
 }

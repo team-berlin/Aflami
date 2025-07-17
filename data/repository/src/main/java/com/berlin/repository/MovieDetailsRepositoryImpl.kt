@@ -2,6 +2,7 @@ package com.berlin.repository
 
 import android.util.Log
 import com.berlin.entity.MediaCast
+import com.berlin.entity.Movie
 import com.berlin.repository.datasource.remote.MovieDetailsRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.entity.MovieDetails
@@ -41,7 +42,7 @@ class MovieDetailsRepositoryImpl(
         }
     }
     override suspend fun getMovieSimilar(movieId: Long): List<Movie> {
-        return movieDetailsRemoteDataSource.getMovieSimilar(movieId).results?.mapNotNull { movieDto ->
+        return remoteDataSource.getMovieSimilar(movieId).results?.mapNotNull { movieDto ->
             movieDto?.toDomain()
         } ?: emptyList()
     }

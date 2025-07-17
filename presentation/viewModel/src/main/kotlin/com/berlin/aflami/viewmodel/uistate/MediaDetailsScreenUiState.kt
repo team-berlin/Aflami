@@ -2,9 +2,7 @@ package com.berlin.aflami.viewmodel.uistate
 
 import androidx.compose.ui.graphics.painter.Painter
 
-enum class MediaType {
-    MOVIE, TV_SHOW
-}
+
 data class MediaDetailsScreenUiState(
     val id: Long = 0L,
     val poster: String = "",
@@ -39,14 +37,3 @@ data class SeasonState(
     val isExpanded: Boolean = false,
 )
 
-data class MediaOptions(
-    val isSelected: Boolean,
-    val title: String,
-    val image: Painter
-)
-
-data class MediaCastUiState(
-    val mediaId:Long =0L,
-    val name:String="",
-    val poster:String=""
-)
