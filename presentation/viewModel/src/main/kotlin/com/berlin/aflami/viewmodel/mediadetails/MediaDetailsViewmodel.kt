@@ -15,6 +15,14 @@ class MediaDetailsViewmodel(
     private val movieRepo: MovieDetailsRepository,
     private val tvShowRepo: TvShowDetailsRepository
 ) : ViewModel(), MediaInteractionListener {
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import usecase.GetMovieGalleryUseCase
+
+class MediaDetailsViewmodel(
+    private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
+    private val getSerGalleryUseCase: GetMovieGalleryUseCase,
+) : ViewModel(), MediaInteractionListener {
 
     private val _uiState = MutableStateFlow(MediaDetailsUiState())
     val uiState: StateFlow<MediaDetailsUiState> = _uiState
@@ -60,7 +68,7 @@ class MediaDetailsViewmodel(
     }
 
     override fun onRateIconClicked(id: Long) {
-        TODO("Not yet implemented")
+        TODO("KNot yet implemented")
     }
 
     override fun onSelectRateClicked(rate: Float) {
@@ -77,7 +85,7 @@ class MediaDetailsViewmodel(
 
     override fun onAddMediaToFavouriteListClicked(
         favouriteListId: Int,
-        mediaId: Int
+        mediaId: Int,
     ) {
         TODO("Not yet implemented")
     }
@@ -115,7 +123,10 @@ class MediaDetailsViewmodel(
     }
 
     override fun onShowMediaGalleryClicked(id: Long) {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            getSerGalleryUseCase(505)
+            getMovieGalleryUseCase(505)
+        }
     }
 
     override fun onShowCompanyProductionClicked() {
