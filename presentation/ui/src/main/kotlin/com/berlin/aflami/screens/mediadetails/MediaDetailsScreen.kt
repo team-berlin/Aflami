@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.mediadetails
+package com.berlin.aflami.screens.mediadetails
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth

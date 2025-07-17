@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.mediadetails
+package com.berlin.aflami.screens.mediadetails
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
