@@ -54,8 +54,16 @@ class SearchByCountryViewModel(
         tryToCall(
             call = {
                 Pager(
-                    config = PagingConfig(pageSize = 10, initialLoadSize = 20),
-                    pagingSourceFactory = ::moviesPagingSourceFactory,
+                    config = PagingConfig(pageSize = 10, initialLoadSize = 10),
+                    pagingSourceFactory = {
+                        BasePagingSource(
+                            call = { page ->
+                                getCountryIsoCode(state.value.query)?.let {
+                                    searchByCountry.invoke(query = it, page = page)
+                                } ?: emptyList()
+                            }
+                        )
+                    },
                 ).flow
                     .map { it.map { it.toUIState() } }
                     .cachedIn(viewModelScope)
@@ -63,14 +71,6 @@ class SearchByCountryViewModel(
             onSuccess = ::onSearchSuccess,
             onError = ::onSearchError
         )
-    }
-
-    private fun moviesPagingSourceFactory(): PagingSource<Int, Movie> {
-        return BasePagingSource { page ->
-            getCountryIsoCode(state.value.query)?.let {
-                searchByCountry(query = it, page = page)
-            } ?: emptyList()
-        }
     }
 
     private fun onSearchSuccess(movies: Flow<PagingData<MovieUIState>>) {
