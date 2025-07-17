@@ -56,7 +56,7 @@ fun Season.toEntity() = SeasonEntity(
     id = id,
     name = name,
     overview = overview,
-    posterPath = posterPath,
+    posterUrl = posterPath,
     seasonNumber = seasonNumber,
     voteAverage = voteAverage
 )

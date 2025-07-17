@@ -19,7 +19,7 @@ data class SeasonEntity(
     val id: Long,
     val name: String,
     val overview: String?,
-    val posterPath: String?,
+    val posterUrl: String?,
     val seasonNumber: Int,
     val voteAverage: Double
 )

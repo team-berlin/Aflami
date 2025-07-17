@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,24 +35,56 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
 import com.berlin.aflami.viewmodel.uistate.MediaType
-import com.berlin.aflami.viewmodel.uistate.MediaScreenState
+import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.designsystem.R
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MediaDetailsScreen(state: MediaScreenState) {
+fun MediaDetailsScreen(
+    viewModel: MediaDetailsViewmodel =koinViewModel(),
+    mediaId: Long,
+    mediaType: MediaType
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val loading by viewModel.loading.collectAsState()
+    val error by viewModel.error.collectAsState()
 
-    MediaDetailsContent(state=state)
+    LaunchedEffect(mediaId, mediaType) {
+        viewModel.loadMediaDetails(mediaId, mediaType)
+    }
+
+    if (loading) {
+        // Your loader
+    } else if (error != null) {
+        // Your error UI
+    } else {
+        MediaDetailsContent(
+            state = uiState,
+            onBack = { /* navController.popBackStack() */ },
+            onFavorite = {
+                viewModel.onAddMediaToFavouriteListClicked(
+                    mediaId = uiState.id.toInt(),
+                    favouriteListId = 0
+                )
+            },
+            onAdd = { /* handle add to fav/show sheet */ },
+            onPlay = { viewModel.onPlayClicked(uiState.id) },
+            onReadMore = { viewModel.onReadMoreDescriptionClicked(uiState.id) },
+        )
+    }
 }
 
 @Composable
 fun MediaDetailsContent(
-    state: MediaScreenState,
+    state: MediaDetailsUiState,
     onBack: () -> Unit = {},
     onFavorite: () -> Unit = {},
     onAdd: () -> Unit = {},
@@ -70,10 +104,12 @@ fun MediaDetailsContent(
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(263.dp)){
-            Image(painter = painterResource(R.drawable.movie_poster2),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.matchParentSize(),)
+                AsyncImage(
+                    model = state.backdropUrl,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
 
             DefaultBar(
                 firstOption = painterResource(R.drawable.ic_rounded_star),
@@ -118,9 +154,9 @@ fun MediaDetailsContent(
             Spacer(Modifier.height(12.dp))
 
             Row() {
-                state.genre.forEach { g ->
+                state.genres.forEach { g ->
                     Box(modifier = Modifier.padding(end = 4.dp)) {
-                        GenersChip(label = g.toString())
+                        GenersChip(label = g)
                     }
                 }
             }
@@ -174,8 +210,8 @@ fun MediaDetailsContent(
 
             ExpandableDescription(
                 text = state.overview,
-                expanded = expanded,
-                onToggleExpand = { expanded = !expanded },
+                expanded = state.isOverviewExpanded,
+                onToggleExpand =  onReadMore,
                 previewColor = Theme.color.textColors.hint,
                 suffixColor = Theme.color.primary,
                 previewStyle = Theme.textStyle.body.small,
@@ -234,17 +270,17 @@ fun ExpandableDescription(
 @Preview(showBackground = true)
 @Composable
 fun PreviewMediaDetailsScreen() {
-    MediaDetailsScreen(
-        state = MediaScreenState(
+    MediaDetailsContent(
+        state = MediaDetailsUiState(
             id = 1L,
             title = "The Green Mile",
             overview = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile,the death row section of Cold Mountain Penitentiary, alongside officers Brutus Howell, Dean Stanton, Harry Terwilliger, and the sadistic\nIn 1935, corrections officer Paul Edgecomb oversees The Green Mile,the death row section of Cold Mountain Penitentiary, alongside officers Brutus Howell, Dean Stanton, Harry Terwilliger, and the sadistic",
             mediaType = MediaType.MOVIE,
-            rating = "9.9",
+            rating = 9.7,
             releaseYear = "10-09-2016",
-            genre = listOf(0, 1, 2, 3),
-            poster = "",
-            backdrop = "https://image.tmdb.org/t/p/w780/6A2w0neIqdFJAaXe2wv5hE1GUOa.jpg",
+            genres = listOf("comedy", "drama", "action"),
+            posterUrl = "",
+            backdropUrl = "https://image.tmdb.org/t/p/w780/6A2w0neIqdFJAaXe2wv5hE1GUOa.jpg",
             mediaDuration = "1h 34m",
             country = "US",
             isFavorite = true,

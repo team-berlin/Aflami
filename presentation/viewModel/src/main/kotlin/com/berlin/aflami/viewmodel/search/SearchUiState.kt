@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.search
 
-import com.berlin.aflami.viewmodel.uistate.MediaScreenState
 import com.berlin.aflami.viewmodel.uistate.MediaUiState
 
 sealed class SearchUiState() {
