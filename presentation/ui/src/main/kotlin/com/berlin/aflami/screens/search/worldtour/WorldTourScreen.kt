@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
@@ -43,12 +42,12 @@ import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun WorldTourScreen(
+fun SearchByCountryScreen(
     navController: NavController,
     viewModel: SearchByCountryViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    WorldTourContent(
+    SearchByCountryContent(
         state = state,
         listener = viewModel
     )
@@ -66,7 +65,7 @@ fun WorldTourScreen(
 }
 
 @Composable
-private fun WorldTourContent(
+private fun SearchByCountryContent(
     state: SearchByCountryScreenUiState,
     listener: SearchByCountryInteractionListener,
 ) {
@@ -138,7 +137,7 @@ private fun WorldTourContent(
                     )
                 }
 
-                state.isCountrySelected && movies.itemCount == 0  && movies.loadState.refresh is LoadState.NotLoading-> {
+                state.isCountrySelected && movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
                         image = painterResource(R.drawable.no_search_result),
