@@ -59,12 +59,12 @@ fun FilterDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(vertical = 12.dp)
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -95,23 +95,27 @@ fun FilterDialog(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
                         text = stringResource(R.string.imdb_rating),
                         style = Theme.textStyle.title.small,
                         color = Theme.color.textColors.title
                     )
                     RatingBar(
-                        modifier = Modifier,
+                        modifier = Modifier.padding(horizontal = 12.dp),
                         onValueChange = { viewModel.updateRating(it) },
                         currentRating = selectedRating
                     )
                     Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
                         text = stringResource(R.string.Genre),
                         style = Theme.textStyle.title.small, color = Theme.color.textColors.title
                     )
                     LazyRow(
                         modifier = Modifier
                             .height(96.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+
+                        ,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(GenreType.entries) { genre ->
@@ -149,6 +153,7 @@ fun FilterDialog(
                         onClick = { viewModel.clearFilters() },
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(horizontal = 12.dp)
                             .height(56.dp),
                         containerColor = Theme.color.primaryVariant
                     ) {

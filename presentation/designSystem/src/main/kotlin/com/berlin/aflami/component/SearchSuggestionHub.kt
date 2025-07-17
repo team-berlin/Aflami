@@ -1,12 +1,9 @@
 package com.berlin.aflami.component
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,35 +23,26 @@ fun SearchSuggestionHub(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         SearchSuggestionItem(
-            modifier = Modifier
-                .weight(1f)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { onWorldTourClick() },
+            modifier = Modifier.weight(1f),
             title = stringResource(R.string.world_tour),
             subtitle = stringResource(R.string.explore_world_cinema),
+            contentDescription = "world tour",
             gradientBackground = darkPurpleLinearGradient,
             painter = painterResource(R.drawable.news_img),
-            contentDescription = "world tour"
+            onClick = onWorldTourClick
         )
+
         SearchSuggestionItem(
-            modifier = Modifier
-                .weight(1f)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { onSearchByActorClick() },
+            modifier = Modifier.weight(1f),
             title = stringResource(R.string.find_by_actor),
             subtitle = stringResource(R.string.search_by_favorite_actor),
+            contentDescription = "Find by actor",
             gradientBackground = blueLinearGradient,
             painter = painterResource(R.drawable.find_by_actor),
-            contentDescription = "Find by actor"
-
+            onClick = onSearchByActorClick
         )
     }
 }
-
 
 @ThemeAndLocalePreviews
 @Composable
