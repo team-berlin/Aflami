@@ -49,15 +49,20 @@ import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.screens.mediadetails.ReviewSection
+import com.berlin.aflami.screens.mediadetails.components.ContentMoreLikeMedia
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
+import com.berlin.aflami.screens.mediadetails.components.MediaGallery
+import com.berlin.aflami.screens.mediadetails.components.MediaGalleryContent
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
 import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.review.ReviewState
+import com.berlin.aflami.viewmodel.uistate.SimilarMediaUiState
+import com.berlin.aflami.viewmodel.uistate.ReviewState
 import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.uistate.MediaGalleryUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.designsystem.R
 import com.example.navigation.Destination
@@ -75,7 +80,8 @@ fun MediaDetailsScreen(
     val error by viewModel.error.collectAsState()
     val review by viewModel.reviewsUiState.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
-
+    val similarMediaState by viewModel.similarMedia.collectAsState()
+    val galleryMedia by viewModel.galleryMedia.collectAsState()
     LaunchedEffect(mediaId, mediaType) {
         viewModel.loadMediaDetails(mediaId, mediaType)
         viewModel.uiEffect.collect { effect ->
@@ -116,7 +122,9 @@ fun MediaDetailsScreen(
                     mediaId = 550,
                     mediaType =MediaType.MOVIE
                 )
-            }
+            },
+            similarMediaState=similarMediaState,
+            galleryMedia=galleryMedia
         )
     }
 }
@@ -134,13 +142,15 @@ fun MediaDetailsContent(
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     isSelectedTab: MovieDetailsTabs,
-    onChipClick: (MovieDetailsTabs) -> Unit
+    onChipClick: (MovieDetailsTabs) -> Unit,
+    similarMediaState: SimilarMediaUiState,
+    galleryMedia:MediaGalleryUiState
 
-    ) {
+) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(Theme.color.surface)
+            .background(Theme.color.surface),
     ) {
         Box(
             Modifier
@@ -258,21 +268,21 @@ fun MediaDetailsContent(
             var expanded by remember { mutableStateOf(state.isOverviewExpanded) }
             val canExpand = state.overview.length > 160
             val shortDesc = state.overview.take(160)
-
-            ExpandableDescription(
-                text = state.overview,
-                expanded = state.isOverviewExpanded,
-                onToggleExpand = onReadMore,
-                previewColor = Theme.color.textColors.hint,
-                suffixColor = Theme.color.primary,
-                previewStyle = Theme.textStyle.body.small,
-                suffixStyle = Theme.textStyle.label.medium
-            )
+//
+//            ExpandableDescription(
+//                text = state.overview,
+//                expanded = state.isOverviewExpanded,
+//                onToggleExpand = onReadMore,
+//                previewColor = Theme.color.textColors.hint,
+//                suffixColor = Theme.color.primary,
+//                previewStyle = Theme.textStyle.body.small,
+//                suffixStyle = Theme.textStyle.label.medium
+//            )
         }
-        Cast(
-            castState = state.mediaCast,
-            listener = listener
-        )
+//        Cast(
+//            castState = state.mediaCast,
+//            listener = listener
+//        )
         LazyRow(
             modifier = Modifier
                 .height(96.dp)
@@ -295,7 +305,18 @@ fun MediaDetailsContent(
                 isExpanded = isExpanded,
                 onToggleExpand = onToggleExpand
             )
+        }else if( isSelectedTab == MovieDetailsTabs.MORE_LIKE_THIS) {
+            ContentMoreLikeMedia(
+                similarMediaState = similarMediaState,
+                mediaType = MediaType.MOVIE
+            )
+        }else if( isSelectedTab == MovieDetailsTabs.GALLERY) {
+            MediaGalleryContent(
+                mediaGalleryUiState = galleryMedia,
+            )
         }
+
+
     }
 
 
@@ -416,28 +437,6 @@ fun Cast(
     }
 }
 
-@Composable
-fun MediaGallery(modifier: Modifier = Modifier, mediaImages: List<String>) {
-    LazyVerticalGrid(
-        modifier = modifier,
-        columns = GridCells.Adaptive(minSize = 160.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        items(mediaImages.size) { index: Int ->
-            AsyncImage(
-                model = mediaImages[index],
-                contentDescription = stringResource(com.berlin.ui.R.string.media_image),
-                modifier = Modifier
-                    .width(160.dp)
-                    .height(145.dp),
-                contentScale = ContentScale.Fit,
-//                placeholder = ,
-//                error = ,
-            )
-        }
-    }
-}
 
 
 private fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {

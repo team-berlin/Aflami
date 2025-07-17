@@ -5,11 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.review.ReviewState
-import com.berlin.aflami.viewmodel.review.ReviewUiState
+import com.berlin.aflami.viewmodel.uistate.ReviewState
+import com.berlin.aflami.viewmodel.uistate.ReviewUiState
 import com.berlin.aflami.viewmodel.review.toUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.uistate.MediaGalleryUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.uistate.SimilarMediaUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -137,13 +139,13 @@ class MediaDetailsViewmodel(
                 }
 
                 when (newSelectedTab) {
-                    MovieDetailsTabs.MORE_LIKE_THIS -> TODO()
+                    MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(mediaId, mediaType)
                     MovieDetailsTabs.REVIEWS -> getReviews(
                         id = mediaId,
                         mediaType = mediaType
                     )
 
-                    MovieDetailsTabs.GALLERY -> TODO()
+                    MovieDetailsTabs.GALLERY ->  onShowMediaGalleryClicked(mediaId,mediaType)
                     MovieDetailsTabs.COMPANY_PRODUCTION -> TODO()
                 }
 
@@ -240,11 +242,21 @@ class MediaDetailsViewmodel(
     override fun onShowReviewsClicked() {
         TODO("Not yet implemented")
     }
-
-    override fun onShowMediaGalleryClicked(id: Long) {
+    private val _galleryMedia = MutableStateFlow<MediaGalleryUiState>(MediaGalleryUiState.Init)
+    val galleryMedia: StateFlow<MediaGalleryUiState> = _galleryMedia .asStateFlow()
+    override fun onShowMediaGalleryClicked(id: Long,mediaType: MediaType) {
         viewModelScope.launch {
-            getSerGalleryUseCase(505)
-            getMovieGalleryUseCase(505)
+            _galleryMedia.value = MediaGalleryUiState.Loading
+            try {
+                val mediaGallery = when (mediaType) {
+                    MediaType.MOVIE ->  getSerGalleryUseCase(id)
+                    MediaType.TV_SHOW ->  getSerGalleryUseCase(id)
+                }
+                _galleryMedia.value = MediaGalleryUiState.Success(mediaGallery)
+            } catch (e: Exception) {
+                _galleryMedia.value =
+                    MediaGalleryUiState.Error("Failed to load similar media: ${e.message}")
+            }
         }
     }
 
