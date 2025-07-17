@@ -1,14 +1,15 @@
-package com.berlin.aflami.viewmodel.searchworldtour
+package com.berlin.aflami.viewmodel.searchcountry
 
 import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-data class WorldTourUiState(
+data class SearchByCountryScreenUiState(
     val isLoading: Boolean = false,
-    val countryName: String = "",
-    val filteredCountries: Map<String, String> = emptyMap(),
+    val query: String = "",
+    val isCountrySelected: Boolean = false,
+    val filteredCountries: List<String> = emptyList(),
     val movies: Flow<PagingData<MovieUIState>> = emptyFlow(),
     val dropDownExpanded: Boolean = false,
     val error: String? = null,

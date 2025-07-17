@@ -4,14 +4,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -23,34 +26,49 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.paging.compose.LazyPagingItems
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.worldtour.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.searchworldtour.WorldTourInteractionListener
-import com.berlin.aflami.viewmodel.searchworldtour.WorldTourUiState
-import com.berlin.aflami.viewmodel.searchworldtour.WorldTourViewModel
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryEffect
+import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListener
+import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenUiState
+import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WorldTourScreen(
     navController: NavController,
-    viewModel: WorldTourViewModel = koinViewModel()
+    viewModel: SearchByCountryViewModel = koinViewModel()
 ) {
-    val worldTourState by viewModel.uiState.collectAsState()
-    WorldTourContent(worldTourState, viewModel, navController)
+    val state by viewModel.state.collectAsState()
+    WorldTourContent(
+        state = state,
+        listener = viewModel
+    )
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
+                is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
+                    // TODO: Navigate to movie details screen
+                }
+            }
+        }
+    }
 }
 
 @Composable
 private fun WorldTourContent(
-    state: WorldTourUiState,
-    listener: WorldTourInteractionListener,
-    navController: NavController
+    state: SearchByCountryScreenUiState,
+    listener: SearchByCountryInteractionListener,
 ) {
     Column {
         TopBar(
@@ -67,9 +85,7 @@ private fun WorldTourContent(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(Theme.color.surfaceHigh)
-                        .clickable {
-                            navController.popBackStack()
-                        }
+                        .clickable { listener::onBackClicked }
                         .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -84,7 +100,7 @@ private fun WorldTourContent(
 
         val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
-            text = state.countryName,
+            text = state.query,
             hintText = stringResource(R.string.country_name),
             modifier = Modifier
                 .fillMaxWidth()
@@ -106,28 +122,44 @@ private fun WorldTourContent(
             modifier = Modifier
                 .fillMaxWidth(),
         ) {
-//            val movies = state.movies.collectAsLazyPagingItems()
-
-//            if (state.movies.isEmpty()) {
-//                CountryTourExploring(
-//                    modifier = Modifier.fillMaxSize(),
-//                    image = painterResource(R.drawable.world_tour),
-//                    titleId = R.string.country_tour,
-//                    messageId = R.string.country_tour_description
-//                )
-//            }
-
             val movies = state.movies.collectAsLazyPagingItems()
-            MoviesList(movies = movies)
-//            MoviesList(
-//                movies = moviesssss,
-//            )
+
+            when {
+                state.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+
+                state.query.isBlank() && movies.itemCount == 0 -> {
+                    CountryTourExploring(
+                        modifier = Modifier.fillMaxSize(),
+                        image = painterResource(R.drawable.world_tour),
+                        titleId = R.string.country_tour,
+                        messageId = R.string.country_tour_description
+                    )
+                }
+
+                state.isCountrySelected && movies.itemCount == 0  && movies.loadState.refresh is LoadState.NotLoading-> {
+                    CountryTourExploring(
+                        modifier = Modifier.fillMaxSize(),
+                        image = painterResource(R.drawable.no_search_result),
+                        titleId = R.string.no_search_result,
+                        messageId = R.string.please_try_with_another_keyword
+                    )
+                }
+
+                else -> {
+                    MoviesList(
+                        movies = movies,
+                        onMovieClick = listener::onMovieClicked
+                    )
+                }
+            }
 
             AnimatedCountriesList(
-                visible = state.dropDownExpanded,
+                visible = state.dropDownExpanded && state.filteredCountries.isNotEmpty(),
                 filteredCountries = state.filteredCountries,
                 onCountryNameChanged = listener::onCountryNameChanged,
-                onCountryClick = listener::onCountrySelected
+                onCountryClick = listener::onCountryClicked
             )
         }
     }

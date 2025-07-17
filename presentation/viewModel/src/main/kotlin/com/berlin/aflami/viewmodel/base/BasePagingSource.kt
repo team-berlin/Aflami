@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.searchworldtour
+package com.berlin.aflami.viewmodel.base
 
 import android.util.Log
 import androidx.paging.PagingSource
