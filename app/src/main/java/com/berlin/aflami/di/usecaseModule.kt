@@ -4,10 +4,12 @@ import org.koin.dsl.module
 import usecase.GetMovieDetailsUseCase
 import usecase.GetMovieGalleryUseCase
 import usecase.SearchByActorNameUseCase
+import usecase.GetMovieCastUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.GetTvShowDetailsUseCase
 import usecase.GetSeriesGalleryUseCase
+import usecase.GetSeriesCastUseCase
 import usecase.SearchByCountryUseCase
 
 val useCaseModule = module {
@@ -20,4 +22,7 @@ val useCaseModule = module {
 
     single { GetMovieGalleryUseCase(get()) }
     single { GetSeriesGalleryUseCase(get()) }
+    single { GetMovieCastUseCase(get()) }
+    single { GetSeriesCastUseCase(get()) }
+
 }

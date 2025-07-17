@@ -1,5 +1,6 @@
 package com.berlin.repository
 
+import com.berlin.entity.MediaCast
 import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.remote.TvShowDetailsRemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
@@ -28,5 +29,14 @@ class TvShowDetailsRepositoryImpl(
         } catch (e: Exception) {
             throw e
         }
+    }
+
+    override suspend fun getSeriesCastDetails(seriesId: Long, language: String): List<MediaCast> {
+        return remoteDataSource.getSeriesCastDetails(
+            seriesId,
+            language
+        ).cast?.mapNotNull { castItemDto ->
+            castItemDto?.toDomain()
+        } ?: emptyList()
     }
 }

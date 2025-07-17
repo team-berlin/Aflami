@@ -2,6 +2,7 @@ package com.berlin.remote
 
 import android.util.Log
 import com.berlin.repository.datasource.remote.TvShowDetailsRemoteDataSource
+import com.berlin.repository.datasource.remote.dto.MediaCastResponse
 import com.berlin.repository.datasource.remote.dto.MediaImagesResponse
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import io.ktor.client.HttpClient
@@ -25,5 +26,11 @@ class TvShowDetailsRemoteDataSourceImpl(
         return client.get("tv/$id"){
             parameter(ApiConstants.LANGUAGE, language)
         }.body()
+    }
+    override suspend fun getSeriesCastDetails(seriesId: Long, language: String): MediaCastResponse {
+        return client.get(ApiConstants.SERIES_CAST.replace("{series_id}", seriesId.toString())) {
+            parameter("language", language)
+        }.body()
+
     }
 }

@@ -8,10 +8,10 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
-import repository.SeriesDetailsRepository
+import repository.TvShowDetailsRepository
 
 class GetSeriesGalleryUseCaseTest {
-    private val seriesDetailsRepository: SeriesDetailsRepository = mockk()
+    private val seriesDetailsRepository: TvShowDetailsRepository = mockk()
     private lateinit var getSeriesGalleryUseCase: GetSeriesGalleryUseCase
 
     @Before

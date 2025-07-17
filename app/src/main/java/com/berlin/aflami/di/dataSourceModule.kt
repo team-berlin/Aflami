@@ -17,5 +17,4 @@ val dataSourceModule = module {
     single<SearchLocalDataSource> { SearchLocalDataSourceImpl(get<SearchDao>()) }
     single<MovieDetailsRemoteDataSource> { MovieDetailsRemoteDataSourceImpl(get()) }
     single<TvShowDetailsRemoteDataSource> { TvShowDetailsRemoteDataSourceImpl(get()) }
-    single<MovieDetailsRemoteDataSource> { MovieDetailsRemoteDataSourceImpl(get()) }
 }

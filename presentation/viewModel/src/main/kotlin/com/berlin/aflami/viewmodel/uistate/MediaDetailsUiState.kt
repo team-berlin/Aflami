@@ -31,7 +31,8 @@ data class MediaDetailsUiState(
     val mediaDuration: String = "",
     val mediaCast: List<MediaCastUiState> = emptyList(),
     val country: String = "",
-    val options: List<MediaOptions> = emptyList()
+    val options: List<MediaOptions> = emptyList(),
+    val isLoading: Boolean = true,
 )
 
 data class SeasonUiState(
@@ -56,7 +57,6 @@ data class MediaOptions(
 )
 
 data class MediaCastUiState(
-    val mediaId:Long =0L,
     val name:String="",
     val poster:String=""
 )

@@ -1,10 +1,10 @@
-package com.berlin.aflami.screens.mediadetails
+package com.berlin.aflami.screens.mediadetails.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,25 +38,31 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
+import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
-import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
+import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.designsystem.R
+import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MediaDetailsScreen(
-    viewModel: MediaDetailsViewmodel =koinViewModel(),
+    viewModel: MediaDetailsViewmodel = koinViewModel(),
     mediaId: Long,
-    mediaType: MediaType
+    mediaType: MediaType,
+    navController: NavController
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val loading by viewModel.loading.collectAsState()
@@ -64,6 +70,14 @@ fun MediaDetailsScreen(
 
     LaunchedEffect(mediaId, mediaType) {
         viewModel.loadMediaDetails(mediaId, mediaType)
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
+                    navController.navigate(Destination.CastScreen.route)
+                }
+            }
+        }
+
     }
 
     if (loading) {
@@ -83,6 +97,7 @@ fun MediaDetailsScreen(
             onAdd = { /* handle add to fav/show sheet */ },
             onPlay = { viewModel.onPlayClicked(uiState.id) },
             onReadMore = { viewModel.onReadMoreDescriptionClicked(uiState.id) },
+            listener= viewModel,
         )
     }
 }
@@ -95,7 +110,9 @@ fun MediaDetailsContent(
     onAdd: () -> Unit = {},
     onPlay: () -> Unit = {},
     onReadMore: () -> Unit = {},
-) {
+    listener: MediaInteractionListener
+
+    ) {
     Column(
         Modifier
             .fillMaxSize()
@@ -106,9 +123,11 @@ fun MediaDetailsContent(
                 .fillMaxWidth()
                 .height(293.dp)
         ) {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(263.dp)){
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(263.dp)
+            ) {
                 AsyncImage(
                     model = state.backdropUrl,
                     contentDescription = null,
@@ -116,18 +135,20 @@ fun MediaDetailsContent(
                     contentScale = ContentScale.Crop
                 )
 
-            DefaultBar(
-                modifier = Modifier.statusBarsPadding(),
-                firstOption = painterResource(R.drawable.ic_rounded_star),
-                lastOption = painterResource(R.drawable.ic_rounded_add_heart),
-            )
+                DefaultBar(
+                    modifier = Modifier.statusBarsPadding(),
+                    firstOption = painterResource(R.drawable.ic_rounded_star),
+                    lastOption = painterResource(R.drawable.ic_rounded_add_heart),
+                )
 
-                Box(modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(4.dp)) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(4.dp)
+                ) {
                     Rating(rating = "9.8")
                 }
-                }
+            }
 
             Box(
                 Modifier
@@ -159,7 +180,7 @@ fun MediaDetailsContent(
 
             Spacer(Modifier.height(12.dp))
 
-            Row() {
+            Row {
                 state.genres.forEach { g ->
                     Box(modifier = Modifier.padding(end = 4.dp)) {
                         GenersChip(label = g)
@@ -217,14 +238,20 @@ fun MediaDetailsContent(
             ExpandableDescription(
                 text = state.overview,
                 expanded = state.isOverviewExpanded,
-                onToggleExpand =  onReadMore,
+                onToggleExpand = onReadMore,
                 previewColor = Theme.color.textColors.hint,
                 suffixColor = Theme.color.primary,
                 previewStyle = Theme.textStyle.body.small,
                 suffixStyle = Theme.textStyle.label.medium
             )
         }
+        Cast(
+            castState = state.mediaCast,
+            listener = listener
+        )
     }
+
+
 }
 
 @Composable
@@ -251,10 +278,14 @@ fun ExpandableDescription(
     val annotated = buildAnnotatedString {
         append(displayText)
         if (suffix.isNotEmpty()) {
-            withStyle(SpanStyle(color = suffixColor,
-                fontFamily = suffixStyle.fontFamily,
-                fontWeight = suffixStyle.fontWeight,
-                fontSize = suffixStyle.fontSize)) {
+            withStyle(
+                SpanStyle(
+                    color = suffixColor,
+                    fontFamily = suffixStyle.fontFamily,
+                    fontWeight = suffixStyle.fontWeight,
+                    fontSize = suffixStyle.fontSize
+                )
+            ) {
                 append(suffix)
             }
         }
@@ -271,6 +302,71 @@ fun ExpandableDescription(
         ),
         textAlign = TextAlign.Start
     )
+}
+
+@Composable
+fun Cast(
+    modifier: Modifier=Modifier,
+    castState: List<MediaCastUiState>,
+    listener: MediaInteractionListener,
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(com.berlin.ui.R.string.cast),
+                    style = Theme.textStyle.headline.small,
+                    color = Theme.color.textColors.title
+                )
+                Text(
+                    text = stringResource(com.berlin.ui.R.string.all),
+                    style = Theme.textStyle.label.medium,
+                    color = Theme.color.primary,
+                    modifier = Modifier
+                        .clickable {
+                            listener.onShowCastClicked()
+                        }
+                )
+            }
+
+            BoxWithConstraints {
+                val screenWidth = maxWidth
+                val cardSize = 78.dp
+                val spaceBetween = 8.dp
+                val totalCardWidth = cardSize + spaceBetween
+
+                val maxCardsInRow = (screenWidth / totalCardWidth).toInt()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(spaceBetween)
+                ) {
+                    castState.take(maxCardsInRow).forEach {
+                        MediaCastItem(
+                            modifier = Modifier.size(cardSize),
+                            name = it.name,
+                            poster = it.poster
+                        )
+                    }
+                }
+            }
+
+        }
+    }
 }
 
 @Composable
@@ -296,24 +392,25 @@ fun MediaGallery(modifier: Modifier = Modifier, mediaImages: List<String>) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewMediaDetailsScreen() {
-    MediaDetailsContent(
-        state = MediaDetailsUiState(
-            id = 1L,
-            title = "The Green Mile",
-            overview = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile,the death row section of Cold Mountain Penitentiary, alongside officers Brutus Howell, Dean Stanton, Harry Terwilliger, and the sadistic\nIn 1935, corrections officer Paul Edgecomb oversees The Green Mile,the death row section of Cold Mountain Penitentiary, alongside officers Brutus Howell, Dean Stanton, Harry Terwilliger, and the sadistic",
-            mediaType = MediaType.MOVIE,
-            rating = 9.7,
-            releaseYear = "10-09-2016",
-            genres = listOf("comedy", "drama", "action"),
-            posterUrl = "",
-            backdropUrl = "https://image.tmdb.org/t/p/w780/6A2w0neIqdFJAaXe2wv5hE1GUOa.jpg",
-            mediaDuration = "1h 34m",
-            country = "US",
-            isFavorite = true,
-            isOverviewExpanded = false
-        )
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewMediaDetailsScreen() {
+//    MediaDetailsContent(
+//        state = MediaDetailsUiState(
+//            id = 1L,
+//            title = "The Green Mile",
+//            overview = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile,the death row section of Cold Mountain Penitentiary, alongside officers Brutus Howell, Dean Stanton, Harry Terwilliger, and the sadistic\nIn 1935, corrections officer Paul Edgecomb oversees The Green Mile,the death row section of Cold Mountain Penitentiary, alongside officers Brutus Howell, Dean Stanton, Harry Terwilliger, and the sadistic",
+//            mediaType = MediaType.MOVIE,
+//            rating = 9.7,
+//            releaseYear = "10-09-2016",
+//            genres = listOf("comedy", "drama", "action"),
+//            posterUrl = "",
+//            backdropUrl = "https://image.tmdb.org/t/p/w780/6A2w0neIqdFJAaXe2wv5hE1GUOa.jpg",
+//            mediaDuration = "1h 34m",
+//            country = "US",
+//            isFavorite = true,
+//            isOverviewExpanded = false
+//        )
+//        ,
+//    )
+//}
