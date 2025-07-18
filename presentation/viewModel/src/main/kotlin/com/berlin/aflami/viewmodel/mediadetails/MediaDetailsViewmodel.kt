@@ -13,6 +13,7 @@ import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -320,39 +321,37 @@ class MediaDetailsViewmodel(
     override fun onShowAllSeasonsClicked(series_id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             _rowSectionUiState.update { RowSectionUiState.Loading }
-//            try {
-            val numberOfSeasons = _uiState.value.numberOfSeasons ?: 0
-            var seasonEpisodes = mutableListOf<EpisodesSeasonUiState>()
-            val s = getSeasonEpisodesUseCase.invoke(155, 1).map { it.toUiState() }
+            try {
+                    val numberOfSeasons = _uiState.value.numberOfSeasons ?: 0
+                    val seasonEpisodes = mutableListOf<EpisodesSeasonUiState>()
+                    Log.e("eeeeeeeeeeeeeeeeeeeeeeeee","${numberOfSeasons}")
+                    for (seasonNumber in 1..4) {
+                        val seasonEpisodes = getSeasonEpisodesUseCase.invoke(155, 1).map { it.toUiState() }
+                        Log.e("fffffffffffffffffffff","${seasonEpisodes}")
+delay(2000)
+                        if (seasonEpisodes.isEmpty()) {
+                            _rowSectionUiState.update {
+                                RowSectionUiState.Error("No season found")
+                            }
+                        } else {
+                            _rowSectionUiState.update {
+                                RowSectionUiState.Success(
+                                    content = TabContent.Season(
+                                        items = seasonEpisodes
+                                    )
+                                )
+                            }
+                        }
+                    }
 
-            Log.e("eeeeeeeeeeeeeeeeeeeeeeeee", "${s}")
-//                    for (seasonNumber in 1..2) {
-//                         seasonEpisodes =
-//                             getSeasonEpisodesUseCase.invoke(1, 155).map { it.toUiState() }.toMutableList()
-//                    }
-//                    Log.e("fffffffffffffffffffff","${seasonEpisodes}")
-//
-//                    if (seasonEpisodes.isEmpty()) {
-//                        _rowSectionUiState.update {
-//                            RowSectionUiState.Error("No season found")
-//                        }
-//                    } else {
-//                        _rowSectionUiState.update {
-//                            RowSectionUiState.Success(
-//                                content = TabContent.Season(
-//                                    items = seasonEpisodes
-//                                )
-//                            )
-//                        }
-//                    }
-//            } catch (error: Exception) {
-//                _rowSectionUiState.update {
-//                    RowSectionUiState.Error(error.message ?: "Failed to load seasons")
-//                }
-//            }
-//        }
+            } catch (error: Exception) {
+                _rowSectionUiState.update {
+                    RowSectionUiState.Error(error.message ?: "Failed to load seasons")
+                }
+            }
         }
     }
+
     override fun onShowSeasonEpisodesClicked(tvShowId: Long, seasonId: Long) {
         TODO("Not yet implemented")
     }
