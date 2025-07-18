@@ -278,8 +278,7 @@ fun MediaDetailsContent(
 
         HorizontalDivider(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp),
+                .fillMaxWidth(),
             color = Theme.color.stroke,
             thickness = 1.dp
         )
@@ -304,9 +303,9 @@ fun RowSection(
 ) {
     LazyRow(
         modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 12.dp)
             .height(96.dp)
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(MovieDetailsTabs.entries) { tab ->
