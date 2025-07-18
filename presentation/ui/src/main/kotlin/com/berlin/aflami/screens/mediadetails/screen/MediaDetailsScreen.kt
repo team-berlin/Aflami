@@ -1,7 +1,7 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
-import android.util.Log
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,11 +48,11 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
-import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
+import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.SeasonsScreen
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
@@ -62,8 +62,6 @@ import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.TabContent
-import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
-import com.berlin.aflami.viewmodel.uistate.ReviewState
 import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
@@ -282,23 +280,6 @@ fun MediaDetailsContent(
 //            castState = state.mediaCast,
 //            listener = listener
 //        )
-        LazyRow(
-            modifier = Modifier
-                .height(96.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(
-                MovieDetailsTabs.entries
-            ) { tab ->
-                Chips(
-                    title = stringResource(movieDetailsTabsMapper(tab)),
-                    icon = painterResource(getMovieDetailsTabsIcon(tab)),
-                    isSelected = tab == isSelectedTab,
-                    onClick = { onChipClick(tab) }
-                )
-            }
-        }
 
         HorizontalDivider(
             modifier = Modifier
@@ -308,6 +289,7 @@ fun MediaDetailsContent(
         )
 
         RowSection(
+            state = state,
             rowUiState = rowUiState,
             isSelectedTab = isSelectedTab,
             onChipClick = onChipClick,
@@ -319,7 +301,7 @@ fun MediaDetailsContent(
 
 @Composable
 fun RowSection(
-    state:
+    state:MediaDetailsUiState,
     rowUiState: RowSectionUiState,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
