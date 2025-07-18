@@ -11,6 +11,6 @@ fun Review.toUiState(): ReviewUiState {
         avatarImage = avatarImage,
         rating = rating,
         content = content,
-        date = date
+        date = date.substringBefore("T")
     )
 }

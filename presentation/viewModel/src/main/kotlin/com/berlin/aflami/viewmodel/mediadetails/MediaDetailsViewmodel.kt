@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -29,9 +28,7 @@ import usecase.GetSimilarMoviesUseCase
 import usecase.GetSimilarSeriesUseCase
 import usecase.GetTvShowDetailsUseCase
 
-
 class MediaDetailsViewmodel(
-    savedStateHandle: SavedStateHandle,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
@@ -159,6 +156,10 @@ class MediaDetailsViewmodel(
         return _expandedUiStates[id] ?: false
     }
 
+    override fun onReadMoreReviewClicked(id: Long) {
+        _expandedUiStates[id] = !(_expandedUiStates[id] ?: false)
+    }
+
     fun toggleMovieDetailsTab(
         tab: MovieDetailsTabs,
         mediaId: Long,
@@ -273,7 +274,6 @@ class MediaDetailsViewmodel(
                     MediaType.MOVIE -> getSimilarMoviesUseCase(mediaId).map { it.toUIStateMedia() }
                     MediaType.TV_SHOW -> getSimilarTVShowsUseCase(mediaId).map { it.toUIStateMedia() }
                 }
-                Log.e("onShowMoreMediaLikeThisClicked", result.toString())
                 if (result.isEmpty()) {
                     _rowSectionUiState.update { RowSectionUiState.Error("There is no more like this!") }
                 } else {

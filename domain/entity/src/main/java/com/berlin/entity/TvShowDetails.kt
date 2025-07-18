@@ -11,6 +11,8 @@ data class TvShowDetails(
     val runtime: Int?,
     val genres: List<GenreEntity>,
     val seasons: List<SeasonEntity>,
+    val originCountry: String?,
+    val numberOfSeasons: String?,
 )
 
 data class SeasonEntity(

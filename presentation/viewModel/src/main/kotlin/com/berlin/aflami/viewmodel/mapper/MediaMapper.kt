@@ -38,7 +38,9 @@ fun MovieDetails.toUiState(
     seasons = emptyList(),
     isFavorite = isFavorite,
     isOverviewExpanded = isOverviewExpanded,
-    mediaType = MediaType.MOVIE
+    mediaType = MediaType.MOVIE,
+    originalCountry = originCountry,
+    duration = duration
 )
 
 fun TvShowDetails.toUiState(
@@ -57,7 +59,9 @@ fun TvShowDetails.toUiState(
     seasons = seasons.map { it.toUiState() },
     isFavorite = isFavorite,
     isOverviewExpanded = isOverviewExpanded,
-    mediaType = MediaType.TV_SHOW
+    mediaType = MediaType.TV_SHOW,
+    originalCountry = originCountry,
+    numberOfSeasons = numberOfSeasons
 )
 
 fun SeasonEntity.toUiState() = SeasonUiState(

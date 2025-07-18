@@ -3,7 +3,6 @@ package com.berlin.aflami.screens.mediadetails.components
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
-import com.berlin.aflami.screens.mediadetails.ReviewItem
 import com.berlin.aflami.viewmodel.uistate.ReviewUiState
 
 @Composable
