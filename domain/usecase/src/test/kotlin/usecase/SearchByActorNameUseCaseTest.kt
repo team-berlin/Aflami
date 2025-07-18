@@ -25,7 +25,7 @@ class SearchByActorNameUseCaseTest {
         // Given
         val actorName = "tom"
         val page = 1
-        coEvery { searchRepository.getMoviesByActorName(actorName, page) } returns emptyList()
+        coEvery { searchRepository.getMediaByActorName(actorName, page) } returns emptyList()
 
         // When
         val result = searchByActorNameUseCase.invoke(actorName, page)
@@ -39,13 +39,14 @@ class SearchByActorNameUseCaseTest {
         // Given
         val actorName = "tom"
 
-        coEvery { searchRepository.getMoviesByActorName(actorName, 1) } returns getMediaEntities()
+        //coEvery { searchRepository.getMediaByActorName(actorName, 1) } returns
+                //getMediaEntities()
 
         // When
         val result = searchByActorNameUseCase.invoke(actorName, 1)
 
         // Then
-        assertThat(result).cont
+       // assertThat(result).cont
         assertThat(result).hasSize(5)
     }
 
@@ -53,7 +54,7 @@ class SearchByActorNameUseCaseTest {
     fun `When search by invalid actor name, then return empty list`() = runTest {
         // Given
         val actorName = "tom"
-        coEvery { searchRepository.getMoviesByActorName(actorName, 1) } returns emptyList()
+        coEvery { searchRepository.getMediaByActorName(actorName, 1) } returns emptyList()
         // When
         val result = searchByActorNameUseCase.invoke(actorName, 1)
 

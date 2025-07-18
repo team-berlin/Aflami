@@ -63,6 +63,7 @@ class SearchRepositoryImpl(
 
         return sortMediaByCategoryScore(mediaList)
     }
+
     private suspend fun sortMediaByCategoryScore(mediaList: List<Media>): List<Media> {
         val scores = categoriesPreferencesDataSource.getAllCategoryScores()
 
