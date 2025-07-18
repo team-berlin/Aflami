@@ -63,7 +63,7 @@ fun TVShowDetailsDto.toDomain(): TvShowDetails {
         genres = this.genres?.map { it.toEntity() } ?: emptyList(),
         seasons = this.seasons?.map { it.toEntity() } ?: emptyList(),
         originCountry = this.originCountry?.get(0),
-        numberOfSeasons = this.numberOfSeasons?.toString()
+        numberOfSeasons = this.numberOfSeasons
     )
 }
 

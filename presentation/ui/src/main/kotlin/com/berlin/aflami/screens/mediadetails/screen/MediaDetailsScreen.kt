@@ -222,7 +222,10 @@ fun MediaDetailsContent(
 
             Spacer(Modifier.height(8.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     state.releaseYear,
                     style = Theme.textStyle.label.small,
@@ -237,10 +240,10 @@ fun MediaDetailsContent(
                     )
                 }
 
-                state.numberOfSeasons.takeIf { !it.isNullOrEmpty() }?.let { numberOfSeasons ->
+                state.numberOfSeasons?.toString()?.let { numberOfSeasons ->
                     CircularDot()
                     Text(
-                        numberOfSeasons,
+                        "$numberOfSeasons ${stringResource(R.string.season)}",
                         style = Theme.textStyle.label.small,
                         color = Theme.color.textColors.hint
                     )
@@ -377,122 +380,123 @@ fun RowSection(
         }
     }
 
+}
 
-    @Composable
-    fun ExpandableDescription(
-        text: String,
-        expanded: Boolean,
-        onToggleExpand: () -> Unit,
-        maxPreviewLength: Int = 240,
-        previewColor: Color,
-        suffixColor: Color,
-        previewStyle: TextStyle,
-        suffixStyle: TextStyle,
-    ) {
-        val canExpand = text.length > maxPreviewLength
+@Composable
+fun ExpandableDescription(
+    text: String,
+    expanded: Boolean,
+    onToggleExpand: () -> Unit,
+    maxPreviewLength: Int = 240,
+    previewColor: Color,
+    suffixColor: Color,
+    previewStyle: TextStyle,
+    suffixStyle: TextStyle,
+) {
+    val canExpand = text.length > maxPreviewLength
 
-        val displayText =
-            if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
+    val displayText =
+        if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
 
-        val suffix = when {
-            expanded && canExpand -> " Read less"
-            !expanded && canExpand -> " Read more"
-            else -> ""
-        }
-
-        val annotated = buildAnnotatedString {
-            append(displayText)
-            if (suffix.isNotEmpty()) {
-                withStyle(
-                    SpanStyle(
-                        color = suffixColor,
-                        fontFamily = suffixStyle.fontFamily,
-                        fontWeight = suffixStyle.fontWeight,
-                        fontSize = suffixStyle.fontSize
-                    )
-                ) {
-                    append(suffix)
-                }
-            }
-        }
-
-        Text(
-            text = annotated,
-            color = previewColor,
-            style = previewStyle,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.clickable(
-                enabled = canExpand,
-                onClick = onToggleExpand
-            ),
-            textAlign = TextAlign.Start
-        )
+    val suffix = when {
+        expanded && canExpand -> " Read less"
+        !expanded && canExpand -> " Read more"
+        else -> ""
     }
 
-    @SuppressLint("UnusedBoxWithConstraintsScope")
-    @Composable
-    fun Cast(
-        modifier: Modifier = Modifier,
-        castState: List<MediaCastUiState>,
-        listener: MediaInteractionListener,
+    val annotated = buildAnnotatedString {
+        append(displayText)
+        if (suffix.isNotEmpty()) {
+            withStyle(
+                SpanStyle(
+                    color = suffixColor,
+                    fontFamily = suffixStyle.fontFamily,
+                    fontWeight = suffixStyle.fontWeight,
+                    fontSize = suffixStyle.fontSize
+                )
+            ) {
+                append(suffix)
+            }
+        }
+    }
+
+    Text(
+        text = annotated,
+        color = previewColor,
+        style = previewStyle,
+        overflow = TextOverflow.Ellipsis,
+        modifier = Modifier.clickable(
+            enabled = canExpand,
+            onClick = onToggleExpand
+        ),
+        textAlign = TextAlign.Start
+    )
+}
+
+@SuppressLint("UnusedBoxWithConstraintsScope")
+@Composable
+fun Cast(
+    modifier: Modifier = Modifier,
+    castState: List<MediaCastUiState>,
+    listener: MediaInteractionListener,
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
-            modifier = modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(vertical = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(
+                Text(
+                    text = stringResource(com.berlin.ui.R.string.cast),
+                    style = Theme.textStyle.headline.small,
+                    color = Theme.color.textColors.title
+                )
+                Text(
+                    text = stringResource(com.berlin.ui.R.string.all),
+                    style = Theme.textStyle.label.medium,
+                    color = Theme.color.primary,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(com.berlin.ui.R.string.cast),
-                        style = Theme.textStyle.headline.small,
-                        color = Theme.color.textColors.title
-                    )
-                    Text(
-                        text = stringResource(com.berlin.ui.R.string.all),
-                        style = Theme.textStyle.label.medium,
-                        color = Theme.color.primary,
-                        modifier = Modifier
-                            .clickable {
-                                listener.onShowCastClicked()
-                            }
-                    )
-                }
+                        .clickable {
+                            listener.onShowCastClicked()
+                        }
+                )
             }
-            BoxWithConstraints {
-                val screenWidth = maxWidth
-                val cardSize = 78.dp
-                val spaceBetween = 8.dp
-                val totalCardWidth = cardSize + spaceBetween
-
-                val maxCardsInRow = (screenWidth / totalCardWidth).toInt()
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(spaceBetween)
-                ) {
-                    castState.take(maxCardsInRow).forEach {
-                        MediaCastItem(
-                            modifier = Modifier.size(cardSize),
-                            name = it.name,
-                            poster = it.poster
-                        )
-                    }
-                }
-            }
-
         }
+        BoxWithConstraints {
+            val screenWidth = maxWidth
+            val cardSize = 78.dp
+            val spaceBetween = 8.dp
+            val totalCardWidth = cardSize + spaceBetween
+
+            val maxCardsInRow = (screenWidth / totalCardWidth).toInt()
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(spaceBetween)
+            ) {
+                castState.take(maxCardsInRow).forEach {
+                    MediaCastItem(
+                        modifier = Modifier.size(cardSize),
+                        name = it.name,
+                        poster = it.poster
+                    )
+                }
+            }
+        }
+
     }
+}
 
 @Composable
 fun CircularDot() {
@@ -502,8 +506,6 @@ fun CircularDot() {
             .clip(CircleShape)
             .background(Theme.color.stroke)
     )
-}
-
 }
 
 fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
