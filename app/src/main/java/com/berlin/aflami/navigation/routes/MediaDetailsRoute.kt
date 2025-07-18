@@ -7,14 +7,13 @@ import com.berlin.aflami.screens.mediadetails.screen.MediaDetailsScreen
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.example.navigation.Destination.MediaDetailsScreen
 
-
 fun NavGraphBuilder.mediaDetailsRoute(
     navController: NavController
 ) {
     composable(route = MediaDetailsScreen.route) {
         MediaDetailsScreen(
             navController = navController,
-            mediaId = 505,
+            mediaId = 22,
             mediaType = MediaType.MOVIE
         )
     }
