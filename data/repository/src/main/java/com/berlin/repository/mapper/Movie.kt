@@ -1,7 +1,6 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.Movie
-import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import com.berlin.repository.util.toLocalDate
@@ -18,7 +17,7 @@ fun SearchingEntity.toDomain(): Movie {
     )
 }
 
-fun MovieDto.toLocal(query: String, type: QueryType, page: Int,mediaType:String): SearchingEntity {
+fun MovieDto.toLocal(query: String, type: String, page: Int,mediaType:String): SearchingEntity {
     return SearchingEntity(
         query = query,
         type = type,

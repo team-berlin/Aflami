@@ -40,7 +40,7 @@ class SearchByActorViewModel(
     }
 
     override fun onMovieClicked(movieId: Int, mediaType: String) {
-        //sendNewEffect(SearchByActorEffect.NavigatedToMediaDetailsScreen(movieId, mediaType: String))
+        sendNewEffect(SearchByActorEffect.NavigatedToMediaDetailsScreen(movieId, mediaType))
     }
 
     override fun onActorNameChanged(actorName: CharSequence) {

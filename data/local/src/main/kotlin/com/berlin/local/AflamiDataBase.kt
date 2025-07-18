@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.berlin.local.converters.Converters
+import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 
@@ -14,5 +15,6 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 )
 abstract class SearchDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
+    abstract fun recentHistoryDao(): RecentHistoryDao
 
 }

@@ -270,6 +270,7 @@ class SearchViewModel(
             _recentSearchState.value = recentHistoryQueries
         }
     }
+
     fun deleteQueryFromHistory(query: String) {
         viewModelScope.launch {
             deleteQueryFromHistoryUseCase(query)

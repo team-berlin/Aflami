@@ -3,21 +3,22 @@ package com.berlin.repository
 import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
+import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
-import com.berlin.repository.datasource.local.dto.QueryType
-import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
 import com.berlin.repository.mapper.toMedia
+import com.berlin.repository.util.QueryType
 import repository.SearchRepository
 import java.time.Instant
 
 class SearchRepositoryImpl(
     private val localDataSource: SearchLocalDataSource,
     private val remoteDataSource: SearchRemoteDataSource,
+    private val recentHistoryLocalDataSource: RecentHistoryLocalDataSource
     // sharedPref
 ) : SearchRepository {
 
@@ -32,13 +33,13 @@ class SearchRepositoryImpl(
             ?.map { it.toDomain() }
             ?: remoteDataSource.searchMoviesByCountry(query, language, page).results
                 ?.filterNotNull()
-                ?.map { it.toLocal(query, QueryType.COUNTRY, page,"MOVIE")}
+                ?.map { it.toLocal(query, QueryType.COUNTRY.name, page, "MOVIE") }
                 ?.also { localDataSource.cacheSearch(it) }
                 ?.map { it.toDomain() }
             ?: emptyList()
     }
 
-    override suspend fun getMediaByActorName(actorName: String, page:Int): List<Media> {
+    override suspend fun getMediaByActorName(actorName: String, page: Int): List<Media> {
         return localDataSource.getCachedSearch(
             actorName,
             QueryType.ACTOR,
@@ -46,28 +47,35 @@ class SearchRepositoryImpl(
             page = page
         ).takeIf { !isExpiredOrEmpty(it) }
             ?.map { it.toMedia() }
-            ?:remoteDataSource.searchMoviesByActor(actorName, language,page).results
+            ?: remoteDataSource.searchMoviesByActor(actorName, language, page).results
                 ?.filterNotNull()
                 ?.also { getActingDepartment(it) }
-                ?.let { getMediaByActorName(actorName,page,it)}
-                ?.also {localDataSource.cacheSearch(it) }
+                ?.let { getMediaByActorName(actorName, page, it) }
+                ?.also { localDataSource.cacheSearch(it) }
                 ?.map { it.toMedia() }
-            ?:emptyList()
+            ?: emptyList()
     }
 
 
-    private fun getActingDepartment(listOfPersons:List<PersonDto>): List<PersonDto> {
+    private fun getActingDepartment(listOfPersons: List<PersonDto>): List<PersonDto> {
         return listOfPersons.filter { it.knownForDepartment == ACTING_DEPARTMENT }
     }
 
-    private fun getMediaByActorName(actorName: String, page:Int, listOfPersons:List<PersonDto>): List<SearchingEntity> {
-        return listOfPersons.flatMap { it.knownFor?.filterNotNull()
-            ?.map { it.toLocal(
-                actorName,
-                QueryType.ACTOR,
-                page,
-                it.mediaType
-            ) }?:emptyList()
+    private fun getMediaByActorName(
+        actorName: String,
+        page: Int,
+        listOfPersons: List<PersonDto>
+    ): List<SearchingEntity> {
+        return listOfPersons.flatMap {
+            it.knownFor?.filterNotNull()
+                ?.map {
+                    it.toLocal(
+                        actorName,
+                        QueryType.ACTOR.name,
+                        page,
+                        it.mediaType
+                    )
+                } ?: emptyList()
         }
     }
 
@@ -117,10 +125,11 @@ class SearchRepositoryImpl(
                 list.any { Instant.now().epochSecond - it.time > CACHE_TIMEOUT }
     }
 
-    override suspend fun getRecentSearchQueries(): List<String>{
-        return localDataSource.getRecentSearchQueries()
+    override suspend fun getRecentSearchQueries(): List<String> {
+        return recentHistoryLocalDataSource.getRecentSearchQueries()
     }
-    override suspend fun saveRecentHistory(query: String){
+
+    override suspend fun saveRecentHistory(query: String) {
         val entity = SearchingEntity(
             id = query.hashCode().toLong(),
             query = query,
@@ -130,17 +139,20 @@ class SearchRepositoryImpl(
             rating = 0.0,
             releaseYear = "",
             genre = emptyList(),
-            poster = ""
+            poster = "",
+            page = 1,
+            mediaType = ""
+
         )
-        localDataSource.insertQueryOnly(entity)
+        recentHistoryLocalDataSource.insertQueryOnly(entity)
     }
 
     override suspend fun deleteQueryFromHistory(query: String) {
-        localDataSource.deleteQueryFromHistory(query)
+        recentHistoryLocalDataSource.deleteQueryFromHistory(query)
     }
 
     override suspend fun clearSearchHistory() {
-        localDataSource.clearSearchHistory()
+        recentHistoryLocalDataSource.clearSearchHistory()
     }
 
     companion object {

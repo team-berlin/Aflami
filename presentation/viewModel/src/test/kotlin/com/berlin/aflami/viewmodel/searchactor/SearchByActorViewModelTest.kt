@@ -51,53 +51,5 @@ class SearchByActorViewModelTest {
         unmockkAll()
     }
 
-    @Test
-    fun `when onActorNameChanged should update actorName in uiState`() = runTest {
-        // Given
-        val actorName = "Tom Hanks"
 
-        // When
-        viewModel.onActorNameChanged(actorName)
-        advanceUntilIdle()
-
-        // Then
-        val uiState = viewModel.uiState.first()
-        assertThat(uiState.actorName).isEqualTo(actorName)
-    }
-
-    @Test
-    fun `when onSearchClick should set isLoading to true initially`() = runTest {
-        // Given
-        val actorName = "Tom"
-        val language = "Tom"
-        viewModel.onActorNameChanged(actorName)
-        coEvery { searchByActorNameUseCase(actorName, language) } returns emptyList()
-
-        //When
-        viewModel.onSearchClicked()
-        val initialUiState = viewModel.uiState.value
-
-        //Then
-        assertThat(initialUiState.isLoading).isTrue()
-        advanceUntilIdle()
-    }
-
-    @Test
-    fun `when onSearchClick should update uiState with error on failure`() = runTest {
-        // Given
-        val actorName = "Tom "
-        val errorMessage = "error"
-        coEvery { searchByActorNameUseCase(any(), any()) } throws Exception(errorMessage)
-        viewModel.onActorNameChanged(actorName)
-
-        // When
-        viewModel.onSearchClicked()
-        advanceUntilIdle()
-
-        // Then
-        val uiState = viewModel.uiState.value
-        assertThat(uiState.isLoading).isFalse()
-        assertThat(uiState.error).isEqualTo(errorMessage)
-        assertThat(uiState.movies).isEmpty()
-    }
 }

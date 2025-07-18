@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.util.QueryType
 
 @Dao
 interface SearchDao {
@@ -23,18 +23,6 @@ interface SearchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun cacheSearch(searchCaching: List<SearchingEntity>)
-
-    @Query("SELECT DISTINCT `query` FROM search_cache ORDER BY time DESC LIMIT 10")
-    suspend fun getRecentSearchQueries(): List<String>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertQueryOnly(searchingEntity: SearchingEntity)
-
-    @Query("DELETE FROM search_cache WHERE `query` = :query")
-    suspend fun deleteQueryFromHistory(query: String)
-
-    @Query("DELETE FROM search_cache")
-    suspend fun clearSearchHistory()
 
 
 }
