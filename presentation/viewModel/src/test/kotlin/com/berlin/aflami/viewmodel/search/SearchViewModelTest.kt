@@ -19,13 +19,22 @@ import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDate
 import org.junit.Before
 import org.junit.Test
+import usecase.ClearSearchHistoryUseCase
+import usecase.DeleteQueryFromHistoryUseCase
+import usecase.GetRecentHistoryUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
+import usecase.SaveRecentHistoryUseCase
 
 class SearchViewModelTest {
     private lateinit var viewModel: SearchViewModel
     private lateinit var searchMoviesUseCase: GetSearchMoviesUseCase
     private lateinit var searchTvShowsUseCase: GetSearchTvShowsUseCase
+    private lateinit var getRecentHistoryUseCase: GetRecentHistoryUseCase
+    private lateinit var saveRecentHistoryUseCase: SaveRecentHistoryUseCase
+    private lateinit var deleteQueryFromHistoryUseCase: DeleteQueryFromHistoryUseCase
+    private lateinit var clearSearchHistoryUseCase: ClearSearchHistoryUseCase
+
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
@@ -33,15 +42,32 @@ class SearchViewModelTest {
         Dispatchers.setMain(testDispatcher)
         searchMoviesUseCase = mockk()
         searchTvShowsUseCase = mockk()
+        getRecentHistoryUseCase = mockk()
+        saveRecentHistoryUseCase = mockk()
+        deleteQueryFromHistoryUseCase = mockk()
+        clearSearchHistoryUseCase = mockk()
+
         mockkStatic(Log::class)
         every { Log.d(any(), any()) } returns 0
         every { Log.e(any(), any()) } returns 0
+        coEvery { getRecentHistoryUseCase() } returns emptyList()
+        coEvery { saveRecentHistoryUseCase(any()) } returns Unit
+        coEvery { deleteQueryFromHistoryUseCase(any()) } returns Unit
+        coEvery { clearSearchHistoryUseCase() } returns Unit
+
 
 
         mockkStatic(Dispatchers::class)
         every { Dispatchers.IO } returns testDispatcher
 
-        viewModel = SearchViewModel(searchMoviesUseCase, searchTvShowsUseCase)
+        viewModel = SearchViewModel(
+            searchMoviesUseCase,
+            searchTvShowsUseCase,
+            getRecentHistoryUseCase,
+            saveRecentHistoryUseCase,
+            deleteQueryFromHistoryUseCase,
+            clearSearchHistoryUseCase
+        )
     }
 
     @Test
@@ -165,5 +191,41 @@ class SearchViewModelTest {
 
         val successState = state as SearchUiState.Searching.Success
         assertThat(successState.data).containsExactly(expectedUi)
+    }
+
+    @Test
+    fun `loadRecentSearches should update state`() = runTest {
+        val fakeList = listOf("Breaking Bad", "Oppenheimer")
+        coEvery { getRecentHistoryUseCase() } returns fakeList
+
+        viewModel.loadRecentSearches()
+        advanceUntilIdle()
+
+        assert(viewModel.recentSearchState.value == fakeList)
+    }
+
+    @Test
+    fun `clearSearchHistory should call use case and reload`() = runTest {
+        coEvery { clearSearchHistoryUseCase() } returns Unit
+        coEvery { getRecentHistoryUseCase() } returns emptyList()
+
+        viewModel.clearSearchHistory()
+    }
+
+    @Test
+    fun `deleteQueryFromHistory should call use case and reload`() = runTest {
+        val query = "Batman"
+        coEvery { deleteQueryFromHistoryUseCase(query) } returns Unit
+        coEvery { getRecentHistoryUseCase() } returns emptyList()
+
+        viewModel.deleteQueryFromHistory(query)
+
+    }
+
+    @Test
+    fun `clearSearchState should reset UI state and query`() = runTest {
+        viewModel.clearSearchState()
+        assert(viewModel.searchUIState.value == SearchUiState.Init)
+        assert(viewModel.queryFlow.value == "")
     }
 }
