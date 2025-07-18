@@ -1,12 +1,15 @@
 package com.berlin.repository
 
+import com.berlin.entity.EpisodesSeason
 import com.berlin.entity.MediaCast
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.remote.TvShowDetailsRemoteDataSource
+import com.berlin.repository.datasource.remote.dto.details.EpisodeDto
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
+import com.berlin.repository.mapper.toEpisode
 import com.berlin.repository.mapper.toTVShow
 import exceptions.AflamiExceptions
 import repository.TvShowDetailsRepository
@@ -52,5 +55,11 @@ class TvShowDetailsRepositoryImpl(
             ?.filterNotNull()
             ?.map {  reviewDto -> reviewDto.toDomain() }
             ?: emptyList()
+    }
+    override suspend fun getSeasonEpisodes(seriesId: Long, seasonNumber: Int): List<EpisodesSeason> {
+        return remoteDataSource.getEpisodeSeasonSeries(seriesId, seasonNumber)
+            .results?.filterNotNull()?.map { episodeDto ->
+                episodeDto.toDomain()
+            } ?: emptyList()
     }
 }

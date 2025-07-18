@@ -22,8 +22,9 @@ data class MediaDetailsUiState(
     val genres: List<String> = emptyList(),
     val releaseYear: String = "",
     val rating: Double = 0.0,
-    val runtime: String = "",
-    val seasons: List<SeasonUiState> = emptyList(),
+    val runtime: String? = "",
+    val seasons: List<EpisodesSeasonUiState>? = emptyList(),
+    val numberOfSeasons:Int?=null,
     val isFavorite: Boolean = false,
     val isOverviewExpanded: Boolean = false,
     val mediaType: MediaType = MediaType.MOVIE,
@@ -35,34 +36,24 @@ data class MediaDetailsUiState(
     val isLoading: Boolean = true,
 )
 
-data class SeasonUiState(
-    val id: Long = 0L,
-    val numberOfEpisodes: Int = 0,
-    val seasonTitle: String = "",
-    val episodeTitle: String= "",
-    val episodeDuration: Int = 0,
-    val airDate: String = "",
-    val episodeDescription: String = "",
-    val posterUrl: String = "",
-    val rate: Float = 0f,
-    val seasonNumber: Int = 0,
-    //val isPlaying: Boolean = false,
-data class EpisodeUi(
-    val id: Int,
+
+data class EpisodesUiState(
+    val airDate: String,
     val episodeNumber: Int,
-    val title: String,
-    val description: String,
-    val imageUrl: String,
-    val time: String,
-    val date: String,
-    val rating: String,
-    val isPlaying: Boolean = false,
-    val isExpanded: Boolean = false,
+    val episodeType: String,
+    val id: Int,
+    val name: String,
+    val overview: String,
+    val runtime: Int,
+    val voteAverage: Double,
+
     )
-)
-data class SeasonUiState(
-    val seasonNumber: String,
-    val episodes: List<EpisodeUi>
+data class EpisodesSeasonUiState(
+    val idSeason: Int,
+    val name: String,
+    val episodes: List<EpisodesUiState?>,
+    val seasonNumber: Int,
+    val posterPath: String,
 )
 
 data class MediaOptions(

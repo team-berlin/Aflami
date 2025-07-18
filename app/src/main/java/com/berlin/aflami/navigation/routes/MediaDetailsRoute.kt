@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.berlin.aflami.screens.mediadetails.screen.MediaDetailsScreen
 import com.berlin.aflami.viewmodel.uistate.MediaType
-import com.berlin.aflami.screens.mediadetails.screens.MediaDetailsScreen
 import com.example.navigation.Destination.MediaDetailsScreen
 
 fun NavGraphBuilder.mediaDetailsRoute(

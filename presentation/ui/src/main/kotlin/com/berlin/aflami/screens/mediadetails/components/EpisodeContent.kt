@@ -23,25 +23,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.berlin.aflami.screens.search.mediadetails.EpisodeCard
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.uistate.EpisodeUi
-import com.berlin.aflami.viewmodel.uistate.SeasonUiState
+import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
+import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
+import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.designsystem.R
 
 
 @Composable
 fun SeasonsScreen(
-    seasons: List<SeasonUiState>,
+     seasons: List<EpisodesSeasonUiState>? = emptyList(),
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.background(Theme.color.surface),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        seasons.forEach { season ->
+        seasons?.forEach { season ->
             EpisodeScreen(
-                seasonNumber = season.seasonNumber,
+                seasonNumber = season.seasonNumber.toString(),
                 episodes = season.episodes
             )
             HorizontalDivider(
@@ -58,7 +60,7 @@ fun SeasonsScreen(
 @Composable
 fun EpisodeScreen(
     seasonNumber: String,
-    episodes: List<EpisodeUi>,
+    episodes: List<EpisodesUiState?>,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -79,11 +81,13 @@ fun EpisodeScreen(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     items(episodes.size) { index ->
-                        EpisodeCard(
-                            episode = episodes[index],
-                            modifier = Modifier.fillMaxWidth(),
-                            onClickPlay = {}
-                        )
+                        episodes[index]?.let {
+                            EpisodeCard(
+                                episode = it,
+                                modifier = Modifier.fillMaxWidth(),
+                                onClickPlay = {}
+                            )
+                        }
                     }
                 }
             }
@@ -130,110 +134,110 @@ fun SeasonsHeader(
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun SeasonsScreenPreview() {
-    AflamiTheme(isDarkTheme = false) {
-        SeasonsScreen(
-            seasons = sampleSeasons,
-            modifier = Modifier.background(Theme.color.surface)
-        )
-    }
-}
-val sampleSeasons = listOf(
-    SeasonUiState(
-        seasonNumber = "1",
-        episodes = listOf(
-            EpisodeUi(
-                id = 0,
-                episodeNumber = 1,
-                title = "Recovering a Body",
-                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
-                imageUrl = "",
-                time = "58 m",
-                date = "3 Sep 2020",
-                rating = "8.2"
-            ),
-            EpisodeUi(
-                id = 1,
-                episodeNumber = 2,
-                title = "The Mouse",
-                description = "A mysterious inmate arrives at The Green Mile.",
-                imageUrl = "",
-                time = "60 m",
-                date = "10 Sep 2020",
-                rating = "8.5"
-            )
-        )
-    ),
-    SeasonUiState(
-        seasonNumber = "2",
-        episodes = listOf(
-            EpisodeUi(
-                id = 0,
-                episodeNumber = 1,
-                title = "Recovering a Body",
-                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
-                imageUrl = "",
-                time = "58 m",
-                date = "3 Sep 2020",
-                rating = "8.2"
-            ),
-            EpisodeUi(
-                id = 1,
-                episodeNumber = 2,
-                title = "The Mouse",
-                description = "A mysterious inmate arrives at The Green Mile.",
-                imageUrl = "",
-                time = "60 m",
-                date = "10 Sep 2020",
-                rating = "8.5"
-            )
-        )
-    ),
-    SeasonUiState(
-        seasonNumber = "3",
-        episodes = listOf(
-            EpisodeUi(
-                id = 0,
-                episodeNumber = 1,
-                title = "Recovering a Body",
-                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
-                imageUrl = "",
-                time = "58 m",
-                date = "3 Sep 2020",
-                rating = "8.2"
-            ),
-            EpisodeUi(
-                id = 1,
-                episodeNumber = 2,
-                title = "The Mouse",
-                description = "A mysterious inmate arrives at The Green Mile.",
-                imageUrl = "",
-                time = "60 m",
-                date = "10 Sep 2020",
-                rating = "8.5"
-            ),
-            EpisodeUi(
-                id = 2,
-                episodeNumber = 3,
-                title = "Recovering a Body",
-                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
-                imageUrl = "",
-                time = "58 m",
-                date = "3 Sep 2020",
-                rating = "8.2"
-            ),
-            EpisodeUi(
-                id = 3,
-                episodeNumber = 4,
-                title = "The Mouse",
-                description = "A mysterious inmate arrives at The Green Mile.",
-                imageUrl = "",
-                time = "60 m",
-                date = "10 Sep 2020",
-                rating = "8.5"
-            )
-        )
-    )
-)
+//@Preview(showSystemUi = true)
+//@Composable
+//fun SeasonsScreenPreview() {
+//    AflamiTheme(isDarkTheme = false) {
+//        SeasonsScreen(
+//            seasons = sampleSeasons,
+//            modifier = Modifier.background(Theme.color.surface)
+//        )
+//    }
+//}
+//val sampleSeasons = listOf(
+//    MediaDetailsUiState(
+//        seasonNumber = "1",
+//        episodes = listOf(
+//            EpisodeUi(
+//                id = 0,
+//                episodeNumber = 1,
+//                title = "Recovering a Body",
+//                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
+//                imageUrl = "",
+//                time = "58 m",
+//                date = "3 Sep 2020",
+//                rating = "8.2"
+//            ),
+//            EpisodeUi(
+//                id = 1,
+//                episodeNumber = 2,
+//                title = "The Mouse",
+//                description = "A mysterious inmate arrives at The Green Mile.",
+//                imageUrl = "",
+//                time = "60 m",
+//                date = "10 Sep 2020",
+//                rating = "8.5"
+//            )
+//        )
+//    ),
+//    SeasonUiState(
+//        seasonNumber = "2",
+//        episodes = listOf(
+//            EpisodeUi(
+//                id = 0,
+//                episodeNumber = 1,
+//                title = "Recovering a Body",
+//                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
+//                imageUrl = "",
+//                time = "58 m",
+//                date = "3 Sep 2020",
+//                rating = "8.2"
+//            ),
+//            EpisodeUi(
+//                id = 1,
+//                episodeNumber = 2,
+//                title = "The Mouse",
+//                description = "A mysterious inmate arrives at The Green Mile.",
+//                imageUrl = "",
+//                time = "60 m",
+//                date = "10 Sep 2020",
+//                rating = "8.5"
+//            )
+//        )
+//    ),
+//    SeasonUiState(
+//        seasonNumber = "3",
+//        episodes = listOf(
+//            EpisodeUi(
+//                id = 0,
+//                episodeNumber = 1,
+//                title = "Recovering a Body",
+//                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
+//                imageUrl = "",
+//                time = "58 m",
+//                date = "3 Sep 2020",
+//                rating = "8.2"
+//            ),
+//            EpisodeUi(
+//                id = 1,
+//                episodeNumber = 2,
+//                title = "The Mouse",
+//                description = "A mysterious inmate arrives at The Green Mile.",
+//                imageUrl = "",
+//                time = "60 m",
+//                date = "10 Sep 2020",
+//                rating = "8.5"
+//            ),
+//            EpisodeUi(
+//                id = 2,
+//                episodeNumber = 3,
+//                title = "Recovering a Body",
+//                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
+//                imageUrl = "",
+//                time = "58 m",
+//                date = "3 Sep 2020",
+//                rating = "8.2"
+//            ),
+//            EpisodeUi(
+//                id = 3,
+//                episodeNumber = 4,
+//                title = "The Mouse",
+//                description = "A mysterious inmate arrives at The Green Mile.",
+//                imageUrl = "",
+//                time = "60 m",
+//                date = "10 Sep 2020",
+//                rating = "8.5"
+//            )
+//        )
+//    )
+//)

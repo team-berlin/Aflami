@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.mediadetails.components
+package com.berlin.aflami.screens.search.mediadetails
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,14 +32,13 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.uistate.EpisodeUi
+import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
 import com.berlin.designsystem.R
-
 
 
 @Composable
 fun EpisodeCard(
-    episode: EpisodeUi,
+    episode: EpisodesUiState,
     modifier: Modifier = Modifier,
     onClickPlay: () -> Unit = {}
 ) {
@@ -54,8 +53,8 @@ fun EpisodeCard(
         ) {
             ImageWithRatingBadge(
                 modifier = Modifier,
-                imageUrl = episode.imageUrl,
-                rating = episode.rating
+                imageUrl = "",
+                rating = episode.voteAverage.toString()
             )
 
             EpisodeDetails(
@@ -63,9 +62,9 @@ fun EpisodeCard(
                     .padding(start = 12.dp)
                     .weight(1f),
                 episodeNumber = episode.episodeNumber,
-                title = episode.title,
-                time = episode.time,
-                date = episode.date
+                title = episode.name,
+                time = episode.runtime.toString(),
+                date = episode.airDate
             )
 
             CircularIConButton(
@@ -76,7 +75,7 @@ fun EpisodeCard(
 
         Text(
             modifier = Modifier.padding(top = 8.dp),
-            text = episode.description,
+            text = episode.overview,
             style = Theme.textStyle.label.small,
             color = Theme.color.textColors.hint,
             maxLines = 2,
@@ -186,21 +185,4 @@ private fun EpisodeDetails(
     }
 }
 
-@Composable
-@Preview()
-private fun EpisodeDetailsCardPreview() {
-    AflamiTheme(isDarkTheme = true) {
-        EpisodeCard(episode = previewEpisode)
-    }
-}
 
-private val previewEpisode = EpisodeUi(
-    id = 0,
-    episodeNumber = 1,
-    title = "Recovering a body",
-    description = "In 1935, corrections officer Paul Edge comb oversees \"The Green Mile, the death row",
-    imageUrl = "",
-    time = "58 m",
-    date = "3 Sep 2020",
-    rating = "8.2",
-)

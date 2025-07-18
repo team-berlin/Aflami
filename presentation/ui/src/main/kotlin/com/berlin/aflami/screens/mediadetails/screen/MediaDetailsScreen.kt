@@ -50,6 +50,7 @@ import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSectio
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
+import com.berlin.aflami.screens.mediadetails.components.SeasonsScreen
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
@@ -58,6 +59,7 @@ import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.TabContent
+import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.uistate.ReviewState
 import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
@@ -109,16 +111,18 @@ fun MediaDetailsScreen(
             onPlay = { viewModel.onPlayClicked(uiState.id) },
             onReadMore = { viewModel.onReadMoreDescriptionClicked(uiState.id) },
             listener = viewModel,
-            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(id = 550) },
-            isExpanded = viewModel.isDescriptionExpanded(id = 550),
+            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(id = 155) },
+            isExpanded = viewModel.isDescriptionExpanded(id = 155),
             isSelectedTab = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
                     tab = tab,
-                    mediaId = 550,
-                    mediaType = MediaType.MOVIE
+                    mediaId = 155,
+                    mediaType = MediaType.TV_SHOW
                 )
-            }
+            },
+
+            mediaType =   mediaType,
         )
     }
 }
@@ -137,6 +141,7 @@ fun MediaDetailsContent(
     onToggleExpand: () -> Unit,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
+    mediaType: MediaType,
 ) {
     Column(
         Modifier
@@ -215,37 +220,37 @@ fun MediaDetailsContent(
 
             Spacer(Modifier.height(8.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    state.releaseYear,
-                    style = Theme.textStyle.label.small,
-                    color = Theme.color.textColors.hint
-                )
-                if (state.mediaDuration.isNotBlank()) {
-                    Text(
-                        "•",
-                        style = Theme.textStyle.label.small,
-                        color = Theme.color.textColors.hint
-                    )
-                    Text(
-                        state.mediaDuration,
-                        style = Theme.textStyle.label.small,
-                        color = Theme.color.textColors.hint
-                    )
-                }
-                if (state.country.isNotBlank()) {
-                    Text(
-                        "•",
-                        style = Theme.textStyle.label.small,
-                        color = Theme.color.textColors.hint
-                    )
-                    Text(
-                        state.mediaDuration,
-                        style = Theme.textStyle.label.small,
-                        color = Theme.color.textColors.hint
-                    )
-                }
-            }
+//            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+//                Text(
+//                    state.releaseYear,
+//                    style = Theme.textStyle.label.small,
+//                    color = Theme.color.textColors.hint
+//                )
+//                if (state.mediaDuration.isNotBlank()) {
+//                    Text(
+//                        "•",
+//                        style = Theme.textStyle.label.small,
+//                        color = Theme.color.textColors.hint
+//                    )
+//                    Text(
+//                        state.mediaDuration,
+//                        style = Theme.textStyle.label.small,
+//                        color = Theme.color.textColors.hint
+//                    )
+//                }
+//                if (state.country.isNotBlank()) {
+//                    Text(
+//                        "•",
+//                        style = Theme.textStyle.label.small,
+//                        color = Theme.color.textColors.hint
+//                    )
+//                    Text(
+//                        state.mediaDuration,
+//                        style = Theme.textStyle.label.small,
+//                        color = Theme.color.textColors.hint
+//                    )
+//                }
+//            }
 
             Spacer(Modifier.height(24.dp))
 
@@ -280,7 +285,9 @@ fun MediaDetailsContent(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(MovieDetailsTabs.entries) { tab ->
+            items(
+                MovieDetailsTabs.entries
+            ) { tab ->
                 Chips(
                     title = stringResource(movieDetailsTabsMapper(tab)),
                     icon = painterResource(getMovieDetailsTabsIcon(tab)),
@@ -330,146 +337,151 @@ fun MediaDetailsContent(
                         CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
                     }
 
-                    else -> {
+                    is TabContent.Season -> {
+                        SeasonsScreen(
+                            seasons = state.seasons,
+                        )
+                    }
+                }
 
+            }
+        }
+    }
+
+    @Composable
+    fun ExpandableDescription(
+        text: String,
+        expanded: Boolean,
+        onToggleExpand: () -> Unit,
+        maxPreviewLength: Int = 240,
+        previewColor: Color,
+        suffixColor: Color,
+        previewStyle: TextStyle,
+        suffixStyle: TextStyle
+    ) {
+        val canExpand = text.length > maxPreviewLength
+
+        val displayText =
+            if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
+
+        val suffix = when {
+            expanded && canExpand -> " Read less"
+            !expanded && canExpand -> " Read more"
+            else -> ""
+        }
+
+        val annotated = buildAnnotatedString {
+            append(displayText)
+            if (suffix.isNotEmpty()) {
+                withStyle(
+                    SpanStyle(
+                        color = suffixColor,
+                        fontFamily = suffixStyle.fontFamily,
+                        fontWeight = suffixStyle.fontWeight,
+                        fontSize = suffixStyle.fontSize
+                    )
+                ) {
+                    append(suffix)
+                }
+            }
+        }
+
+        Text(
+            text = annotated,
+            color = previewColor,
+            style = previewStyle,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.clickable(
+                enabled = canExpand,
+                onClick = onToggleExpand
+            ),
+            textAlign = TextAlign.Start
+        )
+    }
+
+    @Composable
+    fun Cast(
+        modifier: Modifier = Modifier,
+        castState: List<MediaCastUiState>,
+        listener: MediaInteractionListener,
+    ) {
+        Column(
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Column(
+                modifier = Modifier.padding(vertical = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = stringResource(com.berlin.ui.R.string.cast),
+                        style = Theme.textStyle.headline.small,
+                        color = Theme.color.textColors.title
+                    )
+                    Text(
+                        text = stringResource(com.berlin.ui.R.string.all),
+                        style = Theme.textStyle.label.medium,
+                        color = Theme.color.primary,
+                        modifier = Modifier
+                            .clickable {
+                                listener.onShowCastClicked()
+                            }
+                    )
+                }
+            }
+            BoxWithConstraints {
+                val screenWidth = maxWidth
+                val cardSize = 78.dp
+                val spaceBetween = 8.dp
+                val totalCardWidth = cardSize + spaceBetween
+
+                val maxCardsInRow = (screenWidth / totalCardWidth).toInt()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(spaceBetween)
+                ) {
+                    castState.take(maxCardsInRow).forEach {
+                        MediaCastItem(
+                            modifier = Modifier.size(cardSize),
+                            name = it.name,
+                            poster = it.poster
+                        )
                     }
                 }
             }
 
         }
     }
+
+
 }
 
-@Composable
-fun ExpandableDescription(
-    text: String,
-    expanded: Boolean,
-    onToggleExpand: () -> Unit,
-    maxPreviewLength: Int = 240,
-    previewColor: Color,
-    suffixColor: Color,
-    previewStyle: TextStyle,
-    suffixStyle: TextStyle
-) {
-    val canExpand = text.length > maxPreviewLength
-
-    val displayText =
-        if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
-
-    val suffix = when {
-        expanded && canExpand -> " Read less"
-        !expanded && canExpand -> " Read more"
-        else -> ""
-    }
-
-    val annotated = buildAnnotatedString {
-        append(displayText)
-        if (suffix.isNotEmpty()) {
-            withStyle(
-                SpanStyle(
-                    color = suffixColor,
-                    fontFamily = suffixStyle.fontFamily,
-                    fontWeight = suffixStyle.fontWeight,
-                    fontSize = suffixStyle.fontSize
-                )
-            ) {
-                append(suffix)
-            }
-        }
-    }
-
-    Text(
-        text = annotated,
-        color = previewColor,
-        style = previewStyle,
-        overflow = TextOverflow.Ellipsis,
-        modifier = Modifier.clickable(
-            enabled = canExpand,
-            onClick = onToggleExpand
-        ),
-        textAlign = TextAlign.Start
-    )
-}
-
-@Composable
-fun Cast(
-    modifier: Modifier = Modifier,
-    castState: List<MediaCastUiState>,
-    listener: MediaInteractionListener,
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Column(
-            modifier = Modifier.padding(vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(com.berlin.ui.R.string.cast),
-                    style = Theme.textStyle.headline.small,
-                    color = Theme.color.textColors.title
-                )
-                Text(
-                    text = stringResource(com.berlin.ui.R.string.all),
-                    style = Theme.textStyle.label.medium,
-                    color = Theme.color.primary,
-                    modifier = Modifier
-                        .clickable {
-                            listener.onShowCastClicked()
-                        }
-                )
-            }
-        }
-        BoxWithConstraints {
-            val screenWidth = maxWidth
-            val cardSize = 78.dp
-            val spaceBetween = 8.dp
-            val totalCardWidth = cardSize + spaceBetween
-
-            val maxCardsInRow = (screenWidth / totalCardWidth).toInt()
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(spaceBetween)
-            ) {
-                castState.take(maxCardsInRow).forEach {
-                    MediaCastItem(
-                        modifier = Modifier.size(cardSize),
-                        name = it.name,
-                        poster = it.poster
-                    )
-                }
-            }
-        }
-
-    }
-}
-
-
-private fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
+fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
     return when (tab) {
         MovieDetailsTabs.MORE_LIKE_THIS -> R.string.more_like_this
         MovieDetailsTabs.REVIEWS -> R.string.reviews
         MovieDetailsTabs.GALLERY -> R.string.gallery
         MovieDetailsTabs.COMPANY_PRODUCTION -> R.string.company_production
+        MovieDetailsTabs.SEASON -> R.string.season
     }
 }
 
-private fun getMovieDetailsTabsIcon(tab: MovieDetailsTabs): Int {
+fun getMovieDetailsTabsIcon(tab: MovieDetailsTabs): Int {
     return when (tab) {
         MovieDetailsTabs.MORE_LIKE_THIS -> com.berlin.ui.R.drawable.camera_video
-        MovieDetailsTabs.REVIEWS -> R.drawable.star
+        MovieDetailsTabs.REVIEWS -> com.berlin.ui.R.drawable.star
         MovieDetailsTabs.GALLERY -> com.berlin.ui.R.drawable.album
         MovieDetailsTabs.COMPANY_PRODUCTION -> com.berlin.ui.R.drawable.city
+        MovieDetailsTabs.SEASON -> com.berlin.ui.R.drawable.season
     }
 }

@@ -1,7 +1,8 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.SeasonEntity
-import com.berlin.entity.Episode
+import com.berlin.entity.Episodes
+import com.berlin.entity.EpisodesSeason
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.local.dto.SearchingEntity
@@ -9,6 +10,7 @@ import com.berlin.repository.datasource.remote.dto.Season
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.datasource.remote.dto.details.EpisodeDto
+import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
 import com.berlin.repository.util.toLocalDate
 
 
@@ -58,8 +60,9 @@ fun TVShowDetailsDto.toDomain(): TvShowDetails {
         rating = this.voteAverage ?: 0.0,
         runtime = this.episodeRunTime?.firstOrNull() ?: 0,
         genres = this.genres?.map { it.toEntity() } ?: emptyList(),
-        seasons = this.seasons?.map { it.toEntity() } ?: emptyList()
-        )
+        numberOfSeasons = this.numberOfSeasons
+
+    )
 }
 
 fun Season.toEntity() = SeasonEntity(
@@ -73,17 +76,26 @@ fun Season.toEntity() = SeasonEntity(
     voteAverage = voteAverage
 )
 
-fun EpisodeDto.toEpisode(): Episode {
-    return Episode(
-        airDate = airDate,
-        episodeNumber = episodeNumber,
-        id = id,
-        name = name,
-        overview = overview,
-        runtime = runtime,
-        seasonNumber = seasonNumber,
-        showId = showId,
-        stillPath = stillPath,
-        voteAverage = voteAverage
+fun EpisodesSeasonDto.toDomain(): EpisodesSeason {
+    return EpisodesSeason(
+        idSeason = this.id_Season,
+        name = this.name,
+        episodes = this.episodes?.filterNotNull()?.map { it.toEpisode() },
+        seasonNumber = this.seasonNumber,
+        posterPath = this.posterPath?.let { POSTER_PREFIX + it }
     )
 }
+fun EpisodeDto.toEpisode(): Episodes {
+    return Episodes(
+        airDate = this.airDate,
+        episodeNumber = this.episodeNumber,
+        episodeType = this.episodeType,
+        id = this.id,
+        name = this.name,
+        overview = this.overview,
+        runtime = this.runtime,
+        showId = this.showId,
+        voteAverage = this.voteAverage
+    )
+}
+

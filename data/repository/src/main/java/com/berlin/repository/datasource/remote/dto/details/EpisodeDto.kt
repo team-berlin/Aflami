@@ -8,8 +8,14 @@ import kotlinx.serialization.Serializable
 data class EpisodeDto(
     @SerialName("air_date")
     val airDate: String? = null,
+    @SerialName("crew")
+    val crew: List<CrewDto?>? = null,
     @SerialName("episode_number")
     val episodeNumber: Int? = null,
+    @SerialName("episode_type")
+    val episodeType: String? = null,
+    @SerialName("guest_stars")
+    val guestStars: List<GuestStarDto?>? = null,
     @SerialName("id")
     val id: Int? = null,
     @SerialName("name")
@@ -30,9 +36,4 @@ data class EpisodeDto(
     val voteAverage: Double? = null,
     @SerialName("vote_count")
     val voteCount: Int? = null
-)
-@Serializable
-data class EpisodeResponse(
-    @SerialName("results")
-    val results: List<EpisodeDto?>? = null,
 )

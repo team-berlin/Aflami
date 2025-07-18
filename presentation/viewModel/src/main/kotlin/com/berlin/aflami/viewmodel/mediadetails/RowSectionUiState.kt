@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
+import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.aflami.viewmodel.uistate.ReviewUiState
 
@@ -13,6 +14,7 @@ sealed class TabContent {
     data class MoreLikeThis(val items: List<MediaUiState>) : TabContent()
     data class Reviews(val items: List<ReviewUiState>) : TabContent()
     data class Gallery(val items: List<String>) : TabContent()
+    data class Season(val items: List<EpisodesSeasonUiState>) : TabContent()
     data class CompanyProduction(val items: List<CompanyProductionItem>) : TabContent()
 }
 

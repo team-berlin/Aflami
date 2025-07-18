@@ -1,10 +1,13 @@
 package com.berlin.aflami.viewmodel.mapper
 
 import com.berlin.aflami.viewmodel.mediadetails.CompanyProductionItem
+import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
+import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
-import com.berlin.aflami.viewmodel.uistate.SeasonUiState
+import com.berlin.entity.Episodes
+import com.berlin.entity.EpisodesSeason
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.ProductionCompanyEntity
@@ -35,7 +38,7 @@ fun MovieDetails.toUiState(
     releaseYear = releaseDate ?: "",
     rating = rating,
     runtime = runtime?.let { "${it / 60}h ${it % 60}m" } ?: "",
-    seasons = emptyList(),
+    numberOfSeasons = null,
     isFavorite = isFavorite,
     isOverviewExpanded = isOverviewExpanded,
     mediaType = MediaType.MOVIE
@@ -53,21 +56,13 @@ fun TvShowDetails.toUiState(
     genres = genres.map { it.name },
     releaseYear = releaseDate?.take(4) ?: "",
     rating = rating,
-    runtime = if (seasons.isNotEmpty()) "${seasons.size} seasons" else "",
-    seasons = seasons.map { it.toUiState() },
+    runtime = "",
+    numberOfSeasons=numberOfSeasons,
     isFavorite = isFavorite,
     isOverviewExpanded = isOverviewExpanded,
-    mediaType = MediaType.TV_SHOW
+    mediaType = MediaType.TV_SHOW,
 )
 
-fun SeasonEntity.toUiState() = SeasonUiState(
-    id = id,
-    seasonTitle = name,
-    numberOfEpisodes = episodeCount,
-    posterUrl = posterUrl ?: "",
-    seasonNumber = seasonNumber,
-    airDate = airDate ?: ""
-)
 
 fun ProductionCompanyEntity.toUiState() = CompanyProductionItem(
     id = id.toString(),
@@ -75,4 +70,27 @@ fun ProductionCompanyEntity.toUiState() = CompanyProductionItem(
     name = name,
     country = originCountry ?: ""
 )
+
+fun Episodes.toUiState(): EpisodesUiState {
+    return EpisodesUiState(
+        airDate = this.airDate ?: "",
+        episodeNumber = this.episodeNumber ?: 0,
+        episodeType = this.episodeType ?: "",
+        id = this.id ?: 0,
+        name = this.name ?: "",
+        overview = this.overview ?: "",
+        runtime = this.runtime ?: 0,
+        voteAverage = this.voteAverage ?: 0.0
+    )
+}
+
+fun EpisodesSeason.toUiState(): EpisodesSeasonUiState {
+    return EpisodesSeasonUiState(
+        idSeason = this.idSeason ?: 0,
+        name = this.name ?: "",
+        episodes = this.episodes?.map { episode -> episode?.toUiState() } ?: emptyList(),
+        seasonNumber = this.seasonNumber ?: 0,
+        posterPath = this.posterPath ?: ""
+    )
+}
 

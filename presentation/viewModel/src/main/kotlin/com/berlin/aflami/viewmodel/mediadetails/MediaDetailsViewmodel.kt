@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.uistate.ReviewState
 import com.berlin.aflami.viewmodel.uistate.ReviewUiState
 import com.berlin.aflami.viewmodel.review.toUiState
+import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +24,7 @@ import usecase.GetMovieCastUseCase
 import usecase.GetMovieDetailsUseCase
 import usecase.GetMovieGalleryUseCase
 import usecase.GetMovieReviewUseCase
+import usecase.GetSeasonEpisodesUseCase
 import usecase.GetSeriesCastUseCase
 import usecase.GetSeriesGalleryUseCase
 import usecase.GetSeriesReviewUseCase
@@ -39,7 +42,8 @@ class MediaDetailsViewmodel(
     private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
     private val getSimilarTVShowsUseCase: GetSimilarSeriesUseCase,
     private val movieReviewUseCase: GetMovieReviewUseCase,
-    private val seriesReviewUseCase: GetSeriesReviewUseCase
+    private val seriesReviewUseCase: GetSeriesReviewUseCase,
+    private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase
 ) : ViewModel(), MediaInteractionListener {
 
     private val _uiState = MutableStateFlow(MediaDetailsUiState())
@@ -169,6 +173,7 @@ class MediaDetailsViewmodel(
 
                     MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(mediaId, mediaType)
                     MovieDetailsTabs.COMPANY_PRODUCTION -> getCompanyProduction()
+                    MovieDetailsTabs.SEASON -> onShowAllSeasonsClicked(mediaId)
                 }
 
                 MovieDetailsTabsUiState(
@@ -309,13 +314,45 @@ class MediaDetailsViewmodel(
     }
 
     override fun onShowCompanyProductionClicked() {
-        TODO("Not yet implemented")
+
     }
 
-    override fun onShowAllSeasonsClicked() {
-        TODO("Not yet implemented")
-    }
+    override fun onShowAllSeasonsClicked(series_id: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _rowSectionUiState.update { RowSectionUiState.Loading }
+//            try {
+            val numberOfSeasons = _uiState.value.numberOfSeasons ?: 0
+            var seasonEpisodes = mutableListOf<EpisodesSeasonUiState>()
+            val s = getSeasonEpisodesUseCase.invoke(155, 1).map { it.toUiState() }
 
+            Log.e("eeeeeeeeeeeeeeeeeeeeeeeee", "${s}")
+//                    for (seasonNumber in 1..2) {
+//                         seasonEpisodes =
+//                             getSeasonEpisodesUseCase.invoke(1, 155).map { it.toUiState() }.toMutableList()
+//                    }
+//                    Log.e("fffffffffffffffffffff","${seasonEpisodes}")
+//
+//                    if (seasonEpisodes.isEmpty()) {
+//                        _rowSectionUiState.update {
+//                            RowSectionUiState.Error("No season found")
+//                        }
+//                    } else {
+//                        _rowSectionUiState.update {
+//                            RowSectionUiState.Success(
+//                                content = TabContent.Season(
+//                                    items = seasonEpisodes
+//                                )
+//                            )
+//                        }
+//                    }
+//            } catch (error: Exception) {
+//                _rowSectionUiState.update {
+//                    RowSectionUiState.Error(error.message ?: "Failed to load seasons")
+//                }
+//            }
+//        }
+        }
+    }
     override fun onShowSeasonEpisodesClicked(tvShowId: Long, seasonId: Long) {
         TODO("Not yet implemented")
     }

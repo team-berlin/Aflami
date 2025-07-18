@@ -10,5 +10,6 @@ enum class MovieDetailsTabs() {
     MORE_LIKE_THIS,
     REVIEWS,
     GALLERY,
-    COMPANY_PRODUCTION
+    COMPANY_PRODUCTION,
+    SEASON
 }
