@@ -70,6 +70,7 @@ class MediaDetailsViewmodel(
     init {
         viewModelScope.launch {
             getMovieCast(505, MediaType.MOVIE, "ar-EG")
+            getReviews(id = 505, mediaType = MediaType.MOVIE)
         }
     }
 
@@ -144,6 +145,10 @@ class MediaDetailsViewmodel(
 
     fun isDescriptionExpanded(id: Long): Boolean {
         return _expandedUiStates[id] ?: false
+    }
+
+    override fun onReadMoreReviewClicked(id: Long) {
+        _expandedUiStates[id] = !(_expandedUiStates[id] ?: false)
     }
 
     fun toggleMovieDetailsTab(

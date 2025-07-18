@@ -1,6 +1,7 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
 import android.util.Log
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -112,8 +114,8 @@ fun MediaDetailsScreen(
             onPlay = { viewModel.onPlayClicked(uiState.id) },
             onReadMore = { viewModel.onReadMoreDescriptionClicked(uiState.id) },
             listener = viewModel,
-            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(id = 155) },
-            isExpanded = viewModel.isDescriptionExpanded(id = 155),
+            onToggleExpand = { viewModel.onReadMoreReviewClicked(id = 550) },
+            isExpanded = viewModel.isDescriptionExpanded(id = 550),
             isSelectedTab = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
@@ -298,47 +300,90 @@ fun MediaDetailsContent(
             }
         }
 
-        when (rowUiState) {
-            is RowSectionUiState.Error -> {
-                Text(
-                    text = rowUiState.message,
-                    style = Theme.textStyle.label.large,
-                    color = Theme.color.textColors.body,
-                )
-            }
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth(),
+            color = Theme.color.stroke,
+            thickness = 1.dp
+        )
 
-            is RowSectionUiState.Loading -> {
-                Loading()
-            }
+        RowSection(
+            rowUiState = rowUiState,
+            isSelectedTab = isSelectedTab,
+            onChipClick = onChipClick,
+            isExpanded = isExpanded,
+            onToggleExpand = onToggleExpand
+        )
+    }
+}
 
-            is RowSectionUiState.Success -> {
-                when (rowUiState.content) {
-                    is TabContent.MoreLikeThis -> {
-                        MoreLikeThisSection(
-                            mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
-                            mediaType = MediaType.MOVIE
-                        )
-                    }
+@Composable
+fun RowSection(
+    state:
+    rowUiState: RowSectionUiState,
+    isSelectedTab: MovieDetailsTabs,
+    onChipClick: (MovieDetailsTabs) -> Unit,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
+) {
+    LazyRow(
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .height(96.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(MovieDetailsTabs.entries) { tab ->
+            Chips(
+                title = stringResource(movieDetailsTabsMapper(tab)),
+                icon = painterResource(getMovieDetailsTabsIcon(tab)),
+                isSelected = tab == isSelectedTab,
+                onClick = { onChipClick(tab) }
+            )
+        }
+    }
 
-                    is TabContent.Reviews -> {
-                        ReviewsSection(
-                            reviews = (rowUiState.content as TabContent.Reviews).items,
-                            isExpanded = isExpanded,
-                            onToggleExpand = onToggleExpand
-                        )
-                    }
+    when (rowUiState) {
+        is RowSectionUiState.Error -> {
+            Text(
+                text = rowUiState.message,
+                style = Theme.textStyle.label.large,
+                color = Theme.color.textColors.body,
+            )
+        }
 
-                    is TabContent.Gallery -> {
-                        GallerySection(
-                            mediaImages = (rowUiState.content as TabContent.Gallery).items,
-                        )
-                    }
+        is RowSectionUiState.Loading -> {
+            Loading()
+        }
 
-                    is TabContent.CompanyProduction -> {
-                        CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
-                    }
+        is RowSectionUiState.Success -> {
+            when (rowUiState.content) {
+                is TabContent.MoreLikeThis -> {
+                    MoreLikeThisSection(
+                        mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
+                        mediaType = MediaType.MOVIE
+                    )
+                }
 
-                    is TabContent.Season -> {
+                is TabContent.Reviews -> {
+                    ReviewsSection(
+                        reviews = (rowUiState.content as TabContent.Reviews).items,
+                        isExpanded = isExpanded,
+                        onToggleExpand = onToggleExpand
+                    )
+                }
+
+                is TabContent.Gallery -> {
+                    GallerySection(
+                        mediaImages = (rowUiState.content as TabContent.Gallery).items,
+                    )
+                }
+
+                is TabContent.CompanyProduction -> {
+                    CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
+                }
+
+                is TabContent.Season -> {
                         Log.d("Khiary", "seasons tab clicked")
                         SeasonsScreen(
                             state,
@@ -348,7 +393,7 @@ fun MediaDetailsContent(
 
             }
         }
-    }
+
 
     @Composable
     fun ExpandableDescription(
@@ -401,7 +446,8 @@ fun MediaDetailsContent(
         )
     }
 
-    @Composable
+    @SuppressLint("UnusedBoxWithConstraintsScope")
+@Composable
     fun Cast(
         modifier: Modifier = Modifier,
         castState: List<MediaCastUiState>,

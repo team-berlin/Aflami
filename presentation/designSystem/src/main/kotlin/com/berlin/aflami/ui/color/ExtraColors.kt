@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 object ExtraColors {
     val darkReddishPink12 = Color(0x1FBF434C)
     val darkReddishGreen12 = Color(0x1F429946)
+    val white = Color(0xFFFFFFFF)
 
     val blueLinearGradient = Brush.linearGradient(
         listOf(

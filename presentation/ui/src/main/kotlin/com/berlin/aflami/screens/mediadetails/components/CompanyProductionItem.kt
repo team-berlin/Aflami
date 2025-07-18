@@ -4,10 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,27 +21,34 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.color.ExtraColors
+import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.CompanyProductionItem
 import com.berlin.ui.R
 
 @Composable
-fun CompanyProductionItem (
-    modifier : Modifier = Modifier,
-    item: CompanyProductionItem) {
+fun CompanyProductionItem(
+    modifier: Modifier = Modifier,
+    item: CompanyProductionItem
+) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
+            .background(ExtraColors.white)
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(12.dp))
 
     ) {
         AsyncImage(
+            modifier = Modifier
+                .fillMaxSize()
+                .width(160.dp)
+                .height(145.dp),
             model = item.image,
             contentDescription = stringResource(R.string.company_production_image_cd),
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
             error = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
             fallback = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
         )
@@ -48,7 +56,7 @@ fun CompanyProductionItem (
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.5f)
+                .height(72.dp)
                 .align(Alignment.BottomCenter)
                 .background(ExtraColors.overlayGradient)
         )
@@ -63,6 +71,7 @@ fun CompanyProductionItem (
                 style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.onPrimary,
                 maxLines = 1,
+                lineHeight = 24.sp,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
@@ -70,6 +79,7 @@ fun CompanyProductionItem (
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.onPrimaryBody,
                 maxLines = 1,
+                lineHeight = 16.sp,
                 overflow = TextOverflow.Ellipsis
             )
         }
@@ -78,13 +88,15 @@ fun CompanyProductionItem (
 
 @Preview
 @Composable
-fun CompanyProductionItemPreview () {
-    CompanyProductionItem(
-        item = CompanyProductionItem(
-            id = "1",
-            image = "https://image.tmdb.org/t/p/w500/c9dVHPOL3cqCr2593Ahk0nEKTEM.png",
-            name = "Universal",
-            country = "US"
+fun CompanyProductionItemPreview() {
+    AflamiTheme {
+        CompanyProductionItem(
+            item = CompanyProductionItem(
+                id = "1",
+                image = "https://image.tmdb.org/t/p/w500/c9dVHPOL3cqCr2593Ahk0nEKTEM.png",
+                name = "Universal",
+                country = "US"
+            )
         )
-    )
+    }
 }
