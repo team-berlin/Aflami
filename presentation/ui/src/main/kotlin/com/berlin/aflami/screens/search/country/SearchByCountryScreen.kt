@@ -1,6 +1,5 @@
-package com.berlin.aflami.screens.search.worldtour
+package com.berlin.aflami.screens.search.country
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,13 +26,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
-import com.berlin.aflami.screens.search.worldtour.composable.AnimatedCountriesList
+import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListener
@@ -43,12 +43,12 @@ import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun WorldTourScreen(
+fun SearchByCountryScreen(
     navController: NavController,
     viewModel: SearchByCountryViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    WorldTourContent(
+    SearchByCountryContent(
         state = state,
         listener = viewModel
     )
@@ -66,7 +66,7 @@ fun WorldTourScreen(
 }
 
 @Composable
-private fun WorldTourContent(
+private fun SearchByCountryContent(
     state: SearchByCountryScreenUiState,
     listener: SearchByCountryInteractionListener,
 ) {
@@ -123,7 +123,7 @@ private fun WorldTourContent(
                 .fillMaxWidth(),
         ) {
             val movies = state.movies.collectAsLazyPagingItems()
-            Log.d("PAGING",movies.itemCount.toString())
+
             when {
                 state.isLoading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -138,7 +138,8 @@ private fun WorldTourContent(
                     )
                 }
 
-                state.isCountrySelected && movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading -> {
+                state.isCountrySelected && movies.itemCount == 0
+                        && movies.loadState.refresh is LoadState.NotLoading -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
                         image = painterResource(R.drawable.no_search_result),

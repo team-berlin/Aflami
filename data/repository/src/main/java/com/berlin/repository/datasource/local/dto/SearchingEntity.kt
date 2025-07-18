@@ -18,3 +18,11 @@ data class SearchingEntity(
     val page: Int,
     val mediaType: String
 )
+
+enum class QueryType {
+    ACTOR,
+    COUNTRY,
+    TV,
+    MOVIE,
+    HISTORY
+}

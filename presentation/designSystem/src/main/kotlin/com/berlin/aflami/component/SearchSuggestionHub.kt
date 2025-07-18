@@ -15,7 +15,7 @@ import com.berlin.designsystem.R
 @Composable
 fun SearchSuggestionHub(
     modifier: Modifier = Modifier,
-    onWorldTourClick: () -> Unit,
+    onSearchByCountryClick: () -> Unit,
     onSearchByActorClick: () -> Unit
 ) {
     Row(
@@ -29,7 +29,7 @@ fun SearchSuggestionHub(
             contentDescription = "world tour",
             gradientBackground = darkPurpleLinearGradient,
             painter = painterResource(R.drawable.news_img),
-            onClick = onWorldTourClick
+            onClick = onSearchByCountryClick
         )
 
         SearchSuggestionItem(
