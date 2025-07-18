@@ -57,11 +57,11 @@ class SearchRepositoryImpl(
     }
 
 
-    private fun getActingDepartment(listOfPersons: List<PersonDto>): List<PersonDto> {
+    fun getActingDepartment(listOfPersons: List<PersonDto>): List<PersonDto> {
         return listOfPersons.filter { it.knownForDepartment == ACTING_DEPARTMENT }
     }
 
-    private fun getMediaByActorName(
+    fun getMediaByActorName(
         actorName: String,
         page: Int,
         listOfPersons: List<PersonDto>
