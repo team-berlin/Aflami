@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main, develop, epic/** ]
   workflow_dispatch:
+  
+permissions:
+  contents: write  
+  
 jobs:
   build:
     name: app_publish
@@ -36,7 +40,7 @@ jobs:
           branch="${GITHUB_REF#refs/heads/}"
           echo "Current branch: $branch"
 
-          latest=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          latest=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.3")
           echo "Latest tag: $latest"
 
           IFS='.' read -r major minor patch <<< "${latest#v}"
@@ -95,7 +99,7 @@ jobs:
         run: |
           npm install -g firebase-tools
           firebase appdistribution:distribute \
-          app/build/outputs/apk/debug/app-debug.apk \
+          app-${{ env.NEW_TAG }}.apk \
           --app ${{ secrets.FIREBASE_APP_ID }} \
           --token ${{ secrets.FIREBASE_TOKEN }} \
           --groups "${{ steps.tester_group.outputs.group }}" \
