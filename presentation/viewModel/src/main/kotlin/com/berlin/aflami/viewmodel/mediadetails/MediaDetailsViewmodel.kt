@@ -6,14 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.uistate.ReviewState
-import com.berlin.aflami.viewmodel.uistate.ReviewUiState
 import com.berlin.aflami.viewmodel.review.toUiState
-import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.entity.Episodes
+import com.berlin.entity.EpisodesSeason
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,7 +42,7 @@ class MediaDetailsViewmodel(
     private val getSimilarTVShowsUseCase: GetSimilarSeriesUseCase,
     private val movieReviewUseCase: GetMovieReviewUseCase,
     private val seriesReviewUseCase: GetSeriesReviewUseCase,
-    private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase
+    private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
 ) : ViewModel(), MediaInteractionListener {
 
     private val _uiState = MutableStateFlow(MediaDetailsUiState())
@@ -151,7 +149,7 @@ class MediaDetailsViewmodel(
     fun toggleMovieDetailsTab(
         tab: MovieDetailsTabs,
         mediaId: Long,
-        mediaType: MediaType
+        mediaType: MediaType,
     ) {
         viewModelScope.launch {
             _tabSelectedUiState.update { current ->
@@ -174,7 +172,15 @@ class MediaDetailsViewmodel(
 
                     MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(mediaId, mediaType)
                     MovieDetailsTabs.COMPANY_PRODUCTION -> getCompanyProduction()
-                    MovieDetailsTabs.SEASON -> onShowAllSeasonsClicked(mediaId)
+                    MovieDetailsTabs.SEASON -> onShowAllSeasonsClicked(
+                        _uiState.value.id,
+                        _uiState.value.numberOfSeasons!!,
+                    ).also {
+                        Log.d(
+                            "Khairy",
+                            "id = ${_uiState.value.id} ,number of seasons = ${_uiState.value.numberOfSeasons}: "
+                        )
+                    }
                 }
 
                 MovieDetailsTabsUiState(
@@ -318,32 +324,26 @@ class MediaDetailsViewmodel(
 
     }
 
-    override fun onShowAllSeasonsClicked(series_id: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _rowSectionUiState.update { RowSectionUiState.Loading }
+    override fun onShowAllSeasonsClicked(seriesId: Long, numberOfSeasons: Int) {
+        viewModelScope.launch {
             try {
-                    val numberOfSeasons = _uiState.value.numberOfSeasons ?: 0
-                    val seasonEpisodes = mutableListOf<EpisodesSeasonUiState>()
-                    Log.e("eeeeeeeeeeeeeeeeeeeeeeeee","${numberOfSeasons}")
-                    for (seasonNumber in 1..4) {
-                        val seasonEpisodes = getSeasonEpisodesUseCase.invoke(155, 1).map { it.toUiState() }
-                        Log.e("fffffffffffffffffffff","${seasonEpisodes}")
-delay(2000)
-                        if (seasonEpisodes.isEmpty()) {
-                            _rowSectionUiState.update {
-                                RowSectionUiState.Error("No season found")
-                            }
-                        } else {
-                            _rowSectionUiState.update {
-                                RowSectionUiState.Success(
-                                    content = TabContent.Season(
-                                        items = seasonEpisodes
-                                    )
-                                )
-                            }
-                        }
+                _rowSectionUiState.update { RowSectionUiState.Loading }
+                repeat(numberOfSeasons) { seasonNumber ->
+                    val episodes: List<Episodes?> = getSeasonEpisodesUseCase(seriesId, seasonNumber)
+                    _rowSectionUiState.update {
+                        RowSectionUiState.Success(
+                            content = TabContent.Season(
+                                items = emptyMap()
+                            )
+                        )
                     }
-
+                    _uiState.update { currentState ->
+                        val updatedMap = currentState.seasonsMap?.toMutableMap() ?: mutableMapOf()
+                        updatedMap[seasonNumber] = episodes.map { it?.toUiState() }
+                        Log.d("Khairy", "New season added , episodes number ${episodes.size}")
+                        currentState.copy(seasonsMap = updatedMap)
+                    }
+                }
             } catch (error: Exception) {
                 _rowSectionUiState.update {
                     RowSectionUiState.Error(error.message ?: "Failed to load seasons")

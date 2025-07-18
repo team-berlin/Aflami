@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,10 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.screens.search.mediadetails.EpisodeCard
-import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
@@ -34,17 +33,21 @@ import com.berlin.designsystem.R
 
 @Composable
 fun SeasonsScreen(
-     seasons: List<EpisodesSeasonUiState>? = emptyList(),
-    modifier: Modifier = Modifier
+    state: MediaDetailsUiState,
+    seasonsMap: Map<Int, List<EpisodesUiState?>> = mutableMapOf(),
+    seasons: List<EpisodesSeasonUiState>? = emptyList(),
+    modifier: Modifier = Modifier,
 ) {
+    Log.d("Khairy", "seasons are = ${state.seasonsMap}")
     Column(
         modifier = modifier.background(Theme.color.surface),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        seasons?.forEach { season ->
+        for ((seasonNumber, episodes) in state.seasonsMap ?: emptyMap()) {
+            Log.d("Khairy", "seasons are = ${state.seasonsMap}")
             EpisodeScreen(
-                seasonNumber = season.seasonNumber.toString(),
-                episodes = season.episodes
+                seasonNumber = seasonNumber.plus(1).toString(),
+                episodes = episodes
             )
             HorizontalDivider(
                 modifier = Modifier
@@ -100,7 +103,7 @@ fun SeasonsHeader(
     seasonNumber: String,
     episodeCount: String,
     isExpanded: Boolean,
-    onToggleExpand: () -> Unit
+    onToggleExpand: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -125,7 +128,9 @@ fun SeasonsHeader(
                 color = Theme.color.textColors.hint,
             )
             Icon(
-                painter = if (isExpanded) painterResource(R.drawable.arrow_up) else painterResource(R.drawable.arrow_down),
+                painter = if (isExpanded) painterResource(R.drawable.arrow_up) else painterResource(
+                    R.drawable.arrow_down
+                ),
                 contentDescription = stringResource(R.string.icon_cd),
                 modifier = Modifier.size(20.dp),
                 tint = Theme.color.textColors.title

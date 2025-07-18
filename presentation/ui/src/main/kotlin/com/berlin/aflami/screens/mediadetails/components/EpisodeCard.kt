@@ -53,7 +53,7 @@ fun EpisodeCard(
         ) {
             ImageWithRatingBadge(
                 modifier = Modifier,
-                imageUrl = "",
+                imageUrl = "https://image.tmdb.org/t/p/w342".plus(episode.stillPath),
                 rating = episode.voteAverage.toString()
             )
 

@@ -27,7 +27,7 @@ object ApiConstants  {
     const val MOVIE_MORE_LIKE_THIS="movie/{movie_id}/similar"
     const val MOVIE_ID = "{movie_id}"
     const val SERIES_ID="{series_id}"
-    const val EPISODE_SEASON_SERIES="tv/{series_id}/season/{episode_id}"
+    const val EPISODE_SEASON_SERIES="tv/{series_id}/season/{season_number}"
 
 
 

@@ -1,6 +1,6 @@
 package com.berlin.entity
 
-data class EpisodesSeason(
+    data class EpisodesSeason(
     val idSeason: Int? = null,
     val name: String? = null,
     val episodes: List<Episodes?>? = null,

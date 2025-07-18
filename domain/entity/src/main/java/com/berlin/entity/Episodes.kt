@@ -10,5 +10,5 @@ data class Episodes(
     val runtime: Int? = null,
     val showId: Int? = null,
     val voteAverage: Double? = null,
-
+    val stillPath: String? = null,
 )

@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.uistate
 
 import androidx.compose.ui.graphics.painter.Painter
+import com.berlin.entity.Episodes
 
 enum class MediaType { MOVIE, TV_SHOW }
 
@@ -10,7 +11,7 @@ data class MediaUiState(
     val rating: String = "",
     val releaseYear: String = "",
     val genre: List<Int> = emptyList(),
-    val poster: String = ""
+    val poster: String = "",
 )
 
 data class MediaDetailsUiState(
@@ -23,6 +24,7 @@ data class MediaDetailsUiState(
     val releaseYear: String = "",
     val rating: Double = 0.0,
     val runtime: String? = "",
+    val seasonsMap: MutableMap<Int, List<EpisodesUiState?>>? = mutableMapOf(),
     val seasons: List<EpisodesSeasonUiState>? = emptyList(),
     val numberOfSeasons:Int?=null,
     val isFavorite: Boolean = false,
@@ -38,6 +40,7 @@ data class MediaDetailsUiState(
 
 
 data class EpisodesUiState(
+    val stillPath:String,
     val airDate: String,
     val episodeNumber: Int,
     val episodeType: String,
@@ -48,6 +51,7 @@ data class EpisodesUiState(
     val voteAverage: Double,
 
     )
+
 data class EpisodesSeasonUiState(
     val idSeason: Int,
     val name: String,
@@ -59,11 +63,11 @@ data class EpisodesSeasonUiState(
 data class MediaOptions(
     val isSelected: Boolean,
     val title: String,
-    val image: Painter
+    val image: Painter,
 )
 
 data class MediaCastUiState(
-    val mediaId:Long =0L,
-    val name:String="",
-    val poster:String=""
+    val mediaId: Long = 0L,
+    val name: String = "",
+    val poster: String = "",
 )

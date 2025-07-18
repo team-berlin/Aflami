@@ -1,14 +1,15 @@
 package usecase
 
+import com.berlin.entity.Episodes
 import com.berlin.entity.EpisodesSeason
 import jdk.internal.net.http.common.Log
 import repository.TvShowDetailsRepository
 
-class GetSeasonEpisodesUseCase (
-    private val tvShowDetailsRepository: TvShowDetailsRepository
+class GetSeasonEpisodesUseCase(
+    private val tvShowDetailsRepository: TvShowDetailsRepository,
 ) {
 
-    suspend operator fun invoke(seriesId: Long, seasonNumber: Int): List<EpisodesSeason>{
+    suspend operator fun invoke(seriesId: Long, seasonNumber: Int): List<Episodes?> {
         return tvShowDetailsRepository.getSeasonEpisodes(seriesId, seasonNumber)
     }
 }

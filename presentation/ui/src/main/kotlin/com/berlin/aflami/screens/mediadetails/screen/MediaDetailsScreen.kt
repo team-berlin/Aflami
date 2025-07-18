@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -338,8 +339,9 @@ fun MediaDetailsContent(
                     }
 
                     is TabContent.Season -> {
+                        Log.d("Khiary", "seasons tab clicked")
                         SeasonsScreen(
-                            seasons = state.seasons,
+                            state,
                         )
                     }
                 }

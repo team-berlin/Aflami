@@ -6,6 +6,7 @@ import com.berlin.repository.datasource.remote.dto.MediaImagesResponse
 import com.berlin.repository.datasource.remote.dto.ReviewResponse
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowResponse
+import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
 import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -42,10 +43,10 @@ class TvShowDetailsRemoteDataSourceImpl(
         return client.get(ApiConstants.SERIES_REVIEW
             .replace("{series_id}", id.toString())).body()
     }
-    override suspend fun getEpisodeSeasonSeries(seriesId: Long, seasonNumber: Int): EpisodesSeasonResponse {
+    override suspend fun getEpisodeSeasonSeries(seriesId: Long, seasonNumber: Int): EpisodesSeasonDto {
         return client.get(ApiConstants.EPISODE_SEASON_SERIES
             .replace("{series_id}", seriesId.toString())
-            .replace("{episode_id}", seasonNumber.toString())).body()
+            .replace("{season_number}", seasonNumber.toString())).body()
     }
 
 }

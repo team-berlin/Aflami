@@ -14,7 +14,7 @@ sealed class TabContent {
     data class MoreLikeThis(val items: List<MediaUiState>) : TabContent()
     data class Reviews(val items: List<ReviewUiState>) : TabContent()
     data class Gallery(val items: List<String>) : TabContent()
-    data class Season(val items: List<EpisodesSeasonUiState>) : TabContent()
+    data class Season(val items: Map<Int,List<EpisodesSeasonUiState>>) : TabContent()
     data class CompanyProduction(val items: List<CompanyProductionItem>) : TabContent()
 }
 

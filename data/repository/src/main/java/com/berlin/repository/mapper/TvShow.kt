@@ -87,6 +87,7 @@ fun EpisodesSeasonDto.toDomain(): EpisodesSeason {
 }
 fun EpisodeDto.toEpisode(): Episodes {
     return Episodes(
+        stillPath = this.stillPath,
         airDate = this.airDate,
         episodeNumber = this.episodeNumber,
         episodeType = this.episodeType,
