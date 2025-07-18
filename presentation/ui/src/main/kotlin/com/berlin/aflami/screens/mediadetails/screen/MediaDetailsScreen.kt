@@ -48,6 +48,7 @@ import com.berlin.aflami.component.Rating
 import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
+import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
 import com.berlin.aflami.screens.search.components.Loading
@@ -78,6 +79,8 @@ fun MediaDetailsScreen(
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
+    var showLoginRequiredDialog by remember { mutableStateOf(false) }
+
     LaunchedEffect(mediaId, mediaType) {
         viewModel.getMediaDetails(mediaId, mediaType)
         viewModel.uiEffect.collect { effect ->
@@ -85,6 +88,10 @@ fun MediaDetailsScreen(
                 MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
                     navController.navigate(Destination.CastScreen.route)
                 }
+                MediaDetailsScreenEffect.NavigateBack -> {}
+                is MediaDetailsScreenEffect.PlayMedia -> {}
+                is MediaDetailsScreenEffect.ShowAddToFavoriteListSheet -> {showLoginRequiredDialog = true}
+                is MediaDetailsScreenEffect.ShowRatingSheet -> { showLoginRequiredDialog = true}
             }
         }
 
@@ -98,16 +105,6 @@ fun MediaDetailsScreen(
         MediaDetailsContent(
             state = uiState,
             rowUiState = rowUiState,
-            onBack = { /* navController.popBackStack() */ },
-            onFavorite = {
-                viewModel.onAddMediaToFavouriteListClicked(
-                    mediaId = uiState.id.toInt(),
-                    favouriteListId = 0
-                )
-            },
-            onAdd = { /* handle add to fav/show sheet */ },
-            onPlay = { viewModel.onPlayClicked(uiState.id) },
-            onReadMore = { viewModel.onReadMoreDescriptionClicked(uiState.id) },
             listener = viewModel,
             onToggleExpand = { viewModel.onReadMoreDescriptionClicked(id = 550) },
             isExpanded = viewModel.isDescriptionExpanded(id = 550),
@@ -120,6 +117,18 @@ fun MediaDetailsScreen(
                 )
             }
         )
+
+        if (showLoginRequiredDialog) {
+            LoginRequiredDialog(
+                onLoginClick = {
+                    showLoginRequiredDialog = false
+                    //navController.navigate("login")
+                },
+                onDismiss = { showLoginRequiredDialog = false },
+                title = "Login Required",
+                description = "Please login to access your account details\nand other features!"
+            )
+        }
     }
 }
 
@@ -127,11 +136,6 @@ fun MediaDetailsScreen(
 fun MediaDetailsContent(
     state: MediaDetailsUiState,
     rowUiState: RowSectionUiState,
-    onBack: () -> Unit = {},
-    onFavorite: () -> Unit = {},
-    onAdd: () -> Unit = {},
-    onPlay: () -> Unit = {},
-    onReadMore: () -> Unit = {},
     listener: MediaInteractionListener,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
@@ -157,13 +161,18 @@ fun MediaDetailsContent(
                     model = state.backdropUrl,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
+                    error = painterResource(com.berlin.ui.R.drawable.place_holder)
                 )
 
                 DefaultBar(
                     modifier = Modifier.statusBarsPadding(),
                     firstOption = painterResource(R.drawable.ic_rounded_star),
                     lastOption = painterResource(R.drawable.ic_rounded_add_heart),
+                    onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
+                    onLastOptionClicked = { listener.onAddMediaToFavouriteListClicked(0, state.id.toInt()) },
+                    onNavigateBackClicked = { listener.onBackClicked() },
                 )
 
                 Box(
@@ -185,7 +194,7 @@ fun MediaDetailsContent(
                 CircularIConButton(
                     modifier = Modifier.align(Alignment.Center),
                     painter = painterResource(R.drawable.play_arrow),
-                    onClick = onPlay,
+                    onClick = {listener.onPlayClicked(state.id)},
                     hasDropShadow = true,
                     dropShadowAlpha = 0.09f,
                     borderWidth = 2,
@@ -259,16 +268,16 @@ fun MediaDetailsContent(
             var expanded by remember { mutableStateOf(state.isOverviewExpanded) }
             val canExpand = state.overview.length > 160
             val shortDesc = state.overview.take(160)
-//
-//            ExpandableDescription(
-//                text = state.overview,
-//                expanded = state.isOverviewExpanded,
-//                onToggleExpand = onReadMore,
-//                previewColor = Theme.color.textColors.hint,
-//                suffixColor = Theme.color.primary,
-//                previewStyle = Theme.textStyle.body.small,
-//                suffixStyle = Theme.textStyle.label.medium
-//            )
+
+            ExpandableDescription(
+                text = state.overview,
+                expanded = state.isOverviewExpanded,
+                onToggleExpand = { listener.onReadMoreDescriptionClicked(state.id) },
+                previewColor = Theme.color.textColors.hint,
+                suffixColor = Theme.color.primary,
+                previewStyle = Theme.textStyle.body.small,
+                suffixStyle = Theme.textStyle.label.medium
+            )
         }
 //        Cast(
 //            castState = state.mediaCast,
