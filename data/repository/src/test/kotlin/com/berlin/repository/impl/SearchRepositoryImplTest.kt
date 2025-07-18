@@ -1,12 +1,16 @@
 package com.berlin.repository.impl
 
+import com.berlin.repository.SearchRepositoryImpl
+import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.BaseResponse
+import com.berlin.repository.datasource.remote.dto.MediaDto
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
+import com.berlin.repository.util.QueryType
 import com.google.common.truth.Truth
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -23,6 +27,7 @@ class SearchRepositoryImplTest {
 
     private lateinit var remoteDataSource: SearchRemoteDataSource
     private lateinit var localDataSource: SearchLocalDataSource
+    private lateinit var recentHistoryLocalDataSource: RecentHistoryLocalDataSource
 
     private lateinit var repository: SearchRepositoryImpl
 
@@ -30,9 +35,11 @@ class SearchRepositoryImplTest {
     fun setup() {
         localDataSource = mockk(relaxed = true)
         remoteDataSource = mockk(relaxed = true)
+        recentHistoryLocalDataSource = mockk(relaxed = true)
         repository = SearchRepositoryImpl(
             localDataSource = localDataSource,
-            remoteDataSource = remoteDataSource
+            remoteDataSource = remoteDataSource,
+            recentHistoryLocalDataSource = recentHistoryLocalDataSource
         )
 
     }
@@ -44,22 +51,41 @@ class SearchRepositoryImplTest {
         val language = "en-US"
         val movieDto = dummyMovieDto
 
-        val movie1 = movieDto.toLocal(query = country, time = 123L, type = "COUNTRY")
+        val movie1 = movieDto.toLocal(
+            query = country, page = 1, type = "COUNTRY",
+            mediaType = "MOVIE"
+        )
         val mapped = movie1.toDomain()
 
         val response = BaseResponse(results = listOf(movieDto, movieDto, movieDto))
 
-       
-        coEvery { localDataSource.getCachedSearch(country, "COUNTRY") } returnsMany listOf(
+
+        coEvery {
+            localDataSource.getCachedSearch(
+                country,
+                QueryType.COUNTRY,
+                pageSize = 20,
+                page = 1
+            )
+        } returnsMany listOf(
             emptyList(), // First call triggers remote fetch
             listOf(movie1, movie1, movie1) // After caching
         )
 
-        coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
+        coEvery {
+            remoteDataSource.searchMoviesByCountry(
+                country, language,
+                page = 1
+            )
+        } returns response
         coJustRun { localDataSource.cacheSearch(any()) }
 
         // When
-        val result = repository.getMoviesByCountry(country, language)
+        val result = repository.getMoviesByCountry(
+            page = 1,
+            query = country,
+        )
+
 
         // Then
         println(result)
@@ -72,10 +98,15 @@ class SearchRepositoryImplTest {
         val country = "EG"
         val language = "en-US"
         val response = BaseResponse<MovieDto>(1, 10, results = null, 2)
-        coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
+        coEvery {
+            remoteDataSource.searchMoviesByCountry(
+                country, language,
+                page = 1
+            )
+        } returns response
 
         // When
-        val result = repository.getMoviesByCountry(country, language)
+        val result = repository.getMoviesByCountry(country, 1)
 
         // Then
         Truth.assertThat(result).isEmpty()
@@ -87,19 +118,36 @@ class SearchRepositoryImplTest {
             val actorName = "Tom Hanks"
             val language = "en-US"
             val dto = dummyPersonDto
-            val local = dto.knownFor!!.first()!!.toLocal(actorName, 123L, "ACTOR")
+            val local = dto.knownFor!!.first()!!.toLocal(
+                actorName,
+                QueryType.ACTOR.name,
+                1,
+                mediaType = QueryType.MOVIE.name
+            )
             val mapped = local.toDomain()
 
             val response = BaseResponse(results = listOf(dto))
 
-            coEvery { localDataSource.getCachedSearch(actorName, "ACTOR") } returnsMany listOf(
+            coEvery {
+                localDataSource.getCachedSearch(
+                    actorName, QueryType.ACTOR,
+                    pageSize = 20,
+                    page = 1
+                )
+            } returnsMany listOf(
                 emptyList(),
                 listOf(local, local)
             )
-            coEvery { remoteDataSource.searchMoviesByActor(actorName, language) } returns response
+            coEvery {
+                remoteDataSource.searchMoviesByActor(
+                    actorName,
+                    language,
+                    1
+                )
+            } returns response
             coJustRun { localDataSource.cacheSearch(any()) }
 
-            val result = repository.getMoviesByActorName(actorName, language)
+            val result = repository.getMediaByActorName(actorName, 1)
 
             Truth.assertThat(result).containsExactly(mapped, mapped)
         }
@@ -108,12 +156,24 @@ class SearchRepositoryImplTest {
     fun `getMoviesByActorName returns cached data when cache is fresh`() = runTest {
         val actorName = "Tom Hanks"
         val language = "en-US"
-        val movie = dummyMovieDto.toLocal(actorName, System.currentTimeMillis(), "ACTOR")
+        val movie = dummyMovieDto.toLocal(
+            actorName,
+            QueryType.ACTOR.name,
+            1,
+            QueryType.MOVIE.name
+        )
         val mapped = movie.toDomain()
 
-        coEvery { localDataSource.getCachedSearch(actorName, "ACTOR") } returns listOf(movie)
+        coEvery {
+            localDataSource.getCachedSearch(
+                actorName,
+                QueryType.ACTOR,
+                20,
+                1
+            )
+        } returns listOf(movie)
 
-        val result = repository.getMoviesByActorName(actorName, language)
+        val result = repository.getMediaByActorName(actorName, 1)
 
         Truth.assertThat(result).containsExactly(mapped)
     }
@@ -125,11 +185,24 @@ class SearchRepositoryImplTest {
         val language = "en-US"
         val response = BaseResponse<PersonDto>(results = null)
 
-        coEvery { localDataSource.getCachedSearch(actorName, "ACTOR") } returns emptyList()
-        coEvery { remoteDataSource.searchMoviesByActor(actorName, language) } returns response
+        coEvery {
+            localDataSource.getCachedSearch(
+                actorName,
+                QueryType.ACTOR,
+                20,
+                1
+            )
+        } returns emptyList()
+        coEvery {
+            remoteDataSource.searchMoviesByActor(
+                actorName,
+                language,
+                page = 1
+            )
+        } returns response
         coJustRun { localDataSource.cacheSearch(any()) }
 
-        val result = repository.getMoviesByActorName(actorName, language)
+        val result = repository.getMediaByActorName(actorName, 1)
 
         Truth.assertThat(result).isEmpty()
     }
@@ -142,11 +215,17 @@ class SearchRepositoryImplTest {
 
         val response = BaseResponse(results = listOf(nonActor))
 
-        coEvery { localDataSource.getCachedSearch(actorName, "ACTOR") } returns emptyList()
-        coEvery { remoteDataSource.searchMoviesByActor(actorName, language) } returns response
-        coJustRun { localDataSource.cacheSearch(any()) }
+        coEvery {
+            localDataSource.getCachedSearch(
+                actorName,
+                QueryType.ACTOR,
+                pageSize = 20,
+                page = 1
+            )
+        } returns emptyList()
+        coEvery { remoteDataSource.searchMoviesByActor(actorName, language, 1) } returns response
 
-        val result = repository.getMoviesByActorName(actorName, language)
+        val result = repository.getMediaByActorName(actorName, 1)
 
         Truth.assertThat(result).isEmpty()
     }
@@ -154,23 +233,23 @@ class SearchRepositoryImplTest {
     @Test
     fun `getRecentSearchQueries should return list from localDataSource`() = runTest {
         val expected = listOf("Avengers", "Dark Knight")
-        coEvery { localDataSource.getRecentSearchQueries() } returns expected
+        coEvery { recentHistoryLocalDataSource.getRecentSearchQueries() } returns expected
 
         val result = repository.getRecentSearchQueries()
 
         Truth.assertThat(result).isEqualTo(expected)
-        coVerify(exactly = 1) { localDataSource.getRecentSearchQueries() }
+        coVerify(exactly = 1) { recentHistoryLocalDataSource.getRecentSearchQueries() }
     }
 
     @Test
     fun `saveRecentHistory should insert query as SearchingEntity`() = runTest {
         val query = "Spider Man"
-        coEvery { localDataSource.insertQueryOnly(any()) } just Runs
+        coEvery { recentHistoryLocalDataSource.insertQueryOnly(any()) } just Runs
 
         repository.saveRecentHistory(query)
 
         coVerify(exactly = 1) {
-            localDataSource.insertQueryOnly(withArg {
+            recentHistoryLocalDataSource.insertQueryOnly(withArg {
                 Truth.assertThat(it.id).isEqualTo(query.hashCode().toLong())
                 Truth.assertThat(it.query).isEqualTo(query)
                 Truth.assertThat(it.type).isEqualTo("HISTORY")
@@ -186,20 +265,20 @@ class SearchRepositoryImplTest {
     @Test
     fun `deleteQueryFromHistory should delegate call to localDataSource`() = runTest {
         val query = "Batman"
-        coEvery { localDataSource.deleteQueryFromHistory(query) } just Runs
+        coEvery { recentHistoryLocalDataSource.deleteQueryFromHistory(query) } just Runs
 
         repository.deleteQueryFromHistory(query)
 
-        coVerify(exactly = 1) { localDataSource.deleteQueryFromHistory(query) }
+        coVerify(exactly = 1) { recentHistoryLocalDataSource.deleteQueryFromHistory(query) }
     }
 
     @Test
     fun `clearSearchHistory should delegate call to localDataSource`() = runTest {
-        coEvery { localDataSource.clearSearchHistory() } just Runs
+        coEvery { recentHistoryLocalDataSource.clearSearchHistory() } just Runs
 
         repository.clearSearchHistory()
 
-        coVerify(exactly = 1) { localDataSource.clearSearchHistory() }
+        coVerify(exactly = 1) { recentHistoryLocalDataSource.clearSearchHistory() }
     }
 
 
@@ -218,12 +297,22 @@ class SearchRepositoryImplTest {
 
         )
 
+    private val dummyMediaDto = MediaDto(
+        id = 101,
+        title = "Epic Movie",
+        genreIds = listOf(12, 18),
+        posterPath = "/poster/path.jpg",
+        releaseDate = "2023-05-15",
+        popularity = 123.45,
+        voteAverage = 8.7,
+        mediaType = "MOVIE"
+    )
+
 
     private val dummyPersonDto = PersonDto(
         id = 1,
         name = "Tom Hanks",
         knownForDepartment = "Acting",
-        knownFor = listOf(dummyMovieDto, dummyMovieDto),
+        knownFor = listOf(dummyMediaDto),
     )
-
 }
