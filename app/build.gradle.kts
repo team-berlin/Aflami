@@ -30,11 +30,28 @@ android {
             enableSplit = true
         }
     }
+    buildTypes {
+        getByName("release") {
+            ndk {
+                abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+            }
+        }
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
     defaultConfig {
         applicationId = "com.berlin.aflami"
         minSdk = 26
         targetSdk = 35
-
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
         versionCode = 1
         versionName = if (project.hasProperty("versionName")) {
             project.property("versionName") as String
@@ -72,7 +89,9 @@ android {
         buildConfig = true
     }
 
-    configurations { implementation.get().exclude(mapOf("group" to "org.jetbrains", "module" to "annotations"))}
+    configurations {
+        implementation.get().exclude(mapOf("group" to "org.jetbrains", "module" to "annotations"))
+    }
 }
 
 dependencies {
