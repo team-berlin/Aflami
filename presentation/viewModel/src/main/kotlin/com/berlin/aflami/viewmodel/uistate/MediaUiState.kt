@@ -5,6 +5,7 @@ data class MediaUiState(
     val title: String = "",
     val rating: String = "",
     val releaseYear: String = "",
+    val mediaType: String = "",
     val genre: List<Int> = emptyList(),
     val poster: String = ""
 )

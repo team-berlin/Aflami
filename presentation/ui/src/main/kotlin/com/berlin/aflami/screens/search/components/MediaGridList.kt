@@ -14,14 +14,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.ui.R
 
 @Composable
-fun MoviesList(
+fun MediaGridList(
     modifier: Modifier = Modifier,
-    movies: LazyPagingItems<MovieUIState>,
-    onMovieClick: (Int) -> Unit
+    media: LazyPagingItems<MediaUiState>,
+    onMovieClick: (Int, mediaType: String) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -33,19 +33,18 @@ fun MoviesList(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
-                count = movies.itemCount,
+                count = media.itemCount,
             ) { index ->
-                val movie = movies[index]
+                val movie = media[index]
                 if (movie != null) {
                     MediaCard(
                         modifier = Modifier
                             .height(222.dp)
-                            .clickable { onMovieClick(movie.id.toInt()) },
+                            .clickable { onMovieClick(movie.id.toInt(),movie.mediaType) },
                         mediaImg = movie.poster,
                         title = movie.title,
-                        typeOfMedia = if (movie.mediaType == "movie") stringResource(R.string.movie) else stringResource(
-                            com.berlin.designsystem.R.string.tv_shows
-                        ),
+                        typeOfMedia = if (movie.mediaType=="movie")stringResource(R.string.movie) else stringResource(
+                            com.berlin.designsystem.R.string.tv_shows),
                         date = movie.releaseYear,
                         rating = movie.rating
                     )

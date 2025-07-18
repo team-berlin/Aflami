@@ -31,7 +31,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.CountryTourExploring
-import com.berlin.aflami.screens.search.components.MoviesList
+import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorEffect
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorInteractionListener
@@ -51,7 +51,7 @@ fun SearchByActorNameScreen(
         viewModel.effect.collect {
             when (it){
                 is SearchByActorEffect.NavigatedBack -> {navController.popBackStack()}
-                is SearchByActorEffect.NavigatedToMovieDetailsScreen -> {}
+                is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {}
             }
         }
     }
@@ -133,8 +133,8 @@ private fun SearchByActorNameContent(
                     )
                 }
                 else -> {
-                    MoviesList(
-                        movies = pagedMovies,
+                    MediaGridList(
+                        media = pagedMovies,
                         onMovieClick = listener::onMovieClicked,
                     )
                 }

@@ -16,6 +16,7 @@ data class SearchingEntity(
     val genre: List<Int>,
     val poster: String,
     val page:Int,
+    val mediaType:String
 )
 
 enum class QueryType {

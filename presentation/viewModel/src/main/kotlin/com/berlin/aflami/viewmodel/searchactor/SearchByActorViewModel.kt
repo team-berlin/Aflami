@@ -9,7 +9,7 @@ import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIState
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
@@ -39,8 +39,8 @@ class SearchByActorViewModel(
         }
     }
 
-    override fun onMovieClicked(movieId: Int) {
-        sendNewEffect(SearchByActorEffect.NavigatedToMovieDetailsScreen(movieId))
+    override fun onMovieClicked(movieId: Int, mediaType: String) {
+        //sendNewEffect(SearchByActorEffect.NavigatedToMediaDetailsScreen(movieId, mediaType: String))
     }
 
     override fun onActorNameChanged(actorName: CharSequence) {
@@ -71,7 +71,7 @@ class SearchByActorViewModel(
         )
     }
 
-    private fun onSearchSuccess(movies: Flow<PagingData<MovieUIState>>) {
+    private fun onSearchSuccess(movies: Flow<PagingData<MediaUiState>>) {
         _state.update { it.copy(movies = movies, isLoading = false) }
     }
 

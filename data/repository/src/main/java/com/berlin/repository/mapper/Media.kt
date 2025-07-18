@@ -1,37 +1,36 @@
 package com.berlin.repository.mapper
 
-import com.berlin.entity.Movie
+import com.berlin.entity.Media
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
-import com.berlin.repository.datasource.remote.dto.MovieDto
+import com.berlin.repository.datasource.remote.dto.MediaDto
 import com.berlin.repository.util.toLocalDate
 import java.time.Instant
 
-fun SearchingEntity.toDomain(): Movie {
-    return Movie(
-        id = this.id,
-        title = this.title,
-        rating = this.rating,
-        releaseYear = releaseYear.toLocalDate(),
-        genre = this.genre,
-        poster = this.poster
-    )
-}
-
-fun MovieDto.toLocal(query: String, type: QueryType, page: Int,mediaType:String): SearchingEntity {
+fun MediaDto.toLocal(query: String, type: QueryType, page: Int, mediaType: String?): SearchingEntity {
     return SearchingEntity(
         query = query,
         type = type,
         time = Instant.now().epochSecond,
         id = this.id?.toLong() ?: 0L,
-        title = this.title ?: "",
+        title = this.title ?:this.name?:"",
         rating = this.voteAverage ?: 0.0,
         releaseYear = (releaseDate ?: ""),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
         page = page,
-        mediaType = mediaType
+        mediaType = mediaType?:""
     )
 }
 
-const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
+fun SearchingEntity.toMedia(): Media {
+    return Media(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseYear = releaseYear.toLocalDate(),
+        genre = this.genre,
+        poster = this.poster,
+        mediaType = this.mediaType
+    )
+}

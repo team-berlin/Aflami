@@ -1,5 +1,6 @@
 package com.berlin.repository
 
+import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.SearchLocalDataSource
@@ -9,6 +10,7 @@ import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
+import com.berlin.repository.mapper.toMedia
 import repository.SearchRepository
 import java.time.Instant
 
@@ -29,26 +31,26 @@ class SearchRepositoryImpl(
             ?.map { it.toDomain() }
             ?: remoteDataSource.searchMoviesByCountry(query, language, page).results
                 ?.filterNotNull()
-                ?.map { it.toLocal(query, QueryType.COUNTRY, page) }
+                ?.map { it.toLocal(query, QueryType.COUNTRY, page,"MOVIE")}
                 ?.also { localDataSource.cacheSearch(it) }
                 ?.map { it.toDomain() }
             ?: emptyList()
     }
 
-    override suspend fun getMoviesByActorName(actorName: String ,page:Int): List<Movie> {
+    override suspend fun getMediaByActorName(actorName: String, page:Int): List<Media> {
         return localDataSource.getCachedSearch(
             actorName,
             QueryType.ACTOR,
             pageSize = 20,
             page = page
         ).takeIf { !isExpiredOrEmpty(it) }
-            ?.map { it.toDomain() }
+            ?.map { it.toMedia() }
             ?:remoteDataSource.searchMoviesByActor(actorName, language,page).results
                 ?.filterNotNull()
                 ?.also { getActingDepartment(it) }
-                ?.let { getMoviesByActorName(actorName,page,it)}
+                ?.let { getMediaByActorName(actorName,page,it)}
                 ?.also {localDataSource.cacheSearch(it) }
-                ?.map { it.toDomain() }
+                ?.map { it.toMedia() }
             ?:emptyList()
     }
 
@@ -57,12 +59,13 @@ class SearchRepositoryImpl(
         return listOfPersons.filter { it.knownForDepartment == ACTING_DEPARTMENT }
     }
 
-    private fun getMoviesByActorName(actorName: String,page:Int,listOfPersons:List<PersonDto>): List<SearchingEntity> {
+    private fun getMediaByActorName(actorName: String, page:Int, listOfPersons:List<PersonDto>): List<SearchingEntity> {
         return listOfPersons.flatMap { it.knownFor?.filterNotNull()
             ?.map { it.toLocal(
                 actorName,
                 QueryType.ACTOR,
                 page,
+                it.mediaType
             ) }?:emptyList()
         }
     }
