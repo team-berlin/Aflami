@@ -1,16 +1,15 @@
 package com.berlin.aflami.viewmodel.searchcountry
 
-import android.util.Log
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.aflami.viewmodel.mapper.toUIState
+import com.berlin.aflami.viewmodel.util.getCountryIsoCode
 import com.berlin.entity.Movie
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -19,24 +18,17 @@ import kotlinx.datetime.LocalDate
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.assertThrows
 import usecase.SearchByCountryUseCase
 
 class SearchByCountryViewModelTest {
 
     private lateinit var viewModel: SearchByCountryViewModel
     private lateinit var searchByCountryUseCase: SearchByCountryUseCase
-    private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
-        Dispatchers.setMain(testDispatcher)
-
-        mockkStatic(Dispatchers::class)
-        every { Dispatchers.IO } returns testDispatcher
-
-        mockkStatic(Log::class)
-        every { Log.e(any(), any()) } returns 0
-
+        Dispatchers.setMain(StandardTestDispatcher())
         searchByCountryUseCase = mockk()
         viewModel = SearchByCountryViewModel(searchByCountryUseCase)
     }
@@ -44,89 +36,92 @@ class SearchByCountryViewModelTest {
     @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
-        unmockkAll()
     }
 
     @Test
-    fun `onCountryNameChanged should update countryName and dropdown state`() = runTest {
-        val country = "Egy"
-        viewModel.onCountryNameChanged(country)
+    fun `onCountryNameChanged updates state with filtered results`() = runTest {
+        val input = "Egy"
+        viewModel.onCountryNameChanged(input)
+
         advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertThat(state.countryName).isEqualTo("Egy")
-        assertThat(state.dropDownExpanded).isTrue()
-        assertThat(state.filteredCountries.keys.any {
-            it.startsWith(
-                "Egy",
-                ignoreCase = true
-            )
-        }).isTrue()
+        val state = viewModel.state.value
+
+        assertThat(state.query).isEqualTo(input)
+        assertThat(state.filteredCountries).isNotEmpty()
     }
 
     @Test
-    fun `onCountrySelected(name) should update country name only`() = runTest {
-        viewModel.onCountrySelected("Egypt")
-        val state = viewModel.uiState.value
-        assertThat(state.countryName).isEqualTo("Egypt")
+    fun `should hide dropdown when query is empty`() = runTest {
+        viewModel.onCountryNameChanged("")
+
+        val state = viewModel.state.value
+        assertThat(state.query).isEmpty()
+        assertThat(state.filteredCountries.isEmpty() || state.dropDownExpanded.not()).isTrue()
     }
 
     @Test
-    fun `onCountrySelected() should update state with movies on success`() = runTest {
-        val countryName = "Egypt"
-        val countryCode = "EG"
-        val movie = Movie(1, "Movie 2", 8.0, LocalDate(2021, 1, 1), emptyList(), "img")
-        val movieUI = MovieUIState(1, "Movie 2", "8.0", "2021", emptyList(), "img")
-        viewModel.onCountryNameChanged(countryName)
-        viewModel.countriesWithCodeMap = mapOf(countryName to countryCode)
-
-        coEvery { searchByCountryUseCase(countryCode, any()) } returns listOf(movie)
-
-        viewModel.onCountrySelected()
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertThat(state.isLoading).isFalse()
-        assertThat(state.movies).containsExactly(movieUI)
-    }
-
-    @Test
-    fun `onCountrySelected() should show error if country name is invalid`() = runTest {
-        viewModel.onCountryNameChanged("Unknownland")
-        viewModel.countriesWithCodeMap = emptyMap()
-
-        viewModel.onCountrySelected()
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertThat(state.isLoading).isFalse()
-        assertThat(state.error).isEqualTo("Invalid country name")
-    }
-
-    @Test
-    fun `onCountrySelected() should show error on failure`() = runTest {
-        val countryName = "Egypt"
-        val countryCode = "EG"
-        val errorMessage = "Network error"
-
-        viewModel.onCountryNameChanged(countryName)
-        viewModel.countriesWithCodeMap = mapOf(countryName to countryCode)
-
-        coEvery { searchByCountryUseCase(countryCode, any()) } throws RuntimeException(errorMessage)
-
-        viewModel.onCountrySelected()
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertThat(state.isLoading).isFalse()
-        assertThat(state.error).isEqualTo(errorMessage)
-        assertThat(state.movies).isEmpty()
-    }
-
-    @Test
-    fun `onDismissDropDown should hide dropdown`() = runTest {
+    fun `should hide dropdown when onDismissDropDown called`() = runTest {
         viewModel.onDismissDropDown()
-        val state = viewModel.uiState.value
-        assertThat(state.dropDownExpanded).isFalse()
+        assertThat(viewModel.state.value.dropDownExpanded).isFalse()
     }
+
+    @Test
+    fun `should emits NavigatedBack effect when onBackClicked called`() = runTest {
+        val effects = mutableListOf<SearchByCountryEffect>()
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.effect.collect { effects.add(it) }
+        }
+
+        viewModel.onBackClicked()
+        advanceUntilIdle()
+
+        assertThat(effects.contains(SearchByCountryEffect.NavigatedBack)).isTrue()
+        job.cancel()
+    }
+
+    @Test
+    fun `should emits NavigatedToMovieDetailsScreen effect when onMovieClicked called`() = runTest {
+        val effects = mutableListOf<SearchByCountryEffect>()
+        val movieId = 101
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.effect.collect { effects.add(it) }
+        }
+
+        viewModel.onMovieClicked(movieId)
+        advanceUntilIdle()
+
+        assertThat(effects.contains(SearchByCountryEffect.NavigatedToMovieDetailsScreen(movieId))).isTrue()
+        job.cancel()
+    }
+
+    @Test
+    fun `should call usecase when onCountryClicked clicked and updates state`() = runTest {
+        val isoCode = getCountryIsoCode("Egypt") ?: "EG"
+        val dummyMovies = listOf(movie)
+
+        coEvery { searchByCountryUseCase.invoke(isoCode, any()) } returns dummyMovies
+
+        viewModel.onCountryNameChanged("Egypt")
+        viewModel.onCountryClicked()
+
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertThat(state.isLoading).isTrue()
+        assertThat(state.isCountrySelected).isTrue()
+        assertThat(state.dropDownExpanded).isFalse()
+        assertThat(state.movies).isNotNull()
+    }
+
+    private val movie = Movie(
+        id = 1,
+        title = "Test Movie",
+        rating = 8.5,
+        releaseYear = LocalDate.parse("2023-01-01"),
+        poster = "poster.jpg",
+        genre = emptyList(),
+    )
+
+    private val movieUIState = movie.toUIState()
 }

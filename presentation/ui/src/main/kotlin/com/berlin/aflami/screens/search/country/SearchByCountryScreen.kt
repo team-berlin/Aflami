@@ -137,7 +137,8 @@ private fun SearchByCountryContent(
                     )
                 }
 
-                state.isCountrySelected && movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading -> {
+                state.isCountrySelected && movies.itemCount == 0
+                        && movies.loadState.refresh is LoadState.NotLoading -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
                         image = painterResource(R.drawable.no_search_result),

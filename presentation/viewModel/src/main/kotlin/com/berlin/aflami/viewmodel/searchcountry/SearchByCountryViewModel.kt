@@ -30,7 +30,8 @@ class SearchByCountryViewModel(
             it.copy(
                 query = countryName.toString(),
                 filteredCountries = filterCountriesByName(countryName.toString()),
-                dropDownExpanded = countryName.isNotBlank() && state.value.filteredCountries.isNotEmpty()
+                dropDownExpanded = countryName.isNotBlank()
+                        && state.value.filteredCountries.isNotEmpty()
             )
         }
     }
