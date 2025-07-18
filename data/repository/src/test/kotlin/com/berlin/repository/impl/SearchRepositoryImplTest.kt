@@ -1,8 +1,10 @@
 package com.berlin.repository.impl
 
 import com.berlin.repository.SearchRepositoryImpl
+import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
+import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.BaseResponse
 import com.berlin.repository.datasource.remote.dto.MediaDto
@@ -11,7 +13,6 @@ import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
 import com.berlin.repository.mapper.toMedia
-import com.berlin.repository.util.QueryType
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
@@ -27,6 +28,7 @@ class SearchRepositoryImplTest {
     private lateinit var remoteDataSource: SearchRemoteDataSource
     private lateinit var localDataSource: SearchLocalDataSource
     private lateinit var recentHistoryLocalDataSource: RecentHistoryLocalDataSource
+    private lateinit var categoriesPreferencesDataSource: CategoriesPreferencesDataSource
 
     private lateinit var repository: SearchRepositoryImpl
 
@@ -38,7 +40,8 @@ class SearchRepositoryImplTest {
         repository = SearchRepositoryImpl(
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
-            recentHistoryLocalDataSource = recentHistoryLocalDataSource
+            recentHistoryLocalDataSource = recentHistoryLocalDataSource,
+            categoriesPreferencesDataSource = categoriesPreferencesDataSource,
         )
 
     }
