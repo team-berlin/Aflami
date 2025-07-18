@@ -1,11 +1,13 @@
 package com.berlin.aflami.viewmodel.mapper
 
+import com.berlin.aflami.viewmodel.mediadetails.CompanyProductionItem
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.SeasonUiState
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
+import com.berlin.entity.ProductionCompanyEntity
 import com.berlin.entity.SeasonEntity
 import com.berlin.entity.TvShowDetails
 
@@ -20,23 +22,6 @@ fun Movie.toUIState(): MovieUIState {
     )
 }
 
-//fun Movie.toUiModel(): MediaDetailsUiState {
-//    return MediaDetailsUiState(
-//        id = id,
-//        title = title,
-//        mediaType = MediaType.MOVIE,
-//        posterUrl = poster,
-//        backdrop = backdropPath,
-//        overview = overview.orEmpty(),
-//        genre = genre ,
-//        mediaDuration = runtime?.let { "${it / 60}h ${it % 60}m" } ?: "",
-//        releaseYear = releaseYear.year.toString(),
-//        country ="",
-//        isFavorite =false,
-//        isOverviewExpanded =false,
-//    )
-//}
-
 fun MovieDetails.toUiState(
     isFavorite: Boolean = false,
     isOverviewExpanded: Boolean = false
@@ -47,7 +32,7 @@ fun MovieDetails.toUiState(
     posterUrl = posterUrl,
     backdropUrl = backdropUrl,
     genres = genres.map { it.name },
-    releaseYear = releaseDate?: "",
+    releaseYear = releaseDate ?: "",
     rating = rating,
     runtime = runtime?.let { "${it / 60}h ${it % 60}m" } ?: "",
     seasons = emptyList(),
@@ -79,17 +64,15 @@ fun SeasonEntity.toUiState() = SeasonUiState(
     id = id,
     seasonTitle = name,
     numberOfEpisodes = episodeCount,
-    posterUrl = posterUrl?:"",
+    posterUrl = posterUrl ?: "",
     seasonNumber = seasonNumber,
-    airDate = airDate?:""
+    airDate = airDate ?: ""
 )
 
-//fun TVShow.toUiModel() = MediaDetailsUiState(
-//    id = id,
-//    title = title,
-//    mediaType = MediaType.TV_SHOW,
-//    posterUrl = poster,
-//    backdrop = backdropPath,
-//    overview = overview.orEmpty(),
-//    genre = genre ,
-//)
+fun ProductionCompanyEntity.toUiState() = CompanyProductionItem(
+    id = id.toString(),
+    image = poster,
+    name = name,
+    country = originCountry ?: ""
+)
+

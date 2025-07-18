@@ -36,8 +36,6 @@ data class MovieDetailsDto(
     val posterPath: String?,
     @SerialName("production_companies")
     val productionCompanies: List<ProductionCompany>?,
-    @SerialName("production_countries")
-    val productionCountries: List<ProductionCountry>?,
     @SerialName("release_date")
     val releaseDate: String?,
     @SerialName("revenue")

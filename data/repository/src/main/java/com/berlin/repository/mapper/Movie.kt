@@ -3,10 +3,12 @@ package com.berlin.repository.mapper
 import com.berlin.entity.GenreEntity
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
+import com.berlin.entity.ProductionCompanyEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.Genre
 import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.MovieDto
+import com.berlin.repository.datasource.remote.dto.ProductionCompany
 import com.berlin.repository.util.toLocalDate
 
 fun SearchingEntity.toDomain(): Movie {
@@ -55,13 +57,23 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
         releaseDate = this.releaseDate.orEmpty(),
         rating = this.voteAverage ?: 0.0,
         runtime = this.runtime ?: 0,
-        genres = this.genres?.map { it.toEntity() } ?: emptyList()
+        genres = this.genres?.map { it.toEntity() } ?: emptyList(),
+        productionCompanies = this.productionCompanies?.map { company ->
+            company.toEntity()
+        } ?: emptyList()
     )
 }
 
 fun Genre.toEntity() = GenreEntity(
     id = this.id ?: 0,
     name = this.name.orEmpty()
+)
+
+fun ProductionCompany.toEntity() = ProductionCompanyEntity(
+    id = this.id ?: 0,
+    name = this.name.orEmpty(),
+    poster = this.logoPath?.let { "$POSTER_PREFIX$it" },
+    originCountry = this.originCountry.orEmpty()
 )
 
 const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"

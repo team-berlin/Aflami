@@ -14,10 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -48,21 +45,22 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
-import com.berlin.aflami.screens.mediadetails.ReviewSection
-import com.berlin.aflami.screens.mediadetails.components.ContentMoreLikeMedia
+import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
+import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
+import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
-import com.berlin.aflami.screens.mediadetails.components.MediaGallery
-import com.berlin.aflami.screens.mediadetails.components.MediaGalleryContent
+import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
+import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
 import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.uistate.SimilarMediaUiState
+import com.berlin.aflami.viewmodel.mediadetails.RowSectionUiState
+import com.berlin.aflami.viewmodel.mediadetails.TabContent
 import com.berlin.aflami.viewmodel.uistate.ReviewState
 import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.uistate.MediaGalleryUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.designsystem.R
 import com.example.navigation.Destination
@@ -76,14 +74,12 @@ fun MediaDetailsScreen(
     navController: NavController
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val rowUiState by viewModel.rowSectionUiState.collectAsState()
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
-    val review by viewModel.reviewsUiState.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
-    val similarMediaState by viewModel.similarMedia.collectAsState()
-    val galleryMedia by viewModel.galleryMedia.collectAsState()
     LaunchedEffect(mediaId, mediaType) {
-        viewModel.loadMediaDetails(mediaId, mediaType)
+        viewModel.getMediaDetails(mediaId, mediaType)
         viewModel.uiEffect.collect { effect ->
             when (effect) {
                 MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
@@ -101,6 +97,7 @@ fun MediaDetailsScreen(
     } else {
         MediaDetailsContent(
             state = uiState,
+            rowUiState = rowUiState,
             onBack = { /* navController.popBackStack() */ },
             onFavorite = {
                 viewModel.onAddMediaToFavouriteListClicked(
@@ -111,8 +108,7 @@ fun MediaDetailsScreen(
             onAdd = { /* handle add to fav/show sheet */ },
             onPlay = { viewModel.onPlayClicked(uiState.id) },
             onReadMore = { viewModel.onReadMoreDescriptionClicked(uiState.id) },
-            listener= viewModel,
-            reviewState = review,
+            listener = viewModel,
             onToggleExpand = { viewModel.onReadMoreDescriptionClicked(id = 550) },
             isExpanded = viewModel.isDescriptionExpanded(id = 550),
             isSelectedTab = tabSelected.tab,
@@ -120,11 +116,9 @@ fun MediaDetailsScreen(
                 viewModel.toggleMovieDetailsTab(
                     tab = tab,
                     mediaId = 550,
-                    mediaType =MediaType.MOVIE
+                    mediaType = MediaType.MOVIE
                 )
-            },
-            similarMediaState=similarMediaState,
-            galleryMedia=galleryMedia
+            }
         )
     }
 }
@@ -132,20 +126,17 @@ fun MediaDetailsScreen(
 @Composable
 fun MediaDetailsContent(
     state: MediaDetailsUiState,
+    rowUiState: RowSectionUiState,
     onBack: () -> Unit = {},
     onFavorite: () -> Unit = {},
     onAdd: () -> Unit = {},
     onPlay: () -> Unit = {},
     onReadMore: () -> Unit = {},
     listener: MediaInteractionListener,
-    reviewState: ReviewState,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
-    similarMediaState: SimilarMediaUiState,
-    galleryMedia:MediaGalleryUiState
-
 ) {
     Column(
         Modifier
@@ -299,27 +290,54 @@ fun MediaDetailsContent(
             }
         }
 
-        if (isSelectedTab == MovieDetailsTabs.REVIEWS) {
-            ReviewSection(
-                reviewState = reviewState,
-                isExpanded = isExpanded,
-                onToggleExpand = onToggleExpand
-            )
-        }else if( isSelectedTab == MovieDetailsTabs.MORE_LIKE_THIS) {
-            ContentMoreLikeMedia(
-                similarMediaState = similarMediaState,
-                mediaType = MediaType.MOVIE
-            )
-        }else if( isSelectedTab == MovieDetailsTabs.GALLERY) {
-            MediaGalleryContent(
-                mediaGalleryUiState = galleryMedia,
-            )
+        when (rowUiState) {
+            is RowSectionUiState.Error -> {
+                Text(
+                    text = rowUiState.message,
+                    style = Theme.textStyle.label.large,
+                    color = Theme.color.textColors.body,
+                )
+            }
+
+            is RowSectionUiState.Loading -> {
+                Loading()
+            }
+
+            is RowSectionUiState.Success -> {
+                when (rowUiState.content) {
+                    is TabContent.MoreLikeThis -> {
+                        MoreLikeThisSection(
+                            mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
+                            mediaType = MediaType.MOVIE
+                        )
+                    }
+
+                    is TabContent.Reviews -> {
+                        ReviewsSection(
+                            reviews = (rowUiState.content as TabContent.Reviews).items,
+                            isExpanded = isExpanded,
+                            onToggleExpand = onToggleExpand
+                        )
+                    }
+
+                    is TabContent.Gallery -> {
+                        GallerySection(
+                            mediaImages = (rowUiState.content as TabContent.Gallery).items,
+                        )
+                    }
+
+                    is TabContent.CompanyProduction -> {
+                        CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
         }
-
-
     }
-
-
 }
 
 @Composable
@@ -335,7 +353,8 @@ fun ExpandableDescription(
 ) {
     val canExpand = text.length > maxPreviewLength
 
-    val displayText = if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
+    val displayText =
+        if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
 
     val suffix = when {
         expanded && canExpand -> " Read less"
@@ -374,7 +393,7 @@ fun ExpandableDescription(
 
 @Composable
 fun Cast(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     castState: List<MediaCastUiState>,
     listener: MediaInteractionListener,
 ) {
@@ -408,35 +427,33 @@ fun Cast(
                         }
                 )
             }
+        }
+        BoxWithConstraints {
+            val screenWidth = maxWidth
+            val cardSize = 78.dp
+            val spaceBetween = 8.dp
+            val totalCardWidth = cardSize + spaceBetween
 
-            BoxWithConstraints {
-                val screenWidth = maxWidth
-                val cardSize = 78.dp
-                val spaceBetween = 8.dp
-                val totalCardWidth = cardSize + spaceBetween
+            val maxCardsInRow = (screenWidth / totalCardWidth).toInt()
 
-                val maxCardsInRow = (screenWidth / totalCardWidth).toInt()
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(spaceBetween)
-                ) {
-                    castState.take(maxCardsInRow).forEach {
-                        MediaCastItem(
-                            modifier = Modifier.size(cardSize),
-                            name = it.name,
-                            poster = it.poster
-                        )
-                    }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(spaceBetween)
+            ) {
+                castState.take(maxCardsInRow).forEach {
+                    MediaCastItem(
+                        modifier = Modifier.size(cardSize),
+                        name = it.name,
+                        poster = it.poster
+                    )
                 }
             }
-
         }
+
     }
 }
-
 
 
 private fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {

@@ -9,9 +9,7 @@ import com.berlin.aflami.viewmodel.uistate.ReviewState
 import com.berlin.aflami.viewmodel.uistate.ReviewUiState
 import com.berlin.aflami.viewmodel.review.toUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.uistate.MediaGalleryUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
-import com.berlin.aflami.viewmodel.uistate.SimilarMediaUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,23 +18,24 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import repository.MovieDetailsRepository
-import repository.TvShowDetailsRepository
 import usecase.GetMovieCastUseCase
+import usecase.GetMovieDetailsUseCase
 import usecase.GetMovieGalleryUseCase
 import usecase.GetMovieReviewUseCase
 import usecase.GetSeriesCastUseCase
+import usecase.GetSeriesGalleryUseCase
 import usecase.GetSeriesReviewUseCase
 import usecase.GetSimilarMoviesUseCase
 import usecase.GetSimilarSeriesUseCase
+import usecase.GetTvShowDetailsUseCase
 
 class MediaDetailsViewmodel(
+    private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
+    private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getSeriesCastUseCase: GetSeriesCastUseCase,
-    private val movieRepo: MovieDetailsRepository,
-    private val tvShowRepo: TvShowDetailsRepository,
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
-    private val getSerGalleryUseCase: GetMovieGalleryUseCase,
+    private val getSeriesGalleryUseCase: GetSeriesGalleryUseCase,
     private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
     private val getSimilarTVShowsUseCase: GetSimilarSeriesUseCase,
     private val movieReviewUseCase: GetMovieReviewUseCase,
@@ -55,20 +54,39 @@ class MediaDetailsViewmodel(
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
+    private val _rowSectionUiState = MutableStateFlow<RowSectionUiState>(RowSectionUiState.Loading)
+    val rowSectionUiState: StateFlow<RowSectionUiState> = _rowSectionUiState
+
+    private val _tabSelectedUiState = MutableStateFlow(MovieDetailsTabsUiState())
+    val tabSelectedUiState = _tabSelectedUiState.asStateFlow()
+
+    private val _expandedUiStates = mutableStateMapOf<Long, Boolean>()
+
+    var companyProductionCache: List<CompanyProductionItem>? = null
+
     init {
         viewModelScope.launch {
             getMovieCast(505, MediaType.MOVIE, "ar-EG")
         }
     }
 
-    fun loadMediaDetails(mediaId: Long, mediaType: MediaType, language: String = "en-US") {
+    fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String = "en-US") {
         viewModelScope.launch {
             _loading.value = true
             _error.value = null
             val uiState = try {
                 when (mediaType) {
-                    MediaType.MOVIE -> movieRepo.getMovieDetails(mediaId, language)?.toUiState()
-                    MediaType.TV_SHOW -> tvShowRepo.getTvShowDetails(mediaId, language)?.toUiState()
+                    MediaType.MOVIE -> {
+                        val result = getMovieDetailsUseCase.invoke(mediaId, language)
+                        companyProductionCache =
+                            result?.productionCompanies?.map { productCompany ->
+                                productCompany.toUiState()
+                            }
+                        getMovieDetailsUseCase.invoke(mediaId, language)?.toUiState()
+                    }
+
+                    MediaType.TV_SHOW -> getTvShowDetailsUseCase.invoke(mediaId, language)
+                        ?.toUiState()
                 }
             } catch (e: Exception) {
                 _error.value = "Failed to load details: ${e.message}"
@@ -79,18 +97,9 @@ class MediaDetailsViewmodel(
         }
     }
 
-    private val _reviewsUiState = MutableStateFlow<ReviewState>(ReviewState.Reviewing.Loading)
-    val reviewsUiState = _reviewsUiState.asStateFlow()
-
-    private val _tabSelectedUiState = MutableStateFlow(MovieDetailsTabsUiState())
-    val tabSelectedUiState = _tabSelectedUiState.asStateFlow()
-
-    private val _expandedUiStates = mutableStateMapOf<Long, Boolean>()
-
-    fun getReviews(id: Long, mediaType:MediaType) {
-
+    private fun getReviews(id: Long, mediaType: MediaType) {
         viewModelScope.launch(Dispatchers.IO) {
-            _reviewsUiState.update { ReviewState.Reviewing.Loading }
+            _rowSectionUiState.update { RowSectionUiState.Loading }
 
             try {
                 val result = when (mediaType) {
@@ -99,36 +108,45 @@ class MediaDetailsViewmodel(
                 }
 
                 if (result.isEmpty()) {
-                    _reviewsUiState.update { ReviewState.NoReviewFound }
+                    _rowSectionUiState.update { RowSectionUiState.Error("There is no reviews!") }
                 } else {
-                    onReviewSuccess(result)
+                    _rowSectionUiState.update {
+                        RowSectionUiState.Success(
+                            content = TabContent.Reviews(
+                                items = result
+                            )
+                        )
+                    }
                 }
 
             } catch (error: Exception) {
-                onReviewError(error.message ?: "Unknown error")
+                _rowSectionUiState.update {
+                    RowSectionUiState.Error(
+                        error.message ?: "Unknown error"
+                    )
+                }
             }
         }
     }
 
-    private fun onReviewSuccess(reviews: List<ReviewUiState>) {
-        _reviewsUiState.update {
-            ReviewState.Reviewing.Success(reviews)
+    private fun getCompanyProduction() {
+        _rowSectionUiState.update {
+            RowSectionUiState.Success(
+                content = TabContent.CompanyProduction(
+                    items = companyProductionCache ?: emptyList()
+                )
+            )
         }
-    }
-
-    private fun onReviewError(error: String) {
-        _reviewsUiState.update { ReviewState.Reviewing.Error(error) }
     }
 
     fun isDescriptionExpanded(id: Long): Boolean {
         return _expandedUiStates[id] ?: false
     }
 
-
     fun toggleMovieDetailsTab(
         tab: MovieDetailsTabs,
         mediaId: Long,
-        mediaType:MediaType
+        mediaType: MediaType
     ) {
         viewModelScope.launch {
             _tabSelectedUiState.update { current ->
@@ -139,14 +157,18 @@ class MediaDetailsViewmodel(
                 }
 
                 when (newSelectedTab) {
-                    MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(mediaId, mediaType)
+                    MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(
+                        mediaId,
+                        mediaType
+                    )
+
                     MovieDetailsTabs.REVIEWS -> getReviews(
                         id = mediaId,
                         mediaType = mediaType
                     )
 
-                    MovieDetailsTabs.GALLERY ->  onShowMediaGalleryClicked(mediaId,mediaType)
-                    MovieDetailsTabs.COMPANY_PRODUCTION -> TODO()
+                    MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(mediaId, mediaType)
+                    MovieDetailsTabs.COMPANY_PRODUCTION -> getCompanyProduction()
                 }
 
                 MovieDetailsTabsUiState(
@@ -168,6 +190,7 @@ class MediaDetailsViewmodel(
     override fun onReadMoreDescriptionClicked(id: Long) {
         _uiState.value = _uiState.value.copy(isOverviewExpanded = true)
     }
+
     override fun onShowCastClicked() {
         viewModelScope.launch {
             _uiEffect.emit(MediaDetailsScreenEffect.NavigateToShowAllCastScreen)
@@ -221,41 +244,66 @@ class MediaDetailsViewmodel(
         TODO("Not yet implemented")
     }
 
-    private val _similarMedia = MutableStateFlow<SimilarMediaUiState>(SimilarMediaUiState.Init)
-    val similarMedia: StateFlow<SimilarMediaUiState> = _similarMedia.asStateFlow()
 
     override fun onShowMoreMediaLikeThisClicked(mediaId: Long, mediaType: MediaType) {
         viewModelScope.launch {
-            _similarMedia.value = SimilarMediaUiState.Loading
+            _rowSectionUiState.update { RowSectionUiState.Loading }
             try {
-                val similar = when (mediaType) {
+                val result = when (mediaType) {
                     MediaType.MOVIE -> getSimilarMoviesUseCase(mediaId).map { it.toUIStateMedia() }
                     MediaType.TV_SHOW -> getSimilarTVShowsUseCase(mediaId).map { it.toUIStateMedia() }
                 }
-                _similarMedia.value = SimilarMediaUiState.Success(similar)
-            } catch (e: Exception) {
-                _similarMedia.value =
-                    SimilarMediaUiState.Error("Failed to load similar media: ${e.message}")
+                if (result.isEmpty()) {
+                    _rowSectionUiState.update { RowSectionUiState.Error("There is no more like this!") }
+                } else {
+                    _rowSectionUiState.update {
+                        RowSectionUiState.Success(
+                            content = TabContent.MoreLikeThis(
+                                items = result
+                            )
+                        )
+                    }
+                }
+            } catch (error: Exception) {
+                _rowSectionUiState.update {
+                    RowSectionUiState.Error(
+                        error.message ?: "Unknown error"
+                    )
+                }
             }
         }
     }
+
     override fun onShowReviewsClicked() {
         TODO("Not yet implemented")
     }
-    private val _galleryMedia = MutableStateFlow<MediaGalleryUiState>(MediaGalleryUiState.Init)
-    val galleryMedia: StateFlow<MediaGalleryUiState> = _galleryMedia .asStateFlow()
-    override fun onShowMediaGalleryClicked(id: Long,mediaType: MediaType) {
+
+    override fun onShowMediaGalleryClicked(id: Long, mediaType: MediaType) {
         viewModelScope.launch {
-            _galleryMedia.value = MediaGalleryUiState.Loading
+            _rowSectionUiState.update { RowSectionUiState.Loading }
             try {
-                val mediaGallery = when (mediaType) {
-                    MediaType.MOVIE ->  getSerGalleryUseCase(id)
-                    MediaType.TV_SHOW ->  getSerGalleryUseCase(id)
+                val result = when (mediaType) {
+                    MediaType.MOVIE -> getMovieGalleryUseCase(id)
+                    MediaType.TV_SHOW -> getSeriesGalleryUseCase(id)
                 }
-                _galleryMedia.value = MediaGalleryUiState.Success(mediaGallery)
-            } catch (e: Exception) {
-                _galleryMedia.value =
-                    MediaGalleryUiState.Error("Failed to load similar media: ${e.message}")
+
+                if (result.isEmpty()) {
+                    _rowSectionUiState.update { RowSectionUiState.Error("There is no images!") }
+                } else {
+                    _rowSectionUiState.update {
+                        RowSectionUiState.Success(
+                            content = TabContent.Gallery(
+                                items = result
+                            )
+                        )
+                    }
+                }
+            } catch (error: Exception) {
+                _rowSectionUiState.update {
+                    RowSectionUiState.Error(
+                        error.message ?: "Unknown error"
+                    )
+                }
             }
         }
     }
@@ -278,7 +326,6 @@ class MediaDetailsViewmodel(
 
 
     private fun getMovieCast(mediaId: Long, mediaType: MediaType, language: String) {
-
         viewModelScope.launch {
             val cast = when (mediaType) {
                 MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
