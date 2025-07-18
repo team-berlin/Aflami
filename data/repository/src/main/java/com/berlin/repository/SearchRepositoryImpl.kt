@@ -1,18 +1,17 @@
 package com.berlin.repository
 
-import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
+import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
 import com.berlin.repository.mapper.toMedia
-import com.berlin.repository.util.QueryType
 import repository.SearchRepository
 import java.time.Instant
 
@@ -30,15 +29,16 @@ class SearchRepositoryImpl(
         query: String,
         page: Int
     ): List<Movie> {
-        return localDataSource.getCachedSearch(query, QueryType.COUNTRY, pageSize = 20, page = page)
-            .takeIf { !isExpiredOrEmpty(it) }
-            ?.map { it.toDomain() }
-            ?: remoteDataSource.searchMoviesByCountry(query, language, page).results
-                ?.filterNotNull()
-                ?.map { it.toLocal(query, QueryType.COUNTRY.name, page, "MOVIE") }
-                ?.also { localDataSource.cacheSearch(it) }
-                ?.map { it.toDomain() }
-            ?: emptyList()
+        val movies = localDataSource.getCachedSearch(query, QueryType.COUNTRY, page = page)
+        if (!isExpiredOrEmpty(movies)) return movies.map { it.toDomain() }
+
+        remoteDataSource.searchMoviesByCountry(query, language, page).results
+            ?.filterNotNull()
+            ?.map { it.toLocal(query, QueryType.COUNTRY) }
+            ?.also { localDataSource.cacheSearch(it) }
+
+        return localDataSource.getCachedSearch(query, QueryType.COUNTRY, page = page)
+            .map { it.toDomain() }
     }
 
     override suspend fun getMediaByActorName(actorName: String, page: Int): List<Media> {

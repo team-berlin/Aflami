@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BasePagingSource
@@ -13,7 +12,6 @@ import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.util.getCountriesNames
 import com.berlin.aflami.viewmodel.util.getCountryIsoCode
-import com.berlin.entity.Movie
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -32,7 +30,8 @@ class SearchByCountryViewModel(
             it.copy(
                 query = countryName.toString(),
                 filteredCountries = filterCountriesByName(countryName.toString()),
-                dropDownExpanded = countryName.isNotBlank() && state.value.filteredCountries.isNotEmpty()
+                dropDownExpanded = countryName.isNotBlank()
+                        && state.value.filteredCountries.isNotEmpty()
             )
         }
     }
@@ -44,25 +43,26 @@ class SearchByCountryViewModel(
     }
 
     override fun onCountryClicked() {
-        _state.update {
-            it.copy(
-                isLoading = true,
-                isCountrySelected = true,
-                dropDownExpanded = false,
-                error = null
-            )
-        }
+        _state.update { it.copy(
+            isLoading = true,
+            isCountrySelected = true,
+            dropDownExpanded = false,
+            error = null
+        ) }
 
         tryToCall(
             call = {
                 Pager(
-                    config = PagingConfig(
-                        pageSize = 10,
-                        initialLoadSize = 20,
-                        enablePlaceholders = false,
-                        maxSize = 40
-                    ),
-                    pagingSourceFactory = ::moviesPagingSourceFactory,
+                    config = PagingConfig(pageSize = 10, initialLoadSize = 10),
+                    pagingSourceFactory = {
+                        BasePagingSource(
+                            call = { page ->
+                                getCountryIsoCode(state.value.query)?.let {
+                                    searchByCountry.invoke(query = it, page = page)
+                                } ?: emptyList()
+                            }
+                        )
+                    },
                 ).flow
                     .map { it.map { it.toUIState() } }
                     .cachedIn(viewModelScope)
@@ -70,14 +70,6 @@ class SearchByCountryViewModel(
             onSuccess = ::onSearchSuccess,
             onError = ::onSearchError
         )
-    }
-
-    private fun moviesPagingSourceFactory(): PagingSource<Int, Movie> {
-        return BasePagingSource { page ->
-            getCountryIsoCode(state.value.query)?.let {
-                searchByCountry(query = it, page = page)
-            } ?: emptyList()
-        }
     }
 
     private fun onSearchSuccess(movies: Flow<PagingData<MovieUIState>>) {

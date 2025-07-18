@@ -182,7 +182,7 @@ private fun SearchScreenContent(
 
                     SearchSuggestionHub(
                         Modifier.padding(horizontal = 16.dp),
-                        onWorldTourClick = { navController.navigate(Destination.WorldTourScreen.route) },
+                        onSearchByCountryClick = { navController.navigate(Destination.SearchByCountryScreen.route) },
                         onSearchByActorClick = { navController.navigate(Destination.SearchByActorNameScreen.route) })
 
 

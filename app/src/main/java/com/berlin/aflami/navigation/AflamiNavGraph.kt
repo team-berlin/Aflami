@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchRoute
-import com.berlin.aflami.navigation.routes.worldTourRoute
+import com.berlin.aflami.navigation.routes.searchByCountryRoute
 import com.example.navigation.Destination
 
 /**
@@ -38,7 +38,7 @@ fun AflamiNavGraph(navController: NavHostController, modifier: Modifier = Modifi
         }
     ) {
         searchRoute(navController)
-        worldTourRoute(navController)
+        searchByCountryRoute(navController)
         searchByActorNameRoute(navController)
 
     }

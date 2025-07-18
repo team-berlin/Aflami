@@ -16,7 +16,3 @@ private val countryNameToIsoMap: Map<String, String> by lazy {
         valueTransform = { it }
     )
 }
-
-private val isoToCountryNameMap: Map<String, String> by lazy {
-    countryNameToIsoMap.entries.associate { (name, iso) -> iso to name }
-}
