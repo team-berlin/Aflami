@@ -4,11 +4,11 @@ package com.berlin.aflami.viewmodel.search
 interface SearchInteractionListener {
     fun onFilterButtonClicked()
     fun onSearchActionClicked()
-    fun onSearchQueryChanged(query: String)
+    fun onSearchQueryChanged(query: CharSequence)
     fun onBackClicked()
     fun onWorldSearchCardClicked()
     fun onActorSearchCardClicked()
-    fun onTabOptionClicked(tabOption: TabOption)
+    fun onTabOptionClicked(tabOption: Int)
     fun onCardClicked(id: Int)
     fun onRecentSearchClicked(query: String)
     fun onRecentSearchCleared(query: String)

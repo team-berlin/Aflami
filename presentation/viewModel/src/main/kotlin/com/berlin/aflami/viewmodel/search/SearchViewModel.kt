@@ -1,10 +1,12 @@
 package com.berlin.aflami.viewmodel.search
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.filter
 import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -14,9 +16,11 @@ import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -30,9 +34,7 @@ class SearchViewModel(
     FilterInteractionListener {
 
     init {
-//            observeSearchKeywordChanges()
-//            fetchMoviesByQuery("Spider")
-        fetchTvShowsByQuery("Spider")
+        observeSearchKeywordChanges()
     }
 
     //not completed
@@ -66,9 +68,13 @@ class SearchViewModel(
         return unit
     }
 
+    @OptIn(FlowPreview::class)
     private fun observeSearchKeywordChanges() {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.map { it.searchQuery.trim() }.debounce(300).filter(String::isNotBlank)
+            _state.map { it.searchQuery.trim() }
+                .debounce(800)
+                .filter { it.isNotEmpty() }
+                .distinctUntilChanged()
                 .collectLatest { query ->
                     onSearchKeywordChanged(query)
                 }
@@ -76,6 +82,7 @@ class SearchViewModel(
     }
 
     private fun onSearchKeywordChanged(query: String) {
+        Log.d("PAGING", "onSearchKeywordChanged: $query")
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByQuery(query)
             TabOption.TV_SHOWS -> fetchTvShowsByQuery(query)
@@ -83,12 +90,13 @@ class SearchViewModel(
     }
 
     private fun fetchTvShowsByQuery(query: String) {
-        startLoading()
+        Log.d("PAGING", "fetchTvShowsByQuery: $query")
         tryToCall(
             call = {
                 Pager(
-                    config = PagingConfig(pageSize = 20, initialLoadSize = 20),
-                    pagingSourceFactory = {
+                    config = PagingConfig(
+                        pageSize = 20, initialLoadSize = 20
+                    ), pagingSourceFactory = {
                         BasePagingSource(
                             call = { page ->
                                 searchTvShowsUseCase.invoke(
@@ -101,7 +109,7 @@ class SearchViewModel(
             onError = { error ->
                 updateState {
                     it.copy(
-                        errorMessage = error.message, isLoading = false, isDialogVisible = false
+                        errorMessage = error.message, isLoading = false,
                     )
                 }
             },
@@ -109,12 +117,15 @@ class SearchViewModel(
     }
 
     private fun fetchMoviesByQuery(query: String) {
-        startLoading()
+        //startLoading()
+        Log.d("PAGING", "fetchMoviesByQuery: $query")
+        updateState { it.copy(isLoading = true) }
         tryToCall(
             call = {
                 Pager(
-                    config = PagingConfig(pageSize = 20, initialLoadSize = 20),
-                    pagingSourceFactory = {
+                    config = PagingConfig(
+                        pageSize = 20, initialLoadSize = 20
+                    ), pagingSourceFactory = {
                         BasePagingSource(
                             call = { page ->
                                 searchMoviesUseCase.invoke(
@@ -127,11 +138,13 @@ class SearchViewModel(
             onError = { error ->
                 updateState {
                     it.copy(
-                        errorMessage = error.message, isLoading = false, isDialogVisible = false
+                        errorMessage = error.message,
+                        isLoading = false,
                     )
                 }
             },
         )
+
     }
 
     private fun onFetchTvShowsSuccess(tvShowsFlow: Flow<PagingData<TVShowUiState>>) {
@@ -172,7 +185,6 @@ class SearchViewModel(
         )
     }
 
-
     override fun onSearchActionClicked() {
         onSearchQueryChanged(state.value.searchQuery)
         tryToCall(call = {
@@ -185,12 +197,13 @@ class SearchViewModel(
         })
     }
 
-    override fun onSearchQueryChanged(query: String) {
-        updateState { it.copy(searchQuery = query, isLoading = false) }
+    override fun onSearchQueryChanged(query: CharSequence) {
+        Log.d("PAGING", "onSearchQueryChanged: $query")
+        updateState { it.copy(searchQuery = query.toString(), isLoading = false) }
     }
 
     override fun onBackClicked() {
-        sendNewEffect(SearchUiEffect.NavigatedBack)
+        // sendNewEffect(SearchUiEffect.)
     }
 
     override fun onWorldSearchCardClicked() {
@@ -205,22 +218,18 @@ class SearchViewModel(
     private fun startLoading() {
         updateState {
             it.copy(
-                isLoading = false,
+                isLoading = true,
             )
         }
     }
 
-    override fun onTabOptionClicked(tabOption: TabOption) {
-        observeSearchKeywordChanges()
-        updateState {
-            it.copy(
-                selectedTabOption = tabOption,
-                movies = state.value.movies,
-                tvShows = state.value.tvShows,
-                isLoading = false,
-                filterItemUiState = FilterItemUiState()
-            )
+    override fun onTabOptionClicked(tabOption: Int) {
+        Log.d("PAGING", "onTabOptionClicked: $tabOption")
+        when (tabOption) {
+            0 -> updateState { it.copy(selectedTabOption = TabOption.MOVIES) }
+            1 -> updateState { it.copy(selectedTabOption = TabOption.TV_SHOWS) }
         }
+        Log.d("PAGING", "onTabOptionClicked: $tabOption")
     }
 
     override fun onCardClicked(id: Int) {
@@ -303,6 +312,7 @@ class SearchViewModel(
     }
 
     override fun onGenreButtonChanged(genreType: GenreType) {
+        Log.d("PAGING", "onGenreButtonChanged: $genreType")
         updateState {
             it.copy(
                 filterItemUiState = state.value.filterItemUiState.copy(
@@ -313,17 +323,25 @@ class SearchViewModel(
     }
 
     override fun onApplyButtonClicked() {
-        updateState {
-            it.copy(
-                isDialogVisible = false,
-                isLoading = true,
-                filterItemUiState = it.filterItemUiState.copy(isLoading = false)
-            )
-        }
-        when (state.value.selectedTabOption) {
-            TabOption.MOVIES -> {}
-            TabOption.TV_SHOWS -> {}
-        }
+//        updateState {
+//            it.copy(
+//                isDialogVisible = false,
+//            )
+//        }
+//        when (state.value.selectedTabOption) {
+//            TabOption.MOVIES -> {
+//                updateState {state->
+//                    state.copy(
+//                        movies = state.movies.map {
+//                           it.filter {movie-> state.filterItemUiState.selectedRating >) }
+//                        }
+//                    )
+//                }
+//            }
+//            TabOption.TV_SHOWS -> {
+//
+//            }
+//        }
     }
 
     override fun onClearButtonClicked() {

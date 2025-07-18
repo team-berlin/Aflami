@@ -1,20 +1,16 @@
 package com.berlin.aflami.screens.search.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -38,14 +34,23 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.MediaCard
+import com.berlin.aflami.component.SearchSuggestionHub
+import com.berlin.aflami.component.TabBar
+import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.screens.search.components.CountryTourExploring
+import com.berlin.aflami.screens.search.components.ErrorMessage
+import com.berlin.aflami.screens.search.components.Loading
+import com.berlin.aflami.screens.search.components.NoDataSearch
+import com.berlin.aflami.screens.search.components.ResultGridList
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
+import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.designsystem.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -93,11 +98,11 @@ private fun SearchScreenContent(
                         .clip(RoundedCornerShape(12.dp))
                         .background(Theme.color.surfaceHigh)
                         .clickable {
-                            listenerSearch.onSearchCleared()
-                            focusManager.clearFocus()
+//                            listenerSearch.onSearchCleared()
+//                            focusManager.clearFocus()
                         }
                         .onFocusChanged {
-                            listenerSearch.onSearchCleared()
+                            //listenerSearch.onSearchCleared()
                         },
                     contentAlignment = Alignment.Center,
 
@@ -139,170 +144,138 @@ private fun SearchScreenContent(
                 trailingIcon = R.drawable.filter_vertical,
                 onTrailingClick = listenerSearch::onFilterButtonClicked
             )
-            Box(modifier = Modifier.fillMaxSize()) {
-                val movies = state.tvShows.collectAsLazyPagingItems()
-                LazyVerticalGrid(
-                    modifier = Modifier.fillMaxSize(),
-                    columns = GridCells.Adaptive(minSize = 160.dp),
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(
-                        count = movies.itemCount,
-                    ) { index ->
-                        val movie = movies[index]
-                        if (movie != null) {
-                            MediaCard(
-                                modifier = Modifier
-                                    .height(222.dp)
-                                    .clickable { },
-                                mediaImg = movie.poster,
-                                title = movie.title,
-                                typeOfMedia = stringResource(R.string.tv_shows),
-                                date = movie.releaseYear,
-                                rating = movie.rating
-                            )
-                        }
-                    }
-                }
-            }
-//
-//
-//            when {
-//                state.searchQuery.isBlank() -> {
-//                    Text(
-//                        stringResource(R.string.search_suggestions_hub),
-//                        color = Theme.color.textColors.title,
-//                        style = Theme.textStyle.title.medium,
-//                        modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
-//                    )
-//
-//                    SearchSuggestionHub(
-//                        Modifier.padding(horizontal = 16.dp),
-//                        onWorldTourClick = {
-//                            listenerSearch.onWorldSearchCardClicked()
-//                        },
-//                        onSearchByActorClick = {
-//                            listenerSearch.onActorSearchCardClicked()
-//                        },
-//                    )
-//
-//                    NoDataSearch()
-//
-//                }
-//
-//                state.searchQuery.isNotBlank() -> {
-//                    // Handle success state if needed
-//                    TabBar(
-//                        containerColor = Theme.color.surface,
-//                        items = listOf(
-//                            TabBarItem(
-//                                text = stringResource(R.string.movies),
-//                                isSelected = state.selectedTabOption.index == 0
-//                            ), TabBarItem(
-//                                text = stringResource(R.string.tv_shows),
-//                                isSelected = state.selectedTabOption.index == 1
-//                            )
-//                        ),
-//                        onTabChange = {
-//                            listenerSearch.onTabOptionClicked(state.selectedTabOption)
-//                        },
-//                    )
 
-
-            /*when {
+            when {
                 state.searchQuery.isBlank() -> {
+                    Log.d("PAGING", "state.searchQuery.isBlank(): ${state.searchQuery}")
+                    Text(
+                        stringResource(R.string.search_suggestions_hub),
+                        color = Theme.color.textColors.title,
+                        style = Theme.textStyle.title.medium,
+                        modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
+                    )
+                    SearchSuggestionHub(
+                        Modifier.padding(horizontal = 16.dp),
+                        onWorldTourClick = {
+                            listenerSearch.onWorldSearchCardClicked()
+                        },
+                        onSearchByActorClick = {
+                            listenerSearch.onActorSearchCardClicked()
+                        },
+                    )
                     NoDataSearch()
+
                 }
 
-                state.isLoading -> {
-                    Loading(Modifier)
-                }
+                state.searchQuery.isNotBlank() -> {
+                    // Handle success state if needed
+                    TabBar(
+                        containerColor = Theme.color.surface,
+                        items = listOf(
+                            TabBarItem(
+                                text = stringResource(R.string.movies),
+                                isSelected = state.selectedTabOption.index == 0
+                            ), TabBarItem(
+                                text = stringResource(R.string.tv_shows),
+                                isSelected = state.selectedTabOption.index == 1
+                            )
+                        ),
+                        onTabChange = {
+                            listenerSearch.onTabOptionClicked(it)
+                        },
+                    )
 
-                state.errorMessage != null -> {
-                    ErrorMessage(Modifier, state.errorMessage.toString())
-                }
+                    when {
+                        state.searchQuery.isBlank() -> {
+                            NoDataSearch()
+                        }
 
-                else -> {
-                    when (state.selectedTabOption) {
-                        TabOption.MOVIES -> {
-                            val movies = state.movies.collectAsLazyPagingItems()
-                            if (movies.itemCount == 0) {
-//                                        CountryTourExploring(
-//                                            modifier = Modifier
-//                                                .fillMaxSize()
-//                                                .align(Alignment.CenterHorizontally),
-//                                            painterResource(com.berlin.ui.R.drawable.no_search_result),
-//                                            com.berlin.ui.R.string.no_search_result,
-//                                            com.berlin.ui.R.string.please_try_with_another_keyword
-//                                        )
-                            } else {
-//                                        ResultGridList(
-//                                            modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
-//                                            items = movies.itemSnapshotList.items
-//                                        ) { media ->
-//                                            MediaCard(
-//                                                modifier = Modifier.size(
-//                                                    width = 160.dp, height = 222.dp
-//                                                ),
-//                                                mediaImg = media.poster,
-//                                                title = media.title,
-//                                                typeOfMedia = "Movies",
-//                                                date = media.releaseYear.substringBefore("-"),
-//                                                rating = media.rating.toDouble().toString()
-//                                            )
-//                                        }
-//
-//                                    }
-//                                }
+                        state.isLoading -> {
+                            Loading(Modifier)
+                        }
 
-                        TabOption.TV_SHOWS -> {
-                            val tvShows = state.tvShows.collectAsLazyPagingItems()
-                            if (tvShows.itemCount == 0) {
-//                                        CountryTourExploring(
-//                                            modifier = Modifier
-//                                                .fillMaxSize()
-//                                                .align(Alignment.CenterHorizontally),
-//                                            painterResource(com.berlin.ui.R.drawable.no_search_result),
-//                                            com.berlin.ui.R.string.no_search_result,
-//                                            com.berlin.ui.R.string.please_try_with_another_keyword
-//                                        )
-                            } else {
-//                                        ResultGridList(
-//                                            modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
-//                                            items = tvShows.itemSnapshotList.items
-//                                        ) { media ->
-//                                            MediaCard(
-//                                                modifier = Modifier.size(
-//                                                    width = 160.dp, height = 222.dp
-//                                                ),
-//                                                mediaImg = media.poster,
-//                                                title = media.title,
-//                                                typeOfMedia = "Tv Show",
-//                                                date = media.releaseYear.substringBefore("-"),
-//                                                rating = media.rating.toDouble().toString()
-//                                            )
-//                                        }
+                        state.errorMessage != null -> {
+                            ErrorMessage(Modifier, state.errorMessage.toString())
+                        }
+
+                        else -> {
+                            when (state.selectedTabOption) {
+                                TabOption.MOVIES -> {
+                                    val movies = state.movies.collectAsLazyPagingItems()
+                                    if (movies.itemCount == 0) {
+                                        CountryTourExploring(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .align(Alignment.CenterHorizontally),
+                                            painterResource(com.berlin.ui.R.drawable.no_search_result),
+                                            com.berlin.ui.R.string.no_search_result,
+                                            com.berlin.ui.R.string.please_try_with_another_keyword
+                                        )
+                                    } else {
+                                        ResultGridList(
+                                            modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
+                                            items = movies.itemSnapshotList.items
+                                        ) { media ->
+                                            MediaCard(
+                                                modifier = Modifier.size(
+                                                    width = 160.dp, height = 222.dp
+                                                ),
+                                                mediaImg = media.poster,
+                                                title = media.title,
+                                                typeOfMedia = "Movies",
+                                                date = media.releaseYear.substringBefore("-"),
+                                                rating = media.rating.toDouble().toString()
+                                            )
+                                        }
+
+                                    }
+                                }
+
+                                TabOption.TV_SHOWS -> {
+                                    val tvShows = state.tvShows.collectAsLazyPagingItems()
+                                    if (tvShows.itemCount == 0) {
+                                        CountryTourExploring(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .align(Alignment.CenterHorizontally),
+                                            painterResource(com.berlin.ui.R.drawable.no_search_result),
+                                            com.berlin.ui.R.string.no_search_result,
+                                            com.berlin.ui.R.string.please_try_with_another_keyword
+                                        )
+                                    } else {
+                                        ResultGridList(
+                                            modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
+                                            items = tvShows.itemSnapshotList.items
+                                        ) { media ->
+                                            MediaCard(
+                                                modifier = Modifier.size(
+                                                    width = 160.dp, height = 222.dp
+                                                ),
+                                                mediaImg = media.poster,
+                                                title = media.title,
+                                                typeOfMedia = "Tv Show",
+                                                date = media.releaseYear.substringBefore("-"),
+                                                rating = media.rating.toDouble().toString()
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
+
+
                 }
 
-             */
-//
+            }
         }
-//        if (filterDialogsState) {
-//            FilterDialog(
-//                viewModel
-//                }
-//
-//
-//            }
-//            )
-//        }
     }
-
+    if (state.isDialogVisible) {
+        FilterDialog(
+            state = state.filterItemUiState,
+            filterListener = filterSearch,
+        )
+    }
 }
 
 

@@ -21,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,128 +37,129 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.search.SearchViewModel
+import com.berlin.aflami.viewmodel.search.FilterInteractionListener
+import com.berlin.aflami.viewmodel.search.FilterItemUiState
 import com.berlin.aflami.viewmodel.search.GenreType
 import com.berlin.designsystem.R
 
 @Composable
 fun FilterDialog(
-    viewModel: SearchViewModel
-) {
-//    val filterState by viewModel.filterUiState.collectAsState()
-//    val selectedRating = filterState.selectedRating
-//    val selectedGenre = filterState.selectedGenre.type
-//
-//    Dialog(onDismissRequest = viewModel::onDismiss) {
-//        Surface(
-//            shape = RoundedCornerShape(16.dp),
-//            color = Theme.color.surface
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .padding(12.dp)
-//                    .fillMaxWidth(),
-//                verticalArrangement = Arrangement.spacedBy(24.dp)
-//            ) {
-//                Row(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    horizontalArrangement = Arrangement.SpaceBetween
-//                ) {
-//                    Text(
-//                        text = stringResource(R.string.filter_result),
-//                        style = Theme.textStyle.title.large,
-//                        color = Theme.color.textColors.title
-//                    )
-//                    Box(
-//                        modifier = Modifier
-//                            .size(40.dp)
-//                            .clip(RoundedCornerShape(10.dp))
-//                            .background(Theme.color.surfaceHigh)
-//                            .clickable { viewModel.onDismiss() },
-//                        contentAlignment = Alignment.Center
-//                    ) {
-//                        Icon(
-//                            painter = painterResource(R.drawable.cancel),
-//                            contentDescription = stringResource(R.string.icon_cd),
-//                            modifier = Modifier
-//                                .size(24.dp),
-//                            tint = Theme.color.textColors.title
-//                        )
-//                    }
-//                }
-//                Column(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    verticalArrangement = Arrangement.spacedBy(12.dp)
-//                ) {
-//                    Text(
-//                        text = stringResource(R.string.imdb_rating),
-//                        style = Theme.textStyle.title.small,
-//                        color = Theme.color.textColors.title
-//                    )
-//                    RatingBar(
-//                        modifier = Modifier,
-//                        onValueChange = { viewModel.updateRating(it) },
-//                        currentRating = selectedRating
-//                    )
-//                    Text(
-//                        text = stringResource(R.string.Genre),
-//                        style = Theme.textStyle.title.small, color = Theme.color.textColors.title
-//                    )
-//                    LazyRow(
-//                        modifier = Modifier
-//                            .height(96.dp)
-//                            .fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-//                    ) {
-//                        items(GenreType.entries) { genre ->
-//                            Chips(
-//                                title = stringResource(genreMapper(genre)),
-//                                icon = painterResource(getGenreIcon(genre)),
-//                                isSelected = selectedGenre == genre,
-//                                onClick = { viewModel.toggleGenre(genre) }
-//                            )
-//                        }
-//                    }
-//                }
-//                Column(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    verticalArrangement = Arrangement.spacedBy(8.dp)
-//                ) {
-//                    PrimaryButton(
-//                        onClick = {
-//                            viewModel.onSearchClick(viewModel.queryFlow.value)
-//                            viewModel.onDismiss()
-//                        },
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(56.dp),
-//                        containerColor = Theme.color.primary,
-//                        gradientColor = Theme.color.primaryButton
-//                    ) {
-//                        Text(
-//                            "Apply",
-//                            style = Theme.textStyle.label.large,
-//                            color = Theme.color.textColors.onPrimary
-//                        )
-//                    }
-//                    PrimaryButton(
-//                        onClick = { viewModel.clearFilters() },
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(56.dp),
-//                        containerColor = Theme.color.primaryVariant
-//                    ) {
-//                        Text(
-//                            "Clear",
-//                            style = Theme.textStyle.label.large,
-//                            color = Theme.color.primary
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
+    filterListener: FilterInteractionListener,
+    state: FilterItemUiState)
+{
+
+    Dialog(onDismissRequest = filterListener::onCancelButtonClicked) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = Theme.color.surface
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = stringResource(R.string.filter_result),
+                        style = Theme.textStyle.title.large,
+                        color = Theme.color.textColors.title
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Theme.color.surfaceHigh)
+                            .clickable { filterListener.onCancelButtonClicked() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.cancel),
+                            contentDescription = stringResource(R.string.icon_cd),
+                            modifier = Modifier
+                                .size(24.dp),
+                            tint = Theme.color.textColors.title
+                        )
+                    }
+                }
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.imdb_rating),
+                        style = Theme.textStyle.title.small,
+                        color = Theme.color.textColors.title
+                    )
+                    RatingBar(
+                        modifier = Modifier,
+                        onValueChange = { filterListener.onRatingStarChanged(it) },
+                        currentRating = state.selectedRating
+                    )
+                    Text(
+                        text = stringResource(R.string.Genre),
+                        style = Theme.textStyle.title.small, color = Theme.color.textColors.title
+                    )
+                    LazyRow(
+                        modifier = Modifier
+                            .height(96.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(
+                            items = state.mediaGenres
+                        ) { genre ->
+                            Chips(
+                                title = stringResource(genreMapper(genre.genres.type)),
+                                icon = painterResource(getGenreIcon(genre.genres.type)),
+                                isSelected = genre.genres.isSelected,
+                                onClick = { filterListener.onGenreButtonChanged(genre.genres.type) }
+                            )
+                        }
+                    }
+                }
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    PrimaryButton(
+                        onClick = {
+                            filterListener.onApplyButtonClicked()
+                            filterListener.onCancelButtonClicked()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        containerColor = Theme.color.primary,
+                        gradientColor = Theme.color.primaryButton
+                    ) {
+                        Text(
+                            "Apply",
+                            style = Theme.textStyle.label.large,
+                            color = Theme.color.textColors.onPrimary
+                        )
+                    }
+                    PrimaryButton(
+                        onClick = { filterListener.onClearButtonClicked()},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        containerColor = Theme.color.primaryVariant
+                    ) {
+                        Text(
+                            "Clear",
+                            style = Theme.textStyle.label.large,
+                            color = Theme.color.primary
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 fun getGenreIcon(genre: GenreType): Int {
