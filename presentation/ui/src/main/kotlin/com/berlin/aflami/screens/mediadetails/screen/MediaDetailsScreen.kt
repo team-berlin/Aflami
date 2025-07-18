@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -216,32 +217,34 @@ fun MediaDetailsContent(
 
             Spacer(Modifier.height(8.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     state.releaseYear,
                     style = Theme.textStyle.label.small,
                     color = Theme.color.textColors.hint
                 )
-                if (state.mediaDuration.isNotBlank()) {
+                state.duration.takeIf { !it.isNullOrEmpty() }?.let { duration ->
+                    CircularDot()
                     Text(
-                        "•",
-                        style = Theme.textStyle.label.small,
-                        color = Theme.color.textColors.hint
-                    )
-                    Text(
-                        state.mediaDuration,
+                        duration,
                         style = Theme.textStyle.label.small,
                         color = Theme.color.textColors.hint
                     )
                 }
-                if (state.country.isNotBlank()) {
+
+                state.numberOfSeasons.takeIf { !it.isNullOrEmpty() }?.let { numberOfSeasons ->
+                    CircularDot()
                     Text(
-                        "•",
+                        numberOfSeasons,
                         style = Theme.textStyle.label.small,
                         color = Theme.color.textColors.hint
                     )
+                }
+
+                state.originalCountry.takeIf { !it.isNullOrEmpty() }?.let { originalCountry ->
+                    CircularDot()
                     Text(
-                        state.mediaDuration,
+                        originalCountry,
                         style = Theme.textStyle.label.small,
                         color = Theme.color.textColors.hint
                     )
@@ -483,6 +486,15 @@ fun Cast(
     }
 }
 
+@Composable
+fun CircularDot() {
+    Box(
+        modifier = Modifier
+            .size(4.dp)
+            .clip(CircleShape)
+            .background(Theme.color.stroke)
+    )
+}
 
 private fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
     return when (tab) {

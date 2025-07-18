@@ -60,7 +60,9 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
         genres = this.genres?.map { it.toEntity() } ?: emptyList(),
         productionCompanies = this.productionCompanies?.map { company ->
             company.toEntity()
-        } ?: emptyList()
+        } ?: emptyList(),
+        originCountry = this.originCountry?.get(0),
+        duration = formatRuntime(this.runtime)
     )
 }
 
@@ -75,6 +77,13 @@ fun ProductionCompany.toEntity() = ProductionCompanyEntity(
     poster = this.logoPath?.let { "$POSTER_PREFIX$it" },
     originCountry = this.originCountry.orEmpty()
 )
+
+fun formatRuntime(minutes: Int?): String? {
+    if (minutes == null || minutes == 0) return null
+    val hours = minutes / 60
+    val remainingMinutes = minutes % 60
+    return "${hours}h ${remainingMinutes}m"
+}
 
 const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
 const val BACKDROP_PREFIX = "https://image.tmdb.org/t/p/original"

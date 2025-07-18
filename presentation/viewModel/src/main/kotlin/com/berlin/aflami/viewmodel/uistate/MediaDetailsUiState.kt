@@ -28,18 +28,20 @@ data class MediaDetailsUiState(
     val isOverviewExpanded: Boolean = false,
     val mediaType: MediaType = MediaType.MOVIE,
     val isPlaying: Boolean = false,
-    val mediaDuration: String = "",
     val mediaCast: List<MediaCastUiState> = emptyList(),
     val country: String = "",
     val options: List<MediaOptions> = emptyList(),
     val isLoading: Boolean = true,
+    val originalCountry: String? = null,
+    val duration: String? = null,
+    val numberOfSeasons: String? = null
 )
 
 data class SeasonUiState(
     val id: Long = 0L,
     val numberOfEpisodes: Int = 0,
     val seasonTitle: String = "",
-    val episodeTitle: String= "",
+    val episodeTitle: String = "",
     val episodeDuration: Int = 0,
     val airDate: String = "",
     val episodeDescription: String = "",
@@ -48,7 +50,7 @@ data class SeasonUiState(
     val seasonNumber: Int = 0,
     //val isPlaying: Boolean = false,
     val isExpanded: Boolean = false,
-    )
+)
 
 data class MediaOptions(
     val isSelected: Boolean,
@@ -57,6 +59,6 @@ data class MediaOptions(
 )
 
 data class MediaCastUiState(
-    val name:String="",
-    val poster:String=""
+    val name: String = "",
+    val poster: String = ""
 )
