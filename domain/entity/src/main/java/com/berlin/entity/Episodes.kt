@@ -7,7 +7,7 @@ data class Episodes(
     val id: Int? = null,
     val name: String? = null,
     val overview: String? = null,
-    val runtime: Int? = null,
+    val runtime: String? = null,
     val showId: Int? = null,
     val voteAverage: Double? = null,
     val stillPath: String? = null,

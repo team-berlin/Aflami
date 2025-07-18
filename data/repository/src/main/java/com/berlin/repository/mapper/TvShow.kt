@@ -96,7 +96,7 @@ fun EpisodeDto.toEpisode(): Episodes {
         id = this.id,
         name = this.name,
         overview = this.overview,
-        runtime = this.runtime,
+        runtime = this.runtime.formatRuntime(),
         showId = this.showId,
         voteAverage = this.voteAverage
     )

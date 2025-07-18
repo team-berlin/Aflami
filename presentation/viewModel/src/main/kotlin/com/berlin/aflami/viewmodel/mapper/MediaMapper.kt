@@ -81,7 +81,8 @@ fun Episodes.toUiState(): EpisodesUiState {
         id = this.id ?: 0,
         name = this.name ?: "",
         overview = this.overview ?: "",
-        runtime = this.runtime ?: 0,
+        runtime =
+            this.runtime ?: "",
         voteAverage = this.voteAverage ?: 0.0,
         stillPath = this.stillPath ?: ""
     )

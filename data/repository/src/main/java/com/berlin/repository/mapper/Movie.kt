@@ -62,7 +62,7 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
             company.toEntity()
         } ?: emptyList(),
         originCountry = this.originCountry?.get(0),
-        duration = formatRuntime(this.runtime)
+        duration = this.runtime.formatRuntime()
     )
 }
 
@@ -78,10 +78,10 @@ fun ProductionCompany.toEntity() = ProductionCompanyEntity(
     originCountry = this.originCountry.orEmpty()
 )
 
-fun formatRuntime(minutes: Int?): String? {
-    if (minutes == null || minutes == 0) return null
-    val hours = minutes / 60
-    val remainingMinutes = minutes % 60
+fun Int?.formatRuntime(): String? {
+    if (this == null || this == 0) return null
+    val hours = this / 60
+    val remainingMinutes = this % 60
     return "${hours}h ${remainingMinutes}m"
 }
 

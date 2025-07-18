@@ -24,7 +24,6 @@ data class MediaDetailsUiState(
     val releaseYear: String = "",
     val rating: Double = 0.0,
     val runtime: String? = "",
-    val seasonsMap: MutableMap<Int, List<EpisodesUiState?>>? = mutableMapOf(),// remove this
     val seasons: List<EpisodesSeasonUiState>? = emptyList(),
     val numberOfSeasons: Int? = null,
     val isFavorite: Boolean = false,
@@ -48,8 +47,8 @@ data class EpisodesUiState(
     val id: Int,
     val name: String,
     val overview: String,
-    val runtime: Int,
-    val voteAverage: Double
+    val runtime: String?,
+    val voteAverage: Double,
 )
 
 data class EpisodesSeasonUiState(
