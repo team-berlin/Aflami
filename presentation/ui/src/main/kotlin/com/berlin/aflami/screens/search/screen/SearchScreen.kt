@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.search.screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -54,30 +53,27 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
-    navController: NavController,
-    viewModel: SearchViewModel = koinViewModel()
+    navController: NavController, viewModel: SearchViewModel = koinViewModel()
 ) {
     val searchState by viewModel.searchUIState.collectAsState()
 
     val selectedTabIndex = viewModel.selectTabIndex
 
     val textValue by viewModel.queryFlow.collectAsState()
-    val filterDialogsState=viewModel.filterDialogState.collectAsState()
+    val filterDialogsState = viewModel.filterDialogState.collectAsState()
 
     SearchScreenContent(
         navController = navController,
         searchState = searchState,
         listener = viewModel,
-        filterDialogsState=filterDialogsState.value,
+        filterDialogsState = filterDialogsState.value,
         textValue = textValue,
         selectedTabIndex = selectedTabIndex,
         onFocusChanged = viewModel::onFocusChanged,
         onTabChange = viewModel::onTabChange,
         clearSearchState = viewModel::clearSearchState,
-        clearFilters = viewModel::clearFilters,
-        applyFilters = viewModel::applyFilters,
-        onDismissFilterDialog=viewModel::onDismiss,
-        updateSearchQuery=viewModel::updateSearchQuery,
+        updateSearchQuery = viewModel::updateSearchQuery,
+        viewModel = viewModel
 
     )
 }
@@ -94,58 +90,48 @@ private fun SearchScreenContent(
     clearSearchState: () -> Unit,
     updateSearchQuery: (String) -> Unit,
     filterDialogsState: Boolean,
-    clearFilters: () -> Unit,
-    applyFilters: (() -> Unit) -> Unit,
-    onDismissFilterDialog: () -> Unit
+    viewModel: SearchViewModel
 ) {
     val focusManager = LocalFocusManager.current
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Theme.color.surface)
             .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }) {
+                indication = null, interactionSource = remember { MutableInteractionSource() }) {
                 focusManager.clearFocus()
-
             }
             .focusable(),
     ) {
-        Column(
+        Column {
+            TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+                Text(
+                    text = stringResource(R.string.search),
+                    style = Theme.textStyle.title.large,
+                    color = Theme.color.textColors.title
+                )
+            }, leadingIcon = {
+                Box(
+                    Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Theme.color.surfaceHigh)
+                        .clickable {
+                            clearSearchState()
+                            focusManager.clearFocus()
+                        }
+                        .onFocusChanged {
+                            clearSearchState
+                        }, contentAlignment = Alignment.Center
 
-        ) {
-            TopBar(
-                modifier = Modifier.padding(vertical = 8.dp),
-                title = {
-                    Text(
-                        text = stringResource(R.string.search),
-                        style = Theme.textStyle.title.large,
-                        color = Theme.color.textColors.title
+                ) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        painter = painterResource(R.drawable.arrow_left),
+                        contentDescription = stringResource(R.string.icon_cd),
+                        tint = Theme.color.textColors.title
                     )
-                },
-                leadingIcon = {
-                    Box(
-                        Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Theme.color.surfaceHigh)
-                            .clickable {
-                                listener::onBackClick
-                            }
-                            .onFocusChanged {
-                                clearSearchState
-                            }, contentAlignment = Alignment.Center
-
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            painter = painterResource(R.drawable.arrow_left),
-                            contentDescription = stringResource(R.string.icon_cd),
-                            tint = Theme.color.textColors.title
-                        )
-                    }
                 }
-            )
+            })
 
             val keyboardController = LocalSoftwareKeyboardController.current
             TextField(
@@ -156,6 +142,7 @@ private fun SearchScreenContent(
                     .clip(RoundedCornerShape(16.dp))
                     .background(Theme.color.surfaceHigh)
                     .onFocusChanged {
+                        clearSearchState()
                         onFocusChanged(it.isFocused)
                     },
                 hintText = stringResource(R.string.search_hint_text),
@@ -187,8 +174,7 @@ private fun SearchScreenContent(
                     SearchSuggestionHub(
                         Modifier.padding(horizontal = 16.dp),
                         onWorldTourClick = { navController.navigate(Destination.WorldTourScreen.route) },
-                        onSearchByActorClick = { navController.navigate(Destination.SearchByActorNameScreen.route) }
-                    )
+                        onSearchByActorClick = { navController.navigate(Destination.SearchByActorNameScreen.route) })
 
                     NoDataSearch()
 
@@ -208,7 +194,6 @@ private fun SearchScreenContent(
                             )
                         ),
                         onTabChange = {
-                            Log.d("SearchViewModel", "onTabChange: $it")
                             onTabChange(it)
                         },
                     )
@@ -271,13 +256,12 @@ private fun SearchScreenContent(
         }
         if (filterDialogsState) {
             FilterDialog(
-                onDismiss = { applyFilters { onDismissFilterDialog } },
-                viewModel = view,
+                viewModel
             )
         }
     }
 
-    }
+}
 
 
 @Preview

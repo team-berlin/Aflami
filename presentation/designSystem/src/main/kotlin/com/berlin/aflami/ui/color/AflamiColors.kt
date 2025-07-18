@@ -17,12 +17,13 @@ data class AflamiColors(
     val gradientColors: GradientColors,
     val textColors: TextColors,
     val statusColors: StatusColors,
+    val primaryButton: Color,
 )
 
 data class GradientColors(
     val overly: List<Color>,
     val streakGradient: List<Color>,
-    val pointsOverly: List<Color>
+    val pointsOverly: List<Color>,
 )
 
 data class TextColors(

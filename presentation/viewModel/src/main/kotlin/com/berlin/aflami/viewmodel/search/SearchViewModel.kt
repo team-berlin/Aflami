@@ -8,6 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.search_actor.FilterUiState
+import com.berlin.aflami.viewmodel.search_actor.GenreType
+import com.berlin.aflami.viewmodel.search_actor.genreToId
 import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
@@ -33,12 +36,6 @@ class SearchViewModel(
     private val _searchUIState = MutableStateFlow<SearchUiState>(SearchUiState.Init)
     val searchUIState = _searchUIState.asStateFlow()
 
-    private val _moviesUiState = MutableStateFlow(SearchMoviesUiState())
-    val moviesUiState = _moviesUiState.asStateFlow()
-
-    private val _tvShowUiState = MutableStateFlow(SearchTvShowUiState())
-    val tvShowUiState = _tvShowUiState.asStateFlow()
-
     private val _filterUiState = MutableStateFlow(FilterUiState())
     val filterUiState = _filterUiState.asStateFlow()
 
@@ -51,7 +48,7 @@ class SearchViewModel(
     init {
         viewModelScope.launch {
             _queryFlow
-                .debounce(300)
+                .debounce(600)
                 .filter { it.isNotEmpty() }
                 .distinctUntilChanged()
                 .collect { query ->
@@ -95,13 +92,7 @@ class SearchViewModel(
 
     fun onTabChange(index: Int) {
         selectTabIndex = index
-        val query = when (index) {
-            0 -> _queryFlow.value
-            1 -> _queryFlow.value
-            else -> ""
-        }
-        Log.d("SearchViewModel", "onTabChange insided viewmoddel: $query")
-        updateSearchQuery(query)
+        updateSearchQuery(_queryFlow.value)
     }
 
     override fun onBackClick() {
@@ -109,79 +100,69 @@ class SearchViewModel(
     }
 
     fun updateSearchQuery(query: String) {
-        _queryFlow.value = query
+        _queryFlow.update { query }
         onSearchClick(query)
-        Log.d("SearchViewModel", "updateSearchQuery After update query : $query")
     }
 
     override fun onSearchClick(query: CharSequence) {
         if (query.toString().isBlank()) {
             _searchUIState.update { SearchUiState.Searching.Init }
-            when (selectTabIndex) {
-                0 -> _moviesUiState.update { it.copy(movieName = "") }
-                1 -> _tvShowUiState.update { it.copy(tvShowName = "") }
-            }
             return
         }
         when (selectTabIndex) {
-            0 -> {
-                _moviesUiState.update {
-                    it.copy(
-                        movieName = query.toString()
-                    )
-                }
-                searchMedia(MediaType.MOVIE)
-            }
-
-            1 -> {
-                _tvShowUiState.update {
-                    it.copy(
-                        tvShowName = query.toString()
-                    )
-                }
-                searchMedia(MediaType.TV_SHOW)
-            }
+            0 -> searchMedia(MediaType.MOVIE)
+            1 -> searchMedia(MediaType.TV_SHOW)
         }
     }
 
-    override fun onMovieClick(id: Int) {
-        TODO("Not yet implemented")
-    }
 
     override fun onFilterIconClicked() {
-
         _filterDialogState.update { true }
     }
 
     private fun searchMedia(mediaType: MediaType) {
-        val query = when (mediaType) {
-            MediaType.MOVIE -> _queryFlow.value
-            MediaType.TV_SHOW -> _queryFlow.value
-        }
-        Log.d("SearchViewModel", "inside searchMedia before return  Query: $query")
-        if (query.isBlank()) return
-        Log.d("SearchViewModel", "searchMedia Didn't return $query")
-        _searchUIState.update { SearchUiState.Searching.Loading }
 
+        if (queryFlow.value.isBlank()) return
+        _searchUIState.update { SearchUiState.Searching.Loading }
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val locale = Locale.getDefault()
                 val languageCode = "${locale.language}-${locale.country}"
                 val result = when (mediaType) {
                     MediaType.MOVIE -> {
-                        Log.d("SearchViewModel", "searchMedia: Movied with query $query")
                         searchMoviesUseCase(
-                            query, languageCode
-                        ).map { it.toUIState() }
-
+                            queryFlow.value, languageCode
+                        ).map {
+                            it.toUIState()
+                        }.filter {
+                            Log.d("Search", it.rating)
+                            (it.rating.toDouble() >= _filterUiState.value.selectedRating.toDouble())
+                                    &&
+                                    (if (genreToId(_filterUiState.value.selectedGenre.type) > 0) {
+                                        it.genre.contains(
+                                            genreToId(_filterUiState.value.selectedGenre.type)
+                                        )
+                                    } else {
+                                        true
+                                    }
+                                            )
+                        }
                     }
 
                     MediaType.TV_SHOW -> {
-                        Log.d("SearchViewModel", "searchMedia: TV Show with query $query")
-                        searchTvShowsUseCase(
-                            query, languageCode
-                        ).map { it.toUiState() }
-
+                        searchTvShowsUseCase(queryFlow.value, languageCode)
+                            .map { it.toUiState() }
+                            .filter {
+                                (it.rating.toDouble() >= _filterUiState.value.selectedRating.toDouble())
+                                        &&
+                                        if (genreToId(_filterUiState.value.selectedGenre.type) > 0) {
+                                            it.genre.contains(
+                                                genreToId(_filterUiState.value.selectedGenre.type)
+                                            )
+                                        } else {
+                                            true
+                                        }
+                            }
                     }
                 }
                 when (mediaType) {
@@ -237,19 +218,6 @@ class SearchViewModel(
         _searchUIState.update { SearchUiState.Searching.Error(error) }
     }
 
-    fun applyFilters(onDismiss: () -> Unit) {
-        viewModelScope.launch {
-            if (selectTabIndex == 0) {
-                _searchUIState.update {
-                    //it.succed
-                }
-            } else {
-
-            }
-            onDismiss()
-        }
-    }
-
     fun onDismiss() {
         _filterDialogState.update { false }
     }
@@ -259,50 +227,12 @@ class SearchViewModel(
             _filterUiState.update {
                 FilterUiState()
             }
-
         }
-    }
-
-    fun hide() {
-
     }
 
     fun clearSearchState() {
         _searchUIState.update { SearchUiState.Init }
-        _moviesUiState.update { it.copy(movieName = "") }
-        _tvShowUiState.update { it.copy(tvShowName = "") }
+        _queryFlow.value = ""
     }
 }
 
-data class FilterUiState(
-    val selectedRating: Float = 1f,
-    val selectedGenre: GenreUiState = GenreUiState(),
-)
-
-data class GenreUiState(
-    val type: GenreType = GenreType.ALL,
-    val isSelected: Boolean = true
-)
-
-enum class GenreType {
-    ALL,
-    ROMANCE,
-    SCIENCE_FICTION,
-    FAMILY,
-    MYSTERY,
-    HISTORY,
-    WAR,
-    ACTION,
-    CRIME,
-    COMEDY,
-    HORROR,
-    WESTERN,
-    MUSIC,
-    ADVENTURE,
-    TV_MOVIE,
-    FANTASY,
-    THRILLER,
-    DRAMA,
-    DOCUMENTARY,
-    ANIMATION
-}

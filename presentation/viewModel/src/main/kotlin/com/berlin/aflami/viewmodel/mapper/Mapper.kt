@@ -10,6 +10,6 @@ fun Movie.toUIState(): MovieUIState {
         rating = rating.toString().take(3),
         releaseYear = releaseYear.year.toString(),
         genre = genre,
-        poster =poster
+        poster = poster
     )
 }
