@@ -2,10 +2,11 @@ package com.berlin.repository
 
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
-import com.berlin.repository.datasource.remote.dto.MovieDto
 import com.berlin.repository.datasource.remote.dto.BaseResponse
+import com.berlin.repository.datasource.remote.dto.MovieDto
+import com.berlin.repository.impl.SearchRepositoryImpl
 import com.berlin.repository.mapper.toLocal
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -34,7 +35,8 @@ class SearchRepositoryImplTest {
         val country = "EG"
         val language = "en-US"
         val movieDto = dummyMovieDto
-        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis(), type = "country")
+        val movie =
+            movieDto.toLocal(query = country, time = System.currentTimeMillis(), type = "country")
 
         val response = BaseResponse(results = listOf(movieDto, movieDto, movieDto))
         coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
@@ -43,7 +45,7 @@ class SearchRepositoryImplTest {
         val result = repository.getMoviesByCountry(country, language)
 
         // Then
-        assertThat(result).containsExactly(movie, movie, movie)
+        Truth.assertThat(result).containsExactly(movie, movie, movie)
     }
 
     @Test
@@ -58,7 +60,7 @@ class SearchRepositoryImplTest {
         val result = repository.getMoviesByCountry(country, language)
 
         // Then
-        assertThat(result).isEmpty()
+        Truth.assertThat(result).isEmpty()
     }
 
     @Test
@@ -67,7 +69,7 @@ class SearchRepositoryImplTest {
         val country = "EG"
         val language = "en-US"
         val movieDto = dummyMovieDto
-        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis(),"country")
+        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis(), "country")
 
         val response = BaseResponse(results = listOf(movieDto, null, movieDto))
         coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
@@ -76,7 +78,7 @@ class SearchRepositoryImplTest {
         val result = repository.getMoviesByCountry(country, language)
 
         // Then
-        assertThat(result).containsExactly(movie, movie)
+        Truth.assertThat(result).containsExactly(movie, movie)
     }
 
     private val dummyMovieDto = MovieDto(
@@ -88,5 +90,5 @@ class SearchRepositoryImplTest {
         popularity = 123.45,
         voteAverage = 8.7,
 
-    )
+        )
 }
