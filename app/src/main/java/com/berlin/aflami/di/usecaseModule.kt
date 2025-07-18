@@ -8,6 +8,7 @@ import usecase.GetMovieCastUseCase
 import usecase.GetMovieReviewUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
+import usecase.GetSeasonEpisodesUseCase
 import usecase.GetSimilarMoviesUseCase
 import usecase.GetSimilarSeriesUseCase
 import usecase.GetTvShowDetailsUseCase
@@ -31,4 +32,6 @@ val useCaseModule = module {
     single { GetSeriesCastUseCase(get()) }
     single { GetMovieReviewUseCase(get()) }
     single { GetSeriesReviewUseCase(get()) }
+    single { GetSeasonEpisodesUseCase(get()) }
+
 }

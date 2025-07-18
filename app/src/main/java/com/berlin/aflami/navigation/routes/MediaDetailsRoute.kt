@@ -13,8 +13,8 @@ fun NavGraphBuilder.mediaDetailsRoute(
     composable(route = MediaDetailsScreen.route) {
         MediaDetailsScreen(
             navController = navController,
-            mediaId = 22,
-            mediaType = MediaType.MOVIE
+            mediaId = 505,
+            mediaType = MediaType.TV_SHOW
         )
     }
 }

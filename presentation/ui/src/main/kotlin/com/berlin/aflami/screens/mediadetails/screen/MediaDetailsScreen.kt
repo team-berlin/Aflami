@@ -1,6 +1,7 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,11 +49,12 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
-import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
+import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
+import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
@@ -73,7 +75,7 @@ fun MediaDetailsScreen(
     viewModel: MediaDetailsViewmodel = koinViewModel(),
     mediaId: Long,
     mediaType: MediaType,
-    navController: NavController
+    navController: NavController,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val rowUiState by viewModel.rowSectionUiState.collectAsState()
@@ -117,10 +119,12 @@ fun MediaDetailsScreen(
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
                     tab = tab,
-                    mediaId = 550,
-                    mediaType = MediaType.MOVIE
+                    mediaId = 155,
+                    mediaType = MediaType.TV_SHOW
                 )
-            }
+            },
+
+            mediaType = mediaType,
         )
     }
 }
@@ -139,6 +143,7 @@ fun MediaDetailsContent(
     onToggleExpand: () -> Unit,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
+    mediaType: MediaType,
 ) {
     Column(
         Modifier
@@ -217,7 +222,10 @@ fun MediaDetailsContent(
 
             Spacer(Modifier.height(8.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     state.releaseYear,
                     style = Theme.textStyle.label.small,
@@ -232,10 +240,10 @@ fun MediaDetailsContent(
                     )
                 }
 
-                state.numberOfSeasons.takeIf { !it.isNullOrEmpty() }?.let { numberOfSeasons ->
+                state.numberOfSeasons?.toString()?.let { numberOfSeasons ->
                     CircularDot()
                     Text(
-                        numberOfSeasons,
+                        "$numberOfSeasons ${stringResource(R.string.season)}",
                         style = Theme.textStyle.label.small,
                         color = Theme.color.textColors.hint
                     )
@@ -291,7 +299,7 @@ fun MediaDetailsContent(
             isSelectedTab = isSelectedTab,
             onChipClick = onChipClick,
             isExpanded = isExpanded,
-            onToggleExpand = onToggleExpand
+            onToggleExpand = onToggleExpand,
         )
     }
 }
@@ -361,13 +369,17 @@ fun RowSection(
                     CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
                 }
 
-                else -> {
-
+                is TabContent.Season -> {
+                    Log.d("Khiary", "seasons tab clicked")
+                    SeasonsSection(
+                        seasonsMap = (rowUiState.content as TabContent.Season).items,
+                    )
                 }
             }
-        }
 
+        }
     }
+
 }
 
 @Composable
@@ -379,7 +391,7 @@ fun ExpandableDescription(
     previewColor: Color,
     suffixColor: Color,
     previewStyle: TextStyle,
-    suffixStyle: TextStyle
+    suffixStyle: TextStyle,
 ) {
     val canExpand = text.length > maxPreviewLength
 
@@ -496,20 +508,22 @@ fun CircularDot() {
     )
 }
 
-private fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
+fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
     return when (tab) {
         MovieDetailsTabs.MORE_LIKE_THIS -> R.string.more_like_this
         MovieDetailsTabs.REVIEWS -> R.string.reviews
         MovieDetailsTabs.GALLERY -> R.string.gallery
         MovieDetailsTabs.COMPANY_PRODUCTION -> R.string.company_production
+        MovieDetailsTabs.SEASON -> R.string.season
     }
 }
 
-private fun getMovieDetailsTabsIcon(tab: MovieDetailsTabs): Int {
+fun getMovieDetailsTabsIcon(tab: MovieDetailsTabs): Int {
     return when (tab) {
         MovieDetailsTabs.MORE_LIKE_THIS -> com.berlin.ui.R.drawable.camera_video
-        MovieDetailsTabs.REVIEWS -> R.drawable.star
+        MovieDetailsTabs.REVIEWS -> com.berlin.ui.R.drawable.star
         MovieDetailsTabs.GALLERY -> com.berlin.ui.R.drawable.album
         MovieDetailsTabs.COMPANY_PRODUCTION -> com.berlin.ui.R.drawable.city
+        MovieDetailsTabs.SEASON -> com.berlin.ui.R.drawable.season
     }
 }
