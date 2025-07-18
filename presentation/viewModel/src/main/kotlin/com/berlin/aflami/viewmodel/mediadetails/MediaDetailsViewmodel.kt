@@ -143,6 +143,10 @@ class MediaDetailsViewmodel(
         return _expandedUiStates[id] ?: false
     }
 
+    override fun onReadMoreReviewClicked(id: Long) {
+        _expandedUiStates[id] = !(_expandedUiStates[id] ?: false)
+    }
+
     fun toggleMovieDetailsTab(
         tab: MovieDetailsTabs,
         mediaId: Long,
