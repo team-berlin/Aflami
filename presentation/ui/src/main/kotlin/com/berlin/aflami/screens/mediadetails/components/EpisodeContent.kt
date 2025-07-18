@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.mediadetails.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,24 +26,19 @@ import com.berlin.aflami.screens.search.mediadetails.EpisodeCard
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
-import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.designsystem.R
 
 
 @Composable
-fun SeasonsScreen(
-    state: MediaDetailsUiState,
-    seasonsMap: Map<Int, List<EpisodesUiState?>> = mutableMapOf(),
-    seasons: List<EpisodesSeasonUiState>? = emptyList(),
+fun SeasonsSection(
+    seasonsMap: MutableMap<Int, List<EpisodesUiState>>,
     modifier: Modifier = Modifier,
 ) {
-    Log.d("Khairy", "seasons are = ${state.seasonsMap}")
     Column(
         modifier = modifier.background(Theme.color.surface),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        for ((seasonNumber, episodes) in state.seasonsMap ?: emptyMap()) {
-            Log.d("Khairy", "seasons are = ${state.seasonsMap}")
+        for ((seasonNumber, episodes) in seasonsMap) {
             EpisodeScreen(
                 seasonNumber = seasonNumber.plus(1).toString(),
                 episodes = episodes

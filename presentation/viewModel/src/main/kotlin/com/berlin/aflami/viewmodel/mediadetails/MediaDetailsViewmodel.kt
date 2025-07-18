@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.review.toUiState
+import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.entity.Episodes
-import com.berlin.entity.EpisodesSeason
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -177,7 +177,7 @@ class MediaDetailsViewmodel(
 
                     MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(mediaId, mediaType)
                     MovieDetailsTabs.COMPANY_PRODUCTION -> getCompanyProduction()
-                    MovieDetailsTabs.SEASON -> onShowAllSeasonsClicked(
+                    MovieDetailsTabs.SEASON -> onSeasonsClicked(
                         _uiState.value.id,
                         _uiState.value.numberOfSeasons!!,
                     ).also {
@@ -329,24 +329,28 @@ class MediaDetailsViewmodel(
 
     }
 
-    override fun onShowAllSeasonsClicked(seriesId: Long, numberOfSeasons: Int) {
+    override fun onSeasonsClicked(seriesId: Long, numberOfSeasons: Int) {
         viewModelScope.launch {
             try {
                 _rowSectionUiState.update { RowSectionUiState.Loading }
+                val result: MutableMap<Int, List<Episodes?>> = mutableMapOf()
                 repeat(numberOfSeasons) { seasonNumber ->
                     val episodes: List<Episodes?> = getSeasonEpisodesUseCase(seriesId, seasonNumber)
+                    result.put(seasonNumber, episodes)
+                }
+                if (result.isEmpty()) {
+                    RowSectionUiState.Error("No seasons found!")
+                } else {
                     _rowSectionUiState.update {
                         RowSectionUiState.Success(
                             content = TabContent.Season(
-                                items = emptyMap()
+                                items = result.mapValues { entry ->
+                                    entry.value.mapNotNull { episode ->
+                                        episode?.toUiState()
+                                    }
+                                } as MutableMap<Int, List<EpisodesUiState>>
                             )
                         )
-                    }
-                    _uiState.update { currentState ->
-                        val updatedMap = currentState.seasonsMap?.toMutableMap() ?: mutableMapOf()
-                        updatedMap[seasonNumber] = episodes.map { it?.toUiState() }
-                        Log.d("Khairy", "New season added , episodes number ${episodes.size}")
-                        currentState.copy(seasonsMap = updatedMap)
                     }
                 }
             } catch (error: Exception) {

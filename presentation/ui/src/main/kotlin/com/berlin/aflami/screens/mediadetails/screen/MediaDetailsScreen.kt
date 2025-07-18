@@ -53,7 +53,7 @@ import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
 import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
-import com.berlin.aflami.screens.mediadetails.components.SeasonsScreen
+import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
@@ -74,7 +74,7 @@ fun MediaDetailsScreen(
     viewModel: MediaDetailsViewmodel = koinViewModel(),
     mediaId: Long,
     mediaType: MediaType,
-    navController: NavController
+    navController: NavController,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val rowUiState by viewModel.rowSectionUiState.collectAsState()
@@ -123,7 +123,7 @@ fun MediaDetailsScreen(
                 )
             },
 
-            mediaType =   mediaType,
+            mediaType = mediaType,
         )
     }
 }
@@ -289,19 +289,17 @@ fun MediaDetailsContent(
         )
 
         RowSection(
-            state = state,
             rowUiState = rowUiState,
             isSelectedTab = isSelectedTab,
             onChipClick = onChipClick,
             isExpanded = isExpanded,
-            onToggleExpand = onToggleExpand
+            onToggleExpand = onToggleExpand,
         )
     }
 }
 
 @Composable
 fun RowSection(
-    state:MediaDetailsUiState,
     rowUiState: RowSectionUiState,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
@@ -366,15 +364,15 @@ fun RowSection(
                 }
 
                 is TabContent.Season -> {
-                        Log.d("Khiary", "seasons tab clicked")
-                        SeasonsScreen(
-                            state,
-                        )
-                    }
+                    Log.d("Khiary", "seasons tab clicked")
+                    SeasonsSection(
+                        seasonsMap = (rowUiState.content as TabContent.Season).items,
+                    )
                 }
-
             }
+
         }
+    }
 
 
     @Composable
@@ -386,7 +384,7 @@ fun RowSection(
         previewColor: Color,
         suffixColor: Color,
         previewStyle: TextStyle,
-        suffixStyle: TextStyle
+        suffixStyle: TextStyle,
     ) {
         val canExpand = text.length > maxPreviewLength
 
@@ -429,7 +427,7 @@ fun RowSection(
     }
 
     @SuppressLint("UnusedBoxWithConstraintsScope")
-@Composable
+    @Composable
     fun Cast(
         modifier: Modifier = Modifier,
         castState: List<MediaCastUiState>,

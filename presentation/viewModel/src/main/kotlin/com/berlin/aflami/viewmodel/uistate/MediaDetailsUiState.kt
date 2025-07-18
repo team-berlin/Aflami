@@ -24,9 +24,9 @@ data class MediaDetailsUiState(
     val releaseYear: String = "",
     val rating: Double = 0.0,
     val runtime: String? = "",
-    val seasonsMap: MutableMap<Int, List<EpisodesUiState?>>? = mutableMapOf(),
+    val seasonsMap: MutableMap<Int, List<EpisodesUiState?>>? = mutableMapOf(),// remove this
     val seasons: List<EpisodesSeasonUiState>? = emptyList(),
-    val numberOfSeasons:Int?=null,
+    val numberOfSeasons: Int? = null,
     val isFavorite: Boolean = false,
     val isOverviewExpanded: Boolean = false,
     val mediaType: MediaType = MediaType.MOVIE,
@@ -40,7 +40,7 @@ data class MediaDetailsUiState(
 
 
 data class EpisodesUiState(
-    val stillPath:String,
+    val stillPath: String,
     val airDate: String,
     val episodeNumber: Int,
     val episodeType: String,
@@ -48,9 +48,8 @@ data class EpisodesUiState(
     val name: String,
     val overview: String,
     val runtime: Int,
-    val voteAverage: Double,
-
-    )
+    val voteAverage: Double
+)
 
 data class EpisodesSeasonUiState(
     val idSeason: Int,
