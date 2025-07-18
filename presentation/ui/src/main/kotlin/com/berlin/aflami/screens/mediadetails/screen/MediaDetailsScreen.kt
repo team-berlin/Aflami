@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -275,80 +276,99 @@ fun MediaDetailsContent(
 //            listener = listener
 //        )
 
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                color = Theme.color.stroke,
-                thickness = 1.dp
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp),
+            color = Theme.color.stroke,
+            thickness = 1.dp
+        )
+
+        RowSection(
+            rowUiState = rowUiState,
+            isSelectedTab = isSelectedTab,
+            onChipClick = onChipClick,
+            isExpanded = isExpanded,
+            onToggleExpand = onToggleExpand
+        )
+    }
+}
+
+@Composable
+fun RowSection(
+    rowUiState: RowSectionUiState,
+    isSelectedTab: MovieDetailsTabs,
+    onChipClick: (MovieDetailsTabs) -> Unit,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
+) {
+    LazyRow(
+        modifier = Modifier
+            .height(96.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(MovieDetailsTabs.entries) { tab ->
+            Chips(
+                title = stringResource(movieDetailsTabsMapper(tab)),
+                icon = painterResource(getMovieDetailsTabsIcon(tab)),
+                isSelected = tab == isSelectedTab,
+                onClick = { onChipClick(tab) }
             )
-
-            LazyRow(
-                modifier = Modifier
-                    .height(96.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(MovieDetailsTabs.entries) { tab ->
-                    Chips(
-                        title = stringResource(movieDetailsTabsMapper(tab)),
-                        icon = painterResource(getMovieDetailsTabsIcon(tab)),
-                        isSelected = tab == isSelectedTab,
-                        onClick = { onChipClick(tab) }
-                    )
-                }
-            }
-
-            when (rowUiState) {
-                is RowSectionUiState.Error -> {
-                    Text(
-                        text = rowUiState.message,
-                        style = Theme.textStyle.label.large,
-                        color = Theme.color.textColors.body,
-                    )
-                }
-
-                is RowSectionUiState.Loading -> {
-                    Loading()
-                }
-
-                is RowSectionUiState.Success -> {
-                    when (rowUiState.content) {
-                        is TabContent.MoreLikeThis -> {
-                            MoreLikeThisSection(
-                                mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
-                                mediaType = MediaType.MOVIE
-                            )
-                        }
-
-                        is TabContent.Reviews -> {
-                            ReviewsSection(
-                                reviews = (rowUiState.content as TabContent.Reviews).items,
-                                isExpanded = isExpanded,
-                                onToggleExpand = onToggleExpand
-                            )
-                        }
-
-                        is TabContent.Gallery -> {
-                            GallerySection(
-                                mediaImages = (rowUiState.content as TabContent.Gallery).items,
-                            )
-                        }
-
-                        is TabContent.CompanyProduction -> {
-                            CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
-                        }
-
-                        else -> {
-
-                        }
-                    }
-                }
-
-            }
         }
     }
 
-    @Composable
+    when (rowUiState) {
+        is RowSectionUiState.Error -> {
+            Text(
+                text = rowUiState.message,
+                style = Theme.textStyle.label.large,
+                color = Theme.color.textColors.body,
+            )
+        }
+
+        is RowSectionUiState.Loading -> {
+            Loading()
+        }
+
+        is RowSectionUiState.Success -> {
+            when (rowUiState.content) {
+                is TabContent.MoreLikeThis -> {
+                    MoreLikeThisSection(
+                        mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
+                        mediaType = MediaType.MOVIE
+                    )
+                }
+
+                is TabContent.Reviews -> {
+                    ReviewsSection(
+                        reviews = (rowUiState.content as TabContent.Reviews).items,
+                        isExpanded = isExpanded,
+                        onToggleExpand = onToggleExpand
+                    )
+                }
+
+                is TabContent.Gallery -> {
+                    GallerySection(
+                        mediaImages = (rowUiState.content as TabContent.Gallery).items,
+                    )
+                }
+
+                is TabContent.CompanyProduction -> {
+                    CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
+                }
+
+                else -> {
+
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
 fun ExpandableDescription(
     text: String,
     expanded: Boolean,
@@ -399,6 +419,7 @@ fun ExpandableDescription(
     )
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Cast(
     modifier: Modifier = Modifier,
