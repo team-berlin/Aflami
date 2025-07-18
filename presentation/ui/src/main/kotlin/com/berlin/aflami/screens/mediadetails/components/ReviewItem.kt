@@ -48,8 +48,8 @@ fun ReviewItem(
                 .padding(bottom = 12.dp),
         ) {
             AsyncImage(
-                placeholder = painterResource(R.drawable.ic_placeholder),
-                error = painterResource(R.drawable.ic_placeholder),
+                placeholder = painterResource(R.drawable.no_review_image),
+                error = painterResource(R.drawable.no_review_image),
                 fallback = painterResource(R.drawable.no_review_image),
                 model = review.avatarImage,
                 contentDescription = "Avatar Image",
