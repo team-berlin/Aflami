@@ -14,8 +14,6 @@ val properties = Properties().apply {
     load(rootProject.file("local.properties").inputStream())
 }
 
-
-
 android {
     namespace = "com.berlin.aflami"
     compileSdk = 35
@@ -66,17 +64,6 @@ android {
     }
 
 
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -104,6 +91,7 @@ dependencies {
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+    implementation(libs.firebase.crashlytics.ktx)
     implementation(libs.bundles.room)
     ksp(libs.roomCompiler)
     implementation(libs.androidx.navigation)
