@@ -19,7 +19,17 @@ val properties = Properties().apply {
 android {
     namespace = "com.berlin.aflami"
     compileSdk = 35
-
+    bundle {
+        abi {
+            enableSplit = true
+        }
+        density {
+            enableSplit = true
+        }
+        language {
+            enableSplit = true
+        }
+    }
     defaultConfig {
         applicationId = "com.berlin.aflami"
         minSdk = 26
