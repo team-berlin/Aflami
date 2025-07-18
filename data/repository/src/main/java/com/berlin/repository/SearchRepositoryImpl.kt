@@ -23,15 +23,16 @@ class SearchRepositoryImpl(
         query: String,
         page: Int
     ): List<Movie> {
+        val movies = localDataSource.getCachedSearch(query, QueryType.COUNTRY, page = page)
+        if (!isExpiredOrEmpty(movies)) return movies.map { it.toDomain() }
+
+        remoteDataSource.searchMoviesByCountry(query, language, page).results
+            ?.filterNotNull()
+            ?.map { it.toLocal(query, QueryType.COUNTRY) }
+            ?.also { localDataSource.cacheSearch(it) }
+
         return localDataSource.getCachedSearch(query, QueryType.COUNTRY, page = page)
-            .takeIf { !isExpiredOrEmpty(it) }
-            ?.map { it.toDomain() }
-            ?: remoteDataSource.searchMoviesByCountry(query, language, page).results
-                ?.filterNotNull()
-                ?.map { it.toLocal(query, QueryType.COUNTRY) }
-                ?.also { localDataSource.cacheSearch(it) }
-                ?.map { it.toDomain() }
-            ?: emptyList()
+            .map { it.toDomain() }
     }
 
     override suspend fun getMoviesByActorName(actorName: String, language: String): List<Movie> {

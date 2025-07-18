@@ -16,7 +16,7 @@ import com.berlin.designsystem.R
 @Composable
 fun SearchSuggestionHub(
     modifier: Modifier = Modifier,
-    onWorldTourClick: () -> Unit,
+    onSearchByCountryClick: () -> Unit,
     onSearchByActorClick: () -> Unit
 ) {
     Row(
@@ -26,7 +26,7 @@ fun SearchSuggestionHub(
         SearchSuggestionItem(
             modifier = Modifier
                 .weight(1f)
-                .clickable { onWorldTourClick() },
+                .clickable { onSearchByCountryClick() },
             title = stringResource(R.string.world_tour),
             subtitle = stringResource(R.string.explore_world_cinema),
             gradientBackground = darkPurpleLinearGradient,

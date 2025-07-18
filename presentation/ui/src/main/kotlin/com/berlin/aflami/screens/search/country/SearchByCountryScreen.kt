@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.worldtour
+package com.berlin.aflami.screens.search.country
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +32,7 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
-import com.berlin.aflami.screens.search.worldtour.composable.AnimatedCountriesList
+import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListener

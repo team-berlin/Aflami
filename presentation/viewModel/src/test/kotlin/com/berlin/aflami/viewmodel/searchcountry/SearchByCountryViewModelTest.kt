@@ -21,7 +21,7 @@ import org.junit.Test
 import org.junit.jupiter.api.AfterEach
 import usecase.SearchByCountryUseCase
 
-class WorldTourViewModelTest {
+class SearchByCountryViewModelTest {
 
     private lateinit var viewModel: SearchByCountryViewModel
     private lateinit var searchByCountryUseCase: SearchByCountryUseCase
