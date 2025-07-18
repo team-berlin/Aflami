@@ -15,7 +15,10 @@ interface SearchDao {
         LIMIT :pageSize OFFSET :skip"""
     )
     suspend fun getCachedSearch(
-        query: String, type: QueryType, pageSize: Int, skip: Int
+        query: String,
+        type: QueryType,
+        pageSize: Int,
+        skip: Int
     ): List<SearchingEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

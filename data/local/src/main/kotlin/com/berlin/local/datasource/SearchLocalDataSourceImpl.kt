@@ -8,7 +8,6 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 class SearchLocalDataSourceImpl(
     private val searchDao: SearchDao
 ) : SearchLocalDataSource {
-
     override suspend fun getCachedSearch(
         query: String,
         type: QueryType,
@@ -22,6 +21,7 @@ class SearchLocalDataSourceImpl(
             skip = (page - 1) * 20
         )
     }
+
     override suspend fun cacheSearch(movies: List<SearchingEntity>) {
         searchDao.cacheSearch(movies)
     }

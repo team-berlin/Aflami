@@ -6,7 +6,7 @@ import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 
 interface SearchRemoteDataSource {
-    suspend fun searchMoviesByCountry(countryName: String, language: String): BaseResponse<MovieDto>
+    suspend fun searchMoviesByCountry(countryName: String, language: String, page: Int): BaseResponse<MovieDto>
     suspend fun searchMoviesByActor(actorName: String, language: String): BaseResponse<PersonDto>
     suspend fun searchMovies(query: String, language: String, page: Int): BaseResponse<MovieDto>
     suspend fun searchTvShows(query: String, language: String, page: Int): BaseResponse<TVShowDto>

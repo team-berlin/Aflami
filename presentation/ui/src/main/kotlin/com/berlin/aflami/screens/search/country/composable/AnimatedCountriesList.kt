@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.worldtour.composable
+package com.berlin.aflami.screens.search.country.composable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -26,7 +26,7 @@ import com.berlin.ui.R
 fun AnimatedCountriesList(
     modifier: Modifier = Modifier,
     visible: Boolean,
-    filteredCountries: Map<String, String>,
+    filteredCountries: List<String>,
     onCountryNameChanged: (String) -> Unit,
     onCountryClick: () -> Unit,
 ) {
@@ -50,19 +50,19 @@ fun AnimatedCountriesList(
                         modifier = Modifier.padding(start = 16.dp)
                     )
                 }
-                itemsIndexed(
-                    items = filteredCountries.toList(),
-                    key = { _, countryWithCode -> countryWithCode.second }
-                ) { index, countryWithCode ->
+                items(
+                    items = filteredCountries,
+                    key = { filteredCountries.indexOf(it) }
+                ) { countryName ->
                     CountryItem(
-                        countryWithCode = countryWithCode,
+                        countryName = countryName,
                         onCountryClick = {
                             onCountryNameChanged(it)
                             onCountryClick()
                         }
                     )
 
-                    if (index != filteredCountries.size - 1) {
+                    if (filteredCountries.indexOf(countryName) != filteredCountries.size - 1) {
                         HorizontalDivider(
                             modifier = Modifier.fillMaxWidth(),
                             thickness = 1.dp,
@@ -77,19 +77,19 @@ fun AnimatedCountriesList(
 
 @Composable
 private fun CountryItem(
-    countryWithCode: Pair<String, String>,
+    countryName: String,
     onCountryClick: (String) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .clickable { onCountryClick(countryWithCode.first) }
+            .clickable { onCountryClick(countryName) }
             .padding(start = 16.dp)
             .fillMaxWidth()
             .padding(horizontal = 0.dp, vertical = 16.dp)
     ) {
         Text(
-            text = countryWithCode.first,
+            text = countryName,
             style = Theme.textStyle.body.medium,
             color = Theme.color.textColors.body
         )

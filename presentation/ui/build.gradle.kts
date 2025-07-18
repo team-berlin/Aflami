@@ -29,4 +29,8 @@ dependencies {
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:navigation"))
     implementation(project(":presentation:viewModel"))
+
+    val paging_version = "3.3.6"
+    implementation("androidx.paging:paging-runtime:$paging_version")
+    implementation("androidx.paging:paging-compose:$paging_version")
 }

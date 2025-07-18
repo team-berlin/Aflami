@@ -4,15 +4,18 @@ import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.MovieDto
-import com.berlin.repository.util.toLocalDate
+import kotlinx.datetime.LocalDate
 import java.time.Instant
+import java.time.format.DateTimeFormatter
+
+const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
 
 fun SearchingEntity.toDomain(): Movie {
     return Movie(
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseYear = releaseYear.toLocalDate(),
+        releaseYear = stringToLocalDate(releaseYear),
         genre = this.genre,
         poster = this.poster
     )
@@ -32,4 +35,8 @@ fun MovieDto.toLocal(query: String, type: QueryType): SearchingEntity {
     )
 }
 
-const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
+private fun stringToLocalDate(dateString: String): LocalDate {
+    return runCatching {
+        LocalDate.parse(dateString)
+    }.getOrElse { LocalDate.parse("1960-01-01") } // TODO:
+}

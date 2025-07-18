@@ -14,11 +14,14 @@ class SearchRemoteDataSourceImp(
     private val client: HttpClient
 ) : SearchRemoteDataSource {
     override suspend fun searchMoviesByCountry(
-        countryName: String, language: String
+        countryName: String,
+        language: String,
+        page: Int
     ): BaseResponse<MovieDto> {
         return client.get(ApiConstants.SEARCH_BY_COUNTRY) {
             parameter(ApiConstants.WITH_ORIGIN_COUNTRY, countryName)
             parameter(ApiConstants.LANGUAGE, language)
+            parameter("page", page)
         }.body()
     }
 

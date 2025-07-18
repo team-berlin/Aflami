@@ -1,24 +1,30 @@
 package com.berlin.repository
 
 import com.berlin.repository.datasource.local.SearchLocalDataSource
+import com.berlin.repository.datasource.local.dto.QueryType
+import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
-import com.berlin.repository.datasource.remote.dto.MovieDto
 import com.berlin.repository.datasource.remote.dto.BaseResponse
+import com.berlin.repository.datasource.remote.dto.MovieDto
+import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.Before
+import org.junit.Test
+import repository.SearchRepository
+import java.time.Instant
 
 class SearchRepositoryImplTest {
+
     private lateinit var remoteDataSource: SearchRemoteDataSource
     private lateinit var localDataSource: SearchLocalDataSource
+    private lateinit var repository: SearchRepository
 
-    private lateinit var repository: SearchRepositoryImpl
-
-    @BeforeEach
+    @Before
     fun setup() {
         localDataSource = mockk(relaxed = true)
         remoteDataSource = mockk(relaxed = true)
@@ -29,64 +35,132 @@ class SearchRepositoryImplTest {
     }
 
     @Test
-    fun `searchByCountry should return mapped movies when results are valid`() = runTest {
+    fun `should call getCachedSearch when getMoviesByCountry is called`() = runTest {
         // Given
-        val country = "EG"
-        val language = "en-US"
-        val movieDto = dummyMovieDto
-        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis(), type = "country")
-
-        val response = BaseResponse(results = listOf(movieDto, movieDto, movieDto))
-        coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
+        coEvery {
+            localDataSource.getCachedSearch(
+                "EG",
+                QueryType.COUNTRY,
+                20,
+                1
+            )
+        } returns cachedMovies
 
         // When
-        val result = repository.getMoviesByCountry(country, language)
+        repository.getMoviesByCountry("EG", 1)
 
         // Then
-        assertThat(result).containsExactly(movie, movie, movie)
+        coVerify { localDataSource.getCachedSearch("EG", QueryType.COUNTRY, 20, 1) }
     }
 
     @Test
-    fun `searchByCountry should return empty list when results is null`() = runTest {
+    fun `should call searchMoviesByCountry when cache is empty`() = runTest {
         // Given
-        val country = "EG"
-        val language = "en-US"
-        val response = BaseResponse<MovieDto>(1, 10, results = null, 2)
-        coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
+        coEvery {
+            localDataSource.getCachedSearch(
+                "EG",
+                QueryType.COUNTRY,
+                20,
+                1
+            )
+        } returns emptyList()
 
         // When
-        val result = repository.getMoviesByCountry(country, language)
+        repository.getMoviesByCountry("EG", 1)
 
         // Then
-        assertThat(result).isEmpty()
+        coVerify { remoteDataSource.searchMoviesByCountry("EG", "en-US", 1) }
     }
 
     @Test
-    fun `searchByCountry should filter out null entries`() = runTest {
+    fun `searchByCountry should return cached movies when cache is not empty`() = runTest {
         // Given
-        val country = "EG"
-        val language = "en-US"
-        val movieDto = dummyMovieDto
-        val movie = movieDto.toLocal(query = country, time = System.currentTimeMillis(),"country")
-
-        val response = BaseResponse(results = listOf(movieDto, null, movieDto))
-        coEvery { remoteDataSource.searchMoviesByCountry(country, language) } returns response
+        coEvery {
+            localDataSource.getCachedSearch(
+                "EG",
+                QueryType.COUNTRY,
+                20,
+                1
+            )
+        } returns cachedMovies
 
         // When
-        val result = repository.getMoviesByCountry(country, language)
+        val result = repository.getMoviesByCountry("EG", 1)
 
         // Then
-        assertThat(result).containsExactly(movie, movie)
+        assertThat(result).containsExactlyElementsIn(cachedMovies.map { it.toDomain() })
     }
 
-    private val dummyMovieDto = MovieDto(
-        id = 101,
-        title = "Epic Movie",
-        genreIds = listOf(12, 18),
-        posterPath = "/poster/path.jpg",
-        releaseDate = "2023-05-15",
-        popularity = 123.45,
-        voteAverage = 8.7,
+    @Test
+    fun `searchByCountry should call remoteDataSource cached is not empty but expired`() = runTest {
+        // Given
+        coEvery {
+            localDataSource.getCachedSearch(
+                "EG",
+                QueryType.COUNTRY,
+                20,
+                1
+            )
+        } returns expiredCached
 
-    )
+        // When
+        repository.getMoviesByCountry("EG", 1)
+
+        // Then
+        coVerify { remoteDataSource.searchMoviesByCountry("EG", "en-US", 1) }
+    }
+
+    @Test
+    fun `should not call cacheMovies when results is null`() = runTest {
+        // Given
+        val response = BaseResponse<MovieDto>(results = null)
+        coEvery {
+            localDataSource.getCachedSearch(
+                "EG",
+                QueryType.COUNTRY,
+                20,
+                1
+            )
+        } returns emptyList()
+        coEvery { remoteDataSource.searchMoviesByCountry("EG", "en-US", 1) } returns response
+
+        // When
+        repository.getMoviesByCountry("EG", 1)
+
+        // Then
+        coVerify(exactly = 0) { localDataSource.cacheSearch(any()) }
+    }
+
+    private val dummyMovieDtos = (0..5).map {
+        MovieDto(
+            id = it,
+            title = "Epic Movie",
+            genreIds = listOf(12, 18),
+            posterPath = "/poster/path.jpg",
+            releaseDate = "2023-05-15",
+            popularity = 123.45,
+            voteAverage = 8.7
+        )
+    }
+
+    private val cachedMovies =
+        dummyMovieDtos.map { it.toLocal(query = "EG", type = QueryType.COUNTRY) }
+
+    private val expiredCached = (0..3).map {
+        SearchingEntity(
+            id = it.toLong(),
+            query = "EG",
+            type = QueryType.COUNTRY,
+            time = Instant.now().epochSecond - CACHE_TIMEOUT,
+            title = "Epic Movie",
+            genre = listOf(12, 18),
+            poster = "/poster/path.jpg",
+            releaseYear = "2023",
+            rating = 8.7
+        )
+    }
+
+    companion object {
+        const val CACHE_TIMEOUT = 10_000_000L
+    }
 }
