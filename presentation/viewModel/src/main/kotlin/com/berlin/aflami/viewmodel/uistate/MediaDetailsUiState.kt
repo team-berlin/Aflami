@@ -31,11 +31,13 @@ data class MediaDetailsUiState(
     val isOverviewExpanded: Boolean = false,
     val mediaType: MediaType = MediaType.MOVIE,
     val isPlaying: Boolean = false,
-    val mediaDuration: String = "",
     val mediaCast: List<MediaCastUiState> = emptyList(),
     val country: String = "",
     val options: List<MediaOptions> = emptyList(),
     val isLoading: Boolean = true,
+    val originalCountry: String? = null,
+    val duration: String? = null,
+    val numberOfSeasons: String? = null
 )
 
 

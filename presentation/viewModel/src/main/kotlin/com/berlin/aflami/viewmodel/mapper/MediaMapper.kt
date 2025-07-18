@@ -41,7 +41,9 @@ fun MovieDetails.toUiState(
     numberOfSeasons = null,
     isFavorite = isFavorite,
     isOverviewExpanded = isOverviewExpanded,
-    mediaType = MediaType.MOVIE
+    mediaType = MediaType.MOVIE,
+    originalCountry = originCountry,
+    duration = duration
 )
 
 fun TvShowDetails.toUiState(
@@ -61,6 +63,8 @@ fun TvShowDetails.toUiState(
     isFavorite = isFavorite,
     isOverviewExpanded = isOverviewExpanded,
     mediaType = MediaType.TV_SHOW,
+    originalCountry = originCountry,
+    numberOfSeasons = numberOfSeasons
 )
 
 

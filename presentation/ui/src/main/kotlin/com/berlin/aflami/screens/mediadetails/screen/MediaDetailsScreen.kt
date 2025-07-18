@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -221,37 +222,39 @@ fun MediaDetailsContent(
 
             Spacer(Modifier.height(8.dp))
 
-//            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-//                Text(
-//                    state.releaseYear,
-//                    style = Theme.textStyle.label.small,
-//                    color = Theme.color.textColors.hint
-//                )
-//                if (state.mediaDuration.isNotBlank()) {
-//                    Text(
-//                        "•",
-//                        style = Theme.textStyle.label.small,
-//                        color = Theme.color.textColors.hint
-//                    )
-//                    Text(
-//                        state.mediaDuration,
-//                        style = Theme.textStyle.label.small,
-//                        color = Theme.color.textColors.hint
-//                    )
-//                }
-//                if (state.country.isNotBlank()) {
-//                    Text(
-//                        "•",
-//                        style = Theme.textStyle.label.small,
-//                        color = Theme.color.textColors.hint
-//                    )
-//                    Text(
-//                        state.mediaDuration,
-//                        style = Theme.textStyle.label.small,
-//                        color = Theme.color.textColors.hint
-//                    )
-//                }
-//            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    state.releaseYear,
+                    style = Theme.textStyle.label.small,
+                    color = Theme.color.textColors.hint
+                )
+                state.duration.takeIf { !it.isNullOrEmpty() }?.let { duration ->
+                    CircularDot()
+                    Text(
+                        duration,
+                        style = Theme.textStyle.label.small,
+                        color = Theme.color.textColors.hint
+                    )
+                }
+
+                state.numberOfSeasons.takeIf { !it.isNullOrEmpty() }?.let { numberOfSeasons ->
+                    CircularDot()
+                    Text(
+                        numberOfSeasons,
+                        style = Theme.textStyle.label.small,
+                        color = Theme.color.textColors.hint
+                    )
+                }
+
+                state.originalCountry.takeIf { !it.isNullOrEmpty() }?.let { originalCountry ->
+                    CircularDot()
+                    Text(
+                        originalCountry,
+                        style = Theme.textStyle.label.small,
+                        color = Theme.color.textColors.hint
+                    )
+                }
+            }
 
             Spacer(Modifier.height(24.dp))
 
@@ -491,6 +494,15 @@ fun RowSection(
         }
     }
 
+@Composable
+fun CircularDot() {
+    Box(
+        modifier = Modifier
+            .size(4.dp)
+            .clip(CircleShape)
+            .background(Theme.color.stroke)
+    )
+}
 
 }
 

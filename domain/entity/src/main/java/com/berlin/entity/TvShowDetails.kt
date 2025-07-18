@@ -10,7 +10,9 @@ data class TvShowDetails(
     val rating: Double,
     val runtime: Int?,
     val genres: List<GenreEntity>,
-    val numberOfSeasons: Int?
+    val seasons: List<SeasonEntity>,
+    val originCountry: String?,
+    val numberOfSeasons: Int?,
 )
 
 data class SeasonEntity(
