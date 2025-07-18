@@ -9,7 +9,7 @@ import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
 
 
 @Dao
-interface CategoriesPreferences {
+interface CategoriesPreferencesDao {
 
 
         @Query("SELECT count FROM categories_preferences WHERE categoryId = :id LIMIT 1")
@@ -20,6 +20,9 @@ interface CategoriesPreferences {
 
         @Query("UPDATE categories_preferences SET count = count + 1 WHERE categoryId = :id")
         suspend fun increment(id: Int)
+
+        @Query("SELECT * FROM categories_preferences")
+        suspend fun getAll(): List<CategoriesPreferencesEntity>
 
         @Transaction
         suspend fun increaseOrInsert(id: Int) {
