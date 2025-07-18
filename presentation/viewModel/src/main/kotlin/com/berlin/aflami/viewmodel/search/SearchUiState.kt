@@ -14,6 +14,7 @@ data class SearchUiState(
     val tvShows: Flow<PagingData<TVShowUiState>> = emptyFlow(),
     val isDialogVisible: Boolean = false,
     val filterItemUiState: FilterItemUiState = FilterItemUiState(),
+    val filterTrigger :Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 )

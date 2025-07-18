@@ -1,5 +1,7 @@
 package com.berlin.aflami.viewmodel.search
 
+import kotlin.enums.EnumEntries
+
 data class GenreUiState(
     val genres: Selectable<GenreType> = Selectable(
         type = GenreType.ALL,
@@ -12,6 +14,9 @@ data class Selectable<T>(
     val type: T
 )
 
+fun GenreUiState.toGenreType(): Int {
+    return genreToId(genres.type)
+}
 enum class GenreType {
     ALL,
     ROMANCE,

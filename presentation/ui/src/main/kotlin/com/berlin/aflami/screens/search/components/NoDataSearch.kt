@@ -49,7 +49,7 @@ fun NoDataSearch() {
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun NoDataSearchPreview() {
     NoDataSearch()

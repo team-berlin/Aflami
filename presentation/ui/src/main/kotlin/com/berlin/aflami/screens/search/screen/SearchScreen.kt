@@ -5,12 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -32,6 +37,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.SearchSuggestionHub
@@ -43,7 +49,6 @@ import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.NoDataSearch
-import com.berlin.aflami.screens.search.components.ResultGridList
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
@@ -52,6 +57,7 @@ import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.designsystem.R
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -168,7 +174,7 @@ private fun SearchScreenContent(
                 }
 
                 state.searchQuery.isNotBlank() -> {
-                    // Handle success state if needed
+
                     TabBar(
                         containerColor = Theme.color.surface,
                         items = listOf(
@@ -197,12 +203,17 @@ private fun SearchScreenContent(
                         state.errorMessage != null -> {
                             ErrorMessage(Modifier, state.errorMessage.toString())
                         }
-
                         else -> {
                             when (state.selectedTabOption) {
                                 TabOption.MOVIES -> {
                                     val movies = state.movies.collectAsLazyPagingItems()
-                                    if (movies.itemCount == 0) {
+                                    Log.d("PAGING", "movies: ${movies.itemCount}")
+
+                                    val loadState = movies.loadState
+                                    val isEmpty = movies.itemCount == 0 &&
+                                            loadState.refresh is LoadState.NotLoading &&
+                                            loadState.append is LoadState.NotLoading
+                                    if (isEmpty) {
                                         CountryTourExploring(
                                             modifier = Modifier
                                                 .fillMaxSize()
@@ -211,23 +222,41 @@ private fun SearchScreenContent(
                                             com.berlin.ui.R.string.no_search_result,
                                             com.berlin.ui.R.string.please_try_with_another_keyword
                                         )
-                                    } else {
-                                        ResultGridList(
-                                            modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
-                                            items = movies.itemSnapshotList.items
-                                        ) { media ->
-                                            MediaCard(
-                                                modifier = Modifier.size(
-                                                    width = 160.dp, height = 222.dp
-                                                ),
-                                                mediaImg = media.poster,
-                                                title = media.title,
-                                                typeOfMedia = "Movies",
-                                                date = media.releaseYear.substringBefore("-"),
-                                                rating = media.rating.toDouble().toString()
-                                            )
-                                        }
+                                    }
+                                    else if(LoadState.Loading == loadState.refresh){
+                                                Loading()
+                                    }
+                                    else {
+                                        Box(modifier = Modifier.fillMaxSize()) {
 
+                                            LazyVerticalGrid(
+                                                modifier = Modifier.fillMaxSize(),
+                                                columns = GridCells.Adaptive(minSize = 160.dp),
+                                                contentPadding = PaddingValues(
+                                                    start = 16.dp, end = 16.dp, top = 8.dp
+                                                ),
+                                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
+                                                items(
+                                                    count = movies.itemCount,
+                                                ) { index ->
+                                                    val movie = movies[index]
+                                                    if (movie != null) {
+                                                        MediaCard(
+                                                            modifier = Modifier.height(222.dp)
+                                                            // .clickable { onMovieClick(movie.id.toInt()) },
+                                                            ,
+                                                            mediaImg = movie.poster,
+                                                            title = movie.title,
+                                                            typeOfMedia = stringResource(R.string.movies),
+                                                            date = movie.releaseYear,
+                                                            rating = movie.rating
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
 
@@ -243,41 +272,51 @@ private fun SearchScreenContent(
                                             com.berlin.ui.R.string.please_try_with_another_keyword
                                         )
                                     } else {
-                                        ResultGridList(
-                                            modifier = Modifier.padding(top = 11.dp, bottom = 6.dp),
-                                            items = tvShows.itemSnapshotList.items
-                                        ) { media ->
-                                            MediaCard(
-                                                modifier = Modifier.size(
-                                                    width = 160.dp, height = 222.dp
-                                                ),
-                                                mediaImg = media.poster,
-                                                title = media.title,
-                                                typeOfMedia = "Tv Show",
-                                                date = media.releaseYear.substringBefore("-"),
-                                                rating = media.rating.toDouble().toString()
-                                            )
+                                        LazyVerticalGrid(
+                                            modifier = Modifier.fillMaxSize(),
+                                            columns = GridCells.Adaptive(minSize = 160.dp),
+                                            contentPadding = PaddingValues(
+                                                start = 16.dp, end = 16.dp, top = 8.dp
+                                            ),
+                                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                        ) {
+                                            items(
+                                                count = tvShows.itemCount,
+                                            ) { index ->
+                                                val tvShows = tvShows[index]
+                                                if (tvShows != null) {
+                                                    MediaCard(
+                                                        modifier = Modifier.height(222.dp)
+                                                        // .clickable { onMovieClick(movie.id.toInt()) },
+                                                        ,
+                                                        mediaImg = tvShows.poster,
+                                                        title = tvShows.title,
+                                                        typeOfMedia = stringResource(R.string.tv_shows),
+                                                        date = tvShows.releaseYear,
+                                                        rating = tvShows.rating
+                                                    )
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-
-
                 }
+            }
 
+
+            if (state.isDialogVisible) {
+                FilterDialog(
+                    state = state.filterItemUiState,
+                    filterListener = filterSearch,
+                )
             }
         }
     }
-    if (state.isDialogVisible) {
-        FilterDialog(
-            state = state.filterItemUiState,
-            filterListener = filterSearch,
-        )
-    }
 }
-
 
 @Preview
 @Composable

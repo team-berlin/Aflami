@@ -17,8 +17,10 @@ import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -70,14 +72,22 @@ class SearchViewModel(
 
     @OptIn(FlowPreview::class)
     private fun observeSearchKeywordChanges() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            combine(
             _state.map { it.searchQuery.trim() }
                 .debounce(800)
                 .filter { it.isNotEmpty() }
                 .distinctUntilChanged()
-                .collectLatest { query ->
-                    onSearchKeywordChanged(query)
-                }
+                ,_state.map { it.selectedTabOption }
+                    .distinctUntilChanged()
+                ,
+                _state.map { it.filterTrigger}
+                    .distinctUntilChanged()
+            ){
+                query,_,_-> query
+            }.collectLatest {
+                onSearchKeywordChanged(it)
+            }
         }
     }
 
@@ -103,7 +113,10 @@ class SearchViewModel(
                                     query = query, page = page
                                 )
                             })
-                    }).flow.map { it.map { it.toUiState() } }.cachedIn(viewModelScope)
+                    }).flow
+                    .map { it.map { it.toUiState() } }
+
+                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = { error ->
@@ -117,14 +130,13 @@ class SearchViewModel(
     }
 
     private fun fetchMoviesByQuery(query: String) {
-        //startLoading()
-        Log.d("PAGING", "fetchMoviesByQuery: $query")
         updateState { it.copy(isLoading = true) }
         tryToCall(
             call = {
                 Pager(
                     config = PagingConfig(
-                        pageSize = 20, initialLoadSize = 20
+                        pageSize = 20,
+                        initialLoadSize = 20
                     ), pagingSourceFactory = {
                         BasePagingSource(
                             call = { page ->
@@ -132,7 +144,17 @@ class SearchViewModel(
                                     query = query, page = page
                                 )
                             })
-                    }).flow.map { it.map { it.toUIState() } }.cachedIn(viewModelScope)
+                    }).flow.map { it.map { it.toUIState() }
+                        .filter {
+                            it.rating.toFloat() > state.value.filterItemUiState.selectedRating
+//                                ||
+//                                    it.genre
+//                                    .contains(state.value.filterItemUiState.mediaGenres
+//                                        .find { it.genres.isSelected ==true }?.
+//                                        toGenreType() )
+                        }
+                    }
+                    .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchMoviesSuccess,
             onError = { error ->
@@ -157,7 +179,12 @@ class SearchViewModel(
 
     private fun applyFilter() {
         val currentItemUiState = state.value.filterItemUiState.mediaGenres
-        tryToCall(
+        updateState {
+            it.copy(
+              //  filteredMovies=it.movies.map { it.filter { it.rating >   } }
+            )
+        }
+     /*   tryToCall(
             call = {
                 searchMoviesUseCase(
                     query = state.value.searchQuery,
@@ -182,7 +209,7 @@ class SearchViewModel(
                     )
                 }
             },
-        )
+        )*/
     }
 
     override fun onSearchActionClicked() {
@@ -224,12 +251,13 @@ class SearchViewModel(
     }
 
     override fun onTabOptionClicked(tabOption: Int) {
-        Log.d("PAGING", "onTabOptionClicked: $tabOption")
+
         when (tabOption) {
             0 -> updateState { it.copy(selectedTabOption = TabOption.MOVIES) }
             1 -> updateState { it.copy(selectedTabOption = TabOption.TV_SHOWS) }
         }
-        Log.d("PAGING", "onTabOptionClicked: $tabOption")
+
+
     }
 
     override fun onCardClicked(id: Int) {
@@ -323,25 +351,7 @@ class SearchViewModel(
     }
 
     override fun onApplyButtonClicked() {
-//        updateState {
-//            it.copy(
-//                isDialogVisible = false,
-//            )
-//        }
-//        when (state.value.selectedTabOption) {
-//            TabOption.MOVIES -> {
-//                updateState {state->
-//                    state.copy(
-//                        movies = state.movies.map {
-//                           it.filter {movie-> state.filterItemUiState.selectedRating >) }
-//                        }
-//                    )
-//                }
-//            }
-//            TabOption.TV_SHOWS -> {
-//
-//            }
-//        }
+      updateState { it.copy(filterTrigger = !it.filterTrigger) }
     }
 
     override fun onClearButtonClicked() {

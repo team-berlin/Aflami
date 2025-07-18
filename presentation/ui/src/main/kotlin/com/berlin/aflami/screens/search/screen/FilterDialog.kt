@@ -97,7 +97,7 @@ fun FilterDialog(
                     )
                     RatingBar(
                         modifier = Modifier,
-                        onValueChange = { filterListener.onRatingStarChanged(it) },
+                        onValueChange = {filterListener.onRatingStarChanged(it) },
                         currentRating = state.selectedRating
                     )
                     Text(
