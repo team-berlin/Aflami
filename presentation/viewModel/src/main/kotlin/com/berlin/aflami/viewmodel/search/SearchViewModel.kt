@@ -15,9 +15,7 @@ import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -74,17 +72,12 @@ class SearchViewModel(
     private fun observeSearchKeywordChanges() {
         viewModelScope.launch {
             combine(
-            _state.map { it.searchQuery.trim() }
-                .debounce(800)
-                .filter { it.isNotEmpty() }
-                .distinctUntilChanged()
-                ,_state.map { it.selectedTabOption }
-                    .distinctUntilChanged()
-                ,
-                _state.map { it.filterTrigger}
-                    .distinctUntilChanged()
-            ){
-                query,_,_-> query
+                _state.map { it.searchQuery.trim() }.debounce(800).filter { it.isNotEmpty() }
+                .distinctUntilChanged(),
+                _state.map { it.selectedTabOption }.distinctUntilChanged(),
+                _state.map { it.filterTrigger }.distinctUntilChanged()
+            ) { query, _, _ ->
+                query
             }.collectLatest {
                 onSearchKeywordChanged(it)
             }
@@ -92,7 +85,6 @@ class SearchViewModel(
     }
 
     private fun onSearchKeywordChanged(query: String) {
-        Log.d("PAGING", "onSearchKeywordChanged: $query")
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByQuery(query)
             TabOption.TV_SHOWS -> fetchTvShowsByQuery(query)
@@ -113,8 +105,7 @@ class SearchViewModel(
                                     query = query, page = page
                                 )
                             })
-                    }).flow
-                    .map { it.map { it.toUiState() } }
+                    }).flow.map { it.map { it.toUiState() } }
 
                     .cachedIn(viewModelScope)
             },
@@ -135,8 +126,7 @@ class SearchViewModel(
             call = {
                 Pager(
                     config = PagingConfig(
-                        pageSize = 20,
-                        initialLoadSize = 20
+                        pageSize = 20, initialLoadSize = 20
                     ), pagingSourceFactory = {
                         BasePagingSource(
                             call = { page ->
@@ -144,17 +134,22 @@ class SearchViewModel(
                                     query = query, page = page
                                 )
                             })
-                    }).flow.map { it.map { it.toUIState() }
-                        .filter {
-                            it.rating.toFloat() > state.value.filterItemUiState.selectedRating
-//                                ||
-//                                    it.genre
-//                                    .contains(state.value.filterItemUiState.mediaGenres
-//                                        .find { it.genres.isSelected ==true }?.
-//                                        toGenreType() )
+                    }).flow.map { pagingData -> pagingData.map { it.toUIState() } }
+                    .map { pagingData ->
+                        pagingData.filter { movieUiState ->
+                            val selectedRating = state.value.filterItemUiState.selectedRating
+                            val selectedGenre = state.value.filterItemUiState.selectedGenre
+                            val matchesRating = movieUiState.rating.toFloatOrNull()
+                                ?.let { it > selectedRating } != false
+                            val matchesGenre = when (selectedGenre) {
+                                GenreType.ALL -> true
+                                else -> movieUiState.genre.isEmpty() || movieUiState.genre.any {
+                                    it == selectedGenre?.toGenreType()
+                                }
+                            } || movieUiState.genre.isEmpty()
+                            matchesRating && matchesGenre
                         }
-                    }
-                    .cachedIn(viewModelScope)
+                    }.cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchMoviesSuccess,
             onError = { error ->
@@ -166,7 +161,6 @@ class SearchViewModel(
                 }
             },
         )
-
     }
 
     private fun onFetchTvShowsSuccess(tvShowsFlow: Flow<PagingData<TVShowUiState>>) {
@@ -175,41 +169,6 @@ class SearchViewModel(
 
     private fun onFetchMoviesSuccess(moviesFlow: Flow<PagingData<MovieUIState>>) {
         updateState { it.copy(movies = moviesFlow, errorMessage = null, isLoading = false) }
-    }
-
-    private fun applyFilter() {
-        val currentItemUiState = state.value.filterItemUiState.mediaGenres
-        updateState {
-            it.copy(
-              //  filteredMovies=it.movies.map { it.filter { it.rating >   } }
-            )
-        }
-     /*   tryToCall(
-            call = {
-                searchMoviesUseCase(
-                    query = state.value.searchQuery,
-                    page = 1,
-//                    genre = currentItemUiState.getSelectedGenreType(),
-//                    rating = state.value.filterItemUiState.selectedRating
-                )
-            },
-            onSuccess = {
-                updateState {
-                    it.copy(
-
-                        isLoading = false,
-                        filterItemUiState = it.filterItemUiState.copy(isLoading = false)
-                    )
-                }
-            },
-            onError = { error ->
-                updateState {
-                    it.copy(
-                        errorMessage = error.message, isLoading = false, isDialogVisible = false
-                    )
-                }
-            },
-        )*/
     }
 
     override fun onSearchActionClicked() {
@@ -225,12 +184,11 @@ class SearchViewModel(
     }
 
     override fun onSearchQueryChanged(query: CharSequence) {
-        Log.d("PAGING", "onSearchQueryChanged: $query")
         updateState { it.copy(searchQuery = query.toString(), isLoading = false) }
     }
 
     override fun onBackClicked() {
-        // sendNewEffect(SearchUiEffect.)
+        sendNewEffect(SearchUiEffect.NavigatedBack)
     }
 
     override fun onWorldSearchCardClicked() {
@@ -239,7 +197,6 @@ class SearchViewModel(
 
     override fun onActorSearchCardClicked() {
         sendNewEffect(SearchUiEffect.NavigateToActorSearch)
-
     }
 
     private fun startLoading() {
@@ -251,13 +208,10 @@ class SearchViewModel(
     }
 
     override fun onTabOptionClicked(tabOption: Int) {
-
         when (tabOption) {
             0 -> updateState { it.copy(selectedTabOption = TabOption.MOVIES) }
             1 -> updateState { it.copy(selectedTabOption = TabOption.TV_SHOWS) }
         }
-
-
     }
 
     override fun onCardClicked(id: Int) {
@@ -340,10 +294,10 @@ class SearchViewModel(
     }
 
     override fun onGenreButtonChanged(genreType: GenreType) {
-        Log.d("PAGING", "onGenreButtonChanged: $genreType")
         updateState {
             it.copy(
-                filterItemUiState = state.value.filterItemUiState.copy(
+                filterItemUiState = it.filterItemUiState.copy(
+                    selectedGenre = genreType,
                     mediaGenres = it.filterItemUiState.mediaGenres.selectByGenre(genreType)
                 )
             )
@@ -351,7 +305,7 @@ class SearchViewModel(
     }
 
     override fun onApplyButtonClicked() {
-      updateState { it.copy(filterTrigger = !it.filterTrigger) }
+        updateState { it.copy(filterTrigger = !it.filterTrigger) }
     }
 
     override fun onClearButtonClicked() {

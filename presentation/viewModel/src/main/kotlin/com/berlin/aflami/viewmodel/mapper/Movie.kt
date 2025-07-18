@@ -11,6 +11,6 @@ fun Movie.toUIState(): MovieUIState {
         rating = DecimalFormat("#.#").format(rating).toString(),
         releaseYear = releaseYear.year.toString(),
         genre = genre,
-        poster = poster
+        poster = poster,
     )
 }

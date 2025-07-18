@@ -1,43 +1,21 @@
 package com.berlin.aflami.viewmodel.search
 
-import kotlin.enums.EnumEntries
-
 data class GenreUiState(
     val genres: Selectable<GenreType> = Selectable(
-        type = GenreType.ALL,
-        isSelected = false
+        type = GenreType.ALL, isSelected = false
     ),
 )
 
 data class Selectable<T>(
-    val isSelected: Boolean = true,
-    val type: T
+    val isSelected: Boolean = true, val type: T
 )
 
-fun GenreUiState.toGenreType(): Int {
-    return genreToId(genres.type)
+fun GenreType.toGenreType(): Int {
+    return genreToId(this)
 }
+
 enum class GenreType {
-    ALL,
-    ROMANCE,
-    SCIENCE_FICTION,
-    FAMILY,
-    MYSTERY,
-    HISTORY,
-    WAR,
-    ACTION,
-    CRIME,
-    COMEDY,
-    HORROR,
-    WESTERN,
-    MUSIC,
-    ADVENTURE,
-    TV_MOVIE,
-    FANTASY,
-    THRILLER,
-    DRAMA,
-    DOCUMENTARY,
-    ANIMATION
+    ALL, ROMANCE, SCIENCE_FICTION, FAMILY, MYSTERY, HISTORY, WAR, ACTION, CRIME, COMEDY, HORROR, WESTERN, MUSIC, ADVENTURE, TV_MOVIE, FANTASY, THRILLER, DRAMA, DOCUMENTARY, ANIMATION
 }
 
 fun genreToId(genre: GenreType): Int {
