@@ -67,6 +67,7 @@ class MediaDetailsViewmodel(
     init {
         viewModelScope.launch {
             getMovieCast(505, MediaType.MOVIE, "ar-EG")
+            getReviews(id = 505, mediaType = MediaType.MOVIE)
         }
     }
 
