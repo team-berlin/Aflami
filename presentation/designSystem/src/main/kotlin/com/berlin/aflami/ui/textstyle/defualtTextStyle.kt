@@ -19,6 +19,10 @@ val nicomoji = FontFamily(
     Font(R.font.nicomoji_regular, weight = FontWeight.Normal)
 )
 
+val IBM = FontFamily(
+    Font(R.font.ibm_plex_sans_arabic_medium, weight = FontWeight.Medium)
+)
+
 
 val LocalAflamiTextStyle = staticCompositionLocalOf { defaultTextStyle }
 
