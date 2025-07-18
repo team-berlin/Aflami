@@ -49,7 +49,7 @@ fun ReviewItem(
             AsyncImage(
                 placeholder = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
                 error = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
-                fallback = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+                fallback = painterResource(com.berlin.designsystem.R.drawable.no_review_image),
                 model = review.avatarImage,
                 contentDescription = "Avatar Image",
                 modifier = Modifier
