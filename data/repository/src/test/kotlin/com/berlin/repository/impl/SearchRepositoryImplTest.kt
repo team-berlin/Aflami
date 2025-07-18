@@ -43,7 +43,7 @@ class SearchRepositoryImplTest {
 
         val response = BaseResponse(results = listOf(movieDto, movieDto, movieDto))
 
-        // 👇 Force cache to be empty on first access to trigger remote fetch
+       
         coEvery { localDataSource.getCachedSearch(country, "COUNTRY") } returnsMany listOf(
             emptyList(), // First call triggers remote fetch
             listOf(movie1, movie1, movie1) // After caching
