@@ -71,8 +71,12 @@ class MediaDetailsViewmodel(
 
     var companyProductionCache: List<CompanyProductionItem>? = null
 
+    init {
+        getReviews(id,type)
+    }
+
    fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _error.value = null
             val uiState = try {
                 when (mediaType) {
@@ -168,7 +172,7 @@ class MediaDetailsViewmodel(
         mediaId: Long,
         mediatype: MediaType
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _tabSelectedUiState.update { current ->
                 val newSelectedTab = if (current.tab == tab) {
                     MovieDetailsTabs.REVIEWS
@@ -270,7 +274,7 @@ class MediaDetailsViewmodel(
 
 
     override fun onShowMoreMediaLikeThisClicked(mediaId: Long, mediaType: MediaType) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _rowSectionUiState.update { RowSectionUiState.Loading }
             try {
                 val result = when (mediaType) {
@@ -303,7 +307,7 @@ class MediaDetailsViewmodel(
     }
 
     override fun onShowMediaGalleryClicked(mediaId: Long, mediaType: MediaType) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _rowSectionUiState.update { RowSectionUiState.Loading }
             try {
                 val result = when (mediaType) {
@@ -351,7 +355,7 @@ class MediaDetailsViewmodel(
     fun getMovieCast(mediaId: Long, mediaType: MediaType, language: String) {
         _error.value = null
         try {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 val cast = when (mediaType) {
                     MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
                     MediaType.TV_SHOW -> getSeriesCastUseCase(

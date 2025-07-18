@@ -42,8 +42,9 @@ fun MediaCastItem(
             text = name,
             style = Theme.textStyle.label.small,
             color = Theme.color.textColors.body,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = modifier
 
         )
     }
