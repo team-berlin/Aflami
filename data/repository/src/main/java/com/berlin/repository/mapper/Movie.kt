@@ -36,7 +36,7 @@ fun MovieDto.toLocal(query: String, type: String, page: Int,mediaType:String): S
     )
 }
 
-private fun stringToLocalDate(dateString: String): LocalDate {
+fun stringToLocalDate(dateString: String): LocalDate {
     return runCatching {
         LocalDate.parse(dateString)
     }.getOrElse { LocalDate.parse("1960-01-01") } // TODO:

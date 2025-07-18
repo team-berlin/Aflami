@@ -3,8 +3,6 @@ package com.berlin.repository.mapper
 import com.berlin.entity.Media
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.MediaDto
-import com.berlin.repository.util.QueryType
-import com.berlin.repository.util.toLocalDate
 import java.time.Instant
 
 fun MediaDto.toLocal(query: String, type: String, page: Int, mediaType: String?): SearchingEntity {
@@ -28,7 +26,7 @@ fun SearchingEntity.toMedia(): Media {
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseYear = releaseYear.toLocalDate(),
+        releaseYear = stringToLocalDate(releaseYear),
         genre = this.genre,
         poster = this.poster,
         mediaType = this.mediaType

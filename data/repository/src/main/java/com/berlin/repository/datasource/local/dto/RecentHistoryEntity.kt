@@ -1,7 +1,6 @@
 package com.berlin.repository.datasource.local.dto
 
 import androidx.room.Entity
-import com.berlin.repository.util.QueryType
 
 @Entity(tableName = "recent_history", primaryKeys = ["query","type"])
 data class RecentHistoryEntity(

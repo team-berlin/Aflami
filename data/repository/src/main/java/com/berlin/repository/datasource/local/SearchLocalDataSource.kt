@@ -1,7 +1,7 @@
 package com.berlin.repository.datasource.local
 
+import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
-import com.berlin.repository.util.QueryType
 
 interface SearchLocalDataSource {
     suspend fun getCachedSearch(

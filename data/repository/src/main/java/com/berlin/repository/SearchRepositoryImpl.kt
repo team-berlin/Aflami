@@ -1,5 +1,6 @@
 package com.berlin.repository
 
+import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
@@ -34,7 +35,7 @@ class SearchRepositoryImpl(
 
         remoteDataSource.searchMoviesByCountry(query, language, page).results
             ?.filterNotNull()
-            ?.map { it.toLocal(query, QueryType.COUNTRY) }
+            ?.map { it.toLocal(query, QueryType.COUNTRY.name, page, "Movie") }
             ?.also { localDataSource.cacheSearch(it) }
 
         return localDataSource.getCachedSearch(query, QueryType.COUNTRY, page = page)
