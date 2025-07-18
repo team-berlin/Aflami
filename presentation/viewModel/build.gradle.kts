@@ -26,9 +26,9 @@ kover {
             rule {
                 bound {
                     minValue = 80
-                }
             }
         }
+    }
     }
 }
 dependencies {

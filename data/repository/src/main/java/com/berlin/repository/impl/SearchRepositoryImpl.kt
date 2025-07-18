@@ -1,4 +1,4 @@
-package com.berlin.repository
+package com.berlin.repository.impl
 
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
@@ -105,4 +105,3 @@ class SearchRepositoryImpl(
         const val ONE_HOUR_IN_MILLIS = 3600000L
     }
 }
-
