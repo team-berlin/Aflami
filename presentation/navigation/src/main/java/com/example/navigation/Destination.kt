@@ -15,6 +15,10 @@ sealed class Destination(val route: String) {
             return "mediaDetailsScreen/$id/$media_type"
         }
     }
-    object CastScreen : Destination("castScreen")
+    object CastScreen : Destination("castScreen/{id}/{media_type}"){
+        fun route(id:Long, media_type:MediaType): String {
+            return "castScreen/$id/$media_type"
+        }
+    }
 }
 

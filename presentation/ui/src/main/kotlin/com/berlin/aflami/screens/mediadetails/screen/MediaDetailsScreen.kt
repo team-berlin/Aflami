@@ -1,8 +1,8 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -76,12 +78,23 @@ fun MediaDetailsScreen(
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
+    val sharedFlow = viewModel.uiEffect
+
+    val navMediaType = com.example.navigation.MediaType.valueOf(viewModel.type.name)
 
     LaunchedEffect(Unit) {
-        viewModel.uiEffect.collect { effect ->
-            when (effect) {
-                MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
-                    navController.navigate(Destination.CastScreen.route)
+        viewModel.getMovieCast(viewModel.id, viewModel.type, "US-EG")
+        viewModel.getMediaDetails(viewModel.id, viewModel.type, "en-US")
+
+        sharedFlow.collect { event ->
+            when (event) {
+                is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
+                    navController.navigate(
+                        Destination.CastScreen.route(
+                            viewModel.id,
+                            navMediaType
+                        )
+                    )
                 }
             }
         }
@@ -89,7 +102,7 @@ fun MediaDetailsScreen(
     }
 
     if (loading) {
-        // Your loader
+        Loading()
     } else if (error != null) {
         // Your error UI
     } else {
@@ -215,7 +228,10 @@ fun MediaDetailsContent(
 
             Spacer(Modifier.height(8.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     state.releaseYear,
                     style = Theme.textStyle.label.small,
@@ -272,10 +288,10 @@ fun MediaDetailsContent(
                 suffixStyle = Theme.textStyle.label.medium
             )
         }
-//        Cast(
-//            castState = state.mediaCast,
-//            listener = listener
-//        )
+        Cast(
+            castState = state.mediaCast,
+            listener = listener
+        )
 
         HorizontalDivider(
             modifier = Modifier
@@ -289,7 +305,8 @@ fun MediaDetailsContent(
             isSelectedTab = isSelectedTab,
             onChipClick = onChipClick,
             isExpanded = isExpanded,
-            onToggleExpand = onToggleExpand
+            onToggleExpand = onToggleExpand,
+            mediaType = mediaType
         )
     }
 }
@@ -301,6 +318,7 @@ fun RowSection(
     onChipClick: (MovieDetailsTabs) -> Unit,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
+    mediaType: MediaType
 ) {
     LazyRow(
         modifier = Modifier
@@ -337,7 +355,7 @@ fun RowSection(
                 is TabContent.MoreLikeThis -> {
                     MoreLikeThisSection(
                         mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
-                        mediaType = MediaType.MOVIE
+                        mediaType = mediaType
                     )
                 }
 
@@ -426,36 +444,34 @@ fun Cast(
     listener: MediaInteractionListener,
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier.padding(vertical = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
+            Text(
+                text = stringResource(com.berlin.ui.R.string.cast),
+                style = Theme.textStyle.headline.small,
+                color = Theme.color.textColors.title
+            )
+            Text(
+                text = stringResource(com.berlin.ui.R.string.all),
+                style = Theme.textStyle.label.medium,
+                color = Theme.color.primary,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(com.berlin.ui.R.string.cast),
-                    style = Theme.textStyle.headline.small,
-                    color = Theme.color.textColors.title
-                )
-                Text(
-                    text = stringResource(com.berlin.ui.R.string.all),
-                    style = Theme.textStyle.label.medium,
-                    color = Theme.color.primary,
-                    modifier = Modifier
-                        .clickable {
-                            listener.onShowCastClicked()
-                        }
-                )
-            }
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        listener.onShowCastClicked()
+                    }
+            )
         }
+//        }
         BoxWithConstraints {
             val screenWidth = maxWidth
             val cardSize = 78.dp

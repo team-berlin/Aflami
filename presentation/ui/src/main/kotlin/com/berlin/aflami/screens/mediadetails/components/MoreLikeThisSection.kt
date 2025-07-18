@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.viewmodel.uistate.MediaType
@@ -32,7 +33,7 @@ fun MoreLikeThisSection(
                     .height(196.dp),
                 mediaImg = media.poster,
                 title = media.title,
-                typeOfMedia = if (mediaType == MediaType.MOVIE) R.string.movie.toString() else R.string.Tv_Show.toString(),
+                typeOfMedia = if (mediaType == MediaType.MOVIE) stringResource( R.string.movie) else stringResource( R.string.Tv_Show),
                 date = media.releaseYear.substringBefore("-"),
                 rating = media.rating
             )
