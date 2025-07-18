@@ -1,12 +1,12 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.uistate.ReviewState
-import com.berlin.aflami.viewmodel.uistate.ReviewUiState
 import com.berlin.aflami.viewmodel.review.toUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
@@ -29,7 +29,9 @@ import usecase.GetSimilarMoviesUseCase
 import usecase.GetSimilarSeriesUseCase
 import usecase.GetTvShowDetailsUseCase
 
+
 class MediaDetailsViewmodel(
+    savedStateHandle: SavedStateHandle,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
@@ -41,6 +43,12 @@ class MediaDetailsViewmodel(
     private val movieReviewUseCase: GetMovieReviewUseCase,
     private val seriesReviewUseCase: GetSeriesReviewUseCase
 ) : ViewModel(), MediaInteractionListener {
+
+
+     val id: Long = savedStateHandle.get<String>("id")?.toLongOrNull() ?: 0L
+     val type: MediaType = savedStateHandle.get<String>("media_type")
+        ?.let { MediaType.valueOf(it) } ?: MediaType.MOVIE
+
 
     private val _uiState = MutableStateFlow(MediaDetailsUiState())
     val uiState = _uiState.asStateFlow()
@@ -65,12 +73,14 @@ class MediaDetailsViewmodel(
     var companyProductionCache: List<CompanyProductionItem>? = null
 
     init {
+//        Log.e("ID  $id", "Type $type")
         viewModelScope.launch {
-            getMovieCast(505, MediaType.MOVIE, "ar-EG")
+            getMediaDetails(id, type, "en-US")
+            getMovieCast(id, type, "en-US")
         }
     }
 
-    fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String = "en-US") {
+    private fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
         viewModelScope.launch {
             _loading.value = true
             _error.value = null
@@ -84,7 +94,6 @@ class MediaDetailsViewmodel(
                             }
                         getMovieDetailsUseCase.invoke(mediaId, language)?.toUiState()
                     }
-
                     MediaType.TV_SHOW -> getTvShowDetailsUseCase.invoke(mediaId, language)
                         ?.toUiState()
                 }
@@ -92,20 +101,27 @@ class MediaDetailsViewmodel(
                 _error.value = "Failed to load details: ${e.message}"
                 null
             }
+            Log.e("getMediaDetails", uiState.toString())
+
             uiState?.let { _uiState.value = it }
             _loading.value = false
         }
     }
 
-    private fun getReviews(id: Long, mediaType: MediaType) {
+    private fun getReviews(mediaId: Long, mediaType: MediaType) {
         viewModelScope.launch(Dispatchers.IO) {
             _rowSectionUiState.update { RowSectionUiState.Loading }
 
             try {
+                Log.e("media id","$mediaId")
+
                 val result = when (mediaType) {
-                    MediaType.MOVIE -> movieReviewUseCase(id).map { it.toUiState() }
-                    MediaType.TV_SHOW -> seriesReviewUseCase(id).map { it.toUiState() }
+                    MediaType.MOVIE -> movieReviewUseCase(mediaId).map { it.toUiState() }
+                    MediaType.TV_SHOW -> seriesReviewUseCase(mediaId).map { it.toUiState() }
                 }
+                Log.e("ID  $id", "Type $type")
+
+                Log.e("getReviews", result.toString())
 
                 if (result.isEmpty()) {
                     _rowSectionUiState.update { RowSectionUiState.Error("There is no reviews!") }
@@ -146,7 +162,7 @@ class MediaDetailsViewmodel(
     fun toggleMovieDetailsTab(
         tab: MovieDetailsTabs,
         mediaId: Long,
-        mediaType: MediaType
+        mediatype: MediaType
     ) {
         viewModelScope.launch {
             _tabSelectedUiState.update { current ->
@@ -158,16 +174,20 @@ class MediaDetailsViewmodel(
 
                 when (newSelectedTab) {
                     MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(
-                        mediaId,
-                        mediaType
+                        mediaId = mediaId,
+                        mediaType = mediatype
                     )
 
                     MovieDetailsTabs.REVIEWS -> getReviews(
-                        id = mediaId,
-                        mediaType = mediaType
+                        mediaId = mediaId,
+                        mediaType = mediatype
                     )
 
-                    MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(mediaId, mediaType)
+                    MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(
+                        mediaId = mediaId,
+                        mediaType = mediatype
+                    )
+
                     MovieDetailsTabs.COMPANY_PRODUCTION -> getCompanyProduction()
                 }
 
@@ -253,6 +273,7 @@ class MediaDetailsViewmodel(
                     MediaType.MOVIE -> getSimilarMoviesUseCase(mediaId).map { it.toUIStateMedia() }
                     MediaType.TV_SHOW -> getSimilarTVShowsUseCase(mediaId).map { it.toUIStateMedia() }
                 }
+                Log.e("onShowMoreMediaLikeThisClicked", result.toString())
                 if (result.isEmpty()) {
                     _rowSectionUiState.update { RowSectionUiState.Error("There is no more like this!") }
                 } else {
@@ -278,14 +299,15 @@ class MediaDetailsViewmodel(
         TODO("Not yet implemented")
     }
 
-    override fun onShowMediaGalleryClicked(id: Long, mediaType: MediaType) {
+    override fun onShowMediaGalleryClicked(mediaId: Long, mediaType: MediaType) {
         viewModelScope.launch {
             _rowSectionUiState.update { RowSectionUiState.Loading }
             try {
                 val result = when (mediaType) {
-                    MediaType.MOVIE -> getMovieGalleryUseCase(id)
-                    MediaType.TV_SHOW -> getSeriesGalleryUseCase(id)
+                    MediaType.MOVIE -> getMovieGalleryUseCase(mediaId)
+                    MediaType.TV_SHOW -> getSeriesGalleryUseCase(mediaId)
                 }
+                Log.e("onShowMediaGalleryClicked", result.toString())
 
                 if (result.isEmpty()) {
                     _rowSectionUiState.update { RowSectionUiState.Error("There is no images!") }
@@ -326,18 +348,33 @@ class MediaDetailsViewmodel(
 
 
     private fun getMovieCast(mediaId: Long, mediaType: MediaType, language: String) {
-        viewModelScope.launch {
-            val cast = when (mediaType) {
-                MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
-                MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId, language).map { it.toUiState() }
+        _loading.value = true
+        _error.value = null
+        try {
+            viewModelScope.launch {
+                val cast = when (mediaType) {
+                    MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
+                    MediaType.TV_SHOW -> getSeriesCastUseCase(
+                        mediaId,
+                        language
+                    ).map {
+                        it.toUiState()
+                    }
+
+                }
+                Log.e("getMovieCast", cast.toString())
+
+                _uiState.update { newCastState ->
+                    newCastState.copy(
+                        mediaCast = cast,
+                        mediaType = mediaType,
+                    )
+                }
             }
-            _uiState.update { newCastState ->
-                newCastState.copy(
-                    mediaCast = cast,
-                    mediaType = mediaType,
-                    isLoading = false
-                )
-            }
+        } catch (e: Exception) {
+            _error.value = "Failed to load all cast: ${e.message}"
+            null
         }
+        _loading.value = false
     }
 }

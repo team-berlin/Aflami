@@ -230,7 +230,15 @@ private fun SearchScreenContent(
                                         date = media.releaseYear.substringBefore("-"),
                                         rating = media.rating.toDouble().toString()
                                     ) {
-                                        navController.navigate(Destination.MediaDetailsScreen.route)
+
+                                        navController.navigate(
+                                            Destination.MediaDetailsScreen.route(
+                                                media.id,
+                                                if (selectedTabIndex == 0) com.example.navigation.MediaType.MOVIE
+                                                else com.example.navigation.MediaType.TV_SHOW
+
+                                            )
+                                        )
                                     }
                                 }
                             }

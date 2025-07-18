@@ -11,6 +11,7 @@ import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.search_actor.FilterUiState
 import com.berlin.aflami.viewmodel.search_actor.GenreType
 import com.berlin.aflami.viewmodel.search_actor.genreToId
+import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
@@ -175,11 +176,6 @@ class SearchViewModel(
             }
         }
     }
-
-    enum class MediaType {
-        MOVIE, TV_SHOW
-    }
-
     private fun onSearchMoviesSuccess(movies: List<MovieUIState>) {
         _searchUIState.update {
             SearchUiState.Searching.Success(

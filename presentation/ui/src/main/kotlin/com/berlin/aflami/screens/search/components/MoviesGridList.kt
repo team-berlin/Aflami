@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.ui.R
@@ -20,6 +21,7 @@ import com.berlin.ui.R
 fun MoviesList(
     modifier: Modifier = Modifier,
     movies: List<MovieUIState>,
+    navController: NavController
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 160.dp),
@@ -34,14 +36,20 @@ fun MoviesList(
         ) { movie ->
             MediaCard(
                 modifier = Modifier
-                    .height(222.dp)
-                   ,
+                    .height(222.dp),
                 mediaImg = movie.poster,
                 title = movie.title,
                 typeOfMedia = stringResource(R.string.movie),
                 date = movie.releaseYear,
                 rating = movie.rating
-            )
+            ) {
+                navController.navigate(
+                    com.example.navigation.Destination.MediaDetailsScreen.route(
+                        movie.id,
+                        com.example.navigation.MediaType.MOVIE
+                    )
+                )
+            }
         }
     }
 }

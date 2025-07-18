@@ -115,6 +115,7 @@ private fun WorldTourContent(
             }
             MoviesList(
                 movies = state.movies,
+                navController = navController
             )
 
             AnimatedCountriesList(

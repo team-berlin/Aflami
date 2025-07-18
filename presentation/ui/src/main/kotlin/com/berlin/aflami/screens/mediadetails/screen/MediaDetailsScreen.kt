@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -45,11 +46,11 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
-import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
+import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
@@ -58,7 +59,6 @@ import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.TabContent
-import com.berlin.aflami.viewmodel.uistate.ReviewState
 import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
@@ -69,8 +69,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun MediaDetailsScreen(
     viewModel: MediaDetailsViewmodel = koinViewModel(),
-    mediaId: Long,
-    mediaType: MediaType,
     navController: NavController
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -78,8 +76,8 @@ fun MediaDetailsScreen(
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
-    LaunchedEffect(mediaId, mediaType) {
-        viewModel.getMediaDetails(mediaId, mediaType)
+
+    LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
                 MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
@@ -115,10 +113,11 @@ fun MediaDetailsScreen(
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
                     tab = tab,
-                    mediaId = 550,
-                    mediaType = MediaType.MOVIE
+                    mediaId = viewModel.id,
+                    mediatype = viewModel.type,
                 )
-            }
+            },
+            mediaType = viewModel.type
         )
     }
 }
@@ -137,64 +136,66 @@ fun MediaDetailsContent(
     onToggleExpand: () -> Unit,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
+    mediaType: MediaType,
 ) {
-    Column(
+    LazyColumn(
         Modifier
             .fillMaxSize()
             .background(Theme.color.surface),
     ) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(293.dp)
-        ) {
+        item {
             Box(
-                modifier = Modifier
+                Modifier
                     .fillMaxWidth()
-                    .height(263.dp)
+                    .height(293.dp)
             ) {
-                AsyncImage(
-                    model = state.backdropUrl,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-
-                DefaultBar(
-                    modifier = Modifier.statusBarsPadding(),
-                    firstOption = painterResource(R.drawable.ic_rounded_star),
-                    lastOption = painterResource(R.drawable.ic_rounded_add_heart),
-                )
-
                 Box(
                     modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(4.dp)
+                        .fillMaxWidth()
+                        .height(263.dp)
                 ) {
-                    Rating(rating = "9.8")
+                    AsyncImage(
+                        model = state.backdropUrl,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    DefaultBar(
+                        modifier = Modifier.statusBarsPadding(),
+                        firstOption = painterResource(R.drawable.ic_rounded_star),
+                        lastOption = painterResource(R.drawable.ic_rounded_add_heart),
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(4.dp)
+                    ) {
+                        Rating(rating = "9.8")
+                    }
+                }
+
+                Box(
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .size(72.dp)
+                        .background(Theme.color.surface, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularIConButton(
+                        modifier = Modifier.align(Alignment.Center),
+                        painter = painterResource(R.drawable.play_arrow),
+                        onClick = onPlay,
+                        hasDropShadow = true,
+                        dropShadowAlpha = 0.09f,
+                        borderWidth = 2,
+                        size = 64,
+                    )
                 }
             }
 
-            Box(
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .size(72.dp)
-                    .background(Theme.color.surface, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularIConButton(
-                    modifier = Modifier.align(Alignment.Center),
-                    painter = painterResource(R.drawable.play_arrow),
-                    onClick = onPlay,
-                    hasDropShadow = true,
-                    dropShadowAlpha = 0.09f,
-                    borderWidth = 2,
-                    size = 64,
-                )
-            }
-        }
-
-        Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp))
 
         Column(Modifier.padding(horizontal = 16.dp)) {
             Text(
@@ -259,83 +260,85 @@ fun MediaDetailsContent(
             var expanded by remember { mutableStateOf(state.isOverviewExpanded) }
             val canExpand = state.overview.length > 160
             val shortDesc = state.overview.take(160)
-//
-//            ExpandableDescription(
-//                text = state.overview,
-//                expanded = state.isOverviewExpanded,
-//                onToggleExpand = onReadMore,
-//                previewColor = Theme.color.textColors.hint,
-//                suffixColor = Theme.color.primary,
-//                previewStyle = Theme.textStyle.body.small,
-//                suffixStyle = Theme.textStyle.label.medium
-//            )
+
+            ExpandableDescription(
+                text = state.overview,
+                expanded = state.isOverviewExpanded,
+                onToggleExpand = onReadMore,
+                previewColor = Theme.color.textColors.hint,
+                suffixColor = Theme.color.primary,
+                previewStyle = Theme.textStyle.body.small,
+                suffixStyle = Theme.textStyle.label.medium
+            )
         }
-//        Cast(
-//            castState = state.mediaCast,
-//            listener = listener
-//        )
-        LazyRow(
-            modifier = Modifier
-                .height(96.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(MovieDetailsTabs.entries) { tab ->
-                Chips(
-                    title = stringResource(movieDetailsTabsMapper(tab)),
-                    icon = painterResource(getMovieDetailsTabsIcon(tab)),
-                    isSelected = tab == isSelectedTab,
-                    onClick = { onChipClick(tab) }
-                )
-            }
-        }
+            Cast(
+                castState = state.mediaCast,
+                listener = listener
+            )
 
-        when (rowUiState) {
-            is RowSectionUiState.Error -> {
-                Text(
-                    text = rowUiState.message,
-                    style = Theme.textStyle.label.large,
-                    color = Theme.color.textColors.body,
-                )
-            }
-
-            is RowSectionUiState.Loading -> {
-                Loading()
-            }
-
-            is RowSectionUiState.Success -> {
-                when (rowUiState.content) {
-                    is TabContent.MoreLikeThis -> {
-                        MoreLikeThisSection(
-                            mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
-                            mediaType = MediaType.MOVIE
-                        )
-                    }
-
-                    is TabContent.Reviews -> {
-                        ReviewsSection(
-                            reviews = (rowUiState.content as TabContent.Reviews).items,
-                            isExpanded = isExpanded,
-                            onToggleExpand = onToggleExpand
-                        )
-                    }
-
-                    is TabContent.Gallery -> {
-                        GallerySection(
-                            mediaImages = (rowUiState.content as TabContent.Gallery).items,
-                        )
-                    }
-
-                    is TabContent.CompanyProduction -> {
-                        CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
-                    }
-
-                    else -> {
-
-                    }
+            LazyRow(
+                modifier = Modifier
+                    .height(96.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(MovieDetailsTabs.entries) { tab ->
+                    Chips(
+                        title = stringResource(movieDetailsTabsMapper(tab)),
+                        icon = painterResource(getMovieDetailsTabsIcon(tab)),
+                        isSelected = tab == isSelectedTab,
+                        onClick = { onChipClick(tab) }
+                    )
                 }
             }
 
+            when (rowUiState) {
+                is RowSectionUiState.Error -> {
+                    Text(
+                        text = rowUiState.message,
+                        style = Theme.textStyle.label.large,
+                        color = Theme.color.textColors.body,
+                    )
+                }
+
+                is RowSectionUiState.Loading -> {
+                    Loading()
+                }
+
+                is RowSectionUiState.Success -> {
+                    when (rowUiState.content) {
+                        is TabContent.MoreLikeThis -> {
+                            MoreLikeThisSection(
+                                mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
+                                mediaType = mediaType
+                            )
+                        }
+
+                        is TabContent.Reviews -> {
+                            ReviewsSection(
+                                reviews = (rowUiState.content as TabContent.Reviews).items,
+                                isExpanded = isExpanded,
+                                onToggleExpand = onToggleExpand
+                            )
+                        }
+
+                        is TabContent.Gallery -> {
+                            GallerySection(
+                                mediaImages = (rowUiState.content as TabContent.Gallery).items,
+                            )
+                        }
+
+                        is TabContent.CompanyProduction -> {
+                            CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
+                        }
+
+                        else -> {
+
+                        }
+                    }
+                }
+
+            }
         }
     }
 }
