@@ -42,6 +42,7 @@ import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.ResultGridList
+import com.berlin.aflami.screens.search.components.SearchData
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.SearchInteractionListener
@@ -61,6 +62,7 @@ fun SearchScreen(
 
     val textValue by viewModel.queryFlow.collectAsState()
     val filterDialogsState = viewModel.filterDialogState.collectAsState()
+    val recentSearchState = viewModel.recentSearchState.collectAsState()
 
     SearchScreenContent(
         navController = navController,
@@ -73,8 +75,11 @@ fun SearchScreen(
         onTabChange = viewModel::onTabChange,
         clearSearchState = viewModel::clearSearchState,
         updateSearchQuery = viewModel::updateSearchQuery,
-        viewModel = viewModel
-
+        viewModel = viewModel,
+        recentSearchState = recentSearchState.value,
+        onDeleteItem = viewModel::deleteQueryFromHistory,
+        onClearAll = viewModel::clearSearchHistory,
+        onItemClick = viewModel::onItemClicked
     )
 }
 
@@ -90,7 +95,11 @@ private fun SearchScreenContent(
     clearSearchState: () -> Unit,
     updateSearchQuery: (String) -> Unit,
     filterDialogsState: Boolean,
-    viewModel: SearchViewModel
+    viewModel: SearchViewModel,
+    recentSearchState: List<String>,
+    onItemClick: (String) -> Unit,
+    onDeleteItem: (String) -> Unit,
+    onClearAll: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     Box(
@@ -176,8 +185,20 @@ private fun SearchScreenContent(
                         onWorldTourClick = { navController.navigate(Destination.WorldTourScreen.route) },
                         onSearchByActorClick = { navController.navigate(Destination.SearchByActorNameScreen.route) })
 
-                    NoDataSearch()
 
+
+                    if (recentSearchState.isNotEmpty()) {
+                        SearchData(
+                            recentSearch = recentSearchState,
+                            onDeleteItem = onDeleteItem,
+                            onItemClick = onItemClick,
+                            onClearAll = onClearAll
+                        )
+
+                    }else{
+                        NoDataSearch()
+
+                    }
                 }
 
                 is SearchUiState.Searching -> {

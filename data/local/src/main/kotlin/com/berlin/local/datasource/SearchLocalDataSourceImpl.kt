@@ -4,7 +4,6 @@ import com.berlin.local.dao.SearchDao
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
-
 class SearchLocalDataSourceImpl(
     private val searchDao: SearchDao
 ) : SearchLocalDataSource {
@@ -21,6 +20,19 @@ class SearchLocalDataSourceImpl(
             skip = (page - 1) * 20
         )
     }
+    override suspend fun cacheSearch(movies: List<SearchingEntity>) = searchDao.cacheSearch(movies)
+
+
+    override suspend fun getRecentSearchQueries(): List<String> = searchDao.getRecentSearchQueries()
+
+    override suspend fun insertQueryOnly(searchingEntity: SearchingEntity) =
+        searchDao.insertQueryOnly(searchingEntity)
+
+    override suspend fun deleteQueryFromHistory(query: String) =
+        searchDao.deleteQueryFromHistory(query)
+
+
+    override suspend fun clearSearchHistory() = searchDao.clearSearchHistory()
 
     override suspend fun cacheSearch(movies: List<SearchingEntity>) {
         searchDao.cacheSearch(movies)

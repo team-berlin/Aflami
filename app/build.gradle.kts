@@ -24,8 +24,13 @@ android {
         applicationId = "com.berlin.aflami"
         minSdk = 26
         targetSdk = 35
+
         versionCode = 1
-        versionName = "1.0"
+        versionName = if (project.hasProperty("versionName")) {
+            project.property("versionName") as String
+        } else {
+            "1.0.0"
+        }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

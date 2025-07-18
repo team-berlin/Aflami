@@ -9,4 +9,13 @@ interface SearchRepository {
     suspend fun getMediaByActorName(actorName: String, page: Int): List<Media>
     suspend fun searchMovie(query: String, language: String): List<Movie>
     suspend fun searchTVShow(query: String, language: String): List<TVShow>
+    suspend fun getRecentSearchQueries(): List<String>
+
+    suspend fun saveRecentHistory(query: String)
+
+    suspend fun deleteQueryFromHistory(query: String)
+
+    suspend fun clearSearchHistory()
+
+
 }

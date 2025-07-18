@@ -6,6 +6,7 @@ import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.mapper.toDomain
@@ -116,9 +117,34 @@ class SearchRepositoryImpl(
                 list.any { Instant.now().epochSecond - it.time > CACHE_TIMEOUT }
     }
 
+    override suspend fun getRecentSearchQueries(): List<String>{
+        return localDataSource.getRecentSearchQueries()
+    }
+    override suspend fun saveRecentHistory(query: String){
+        val entity = SearchingEntity(
+            id = query.hashCode().toLong(),
+            query = query,
+            type = QueryType.HISTORY.name,
+            time = System.currentTimeMillis(),
+            title = "",
+            rating = 0.0,
+            releaseYear = "",
+            genre = emptyList(),
+            poster = ""
+        )
+        localDataSource.insertQueryOnly(entity)
+    }
+
+    override suspend fun deleteQueryFromHistory(query: String) {
+        localDataSource.deleteQueryFromHistory(query)
+    }
+
+    override suspend fun clearSearchHistory() {
+        localDataSource.clearSearchHistory()
+    }
+
     companion object {
         const val CACHE_TIMEOUT = 3600000L
         const val ACTING_DEPARTMENT = "Acting"
     }
 }
-
