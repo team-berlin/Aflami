@@ -19,11 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.designsystem.R
 import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
@@ -44,16 +48,16 @@ fun MediaCard(
                 onClick?.invoke()
             }
     ) {
-//        AsyncImage(
-//            model = mediaImg,
-//            contentDescription = stringResource(R.string.api_image_card_content),
-//            modifier = Modifier.fillMaxSize(),
-//            contentScale = ContentScale.Crop
-//        )
-        SafeImageViewer(
-            imageUri = mediaImg,
+        AsyncImage(
+            model = mediaImg,
+            contentDescription = stringResource(R.string.api_image_card_content),
             modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
+//        SafeImageViewer(
+//            imageUri = mediaImg,
+//            modifier = Modifier.fillMaxSize(),
+//        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()

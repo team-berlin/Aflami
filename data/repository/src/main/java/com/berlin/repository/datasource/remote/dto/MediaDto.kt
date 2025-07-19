@@ -16,6 +16,8 @@ data class MediaDto(
 
     @SerialName("title")
     val title: String? = null,
+    @SerialName("name")
+    val name: String? = null,
 
     @SerialName("original_title")
     val originalTitle: String? = null,
@@ -33,14 +35,17 @@ data class MediaDto(
     val originalLanguage: String? = null,
 
     @SerialName("genre_ids")
-    val genreIds: List<Int?>? = null,
+    val genreIds: List<Int>? = null,
 
     @SerialName("popularity")
     val popularity: Double? = null,
 
-
     @SerialName("release_date")
     val releaseDate: String? = null,
+
+    @SerialName("first_air_date")
+    val firstAirDate: String? = null,
+
 
     @SerialName("video")
     val video: Boolean? = null,
@@ -52,29 +57,3 @@ data class MediaDto(
     val voteCount: Int? = null
 )
 
-@Serializable
-sealed class MediaItem {
-    abstract val id: Long
-    abstract val mediaType: String
-    abstract val posterPath: String?
-    abstract val overview: String
-}
-@Serializable
-@SerialName("movie")
-data class MovieItem(
-    override val id: Long,
-    @SerialName("media_type") override val mediaType: String,
-    @SerialName("poster_path") override val posterPath: String?,
-    override val overview: String,
-    @SerialName("release_date") val releaseDate: String?
-) : MediaItem()
-
-@Serializable
-@SerialName("tv")
-data class TvItem(
-    override val id: Long,
-    @SerialName("media_type") override val mediaType: String,
-    @SerialName("poster_path") override val posterPath: String?,
-    override val overview: String,
-    @SerialName("first_air_date") val firstAirDate: String?
-) : MediaItem()

@@ -1,6 +1,5 @@
 package com.berlin.repository.mapper
 
-import com.berlin.entity.GenreEntity
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.ProductionCompanyEntity
@@ -8,6 +7,10 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.Genre
 import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.MovieDto
+import kotlinx.datetime.LocalDate
+import java.time.Instant
+import java.time.format.DateTimeFormatter
+
 import com.berlin.repository.datasource.remote.dto.ProductionCompany
 import com.berlin.repository.util.toLocalDate
 
@@ -16,23 +19,25 @@ fun SearchingEntity.toDomain(): Movie {
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseYear = releaseYear.toLocalDate(),
+        releaseYear = stringToLocalDate(releaseYear),
         genre = this.genre,
         poster = this.poster
     )
 }
 
-fun MovieDto.toLocal(query: String, time: Long, type: String): SearchingEntity {
+fun MovieDto.toLocal(query: String, type: String, page: Int,mediaType:String): SearchingEntity {
     return SearchingEntity(
         query = query,
         type = type,
-        time = time,
+        time = Instant.now().epochSecond,
         id = this.id?.toLong() ?: 0L,
         title = this.title ?: "",
         rating = this.voteAverage ?: 0.0,
         releaseYear = (releaseDate ?: ""),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        page = page,
+        mediaType = mediaType
     )
 }
 
@@ -65,6 +70,10 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
         originCountry =this.originCountry?.get(0) ,
         duration = this.runtime.formatRuntime()
     )
+fun stringToLocalDate(dateString: String): LocalDate {
+    return runCatching {
+        LocalDate.parse(dateString)
+    }.getOrElse { LocalDate.parse("1960-01-01") } // TODO:
 }
 
 fun Genre.toEntity() = GenreEntity(

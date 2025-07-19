@@ -7,7 +7,7 @@ enum class MediaType{
 }
 sealed class Destination(val route: String) {
     object SearchScreen : Destination("searchScreen")
-    object WorldTourScreen : Destination("worldTourScreen")
+    object SearchByCountryScreen : Destination("searchByCountryScreen")
     object SearchByActorNameScreen : Destination("searchByActorNameScreen")
 
     object MediaDetailsScreen : Destination("mediaDetailsScreen/{id}/{media_type}"){

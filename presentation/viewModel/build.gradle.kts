@@ -26,9 +26,9 @@ kover {
             rule {
                 bound {
                     minValue = 80
-                }
             }
         }
+    }
     }
 }
 dependencies {
@@ -40,4 +40,7 @@ dependencies {
     implementation(libs.kotlin.datex)
 
     implementation(project(":domain:usecase"))
+    val paging_version = "3.3.6"
+    implementation("androidx.paging:paging-runtime:$paging_version")
+
 }
