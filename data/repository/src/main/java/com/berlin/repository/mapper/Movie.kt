@@ -61,9 +61,8 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
         productionCompanies = this.productionCompanies?.map { company ->
             company.toEntity()
         } ?: emptyList(),
-        hasVideo = this.video
-        } ?: emptyList(),
-        originCountry = this.originCountry?.get(0),
+        hasVideo = this.video,
+        originCountry =this.originCountry?.get(0) ,
         duration = this.runtime.formatRuntime()
     )
 }

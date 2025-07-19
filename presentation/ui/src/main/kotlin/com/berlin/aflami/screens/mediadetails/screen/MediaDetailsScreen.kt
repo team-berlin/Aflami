@@ -300,20 +300,24 @@ fun MediaDetailsContent(
 //            listener = listener
 //        )
 
-        HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth(),
-            color = Theme.color.stroke,
-            thickness = 1.dp
-        )
+        item {
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                color = Theme.color.stroke,
+                thickness = 1.dp
+            )
+        }
 
-        RowSection(
-            rowUiState = rowUiState,
-            isSelectedTab = isSelectedTab,
-            onChipClick = onChipClick,
-            isExpanded = isExpanded,
-            onToggleExpand = onToggleExpand,
-        )
+        item {
+            RowSection(
+                rowUiState = rowUiState,
+                isSelectedTab = isSelectedTab,
+                onChipClick = onChipClick,
+                isExpanded = isExpanded,
+                onToggleExpand = onToggleExpand,
+            )
+        }
     }
 }
 

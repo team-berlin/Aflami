@@ -41,8 +41,7 @@ fun MovieDetails.toUiState(
     isFavorite = isFavorite,
     isOverviewExpanded = isOverviewExpanded,
     mediaType = MediaType.MOVIE,
-    hasVideo = hasVideo ?: false
-    mediaType = MediaType.MOVIE,
+    hasVideo = hasVideo ?: false,
     originalCountry = originCountry,
     duration = duration
 )
