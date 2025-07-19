@@ -33,6 +33,7 @@ data class MediaDetailsUiState(
     val country: String = "",
     val options: List<MediaOptions> = emptyList(),
     val isLoading: Boolean = true,
+    val hasVideo: Boolean = false
 )
 
 data class SeasonUiState(

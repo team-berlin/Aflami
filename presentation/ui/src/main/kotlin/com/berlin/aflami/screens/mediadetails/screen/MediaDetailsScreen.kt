@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -59,7 +60,6 @@ import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.TabContent
-import com.berlin.aflami.viewmodel.uistate.ReviewState
 import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
@@ -88,7 +88,7 @@ fun MediaDetailsScreen(
                 MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
                     navController.navigate(Destination.CastScreen.route)
                 }
-                MediaDetailsScreenEffect.NavigateBack -> {}
+                MediaDetailsScreenEffect.NavigateBack -> {navController.popBackStack()}
                 is MediaDetailsScreenEffect.PlayMedia -> {}
                 is MediaDetailsScreenEffect.ShowAddToFavoriteListSheet -> {showLoginRequiredDialog = true}
                 is MediaDetailsScreenEffect.ShowRatingSheet -> { showLoginRequiredDialog = true}
@@ -106,8 +106,8 @@ fun MediaDetailsScreen(
             state = uiState,
             rowUiState = rowUiState,
             listener = viewModel,
-            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(id = 550) },
-            isExpanded = viewModel.isDescriptionExpanded(id = 550),
+            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(mediaId) },
+            isExpanded = viewModel.isDescriptionExpanded(mediaId),
             isSelectedTab = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
@@ -142,89 +142,96 @@ fun MediaDetailsContent(
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
 ) {
-    Column(
-        Modifier
+    LazyColumn(
+        modifier = Modifier
             .fillMaxSize()
-            .background(Theme.color.surface),
+            .background(Theme.color.surface)
     ) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(293.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(263.dp)
-            ) {
-                AsyncImage(
-                    model = state.backdropUrl,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop,
-                    placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
-                    error = painterResource(com.berlin.ui.R.drawable.place_holder)
-                )
-
-                DefaultBar(
-                    modifier = Modifier.statusBarsPadding(),
-                    firstOption = painterResource(R.drawable.ic_rounded_star),
-                    lastOption = painterResource(R.drawable.ic_rounded_add_heart),
-                    onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
-                    onLastOptionClicked = { listener.onAddMediaToFavouriteListClicked(0, state.id.toInt()) },
-                    onNavigateBackClicked = { listener.onBackClicked() },
-                )
-
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(4.dp)
-                ) {
-                    Rating(rating = "9.8")
-                }
-            }
-
+        item {
             Box(
                 Modifier
-                    .align(Alignment.BottomCenter)
-                    .size(72.dp)
-                    .background(Theme.color.surface, CircleShape),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .height(293.dp)
             ) {
-                CircularIConButton(
-                    modifier = Modifier.align(Alignment.Center),
-                    painter = painterResource(R.drawable.play_arrow),
-                    onClick = {listener.onPlayClicked(state.id)},
-                    hasDropShadow = true,
-                    dropShadowAlpha = 0.09f,
-                    borderWidth = 2,
-                    size = 64,
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(263.dp)
+                ) {
+                    AsyncImage(
+                        model = state.backdropUrl,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
+                        error = painterResource(com.berlin.ui.R.drawable.place_holder),
+                    )
+                    DefaultBar(
+                        modifier = Modifier.statusBarsPadding(),
+                        firstOption = painterResource(R.drawable.ic_rounded_star),
+                        lastOption = painterResource(R.drawable.ic_rounded_add_heart),
+                        onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
+                        onLastOptionClicked = { listener.onAddMediaToFavouriteListClicked(0, state.id.toInt()) },
+                        onNavigateBackClicked = { listener.onBackClicked() },
+                        optionContainerColor = Theme.color.surfaceHigh
+                    )
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(4.dp)
+                    ) {
+                        Rating(rating = state.rating.toString())
+                    }
+                }
+
+                Box(
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .size(72.dp)
+                        .background(Theme.color.surface, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularIConButton(
+                        modifier = Modifier.align(Alignment.Center),
+                        painter = painterResource(R.drawable.play_arrow),
+                        onClick = { listener.onPlayClicked(state.id) },
+                        hasDropShadow = true,
+                        dropShadowAlpha = 0.09f,
+                        borderWidth = 2,
+                        size = 64,
+                        enabled = state.hasVideo,
+                        tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable,
+
+                    )
+                }
             }
         }
 
-        Spacer(Modifier.height(12.dp))
-
-        Column(Modifier.padding(horizontal = 16.dp)) {
-            Text(
-                text = state.title,
-                style = Theme.textStyle.title.large,
-                color = Theme.color.textColors.title,
-            )
-
+        item {
             Spacer(Modifier.height(12.dp))
-
-            Row {
-                state.genres.forEach { g ->
-                    Box(modifier = Modifier.padding(end = 4.dp)) {
-                        GenersChip(label = g)
+            Column(Modifier.padding(horizontal = 16.dp)) {
+                Text(
+                    text = state.title,
+                    style = Theme.textStyle.title.large,
+                    color = Theme.color.textColors.title,
+                )
+                Spacer(Modifier.height(12.dp))
+                Row {
+                    state.genres.forEach { g ->
+                        Box(modifier = Modifier.padding(end = 4.dp)) {
+                            GenersChip(label = g)
+                        }
                     }
                 }
             }
+        }
 
+        item {
             Spacer(Modifier.height(8.dp))
-
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Text(
                     state.releaseYear,
                     style = Theme.textStyle.label.small,
@@ -255,96 +262,87 @@ fun MediaDetailsContent(
                     )
                 }
             }
+        }
 
+        item {
             Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = "Description",
-                color = Theme.color.textColors.title,
-                style = Theme.textStyle.title.small,
-            )
-
-            // Expandable Description
-            var expanded by remember { mutableStateOf(state.isOverviewExpanded) }
-            val canExpand = state.overview.length > 160
-            val shortDesc = state.overview.take(160)
-
-            ExpandableDescription(
-                text = state.overview,
-                expanded = state.isOverviewExpanded,
-                onToggleExpand = { listener.onReadMoreDescriptionClicked(state.id) },
-                previewColor = Theme.color.textColors.hint,
-                suffixColor = Theme.color.primary,
-                previewStyle = Theme.textStyle.body.small,
-                suffixStyle = Theme.textStyle.label.medium
-            )
-        }
-//        Cast(
-//            castState = state.mediaCast,
-//            listener = listener
-//        )
-        LazyRow(
-            modifier = Modifier
-                .height(96.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(MovieDetailsTabs.entries) { tab ->
-                Chips(
-                    title = stringResource(movieDetailsTabsMapper(tab)),
-                    icon = painterResource(getMovieDetailsTabsIcon(tab)),
-                    isSelected = tab == isSelectedTab,
-                    onClick = { onChipClick(tab) }
-                )
-            }
-        }
-
-        when (rowUiState) {
-            is RowSectionUiState.Error -> {
+            Column(Modifier.padding(horizontal = 16.dp)) {
                 Text(
-                    text = rowUiState.message,
-                    style = Theme.textStyle.label.large,
-                    color = Theme.color.textColors.body,
+                    text = "Description",
+                    color = Theme.color.textColors.title,
+                    style = Theme.textStyle.title.small,
+                )
+
+                ExpandableDescription(
+                    text = state.overview,
+                    expanded = isExpanded,
+                    onToggleExpand = onToggleExpand,
+                    previewColor = Theme.color.textColors.hint,
+                    suffixColor = Theme.color.primary,
+                    previewStyle = Theme.textStyle.body.small,
+                    suffixStyle = Theme.textStyle.label.medium
                 )
             }
+        }
 
-            is RowSectionUiState.Loading -> {
-                Loading()
+        item {
+            Spacer(Modifier.height(16.dp))
+            LazyRow(
+                modifier = Modifier
+                    .height(48.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp)
+            ) {
+                items(MovieDetailsTabs.entries) { tab ->
+                    Chips(
+                        title = stringResource(movieDetailsTabsMapper(tab)),
+                        icon = painterResource(getMovieDetailsTabsIcon(tab)),
+                        isSelected = tab == isSelectedTab,
+                        onClick = { onChipClick(tab) }
+                    )
+                }
             }
+        }
 
-            is RowSectionUiState.Success -> {
-                when (rowUiState.content) {
-                    is TabContent.MoreLikeThis -> {
-                        MoreLikeThisSection(
-                            mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
-                            mediaType = MediaType.MOVIE
-                        )
-                    }
-
-                    is TabContent.Reviews -> {
-                        ReviewsSection(
-                            reviews = (rowUiState.content as TabContent.Reviews).items,
-                            isExpanded = isExpanded,
-                            onToggleExpand = onToggleExpand
-                        )
-                    }
-
-                    is TabContent.Gallery -> {
-                        GallerySection(
-                            mediaImages = (rowUiState.content as TabContent.Gallery).items,
-                        )
-                    }
-
-                    is TabContent.CompanyProduction -> {
-                        CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
-                    }
-
-                    else -> {
-
+        item {
+            when (rowUiState) {
+                is RowSectionUiState.Error -> {
+                    Text(
+                        text = rowUiState.message,
+                        style = Theme.textStyle.label.large,
+                        color = Theme.color.textColors.body,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp)
+                    )
+                }
+                is RowSectionUiState.Loading -> Loading()
+                is RowSectionUiState.Success -> {
+                    when (rowUiState.content) {
+                        is TabContent.MoreLikeThis -> {
+                            MoreLikeThisSection(
+                                mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
+                                mediaType = MediaType.MOVIE
+                            )
+                        }
+                        is TabContent.Reviews -> {
+                            ReviewsSection(
+                                reviews = (rowUiState.content as TabContent.Reviews).items,
+                                isExpanded = isExpanded,
+                                onToggleExpand = onToggleExpand
+                            )
+                        }
+                        is TabContent.Gallery -> {
+                            GallerySection(
+                                mediaImages = (rowUiState.content as TabContent.Gallery).items,
+                            )
+                        }
+                        is TabContent.CompanyProduction -> {
+                            CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
+                        }
+                        else -> { }
                     }
                 }
             }
-
         }
     }
 }
@@ -354,7 +352,7 @@ fun ExpandableDescription(
     text: String,
     expanded: Boolean,
     onToggleExpand: () -> Unit,
-    maxPreviewLength: Int = 240,
+    maxPreviewLength: Int = 180,
     previewColor: Color,
     suffixColor: Color,
     previewStyle: TextStyle,
@@ -437,8 +435,9 @@ fun Cast(
                 )
             }
         }
+
         BoxWithConstraints {
-            val screenWidth = maxWidth
+            val screenWidth = this.maxWidth
             val cardSize = 78.dp
             val spaceBetween = 8.dp
             val totalCardWidth = cardSize + spaceBetween
@@ -460,7 +459,6 @@ fun Cast(
                 }
             }
         }
-
     }
 }
 

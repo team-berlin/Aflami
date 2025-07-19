@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
@@ -40,8 +41,8 @@ fun IconButton(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
+            .clip(shape)
             .background(
-                shape = shape,
                 color = containerColor,
             )
             .then(borderModifier)

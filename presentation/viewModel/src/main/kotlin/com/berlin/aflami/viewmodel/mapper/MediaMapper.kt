@@ -38,7 +38,8 @@ fun MovieDetails.toUiState(
     seasons = emptyList(),
     isFavorite = isFavorite,
     isOverviewExpanded = isOverviewExpanded,
-    mediaType = MediaType.MOVIE
+    mediaType = MediaType.MOVIE,
+    hasVideo = hasVideo ?: false
 )
 
 fun TvShowDetails.toUiState(

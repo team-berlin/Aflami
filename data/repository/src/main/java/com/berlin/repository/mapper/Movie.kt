@@ -60,7 +60,8 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
         genres = this.genres?.map { it.toEntity() } ?: emptyList(),
         productionCompanies = this.productionCompanies?.map { company ->
             company.toEntity()
-        } ?: emptyList()
+        } ?: emptyList(),
+        hasVideo = this.video
     )
 }
 

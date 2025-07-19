@@ -193,7 +193,8 @@ class MediaDetailsViewmodel(
     }
 
     override fun onReadMoreDescriptionClicked(id: Long) {
-        _uiState.value = _uiState.value.copy(isOverviewExpanded = true)
+        //_uiState.value = _uiState.value.copy(isOverviewExpanded = true)
+        _expandedUiStates[id] = !(isDescriptionExpanded(id))
     }
 
     override fun onShowCastClicked() {
