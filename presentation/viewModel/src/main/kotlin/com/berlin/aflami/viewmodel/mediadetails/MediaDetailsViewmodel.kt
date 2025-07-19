@@ -90,11 +90,17 @@ class MediaDetailsViewmodel(
                             result?.productionCompanies?.map { productCompany ->
                                 productCompany.toUiState()
                             }
-                        getMovieDetailsUseCase.invoke(mediaId, language)?.toUiState()
+                        result?.toUiState()
                     }
 
-                    MediaType.TV_SHOW -> getTvShowDetailsUseCase.invoke(mediaId, language)
-                        ?.toUiState()
+                    MediaType.TV_SHOW -> {
+                        val result = getTvShowDetailsUseCase.invoke(mediaId, language)
+                        companyProductionCache =
+                            result?.productionCompanies?.map { productCompany ->
+                                productCompany.toUiState()
+                            }
+                        result?.toUiState()
+                    }
                 }
             } catch (e: Exception) {
                 _error.value = "Failed to load details: ${e.message}"
