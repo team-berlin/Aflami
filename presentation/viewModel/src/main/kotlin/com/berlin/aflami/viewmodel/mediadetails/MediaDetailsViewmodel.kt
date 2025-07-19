@@ -121,6 +121,8 @@ class MediaDetailsViewmodel(
             _rowSectionUiState.update { RowSectionUiState.Loading }
 
             try {
+                Log.e("id=$id","type=$type")
+
                 val result = when (mediaType) {
                     MediaType.MOVIE -> movieReviewUseCase(mediaId).map { it.toUiState() }
                     MediaType.TV_SHOW -> seriesReviewUseCase(mediaId).map { it.toUiState() }
@@ -170,7 +172,7 @@ class MediaDetailsViewmodel(
     fun toggleMovieDetailsTab(
         tab: MovieDetailsTabs,
         mediaId: Long,
-        mediatype: MediaType
+        mediaType: MediaType
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _tabSelectedUiState.update { current ->
@@ -183,17 +185,17 @@ class MediaDetailsViewmodel(
                 when (newSelectedTab) {
                     MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(
                         mediaId = mediaId,
-                        mediaType = mediatype
+                        mediaType = mediaType
                     )
 
                     MovieDetailsTabs.REVIEWS -> getReviews(
                         mediaId = mediaId,
-                        mediaType = mediatype
+                        mediaType = mediaType
                     )
 
                     MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(
                         mediaId = mediaId,
-                        mediaType = mediatype
+                        mediaType = mediaType
                     )
 
                     MovieDetailsTabs.COMPANY_PRODUCTION -> getCompanyProduction()

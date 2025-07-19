@@ -127,7 +127,7 @@ fun MediaDetailsScreen(
                 viewModel.toggleMovieDetailsTab(
                     tab = tab,
                     mediaId = viewModel.id,
-                    mediatype = viewModel.type,
+                    mediaType = viewModel.type,
                 )
             },
             mediaType = viewModel.type
