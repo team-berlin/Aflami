@@ -10,6 +10,7 @@ data class MovieDetails(
     val rating: Double,
     val runtime: Int?,
     val genres: List<GenreEntity>,
+    val hasVideo: Boolean?,
     val productionCompanies: List<ProductionCompanyEntity>,
     val originCountry: String?,
     val duration: String?,

@@ -1,27 +1,45 @@
 package com.berlin.aflami.screens.mediadetails.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.viewmodel.mediadetails.CompanyProductionItem
 
 @Composable
 fun CompanyProductionSection(
     companyProductions: List<CompanyProductionItem>,
+    columns: Int = 2 // Set this as needed (2 or 3 typical)
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 160.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    val rows = (companyProductions.size + columns - 1) / columns
+    Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
+        modifier = Modifier.padding(horizontal = 16.dp)
     ) {
-        items(companyProductions.size) { index: Int ->
-            CompanyProductionItem(
-                item = companyProductions[index]
-            )
+        for (row in 0 until rows) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                for (col in 0 until columns) {
+                    val index = row * columns + col
+                    if (index < companyProductions.size) {
+                        CompanyProductionItem(
+                            item = companyProductions[index]
+                        )
+                    } else {
+                        // Spacer to keep grid structure for incomplete last row
+                        Spacer(Modifier.width(160.dp))
+                    }
+                }
+            }
         }
     }
 }

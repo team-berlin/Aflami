@@ -1,6 +1,7 @@
 package com.berlin.aflami.screens.mediadetails.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,13 +20,13 @@ fun MoreLikeThisSection(
     mediaList: List<MediaUiState>,
     mediaType: MediaType
 ) {
-  LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(mediaList) { media ->
+    Column(
+          modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 16.dp),
+          verticalArrangement = Arrangement.spacedBy(8.dp)
+      ) {
+        mediaList.forEach { media ->
             MediaCard(
                 modifier = Modifier
                     .fillMaxWidth()

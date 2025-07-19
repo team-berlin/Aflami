@@ -197,15 +197,21 @@ class MediaDetailsViewmodel(
     }
 
     override fun onBackClicked() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            _uiEffect.emit(MediaDetailsScreenEffect.NavigateBack)
+        }
     }
 
     override fun onPlayClicked(id: Long) {
         _uiState.value = _uiState.value.copy(isPlaying = true)
+        viewModelScope.launch {
+            _uiEffect.emit(MediaDetailsScreenEffect.PlayMedia(id))
+        }
     }
 
     override fun onReadMoreDescriptionClicked(id: Long) {
-        _uiState.value = _uiState.value.copy(isOverviewExpanded = true)
+        //_uiState.value = _uiState.value.copy(isOverviewExpanded = true)
+        _expandedUiStates[id] = !(isDescriptionExpanded(id))
     }
 
     override fun onShowCastClicked() {
@@ -215,7 +221,9 @@ class MediaDetailsViewmodel(
     }
 
     override fun onRateIconClicked(id: Long) {
-        TODO("KNot yet implemented")
+        viewModelScope.launch {
+            _uiEffect.emit(MediaDetailsScreenEffect.ShowRatingSheet(id=id))
+        }
     }
 
     override fun onSelectRateClicked(rate: Float) {
@@ -234,7 +242,10 @@ class MediaDetailsViewmodel(
         favouriteListId: Int,
         mediaId: Int,
     ) {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            _uiEffect.emit(MediaDetailsScreenEffect
+                .ShowAddToFavoriteListSheet( favouriteListId = favouriteListId, mediaId=mediaId))
+        }
     }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {

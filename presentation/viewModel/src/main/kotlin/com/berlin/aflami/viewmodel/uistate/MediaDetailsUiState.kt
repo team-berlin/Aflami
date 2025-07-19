@@ -36,6 +36,7 @@ data class MediaDetailsUiState(
     val isLoading: Boolean = true,
     val originalCountry: String? = null,
     val duration: String? = null,
+    val hasVideo: Boolean = false
 )
 
 
