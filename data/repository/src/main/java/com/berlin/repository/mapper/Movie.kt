@@ -1,13 +1,20 @@
 package com.berlin.repository.mapper
 
+import com.berlin.entity.GenreEntity
 import com.berlin.entity.Movie
+import com.berlin.entity.MovieDetails
+import com.berlin.entity.ProductionCompanyEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.remote.dto.Genre
+import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import kotlinx.datetime.LocalDate
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
-const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
+import com.berlin.repository.datasource.remote.dto.ProductionCompany
+
+import kotlinx.datetime.toLocalDate
 
 fun SearchingEntity.toDomain(): Movie {
     return Movie(
@@ -36,8 +43,60 @@ fun MovieDto.toLocal(query: String, type: String, page: Int,mediaType:String): S
     )
 }
 
+fun MovieDto.toDomain(): Movie {
+    return Movie(
+        id = this.id?.toLong() ?: 0L,
+        title = this.title.orEmpty(),
+        rating = (this.voteAverage ?: 0.0),
+        releaseYear = stringToLocalDate(releaseDate?:""),
+        genre = this.genreIds?.filterNotNull() ?: emptyList(),
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+    )
+}
+
+fun MovieDetailsDto.toDomain(): MovieDetails {
+    return MovieDetails(
+        id = this.id?.toLong() ?: 0L,
+        title = this.title.orEmpty(),
+        overview = this.overview.orEmpty(),
+        posterUrl = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        backdropUrl = "$BACKDROP_PREFIX${this.backdropPath.orEmpty()}",
+        releaseDate = this.releaseDate.orEmpty(),
+        rating = this.voteAverage ?: 0.0,
+        runtime = this.runtime ?: 0,
+        genres = this.genres?.map { it.toEntity() } ?: emptyList(),
+        productionCompanies = this.productionCompanies?.map { company ->
+            company.toEntity()
+        } ?: emptyList(),
+        hasVideo = this.video,
+        originCountry = this.originCountry?.get(0),
+        duration = this.runtime.formatRuntime()
+    )
+}
 fun stringToLocalDate(dateString: String): LocalDate {
     return runCatching {
         LocalDate.parse(dateString)
-    }.getOrElse { LocalDate.parse("1960-01-01") } // TODO:
+    }.getOrElse { LocalDate.parse("1960-01-01") }
 }
+
+fun Genre.toEntity() = GenreEntity(
+    id = this.id ?: 0,
+    name = this.name.orEmpty()
+)
+
+fun ProductionCompany.toEntity() = ProductionCompanyEntity(
+    id = this.id ?: 0,
+    name = this.name.orEmpty(),
+    poster = this.logoPath?.let { "$POSTER_PREFIX$it" },
+    originCountry = this.originCountry.orEmpty()
+)
+
+fun Int?.formatRuntime(): String? {
+    if (this == null || this == 0) return null
+    val hours = this / 60
+    val remainingMinutes = this % 60
+    return "${hours}h ${remainingMinutes}m"
+}
+
+const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
+const val BACKDROP_PREFIX = "https://image.tmdb.org/t/p/original"

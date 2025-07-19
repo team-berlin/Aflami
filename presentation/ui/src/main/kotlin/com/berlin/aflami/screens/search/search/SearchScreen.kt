@@ -250,7 +250,17 @@ private fun SearchScreenContent(
                                         typeOfMedia = if (selectedTabIndex == 0) "Movies" else "Tv Show",
                                         date = media.releaseYear.substringBefore("-"),
                                         rating = media.rating.toDouble().toString()
-                                    )
+                                    ) {
+
+                                        navController.navigate(
+                                            Destination.MediaDetailsScreen.route(
+                                                media.id,
+                                                if (selectedTabIndex == 0) com.example.navigation.MediaType.MOVIE
+                                                else com.example.navigation.MediaType.TV_SHOW
+
+                                            )
+                                        )
+                                    }
                                 }
                             }
 

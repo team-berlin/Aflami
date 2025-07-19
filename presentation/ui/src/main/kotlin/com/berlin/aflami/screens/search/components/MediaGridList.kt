@@ -39,8 +39,8 @@ fun MediaGridList(
                 if (movie != null) {
                     MediaCard(
                         modifier = Modifier
-                            .height(222.dp)
-                            .clickable { onMovieClick(movie.id.toInt(),movie.mediaType) },
+                            .height(222.dp) ,
+                        onClick = { onMovieClick(movie.id.toInt(),movie.mediaType) },
                         mediaImg = movie.poster,
                         title = movie.title,
                         typeOfMedia = if (movie.mediaType=="movie")stringResource(R.string.movie) else stringResource(

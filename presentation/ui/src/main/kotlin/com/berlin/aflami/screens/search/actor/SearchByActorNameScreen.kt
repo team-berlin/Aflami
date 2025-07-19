@@ -38,6 +38,7 @@ import com.berlin.aflami.viewmodel.searchactor.SearchByActorInteractionListener
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenUiState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.ui.R
+import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -51,7 +52,14 @@ fun SearchByActorNameScreen(
         viewModel.effect.collect {
             when (it){
                 is SearchByActorEffect.NavigatedBack -> {navController.popBackStack()}
-                is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {}
+                is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {
+                    navController.navigate(
+                        Destination.MediaDetailsScreen.route(
+                            it.movieId.toLong(),
+                            com.example.navigation.MediaType.MOVIE
+                        )
+                    )
+                }
             }
         }
     }

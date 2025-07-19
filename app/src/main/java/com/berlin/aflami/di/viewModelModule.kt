@@ -1,6 +1,7 @@
 package com.berlin.aflami.di
 
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
+import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
 import org.koin.core.module.dsl.viewModelOf
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
@@ -13,4 +14,6 @@ val viewModelModule = module {
     viewModel { SearchByCountryViewModel(get()) }
     viewModelOf(::SearchViewModel)
     viewModelOf(::SearchByCountryViewModel)
+    viewModel { SearchViewModel(get(), get(), get(), get(),get(),get()) }
+    viewModelOf(:: MediaDetailsViewmodel)
 }

@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.search.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,15 +38,13 @@ fun MoviesList(
                 if (movie != null) {
                     MediaCard(
                         modifier = Modifier
-                            .height(222.dp)
-                            .clickable { onMovieClick(movie.id.toInt()) },
+                            .height(222.dp),
                         mediaImg = movie.poster,
                         title = movie.title,
-                        typeOfMedia = if (movie.mediaType == "movie") stringResource(R.string.movie) else stringResource(
-                            com.berlin.designsystem.R.string.tv_shows
-                        ),
+                        typeOfMedia = stringResource(R.string.movie),
                         date = movie.releaseYear,
-                        rating = movie.rating
+                        rating = movie.rating,
+                        onClick = { onMovieClick(movie.id.toInt()) }
                     )
                 }
             }
