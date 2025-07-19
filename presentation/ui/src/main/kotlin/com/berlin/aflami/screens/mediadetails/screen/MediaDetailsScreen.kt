@@ -311,6 +311,7 @@ fun MediaDetailsContent(
             Spacer(Modifier.height(8.dp))
 
             Row(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -414,22 +415,30 @@ fun RowSection(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(MovieDetailsTabs.entries) { tab ->
-            Chips(
-                title = stringResource(movieDetailsTabsMapper(tab)),
-                icon = painterResource(getMovieDetailsTabsIcon(tab)),
-                isSelected = tab == isSelectedTab,
-                onClick = { onChipClick(tab) }
-            )
+            if (mediaType == MediaType.MOVIE && tab == MovieDetailsTabs.SEASON) {
+                // nothing
+            } else {
+                Chips(
+                    title = stringResource(movieDetailsTabsMapper(tab)),
+                    icon = painterResource(getMovieDetailsTabsIcon(tab)),
+                    isSelected = tab == isSelectedTab,
+                    onClick = { onChipClick(tab) }
+                )
+            }
         }
     }
 
     when (rowUiState) {
         is RowSectionUiState.Error -> {
-            Text(
-                text = rowUiState.message,
-                style = Theme.textStyle.label.large,
-                color = Theme.color.textColors.body,
-            )
+            Box(Modifier.height(80.dp), contentAlignment = Alignment.Center) {
+                Text(
+                    modifier = Modifier.fillMaxSize(),
+                    text = rowUiState.message,
+                    style = Theme.textStyle.label.large,
+                    color = Theme.color.textColors.body,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
 
         is RowSectionUiState.Loading -> {
