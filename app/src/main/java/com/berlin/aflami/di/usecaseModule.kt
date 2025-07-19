@@ -12,7 +12,6 @@ import usecase.GetMovieReviewUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
-import usecase.SearchByActorNameUseCase
 import usecase.GetSeasonEpisodesUseCase
 import usecase.GetSimilarMoviesUseCase
 import usecase.GetSimilarSeriesUseCase

@@ -11,44 +11,47 @@ import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.datasource.remote.dto.details.EpisodeDto
 import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
-import com.berlin.repository.util.toLocalDate
 
-
-fun TVShowDto.toLocal(query: String, time: Long, type: String): SearchingEntity {
-    return SearchingEntity(
-        query = query,
-        type = type,
-        time = time,
-        id = this.id?.toLong() ?: 0L,
-        title = this.name ?: "",
-        rating = this.voteAverage ?: 0.0,
-        releaseYear = (this.firstAirDate ?: "").toLocalDate().toString(),
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
-    )
-}
-
+//
+//fun TVShowDto.toLocal(query: String, time: Long, type: String): SearchingEntity {
+//    return SearchingEntity(
+//        query = query,
+//        type = type,
+//        time = time,
+//        id = this.id?.toLong() ?: 0L,
+//        title = this.name ?: "",
+//        rating = this.voteAverage ?: 0.0,
+//        releaseYear = firstAirDate.toString(),
+//        genre = this.genreIds?.filterNotNull() ?: emptyList(),
+//        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+//        page = 1,
+//        mediaType = "TV_SHOW"
+//    )
+//}
+//
 fun TVShowDto.toTVShow(): TVShow {
     return TVShow(
         id = this.id?.toLong() ?: 0L,
         title = this.name ?: "",
         rating = this.voteAverage ?: 0.0,
-        releaseYear = (this.firstAirDate ?: "").toLocalDate(),
+        releaseYear = stringToLocalDate(
+            dateString = this.firstAirDate.toString()
+        ),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
 
-fun SearchingEntity.toTVShow(): TVShow {
-    return TVShow(
-        id = this.id,
-        title = this.title,
-        rating = this.rating,
-        releaseYear = this.releaseYear.toLocalDate(),
-        genre = this.genre,
-        poster = this.poster,
-    )
-}
+//fun SearchingEntity.toTVShow(): TVShow {
+//    return TVShow(
+//        id = this.id,
+//        title = this.title,
+//        rating = this.rating,
+//        releaseYear = this.releaseYear,
+//        genre = this.genre,
+//        poster = this.poster,
+//    )
+//}
 
 fun TVShowDetailsDto.toDomain(): TvShowDetails {
     return TvShowDetails(

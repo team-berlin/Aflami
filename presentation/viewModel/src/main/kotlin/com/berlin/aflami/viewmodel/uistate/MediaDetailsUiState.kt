@@ -12,7 +12,10 @@ data class MediaUiState(
     val releaseYear: String = "",
     val genre: List<Int> = emptyList(),
     val poster: String = "",
-)
+    val mediaType: String = "",
+
+    )
+
 
 data class MediaDetailsUiState(
     val id: Long = 0L,

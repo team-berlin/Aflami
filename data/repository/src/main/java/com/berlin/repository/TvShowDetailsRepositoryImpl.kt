@@ -66,13 +66,7 @@ class TvShowDetailsRepositoryImpl(
         seasonNumber: Int,
     ): List<Episodes?> {
         return remoteDataSource.getEpisodeSeasonSeries(seriesId, seasonNumber)
-//            .also {
-//                Log.d("Khairy", "response in repository impl =  : $it")
-//            }
             .toDomain()
-//            .also {
-//                Log.d("Khairy", "mapping episode Dto to domain : $it")
-//            }
             .episodes ?: emptyList()
     }
 }

@@ -1,5 +1,6 @@
 package com.berlin.repository.mapper
 
+import com.berlin.entity.GenreEntity
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.ProductionCompanyEntity
@@ -12,7 +13,8 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 import com.berlin.repository.datasource.remote.dto.ProductionCompany
-import com.berlin.repository.util.toLocalDate
+
+import kotlinx.datetime.toLocalDate
 
 fun SearchingEntity.toDomain(): Movie {
     return Movie(
@@ -46,7 +48,7 @@ fun MovieDto.toDomain(): Movie {
         id = this.id?.toLong() ?: 0L,
         title = this.title.orEmpty(),
         rating = (this.voteAverage ?: 0.0),
-        releaseYear = (((this.releaseDate ?: "")).toLocalDate()),
+        releaseYear = stringToLocalDate(releaseDate?:""),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
@@ -67,13 +69,14 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
             company.toEntity()
         } ?: emptyList(),
         hasVideo = this.video,
-        originCountry =this.originCountry?.get(0) ,
+        originCountry = this.originCountry?.get(0),
         duration = this.runtime.formatRuntime()
     )
+}
 fun stringToLocalDate(dateString: String): LocalDate {
     return runCatching {
         LocalDate.parse(dateString)
-    }.getOrElse { LocalDate.parse("1960-01-01") } // TODO:
+    }.getOrElse { LocalDate.parse("1960-01-01") }
 }
 
 fun Genre.toEntity() = GenreEntity(
