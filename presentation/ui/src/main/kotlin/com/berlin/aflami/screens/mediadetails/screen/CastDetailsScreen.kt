@@ -4,13 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,29 +21,46 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.mediadetails.components.MoviesCastGrid
+import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
-import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CastDetailsScreen(
     navController: NavController,
-    viewModel: MediaDetailsViewmodel = koinViewModel()
+    viewmodel: MediaDetailsViewmodel = koinViewModel(),
 ) {
-    val castState by viewModel.uiState.collectAsState()
-    CastContent(
-        navController = navController,
-        castState = castState
-    )
+
+    val castState by viewmodel.uiState.collectAsState()
+    val loading by viewmodel.loading.collectAsState()
+
+
+    LaunchedEffect(Unit) {
+        viewmodel.getMovieCast(
+            mediaId = viewmodel.id,
+            mediaType = viewmodel.type,
+            language = "US-EG"
+        )
+    }
+    if (loading) {
+        Loading()
+    } else {
+        CastContent(
+            navController = navController,
+            castState = castState.mediaCast
+        )
+    }
+
 
 }
 
 @Composable
 fun CastContent(
     navController: NavController,
-    castState: MediaDetailsUiState
+    castState: List<MediaCastUiState>
 ) {
     Column {
         TopBar(
@@ -75,21 +91,10 @@ fun CastContent(
                 }
             }
         )
-        if (castState.isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    color = Theme.color.primary,
-                )
-            }
-        } else {
-            MoviesCastGrid(
-                mediaCast = castState.mediaCast
+        MoviesCastGrid(
+            mediaCast = castState
 
-            )
-        }
+        )
     }
 
 

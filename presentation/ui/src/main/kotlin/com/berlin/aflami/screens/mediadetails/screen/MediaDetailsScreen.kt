@@ -1,9 +1,9 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -50,12 +50,12 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
+import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
-import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
@@ -75,35 +75,51 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun MediaDetailsScreen(
     viewModel: MediaDetailsViewmodel = koinViewModel(),
-    mediaId: Long,
-    mediaType: MediaType,
-    navController: NavController,
+    navController: NavController
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val rowUiState by viewModel.rowSectionUiState.collectAsState()
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
+    val sharedFlow = viewModel.uiEffect
     var showLoginRequiredDialog by remember { mutableStateOf(false) }
+    val navMediaType = com.example.navigation.MediaType.valueOf(viewModel.type.name)
 
-    LaunchedEffect(mediaId, mediaType) {
-        viewModel.getMediaDetails(mediaId, mediaType)
-        viewModel.uiEffect.collect { effect ->
-            when (effect) {
-                MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
-                    navController.navigate(Destination.CastScreen.route)
+    LaunchedEffect(Unit) {
+        viewModel.getMovieCast(viewModel.id, viewModel.type, "US-EG")
+        viewModel.getMediaDetails(viewModel.id, viewModel.type, "en-US")
+
+        sharedFlow.collect { event ->
+            when (event) {
+                is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
+                    navController.navigate(
+                        Destination.CastScreen.route(
+                            viewModel.id,
+                            navMediaType
+                        )
+                    )
                 }
-                MediaDetailsScreenEffect.NavigateBack -> {navController.popBackStack()}
+
+                MediaDetailsScreenEffect.NavigateBack -> {
+                    navController.popBackStack()
+                }
+
                 is MediaDetailsScreenEffect.PlayMedia -> {}
-                is MediaDetailsScreenEffect.ShowAddToFavoriteListSheet -> {showLoginRequiredDialog = true}
-                is MediaDetailsScreenEffect.ShowRatingSheet -> { showLoginRequiredDialog = true}
+                is MediaDetailsScreenEffect.ShowAddToFavoriteListSheet -> {
+                    showLoginRequiredDialog = true
+                }
+
+                is MediaDetailsScreenEffect.ShowRatingSheet -> {
+                    showLoginRequiredDialog = true
+                }
             }
         }
-
     }
 
+
     if (loading) {
-        // Your loader
+        Loading()
     } else if (error != null) {
         // Your error UI
     } else {
@@ -111,18 +127,17 @@ fun MediaDetailsScreen(
             state = uiState,
             rowUiState = rowUiState,
             listener = viewModel,
-            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(mediaId) },
-            isExpanded = viewModel.isDescriptionExpanded(mediaId),
+            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(viewModel.id) },
+            isExpanded = viewModel.isDescriptionExpanded(viewModel.id),
             isSelectedTab = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
                     tab = tab,
-                    mediaId = 155,
-                    mediaType = MediaType.TV_SHOW
+                    mediaId = viewModel.id,
+                    mediaType = viewModel.type,
                 )
             },
-
-            mediaType = mediaType,
+            mediaType = viewModel.type
         )
 
         if (showLoginRequiredDialog) {
@@ -179,7 +194,12 @@ fun MediaDetailsContent(
                         firstOption = painterResource(R.drawable.ic_rounded_star),
                         lastOption = painterResource(R.drawable.ic_rounded_add_heart),
                         onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
-                        onLastOptionClicked = { listener.onAddMediaToFavouriteListClicked(0, state.id.toInt()) },
+                        onLastOptionClicked = {
+                            listener.onAddMediaToFavouriteListClicked(
+                                0,
+                                state.id.toInt()
+                            )
+                        },
                         onNavigateBackClicked = { listener.onBackClicked() },
                         optionContainerColor = Theme.color.surfaceHigh
                     )
@@ -210,7 +230,7 @@ fun MediaDetailsContent(
                         enabled = state.hasVideo,
                         tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable,
 
-                    )
+                        )
                 }
             }
         }
@@ -295,10 +315,12 @@ fun MediaDetailsContent(
                 )
             }
         }
-//        Cast(
-//            castState = state.mediaCast,
-//            listener = listener
-//        )
+        item {
+            Cast(
+                castState = state.mediaCast,
+                listener = listener
+            )
+        }
 
         item {
             HorizontalDivider(
@@ -316,6 +338,7 @@ fun MediaDetailsContent(
                 onChipClick = onChipClick,
                 isExpanded = isExpanded,
                 onToggleExpand = onToggleExpand,
+                mediaType = mediaType
             )
         }
     }
@@ -328,6 +351,7 @@ fun RowSection(
     onChipClick: (MovieDetailsTabs) -> Unit,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
+    mediaType: MediaType
 ) {
     LazyRow(
         modifier = Modifier
@@ -364,7 +388,7 @@ fun RowSection(
                 is TabContent.MoreLikeThis -> {
                     MoreLikeThisSection(
                         mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
-                        mediaType = MediaType.MOVIE
+                        mediaType = mediaType
                     )
                 }
 
@@ -387,15 +411,14 @@ fun RowSection(
                 }
 
                 is TabContent.Season -> {
-                    Log.d("Khiary", "seasons tab clicked")
                     SeasonsSection(
                         seasonsMap = (rowUiState.content as TabContent.Season).items,
                     )
                 }
             }
         }
-    }
 
+    }
 }
 
 @Composable
@@ -449,6 +472,7 @@ fun ExpandableDescription(
     )
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Cast(
     modifier: Modifier = Modifier,
@@ -456,39 +480,36 @@ fun Cast(
     listener: MediaInteractionListener,
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier.padding(vertical = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
+            Text(
+                text = stringResource(com.berlin.ui.R.string.cast),
+                style = Theme.textStyle.headline.small,
+                color = Theme.color.textColors.title
+            )
+            Text(
+                text = stringResource(com.berlin.ui.R.string.all),
+                style = Theme.textStyle.label.medium,
+                color = Theme.color.primary,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(com.berlin.ui.R.string.cast),
-                    style = Theme.textStyle.headline.small,
-                    color = Theme.color.textColors.title
-                )
-                Text(
-                    text = stringResource(com.berlin.ui.R.string.all),
-                    style = Theme.textStyle.label.medium,
-                    color = Theme.color.primary,
-                    modifier = Modifier
-                        .clickable {
-                            listener.onShowCastClicked()
-                        }
-                )
-            }
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        listener.onShowCastClicked()
+                    }
+            )
         }
 
         BoxWithConstraints {
-            val screenWidth = this.maxWidth
+            val screenWidth = maxWidth
             val cardSize = 78.dp
             val spaceBetween = 8.dp
             val totalCardWidth = cardSize + spaceBetween
@@ -510,6 +531,7 @@ fun Cast(
                 }
             }
         }
+
     }
 }
 

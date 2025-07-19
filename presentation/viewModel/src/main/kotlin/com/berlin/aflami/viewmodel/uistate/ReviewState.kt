@@ -1,5 +1,7 @@
 package com.berlin.aflami.viewmodel.uistate
 
+import kotlin.String
+
 sealed class ReviewState {
     sealed class Reviewing : ReviewState() {
         object Loading : Reviewing()

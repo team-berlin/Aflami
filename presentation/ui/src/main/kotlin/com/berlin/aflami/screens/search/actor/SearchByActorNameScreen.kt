@@ -127,6 +127,7 @@ private fun SearchByActorNameContent(
 
             MoviesList(
                 movies = state.movies,
+                navController = navController
 
             )
         }
