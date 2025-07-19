@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -11,8 +12,8 @@ fun ReviewsSection(
     isExpanded: Boolean,
     onToggleExpand: () -> Unit
 ) {
-    LazyColumn {
-        itemsIndexed(reviews) { index, review ->
+    Column {
+        reviews.forEachIndexed { index, review ->
             val isLast = index == reviews.lastIndex
             ReviewItem(
                 review = review,

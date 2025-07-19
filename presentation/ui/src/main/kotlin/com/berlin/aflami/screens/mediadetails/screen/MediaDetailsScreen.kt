@@ -1,5 +1,7 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -48,11 +51,11 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
+import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
-import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
@@ -95,7 +98,19 @@ fun MediaDetailsScreen(
                             navMediaType
                         )
                     )
+    var showLoginRequiredDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(mediaId, mediaType) {
+        viewModel.getMediaDetails(mediaId, mediaType)
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
+                    navController.navigate(Destination.CastScreen.route)
                 }
+                MediaDetailsScreenEffect.NavigateBack -> {navController.popBackStack()}
+                is MediaDetailsScreenEffect.PlayMedia -> {}
+                is MediaDetailsScreenEffect.ShowAddToFavoriteListSheet -> {showLoginRequiredDialog = true}
+                is MediaDetailsScreenEffect.ShowRatingSheet -> { showLoginRequiredDialog = true}
             }
         }
 
@@ -109,19 +124,9 @@ fun MediaDetailsScreen(
         MediaDetailsContent(
             state = uiState,
             rowUiState = rowUiState,
-            onBack = { /* navController.popBackStack() */ },
-            onFavorite = {
-                viewModel.onAddMediaToFavouriteListClicked(
-                    mediaId = uiState.id.toInt(),
-                    favouriteListId = 0
-                )
-            },
-            onAdd = { /* handle add to fav/show sheet */ },
-            onPlay = { viewModel.onPlayClicked(uiState.id) },
-            onReadMore = { viewModel.onReadMoreDescriptionClicked(uiState.id) },
             listener = viewModel,
-            onToggleExpand = { viewModel.onReadMoreReviewClicked(id = 550) },
-            isExpanded = viewModel.isDescriptionExpanded(id = 550),
+            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(mediaId) },
+            isExpanded = viewModel.isDescriptionExpanded(mediaId),
             isSelectedTab = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
@@ -132,6 +137,18 @@ fun MediaDetailsScreen(
             },
             mediaType = viewModel.type
         )
+
+        if (showLoginRequiredDialog) {
+            LoginRequiredDialog(
+                onLoginClick = {
+                    showLoginRequiredDialog = false
+                    //navController.navigate("login")
+                },
+                onDismiss = { showLoginRequiredDialog = false },
+                title = "Login Required",
+                description = "Please login to access your account details\nand other features!"
+            )
+        }
     }
 }
 
@@ -139,11 +156,6 @@ fun MediaDetailsScreen(
 fun MediaDetailsContent(
     state: MediaDetailsUiState,
     rowUiState: RowSectionUiState,
-    onBack: () -> Unit = {},
-    onFavorite: () -> Unit = {},
-    onAdd: () -> Unit = {},
-    onPlay: () -> Unit = {},
-    onReadMore: () -> Unit = {},
     listener: MediaInteractionListener,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
@@ -151,81 +163,91 @@ fun MediaDetailsContent(
     onChipClick: (MovieDetailsTabs) -> Unit,
     mediaType: MediaType,
 ) {
-    Column(
-        Modifier
+    LazyColumn(
+        modifier = Modifier
             .fillMaxSize()
-            .background(Theme.color.surface),
+            .background(Theme.color.surface)
     ) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(293.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(263.dp)
-            ) {
-                AsyncImage(
-                    model = state.backdropUrl,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-
-                DefaultBar(
-                    modifier = Modifier.statusBarsPadding(),
-                    firstOption = painterResource(R.drawable.ic_rounded_star),
-                    lastOption = painterResource(R.drawable.ic_rounded_add_heart),
-                )
-
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(4.dp)
-                ) {
-                    Rating(rating = "9.8")
-                }
-            }
-
+        item {
             Box(
                 Modifier
-                    .align(Alignment.BottomCenter)
-                    .size(72.dp)
-                    .background(Theme.color.surface, CircleShape),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .height(293.dp)
             ) {
-                CircularIConButton(
-                    modifier = Modifier.align(Alignment.Center),
-                    painter = painterResource(R.drawable.play_arrow),
-                    onClick = onPlay,
-                    hasDropShadow = true,
-                    dropShadowAlpha = 0.09f,
-                    borderWidth = 2,
-                    size = 64,
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(263.dp)
+                ) {
+                    AsyncImage(
+                        model = state.backdropUrl,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
+                        error = painterResource(com.berlin.ui.R.drawable.place_holder),
+                    )
+                    DefaultBar(
+                        modifier = Modifier.statusBarsPadding(),
+                        firstOption = painterResource(R.drawable.ic_rounded_star),
+                        lastOption = painterResource(R.drawable.ic_rounded_add_heart),
+                        onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
+                        onLastOptionClicked = { listener.onAddMediaToFavouriteListClicked(0, state.id.toInt()) },
+                        onNavigateBackClicked = { listener.onBackClicked() },
+                        optionContainerColor = Theme.color.surfaceHigh
+                    )
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(4.dp)
+                    ) {
+                        Rating(rating = state.rating.toString())
+                    }
+                }
+
+                Box(
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .size(72.dp)
+                        .background(Theme.color.surface, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularIConButton(
+                        modifier = Modifier.align(Alignment.Center),
+                        painter = painterResource(R.drawable.play_arrow),
+                        onClick = { listener.onPlayClicked(state.id) },
+                        hasDropShadow = true,
+                        dropShadowAlpha = 0.09f,
+                        borderWidth = 2,
+                        size = 64,
+                        enabled = state.hasVideo,
+                        tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable,
+
+                    )
+                }
             }
         }
 
-        Spacer(Modifier.height(12.dp))
-
-        Column(Modifier.padding(horizontal = 16.dp)) {
-            Text(
-                text = state.title,
-                style = Theme.textStyle.title.large,
-                color = Theme.color.textColors.title,
-            )
-
+        item {
             Spacer(Modifier.height(12.dp))
-
-            Row {
-                state.genres.forEach { g ->
-                    Box(modifier = Modifier.padding(end = 4.dp)) {
-                        GenersChip(label = g)
+            Column(Modifier.padding(horizontal = 16.dp)) {
+                Text(
+                    text = state.title,
+                    style = Theme.textStyle.title.large,
+                    color = Theme.color.textColors.title,
+                )
+                Spacer(Modifier.height(12.dp))
+                Row {
+                    state.genres.forEach { g ->
+                        Box(modifier = Modifier.padding(end = 4.dp)) {
+                            GenersChip(label = g)
+                        }
                     }
                 }
             }
+        }
 
+        item {
             Spacer(Modifier.height(8.dp))
 
             Row(
@@ -246,10 +268,10 @@ fun MediaDetailsContent(
                     )
                 }
 
-                state.numberOfSeasons.takeIf { !it.isNullOrEmpty() }?.let { numberOfSeasons ->
+                state.numberOfSeasons?.toString()?.let { numberOfSeasons ->
                     CircularDot()
                     Text(
-                        numberOfSeasons,
+                        "$numberOfSeasons ${stringResource(R.string.season)}",
                         style = Theme.textStyle.label.small,
                         color = Theme.color.textColors.hint
                     )
@@ -264,50 +286,51 @@ fun MediaDetailsContent(
                     )
                 }
             }
+        }
 
+        item {
             Spacer(Modifier.height(24.dp))
+            Column(Modifier.padding(horizontal = 16.dp)) {
+                Text(
+                    text = "Description",
+                    color = Theme.color.textColors.title,
+                    style = Theme.textStyle.title.small,
+                )
 
-            Text(
-                text = "Description",
-                color = Theme.color.textColors.title,
-                style = Theme.textStyle.title.small,
-            )
-
-            // Expandable Description
-            var expanded by remember { mutableStateOf(state.isOverviewExpanded) }
-            val canExpand = state.overview.length > 160
-            val shortDesc = state.overview.take(160)
-
-            ExpandableDescription(
-                text = state.overview,
-                expanded = state.isOverviewExpanded,
-                onToggleExpand = onReadMore,
-                previewColor = Theme.color.textColors.hint,
-                suffixColor = Theme.color.primary,
-                previewStyle = Theme.textStyle.body.small,
-                suffixStyle = Theme.textStyle.label.medium
-            )
+                ExpandableDescription(
+                    text = state.overview,
+                    expanded = isExpanded,
+                    onToggleExpand = onToggleExpand,
+                    previewColor = Theme.color.textColors.hint,
+                    suffixColor = Theme.color.primary,
+                    previewStyle = Theme.textStyle.body.small,
+                    suffixStyle = Theme.textStyle.label.medium
+                )
+            }
         }
         Cast(
             castState = state.mediaCast,
             listener = listener
         )
 
-        HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth(),
-            color = Theme.color.stroke,
-            thickness = 1.dp
-        )
+        item {
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                color = Theme.color.stroke,
+                thickness = 1.dp
+            )
+        }
 
-        RowSection(
-            rowUiState = rowUiState,
-            isSelectedTab = isSelectedTab,
-            onChipClick = onChipClick,
-            isExpanded = isExpanded,
-            onToggleExpand = onToggleExpand,
-            mediaType = mediaType
-        )
+        item {
+            RowSection(
+                rowUiState = rowUiState,
+                isSelectedTab = isSelectedTab,
+                onChipClick = onChipClick,
+                isExpanded = isExpanded,
+                onToggleExpand = onToggleExpand,
+            )
+        }
     }
 }
 
@@ -377,8 +400,10 @@ fun RowSection(
                     CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
                 }
 
-                else -> {
-
+                is TabContent.Season -> {
+                    SeasonsSection(
+                        seasonsMap = (rowUiState.content as TabContent.Season).items,
+                    )
                 }
             }
         }
@@ -391,11 +416,11 @@ fun ExpandableDescription(
     text: String,
     expanded: Boolean,
     onToggleExpand: () -> Unit,
-    maxPreviewLength: Int = 240,
+    maxPreviewLength: Int = 180,
     previewColor: Color,
     suffixColor: Color,
     previewStyle: TextStyle,
-    suffixStyle: TextStyle
+    suffixStyle: TextStyle,
 ) {
     val canExpand = text.length > maxPreviewLength
 
@@ -437,6 +462,7 @@ fun ExpandableDescription(
     )
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Cast(
     modifier: Modifier = Modifier,
@@ -471,7 +497,7 @@ fun Cast(
                     }
             )
         }
-//        }
+
         BoxWithConstraints {
             val screenWidth = maxWidth
             val cardSize = 78.dp
@@ -509,20 +535,22 @@ fun CircularDot() {
     )
 }
 
-private fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
+fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
     return when (tab) {
         MovieDetailsTabs.MORE_LIKE_THIS -> R.string.more_like_this
         MovieDetailsTabs.REVIEWS -> R.string.reviews
         MovieDetailsTabs.GALLERY -> R.string.gallery
         MovieDetailsTabs.COMPANY_PRODUCTION -> R.string.company_production
+        MovieDetailsTabs.SEASON -> R.string.season
     }
 }
 
-private fun getMovieDetailsTabsIcon(tab: MovieDetailsTabs): Int {
+fun getMovieDetailsTabsIcon(tab: MovieDetailsTabs): Int {
     return when (tab) {
         MovieDetailsTabs.MORE_LIKE_THIS -> com.berlin.ui.R.drawable.camera_video
         MovieDetailsTabs.REVIEWS -> R.drawable.star
         MovieDetailsTabs.GALLERY -> com.berlin.ui.R.drawable.album
         MovieDetailsTabs.COMPANY_PRODUCTION -> com.berlin.ui.R.drawable.city
+        MovieDetailsTabs.SEASON -> com.berlin.ui.R.drawable.season
     }
 }

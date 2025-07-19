@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.uistate
 
 import androidx.compose.ui.graphics.painter.Painter
+import com.berlin.entity.Episodes
 
 enum class MediaType { MOVIE, TV_SHOW }
 
@@ -10,7 +11,7 @@ data class MediaUiState(
     val rating: String = "",
     val releaseYear: String = "",
     val genre: List<Int> = emptyList(),
-    val poster: String = ""
+    val poster: String = "",
 )
 
 data class MediaDetailsUiState(
@@ -22,8 +23,9 @@ data class MediaDetailsUiState(
     val genres: List<String> = emptyList(),
     val releaseYear: String = "",
     val rating: Double = 0.0,
-    val runtime: String = "",
-    val seasons: List<SeasonUiState> = emptyList(),
+    val runtime: String? = "",
+    val seasons: List<EpisodesSeasonUiState>? = emptyList(),
+    val numberOfSeasons: Int? = null,
     val isFavorite: Boolean = false,
     val isOverviewExpanded: Boolean = false,
     val mediaType: MediaType = MediaType.MOVIE,
@@ -34,31 +36,38 @@ data class MediaDetailsUiState(
     val isLoading: Boolean = true,
     val originalCountry: String? = null,
     val duration: String? = null,
-    val numberOfSeasons: String? = null
+    val hasVideo: Boolean = false
 )
 
-data class SeasonUiState(
-    val id: Long = 0L,
-    val numberOfEpisodes: Int = 0,
-    val seasonTitle: String = "",
-    val episodeTitle: String = "",
-    val episodeDuration: Int = 0,
-    val airDate: String = "",
-    val episodeDescription: String = "",
-    val posterUrl: String = "",
-    val rate: Float = 0f,
-    val seasonNumber: Int = 0,
-    //val isPlaying: Boolean = false,
-    val isExpanded: Boolean = false,
+
+data class EpisodesUiState(
+    val stillPath: String,
+    val airDate: String,
+    val episodeNumber: Int,
+    val episodeType: String,
+    val id: Int,
+    val name: String,
+    val overview: String,
+    val runtime: String?,
+    val voteAverage: Double,
+)
+
+data class EpisodesSeasonUiState(
+    val idSeason: Int,
+    val name: String,
+    val episodes: List<EpisodesUiState?>,
+    val seasonNumber: Int,
+    val posterPath: String,
 )
 
 data class MediaOptions(
     val isSelected: Boolean,
     val title: String,
-    val image: Painter
+    val image: Painter,
 )
 
 data class MediaCastUiState(
+    val mediaId: Long = 0L,
     val name: String = "",
-    val poster: String = ""
+    val poster: String = "",
 )

@@ -1,18 +1,19 @@
-package com.berlin.repository.datasource.remote.dto
+package com.berlin.repository.datasource.remote.dto.details
 
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-
-data class Season(
+data class EpisodesSeasonDto(
     @SerialName("air_date")
     val airDate: String? = null,
-    @SerialName("episode_count")
-    val episodeCount: Int? = null,
+    @SerialName("episodes")
+    val episodes: List<EpisodeDto?>? = null,
+    @SerialName("_id")
+    val id: String? = null,
     @SerialName("id")
-    val id: Int? = null,
+    val id_Season: Int? = null,
     @SerialName("name")
     val name: String? = null,
     @SerialName("overview")

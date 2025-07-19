@@ -8,8 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.review.toUiState
+import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.entity.Episodes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +24,7 @@ import usecase.GetMovieCastUseCase
 import usecase.GetMovieDetailsUseCase
 import usecase.GetMovieGalleryUseCase
 import usecase.GetMovieReviewUseCase
+import usecase.GetSeasonEpisodesUseCase
 import usecase.GetSeriesCastUseCase
 import usecase.GetSeriesGalleryUseCase
 import usecase.GetSeriesReviewUseCase
@@ -40,7 +43,8 @@ class MediaDetailsViewmodel(
     private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
     private val getSimilarTVShowsUseCase: GetSimilarSeriesUseCase,
     private val movieReviewUseCase: GetMovieReviewUseCase,
-    private val seriesReviewUseCase: GetSeriesReviewUseCase
+    private val seriesReviewUseCase: GetSeriesReviewUseCase,
+    private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
 ) : ViewModel(), MediaInteractionListener {
 
 
@@ -172,7 +176,7 @@ class MediaDetailsViewmodel(
     fun toggleMovieDetailsTab(
         tab: MovieDetailsTabs,
         mediaId: Long,
-        mediaType: MediaType
+        mediaType: MediaType,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _tabSelectedUiState.update { current ->
@@ -199,6 +203,15 @@ class MediaDetailsViewmodel(
                     )
 
                     MovieDetailsTabs.COMPANY_PRODUCTION -> getCompanyProduction()
+                    MovieDetailsTabs.SEASON -> onSeasonsClicked(
+                        _uiState.value.id,
+                        _uiState.value.numberOfSeasons!!,
+                    ).also {
+                        Log.d(
+                            "Khairy",
+                            "id = ${_uiState.value.id} ,number of seasons = ${_uiState.value.numberOfSeasons}: "
+                        )
+                    }
                 }
 
                 MovieDetailsTabsUiState(
@@ -210,15 +223,21 @@ class MediaDetailsViewmodel(
     }
 
     override fun onBackClicked() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            _uiEffect.emit(MediaDetailsScreenEffect.NavigateBack)
+        }
     }
 
     override fun onPlayClicked(id: Long) {
         _uiState.value = _uiState.value.copy(isPlaying = true)
+        viewModelScope.launch {
+            _uiEffect.emit(MediaDetailsScreenEffect.PlayMedia(id))
+        }
     }
 
     override fun onReadMoreDescriptionClicked(id: Long) {
-        _uiState.value = _uiState.value.copy(isOverviewExpanded = true)
+        //_uiState.value = _uiState.value.copy(isOverviewExpanded = true)
+        _expandedUiStates[id] = !(isDescriptionExpanded(id))
     }
 
     override fun onShowCastClicked() {
@@ -228,7 +247,9 @@ class MediaDetailsViewmodel(
     }
 
     override fun onRateIconClicked(id: Long) {
-        TODO("KNot yet implemented")
+        viewModelScope.launch {
+            _uiEffect.emit(MediaDetailsScreenEffect.ShowRatingSheet(id=id))
+        }
     }
 
     override fun onSelectRateClicked(rate: Float) {
@@ -247,7 +268,10 @@ class MediaDetailsViewmodel(
         favouriteListId: Int,
         mediaId: Int,
     ) {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            _uiEffect.emit(MediaDetailsScreenEffect
+                .ShowAddToFavoriteListSheet( favouriteListId = favouriteListId, mediaId=mediaId))
+        }
     }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {
@@ -338,11 +362,39 @@ class MediaDetailsViewmodel(
     }
 
     override fun onShowCompanyProductionClicked() {
-        TODO("Not yet implemented")
+
     }
 
-    override fun onShowAllSeasonsClicked() {
-        TODO("Not yet implemented")
+    override fun onSeasonsClicked(seriesId: Long, numberOfSeasons: Int) {
+        viewModelScope.launch {
+            try {
+                _rowSectionUiState.update { RowSectionUiState.Loading }
+                val result: MutableMap<Int, List<Episodes?>> = mutableMapOf()
+                repeat(numberOfSeasons) { seasonNumber ->
+                    val episodes: List<Episodes?> = getSeasonEpisodesUseCase(seriesId, seasonNumber)
+                    result.put(seasonNumber, episodes)
+                }
+                if (result.isEmpty()) {
+                    RowSectionUiState.Error("No seasons found!")
+                } else {
+                    _rowSectionUiState.update {
+                        RowSectionUiState.Success(
+                            content = TabContent.Season(
+                                items = result.mapValues { entry ->
+                                    entry.value.mapNotNull { episode ->
+                                        episode?.toUiState()
+                                    }
+                                } as MutableMap<Int, List<EpisodesUiState>>
+                            )
+                        )
+                    }
+                }
+            } catch (error: Exception) {
+                _rowSectionUiState.update {
+                    RowSectionUiState.Error(error.message ?: "Failed to load seasons")
+                }
+            }
+        }
     }
 
     override fun onShowSeasonEpisodesClicked(tvShowId: Long, seasonId: Long) {
