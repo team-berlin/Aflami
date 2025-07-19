@@ -299,7 +299,7 @@ fun MediaDetailsContent(
             Spacer(Modifier.height(24.dp))
             Column(Modifier.padding(horizontal = 16.dp)) {
                 Text(
-                    text = "Description",
+                    text = stringResource(com.berlin.ui.R.string.description),
                     color = Theme.color.textColors.title,
                     style = Theme.textStyle.title.small,
                 )
@@ -438,8 +438,8 @@ fun ExpandableDescription(
         if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
 
     val suffix = when {
-        expanded && canExpand -> " Read less"
-        !expanded && canExpand -> " Read more"
+        expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_less)
+        !expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_more)
         else -> ""
     }
 

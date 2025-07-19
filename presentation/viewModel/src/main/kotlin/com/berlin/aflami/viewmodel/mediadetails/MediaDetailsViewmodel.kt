@@ -103,11 +103,13 @@ class MediaDetailsViewmodel(
 
             uiState?.let {
                 _uiState.value = _uiState.value.copy(
+                    id=it.id,
                     title = it.title,
                     overview = it.overview,
                     posterUrl = it.posterUrl,
                     backdropUrl = it.backdropUrl,
                     releaseYear = it.releaseYear,
+                    numberOfSeasons = it.numberOfSeasons,
                     rating = it.rating,
                     runtime = it.runtime,
                     genres = it.genres,
@@ -373,6 +375,10 @@ class MediaDetailsViewmodel(
                 repeat(numberOfSeasons) { seasonNumber ->
                     val episodes: List<Episodes?> = getSeasonEpisodesUseCase(seriesId, seasonNumber)
                     result.put(seasonNumber, episodes)
+                    Log.d(
+                        "Khairy",
+                        "id = ${_uiState.value.id} ,number of seasons = ${_uiState.value.numberOfSeasons}:$episodes "
+                    )
                 }
                 if (result.isEmpty()) {
                     RowSectionUiState.Error("No seasons found!")
