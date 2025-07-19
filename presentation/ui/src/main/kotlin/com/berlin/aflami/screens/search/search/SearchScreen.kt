@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.screen
+package com.berlin.aflami.screens.search.search
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -49,6 +49,8 @@ import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.NoDataSearch
+import com.berlin.aflami.screens.search.components.SearchData
+import com.berlin.aflami.screens.search.screen.FilterDialog
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
@@ -57,7 +59,6 @@ import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.designsystem.R
-import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -65,17 +66,20 @@ fun SearchScreen(
     navController: NavController, viewModel: SearchViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val recent by viewModel.recentSearchState.collectAsState()
 
     SearchScreenContent(
         state = state,
         listenerSearch = viewModel,
         filterSearch = viewModel,
+        recentSearchState = recent
     )
 }
 
 @Composable
 private fun SearchScreenContent(
     state: SearchUiState,
+    recentSearchState: List<String>,
     listenerSearch: SearchInteractionListener,
     filterSearch: FilterInteractionListener
 ) {
@@ -90,7 +94,6 @@ private fun SearchScreenContent(
             .focusable(),
     ) {
         Column {
-
             TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
                 Text(
                     text = stringResource(R.string.search),
@@ -153,7 +156,6 @@ private fun SearchScreenContent(
 
             when {
                 state.searchQuery.isBlank() -> {
-                    Log.d("PAGING", "state.searchQuery.isBlank(): ${state.searchQuery}")
                     Text(
                         stringResource(R.string.search_suggestions_hub),
                         color = Theme.color.textColors.title,
@@ -169,8 +171,17 @@ private fun SearchScreenContent(
                             listenerSearch.onWorldSearchCardClicked()
                         },
                     )
-                    NoDataSearch()
+                    if (recentSearchState.isNotEmpty()) {
+                        SearchData(
+                            recentSearch = recentSearchState,
+                            onDeleteItem = listenerSearch::onRecentSearchCleared,
+                            onItemClick = listenerSearch::onRecentSearchClicked,
+                            onClearAll = listenerSearch::onAllRecentSearchesCleared
+                        )
 
+                    } else {
+                        NoDataSearch()
+                    }
                 }
 
                 state.searchQuery.isNotBlank() -> {
@@ -203,6 +214,7 @@ private fun SearchScreenContent(
                         state.errorMessage != null -> {
                             ErrorMessage(Modifier, state.errorMessage.toString())
                         }
+
                         else -> {
                             when (state.selectedTabOption) {
                                 TabOption.MOVIES -> {
@@ -210,9 +222,8 @@ private fun SearchScreenContent(
                                     Log.d("PAGING", "movies: ${movies.itemCount}")
 
                                     val loadState = movies.loadState
-                                    val isEmpty = movies.itemCount == 0 &&
-                                            loadState.refresh is LoadState.NotLoading &&
-                                            loadState.append is LoadState.NotLoading
+                                    val isEmpty =
+                                        movies.itemCount == 0 && loadState.refresh is LoadState.NotLoading && loadState.append is LoadState.NotLoading
                                     if (isEmpty) {
                                         CountryTourExploring(
                                             modifier = Modifier
@@ -222,11 +233,9 @@ private fun SearchScreenContent(
                                             com.berlin.ui.R.string.no_search_result,
                                             com.berlin.ui.R.string.please_try_with_another_keyword
                                         )
-                                    }
-                                    else if(LoadState.Loading == loadState.refresh){
-                                                Loading()
-                                    }
-                                    else {
+                                    } else if (LoadState.Loading == loadState.refresh) {
+                                        Loading()
+                                    } else {
                                         Box(modifier = Modifier.fillMaxSize()) {
 
                                             LazyVerticalGrid(

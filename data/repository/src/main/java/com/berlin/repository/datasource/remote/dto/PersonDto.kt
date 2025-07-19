@@ -18,7 +18,7 @@ data class PersonDto(
 	val popularity: Double? = null,
 
 	@SerialName("known_for")
-	val knownFor: List<MovieDto?>? = null,
+	val knownFor: List<MediaDto?>? = null,
 
 	@SerialName("name")
 	val name: String? = null,

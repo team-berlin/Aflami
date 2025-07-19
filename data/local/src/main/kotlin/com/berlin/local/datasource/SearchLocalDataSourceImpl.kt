@@ -21,7 +21,6 @@ class SearchLocalDataSourceImpl(
             skip = (page - 1) * 20
         )
     }
-
     override suspend fun cacheSearch(movies: List<SearchingEntity>) {
         searchDao.cacheSearch(movies)
     }

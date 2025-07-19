@@ -1,7 +1,6 @@
 package com.berlin.local.converters
 
 import androidx.room.TypeConverter
-import com.berlin.repository.datasource.local.dto.QueryType
 
 class Converters {
     @TypeConverter
@@ -15,9 +14,4 @@ class Converters {
         else data.split(",").map { it.toInt() }
     }
 
-    @TypeConverter
-    fun fromSearchType(queryType: QueryType): String = queryType.name
-
-    @TypeConverter
-    fun toSearchType(name: String): QueryType = QueryType.valueOf(name)
 }

@@ -13,10 +13,13 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.selectByGenre
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -24,26 +27,40 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import usecase.ClearSearchHistoryUseCase
+import usecase.DeleteQueryFromHistoryUseCase
+import usecase.GetRecentHistoryUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
+import usecase.SaveRecentHistoryUseCase
+import java.util.Locale
 
+@OptIn(FlowPreview::class)
 class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
     private val searchTvShowsUseCase: GetSearchTvShowsUseCase,
+    private val getRecentHistoryUseCase: GetRecentHistoryUseCase,
+    private val saveRecentHistoryUseCase: SaveRecentHistoryUseCase,
+    private val deleteQueryFromHistoryUseCase: DeleteQueryFromHistoryUseCase,
+    private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase,
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()), SearchInteractionListener,
     FilterInteractionListener {
+
+
+    private val _recentSearchState = MutableStateFlow<List<String>>(emptyList())
+    val recentSearchState = _recentSearchState.asStateFlow()
+
 
     init {
         observeSearchKeywordChanges()
     }
 
     //not completed
-    private fun loadRecentSearches() {
+    private fun loadData() {
         startLoading()
         tryToCall(
             call = {
-                //getRecentSearchesUseCase()
-                TODO() // Replace with actual use case to getRecentSearchesUseCase
+                getRecentHistoryUseCase()
             },
             onSuccess = {
                 onLoadRecentSearchesSuccess(it)
@@ -105,8 +122,7 @@ class SearchViewModel(
                                     query = query, page = page
                                 )
                             })
-                    }).flow.map { it.map { it.toUiState() } }
-                    .map { pagingData ->
+                    }).flow.map { it.map { it.toUiState() } }.map { pagingData ->
                         pagingData.filter { tvUiState ->
                             val selectedRating = state.value.filterItemUiState.selectedRating
                             val selectedGenre = state.value.filterItemUiState.selectedGenre
@@ -120,8 +136,7 @@ class SearchViewModel(
                             } || tvUiState.genre.isEmpty()
                             matchesRating && matchesGenre
                         }
-                    }
-                    .cachedIn(viewModelScope)
+                    }.cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = { error ->
@@ -188,8 +203,7 @@ class SearchViewModel(
     override fun onSearchActionClicked() {
         onSearchQueryChanged(state.value.searchQuery)
         tryToCall(call = {
-            //addRecentSearchUseCase
-            TODO()
+            saveRecentHistoryUseCase(state.value.searchQuery)
         }, onSuccess = { result ->
             updateState { it.copy(isLoading = false) }
         }, onError = { error ->
@@ -246,8 +260,7 @@ class SearchViewModel(
         updateState { it.copy(isLoading = false) }
         tryToCall(
             call = {
-                //clearRecentSearchUseCase(keyword)
-                TODO()
+                deleteQueryFromHistoryUseCase(keyword)
             },
             onSuccess = { loadRecentSearches() },
             onError = { error ->
@@ -265,8 +278,7 @@ class SearchViewModel(
         updateState { it.copy(isLoading = false) }
         tryToCall(
             call = {
-                //clearAllRecentSearchesUseCase()
-                TODO()
+                clearSearchHistoryUseCase()
             },
             onSuccess = ::onClearAllRecentSearchesSuccess,
             onError = { error ->
@@ -293,6 +305,7 @@ class SearchViewModel(
             )
         }
     }
+
 
     override fun onCancelButtonClicked() {
         updateState {
@@ -325,5 +338,27 @@ class SearchViewModel(
     override fun onClearButtonClicked() {
         updateState { it.copy(filterItemUiState = FilterItemUiState()) }
     }
+
+    fun loadRecentSearches() {
+        viewModelScope.launch {
+            val recentHistoryQueries = getRecentHistoryUseCase()
+            _recentSearchState.value = recentHistoryQueries
+        }
+    }
+
+    fun deleteQueryFromHistory(query: String) {
+        viewModelScope.launch {
+            deleteQueryFromHistoryUseCase(query)
+            loadRecentSearches()
+        }
+    }
+
+    fun clearSearchHistory() {
+        viewModelScope.launch {
+            clearSearchHistoryUseCase()
+            loadRecentSearches()
+        }
+    }
+
 }
 

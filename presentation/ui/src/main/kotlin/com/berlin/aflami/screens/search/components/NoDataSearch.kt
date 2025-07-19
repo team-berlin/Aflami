@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.designsystem.R
 
 @Composable
 fun NoDataSearch() {
@@ -37,7 +39,7 @@ fun NoDataSearch() {
                     contentDescription = "Clock"
                 )
                 Text(
-                    "Start exploring! Search for your favorite movies, series and shows",
+                    text = stringResource(R.string.search_discribtion),
                     textAlign = TextAlign.Center,
                     color = Theme.color.textColors.body,
                     style = Theme.textStyle.body.small,

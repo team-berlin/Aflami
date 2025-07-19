@@ -18,7 +18,7 @@ fun SearchingEntity.toTVShow(): TVShow {
     )
 }
 
-fun TVShowDto.toLocal(query: String, type: QueryType): SearchingEntity {
+fun TVShowDto.toLocal(query: String, type: String): SearchingEntity {
     return SearchingEntity(
         query = query,
         type = type,
@@ -28,6 +28,8 @@ fun TVShowDto.toLocal(query: String, type: QueryType): SearchingEntity {
         rating = this.voteAverage ?: 0.0,
         releaseYear = (this.firstAirDate ?: "").toLocalDate().toString(),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        mediaType = "TV",
+        page = 1,
     )
 }

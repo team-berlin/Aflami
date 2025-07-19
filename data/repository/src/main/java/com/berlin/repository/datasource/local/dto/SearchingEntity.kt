@@ -8,13 +8,15 @@ data class SearchingEntity(
     @PrimaryKey
     val id: Long,
     val query: String,
-    val type: QueryType,
+    val type: String,
     val time: Long,
     val title: String,
     val rating: Double,
     val releaseYear: String,
     val genre: List<Int>,
     val poster: String,
+    val page: Int,
+    val mediaType: String
 )
 
 enum class QueryType {
@@ -22,4 +24,5 @@ enum class QueryType {
     COUNTRY,
     TV,
     MOVIE,
+    HISTORY
 }

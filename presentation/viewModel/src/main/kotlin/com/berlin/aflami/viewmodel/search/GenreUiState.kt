@@ -18,6 +18,13 @@ enum class GenreType {
     ALL, ROMANCE, SCIENCE_FICTION, FAMILY, MYSTERY, HISTORY, WAR, ACTION, CRIME, COMEDY, HORROR, WESTERN, MUSIC, ADVENTURE, TV_MOVIE, FANTASY, THRILLER, DRAMA, DOCUMENTARY, ANIMATION
 }
 
+
+data class FilterUiState(
+    val selectedRating: Float = 1f,
+    val selectedGenre: GenreUiState = GenreUiState(),
+)
+
+
 fun genreToId(genre: GenreType): Int {
     return when (genre) {
         GenreType.ALL -> 0
