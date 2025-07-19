@@ -1,7 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -54,8 +53,10 @@ import com.berlin.aflami.component.Rating
 import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
+import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
+import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
@@ -82,7 +83,7 @@ fun MediaDetailsScreen(
     val error by viewModel.error.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
     val sharedFlow = viewModel.uiEffect
-
+    var showLoginRequiredDialog by remember { mutableStateOf(false) }
     val navMediaType = com.example.navigation.MediaType.valueOf(viewModel.type.name)
 
     LaunchedEffect(Unit) {
@@ -98,23 +99,24 @@ fun MediaDetailsScreen(
                             navMediaType
                         )
                     )
-    var showLoginRequiredDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(mediaId, mediaType) {
-        viewModel.getMediaDetails(mediaId, mediaType)
-        viewModel.uiEffect.collect { effect ->
-            when (effect) {
-                MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
-                    navController.navigate(Destination.CastScreen.route)
                 }
-                MediaDetailsScreenEffect.NavigateBack -> {navController.popBackStack()}
+
+                MediaDetailsScreenEffect.NavigateBack -> {
+                    navController.popBackStack()
+                }
+
                 is MediaDetailsScreenEffect.PlayMedia -> {}
-                is MediaDetailsScreenEffect.ShowAddToFavoriteListSheet -> {showLoginRequiredDialog = true}
-                is MediaDetailsScreenEffect.ShowRatingSheet -> { showLoginRequiredDialog = true}
+                is MediaDetailsScreenEffect.ShowAddToFavoriteListSheet -> {
+                    showLoginRequiredDialog = true
+                }
+
+                is MediaDetailsScreenEffect.ShowRatingSheet -> {
+                    showLoginRequiredDialog = true
+                }
             }
         }
-
     }
+
 
     if (loading) {
         Loading()
@@ -125,8 +127,8 @@ fun MediaDetailsScreen(
             state = uiState,
             rowUiState = rowUiState,
             listener = viewModel,
-            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(mediaId) },
-            isExpanded = viewModel.isDescriptionExpanded(mediaId),
+            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(viewModel.id) },
+            isExpanded = viewModel.isDescriptionExpanded(viewModel.id),
             isSelectedTab = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
@@ -192,7 +194,12 @@ fun MediaDetailsContent(
                         firstOption = painterResource(R.drawable.ic_rounded_star),
                         lastOption = painterResource(R.drawable.ic_rounded_add_heart),
                         onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
-                        onLastOptionClicked = { listener.onAddMediaToFavouriteListClicked(0, state.id.toInt()) },
+                        onLastOptionClicked = {
+                            listener.onAddMediaToFavouriteListClicked(
+                                0,
+                                state.id.toInt()
+                            )
+                        },
                         onNavigateBackClicked = { listener.onBackClicked() },
                         optionContainerColor = Theme.color.surfaceHigh
                     )
@@ -223,7 +230,7 @@ fun MediaDetailsContent(
                         enabled = state.hasVideo,
                         tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable,
 
-                    )
+                        )
                 }
             }
         }
@@ -308,10 +315,12 @@ fun MediaDetailsContent(
                 )
             }
         }
-        Cast(
-            castState = state.mediaCast,
-            listener = listener
-        )
+        item {
+            Cast(
+                castState = state.mediaCast,
+                listener = listener
+            )
+        }
 
         item {
             HorizontalDivider(
@@ -329,6 +338,7 @@ fun MediaDetailsContent(
                 onChipClick = onChipClick,
                 isExpanded = isExpanded,
                 onToggleExpand = onToggleExpand,
+                mediaType = mediaType
             )
         }
     }
