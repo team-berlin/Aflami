@@ -39,7 +39,9 @@ import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListener
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenUiState
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
+import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.ui.R
+import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -56,10 +58,13 @@ fun SearchByCountryScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
+                is SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
                 is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
                     navController.navigate(
-                        "mediaDetailsScreen/${effect.movieId}"
+                        Destination.MediaDetailsScreen.route(
+                            effect.movieId.toLong(),
+                            com.example.navigation.MediaType.MOVIE
+                        )
                     )
                 }
             }
@@ -154,7 +159,7 @@ private fun SearchByCountryContent(
                     MoviesList(
                         movies = movies,
                         onMovieClick = listener::onMovieClicked
-                    )
+                        )
                 }
             }
 
