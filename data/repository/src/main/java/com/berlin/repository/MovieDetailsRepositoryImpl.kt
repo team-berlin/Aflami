@@ -27,7 +27,7 @@ class MovieDetailsRepositoryImpl(
         return try {
             remoteDataSource
                 .getMovieImages(movieId)
-                .posters
+                .backdrops
                 ?.map { POSTER_PREFIX + it.filePath }
                 ?: throw Exception()
         } catch (e: Exception) {
