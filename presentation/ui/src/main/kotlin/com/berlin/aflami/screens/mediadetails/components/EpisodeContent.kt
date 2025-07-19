@@ -57,7 +57,7 @@ fun SeasonsSection(
 @Composable
 fun EpisodeScreen(
     seasonNumber: String,
-    episodes: List<EpisodesUiState?>,
+    episodes: List<EpisodesUiState>,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -73,18 +73,17 @@ fun EpisodeScreen(
         )
         if (isExpanded) {
             Column {
-                LazyColumn(
+                Column(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
-                    items(episodes.size) { index ->
-                        episodes[index]?.let {
-                            EpisodeCard(
-                                episode = it,
-                                modifier = Modifier.fillMaxWidth(),
-                                onClickPlay = {}
-                            )
-                        }
+                    episodes.forEach{ episode->
+                        EpisodeCard(
+                            episode = episode,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClickPlay = {}
+                        )
+
                     }
                 }
             }
@@ -109,7 +108,7 @@ fun SeasonsHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = "Season $seasonNumber",
+            text = "${stringResource(com.berlin.ui.R.string.season)} $seasonNumber",
             style = Theme.textStyle.title.small,
             color = Theme.color.textColors.title,
         )
@@ -117,7 +116,7 @@ fun SeasonsHeader(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = "$episodeCount episodes",
+                text = "$episodeCount ${stringResource(com.berlin.ui.R.string.episode)}",
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.hint,
             )

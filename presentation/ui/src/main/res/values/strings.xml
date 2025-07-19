@@ -22,4 +22,7 @@
     <string name="all">All</string>
     <string name="season">Season</string>
     <string name="company_production_image_cd">Company Production</string>
+    <string name="description">Description</string>
+    <string name="read_less">Read less</string>
+    <string name="read_more">Read more</string>
 </resources>

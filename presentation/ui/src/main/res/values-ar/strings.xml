@@ -22,4 +22,8 @@
     <string name="all">الكل</string>
     <string name="season">موسم</string>
     <string name="company_production_image_cd">إنتاج الشركة</string>
+    <string name="description">الوصف</string>
+    <string name="read_less">قراءة المزيد</string>
+    <string name="read_more">قراءة اقل</string>
+
 </resources>
