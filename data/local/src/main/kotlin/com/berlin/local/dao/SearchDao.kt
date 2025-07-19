@@ -11,7 +11,7 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 interface SearchDao {
     @Query(
         """SELECT * FROM search_cache 
-        WHERE `query` = :query AND `type` = :type
+        WHERE `query` = :query AND `type` = :type ORDER by page
         LIMIT :pageSize OFFSET :skip"""
     )
     suspend fun getCachedSearch(
@@ -23,4 +23,6 @@ interface SearchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun cacheSearch(searchCaching: List<SearchingEntity>)
+
+
 }

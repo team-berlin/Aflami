@@ -1,7 +1,6 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.Movie
-import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import kotlinx.datetime.LocalDate
@@ -21,7 +20,7 @@ fun SearchingEntity.toDomain(): Movie {
     )
 }
 
-fun MovieDto.toLocal(query: String, type: QueryType): SearchingEntity {
+fun MovieDto.toLocal(query: String, type: String, page: Int,mediaType:String): SearchingEntity {
     return SearchingEntity(
         query = query,
         type = type,
@@ -31,11 +30,13 @@ fun MovieDto.toLocal(query: String, type: QueryType): SearchingEntity {
         rating = this.voteAverage ?: 0.0,
         releaseYear = (releaseDate ?: ""),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        page = page,
+        mediaType = mediaType
     )
 }
 
-private fun stringToLocalDate(dateString: String): LocalDate {
+fun stringToLocalDate(dateString: String): LocalDate {
     return runCatching {
         LocalDate.parse(dateString)
     }.getOrElse { LocalDate.parse("1960-01-01") } // TODO:

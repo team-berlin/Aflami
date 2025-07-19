@@ -1,13 +1,15 @@
-package com.berlin.aflami.screens.search.screen
+package com.berlin.aflami.screens.search.search
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +42,7 @@ import androidx.compose.ui.window.Dialog
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.SearchViewModel
-import com.berlin.aflami.viewmodel.search_actor.GenreType
+import com.berlin.aflami.viewmodel.search.GenreType
 import com.berlin.designsystem.R
 
 @Composable
@@ -57,12 +60,12 @@ fun FilterDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(vertical = 12.dp)
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -93,23 +96,27 @@ fun FilterDialog(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
                         text = stringResource(R.string.imdb_rating),
                         style = Theme.textStyle.title.small,
                         color = Theme.color.textColors.title
                     )
                     RatingBar(
-                        modifier = Modifier,
+                        modifier = Modifier.padding(horizontal = 12.dp),
                         onValueChange = { viewModel.updateRating(it) },
                         currentRating = selectedRating
                     )
                     Text(
+                        modifier = Modifier.padding(horizontal = 12.dp),
                         text = stringResource(R.string.Genre),
                         style = Theme.textStyle.title.small, color = Theme.color.textColors.title
                     )
                     LazyRow(
                         modifier = Modifier
                             .height(96.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+
+                        , contentPadding = PaddingValues(horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(GenreType.entries) { genre ->
@@ -123,7 +130,7 @@ fun FilterDialog(
                     }
                 }
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     PrimaryButton(
@@ -147,6 +154,7 @@ fun FilterDialog(
                         onClick = { viewModel.clearFilters() },
                         modifier = Modifier
                             .fillMaxWidth()
+
                             .height(56.dp),
                         containerColor = Theme.color.primaryVariant
                     ) {
@@ -260,7 +268,10 @@ fun RatingBar(
                 tint = if (i <= currentRating) Theme.color.statusColors.yellowAccent else Theme.color.surfaceHigh,
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { onValueChange(i.toFloat()) }
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { onValueChange(i.toFloat()) }
             )
         }
     }

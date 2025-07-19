@@ -43,7 +43,9 @@ fun MoviesList(
                             .clickable { onMovieClick(movie.id.toInt()) },
                         mediaImg = movie.poster,
                         title = movie.title,
-                        typeOfMedia = stringResource(R.string.movie),
+                        typeOfMedia = if (movie.mediaType == "movie") stringResource(R.string.movie) else stringResource(
+                            com.berlin.designsystem.R.string.tv_shows
+                        ),
                         date = movie.releaseYear,
                         rating = movie.rating
                     )

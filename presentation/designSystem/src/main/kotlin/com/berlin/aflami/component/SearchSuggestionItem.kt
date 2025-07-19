@@ -2,6 +2,7 @@ package com.berlin.aflami.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -31,13 +32,14 @@ fun SearchSuggestionItem(
     contentDescription: String,
     gradientBackground: Brush,
     painter: Painter,
-    size: Dp = 56.dp
+    size: Dp = 56.dp,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
+            .clickable { onClick() }
             .background(gradientBackground),
-
         ) {
         Box(
             modifier = Modifier
