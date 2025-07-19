@@ -62,6 +62,9 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
             company.toEntity()
         } ?: emptyList(),
         hasVideo = this.video
+        } ?: emptyList(),
+        originCountry = this.originCountry?.get(0),
+        duration = this.runtime.formatRuntime()
     )
 }
 
@@ -76,6 +79,13 @@ fun ProductionCompany.toEntity() = ProductionCompanyEntity(
     poster = this.logoPath?.let { "$POSTER_PREFIX$it" },
     originCountry = this.originCountry.orEmpty()
 )
+
+fun Int?.formatRuntime(): String? {
+    if (this == null || this == 0) return null
+    val hours = this / 60
+    val remainingMinutes = this % 60
+    return "${hours}h ${remainingMinutes}m"
+}
 
 const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
 const val BACKDROP_PREFIX = "https://image.tmdb.org/t/p/original"

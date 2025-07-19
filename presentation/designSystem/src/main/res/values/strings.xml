@@ -83,6 +83,7 @@
     <string name="more_like_this">More like this</string>
     <string name="reviews">Reviews</string>
     <string name="gallery">Gallery</string>
-    <string name="company_production">company production</string>
+    <string name="company_production">company\nproduction</string>
+    <string name="season">season</string>
 
 </resources>

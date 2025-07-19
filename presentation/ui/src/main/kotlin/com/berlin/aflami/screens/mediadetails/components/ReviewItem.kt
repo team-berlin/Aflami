@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.mediadetails
+package com.berlin.aflami.screens.mediadetails.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -24,6 +24,7 @@ import com.berlin.aflami.component.Rating
 import com.berlin.aflami.screens.search.components.ExpandableText
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.uistate.ReviewUiState
+import com.berlin.designsystem.R
 
 @Composable
 fun ReviewItem(
@@ -47,9 +48,9 @@ fun ReviewItem(
                 .padding(bottom = 12.dp),
         ) {
             AsyncImage(
-                placeholder = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
-                error = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
-                fallback = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+                placeholder = painterResource(R.drawable.no_review_image),
+                error = painterResource(R.drawable.no_review_image),
+                fallback = painterResource(R.drawable.no_review_image),
                 model = review.avatarImage,
                 contentDescription = "Avatar Image",
                 modifier = Modifier

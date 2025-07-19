@@ -11,16 +11,18 @@ data class TvShowDetails(
     val runtime: Int?,
     val genres: List<GenreEntity>,
     val seasons: List<SeasonEntity>,
+    val originCountry: String?,
+    val numberOfSeasons: Int?,
 )
 
 data class SeasonEntity(
     val airDate: String?,
-    val episodeCount: Int,
-    val id: Long,
-    val name: String,
+    val episodeCount: Int?,
+    val id: Int?,
+    val name: String?,
     val overview: String?,
     val posterUrl: String?,
-    val seasonNumber: Int,
-    val voteAverage: Double
+    val seasonNumber: Int?,
+    val voteAverage: Double?
 )
 

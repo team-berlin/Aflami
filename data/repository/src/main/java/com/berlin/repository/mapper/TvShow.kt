@@ -1,14 +1,17 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.SeasonEntity
+import com.berlin.entity.Episodes
+import com.berlin.entity.EpisodesSeason
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.Season
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
+import com.berlin.repository.datasource.remote.dto.details.EpisodeDto
+import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
 import com.berlin.repository.util.toLocalDate
-
 
 
 fun TVShowDto.toLocal(query: String, time: Long, type: String): SearchingEntity {
@@ -24,6 +27,7 @@ fun TVShowDto.toLocal(query: String, time: Long, type: String): SearchingEntity 
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
+
 fun TVShowDto.toTVShow(): TVShow {
     return TVShow(
         id = this.id?.toLong() ?: 0L,
@@ -34,6 +38,7 @@ fun TVShowDto.toTVShow(): TVShow {
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
+
 fun SearchingEntity.toTVShow(): TVShow {
     return TVShow(
         id = this.id,
@@ -56,8 +61,10 @@ fun TVShowDetailsDto.toDomain(): TvShowDetails {
         rating = this.voteAverage ?: 0.0,
         runtime = this.episodeRunTime?.firstOrNull() ?: 0,
         genres = this.genres?.map { it.toEntity() } ?: emptyList(),
-        seasons = this.seasons?.map { it.toEntity() } ?: emptyList()
-        )
+        seasons = this.seasons?.map { it.toEntity() } ?: emptyList(),
+        originCountry = this.originCountry?.get(0),
+        numberOfSeasons = this.numberOfSeasons
+    )
 }
 
 fun Season.toEntity() = SeasonEntity(
@@ -70,3 +77,28 @@ fun Season.toEntity() = SeasonEntity(
     seasonNumber = seasonNumber,
     voteAverage = voteAverage
 )
+
+fun EpisodesSeasonDto.toDomain(): EpisodesSeason {
+    return EpisodesSeason(
+        idSeason = this.id_Season,
+        name = this.name,
+        episodes = this.episodes?.filterNotNull()?.map { it.toEpisode() },
+        seasonNumber = this.seasonNumber,
+        posterPath = this.posterPath?.let { POSTER_PREFIX + it }
+    )
+}
+fun EpisodeDto.toEpisode(): Episodes {
+    return Episodes(
+        stillPath = this.stillPath,
+        airDate = this.airDate,
+        episodeNumber = this.episodeNumber,
+        episodeType = this.episodeType,
+        id = this.id,
+        name = this.name,
+        overview = this.overview,
+        runtime = this.runtime.formatRuntime(),
+        showId = this.showId,
+        voteAverage = this.voteAverage
+    )
+}
+
