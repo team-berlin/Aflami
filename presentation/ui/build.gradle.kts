@@ -19,12 +19,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
     implementation(libs.bundles.koin)
-
-
-    val paging_version = "3.3.6"
-    implementation("androidx.paging:paging-runtime:$paging_version")
-    implementation("androidx.paging:paging-compose:$paging_version")
-
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:navigation"))

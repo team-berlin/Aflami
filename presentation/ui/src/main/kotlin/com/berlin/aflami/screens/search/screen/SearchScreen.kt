@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.search.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -161,11 +162,11 @@ private fun SearchScreenContent(
                     )
                     SearchSuggestionHub(
                         Modifier.padding(horizontal = 16.dp),
-                        onWorldTourClick = {
-                            listenerSearch.onWorldSearchCardClicked()
-                        },
                         onSearchByActorClick = {
                             listenerSearch.onActorSearchCardClicked()
+                        },
+                        onSearchByCountryClick = {
+                            listenerSearch.onWorldSearchCardClicked()
                         },
                     )
                     NoDataSearch()

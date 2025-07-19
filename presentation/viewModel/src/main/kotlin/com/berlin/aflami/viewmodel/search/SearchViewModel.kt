@@ -106,7 +106,21 @@ class SearchViewModel(
                                 )
                             })
                     }).flow.map { it.map { it.toUiState() } }
-
+                    .map { pagingData ->
+                        pagingData.filter { tvUiState ->
+                            val selectedRating = state.value.filterItemUiState.selectedRating
+                            val selectedGenre = state.value.filterItemUiState.selectedGenre
+                            val matchesRating = tvUiState.rating.toFloatOrNull()
+                                ?.let { it > selectedRating } != false
+                            val matchesGenre = when (selectedGenre) {
+                                GenreType.ALL -> true
+                                else -> tvUiState.genre.isEmpty() || tvUiState.genre.any {
+                                    it == selectedGenre?.toGenreType()
+                                }
+                            } || tvUiState.genre.isEmpty()
+                            matchesRating && matchesGenre
+                        }
+                    }
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchTvShowsSuccess,

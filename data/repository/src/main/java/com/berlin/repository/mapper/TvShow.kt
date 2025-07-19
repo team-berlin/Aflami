@@ -4,7 +4,7 @@ import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.TVShowDto
-import com.berlin.repository.util.toLocalDate
+import kotlinx.datetime.toLocalDate
 import java.time.Instant
 
 fun SearchingEntity.toTVShow(): TVShow {
