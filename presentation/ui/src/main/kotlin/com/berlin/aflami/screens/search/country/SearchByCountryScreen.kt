@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
@@ -39,7 +38,6 @@ import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListener
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenUiState
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
-import com.berlin.aflami.viewmodel.uistate.MediaType
 import com.berlin.ui.R
 import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
@@ -51,6 +49,7 @@ fun SearchByCountryScreen(
 ) {
     val state by viewModel.state.collectAsState()
     SearchByCountryContent(
+        navController = navController,
         state = state,
         listener = viewModel
     )
@@ -58,13 +57,10 @@ fun SearchByCountryScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
+                SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
                 is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
                     navController.navigate(
-                        Destination.MediaDetailsScreen.route(
-                            effect.movieId.toLong(),
-                            com.example.navigation.MediaType.MOVIE
-                        )
+                        "mediaDetailsScreen/${effect.movieId}"
                     )
                 }
             }
@@ -76,6 +72,7 @@ fun SearchByCountryScreen(
 private fun SearchByCountryContent(
     state: SearchByCountryScreenUiState,
     listener: SearchByCountryInteractionListener,
+    navController: NavController,
 ) {
     Column {
         TopBar(
@@ -158,8 +155,15 @@ private fun SearchByCountryContent(
                 else -> {
                     MoviesList(
                         movies = movies,
-                        onMovieClick = listener::onMovieClicked
-                        )
+                        onMovieClick = { movieId ->
+                            navController.navigate(
+                                Destination.MediaDetailsScreen.route(
+                                    movieId.toLong(),
+                                    com.example.navigation.MediaType.MOVIE
+                                )
+                            )
+                        }
+                    )
                 }
             }
 
