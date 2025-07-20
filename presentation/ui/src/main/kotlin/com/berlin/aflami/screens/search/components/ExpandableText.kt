@@ -22,7 +22,7 @@ fun ExpandableText(
     modifier: Modifier = Modifier,
     maxSize: Int = 5,
     text: String,
-    isExpanded: Boolean,
+//    isExpanded: Boolean,
     onToggleExpand: () -> Unit,
 ) {
     var hasVisualOverflow by remember { mutableStateOf(false) }
@@ -31,7 +31,7 @@ fun ExpandableText(
         Text(
             text = text,
             color = Theme.color.textColors.body,
-            maxLines = if (isExpanded) Int.MAX_VALUE else maxSize,
+//            maxLines = if (isExpanded) Int.MAX_VALUE else maxSize,
             onTextLayout = { hasVisualOverflow = it.hasVisualOverflow },
             style = Theme.textStyle.body.small,
         )
@@ -63,7 +63,7 @@ fun ExpandableText(
 @Composable
 fun ExpandableTextPreview() {
     ExpandableText(
-        isExpanded = false,
+//        isExpanded = false,
         onToggleExpand = {},
         text = "Hmmm! I wasn’t sure if I was watching a sentimental edition of “Hawaii Five-O” here or a collection of outtakes from a “Sonic” movie as this rather disappointingly trundles along for the guts of two hours. It’s starts, Hmmm! I wasn’t sure if I was watching a sentimental edition of “Hawaii Five-O” here or a collection of outtakes from a “Sonic” movie as this rather disappointingly trundles along for the guts of two hours. It’s starts"
     )

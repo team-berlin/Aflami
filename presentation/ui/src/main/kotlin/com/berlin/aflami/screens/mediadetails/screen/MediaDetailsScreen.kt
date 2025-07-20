@@ -71,14 +71,14 @@ import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
-import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
+import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.RowSectionUiState
-import com.berlin.aflami.viewmodel.mediadetails.TabContent
-import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
-import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaType
 import com.berlin.designsystem.R
 import com.example.navigation.Destination
 import kotlinx.coroutines.delay
@@ -86,15 +86,11 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MediaDetailsScreen(
-    viewModel: MediaDetailsViewmodel = koinViewModel(),
+    viewModel: MediaDetailsViewModel = koinViewModel(),
     navController: NavController
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val rowUiState by viewModel.rowSectionUiState.collectAsState()
-    val loading by viewModel.loading.collectAsState()
-    val error by viewModel.error.collectAsState()
+    val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
-    val sharedFlow = viewModel.uiEffect
     var showLoginRequiredDialog by remember { mutableStateOf(false) }
     val navMediaType = com.example.navigation.MediaType.valueOf(viewModel.type.name)
 
@@ -102,7 +98,7 @@ fun MediaDetailsScreen(
         viewModel.getMovieCast(viewModel.id, viewModel.type, "US-EG")
         viewModel.getMediaDetails(viewModel.id, viewModel.type, "en-US")
 
-        sharedFlow.collect { event ->
+        viewModel.effect.collect { event ->
             when (event) {
                 is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
                     navController.navigate(
@@ -130,17 +126,16 @@ fun MediaDetailsScreen(
     }
 
 
-    if (loading) {
+    if (uiState.isLoading) {
         Loading()
-    } else if (error != null) {
+    } else if (uiState.error!=null) {
         // Your error UI
     } else {
         MediaDetailsContent(
             state = uiState,
-            rowUiState = rowUiState,
             listener = viewModel,
             onToggleExpand = { viewModel.onReadMoreDescriptionClicked(viewModel.id) },
-            isExpanded = viewModel.isDescriptionExpanded(viewModel.id),
+//            isExpanded = viewModel.onReadMoreDescriptionClicked(viewModel.id),
             isSelectedTab = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
@@ -195,9 +190,8 @@ private fun DrawScope.drawIndicator(
 @Composable
 fun MediaDetailsContent(
     state: MediaDetailsUiState,
-    rowUiState: RowSectionUiState,
     listener: MediaInteractionListener,
-    isExpanded: Boolean,
+//    isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
@@ -360,7 +354,7 @@ fun MediaDetailsContent(
 
                 ExpandableDescription(
                     text = state.overview,
-                    expanded = isExpanded,
+//                    expanded = isExpanded,
                     onToggleExpand = onToggleExpand,
                     previewColor = Theme.color.textColors.hint,
                     suffixColor = Theme.color.primary,
@@ -387,10 +381,10 @@ fun MediaDetailsContent(
 
         item {
             RowSection(
-                rowUiState = rowUiState,
+                uiState = state,
                 isSelectedTab = isSelectedTab,
                 onChipClick = onChipClick,
-                isExpanded = isExpanded,
+//                isExpanded = isExpanded,
                 onToggleExpand = onToggleExpand,
                 mediaType = mediaType
             )
@@ -400,10 +394,10 @@ fun MediaDetailsContent(
 
 @Composable
 fun RowSection(
-    rowUiState: RowSectionUiState,
+    uiState: MediaDetailsUiState,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
-    isExpanded: Boolean,
+//    isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     mediaType: MediaType
 ) {
@@ -428,65 +422,67 @@ fun RowSection(
         }
     }
 
-    when (rowUiState) {
-        is RowSectionUiState.Error -> {
-            Box(Modifier.height(80.dp), contentAlignment = Alignment.Center) {
-                Text(
-                    modifier = Modifier.fillMaxSize(),
-                    text = rowUiState.message,
-                    style = Theme.textStyle.label.large,
-                    color = Theme.color.textColors.body,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+//    when (uiState.rowSection) {
+//        is RowSectionUiState.Error -> {
+//            Box(Modifier.height(80.dp), contentAlignment = Alignment.Center) {
+//                Text(
+//                    modifier = Modifier.fillMaxSize(),
+//                    text = uiState.rowSection.message,
+//                    style = Theme.textStyle.label.large,
+//                    color = Theme.color.textColors.body,
+//                    textAlign = TextAlign.Center
+//                )
+//            }
+//        }
+//        is RowSectionUiState.NoDataFound ->{
+//
+//        }
+//        is RowSectionUiState.Loading -> {
+//            Loading()
+//        }
 
-        is RowSectionUiState.Loading -> {
-            Loading()
-        }
+//        is RowSectionUiState.Success -> {
+//            when (uiState.rowSection) {
+//                is TabContent.MoreLikeThis -> {
+//                    MoreLikeThisSection(
+//                        mediaList = (uiState.rowSection.content as TabContent.MoreLikeThis).items,
+//                        mediaType = mediaType
+//                    )
+//                }
+//
+//                is TabContent.Reviews -> {
+//                    ReviewsSection(
+//                        reviews = (rowUiState.content as TabContent.Reviews).items,
+////                        isExpanded = isExpanded,
+//                        onToggleExpand = onToggleExpand
+//                    )
+//                }
+//
+//                is TabContent.Gallery -> {
+//                    GallerySection(
+//                        mediaImages = (rowUiState.content as TabContent.Gallery).items,
+//                    )
+//                }
+//
+//                is TabContent.CompanyProduction -> {
+//                    CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
+//                }
+//
+//                is TabContent.Season -> {
+//                    SeasonsSection(
+//                        seasonsMap = (rowUiState.content as TabContent.Season).items,
+//                    )
+//                }
+//            }
+//        }
 
-        is RowSectionUiState.Success -> {
-            when (rowUiState.content) {
-                is TabContent.MoreLikeThis -> {
-                    MoreLikeThisSection(
-                        mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
-                        mediaType = mediaType
-                    )
-                }
-
-                is TabContent.Reviews -> {
-                    ReviewsSection(
-                        reviews = (rowUiState.content as TabContent.Reviews).items,
-                        isExpanded = isExpanded,
-                        onToggleExpand = onToggleExpand
-                    )
-                }
-
-                is TabContent.Gallery -> {
-                    GallerySection(
-                        mediaImages = (rowUiState.content as TabContent.Gallery).items,
-                    )
-                }
-
-                is TabContent.CompanyProduction -> {
-                    CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
-                }
-
-                is TabContent.Season -> {
-                    SeasonsSection(
-                        seasonsMap = (rowUiState.content as TabContent.Season).items,
-                    )
-                }
-            }
-        }
-
-    }
+//    }
 }
 
 @Composable
 fun ExpandableDescription(
     text: String,
-    expanded: Boolean,
+//    expanded: Boolean,
     onToggleExpand: () -> Unit,
     maxPreviewLength: Int = 180,
     previewColor: Color,
@@ -496,17 +492,17 @@ fun ExpandableDescription(
 ) {
     val canExpand = text.length > maxPreviewLength
 
-    val displayText =
-        if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
+//    val displayText =
+//        if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
 
     val suffix = when {
-        expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_less)
-        !expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_more)
+//        expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_less)
+//        !expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_more)
         else -> ""
     }
 
     val annotated = buildAnnotatedString {
-        append(displayText)
+//        append(displayText)
         if (suffix.isNotEmpty()) {
             withStyle(
                 SpanStyle(

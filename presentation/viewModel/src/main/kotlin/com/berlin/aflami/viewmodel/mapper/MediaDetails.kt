@@ -1,28 +1,19 @@
 package com.berlin.aflami.viewmodel.mapper
 
-import com.berlin.aflami.viewmodel.mediadetails.CompanyProductionItem
-import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
-import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
-import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.uistate.MediaType
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesSeasonUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaType
+import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
 import com.berlin.entity.Episodes
 import com.berlin.entity.EpisodesSeason
-import com.berlin.entity.Movie
+import com.berlin.entity.MediaCast
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.ProductionCompanyEntity
+import com.berlin.entity.Review
 import com.berlin.entity.TvShowDetails
-
-fun Movie.toUIState(): MovieUIState {
-    return MovieUIState(
-        id = id,
-        title = title,
-        rating = rating.toString().take(3),
-        releaseYear = releaseYear.year.toString(),
-        genre = genre,
-        poster = poster
-    )
-}
 
 fun MovieDetails.toUiState(
     isFavorite: Boolean = false,
@@ -66,8 +57,7 @@ fun TvShowDetails.toUiState(
     originalCountry = originCountry,
 )
 
-
-fun ProductionCompanyEntity.toUiState() = CompanyProductionItem(
+fun ProductionCompanyEntity.toUiState() = CompanyProductionUiState(
     id = id.toString(),
     image = poster,
     name = name,
@@ -99,3 +89,21 @@ fun EpisodesSeason.toUiState(): EpisodesSeasonUiState {
     )
 }
 
+fun Review.toUiState(): ReviewUiState {
+    return ReviewUiState(
+        id = id,
+        name = name,
+        userName = userName,
+        avatarImage = avatarImage,
+        rating = rating,
+        content = content,
+        date = date.substringBefore("T")
+    )
+}
+
+fun MediaCast.toUiState(): MediaCastUiState {
+    return MediaCastUiState(
+        name = name,
+        poster = poster
+    )
+}

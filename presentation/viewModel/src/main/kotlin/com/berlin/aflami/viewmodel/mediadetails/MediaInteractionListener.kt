@@ -3,7 +3,7 @@ package com.berlin.aflami.viewmodel.mediadetails
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.addtofavourite.AddToFavouriteInteractionListener
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.createnewlist.CreateNewListInteractionListener
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.rate.RateInteractionListener
-import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaType
 
 interface MediaInteractionListener :
     RateInteractionListener,
@@ -21,7 +21,7 @@ interface MediaInteractionListener :
 
 interface ExtraMediaContentInteractionListener : TVShowSeasonsInteractionListener  {
     fun onShowMoreMediaLikeThisClicked(mediaId: Long, mediaType: MediaType)
-    fun onShowReviewsClicked()
+    fun onShowReviewsClicked(mediaId: Long, mediaType: MediaType)
     fun onShowMediaGalleryClicked(id:Long,mediaType: MediaType)
     fun onShowCompanyProductionClicked()
 }

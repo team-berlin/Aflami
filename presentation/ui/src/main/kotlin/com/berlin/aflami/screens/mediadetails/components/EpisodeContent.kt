@@ -24,8 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.screens.search.mediadetails.EpisodeCard
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
-import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesSeasonUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.designsystem.R
 
 

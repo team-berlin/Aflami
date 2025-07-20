@@ -6,7 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.berlin.aflami.screens.mediadetails.screen.MediaDetailsScreen
-import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaType
 import com.example.navigation.Destination.MediaDetailsScreen
 
 

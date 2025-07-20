@@ -32,7 +32,7 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.designsystem.R
 
 

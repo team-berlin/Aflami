@@ -26,13 +26,13 @@ import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.CompanyProductionItem
+import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.ui.R
 
 @Composable
 fun CompanyProductionItem(
     modifier: Modifier = Modifier,
-    item: CompanyProductionItem
+    item: CompanyProductionUiState
 ) {
     Box(
         modifier = modifier
@@ -91,7 +91,7 @@ fun CompanyProductionItem(
 fun CompanyProductionItemPreview() {
     AflamiTheme {
         CompanyProductionItem(
-            item = CompanyProductionItem(
+            item = CompanyProductionUiState(
                 id = "1",
                 image = "https://image.tmdb.org/t/p/w500/c9dVHPOL3cqCr2593Ahk0nEKTEM.png",
                 name = "Universal",

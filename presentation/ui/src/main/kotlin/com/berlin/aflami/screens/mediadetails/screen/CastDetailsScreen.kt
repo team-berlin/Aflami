@@ -23,19 +23,18 @@ import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.mediadetails.components.MoviesCastGrid
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
-import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
+import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CastDetailsScreen(
     navController: NavController,
-    viewmodel: MediaDetailsViewmodel = koinViewModel(),
+    viewmodel: MediaDetailsViewModel = koinViewModel(),
 ) {
 
-    val castState by viewmodel.uiState.collectAsState()
-    val loading by viewmodel.loading.collectAsState()
+    val castState by viewmodel.state.collectAsState()
 
 
     LaunchedEffect(Unit) {
@@ -45,7 +44,7 @@ fun CastDetailsScreen(
             language = "US-EG"
         )
     }
-    if (loading) {
+    if (castState.isLoading) {
         Loading()
     } else {
         CastContent(

@@ -1,7 +1,9 @@
 package com.berlin.aflami.viewmodel.mapper
 
-import com.berlin.aflami.viewmodel.uistate.MediaUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaUiState
 import com.berlin.entity.Media
+import com.berlin.entity.Movie
+import com.berlin.entity.TVShow
 
 fun Media.toUIState(): MediaUiState {
     return MediaUiState(

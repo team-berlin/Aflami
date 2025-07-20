@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.viewmodel.uistate.MediaType
-import com.berlin.aflami.viewmodel.uistate.MediaUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaType
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaUiState
 import com.berlin.ui.R
 
 @Composable
