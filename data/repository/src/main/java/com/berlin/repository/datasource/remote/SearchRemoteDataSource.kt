@@ -20,6 +20,15 @@ interface SearchRemoteDataSource {
         page: Int
     ): BaseResponse<PersonDto>
 
-    suspend fun searchMovies(query: String, language: String, page: Int): BaseResponse<MovieDto>
-    suspend fun searchTvShows(query: String, language: String, page: Int): BaseResponse<TVShowDto>
+    suspend fun searchMovies(
+        query: String,
+        language: String,
+        page: Int
+    ): BaseResponse<MovieDto>
+
+    suspend fun searchTvShows(
+        query: String,
+        language: String,
+        page: Int
+    ): BaseResponse<TVShowDto>
 }
