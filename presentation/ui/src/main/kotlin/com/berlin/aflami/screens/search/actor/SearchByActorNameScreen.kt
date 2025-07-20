@@ -39,6 +39,7 @@ import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenUiState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.ui.R
 import com.example.navigation.Destination
+import com.example.navigation.MediaType
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -56,7 +57,7 @@ fun SearchByActorNameScreen(
                     navController.navigate(
                         Destination.MediaDetailsScreen.route(
                             it.movieId.toLong(),
-                            com.example.navigation.MediaType.MOVIE
+                            MediaType.TV_SHOW
                         )
                     )
                 }

@@ -4,6 +4,7 @@ import android.app.Application
 import com.berlin.aflami.di.appModule
 import com.berlin.aflami.di.daoModule
 import com.berlin.aflami.di.dataSourceModule
+import com.berlin.aflami.di.networkModule
 import com.berlin.aflami.di.repositoryModule
 import com.berlin.aflami.di.useCaseModule
 import com.berlin.aflami.di.viewModelModule
@@ -17,6 +18,7 @@ class AflamiApp: Application() {
             androidContext(this@AflamiApp)
             modules(
                 appModule,
+                networkModule,
                 dataSourceModule,
                 daoModule,
                 repositoryModule,
@@ -24,5 +26,6 @@ class AflamiApp: Application() {
                 viewModelModule
             )
         }
+
     }
 }
