@@ -17,6 +17,5 @@ dependencies {
     implementation(libs.bundles.androidxUi)
     implementation(libs.androidx.navigation)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.bundles.ktor)
     implementation(libs.bundles.koin)
 }

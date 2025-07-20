@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.performance)
     alias(libs.plugins.ksp)
+    id ("kotlinx-serialization")
 }
 
 val properties = Properties().apply {
@@ -71,7 +72,12 @@ dependencies {
     implementation(libs.bundles.androidxUi)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.bundles.koin)
-    implementation(libs.bundles.ktor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+    implementation(libs.kotlinx.serialization.json)
+
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)

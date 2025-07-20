@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.aflami.custom.plugin)
+
 }
 
 android {
@@ -14,7 +15,10 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.koin)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.bundles.ktor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
     implementation(project(":data:repository"))
 }
