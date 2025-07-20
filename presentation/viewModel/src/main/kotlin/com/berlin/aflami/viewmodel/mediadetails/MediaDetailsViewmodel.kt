@@ -142,8 +142,6 @@ class MediaDetailsViewmodel(
                 Log.e("Review","$result")
                 _loading.value=false
                 if (result.isEmpty()) {
-                    Log.e("nourrreslt","${result}")
-
                     _rowSectionUiState.update { RowSectionUiState.Error("There is no reviews!") }
                 } else {
                     _rowSectionUiState.update {
@@ -156,7 +154,6 @@ class MediaDetailsViewmodel(
                 }
 
             } catch (error: Exception) {
-                Log.e("nourrerro","${error.message}")
                 _rowSectionUiState.update {
                     RowSectionUiState.Error(
                         error.message ?: "Unknown error"
@@ -351,8 +348,6 @@ class MediaDetailsViewmodel(
                     MediaType.MOVIE -> getMovieGalleryUseCase(mediaId)
                     MediaType.TV_SHOW -> getSeriesGalleryUseCase(mediaId)
                 }
-                Log.e("nour1","$result")
-
                 if (result.isEmpty()) {
                     _rowSectionUiState.update { RowSectionUiState.Error("There is no images!") }
                 } else {
@@ -365,8 +360,6 @@ class MediaDetailsViewmodel(
                     }
                 }
             } catch (error: Exception) {
-                Log.e("nour2","${error.message}")
-
                 _rowSectionUiState.update {
                     RowSectionUiState.Error(
                         error.message ?: "Unknown error"
