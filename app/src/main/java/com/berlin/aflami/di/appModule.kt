@@ -2,6 +2,7 @@ package com.berlin.aflami.di
 
 import androidx.room.Room
 import com.berlin.aflami.BuildConfig
+import com.berlin.aflami.util.ApiKeyInterceptor
 import com.berlin.local.SearchDatabase
 import com.berlin.remote.network.MovieApiService
 import com.berlin.remote.network.SearchApiService
@@ -14,6 +15,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
+import okhttp3.Interceptor
+import okhttp3.Response
 
 val appModule = module {
 
@@ -23,14 +26,7 @@ val appModule = module {
         }
 
         val client = OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val original = chain.request()
-                val url = original.url.newBuilder()
-                    .addQueryParameter("api_key", BuildConfig.API_KEY)
-                    .build()
-                val request = original.newBuilder().url(url).build()
-                chain.proceed(request)
-            }
+            .addInterceptor(ApiKeyInterceptor())
             .addInterceptor(logging)
             .build()
 
