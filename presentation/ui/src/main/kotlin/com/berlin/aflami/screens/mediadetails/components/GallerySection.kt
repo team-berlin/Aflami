@@ -1,24 +1,15 @@
 package com.berlin.aflami.screens.mediadetails.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,14 +17,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import coil3.compose.AsyncImage
-import com.berlin.aflami.ui.color.ExtraColors
-import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
+
 @Composable
 fun GallerySection(
     modifier: Modifier = Modifier,
@@ -55,7 +44,6 @@ fun GallerySection(
                 .fillMaxWidth()
                 .padding(start = sidePadding, end = sidePadding, top = 12.dp),
             verticalArrangement = Arrangement.spacedBy(verticalSpacing),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             for (row in 0 until rows) {
                 Row(
@@ -66,9 +54,9 @@ fun GallerySection(
                         val index = row * columns + col
                         if (index < mediaImages.size) {
                             AsyncImage(
-                                error = painterResource(R.drawable.place_holder),
-                                placeholder = painterResource(R.drawable.place_holder),
-                                fallback = painterResource(R.drawable.place_holder),
+                                error = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+                                placeholder = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+                                fallback = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
                                 model = mediaImages[index],
                                 contentDescription = stringResource(R.string.cast),
                                 contentScale = ContentScale.Crop,

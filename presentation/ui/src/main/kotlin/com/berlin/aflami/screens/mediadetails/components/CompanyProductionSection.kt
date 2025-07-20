@@ -38,7 +38,6 @@ fun CompanyProductionSection(
                 .fillMaxWidth()
                 .padding(start = sidePadding, end = sidePadding, top = 12.dp),
             verticalArrangement = Arrangement.spacedBy(verticalSpacing),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             for (row in 0 until rows) {
                 Row(
@@ -49,6 +48,9 @@ fun CompanyProductionSection(
                         val index = row * columns + col
                         if (index < companyProductions.size) {
                             CompanyProductionItem(
+                                modifier = Modifier
+                                    .width(cellWidth)
+                                    .height(cellHeight),
                                 item = companyProductions[index]
                             )
                         } else {

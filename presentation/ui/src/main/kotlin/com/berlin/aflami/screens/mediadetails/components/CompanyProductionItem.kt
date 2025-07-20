@@ -42,10 +42,10 @@ fun CompanyProductionItem(
 
     ) {
         AsyncImage(
-            modifier = Modifier,
+            modifier = modifier,
             model = item.image,
             contentDescription = stringResource(R.string.company_production_image_cd),
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.Crop,
             error = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
             fallback = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
             placeholder = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder)
