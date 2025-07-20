@@ -1,5 +1,7 @@
 package com.berlin.aflami.viewmodel.mediadetails.uistate
 
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+
 sealed class RowSectionUiState {
     object Loading : RowSectionUiState()
     data class Success(val content: TabContent) : RowSectionUiState()

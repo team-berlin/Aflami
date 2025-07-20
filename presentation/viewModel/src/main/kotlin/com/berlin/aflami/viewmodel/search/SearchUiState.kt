@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.search
 
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+
 
 sealed class SearchUiState() {
     object Init : SearchUiState()

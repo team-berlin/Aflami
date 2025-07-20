@@ -23,7 +23,10 @@ import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.mediadetails.components.MoviesCastGrid
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsEffect
+import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsListener
+import com.berlin.aflami.viewmodel.mediadetails.cast.CastViewModel
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
@@ -31,24 +34,26 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CastDetailsScreen(
     navController: NavController,
-    viewmodel: MediaDetailsViewModel = koinViewModel(),
+    viewmodel: CastViewModel = koinViewModel(),
 ) {
 
     val castState by viewmodel.state.collectAsState()
 
 
     LaunchedEffect(Unit) {
-        viewmodel.getMovieCast(
-            mediaId = viewmodel.id,
-            mediaType = viewmodel.type,
-            language = "US-EG"
-        )
+        viewmodel.effect.collect{event->
+            when(event) {
+                is CastDetailsEffect.CastNavigationBack ->{
+                    navController.popBackStack()
+                }
+            }
+        }
     }
     if (castState.isLoading) {
         Loading()
     } else {
         CastContent(
-            navController = navController,
+            listener = viewmodel,
             castState = castState.mediaCast
         )
     }
@@ -58,7 +63,7 @@ fun CastDetailsScreen(
 
 @Composable
 fun CastContent(
-    navController: NavController,
+    listener: CastDetailsListener,
     castState: List<MediaCastUiState>
 ) {
     Column {
@@ -77,7 +82,7 @@ fun CastContent(
                         .clip(RoundedCornerShape(10.dp))
                         .background(Theme.color.surfaceHigh)
                         .clickable {
-                            navController.popBackStack()
+                            listener.onCastBackClicked()
                         }
                         .padding(10.dp),
                     contentAlignment = Alignment.Center

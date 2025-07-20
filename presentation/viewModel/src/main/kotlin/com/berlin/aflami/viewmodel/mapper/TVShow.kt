@@ -1,6 +1,6 @@
 package com.berlin.aflami.viewmodel.mapper
 
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.entity.TVShow
 

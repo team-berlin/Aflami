@@ -5,8 +5,8 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaType
 import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.entity.Episodes
 import com.berlin.entity.EpisodesSeason
 import com.berlin.entity.MediaCast

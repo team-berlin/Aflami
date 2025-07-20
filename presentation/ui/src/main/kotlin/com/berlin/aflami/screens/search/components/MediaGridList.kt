@@ -14,7 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
 
 @Composable
@@ -40,10 +41,10 @@ fun MediaGridList(
                     MediaCard(
                         modifier = Modifier
                             .height(222.dp) ,
-                        onClick = { onMovieClick(movie.id.toInt(),movie.mediaType) },
+                        onClick = { onMovieClick(movie.id.toInt(),movie.mediaType.name) },
                         mediaImg = movie.poster,
                         title = movie.title,
-                        typeOfMedia = if (movie.mediaType=="movie")stringResource(R.string.movie) else stringResource(
+                        typeOfMedia = if (movie.mediaType==MediaType.MOVIE)stringResource(R.string.movie) else stringResource(
                             com.berlin.designsystem.R.string.tv_shows),
                         date = movie.releaseYear,
                         rating = movie.rating
