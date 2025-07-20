@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.emptyFlow
 data class SearchUiState(
     val searchQuery: String = "",
     val recentSearches: List<String> = emptyList(),
-    val selectedTabOption: TabOption = TabOption.MOVIES,
+    val selectedTabOption: TabOption = TabOption.TV_SHOWS,
     val movies: Flow<PagingData<MovieUIState>> = emptyFlow(),
     val tvShows: Flow<PagingData<TVShowUiState>> = emptyFlow(),
     val isDialogVisible: Boolean = false,
     val filterItemUiState: FilterItemUiState = FilterItemUiState(),
-    val filterTrigger :Boolean = false,
+    val filterTrigger: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 )

@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.search.search
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -29,14 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -52,7 +50,6 @@ import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.SearchData
 import com.berlin.aflami.screens.search.screen.FilterDialog
-import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchInteractionListener
@@ -61,16 +58,17 @@ import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.designsystem.R
+import com.example.navigation.Destination
+import com.example.navigation.MediaType
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
     navController: NavController, viewModel: SearchViewModel = koinViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
-//    val recent by viewModel.recentSearchState.collectAsState()
-
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val recentSearchState = viewModel.recentSearchState.collectAsState()
+
 
     SearchScreenContent(
         navController = navController,
@@ -83,18 +81,29 @@ fun SearchScreen(
         onItemClick = viewModel::onItemClicked
     )
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                SearchUiEffect.NavigatedBack -> navController.popBackStack()
+                is SearchUiEffect.NavigatedBack -> navController.popBackStack()
+
                 is SearchUiEffect.NavigatedToMovieDetailsScreen -> {
-
+                    val media = when (state.selectedTabOption) {
+                        TabOption.MOVIES -> MediaType.MOVIE
+                        TabOption.TV_SHOWS -> MediaType.TV_SHOW
+                    }
+                    navController.navigate(
+                        Destination.MediaDetailsScreen.route(
+                            effect.id.toLong(), media
+                        )
+                    )
                 }
+
                 is SearchUiEffect.NavigateToActorSearch -> {
-
+                    navController.navigate("searchByActorNameScreen")
                 }
-                is SearchUiEffect.NavigateToWorldSearch -> {
 
+                is SearchUiEffect.NavigateToWorldSearch -> {
+                    navController.navigate("searchByCountryScreen")
                 }
             }
 
@@ -138,13 +147,9 @@ private fun SearchScreenContent(
                         .background(Theme.color.surfaceHigh)
                         .clickable {
                             listenerSearch.onBackClicked()
-                        }
-                        .onFocusChanged {
-                            listenerSearch.onSearchCleared()
                         },
                     contentAlignment = Alignment.Center,
-
-                    ) {
+                ) {
                     Icon(
                         modifier = Modifier.size(20.dp),
                         painter = painterResource(R.drawable.arrow_left),
@@ -161,10 +166,8 @@ private fun SearchScreenContent(
                     .padding(vertical = 8.dp, horizontal = 16.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .background(Theme.color.surfaceHigh)
-                    .onFocusChanged {
-//                        listenerSearch.onSearchCleared()
-                    },
+                    .background(Theme.color.surfaceHigh),
+
                 hintText = stringResource(R.string.search_hint_text),
                 isEnabled = true,
                 maxLines = 1,
@@ -213,20 +216,26 @@ private fun SearchScreenContent(
                 }
 
                 state.searchQuery.isNotBlank() -> {
-
                     TabBar(
+                        selectedTabIndex = state.selectedTabOption.index,
                         containerColor = Theme.color.surface,
                         items = listOf(
                             TabBarItem(
                                 text = stringResource(R.string.movies),
-                                isSelected = state.selectedTabOption.index == 0
+                                isSelected = state.selectedTabOption == TabOption.MOVIES,
                             ), TabBarItem(
                                 text = stringResource(R.string.tv_shows),
-                                isSelected = state.selectedTabOption.index == 1
+                                isSelected = state.selectedTabOption == TabOption.TV_SHOWS,
                             )
                         ),
                         onTabChange = {
-                            listenerSearch.onTabOptionClicked(it)
+                            listenerSearch.onTabOptionClicked(
+                                when (it) {
+                                    0 -> TabOption.MOVIES
+                                    1 -> TabOption.TV_SHOWS
+                                    else -> throw IllegalArgumentException("Invalid tab index")
+                                }
+                            )
                         },
                     )
 
@@ -247,8 +256,6 @@ private fun SearchScreenContent(
                             when (state.selectedTabOption) {
                                 TabOption.MOVIES -> {
                                     val movies = state.movies.collectAsLazyPagingItems()
-                                    Log.d("PAGING", "movies: ${movies.itemCount}")
-
                                     val loadState = movies.loadState
                                     val isEmpty =
                                         movies.itemCount == 0 && loadState.refresh is LoadState.NotLoading && loadState.append is LoadState.NotLoading
@@ -281,9 +288,12 @@ private fun SearchScreenContent(
                                                     val movie = movies[index]
                                                     if (movie != null) {
                                                         MediaCard(
-                                                            modifier = Modifier.height(222.dp)
-                                                            // .clickable { onMovieClick(movie.id.toInt()) },
-                                                            ,
+                                                            modifier = Modifier.height(222.dp),
+                                                            onClick = {
+                                                                listenerSearch.onCardClicked(
+                                                                    movie.id.toInt()
+                                                                )
+                                                            },
                                                             mediaImg = movie.poster,
                                                             title = movie.title,
                                                             typeOfMedia = stringResource(R.string.movies),
@@ -299,7 +309,10 @@ private fun SearchScreenContent(
 
                                 TabOption.TV_SHOWS -> {
                                     val tvShows = state.tvShows.collectAsLazyPagingItems()
-                                    if (tvShows.itemCount == 0) {
+                                    val loadState = tvShows.loadState
+                                    val isEmpty =
+                                        tvShows.itemCount == 0 && loadState.refresh is LoadState.NotLoading && loadState.append is LoadState.NotLoading
+                                    if (isEmpty) {
                                         CountryTourExploring(
                                             modifier = Modifier
                                                 .fillMaxSize()
@@ -324,11 +337,14 @@ private fun SearchScreenContent(
                                                 val tvShows = tvShows[index]
                                                 if (tvShows != null) {
                                                     MediaCard(
-                                                        modifier = Modifier.height(222.dp)
-                                                        // .clickable { onMovieClick(movie.id.toInt()) },
-                                                        ,
+                                                        modifier = Modifier.height(222.dp),
                                                         mediaImg = tvShows.poster,
                                                         title = tvShows.title,
+                                                        onClick = {
+                                                            listenerSearch.onCardClicked(
+                                                                tvShows.id.toInt()
+                                                            )
+                                                        },
                                                         typeOfMedia = stringResource(R.string.tv_shows),
                                                         date = tvShows.releaseYear,
                                                         rating = tvShows.rating
@@ -343,8 +359,6 @@ private fun SearchScreenContent(
                     }
                 }
             }
-
-
             if (state.isDialogVisible) {
                 FilterDialog(
                     state = state.filterItemUiState,
@@ -352,13 +366,5 @@ private fun SearchScreenContent(
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun SearchScreenPreview() {
-    AflamiTheme {
-//        SearchScreen()
     }
 }

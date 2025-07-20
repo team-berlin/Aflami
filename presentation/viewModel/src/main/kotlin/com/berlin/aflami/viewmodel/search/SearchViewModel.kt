@@ -51,7 +51,6 @@ class SearchViewModel(
         loadRecentSearch()
     }
 
-    //not completed
     private fun loadRecentSearches() {
         startLoading()
         tryToCall(
@@ -84,7 +83,7 @@ class SearchViewModel(
         viewModelScope.launch {
             combine(
                 _state.map { it.searchQuery.trim() }.debounce(800).filter { it.isNotEmpty() }
-                .distinctUntilChanged(),
+                    .distinctUntilChanged(),
                 _state.map { it.selectedTabOption }.distinctUntilChanged(),
                 _state.map { it.filterTrigger }.distinctUntilChanged()
             ) { query, _, _ ->
@@ -225,11 +224,14 @@ class SearchViewModel(
         }
     }
 
-    override fun onTabOptionClicked(tabOption: Int) {
-        when (tabOption) {
-            0 -> updateState { it.copy(selectedTabOption = TabOption.MOVIES) }
-            1 -> updateState { it.copy(selectedTabOption = TabOption.TV_SHOWS) }
+    override fun onTabOptionClicked(tabOption: TabOption) {
+        updateState {
+            it.copy(
+                isLoading = true,
+                selectedTabOption = tabOption,
+            )
         }
+        onSearchQueryChanged(state.value.searchQuery)
     }
 
     override fun onCardClicked(id: Int) {
@@ -289,7 +291,7 @@ class SearchViewModel(
                 searchQuery = "",
                 isLoading = false,
                 isDialogVisible = false,
-                filterItemUiState = FilterItemUiState()
+                filterItemUiState = FilterItemUiState(),
             )
         }
     }
@@ -319,7 +321,7 @@ class SearchViewModel(
     }
 
     override fun onApplyButtonClicked() {
-        updateState { it.copy(filterTrigger = !it.filterTrigger) }
+        updateState { it.copy(filterTrigger = !it.filterTrigger, isLoading = true) }
     }
 
     override fun onClearButtonClicked() {
