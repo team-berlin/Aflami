@@ -9,7 +9,7 @@ import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIState
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.util.getCountriesNames
 import com.berlin.aflami.viewmodel.util.getCountryIsoCode
 import kotlinx.coroutines.flow.Flow

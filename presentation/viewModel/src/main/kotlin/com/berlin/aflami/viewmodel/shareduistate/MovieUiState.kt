@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.uistate
+package com.berlin.aflami.viewmodel.shareduistate
 
 data class MovieUIState(
     val id: Long = 0L,

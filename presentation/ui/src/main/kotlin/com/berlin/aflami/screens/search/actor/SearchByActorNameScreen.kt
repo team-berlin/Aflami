@@ -56,7 +56,7 @@ fun SearchByActorNameScreen(
                     navController.navigate(
                         Destination.MediaDetailsScreen.route(
                             it.movieId.toLong(),
-                            com.example.navigation.MediaType.MOVIE
+                            com.example.navigation.MediaType.TV_SHOW
                         )
                     )
                 }

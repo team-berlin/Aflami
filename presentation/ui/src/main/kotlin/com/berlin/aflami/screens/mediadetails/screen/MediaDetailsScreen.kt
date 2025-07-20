@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -64,25 +65,24 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
-import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
+import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.utils.formatRating
-import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
-import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
-import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.RowSectionUiState
-import com.berlin.aflami.viewmodel.mediadetails.TabContent
-import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
-import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 import com.example.navigation.Destination
 import kotlinx.coroutines.delay
@@ -90,23 +90,19 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MediaDetailsScreen(
-    viewModel: MediaDetailsViewmodel = koinViewModel(),
+    viewModel: MediaDetailsViewModel = koinViewModel(),
     navController: NavController
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val rowUiState by viewModel.rowSectionUiState.collectAsState()
-    val loading by viewModel.loading.collectAsState()
-    val error by viewModel.error.collectAsState()
+    val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
-    val sharedFlow = viewModel.uiEffect
     var showLoginRequiredDialog by remember { mutableStateOf(false) }
     val navMediaType = com.example.navigation.MediaType.valueOf(viewModel.type.name)
 
     LaunchedEffect(Unit) {
-        viewModel.getMovieCast(viewModel.id, viewModel.type, "US-EG")
+        viewModel.getMediaCast(viewModel.id, viewModel.type, "US-EG")
         viewModel.getMediaDetails(viewModel.id, viewModel.type, "en-US")
 
-        sharedFlow.collect { event ->
+        viewModel.effect.collect { event ->
             when (event) {
                 is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
                     navController.navigate(
@@ -129,22 +125,22 @@ fun MediaDetailsScreen(
                 is MediaDetailsScreenEffect.ShowRatingSheet -> {
                     showLoginRequiredDialog = true
                 }
+                else -> {}
             }
         }
     }
 
 
-    if (loading) {
+    if (uiState.isLoading) {
         Loading()
-    } else if (error != null) {
+    } else if (uiState.error != null) {
         // Your error UI
     } else {
         MediaDetailsContent(
             state = uiState,
-            rowUiState = rowUiState,
             listener = viewModel,
             onToggleExpand = { viewModel.onReadMoreDescriptionClicked(viewModel.id) },
-            isExpanded = viewModel.isDescriptionExpanded(viewModel.id),
+//            isExpanded = viewModel.onReadMoreDescriptionClicked(viewModel.id),
             isSelectedTab = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
@@ -199,9 +195,8 @@ private fun DrawScope.drawIndicator(
 @Composable
 fun MediaDetailsContent(
     state: MediaDetailsUiState,
-    rowUiState: RowSectionUiState,
     listener: MediaInteractionListener,
-    isExpanded: Boolean,
+//    isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
@@ -368,7 +363,7 @@ fun MediaDetailsContent(
 
                     ExpandableDescription(
                         text = state.overview,
-                        expanded = isExpanded,
+                       // expanded = isExpanded,
                         onToggleExpand = onToggleExpand,
                         previewColor = Theme.color.textColors.hint,
                         suffixColor = Theme.color.primary,
@@ -384,25 +379,28 @@ fun MediaDetailsContent(
                 )
             }
 
-            item {
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    color = Theme.color.stroke,
-                    thickness = 1.dp
-                )
-            }
+        item {
+            LineStrok()
+        }
 
-            item {
-                RowSection(
-                    rowUiState = rowUiState,
-                    isSelectedTab = isSelectedTab,
-                    onChipClick = onChipClick,
-                    isExpanded = isExpanded,
-                    onToggleExpand = onToggleExpand,
-                    mediaType = mediaType
-                )
-            }
+        item {
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                color = Theme.color.stroke,
+                thickness = 1.dp
+            )
+        }
+
+        item {
+            RowSection(
+                uiState = state,
+                isSelectedTab = isSelectedTab,
+                onChipClick = onChipClick,
+//                isExpanded = isExpanded,
+                onToggleExpand = onToggleExpand,
+                mediaType = mediaType
+            )
         }
         DefaultBar(
             modifier = Modifier.statusBarsPadding(),
@@ -425,41 +423,51 @@ fun MediaDetailsContent(
 
 
 @Composable
+fun LineStrok() {
+    Box(
+        modifier = Modifier.fillMaxWidth().height(1.dp).border(1.dp,Theme.color.stroke)
+    )
+}
+
+@Composable
 fun RowSection(
-    rowUiState: RowSectionUiState,
+    uiState: MediaDetailsUiState,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
-    isExpanded: Boolean,
+//    isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     mediaType: MediaType
 ) {
+    val visibleTabs = MovieDetailsTabs.entries.filter {
+        !(mediaType == MediaType.MOVIE && it == MovieDetailsTabs.SEASON)
+    }
+
     LazyRow(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .height(96.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        items(MovieDetailsTabs.entries) { tab ->
-            if (mediaType == MediaType.MOVIE && tab == MovieDetailsTabs.SEASON) {
-                // nothing
-            } else {
-                Chips(
-                    title = stringResource(movieDetailsTabsMapper(tab)),
-                    icon = painterResource(getMovieDetailsTabsIcon(tab)),
-                    isSelected = tab == isSelectedTab,
-                    onClick = { onChipClick(tab) }
-                )
-            }
+        items(visibleTabs) { tab ->
+            Chips(
+                title = stringResource(movieDetailsTabsMapper(tab)),
+                icon = painterResource(getMovieDetailsTabsIcon(tab)),
+                isSelected = tab == isSelectedTab,
+                onClick = { onChipClick(tab) }
+            )
         }
     }
 
-    when (rowUiState) {
+    when (val sectionState = uiState.rowSection) {
         is RowSectionUiState.Error -> {
-            Box(Modifier.height(80.dp), contentAlignment = Alignment.Center) {
+            Box(
+                Modifier.padding(top = 32.dp, bottom = 82.dp),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
                     modifier = Modifier.fillMaxSize(),
-                    text = rowUiState.message,
+                    text = sectionState.message,
                     style = Theme.textStyle.label.large,
                     color = Theme.color.textColors.body,
                     textAlign = TextAlign.Center
@@ -467,52 +475,71 @@ fun RowSection(
             }
         }
 
+        is RowSectionUiState.NoDataFound -> {
+            Box(
+                Modifier.padding(top = 32.dp, bottom = 82.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxSize(),
+                    text = sectionState.message,
+                    style = Theme.textStyle.label.large,
+                    color = Theme.color.textColors.body,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+        }
+
         is RowSectionUiState.Loading -> {
             Loading()
         }
 
         is RowSectionUiState.Success -> {
-            when (rowUiState.content) {
+            when (val content = sectionState.content) {
                 is TabContent.MoreLikeThis -> {
                     MoreLikeThisSection(
-                        mediaList = (rowUiState.content as TabContent.MoreLikeThis).items,
+                        mediaList = content.items,
                         mediaType = mediaType
                     )
                 }
 
                 is TabContent.Reviews -> {
                     ReviewsSection(
-                        reviews = (rowUiState.content as TabContent.Reviews).items,
-                        isExpanded = isExpanded,
-                        onToggleExpand = onToggleExpand
+                        reviews = content.items,
+                        onToggleExpand = onToggleExpand,
+//                        isExpanded = isExpanded,
                     )
                 }
 
                 is TabContent.Gallery -> {
                     GallerySection(
-                        mediaImages = (rowUiState.content as TabContent.Gallery).items,
+                        mediaImages = content.items,
                     )
                 }
 
                 is TabContent.CompanyProduction -> {
-                    CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
+                    CompanyProductionSection(
+                        companyProductions = content.items
+                    )
                 }
 
                 is TabContent.Season -> {
                     SeasonsSection(
-                        seasonsMap = (rowUiState.content as TabContent.Season).items,
+                        seasonsMap = content.items
                     )
                 }
             }
         }
 
     }
+
 }
 
 @Composable
 fun ExpandableDescription(
     text: String,
-    expanded: Boolean,
+//    expanded: Boolean,
     onToggleExpand: () -> Unit,
     maxPreviewLength: Int = 180,
     previewColor: Color,
@@ -522,17 +549,17 @@ fun ExpandableDescription(
 ) {
     val canExpand = text.length > maxPreviewLength
 
-    val displayText =
-        if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
+//    val displayText =
+//        if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
 
     val suffix = when {
-        expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_less)
-        !expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_more)
+//        expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_less)
+//        !expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_more)
         else -> ""
     }
 
     val annotated = buildAnnotatedString {
-        append(displayText)
+//        append(displayText)
         if (suffix.isNotEmpty()) {
             withStyle(
                 SpanStyle(

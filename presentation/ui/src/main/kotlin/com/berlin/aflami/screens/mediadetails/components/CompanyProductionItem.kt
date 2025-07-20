@@ -26,13 +26,13 @@ import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.CompanyProductionItem
+import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.ui.R
 
 @Composable
 fun CompanyProductionItem(
     modifier: Modifier = Modifier,
-    item: CompanyProductionItem
+    item: CompanyProductionUiState
 ) {
     Box(
         modifier = modifier
@@ -42,21 +42,17 @@ fun CompanyProductionItem(
 
     ) {
         AsyncImage(
-            modifier = Modifier
-                .fillMaxSize()
-                .width(160.dp)
-                .height(145.dp),
+            modifier = modifier,
             model = item.image,
             contentDescription = stringResource(R.string.company_production_image_cd),
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.Crop,
             error = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
             fallback = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+            placeholder = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder)
         )
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(72.dp)
                 .align(Alignment.BottomCenter)
                 .background(ExtraColors.overlayGradient)
         )
@@ -70,7 +66,7 @@ fun CompanyProductionItem(
                 text = item.name,
                 style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.onPrimary,
-                maxLines = 1,
+                maxLines = 2,
                 lineHeight = 24.sp,
                 overflow = TextOverflow.Ellipsis
             )
@@ -91,7 +87,7 @@ fun CompanyProductionItem(
 fun CompanyProductionItemPreview() {
     AflamiTheme {
         CompanyProductionItem(
-            item = CompanyProductionItem(
+            item = CompanyProductionUiState(
                 id = "1",
                 image = "https://image.tmdb.org/t/p/w500/c9dVHPOL3cqCr2593Ahk0nEKTEM.png",
                 name = "Universal",

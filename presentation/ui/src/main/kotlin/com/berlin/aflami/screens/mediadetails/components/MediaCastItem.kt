@@ -30,9 +30,9 @@ fun MediaCastItem(
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         AsyncImage(
-            error = painterResource(R.drawable.place_holder),
-            placeholder = painterResource(R.drawable.place_holder),
-            fallback = painterResource(R.drawable.place_holder),
+            error = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+            placeholder = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+            fallback = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
             modifier = modifier
                 .clip(RoundedCornerShape(16.dp))
                 .border(1.dp, color = Theme.color.stroke, RoundedCornerShape(16.dp)),

@@ -23,7 +23,7 @@ import coil3.compose.AsyncImage
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.screens.search.components.ExpandableText
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.uistate.ReviewUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
 import com.berlin.designsystem.R
 
 @Composable
@@ -31,7 +31,7 @@ fun ReviewItem(
     modifier: Modifier = Modifier,
     review: ReviewUiState,
     isLastItem: Boolean = false,
-    isExpanded: Boolean,
+//    isExpanded: Boolean,
     onToggleExpand: () -> Unit,
 ) {
     Column(
@@ -86,7 +86,7 @@ fun ReviewItem(
 
         ExpandableText(
             text = review.content,
-            isExpanded = isExpanded,
+//            isExpanded = isExpanded,
             onToggleExpand = onToggleExpand,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
