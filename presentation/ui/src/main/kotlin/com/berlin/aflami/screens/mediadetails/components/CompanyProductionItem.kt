@@ -42,21 +42,17 @@ fun CompanyProductionItem(
 
     ) {
         AsyncImage(
-            modifier = Modifier
-                .fillMaxSize()
-                .width(160.dp)
-                .height(145.dp),
+            modifier = Modifier,
             model = item.image,
             contentDescription = stringResource(R.string.company_production_image_cd),
             contentScale = ContentScale.Fit,
             error = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
             fallback = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+            placeholder = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder)
         )
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(72.dp)
                 .align(Alignment.BottomCenter)
                 .background(ExtraColors.overlayGradient)
         )
@@ -70,7 +66,7 @@ fun CompanyProductionItem(
                 text = item.name,
                 style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.onPrimary,
-                maxLines = 1,
+                maxLines = 2,
                 lineHeight = 24.sp,
                 overflow = TextOverflow.Ellipsis
             )
