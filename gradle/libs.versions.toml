@@ -147,5 +147,4 @@ retrofit = [
     "retrofit2-kotlinx-serialization-converter",
     "okhttp",
     "logging-interceptor",
-    "kotlinx-serialization-json"
 ]

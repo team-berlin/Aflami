@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.bundles.koin)
     implementation(libs.bundles.retrofit)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
