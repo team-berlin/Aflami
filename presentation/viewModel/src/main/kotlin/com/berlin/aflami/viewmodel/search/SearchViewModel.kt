@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.search
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -14,6 +15,7 @@ import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
+import com.berlin.aflami.viewmodel.util.MediaType
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,9 +86,8 @@ class SearchViewModel(
             combine(
                 _state.map { it.searchQuery.trim() }.debounce(800).filter { it.isNotEmpty() }
                     .distinctUntilChanged(),
-                _state.map { it.selectedTabOption }.distinctUntilChanged(),
                 _state.map { it.filterTrigger }.distinctUntilChanged()
-            ) { query, _, _ ->
+            ) { query, _ ->
                 query
             }.collectLatest {
                 onSearchKeywordChanged(it)
@@ -236,23 +237,29 @@ class SearchViewModel(
     }
 
     override fun onCardClicked(id: Int) {
+       val mediaType =  when (state.value.selectedTabOption) {
+            TabOption.MOVIES -> MediaType.MOVIE.name
+            TabOption.TV_SHOWS -> MediaType.TV_SHOW.name
+        }
         sendNewEffect(
             SearchUiEffect.NavigatedToMovieDetailsScreen(
-                id = id
+                id = id,
+                mediaType
+
             )
         )
     }
 
-    override fun onRecentSearchClicked(keyword: String) {
-        onSearchQueryChanged(keyword)
+    override fun onRecentSearchClicked(query: String) {
+        onSearchQueryChanged(query)
         observeSearchKeywordChanges()
     }
 
-    override fun onRecentSearchCleared(keyword: String) {
+    override fun onRecentSearchCleared(query: String) {
         updateState { it.copy(isLoading = false) }
         tryToCall(
             call = {
-                deleteQueryFromHistoryUseCase(keyword)
+                deleteQueryFromHistoryUseCase(query)
             },
             onSuccess = { loadRecentSearches() },
             onError = { error ->
