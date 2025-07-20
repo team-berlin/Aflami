@@ -73,6 +73,7 @@ import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
 import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.utils.formatRating
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
 import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
@@ -268,7 +269,7 @@ fun MediaDetailsContent(
                                 .align(Alignment.BottomStart)
                                 .padding(4.dp)
                         ) {
-                            Rating(rating = state.rating.toString())
+                            Rating(rating = formatRating(state.rating))
                         }
                     }
 
