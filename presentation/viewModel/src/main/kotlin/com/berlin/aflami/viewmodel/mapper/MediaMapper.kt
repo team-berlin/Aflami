@@ -5,24 +5,11 @@ import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.uistate.MediaType
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.entity.Episodes
 import com.berlin.entity.EpisodesSeason
-import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.ProductionCompanyEntity
 import com.berlin.entity.TvShowDetails
-
-fun Movie.toUIState(): MovieUIState {
-    return MovieUIState(
-        id = id,
-        title = title,
-        rating = rating.toString().take(3),
-        releaseYear = releaseYear.year.toString(),
-        genre = genre,
-        poster = poster
-    )
-}
 
 fun MovieDetails.toUiState(
     isFavorite: Boolean = false,
@@ -43,8 +30,7 @@ fun MovieDetails.toUiState(
     mediaType = MediaType.MOVIE,
     hasVideo = hasVideo ?: false,
     originalCountry = originCountry,
-    duration = duration
-)
+    duration = duration)
 
 fun TvShowDetails.toUiState(
     isFavorite: Boolean = false,
@@ -68,10 +54,7 @@ fun TvShowDetails.toUiState(
 
 
 fun ProductionCompanyEntity.toUiState() = CompanyProductionItem(
-    id = id.toString(),
-    image = poster,
-    name = name,
-    country = originCountry ?: ""
+    id = id.toString(), image = poster, name = name, country = originCountry ?: ""
 )
 
 fun Episodes.toUiState(): EpisodesUiState {
@@ -82,8 +65,7 @@ fun Episodes.toUiState(): EpisodesUiState {
         id = this.id ?: 0,
         name = this.name ?: "",
         overview = this.overview ?: "",
-        runtime =
-            this.runtime ?: "",
+        runtime = this.runtime ?: "",
         voteAverage = this.voteAverage ?: 0.0,
         stillPath = this.stillPath ?: ""
     )
@@ -95,7 +77,6 @@ fun EpisodesSeason.toUiState(): EpisodesSeasonUiState {
         name = this.name ?: "",
         episodes = this.episodes?.map { episode -> episode?.toUiState() } ?: emptyList(),
         seasonNumber = this.seasonNumber ?: 0,
-        posterPath = this.posterPath ?: ""
-    )
+        posterPath = this.posterPath ?: "")
 }
 

@@ -1,21 +1,6 @@
 package com.berlin.aflami.viewmodel.uistate
 
 import androidx.compose.ui.graphics.painter.Painter
-import com.berlin.entity.Episodes
-
-enum class MediaType { MOVIE, TV_SHOW }
-
-data class MediaUiState(
-    val id: Long = 0L,
-    val title: String = "",
-    val rating: String = "",
-    val releaseYear: String = "",
-    val genre: List<Int> = emptyList(),
-    val poster: String = "",
-    val mediaType: String = "",
-
-    )
-
 
 data class MediaDetailsUiState(
     val id: Long = 0L,
