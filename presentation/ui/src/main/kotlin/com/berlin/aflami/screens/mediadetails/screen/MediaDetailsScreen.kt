@@ -1,6 +1,7 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -31,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -203,200 +206,222 @@ fun MediaDetailsContent(
     onChipClick: (MovieDetailsTabs) -> Unit,
     mediaType: MediaType,
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Theme.color.surface)
-    ) {
-        item {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .height(293.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(263.dp)
-                ) {
-                    val pagerState = rememberPagerState(pageCount = { 4 })
+    val listState = rememberLazyListState()
+    val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
 
-                    LaunchedEffect(pagerState) {
-                        while (true) {
-                            delay(4000)
-                            val nextPage = (pagerState.currentPage + 1) % 4
-                            pagerState.animateScrollToPage(nextPage)
-                        }
-                    }
-
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier.fillMaxSize()
-                    ) { page ->
-                        AsyncImage(
-                            model = state.backdropUrl,
-                            contentDescription = null,
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-
-                    Indicator(pagerState)
-                    DefaultBar(
-                        modifier = Modifier.statusBarsPadding(),
-                        firstOption = painterResource(R.drawable.ic_rounded_star),
-                        lastOption = painterResource(R.drawable.ic_rounded_add_heart),
-                        onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
-                        onLastOptionClicked = {
-                            listener.onAddMediaToFavouriteListClicked(
-                                0,
-                                state.id.toInt()
-                            )
-                        },
-                        onNavigateBackClicked = { listener.onBackClicked() },
-                        optionContainerColor = Theme.color.surfaceHigh
-                    )
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(4.dp)
-                    ) {
-                        Rating(rating = state.rating.toString())
-                    }
-                }
-
-                Box(
-                    Modifier
-                        .align(Alignment.BottomCenter)
-                        .size(72.dp)
-                        .background(Theme.color.surface, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularIConButton(
-                        modifier = Modifier.align(Alignment.Center),
-                        painter = painterResource(R.drawable.play_arrow),
-                        onClick = { listener.onPlayClicked(state.id) },
-                        hasDropShadow = true,
-                        dropShadowAlpha = 0.09f,
-                        borderWidth = 2,
-                        size = 64,
-                        enabled = state.hasVideo,
-                        tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable,
-
-                        )
-                }
-            }
-        }
-
-        item {
-            Spacer(Modifier.height(12.dp))
-            Column(Modifier.padding(horizontal = 16.dp)) {
-                Text(
-                    text = state.title,
-                    style = Theme.textStyle.title.large,
-                    color = Theme.color.textColors.title,
-                )
-                Spacer(Modifier.height(12.dp))
-                Row {
-                    state.genres.forEach { g ->
-                        Box(modifier = Modifier.padding(end = 4.dp)) {
-                            GenersChip(label = g)
-                        }
-                    }
-                }
-            }
-        }
-
-        item {
-            Spacer(Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    state.releaseYear,
-                    style = Theme.textStyle.label.small,
-                    color = Theme.color.textColors.hint
-                )
-                state.duration.takeIf { !it.isNullOrEmpty() }?.let { duration ->
-                    CircularDot()
-                    Text(
-                        duration,
-                        style = Theme.textStyle.label.small,
-                        color = Theme.color.textColors.hint
-                    )
-                }
-
-                state.numberOfSeasons?.toString()?.let { numberOfSeasons ->
-                    CircularDot()
-                    Text(
-                        "$numberOfSeasons ${stringResource(R.string.season)}",
-                        style = Theme.textStyle.label.small,
-                        color = Theme.color.textColors.hint
-                    )
-                }
-
-                state.originalCountry.takeIf { !it.isNullOrEmpty() }?.let { originalCountry ->
-                    CircularDot()
-                    Text(
-                        originalCountry,
-                        style = Theme.textStyle.label.small,
-                        color = Theme.color.textColors.hint
-                    )
-                }
-            }
-        }
-
-        item {
-            Spacer(Modifier.height(24.dp))
-            Column(Modifier.padding(horizontal = 16.dp)) {
-                Text(
-                    text = stringResource(com.berlin.ui.R.string.description),
-                    color = Theme.color.textColors.title,
-                    style = Theme.textStyle.title.small,
-                )
-
-                ExpandableDescription(
-                    text = state.overview,
-                    expanded = isExpanded,
-                    onToggleExpand = onToggleExpand,
-                    previewColor = Theme.color.textColors.hint,
-                    suffixColor = Theme.color.primary,
-                    previewStyle = Theme.textStyle.body.small,
-                    suffixStyle = Theme.textStyle.label.medium
-                )
-            }
-        }
-        item {
-            Cast(
-                castState = state.mediaCast,
-                listener = listener
-            )
-        }
-
-        item {
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                color = Theme.color.stroke,
-                thickness = 1.dp
-            )
-        }
-
-        item {
-            RowSection(
-                rowUiState = rowUiState,
-                isSelectedTab = isSelectedTab,
-                onChipClick = onChipClick,
-                isExpanded = isExpanded,
-                onToggleExpand = onToggleExpand,
-                mediaType = mediaType
-            )
+    val appBarAlpha by remember {
+        derivedStateOf {
+            val offset = if (listState.firstVisibleItemIndex == 0)
+                listState.firstVisibleItemScrollOffset
+            else
+                appBarFadeHeightPx
+            (offset / appBarFadeHeightPx.toFloat()).coerceIn(0f, 1f)
         }
     }
+    val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
+    val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
+
+    Box(Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Theme.color.surface)
+        ) {
+            item {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(293.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(263.dp)
+                    ) {
+                        val pagerState = rememberPagerState(pageCount = { 4 })
+
+                        LaunchedEffect(pagerState) {
+                            while (true) {
+                                delay(4000)
+                                val nextPage = (pagerState.currentPage + 1) % 4
+                                pagerState.animateScrollToPage(nextPage)
+                            }
+                        }
+
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize()
+                        ) { page ->
+                            AsyncImage(
+                                model = state.backdropUrl,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        Indicator(pagerState)
+
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(4.dp)
+                        ) {
+                            Rating(rating = state.rating.toString())
+                        }
+                    }
+
+                    Box(
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .size(72.dp)
+                            .background(Theme.color.surface, CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularIConButton(
+                            modifier = Modifier.align(Alignment.Center),
+                            painter = painterResource(R.drawable.play_arrow),
+                            onClick = { listener.onPlayClicked(state.id) },
+                            hasDropShadow = true,
+                            dropShadowAlpha = 0.09f,
+                            borderWidth = 2,
+                            size = 64,
+                            enabled = state.hasVideo,
+                            tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable,
+
+                            )
+                    }
+                }
+            }
+
+            item {
+                Spacer(Modifier.height(12.dp))
+                Column(Modifier.padding(horizontal = 16.dp)) {
+                    Text(
+                        text = state.title,
+                        style = Theme.textStyle.title.large,
+                        color = Theme.color.textColors.title,
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Row {
+                        state.genres.forEach { g ->
+                            Box(modifier = Modifier.padding(end = 4.dp)) {
+                                GenersChip(label = g)
+                            }
+                        }
+                    }
+                }
+            }
+
+            item {
+                Spacer(Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        state.releaseYear,
+                        style = Theme.textStyle.label.small,
+                        color = Theme.color.textColors.hint
+                    )
+                    state.duration.takeIf { !it.isNullOrEmpty() }?.let { duration ->
+                        CircularDot()
+                        Text(
+                            duration,
+                            style = Theme.textStyle.label.small,
+                            color = Theme.color.textColors.hint
+                        )
+                    }
+
+                    state.numberOfSeasons?.toString()?.let { numberOfSeasons ->
+                        CircularDot()
+                        Text(
+                            "$numberOfSeasons ${stringResource(R.string.season)}",
+                            style = Theme.textStyle.label.small,
+                            color = Theme.color.textColors.hint
+                        )
+                    }
+
+                    state.originalCountry.takeIf { !it.isNullOrEmpty() }?.let { originalCountry ->
+                        CircularDot()
+                        Text(
+                            originalCountry,
+                            style = Theme.textStyle.label.small,
+                            color = Theme.color.textColors.hint
+                        )
+                    }
+                }
+            }
+
+            item {
+                Spacer(Modifier.height(24.dp))
+                Column(Modifier.padding(horizontal = 16.dp)) {
+                    Text(
+                        text = stringResource(com.berlin.ui.R.string.description),
+                        color = Theme.color.textColors.title,
+                        style = Theme.textStyle.title.small,
+                    )
+
+                    ExpandableDescription(
+                        text = state.overview,
+                        expanded = isExpanded,
+                        onToggleExpand = onToggleExpand,
+                        previewColor = Theme.color.textColors.hint,
+                        suffixColor = Theme.color.primary,
+                        previewStyle = Theme.textStyle.body.small,
+                        suffixStyle = Theme.textStyle.label.medium
+                    )
+                }
+            }
+            item {
+                Cast(
+                    castState = state.mediaCast,
+                    listener = listener
+                )
+            }
+
+            item {
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    color = Theme.color.stroke,
+                    thickness = 1.dp
+                )
+            }
+
+            item {
+                RowSection(
+                    rowUiState = rowUiState,
+                    isSelectedTab = isSelectedTab,
+                    onChipClick = onChipClick,
+                    isExpanded = isExpanded,
+                    onToggleExpand = onToggleExpand,
+                    mediaType = mediaType
+                )
+            }
+        }
+        DefaultBar(
+            modifier = Modifier.statusBarsPadding(),
+            firstOption = painterResource(R.drawable.ic_rounded_star),
+            lastOption = painterResource(R.drawable.ic_rounded_add_heart),
+            onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
+            onLastOptionClicked = {
+                listener.onAddMediaToFavouriteListClicked(
+                    0,
+                    state.id.toInt()
+                )
+            },
+            onNavigateBackClicked = { listener.onBackClicked() },
+            optionContainerColor = Theme.color.surfaceHigh,
+            containerColor = appBarBgColor,
+
+            )
+    }
 }
+
 
 @Composable
 fun RowSection(
