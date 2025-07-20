@@ -14,9 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,10 +31,12 @@ import com.berlin.designsystem.R
 @Composable
 fun Chips(
     title: String,
-    icon: Painter
+    icon: Painter,
+    isSelected: Boolean,
+    onClick: () -> Unit
 ) {
 
-    var isSelected by rememberSaveable { mutableStateOf(true) }
+    // var isSelected by rememberSaveable { mutableStateOf(true) }
 
     val background by animateColorAsState(
         targetValue = if (isSelected) Theme.color.secondary else Theme.color.surfaceHigh
@@ -67,7 +66,8 @@ fun Chips(
                     shape = RoundedCornerShape(16.dp), color = border
                 )
                 .clickable {
-                    isSelected = !isSelected
+                    onClick()
+                    // isSelected = !isSelected
                 },
             contentAlignment = Alignment.Center,
         ) {
@@ -97,7 +97,9 @@ private fun ChipsPreview() {
     AflamiTheme {
         Chips(
             title = "All",
-            icon = painterResource(R.drawable.all_movies)
+            icon = painterResource(R.drawable.all_movies),
+            isSelected = true,
+            onClick = { }
         )
     }
 }

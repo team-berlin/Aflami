@@ -1,7 +1,5 @@
 package com.berlin.aflami.viewmodel.uistate
 
-import com.berlin.entity.Movie
-
 data class MediaUiState(
     val id: Long = 0L,
     val title: String = "",

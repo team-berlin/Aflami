@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.search.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,12 +38,12 @@ fun MediaGridList(
                 if (movie != null) {
                     MediaCard(
                         modifier = Modifier
-                            .height(222.dp)
-                            .clickable {
-                                onMovieClick(
-                                    movie.id.toInt(), movie.mediaType.toString()
-                                )
-                            },
+                            .height(222.dp),
+                        onClick = {
+                            onMovieClick(
+                                movie.id.toInt(), movie.mediaType.toString()
+                            )
+                        },
                         mediaImg = movie.poster,
                         title = movie.title,
                         typeOfMedia = if (movie.mediaType.name == "movie") stringResource(R.string.movie) else stringResource(
