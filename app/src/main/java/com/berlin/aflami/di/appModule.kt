@@ -9,40 +9,24 @@ import com.berlin.remote.network.TVShowApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
 val appModule = module {
 
+    // JSON setup for Kotlinx Serialization
     single {
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        val client = OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val original = chain.request()
-                val url = original.url.newBuilder()
-                    .addQueryParameter("api_key", BuildConfig.API_KEY)
-                    .build()
-                val request = original.newBuilder().url(url).build()
-                chain.proceed(request)
-            }
-            .addInterceptor(logging)
-            .build()
-
-        val json = Json {
+        Json {
             ignoreUnknownKeys = true
             classDiscriminator = "media_type"
         }
+    }
 
+    single {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(get<Json>().asConverterFactory("application/json".toMediaType()))
             .build()
     }
 

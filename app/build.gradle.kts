@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.performance)
     alias(libs.plugins.ksp)
-    id ("kotlinx-serialization")
 }
 
 val properties = Properties().apply {
