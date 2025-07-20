@@ -15,8 +15,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import okhttp3.Interceptor
-import okhttp3.Response
 
 val appModule = module {
 
