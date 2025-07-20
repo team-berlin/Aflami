@@ -4,7 +4,7 @@ import com.berlin.aflami.viewmodel.mediadetails.CompanyProductionItem
 import com.berlin.aflami.viewmodel.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.util.MediaType
 import com.berlin.entity.Episodes
 import com.berlin.entity.EpisodesSeason
 import com.berlin.entity.MovieDetails
@@ -28,7 +28,7 @@ fun MovieDetails.toUiState(
     isFavorite = isFavorite,
     isOverviewExpanded = isOverviewExpanded,
     mediaType = MediaType.MOVIE,
-    hasVideo = hasVideo ?: false,
+    hasVideo = hasVideo == true,
     originalCountry = originCountry,
     duration = duration)
 

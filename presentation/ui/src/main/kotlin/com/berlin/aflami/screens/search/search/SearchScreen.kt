@@ -59,7 +59,6 @@ import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.designsystem.R
 import com.example.navigation.Destination
-import com.example.navigation.MediaType
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -88,8 +87,8 @@ fun SearchScreen(
 
                 is SearchUiEffect.NavigatedToMovieDetailsScreen -> {
                     val media = when (state.selectedTabOption) {
-                        TabOption.MOVIES -> MediaType.MOVIE
-                        TabOption.TV_SHOWS -> MediaType.TV_SHOW
+                        TabOption.MOVIES -> "Movie"
+                        TabOption.TV_SHOWS -> "Tv"
                     }
                     navController.navigate(
                         Destination.MediaDetailsScreen.route(
