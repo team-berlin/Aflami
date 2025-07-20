@@ -3,6 +3,7 @@ package com.berlin.aflami.screens.mediadetails.screen
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -61,24 +62,24 @@ import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
-import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
+import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsScreenEffect
-import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewModel
-import com.berlin.aflami.viewmodel.mediadetails.MediaInteractionListener
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaType
+import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 import com.example.navigation.Destination
 import kotlinx.coroutines.delay
@@ -95,7 +96,7 @@ fun MediaDetailsScreen(
     val navMediaType = com.example.navigation.MediaType.valueOf(viewModel.type.name)
 
     LaunchedEffect(Unit) {
-        viewModel.getMovieCast(viewModel.id, viewModel.type, "US-EG")
+        viewModel.getMediaCast(viewModel.id, viewModel.type, "US-EG")
         viewModel.getMediaDetails(viewModel.id, viewModel.type, "en-US")
 
         viewModel.effect.collect { event ->
@@ -121,6 +122,7 @@ fun MediaDetailsScreen(
                 is MediaDetailsScreenEffect.ShowRatingSheet -> {
                     showLoginRequiredDialog = true
                 }
+                else -> {}
             }
         }
     }
@@ -128,7 +130,7 @@ fun MediaDetailsScreen(
 
     if (uiState.isLoading) {
         Loading()
-    } else if (uiState.error!=null) {
+    } else if (uiState.error != null) {
         // Your error UI
     } else {
         MediaDetailsContent(
@@ -371,6 +373,10 @@ fun MediaDetailsContent(
         }
 
         item {
+            LineStrok()
+        }
+
+        item {
             HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -393,6 +399,13 @@ fun MediaDetailsContent(
 }
 
 @Composable
+fun LineStrok() {
+    Box(
+        modifier = Modifier.fillMaxWidth().height(1.dp).border(1.dp,Theme.color.stroke)
+    )
+}
+
+@Composable
 fun RowSection(
     uiState: MediaDetailsUiState,
     isSelectedTab: MovieDetailsTabs,
@@ -401,82 +414,102 @@ fun RowSection(
     onToggleExpand: () -> Unit,
     mediaType: MediaType
 ) {
+    val visibleTabs = MovieDetailsTabs.entries.filter {
+        !(mediaType == MediaType.MOVIE && it == MovieDetailsTabs.SEASON)
+    }
+
     LazyRow(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .height(96.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        items(MovieDetailsTabs.entries) { tab ->
-            if (mediaType == MediaType.MOVIE && tab == MovieDetailsTabs.SEASON) {
-                // nothing
-            } else {
-                Chips(
-                    title = stringResource(movieDetailsTabsMapper(tab)),
-                    icon = painterResource(getMovieDetailsTabsIcon(tab)),
-                    isSelected = tab == isSelectedTab,
-                    onClick = { onChipClick(tab) }
-                )
-            }
+        items(visibleTabs) { tab ->
+            Chips(
+                title = stringResource(movieDetailsTabsMapper(tab)),
+                icon = painterResource(getMovieDetailsTabsIcon(tab)),
+                isSelected = tab == isSelectedTab,
+                onClick = { onChipClick(tab) }
+            )
         }
     }
 
-//    when (uiState.rowSection) {
-//        is RowSectionUiState.Error -> {
-//            Box(Modifier.height(80.dp), contentAlignment = Alignment.Center) {
-//                Text(
-//                    modifier = Modifier.fillMaxSize(),
-//                    text = uiState.rowSection.message,
-//                    style = Theme.textStyle.label.large,
-//                    color = Theme.color.textColors.body,
-//                    textAlign = TextAlign.Center
-//                )
-//            }
-//        }
-//        is RowSectionUiState.NoDataFound ->{
-//
-//        }
-//        is RowSectionUiState.Loading -> {
-//            Loading()
-//        }
+    when (val sectionState = uiState.rowSection) {
+        is RowSectionUiState.Error -> {
+            Box(
+                Modifier.padding(top = 32.dp, bottom = 82.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxSize(),
+                    text = sectionState.message,
+                    style = Theme.textStyle.label.large,
+                    color = Theme.color.textColors.body,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
 
-//        is RowSectionUiState.Success -> {
-//            when (uiState.rowSection) {
-//                is TabContent.MoreLikeThis -> {
-//                    MoreLikeThisSection(
-//                        mediaList = (uiState.rowSection.content as TabContent.MoreLikeThis).items,
-//                        mediaType = mediaType
-//                    )
-//                }
-//
-//                is TabContent.Reviews -> {
-//                    ReviewsSection(
-//                        reviews = (rowUiState.content as TabContent.Reviews).items,
-////                        isExpanded = isExpanded,
-//                        onToggleExpand = onToggleExpand
-//                    )
-//                }
-//
-//                is TabContent.Gallery -> {
-//                    GallerySection(
-//                        mediaImages = (rowUiState.content as TabContent.Gallery).items,
-//                    )
-//                }
-//
-//                is TabContent.CompanyProduction -> {
-//                    CompanyProductionSection(companyProductions = (rowUiState.content as TabContent.CompanyProduction).items)
-//                }
-//
-//                is TabContent.Season -> {
-//                    SeasonsSection(
-//                        seasonsMap = (rowUiState.content as TabContent.Season).items,
-//                    )
-//                }
-//            }
-//        }
+        is RowSectionUiState.NoDataFound -> {
+            Box(
+                Modifier.padding(top = 32.dp, bottom = 82.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxSize(),
+                    text = sectionState.message,
+                    style = Theme.textStyle.label.large,
+                    color = Theme.color.textColors.body,
+                    textAlign = TextAlign.Center
+                )
+            }
 
-//    }
+        }
+
+        is RowSectionUiState.Loading -> {
+            Loading()
+        }
+
+        is RowSectionUiState.Success -> {
+            when (val content = sectionState.content) {
+                is TabContent.MoreLikeThis -> {
+                    MoreLikeThisSection(
+                        mediaList = content.items,
+                        mediaType = mediaType
+                    )
+                }
+
+                is TabContent.Reviews -> {
+                    ReviewsSection(
+                        reviews = content.items,
+                        onToggleExpand = onToggleExpand,
+//                        isExpanded = isExpanded,
+                    )
+                }
+
+                is TabContent.Gallery -> {
+                    GallerySection(
+                        mediaImages = content.items,
+                    )
+                }
+
+                is TabContent.CompanyProduction -> {
+                    CompanyProductionSection(
+                        companyProductions = content.items
+                    )
+                }
+
+                is TabContent.Season -> {
+                    SeasonsSection(
+                        seasonsMap = content.items
+                    )
+                }
+            }
+        }
+
+    }
+
 }
 
 @Composable

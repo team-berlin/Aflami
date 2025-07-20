@@ -1,9 +1,8 @@
 package com.berlin.aflami.viewmodel.mediadetails.uistate
 
 import androidx.compose.ui.graphics.painter.Painter
-import com.berlin.entity.Episodes
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 
-enum class MediaType { MOVIE, TV_SHOW }
 
 data class MediaDetailsUiState(
     val id: Long = 0L,
@@ -30,16 +29,6 @@ data class MediaDetailsUiState(
     val hasVideo: Boolean = false,
     val error: String? = "",
     val rowSection:RowSectionUiState = RowSectionUiState.Loading
-)
-
-data class MediaUiState(
-    val id: Long = 0L,
-    val title: String = "",
-    val rating: String = "",
-    val releaseYear: String = "",
-    val genre: List<Int> = emptyList(),
-    val poster: String = "",
-    val mediaType: String = ""
 )
 
 data class EpisodesUiState(

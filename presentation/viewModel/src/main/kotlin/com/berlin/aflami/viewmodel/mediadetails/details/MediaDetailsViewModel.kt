@@ -1,16 +1,18 @@
-package com.berlin.aflami.viewmodel.mediadetails
+package com.berlin.aflami.viewmodel.mediadetails.details
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
+import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaType
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.entity.Episodes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -285,8 +287,8 @@ class MediaDetailsViewModel(
         tryToCall(
             call = {
                 when (mediaType) {
-                    MediaType.MOVIE -> getMovieGalleryUseCase(id)
-                    MediaType.TV_SHOW -> getSeriesGalleryUseCase(id)
+                    MediaType.MOVIE -> getMovieGalleryUseCase(mediaId)
+                    MediaType.TV_SHOW -> getSeriesGalleryUseCase(mediaId)
                 }
 
             },
@@ -324,15 +326,44 @@ class MediaDetailsViewModel(
     }
 
     override fun onShowCompanyProductionClicked() {
-        _state.update { companyProduction ->
-            companyProduction.copy(
-                rowSection = RowSectionUiState.Success(
-                    content = TabContent.CompanyProduction(
-                        items = companyProductionCache ?: emptyList()
-                    )
-                )
+        _state.update {
+            it.copy(
+                rowSection = RowSectionUiState.Loading
             )
         }
+        tryToCall(
+            call = {},
+            onSuccess = {
+                if(companyProductionCache?.isEmpty() == true) {
+                    _state.update { companyProduction ->
+                        companyProduction.copy(
+                            rowSection = RowSectionUiState.NoDataFound("There is no company production!")
+                        )
+                    }
+                }
+                else{
+                    _state.update { companyProduction ->
+                        companyProduction.copy(
+                            rowSection = RowSectionUiState.Success(
+                                content = TabContent.CompanyProduction(
+                                    items = companyProductionCache ?: emptyList()
+                                )
+                            )
+                        )
+                    }
+                }
+            },
+            onError = {throwable->
+                _state.update { companyProduction ->
+                    companyProduction.copy(
+                        rowSection = RowSectionUiState.Error(
+                            message = throwable.message ?: "Unknown error"
+                        )
+                    )
+                }
+            },
+        )
+
     }
 
     override fun onSeasonsClicked(seriesId: Long, numberOfSeasons: Int) {
@@ -386,25 +417,23 @@ class MediaDetailsViewModel(
         TODO("Not yet implemented")
     }
 
-    fun getMovieCast(mediaId: Long, mediaType: MediaType, language: String) {
+    fun getMediaCast(mediaId: Long, mediaType: MediaType, language: String="US-EG") {
         _state.update {
-            it.copy(error = null)
+            it.copy(error = null, isLoading = true)
         }
         tryToCall(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
-                    MediaType.TV_SHOW -> getSeriesCastUseCase(
-                        mediaId,
-                        language
-                    ).map { it.toUiState() }
+                    MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId, language).map { it.toUiState() }
                 }
             },
             onSuccess = { cast ->
                 _state.update {
                     it.copy(
                         mediaCast = cast,
-                        mediaType = mediaType
+                        mediaType = mediaType,
+                        isLoading = false
                     )
                 }
             },
