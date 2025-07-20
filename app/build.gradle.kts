@@ -71,11 +71,7 @@ dependencies {
     implementation(libs.bundles.androidxUi)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.bundles.koin)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit2.kotlinx.serialization.converter)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
-    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.bundles.retrofit)
 
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
