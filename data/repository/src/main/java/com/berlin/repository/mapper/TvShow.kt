@@ -1,7 +1,6 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.TVShow
-import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 import kotlinx.datetime.toLocalDate
@@ -18,7 +17,7 @@ fun SearchingEntity.toTVShow(): TVShow {
     )
 }
 
-fun TVShowDto.toLocal(query: String, type: String): SearchingEntity {
+fun TVShowDto.toLocal(query: String, type: String, page: Int, mediaType: String): SearchingEntity {
     return SearchingEntity(
         query = query,
         type = type,
@@ -29,7 +28,7 @@ fun TVShowDto.toLocal(query: String, type: String): SearchingEntity {
         releaseYear = (this.firstAirDate ?: "").toLocalDate().toString(),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
-        mediaType = "TV",
-        page = 1,
+        mediaType = mediaType,
+        page = page,
     )
 }

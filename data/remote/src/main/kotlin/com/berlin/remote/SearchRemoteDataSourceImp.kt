@@ -4,9 +4,7 @@ import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.BaseResponse
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
-import com.berlin.repository.datasource.remote.dto.MovieResponse
 import com.berlin.repository.datasource.remote.dto.TVShowDto
-import com.berlin.repository.datasource.remote.dto.TVShowResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -21,7 +19,7 @@ class SearchRemoteDataSourceImp(
         return client.get(ApiConstants.SEARCH_BY_COUNTRY) {
             parameter(ApiConstants.WITH_ORIGIN_COUNTRY, countryName)
             parameter(ApiConstants.LANGUAGE, language)
-            parameter("page", page)
+            parameter(ApiConstants.PAGE, page)
         }.body()
     }
 

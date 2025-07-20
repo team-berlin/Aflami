@@ -5,7 +5,6 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import kotlinx.datetime.LocalDate
 import java.time.Instant
-import java.time.format.DateTimeFormatter
 
 const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
 
@@ -20,7 +19,7 @@ fun SearchingEntity.toDomain(): Movie {
     )
 }
 
-fun MovieDto.toLocal(query: String, type: String, page: Int,mediaType:String): SearchingEntity {
+fun MovieDto.toLocal(query: String, type: String, page: Int, mediaType: String): SearchingEntity {
     return SearchingEntity(
         query = query,
         type = type,

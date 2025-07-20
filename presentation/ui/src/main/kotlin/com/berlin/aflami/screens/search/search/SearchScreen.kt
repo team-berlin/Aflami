@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -55,6 +56,7 @@ import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchInteractionListener
+import com.berlin.aflami.viewmodel.search.SearchUiEffect
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
@@ -66,22 +68,50 @@ fun SearchScreen(
     navController: NavController, viewModel: SearchViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val recent by viewModel.recentSearchState.collectAsState()
+//    val recent by viewModel.recentSearchState.collectAsState()
+
+    val recentSearchState = viewModel.recentSearchState.collectAsState()
 
     SearchScreenContent(
+        navController = navController,
         state = state,
         listenerSearch = viewModel,
         filterSearch = viewModel,
-        recentSearchState = recent
+        recentSearchState = recentSearchState.value,
+        onDeleteItem = viewModel::deleteQueryFromHistory,
+        onClearAll = viewModel::clearSearchHistory,
+        onItemClick = viewModel::onItemClicked
     )
+
+    LaunchedEffect(Unit){
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                SearchUiEffect.NavigatedBack -> navController.popBackStack()
+                is SearchUiEffect.NavigatedToMovieDetailsScreen -> {
+
+                }
+                is SearchUiEffect.NavigateToActorSearch -> {
+
+                }
+                is SearchUiEffect.NavigateToWorldSearch -> {
+
+                }
+            }
+
+        }
+    }
 }
 
 @Composable
 private fun SearchScreenContent(
     state: SearchUiState,
-    recentSearchState: List<String>,
     listenerSearch: SearchInteractionListener,
-    filterSearch: FilterInteractionListener
+    filterSearch: FilterInteractionListener,
+    recentSearchState: List<String>,
+    onItemClick: (String) -> Unit,
+    onDeleteItem: (String) -> Unit,
+    onClearAll: () -> Unit,
+    navController: NavController,
 ) {
     val focusManager = LocalFocusManager.current
     Box(
@@ -89,7 +119,7 @@ private fun SearchScreenContent(
             .fillMaxSize()
             .clickable(
                 indication = null, interactionSource = remember { MutableInteractionSource() }) {
-//                focusManager.clearFocus()
+                focusManager.clearFocus()
             }
             .focusable(),
     ) {
@@ -107,11 +137,10 @@ private fun SearchScreenContent(
                         .clip(RoundedCornerShape(12.dp))
                         .background(Theme.color.surfaceHigh)
                         .clickable {
-//                            listenerSearch.onSearchCleared()
-//                            focusManager.clearFocus()
+                            listenerSearch.onBackClicked()
                         }
                         .onFocusChanged {
-                            //listenerSearch.onSearchCleared()
+                            listenerSearch.onSearchCleared()
                         },
                     contentAlignment = Alignment.Center,
 
@@ -134,15 +163,14 @@ private fun SearchScreenContent(
                     .clip(RoundedCornerShape(16.dp))
                     .background(Theme.color.surfaceHigh)
                     .onFocusChanged {
-                        listenerSearch.onSearchCleared()
-//                        onFocusChanged(it.isFocused)
+//                        listenerSearch.onSearchCleared()
                     },
                 hintText = stringResource(R.string.search_hint_text),
                 isEnabled = true,
                 maxLines = 1,
                 borderColor = Theme.color.stroke,
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search
+                    imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = { keyboardController?.hide() },
@@ -174,9 +202,9 @@ private fun SearchScreenContent(
                     if (recentSearchState.isNotEmpty()) {
                         SearchData(
                             recentSearch = recentSearchState,
-                            onDeleteItem = listenerSearch::onRecentSearchCleared,
-                            onItemClick = listenerSearch::onRecentSearchClicked,
-                            onClearAll = listenerSearch::onAllRecentSearchesCleared
+                            onDeleteItem = onDeleteItem,
+                            onItemClick = onItemClick,
+                            onClearAll = onClearAll,
                         )
 
                     } else {

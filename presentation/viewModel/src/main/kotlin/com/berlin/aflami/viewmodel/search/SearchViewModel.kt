@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.search
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -13,7 +12,6 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.selectByGenre
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.aflami.viewmodel.uistate.MovieUIState
 import com.berlin.aflami.viewmodel.uistate.TVShowUiState
 import kotlinx.coroutines.FlowPreview
@@ -33,16 +31,14 @@ import usecase.GetRecentHistoryUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
-import java.util.Locale
 
-@OptIn(FlowPreview::class)
 class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
     private val searchTvShowsUseCase: GetSearchTvShowsUseCase,
     private val getRecentHistoryUseCase: GetRecentHistoryUseCase,
     private val saveRecentHistoryUseCase: SaveRecentHistoryUseCase,
     private val deleteQueryFromHistoryUseCase: DeleteQueryFromHistoryUseCase,
-    private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase,
+    private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()), SearchInteractionListener,
     FilterInteractionListener {
 
@@ -50,21 +46,19 @@ class SearchViewModel(
     private val _recentSearchState = MutableStateFlow<List<String>>(emptyList())
     val recentSearchState = _recentSearchState.asStateFlow()
 
-
     init {
         observeSearchKeywordChanges()
+        loadRecentSearch()
     }
 
     //not completed
-    private fun loadData() {
+    private fun loadRecentSearches() {
         startLoading()
         tryToCall(
             call = {
                 getRecentHistoryUseCase()
             },
-            onSuccess = {
-                onLoadRecentSearchesSuccess(it)
-            },
+            onSuccess = ::onLoadRecentSearchesSuccess,
             onError = {
                 updateState {
                     it.copy(
@@ -97,6 +91,7 @@ class SearchViewModel(
                 query
             }.collectLatest {
                 onSearchKeywordChanged(it)
+                loadRecentSearch()
             }
         }
     }
@@ -109,7 +104,6 @@ class SearchViewModel(
     }
 
     private fun fetchTvShowsByQuery(query: String) {
-        Log.d("PAGING", "fetchTvShowsByQuery: $query")
         tryToCall(
             call = {
                 Pager(
@@ -123,20 +117,18 @@ class SearchViewModel(
                                 )
                             })
                     }).flow.map { it.map { it.toUiState() } }.map { pagingData ->
-                        pagingData.filter { tvUiState ->
-                            val selectedRating = state.value.filterItemUiState.selectedRating
-                            val selectedGenre = state.value.filterItemUiState.selectedGenre
-                            val matchesRating = tvUiState.rating.toFloatOrNull()
-                                ?.let { it > selectedRating } != false
-                            val matchesGenre = when (selectedGenre) {
-                                GenreType.ALL -> true
-                                else -> tvUiState.genre.isEmpty() || tvUiState.genre.any {
-                                    it == selectedGenre?.toGenreType()
-                                }
-                            } || tvUiState.genre.isEmpty()
-                            matchesRating && matchesGenre
-                        }
-                    }.cachedIn(viewModelScope)
+                    pagingData.filter { tvUiState ->
+                        val selectedRating = state.value.filterItemUiState.selectedRating
+                        val selectedGenre = state.value.filterItemUiState.selectedGenre
+                        val matchesRating =
+                            tvUiState.rating.toFloatOrNull()?.let { it > selectedRating } == true
+                        val matchesGenre =
+                            selectedGenre == null || selectedGenre == GenreType.ALL || tvUiState.genre.any {
+                                it == selectedGenre.toGenreType()
+                            }
+                        matchesGenre && matchesRating
+                    }
+                }.cachedIn(viewModelScope)
             },
             onSuccess = ::onFetchTvShowsSuccess,
             onError = { error ->
@@ -155,7 +147,7 @@ class SearchViewModel(
             call = {
                 Pager(
                     config = PagingConfig(
-                        pageSize = 20, initialLoadSize = 20
+                        pageSize = 10, initialLoadSize = 10
                     ), pagingSourceFactory = {
                         BasePagingSource(
                             call = { page ->
@@ -169,14 +161,12 @@ class SearchViewModel(
                             val selectedRating = state.value.filterItemUiState.selectedRating
                             val selectedGenre = state.value.filterItemUiState.selectedGenre
                             val matchesRating = movieUiState.rating.toFloatOrNull()
-                                ?.let { it > selectedRating } != false
-                            val matchesGenre = when (selectedGenre) {
-                                GenreType.ALL -> true
-                                else -> movieUiState.genre.isEmpty() || movieUiState.genre.any {
-                                    it == selectedGenre?.toGenreType()
+                                ?.let { it > selectedRating } == true
+                            val matchesGenre =
+                                selectedGenre == null || selectedGenre == GenreType.ALL || movieUiState.genre.any {
+                                    it == selectedGenre.toGenreType()
                                 }
-                            } || movieUiState.genre.isEmpty()
-                            matchesRating && matchesGenre
+                            matchesGenre && matchesRating
                         }
                     }.cachedIn(viewModelScope)
             },
@@ -203,7 +193,7 @@ class SearchViewModel(
     override fun onSearchActionClicked() {
         onSearchQueryChanged(state.value.searchQuery)
         tryToCall(call = {
-            saveRecentHistoryUseCase(state.value.searchQuery)
+            saveRecentHistoryUseCase
         }, onSuccess = { result ->
             updateState { it.copy(isLoading = false) }
         }, onError = { error ->
@@ -255,7 +245,6 @@ class SearchViewModel(
         observeSearchKeywordChanges()
     }
 
-    //not completed
     override fun onRecentSearchCleared(keyword: String) {
         updateState { it.copy(isLoading = false) }
         tryToCall(
@@ -273,12 +262,11 @@ class SearchViewModel(
         )
     }
 
-    //not completed
     override fun onAllRecentSearchesCleared() {
         updateState { it.copy(isLoading = false) }
         tryToCall(
             call = {
-                clearSearchHistoryUseCase()
+                clearSearchHistoryUseCase
             },
             onSuccess = ::onClearAllRecentSearchesSuccess,
             onError = { error ->
@@ -305,7 +293,6 @@ class SearchViewModel(
             )
         }
     }
-
 
     override fun onCancelButtonClicked() {
         updateState {
@@ -339,7 +326,7 @@ class SearchViewModel(
         updateState { it.copy(filterItemUiState = FilterItemUiState()) }
     }
 
-    fun loadRecentSearches() {
+    fun loadRecentSearch() {
         viewModelScope.launch {
             val recentHistoryQueries = getRecentHistoryUseCase()
             _recentSearchState.value = recentHistoryQueries
@@ -349,15 +336,19 @@ class SearchViewModel(
     fun deleteQueryFromHistory(query: String) {
         viewModelScope.launch {
             deleteQueryFromHistoryUseCase(query)
-            loadRecentSearches()
+            loadRecentSearch()
         }
     }
 
     fun clearSearchHistory() {
         viewModelScope.launch {
             clearSearchHistoryUseCase()
-            loadRecentSearches()
+            loadRecentSearch()
         }
+    }
+
+    fun onItemClicked(query: String) {
+        updateState { it.copy(searchQuery = query, isLoading = true) }
     }
 
 }
