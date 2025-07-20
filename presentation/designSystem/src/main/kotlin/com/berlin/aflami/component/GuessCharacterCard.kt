@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -171,19 +172,20 @@ fun HorizontalDiagonalRepeatResponsive(
 ) {
     val itemCount = placeHolderWidth.value.toInt()
 
-    Row(
+    LazyRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
-        verticalAlignment = Alignment.Top
+        verticalAlignment = Alignment.CenterVertically,
+        userScrollEnabled = false,
     ) {
-        repeat(itemCount) {
+        items(itemCount) {
             Icon(
                 painter = icon,
                 contentDescription = null,
                 tint = color,
                 modifier= Modifier
                     .height(32.dp)
-                    .width(40.dp),
+                    .width(30.dp),
 
             )
         }
