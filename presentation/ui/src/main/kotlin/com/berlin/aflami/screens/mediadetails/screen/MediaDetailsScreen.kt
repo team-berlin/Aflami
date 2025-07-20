@@ -1,13 +1,11 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -38,13 +35,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -64,6 +56,7 @@ import com.berlin.aflami.component.Rating
 import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
+import com.berlin.aflami.screens.mediadetails.components.Indicator
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
@@ -166,32 +159,6 @@ fun MediaDetailsScreen(
     }
 }
 
-val PagerState.pageOffset: Float
-    get() = currentPage + currentPageOffsetFraction
-
-fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
-    return (currentPage - page) + currentPageOffsetFraction
-}
-
-private fun DrawScope.drawIndicator(
-    x: Float,
-    y: Float,
-    width: Float,
-    height: Float,
-    radius: CornerRadius,
-    color: Color
-) {
-    val rect = RoundRect(
-        x - width / 2,
-        y - height / 2,
-        x + width / 2,
-        y + height / 2,
-        radius
-    )
-    val path = Path().apply { addRoundRect(rect) }
-    drawPath(path = path, color = color)
-}
-
 @Composable
 fun MediaDetailsContent(
     state: MediaDetailsUiState,
@@ -219,7 +186,7 @@ fun MediaDetailsContent(
                         .fillMaxWidth()
                         .height(263.dp)
                 ) {
-                    val pagerState = rememberPagerState(pageCount = { 4 })
+                    val pagerState = rememberPagerState(pageCount = { 5 })
 
                     LaunchedEffect(pagerState) {
                         while (true) {
@@ -241,7 +208,11 @@ fun MediaDetailsContent(
                         )
                     }
 
-                    Indicator(pagerState)
+                    Indicator(
+                        modifier = Modifier.align(Alignment.BottomEnd),
+                        pagerState = pagerState,
+                    )
+
                     DefaultBar(
                         modifier = Modifier.statusBarsPadding(),
                         firstOption = painterResource(R.drawable.ic_rounded_star),
@@ -606,65 +577,6 @@ fun CircularDot() {
             .background(Theme.color.stroke)
     )
 }
-
-@Composable
-fun BoxScope.Indicator(pagerState: PagerState) {
-    val count = 4
-
-    val circleSpacing = 4.dp
-    val dotWidth = 8.dp
-    val dotHeight = 8.dp
-    val activeLineWidth = 24.dp
-    val radius = with(LocalDensity.current) { CornerRadius(4.dp.toPx(), 4.dp.toPx()) }
-    val activeIndicatorColor = Theme.color.primary
-    val inactiveIndicatorColor = Theme.color.textColors.hint
-    val backGroundColor = Theme.color.primaryVariant
-
-    Canvas(
-        modifier = Modifier
-            .width(8.dp)
-            .align(Alignment.BottomEnd)
-            .padding(end = 8.dp, bottom = 8.dp)
-    ) {
-        val spacing = circleSpacing.toPx()
-        val dotWidthPx = dotWidth.toPx()
-        val dotHeightPx = dotHeight.toPx()
-        val activeDotHeightPx = activeLineWidth.toPx()
-        var y = size.height
-        val x = center.x
-
-        drawRoundRect(
-            color = backGroundColor,
-            size = size,
-        )
-
-        repeat(count) { i ->
-            val posOffset = pagerState.pageOffset
-            val dotOffset = posOffset % 1
-            val current = posOffset.toInt()
-
-            val factor = (dotOffset * (activeDotHeightPx - dotHeightPx))
-
-            val calculatedHeight = when {
-                i == current -> activeDotHeightPx - factor
-                i - 1 == current || (i == 0 && posOffset > count - 1) -> dotHeightPx + factor
-                else -> dotHeightPx
-            }
-            val indicatorColor =
-                if (i == current) activeIndicatorColor else inactiveIndicatorColor
-            drawIndicator(
-                x = x,
-                y = y - calculatedHeight / 2,
-                width = dotWidthPx,
-                height = calculatedHeight,
-                radius = radius,
-                color = indicatorColor
-            )
-            y -= calculatedHeight + spacing
-        }
-    }
-}
-
 
 fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
     return when (tab) {
