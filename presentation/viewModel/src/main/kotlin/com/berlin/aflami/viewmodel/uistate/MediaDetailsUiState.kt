@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.uistate
 
 import androidx.compose.ui.graphics.painter.Painter
+import com.berlin.aflami.viewmodel.util.MediaType
 
 data class MediaDetailsUiState(
     val id: Long = 0L,

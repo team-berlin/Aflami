@@ -115,7 +115,8 @@ class SearchViewModel(
                                     query = query, page = page
                                 )
                             })
-                    }).flow.map { it.map { it.toUiState() } }.map { pagingData ->
+                    }).flow
+                    .map { it.map { it.toUiState() } }.map { pagingData ->
                     pagingData.filter { tvUiState ->
                         val selectedRating = state.value.filterItemUiState.selectedRating
                         val selectedGenre = state.value.filterItemUiState.selectedGenre
