@@ -86,13 +86,10 @@ fun SearchScreen(
                 is SearchUiEffect.NavigatedBack -> navController.popBackStack()
 
                 is SearchUiEffect.NavigatedToMovieDetailsScreen -> {
-                    val media = when (state.selectedTabOption) {
-                        TabOption.MOVIES -> "Movie"
-                        TabOption.TV_SHOWS -> "Tv"
-                    }
+
                     navController.navigate(
                         Destination.MediaDetailsScreen.route(
-                            effect.id.toLong(), media
+                            effect.id.toLong(), effect.mediaType
                         )
                     )
                 }
@@ -252,12 +249,16 @@ private fun SearchScreenContent(
                         }
 
                         else -> {
+                            val movies = state.movies.collectAsLazyPagingItems()
+                            val moviesLoadState = movies.loadState
+                            val tvShows = state.tvShows.collectAsLazyPagingItems()
+                            val tvShowsLoadState = tvShows.loadState
                             when (state.selectedTabOption) {
+
                                 TabOption.MOVIES -> {
-                                    val movies = state.movies.collectAsLazyPagingItems()
-                                    val loadState = movies.loadState
+
                                     val isEmpty =
-                                        movies.itemCount == 0 && loadState.refresh is LoadState.NotLoading && loadState.append is LoadState.NotLoading
+                                        movies.itemCount == 0 && moviesLoadState.refresh is LoadState.NotLoading && moviesLoadState.append is LoadState.NotLoading
                                     if (isEmpty) {
                                         CountryTourExploring(
                                             modifier = Modifier
@@ -267,7 +268,7 @@ private fun SearchScreenContent(
                                             com.berlin.ui.R.string.no_search_result,
                                             com.berlin.ui.R.string.please_try_with_another_keyword
                                         )
-                                    } else if (LoadState.Loading == loadState.refresh) {
+                                    } else if (LoadState.Loading == moviesLoadState.refresh) {
                                         Loading()
                                     } else {
                                         Box(modifier = Modifier.fillMaxSize()) {
@@ -282,7 +283,7 @@ private fun SearchScreenContent(
                                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                                             ) {
                                                 items(
-                                                    count = movies.itemCount,
+                                                    count = movies.itemCount
                                                 ) { index ->
                                                     val movie = movies[index]
                                                     if (movie != null) {
@@ -290,7 +291,7 @@ private fun SearchScreenContent(
                                                             modifier = Modifier.height(222.dp),
                                                             onClick = {
                                                                 listenerSearch.onCardClicked(
-                                                                    movie.id.toInt()
+                                                                    id = movie.id.toInt()
                                                                 )
                                                             },
                                                             mediaImg = movie.poster,
@@ -307,10 +308,9 @@ private fun SearchScreenContent(
                                 }
 
                                 TabOption.TV_SHOWS -> {
-                                    val tvShows = state.tvShows.collectAsLazyPagingItems()
-                                    val loadState = tvShows.loadState
+
                                     val isEmpty =
-                                        tvShows.itemCount == 0 && loadState.refresh is LoadState.NotLoading && loadState.append is LoadState.NotLoading
+                                        tvShows.itemCount == 0 && tvShowsLoadState.refresh is LoadState.NotLoading && tvShowsLoadState.append is LoadState.NotLoading
                                     if (isEmpty) {
                                         CountryTourExploring(
                                             modifier = Modifier
@@ -331,10 +331,12 @@ private fun SearchScreenContent(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                                         ) {
                                             items(
-                                                count = tvShows.itemCount,
+                                                count = tvShows.itemCount
                                             ) { index ->
                                                 val tvShows = tvShows[index]
                                                 if (tvShows != null) {
+
+
                                                     MediaCard(
                                                         modifier = Modifier.height(222.dp),
                                                         mediaImg = tvShows.poster,
@@ -348,6 +350,7 @@ private fun SearchScreenContent(
                                                         date = tvShows.releaseYear,
                                                         rating = tvShows.rating
                                                     )
+
                                                 }
                                             }
                                         }
