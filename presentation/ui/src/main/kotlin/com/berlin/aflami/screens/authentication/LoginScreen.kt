@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.authentication
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,6 +39,8 @@ import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.zIndex
+import com.berlin.aflami.component.ThemeAndLocalePreviews
 
 @Composable
 fun LoginScreen() {
@@ -45,9 +49,6 @@ fun LoginScreen() {
 
 @Composable
 fun LoginContent() {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -58,14 +59,6 @@ fun LoginContent() {
             )
             .padding(horizontal = 12.dp),
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ellipse12),
-            contentDescription = null,
-            modifier = Modifier
-                .size(64.dp)
-                .align(Alignment.TopStart)
-                .offset(x = 304.dp, y = 128.dp)
-        )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -73,12 +66,12 @@ fun LoginContent() {
         ) {
             LoginHeader()
             LoginForm(
-                username = username,
-                password = password,
-                passwordError = passwordError,
-                onUsernameChange = { username = it },
-                onPasswordChange = { password = it },
-                onPasswordErrorChange = { passwordError = it }
+                username = TODO(),
+                password = TODO(),
+                passwordError = TODO(),
+                onUsernameChange = TODO(),
+                onPasswordChange = TODO(),
+                onPasswordErrorChange = TODO()
             )
             Spacer(modifier = Modifier.height(48.dp))
             LoginButtons()
@@ -210,7 +203,7 @@ fun LoginButtons() {
             )
         }
         PrimaryButton(
-            onClick = { /* Handle guest login */ },
+            onClick = {},
             containerColor = Theme.color.primaryVariant,
             modifier = Modifier
                 .fillMaxWidth()
@@ -224,9 +217,8 @@ fun LoginButtons() {
         }
     }
 }
-
-
-@Preview(showBackground = true, heightDp = 800, widthDp = 360)
+@Preview(
+    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF0D090B, heightDp = 700, widthDp = 360)
 @Composable
 fun LoginScreenPreview() {
     AflamiTheme(isDarkTheme = false) {
