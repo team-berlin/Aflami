@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,9 @@ fun MediaCard(
             }
     ) {
         AsyncImage(
+            error = painterResource(R.drawable.ic_placeholder),
+            placeholder = painterResource(R.drawable.ic_placeholder),
+            fallback = painterResource(R.drawable.ic_placeholder),
             model = mediaImg,
             contentDescription = stringResource(R.string.api_image_card_content),
             modifier = Modifier.fillMaxSize(),
