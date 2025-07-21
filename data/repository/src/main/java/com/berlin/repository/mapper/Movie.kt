@@ -10,7 +10,6 @@ import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import kotlinx.datetime.LocalDate
 import java.time.Instant
-import java.time.format.DateTimeFormatter
 
 import com.berlin.repository.datasource.remote.dto.ProductionCompany
 
@@ -27,7 +26,7 @@ fun SearchingEntity.toDomain(): Movie {
     )
 }
 
-fun MovieDto.toLocal(query: String, type: String, page: Int,mediaType:String): SearchingEntity {
+fun MovieDto.toLocal(query: String, type: String, page: Int, mediaType: String): SearchingEntity {
     return SearchingEntity(
         query = query,
         type = type,
