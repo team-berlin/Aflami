@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.SearchViewModel
@@ -154,7 +155,6 @@ fun FilterDialog(
                         onClick = { viewModel.clearFilters() },
                         modifier = Modifier
                             .fillMaxWidth()
-
                             .height(56.dp),
                         containerColor = Theme.color.primaryVariant
                     ) {
@@ -277,38 +277,7 @@ fun RatingBar(
     }
 }
 
-@Composable
-fun PrimaryButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    containerColor: Color = Color.Magenta,
-    gradientColor: Color? = null,
-    content: @Composable RowScope.() -> Unit
-) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = if (gradientColor != null)
-                        listOf(containerColor, gradientColor) else listOf(
-                        containerColor,
-                        containerColor
-                    )
-                )
-            )
-            .clickable(onClick = onClick)
-            .padding(vertical = 8.dp, horizontal = 24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            content()
-        }
-    }
-}
+
 
 @Preview(showBackground = true)
 @Composable
