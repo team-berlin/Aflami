@@ -103,7 +103,7 @@ fun LoginContent() {
 fun LoginLogo() {
     IconButton(
         painter = painterResource(com.berlin.designsystem.R.drawable.home_logo),
-        contentDescription = "search",
+        contentDescription = stringResource(R.string.logo),
         modifier = Modifier
             .size(48.dp)
             .clip(RoundedCornerShape(12.dp))

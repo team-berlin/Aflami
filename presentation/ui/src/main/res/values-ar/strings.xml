@@ -37,5 +37,7 @@
     <string name="continue_as_guest">المتابعة كزائر</string>
     <string name="dont_have_account">ليس لديك حساب؟</string>
     <string name="create_account">إنشاء حساب</string>
+    <string name="logo">شعار</string>
+
 
 </resources>
