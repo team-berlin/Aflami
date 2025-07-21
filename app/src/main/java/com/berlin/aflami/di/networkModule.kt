@@ -2,10 +2,12 @@ package com.berlin.aflami.di
 
 import com.berlin.aflami.BuildConfig
 import com.berlin.aflami.util.ApiKeyInterceptor
+import com.berlin.aflami.util.SessionIdInterceptor
 import com.berlin.remote.network.MovieApiService
 import com.berlin.remote.network.SearchApiService
 import com.berlin.remote.network.TVShowApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -13,6 +15,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
+@OptIn(ExperimentalSerializationApi::class)
 val networkModule = module {
 
     single {
@@ -24,6 +27,7 @@ val networkModule = module {
     single {
         OkHttpClient.Builder()
             .addInterceptor(ApiKeyInterceptor())
+            .addInterceptor(SessionIdInterceptor())
             .addInterceptor(get<HttpLoggingInterceptor>())
             .build()
     }
@@ -31,7 +35,6 @@ val networkModule = module {
     single {
         Json {
             ignoreUnknownKeys = true
-            classDiscriminator = "media_type"
         }
     }
 

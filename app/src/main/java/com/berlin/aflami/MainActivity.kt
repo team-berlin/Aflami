@@ -15,6 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.navigation.AflamiNavGraph
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import org.koin.compose.getKoin
+import usecase.auth.LoginUseCase
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +37,7 @@ class MainActivity : ComponentActivity() {
 //                Log.d("DEBUG", "Tv Show: ${tvShowDetails?.seasons[0]}")
 //            }
 
+            val usecase : LoginUseCase= getKoin<LoginUseCase>()
 
             AflamiTheme {
                 AflamiNavGraph(
