@@ -6,6 +6,7 @@ import com.berlin.repository.datasource.remote.dto.BaseResponse
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.MovieResponse
+import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.datasource.remote.dto.TVShowResponse
 
 class SearchRemoteDataSourceImpl(
@@ -24,11 +25,11 @@ class SearchRemoteDataSourceImpl(
         return searchApiService.searchMoviesByActor(actorName, language, page)
     }
 
-    override suspend fun searchMovies(query: String, language: String): MovieResponse {
-        return searchApiService.searchMovies(query, language)
+    override suspend fun searchMovies(query: String, language: String,page: Int): BaseResponse<MovieDto> {
+        return searchApiService.searchMovies(query, language,page)
     }
 
-    override suspend fun searchTvShows(query: String, language: String): TVShowResponse {
-        return searchApiService.searchTvShows(query, language)
+    override suspend fun searchTvShows(query: String, language: String,page: Int): BaseResponse<TVShowDto> {
+        return searchApiService.searchTvShows(query, language,page)
     }
 }

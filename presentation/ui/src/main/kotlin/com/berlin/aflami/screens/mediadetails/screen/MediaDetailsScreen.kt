@@ -71,7 +71,7 @@ import com.berlin.aflami.viewmodel.mediadetails.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.TabContent
 import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.uistate.MediaType
+import com.berlin.aflami.viewmodel.util.MediaType
 import com.berlin.designsystem.R
 import com.example.navigation.Destination
 import kotlinx.coroutines.delay
@@ -89,7 +89,7 @@ fun MediaDetailsScreen(
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
     val sharedFlow = viewModel.uiEffect
     var showLoginRequiredDialog by remember { mutableStateOf(false) }
-    val navMediaType = com.example.navigation.MediaType.valueOf(viewModel.type.name)
+    val navMediaType = MediaType.valueOf(viewModel.type.name)
 
     LaunchedEffect(Unit) {
         viewModel.getMovieCast(viewModel.id, viewModel.type, "US-EG")
@@ -101,7 +101,7 @@ fun MediaDetailsScreen(
                     navController.navigate(
                         Destination.CastScreen.route(
                             viewModel.id,
-                            navMediaType
+                            navMediaType.name
                         )
                     )
                 }

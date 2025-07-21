@@ -37,65 +37,49 @@ fun CastDetailsScreen(
     val castState by viewmodel.uiState.collectAsState()
     val loading by viewmodel.loading.collectAsState()
 
-
     LaunchedEffect(Unit) {
         viewmodel.getMovieCast(
-            mediaId = viewmodel.id,
-            mediaType = viewmodel.type,
-            language = "US-EG"
+            mediaId = viewmodel.id, mediaType = viewmodel.type, language = "US-EG"
         )
     }
     if (loading) {
         Loading()
     } else {
         CastContent(
-            navController = navController,
-            castState = castState.mediaCast
+            navController = navController, castState = castState.mediaCast
         )
     }
-
-
 }
 
 @Composable
 fun CastContent(
-    navController: NavController,
-    castState: List<MediaCastUiState>
+    navController: NavController, castState: List<MediaCastUiState>
 ) {
     Column {
-        TopBar(
-            modifier = Modifier.padding(vertical = 8.dp),
-            title = {
-                Text(
-                    text = stringResource(R.string.cast),
-                    style = Theme.textStyle.title.large,
-                    color = Theme.color.textColors.title
+        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+            Text(
+                text = stringResource(R.string.cast),
+                style = Theme.textStyle.title.large,
+                color = Theme.color.textColors.title
+            )
+        }, leadingIcon = {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Theme.color.surfaceHigh)
+                    .clickable {
+                        navController.popBackStack()
+                    }
+                    .padding(10.dp), contentAlignment = Alignment.Center) {
+                Icon(
+                    painter = painterResource(R.drawable.arrow_left),
+                    contentDescription = stringResource(R.string.arrow_back),
+                    tint = Theme.color.textColors.title
                 )
-            },
-            leadingIcon = {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Theme.color.surfaceHigh)
-                        .clickable {
-                            navController.popBackStack()
-                        }
-                        .padding(10.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.arrow_left),
-                        contentDescription = stringResource(R.string.arrow_back),
-                        tint = Theme.color.textColors.title
-                    )
-                }
             }
-        )
+        })
         MoviesCastGrid(
             mediaCast = castState
-
         )
     }
-
-
 }
