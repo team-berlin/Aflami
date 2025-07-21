@@ -49,6 +49,9 @@ fun LoginScreen() {
 
 @Composable
 fun LoginContent() {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -66,12 +69,12 @@ fun LoginContent() {
         ) {
             LoginHeader()
             LoginForm(
-                username = TODO(),
-                password = TODO(),
-                passwordError = TODO(),
-                onUsernameChange = TODO(),
-                onPasswordChange = TODO(),
-                onPasswordErrorChange = TODO()
+                username = username,
+                password = password,
+                passwordError = passwordError,
+                onUsernameChange = { username = it },
+                onPasswordChange = { password = it },
+                onPasswordErrorChange = { passwordError = it }
             )
             Spacer(modifier = Modifier.height(48.dp))
             LoginButtons()
