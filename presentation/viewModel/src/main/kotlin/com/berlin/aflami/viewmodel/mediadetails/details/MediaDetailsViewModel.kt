@@ -61,7 +61,7 @@ class MediaDetailsViewModel(
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
     init {
-        onShowReviewsClicked(id,type)
+        onShowReviewsClicked(id, type)
     }
 
     fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
@@ -105,12 +105,7 @@ class MediaDetailsViewModel(
                 }
             },
             onError = { throwable ->
-                _state.update {
-                    it.copy(
-                        error = throwable.message,
-                        isLoading = false
-                    )
-                }
+                handleErrorState(throwable.message, true)
             },
         )
     }
@@ -141,7 +136,7 @@ class MediaDetailsViewModel(
     }
 
     override fun onReadMoreDescriptionClicked() {
-        val key= MOVIE_DESCRIPTION_KEY.hashCode().toLong()
+        val key = MOVIE_DESCRIPTION_KEY.hashCode().toLong()
         _expandedUiStates[key] = !(_expandedUiStates[key] ?: false)
     }
 
@@ -236,13 +231,7 @@ class MediaDetailsViewModel(
 
             },
             onError = { throwable ->
-                _state.update {
-                    it.copy(
-                        rowSection = RowSectionUiState.Error(
-                            throwable.message ?: "Unknown error"
-                        )
-                    )
-                }
+                handleErrorState(throwable.message, true)
             },
         )
     }
@@ -281,18 +270,9 @@ class MediaDetailsViewModel(
                 }
             },
             onError = { throwable ->
-                _state.update {
-                    it.copy(
-                        rowSection = RowSectionUiState.Error(
-                            throwable.message ?: "Unknown error"
-                        ),
-                    )
-                }
-
+                handleErrorState(throwable.message, true)
             },
         )
-
-
     }
 
     override fun onShowMediaGalleryClicked(id: Long, mediaType: MediaType) {
@@ -307,7 +287,6 @@ class MediaDetailsViewModel(
                     MediaType.MOVIE -> getMovieGalleryUseCase(id)
                     MediaType.TV_SHOW -> getSeriesGalleryUseCase(id)
                 }
-
             },
             onSuccess = { gallery ->
                 if (gallery.isEmpty()) {
@@ -331,13 +310,7 @@ class MediaDetailsViewModel(
 
             },
             onError = { throwable ->
-                _state.update {
-                    it.copy(
-                        rowSection = RowSectionUiState.Error(
-                            throwable.message ?: "Unknown error"
-                        )
-                    )
-                }
+                handleErrorState(throwable.message, true)
             },
         )
     }
@@ -351,14 +324,13 @@ class MediaDetailsViewModel(
         tryToCall(
             call = {},
             onSuccess = {
-                if(companyProductionCache?.isEmpty() == true) {
+                if (companyProductionCache?.isEmpty() == true) {
                     _state.update { companyProduction ->
                         companyProduction.copy(
                             rowSection = RowSectionUiState.NoDataFound("There is no company production!")
                         )
                     }
-                }
-                else{
+                } else {
                     _state.update { companyProduction ->
                         companyProduction.copy(
                             rowSection = RowSectionUiState.Success(
@@ -370,17 +342,10 @@ class MediaDetailsViewModel(
                     }
                 }
             },
-            onError = {throwable->
-                _state.update { companyProduction ->
-                    companyProduction.copy(
-                        rowSection = RowSectionUiState.Error(
-                            message = throwable.message ?: "Unknown error"
-                        )
-                    )
-                }
+            onError = { throwable ->
+                handleErrorState(throwable.message, true)
             },
         )
-
     }
 
     override fun onSeasonsClicked(seriesId: Long, numberOfSeasons: Int) {
@@ -412,16 +377,9 @@ class MediaDetailsViewModel(
                         )
                     )
                 }
-
             },
             onError = { throwable ->
-                _state.update {
-                    it.copy(
-                        rowSection = RowSectionUiState.Error(
-                            throwable.message ?: "Unknown error"
-                        )
-                    )
-                }
+                handleErrorState(throwable.message, true)
             },
         )
     }
@@ -434,7 +392,7 @@ class MediaDetailsViewModel(
         TODO("Not yet implemented")
     }
 
-    fun getMediaCast(mediaId: Long, mediaType: MediaType, language: String="US-EG") {
+    fun getMediaCast(mediaId: Long, mediaType: MediaType, language: String = "US-EG") {
         _state.update {
             it.copy(error = null, isLoading = true)
         }
@@ -442,7 +400,10 @@ class MediaDetailsViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
-                    MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId, language).map { it.toUiState() }
+                    MediaType.TV_SHOW -> getSeriesCastUseCase(
+                        mediaId,
+                        language
+                    ).map { it.toUiState() }
                 }
             },
             onSuccess = { cast ->
@@ -455,11 +416,7 @@ class MediaDetailsViewModel(
                 }
             },
             onError = { throwable ->
-                _state.update {
-                    it.copy(
-                        error = throwable.message,
-                    )
-                }
+                handleErrorState(throwable.message)
             },
         )
     }
@@ -495,16 +452,28 @@ class MediaDetailsViewModel(
                 MovieDetailsTabs.SEASON -> onSeasonsClicked(
                     _state.value.id,
                     _state.value.numberOfSeasons ?: 0
-
                 )
             }
             current.copy(
                 tab = newSelectedTab,
                 isSelected = true
             )
-
         }
     }
 
-
+    private fun handleErrorState(message: String?, updateRowSection: Boolean = false) {
+        _state.update {
+            if (updateRowSection) {
+                it.copy(
+                    rowSection = RowSectionUiState.Error(message ?: "Unknown error"),
+                    isLoading = false
+                )
+            } else {
+                it.copy(
+                    error = message,
+                    isLoading = false
+                )
+            }
+        }
+    }
 }
