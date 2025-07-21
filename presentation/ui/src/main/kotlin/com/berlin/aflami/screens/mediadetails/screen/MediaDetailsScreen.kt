@@ -3,6 +3,7 @@ package com.berlin.aflami.screens.mediadetails.screen
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -52,6 +53,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.component.Chips
 import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.DefaultBar
@@ -68,10 +71,10 @@ import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.utils.formatRating
+import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaInteractionListener
-import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
@@ -242,16 +245,39 @@ fun MediaDetailsContent(
                             }
                         }
 
+                        val painter = rememberAsyncImagePainter(state.backdropUrl)
+                        val imageState by painter.state.collectAsState()
+
                         HorizontalPager(
                             state = pagerState,
                             modifier = Modifier.fillMaxSize()
                         ) { page ->
-                            AsyncImage(
-                                model = state.backdropUrl,
-                                contentDescription = null,
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
+                            when (imageState) {
+                                is AsyncImagePainter.State.Success ->
+                                    AsyncImage(
+                                        model = state.backdropUrl,
+                                        contentDescription = null,
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop,
+                                    )
+
+                                else -> {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.ic_placeholder),
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .size(48.dp),
+                                            contentScale = ContentScale.Inside,
+                                        )
+                                    }
+                                }
+                            }
+
                         }
 
                         Indicator(pagerState)

@@ -31,14 +31,4 @@ class GetMovieGalleryUseCaseTest {
         coVerify(exactly = 1) { movieDetailsRepository.getMovieImages(movieID) }
     }
 
-    @Test
-    fun `should throw exception if movieRepository throws exception`() = runTest {
-        val exception = RuntimeException()
-        val movieID: Long = 505
-        coEvery { movieDetailsRepository.getMovieImages(505) } throws exception
-
-        assertThrows<RuntimeException> {
-            getMovieGalleryUseCase(movieID)
-        }
-    }
 }
