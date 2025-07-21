@@ -3,10 +3,12 @@ package usecase
 import com.berlin.entity.MediaCast
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
 
 class GetMovieCastUseCaseTest {
@@ -20,7 +22,7 @@ class GetMovieCastUseCaseTest {
     }
 
     @Test
-    fun `should return media cast related to media id when invoke is called`() = runTest {
+    fun `should return media cast related to media id when repository is called`() = runTest {
         // given
         val mediaId = 0L
         val language = "en-US"
@@ -36,6 +38,7 @@ class GetMovieCastUseCaseTest {
 
         // then
         assertThat(result).isEqualTo(getMovieCast())
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieCastDetails(mediaId, language) }
     }
 
     @Test
@@ -55,18 +58,23 @@ class GetMovieCastUseCaseTest {
 
         //then
         assertThat(result).isEmpty()
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieCastDetails(mediaId,language) }
 
     }
 
     private fun getMovieCast(): List<MediaCast> {
 
-        return (0..5).map {
-            MediaCast(
-                it.toLong(),
-                "name",
-                "poster"
+        val castList = mutableListOf<MediaCast>()
+        for (i in 0 ..5) {
+            castList.add(
+                MediaCast(
+                    mediaId = i.toLong(),
+                    name = "name $i",
+                    poster = "poster $i"
+                )
             )
         }
+        return castList
     }
 
 

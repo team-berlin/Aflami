@@ -7,6 +7,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.assertThrows
 import repository.TvShowDetailsRepository
 
 class GetSeriesCastUseCaseTest {
@@ -20,7 +22,7 @@ class GetSeriesCastUseCaseTest {
     }
 
     @Test
-    fun `should return media cast related to media id when invoke is called`() = runTest {
+    fun `should return media cast related to media id when repository is called`() = runTest {
         // given
         val mediaId = 0L
         val language = "en-US"
@@ -60,13 +62,17 @@ class GetSeriesCastUseCaseTest {
 
     private fun getSeriesCast(): List<MediaCast> {
 
-        return (0..5).map {
-            MediaCast(
-                it.toLong(),
-                "name",
-                "poster"
+        val castList = mutableListOf<MediaCast>()
+        for (i in 0..5) {
+            castList.add(
+                MediaCast(
+                    mediaId = i.toLong(),
+                    name = "name $i",
+                    poster = "poster $i"
+                )
             )
         }
+        return castList
     }
 
 
