@@ -25,4 +25,6 @@
     <string name="description">Description</string>
     <string name="read_less">Read less</string>
     <string name="read_more">Read more</string>
+    <string name="login_required_warning">Please login to access your account details\nand other features!</string>
+    <string name="login_required">Login Required</string>
 </resources>

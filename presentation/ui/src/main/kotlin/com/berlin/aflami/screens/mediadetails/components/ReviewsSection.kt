@@ -1,15 +1,13 @@
 package com.berlin.aflami.screens.mediadetails.components
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
 
 @Composable
 fun ReviewsSection(
     reviews: List<ReviewUiState>,
-//    isExpanded: Boolean,
+    isExpanded: Boolean,
     onToggleExpand: () -> Unit
 ) {
     Column {
@@ -18,7 +16,7 @@ fun ReviewsSection(
             ReviewItem(
                 review = review,
                 isLastItem = isLast,
-//                isExpanded = isExpanded,
+                isExpanded = isExpanded,
                 onToggleExpand = onToggleExpand
             )
         }

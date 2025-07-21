@@ -13,7 +13,7 @@ interface MediaInteractionListener :
 
     fun onBackClicked()
     fun onPlayClicked(id: Long)
-    fun onReadMoreDescriptionClicked(id: Long)
+    fun onReadMoreDescriptionClicked()
     fun onReadMoreReviewClicked(id: Long)
     fun onShowCastClicked()
 

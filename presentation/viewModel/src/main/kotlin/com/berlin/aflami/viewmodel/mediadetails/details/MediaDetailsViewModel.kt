@@ -46,6 +46,7 @@ class MediaDetailsViewModel(
     MediaDetailsUiState()
 ), MediaInteractionListener {
 
+    private val MOVIE_DESCRIPTION_KEY = "MOVIE_DESCRIPTION"
     val id: Long = savedStateHandle.get<String>("id")?.toLongOrNull() ?: 0L
     val type: MediaType = savedStateHandle.get<String>("media_type")
         ?.let { MediaType.valueOf(it) } ?: MediaType.MOVIE
@@ -55,6 +56,9 @@ class MediaDetailsViewModel(
 
     private val _expandedUiStates = mutableStateMapOf<Long, Boolean>()
     var companyProductionCache: List<CompanyProductionUiState>? = null
+
+    private val _showLoginRequiredDialog = MutableStateFlow(false)
+    val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
     init {
         onShowReviewsClicked(id,type)
@@ -111,6 +115,18 @@ class MediaDetailsViewModel(
         )
     }
 
+    fun isDescriptionExpanded(): Boolean {
+        return _expandedUiStates[MOVIE_DESCRIPTION_KEY.hashCode().toLong()] ?: false
+    }
+
+    fun isReviewExpanded(id: Long): Boolean {
+        return _expandedUiStates[id] ?: false
+    }
+
+    fun showLoginDialog(show: Boolean) {
+        _showLoginRequiredDialog.value = show
+    }
+
     override fun onBackClicked() {
         sendNewEffect(MediaDetailsScreenEffect.NavigateBack)
     }
@@ -124,8 +140,9 @@ class MediaDetailsViewModel(
         sendNewEffect(MediaDetailsScreenEffect.PlayMedia(id = id))
     }
 
-    override fun onReadMoreDescriptionClicked(id: Long) {
-        _expandedUiStates[id] = !(_expandedUiStates[id] ?: false)
+    override fun onReadMoreDescriptionClicked() {
+        val key= MOVIE_DESCRIPTION_KEY.hashCode().toLong()
+        _expandedUiStates[key] = !(_expandedUiStates[key] ?: false)
     }
 
     override fun onReadMoreReviewClicked(id: Long) {
@@ -278,7 +295,7 @@ class MediaDetailsViewModel(
 
     }
 
-    override fun onShowMediaGalleryClicked(mediaId: Long, mediaType: MediaType) {
+    override fun onShowMediaGalleryClicked(id: Long, mediaType: MediaType) {
         _state.update {
             it.copy(
                 rowSection = RowSectionUiState.Loading
@@ -287,8 +304,8 @@ class MediaDetailsViewModel(
         tryToCall(
             call = {
                 when (mediaType) {
-                    MediaType.MOVIE -> getMovieGalleryUseCase(mediaId)
-                    MediaType.TV_SHOW -> getSeriesGalleryUseCase(mediaId)
+                    MediaType.MOVIE -> getMovieGalleryUseCase(id)
+                    MediaType.TV_SHOW -> getSeriesGalleryUseCase(id)
                 }
 
             },
@@ -470,7 +487,7 @@ class MediaDetailsViewModel(
                 )
 
                 MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(
-                    mediaId = mediaId,
+                    id = mediaId,
                     mediaType = mediaType
                 )
 
