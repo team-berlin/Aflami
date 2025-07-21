@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -36,9 +35,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,12 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
@@ -66,6 +58,7 @@ import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
+import com.berlin.aflami.screens.mediadetails.components.ExpandableText
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
@@ -74,6 +67,7 @@ import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.utils.formatRating
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaInteractionListener
@@ -95,7 +89,7 @@ fun MediaDetailsScreen(
 ) {
     val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
-    var showLoginRequiredDialog by remember { mutableStateOf(false) }
+    val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsState()
     val navMediaType = com.example.navigation.MediaType.valueOf(viewModel.type.name)
 
     LaunchedEffect(Unit) {
@@ -119,13 +113,12 @@ fun MediaDetailsScreen(
 
                 is MediaDetailsScreenEffect.PlayMedia -> {}
                 is MediaDetailsScreenEffect.ShowAddToFavoriteListSheet -> {
-                    showLoginRequiredDialog = true
+                    viewModel.showLoginDialog(true)
                 }
 
                 is MediaDetailsScreenEffect.ShowRatingSheet -> {
-                    showLoginRequiredDialog = true
+                    viewModel.showLoginDialog(true)
                 }
-                else -> {}
             }
         }
     }
@@ -139,8 +132,10 @@ fun MediaDetailsScreen(
         MediaDetailsContent(
             state = uiState,
             listener = viewModel,
-            onToggleExpand = { viewModel.onReadMoreDescriptionClicked(viewModel.id) },
-//            isExpanded = viewModel.onReadMoreDescriptionClicked(viewModel.id),
+            isDescriptionExpanded = viewModel.isDescriptionExpanded(),
+            onToggleDescriptionExpand = { viewModel.onReadMoreDescriptionClicked() },
+            isReviewExpanded = viewModel.isReviewExpanded(viewModel.id),
+            onToggleReviewExpand = { viewModel.onReadMoreReviewClicked(viewModel.id) },
             isSelectedTab = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
@@ -155,12 +150,12 @@ fun MediaDetailsScreen(
         if (showLoginRequiredDialog) {
             LoginRequiredDialog(
                 onLoginClick = {
-                    showLoginRequiredDialog = false
+                    viewModel.showLoginDialog(false)
                     //navController.navigate("login")
                 },
-                onDismiss = { showLoginRequiredDialog = false },
-                title = "Login Required",
-                description = "Please login to access your account details\nand other features!"
+                onDismiss = { viewModel.showLoginDialog(false) },
+                title = stringResource(com.berlin.ui.R.string.login_required),
+                description = stringResource(com.berlin.ui.R.string.login_required_warning)
             )
         }
     }
@@ -196,8 +191,10 @@ private fun DrawScope.drawIndicator(
 fun MediaDetailsContent(
     state: MediaDetailsUiState,
     listener: MediaInteractionListener,
-//    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
+    isDescriptionExpanded: Boolean,
+    onToggleDescriptionExpand: () -> Unit,
+    isReviewExpanded: Boolean,
+    onToggleReviewExpand: () -> Unit,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
     mediaType: MediaType,
@@ -361,10 +358,10 @@ fun MediaDetailsContent(
                         style = Theme.textStyle.title.small,
                     )
 
-                    ExpandableDescription(
+                    ExpandableText(
                         text = state.overview,
-                       // expanded = isExpanded,
-                        onToggleExpand = onToggleExpand,
+                        isExpanded = isDescriptionExpanded,
+                        onToggleExpand = onToggleDescriptionExpand,
                         previewColor = Theme.color.textColors.hint,
                         suffixColor = Theme.color.primary,
                         previewStyle = Theme.textStyle.body.small,
@@ -379,28 +376,25 @@ fun MediaDetailsContent(
                 )
             }
 
-        item {
-            LineStrok()
-        }
+            item {
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    color = Theme.color.stroke,
+                    thickness = 1.dp
+                )
+            }
 
-        item {
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                color = Theme.color.stroke,
-                thickness = 1.dp
-            )
-        }
-
-        item {
-            RowSection(
-                uiState = state,
-                isSelectedTab = isSelectedTab,
-                onChipClick = onChipClick,
-//                isExpanded = isExpanded,
-                onToggleExpand = onToggleExpand,
-                mediaType = mediaType
-            )
+            item {
+                RowSection(
+                    uiState = state,
+                    isSelectedTab = isSelectedTab,
+                    onChipClick = onChipClick,
+                    isExpanded = isReviewExpanded,
+                    onToggleExpand = onToggleReviewExpand,
+                    mediaType = mediaType
+                )
+            }
         }
         DefaultBar(
             modifier = Modifier.statusBarsPadding(),
@@ -423,18 +417,11 @@ fun MediaDetailsContent(
 
 
 @Composable
-fun LineStrok() {
-    Box(
-        modifier = Modifier.fillMaxWidth().height(1.dp).border(1.dp,Theme.color.stroke)
-    )
-}
-
-@Composable
 fun RowSection(
     uiState: MediaDetailsUiState,
     isSelectedTab: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
-//    isExpanded: Boolean,
+    isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     mediaType: MediaType
 ) {
@@ -508,7 +495,7 @@ fun RowSection(
                     ReviewsSection(
                         reviews = content.items,
                         onToggleExpand = onToggleExpand,
-//                        isExpanded = isExpanded,
+                        isExpanded = isExpanded,
                     )
                 }
 
@@ -536,56 +523,6 @@ fun RowSection(
 
 }
 
-@Composable
-fun ExpandableDescription(
-    text: String,
-//    expanded: Boolean,
-    onToggleExpand: () -> Unit,
-    maxPreviewLength: Int = 180,
-    previewColor: Color,
-    suffixColor: Color,
-    previewStyle: TextStyle,
-    suffixStyle: TextStyle,
-) {
-    val canExpand = text.length > maxPreviewLength
-
-//    val displayText =
-//        if (expanded || !canExpand) text else text.take(maxPreviewLength).trimEnd()
-
-    val suffix = when {
-//        expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_less)
-//        !expanded && canExpand -> stringResource(com.berlin.ui.R.string.read_more)
-        else -> ""
-    }
-
-    val annotated = buildAnnotatedString {
-//        append(displayText)
-        if (suffix.isNotEmpty()) {
-            withStyle(
-                SpanStyle(
-                    color = suffixColor,
-                    fontFamily = suffixStyle.fontFamily,
-                    fontWeight = suffixStyle.fontWeight,
-                    fontSize = suffixStyle.fontSize
-                )
-            ) {
-                append(suffix)
-            }
-        }
-    }
-
-    Text(
-        text = annotated,
-        color = previewColor,
-        style = previewStyle,
-        overflow = TextOverflow.Ellipsis,
-        modifier = Modifier.clickable(
-            enabled = canExpand,
-            onClick = onToggleExpand
-        ),
-        textAlign = TextAlign.Start
-    )
-}
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -719,7 +656,7 @@ fun BoxScope.Indicator(pagerState: PagerState) {
 }
 
 
-fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
+private fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
     return when (tab) {
         MovieDetailsTabs.MORE_LIKE_THIS -> R.string.more_like_this
         MovieDetailsTabs.REVIEWS -> R.string.reviews
@@ -729,7 +666,7 @@ fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
     }
 }
 
-fun getMovieDetailsTabsIcon(tab: MovieDetailsTabs): Int {
+private fun getMovieDetailsTabsIcon(tab: MovieDetailsTabs): Int {
     return when (tab) {
         MovieDetailsTabs.MORE_LIKE_THIS -> com.berlin.ui.R.drawable.camera_video
         MovieDetailsTabs.REVIEWS -> R.drawable.star
