@@ -60,10 +60,6 @@ class MediaDetailsViewModel(
     private val _showLoginRequiredDialog = MutableStateFlow(false)
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
-    init {
-        onShowReviewsClicked(id, type)
-    }
-
     fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
 
         _state.update {
@@ -99,7 +95,8 @@ class MediaDetailsViewModel(
                             rating = details.rating,
                             runtime = details.runtime,
                             genres = details.genres,
-                            isLoading = false
+                            isLoading = false,
+                            originalCountry = details.originalCountry,
                         )
                     }
                 }
@@ -465,6 +462,7 @@ class MediaDetailsViewModel(
         _state.update {
             if (updateRowSection) {
                 it.copy(
+                    error = message,
                     rowSection = RowSectionUiState.Error(message ?: "Unknown error"),
                     isLoading = false
                 )

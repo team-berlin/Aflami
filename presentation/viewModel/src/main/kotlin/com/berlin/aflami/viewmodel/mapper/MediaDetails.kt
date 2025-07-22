@@ -47,7 +47,7 @@ fun TvShowDetails.toUiState(
     posterUrl = posterUrl,
     backdropUrl = backdropUrl,
     genres = genres.map { it.name },
-    releaseYear = releaseDate?.take(4) ?: "",
+    releaseYear = releaseDate ?: "",
     rating = rating,
     runtime = "",
     numberOfSeasons = numberOfSeasons,
