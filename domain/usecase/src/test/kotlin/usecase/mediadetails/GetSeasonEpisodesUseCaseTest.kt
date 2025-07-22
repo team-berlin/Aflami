@@ -1,4 +1,4 @@
-package usecase
+package usecase.mediadetails
 
 import com.berlin.entity.Episodes
 import com.google.common.truth.Truth.assertThat

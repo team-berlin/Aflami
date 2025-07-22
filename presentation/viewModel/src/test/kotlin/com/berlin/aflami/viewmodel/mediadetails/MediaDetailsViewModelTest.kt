@@ -31,17 +31,17 @@ import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDate
 import org.junit.Before
 import org.junit.Test
-import usecase.GetMovieCastUseCase
-import usecase.GetMovieDetailsUseCase
-import usecase.GetMovieGalleryUseCase
-import usecase.GetMovieReviewUseCase
-import usecase.GetSeasonEpisodesUseCase
-import usecase.GetSeriesCastUseCase
-import usecase.GetSeriesGalleryUseCase
-import usecase.GetSeriesReviewUseCase
-import usecase.GetSimilarMoviesUseCase
-import usecase.GetSimilarSeriesUseCase
-import usecase.GetTvShowDetailsUseCase
+import usecase.mediadetails.GetMovieCastUseCase
+import usecase.mediadetails.GetMovieDetailsUseCase
+import usecase.mediadetails.GetMovieGalleryUseCase
+import usecase.mediadetails.GetMovieReviewUseCase
+import usecase.mediadetails.GetSeasonEpisodesUseCase
+import usecase.mediadetails.GetSeriesCastUseCase
+import usecase.mediadetails.GetSeriesGalleryUseCase
+import usecase.mediadetails.GetSeriesReviewUseCase
+import usecase.mediadetails.GetSimilarMoviesUseCase
+import usecase.mediadetails.GetSimilarSeriesUseCase
+import usecase.mediadetails.GetTvShowDetailsUseCase
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MediaDetailsViewModelTest {

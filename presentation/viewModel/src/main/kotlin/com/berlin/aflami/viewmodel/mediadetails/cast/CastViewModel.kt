@@ -6,8 +6,8 @@ import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import kotlinx.coroutines.flow.update
-import usecase.GetMovieCastUseCase
-import usecase.GetSeriesCastUseCase
+import usecase.mediadetails.GetMovieCastUseCase
+import usecase.mediadetails.GetSeriesCastUseCase
 
 class CastViewModel(
     savedStateHandle: SavedStateHandle,

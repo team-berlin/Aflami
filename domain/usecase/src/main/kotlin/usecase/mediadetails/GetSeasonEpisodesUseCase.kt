@@ -1,8 +1,6 @@
-package usecase
+package usecase.mediadetails
 
 import com.berlin.entity.Episodes
-import com.berlin.entity.EpisodesSeason
-import jdk.internal.net.http.common.Log
 import repository.TvShowDetailsRepository
 
 class GetSeasonEpisodesUseCase(

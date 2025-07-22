@@ -1,4 +1,4 @@
-package usecase
+package usecase.mediadetails
 
 import com.berlin.entity.TVShow
 import repository.TvShowDetailsRepository

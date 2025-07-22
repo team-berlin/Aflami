@@ -1,6 +1,6 @@
-package usecase
+package usecase.mediadetails
 
-import com.berlin.entity.Movie
+import com.berlin.entity.TVShow
 import com.google.common.truth.Truth
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -9,16 +9,16 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import org.junit.Before
 import org.junit.Test
-import repository.MovieDetailsRepository
+import repository.TvShowDetailsRepository
 
-class GetSimilarMoviesUseCaseTest {
+class GetSimilarSeriesUseCaseTest {
 
-    private val movieDetailsRepository = mockk<MovieDetailsRepository>()
-    private lateinit var getSimilarMoviesUseCase: GetSimilarMoviesUseCase
+    private val seriesDetailsRepository = mockk<TvShowDetailsRepository>()
+    private lateinit var getSimilarSeriesUseCase: GetSimilarSeriesUseCase
 
     @Before
     fun setUp() {
-        getSimilarMoviesUseCase = GetSimilarMoviesUseCase((movieDetailsRepository))
+        getSimilarSeriesUseCase = GetSimilarSeriesUseCase(seriesDetailsRepository)
     }
 
     @Test
@@ -26,17 +26,17 @@ class GetSimilarMoviesUseCaseTest {
         // given
         val mediaId = 0L
         coEvery {
-            movieDetailsRepository.getMovieSimilar(
+            seriesDetailsRepository.getSeriesSimilar(
                 mediaId,
             )
-        } returns getSimilarMovie()
+        } returns getSimilarSeries()
 
         //when
-        val result = getSimilarMoviesUseCase.invoke(mediaId)
+        val result = getSimilarSeriesUseCase.invoke(mediaId)
 
         // then
-        Truth.assertThat(result).isEqualTo(getSimilarMovie())
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieSimilar(mediaId) }
+        Truth.assertThat(result).isEqualTo(getSimilarSeries())
+        coVerify(exactly = 1) { seriesDetailsRepository.getSeriesSimilar(mediaId) }
     }
 
     @Test
@@ -44,27 +44,26 @@ class GetSimilarMoviesUseCaseTest {
         //given
         val mediaId = 2L
         coEvery {
-            movieDetailsRepository.getMovieSimilar(
+            seriesDetailsRepository.getSeriesSimilar(
                 mediaId,
             )
         } returns emptyList()
 
         //when
-        val result = getSimilarMoviesUseCase.invoke(mediaId)
+        val result = getSimilarSeriesUseCase.invoke(mediaId)
 
         //then
         Truth.assertThat(result).isEmpty()
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieSimilar(mediaId) }
+        coVerify(exactly = 1) { seriesDetailsRepository.getSeriesSimilar(mediaId) }
 
     }
 
+    private fun getSimilarSeries(): List<TVShow> {
 
-    private fun getSimilarMovie(): List<Movie> {
-
-        val movieList = mutableListOf<Movie>()
+        val seriesList = mutableListOf<TVShow>()
         for (i in 0..5) {
-            movieList.add(
-                Movie(
+            seriesList.add(
+                TVShow(
                     id = 1L,
                     title = "Inception$i",
                     rating = 8.8,
@@ -78,7 +77,7 @@ class GetSimilarMoviesUseCaseTest {
                 )
             )
         }
-        return movieList
+        return seriesList
     }
 
 

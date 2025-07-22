@@ -1,4 +1,4 @@
-package usecase
+package usecase.mediadetails
 
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.GenreEntity

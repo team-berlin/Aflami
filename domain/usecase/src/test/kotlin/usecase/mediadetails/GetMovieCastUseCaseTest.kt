@@ -1,4 +1,4 @@
-package usecase
+package usecase.mediadetails
 
 import com.berlin.entity.MediaCast
 import com.google.common.truth.Truth.assertThat
@@ -8,7 +8,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
 
 class GetMovieCastUseCaseTest {
