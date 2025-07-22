@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<S, E>(
@@ -33,6 +34,12 @@ abstract class BaseViewModel<S, E>(
                 //Log.e("CATCH", "tryToCall: ", exception)
                 onError(exception)
             }
+        }
+    }
+
+    protected fun updateState(updater: (S) -> S) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update(updater)
         }
     }
 

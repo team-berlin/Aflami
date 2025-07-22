@@ -15,11 +15,10 @@ import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.remote.MovieDetailsRemoteDataSource
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.TvShowDetailsRemoteDataSource
-import io.ktor.client.HttpClient
 import org.koin.dsl.module
 
 val dataSourceModule = module {
-    single<SearchRemoteDataSource> { SearchRemoteDataSourceImpl(get<HttpClient>()) }
+    single<SearchRemoteDataSource> { SearchRemoteDataSourceImpl(get()) }
     single<SearchLocalDataSource> { SearchLocalDataSourceImpl(get<SearchDao>()) }
     single<RecentHistoryLocalDataSource> { RecentHistoryLocalDataSourceImpl(get<RecentHistoryDao>()) }
     single<CategoriesPreferencesDataSource> { CategoriesPreferencesDataSourceImpl(get<CategoriesPreferencesDao>()) }

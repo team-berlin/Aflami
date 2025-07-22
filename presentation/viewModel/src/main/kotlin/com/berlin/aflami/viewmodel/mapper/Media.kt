@@ -11,6 +11,6 @@ fun Media.toUIState(): MediaUiState {
         releaseYear = releaseYear.year.toString(),
         genre = genre,
         poster = poster,
-//        mediaType = mediaType
+        mediaType = mediaType
     )
 }

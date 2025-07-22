@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.search
+package com.berlin.aflami.screens.search.screen
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
@@ -23,7 +23,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,31 +40,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.search.SearchViewModel
+import com.berlin.aflami.viewmodel.search.FilterInteractionListener
+import com.berlin.aflami.viewmodel.search.FilterItemUiState
 import com.berlin.aflami.viewmodel.search.GenreType
 import com.berlin.designsystem.R
 
 @Composable
 fun FilterDialog(
-    viewModel: SearchViewModel
+    filterListener: FilterInteractionListener, state: FilterItemUiState
 ) {
-    val filterState by viewModel.filterUiState.collectAsState()
-    val selectedRating = filterState.selectedRating
-    val selectedGenre = filterState.selectedGenre.type
 
-    Dialog(onDismissRequest = viewModel::onDismiss) {
+    Dialog(onDismissRequest = filterListener::onCancelButtonClicked) {
         Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = Theme.color.surface
+            shape = RoundedCornerShape(16.dp), color = Theme.color.surface
         ) {
             Column(
                 modifier = Modifier
-                    .padding(vertical = 12.dp)
+                    .padding(12.dp)
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -79,14 +75,13 @@ fun FilterDialog(
                             .size(40.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(Theme.color.surfaceHigh)
-                            .clickable { viewModel.onDismiss() },
+                            .clickable { filterListener.onCancelButtonClicked() },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.cancel),
                             contentDescription = stringResource(R.string.icon_cd),
-                            modifier = Modifier
-                                .size(24.dp),
+                            modifier = Modifier.size(24.dp),
                             tint = Theme.color.textColors.title
                         )
                     }
@@ -102,41 +97,44 @@ fun FilterDialog(
                         color = Theme.color.textColors.title
                     )
                     RatingBar(
-                        modifier = Modifier.padding(horizontal = 12.dp),
-                        onValueChange = { viewModel.updateRating(it) },
-                        currentRating = selectedRating
+                        modifier = Modifier,
+                        onValueChange = { filterListener.onRatingStarChanged(it) },
+                        currentRating = state.selectedRating
                     )
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
                         text = stringResource(R.string.Genre),
-                        style = Theme.textStyle.title.small, color = Theme.color.textColors.title
+                        style = Theme.textStyle.title.small,
+                        color = Theme.color.textColors.title
                     )
                     LazyRow(
                         modifier = Modifier
                             .height(96.dp)
-                            .fillMaxWidth()
-
-                        , contentPadding = PaddingValues(horizontal = 12.dp),
+                            .fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(GenreType.entries) { genre ->
+                        items(
+                            items = state.mediaGenres
+                        ) { genre ->
                             Chips(
-                                title = stringResource(genreMapper(genre)),
-                                icon = painterResource(getGenreIcon(genre)),
-                                isSelected = selectedGenre == genre,
-                                onClick = { viewModel.toggleGenre(genre) }
-                            )
+                                title = stringResource(genreMapper(genre.genres.type)),
+                                icon = painterResource(getGenreIcon(genre.genres.type)),
+                                isSelected = genre.genres.isSelected,
+                                onClick = { filterListener.onGenreButtonChanged(genre.genres.type) })
                         }
                     }
                 }
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     PrimaryButton(
                         onClick = {
-                            viewModel.onSearchClick(viewModel.queryFlow.value)
-                            viewModel.onDismiss()
+                            filterListener.onApplyButtonClicked()
+                            filterListener.onCancelButtonClicked()
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -151,10 +149,9 @@ fun FilterDialog(
                         )
                     }
                     PrimaryButton(
-                        onClick = { viewModel.clearFilters() },
+                        onClick = { filterListener.onClearButtonClicked() },
                         modifier = Modifier
                             .fillMaxWidth()
-
                             .height(56.dp),
                         containerColor = Theme.color.primaryVariant
                     ) {
@@ -197,10 +194,7 @@ fun getGenreIcon(genre: GenreType): Int {
 
 @Composable
 fun Chips(
-    title: String,
-    icon: Painter,
-    isSelected: Boolean,
-    onClick: () -> Unit
+    title: String, icon: Painter, isSelected: Boolean, onClick: () -> Unit
 ) {
     val background by animateColorAsState(
         targetValue = if (isSelected) Theme.color.secondary else Theme.color.surfaceHigh
@@ -224,9 +218,7 @@ fun Chips(
                 .clip(RoundedCornerShape(16.dp))
                 .background(background)
                 .border(
-                    width = 1.dp,
-                    shape = RoundedCornerShape(16.dp),
-                    color = border
+                    width = 1.dp, shape = RoundedCornerShape(16.dp), color = border
                 )
                 .clickable { onClick() },
             contentAlignment = Alignment.Center,
@@ -253,13 +245,10 @@ fun Chips(
 
 @Composable
 fun RatingBar(
-    onValueChange: (Float) -> Unit,
-    modifier: Modifier = Modifier,
-    currentRating: Float = 0f
+    onValueChange: (Float) -> Unit, modifier: Modifier = Modifier, currentRating: Float = 0f
 ) {
     Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        modifier = modifier, horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         for (i in 1..10) {
             Icon(
@@ -271,8 +260,7 @@ fun RatingBar(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
-                    ) { onValueChange(i.toFloat()) }
-            )
+                    ) { onValueChange(i.toFloat()) })
         }
     }
 }
@@ -290,10 +278,10 @@ fun PrimaryButton(
             .clip(RoundedCornerShape(16.dp))
             .background(
                 brush = Brush.verticalGradient(
-                    colors = if (gradientColor != null)
-                        listOf(containerColor, gradientColor) else listOf(
-                        containerColor,
-                        containerColor
+                    colors = if (gradientColor != null) listOf(
+                        containerColor, gradientColor
+                    ) else listOf(
+                        containerColor, containerColor
                     )
                 )
             )

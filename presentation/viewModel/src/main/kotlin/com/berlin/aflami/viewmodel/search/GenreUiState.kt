@@ -1,15 +1,20 @@
 package com.berlin.aflami.viewmodel.search
 
-data class FilterUiState(
-    val selectedRating: Float = 1f,
-    val selectedGenre: GenreUiState = GenreUiState(),
-)
-
 data class GenreUiState(
-    val type: GenreType = GenreType.ALL, val isSelected: Boolean = true
+    val genres: Selectable<GenreType> = Selectable(
+        type = GenreType.ALL, isSelected = false
+    ),
 )
 
-enum class GenreType() {
+data class Selectable<T>(
+    val isSelected: Boolean = true, val type: T
+)
+
+fun GenreType.toGenreType(): Int {
+    return genreToId(this)
+}
+
+enum class GenreType {
     ALL, ROMANCE, SCIENCE_FICTION, FAMILY, MYSTERY, HISTORY, WAR, ACTION, CRIME, COMEDY, HORROR, WESTERN, MUSIC, ADVENTURE, TV_MOVIE, FANTASY, THRILLER, DRAMA, DOCUMENTARY, ANIMATION
 }
 

@@ -155,11 +155,11 @@ private fun SearchByCountryContent(
                 else -> {
                     MoviesList(
                         movies = movies,
-                        onMovieClick = { movieId ->
+                        onMovieClick = { movieId,mediaType ->
                             navController.navigate(
                                 Destination.MediaDetailsScreen.route(
-                                    movieId.toLong(),
-                                    com.example.navigation.MediaType.MOVIE
+                                    movieId,
+                                    mediaType
                                 )
                             )
                         }

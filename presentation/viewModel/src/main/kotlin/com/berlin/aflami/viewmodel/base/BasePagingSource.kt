@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 
-class BasePagingSource<T: Any>(
+class BasePagingSource<T : Any>(
     private val call: suspend (page: Int) -> List<T>,
 ) : PagingSource<Int, T>() {
 

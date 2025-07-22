@@ -13,6 +13,7 @@ import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
 import com.berlin.repository.mapper.toMedia
+import com.berlin.repository.mapper.toTVShow
 import repository.SearchRepository
 import java.time.Instant
 
@@ -27,14 +28,12 @@ class SearchRepositoryImpl(
     private val language = "en-US"
 
     override suspend fun getMoviesByCountry(
-        query: String,
-        page: Int
+        query: String, page: Int
     ): List<Movie> {
         val movies = localDataSource.getCachedSearch(query, QueryType.COUNTRY, page = page)
         if (!isExpiredOrEmpty(movies)) return movies.map { it.toDomain() }
 
-        remoteDataSource.searchMoviesByCountry(query, language, page).results
-            ?.filterNotNull()
+        remoteDataSource.searchMoviesByCountry(query, language, page).results?.filterNotNull()
             ?.map { it.toLocal(query, QueryType.COUNTRY.name, page, "Movie") }
             ?.also { localDataSource.cacheSearch(it) }
 
@@ -44,26 +43,40 @@ class SearchRepositoryImpl(
 
     override suspend fun getMediaByActorName(actorName: String, page: Int): List<Media> {
         val cached = localDataSource.getCachedSearch(
-            actorName,
-            QueryType.ACTOR,
-            pageSize = 20,
-            page = page
+            actorName, QueryType.ACTOR, pageSize = 20, page = page
         )
 
         val mediaList = if (!isExpiredOrEmpty(cached)) {
             cached.map { it.toMedia() }
         } else {
-            remoteDataSource.searchMoviesByActor(actorName, language, page).results
-                ?.filterNotNull()
-                ?.also { getActingDepartment(it) }
-                ?.let { getMediaByActorName(actorName, page, it) }
-                ?.also { localDataSource.cacheSearch(it) }
-                ?.map { it.toMedia() }
-                ?: emptyList()
+            remoteDataSource.searchMoviesByActor(actorName, language, page).results?.filterNotNull()
+                ?.also { getActingDepartment(it) }?.let { getMediaByActorName(actorName, page, it) }
+                ?.also { localDataSource.cacheSearch(it) }?.map { it.toMedia() } ?: emptyList()
         }
 
         return sortMediaByCategoryScore(mediaList)
     }
+
+    override suspend fun searchMovie(query: String, page: Int): List<Movie> {
+        return (localDataSource.getCachedSearch(query, QueryType.MOVIE, pageSize = 20, page = page)
+            .takeIf { !isExpiredOrEmpty(it) }?.map { it.toDomain() }
+            ?: remoteDataSource.searchMovies(query, language, page).results?.filterNotNull()?.map {
+                it.toLocal(
+                    query, QueryType.MOVIE.name, page, "Movie"
+                )
+            }?.also { localDataSource.cacheSearch(it) }?.map { it.toDomain() } ?: emptyList())
+    }
+
+    override suspend fun searchTVShow(query: String, page: Int): List<TVShow> {
+        return (localDataSource.getCachedSearch(query, QueryType.TV, pageSize = 20, page = page)
+            .takeIf { !isExpiredOrEmpty(it) }?.map { it.toTVShow() }
+            ?: remoteDataSource.searchTvShows(query, language, page).results?.filterNotNull()?.map {
+                it.toLocal(
+                    query, QueryType.TV.name, page, "TVShow"
+                )
+            }?.also { localDataSource.cacheSearch(it) }?.map { it.toTVShow() } ?: emptyList())
+    }
+
 
     private suspend fun sortMediaByCategoryScore(mediaList: List<Media>): List<Media> {
         val scores = categoriesPreferencesDataSource.getAllCategoryScores()
@@ -78,68 +91,17 @@ class SearchRepositoryImpl(
     }
 
     fun getMediaByActorName(
-        actorName: String,
-        page: Int,
-        listOfPersons: List<PersonDto>
+        actorName: String, page: Int, listOfPersons: List<PersonDto>
     ): List<SearchingEntity> {
         return listOfPersons.flatMap {
-            it.knownFor?.filterNotNull()
-                ?.map {
-                    it.toLocal(
-                        actorName,
-                        QueryType.ACTOR.name,
-                        page,
-                        it.mediaType
-                    )
-                } ?: emptyList()
+            it.knownFor?.filterNotNull()?.map {
+                it.toLocal(
+                    actorName, QueryType.ACTOR.name, page, it.mediaType
+                )
+            } ?: emptyList()
         }
     }
 
-
-    override suspend fun searchMovie(query: String, language: String): List<Movie> {
-        return emptyList()
-//        val searchCaching = localDataSource.getCachedSearch(query, QueryType.MOVIE.name)
-//        val oneHourPassed = searchCaching.find {
-//            it.time < (System.currentTimeMillis() + ONE_HOUR_IN_MILLIS)
-//        } == null
-//        if (searchCaching.isEmpty() || oneHourPassed) {
-//            val result = remoteDataSource.searchMovies(query, language).results?.filterNotNull()
-//                ?.map { movieDto ->
-//                    movieDto.toLocal(
-//                        query, System.currentTimeMillis(), QueryType.MOVIE.name
-//                    )
-//                } ?: emptyList()
-//            localDataSource.cacheSearch(result)
-//        }
-//        return localDataSource.getCachedSearch(query, QueryType.MOVIE.name).map {
-//            it.toDomain()
-//        }
-    }
-
-    override suspend fun searchTVShow(query: String, language: String): List<TVShow> {
-//        val searchCaching = localDataSource.getCachedSearch(query, QueryType.TV.name)
-//        val isCacheStale =
-//            searchCaching.any { it.time < System.currentTimeMillis() - ONE_HOUR_IN_MILLIS }
-//
-//        if (searchCaching.isEmpty() || isCacheStale) {
-//            val result = remoteDataSource.searchTvShows(query, language).results?.filterNotNull()
-//                ?.map { tvShowDto ->
-//                    tvShowDto.toLocal(
-//                        query = query, type = QueryType.TV.name, time = System.currentTimeMillis()
-//                    )
-//                } ?: emptyList()
-//
-//            localDataSource.cacheSearch(result)
-//        }
-//
-//        return localDataSource.getCachedSearch(query, QueryType.TV.name).map { it.toTVShow() }
-        return emptyList()
-    }
-
-    private fun isExpiredOrEmpty(list: List<SearchingEntity>): Boolean {
-        return list.isEmpty() ||
-                list.any { Instant.now().epochSecond - it.time > CACHE_TIMEOUT }
-    }
 
     override suspend fun getRecentSearchQueries(): List<String> {
         return recentHistoryLocalDataSource.getRecentSearchQueries()
@@ -174,5 +136,9 @@ class SearchRepositoryImpl(
     companion object {
         const val CACHE_TIMEOUT = 3600000L
         const val ACTING_DEPARTMENT = "Acting"
+    }
+
+    private fun isExpiredOrEmpty(list: List<SearchingEntity>): Boolean {
+        return list.isEmpty() || list.any { Instant.now().epochSecond - it.time > CACHE_TIMEOUT }
     }
 }
