@@ -1,15 +1,12 @@
-package com.berlin.repository.datasource.remote.dto
+package com.berlin.repository.datasource.remote.dto.auth
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
-class SessionResponse {
-
+data class SessionDto (
     @SerialName("success")
-    val success: Boolean? = null
+    val success: Boolean? ,
     @SerialName("session_id")
-    val sessionId: String? = null
-
-}
+    val sessionId: String?
+)

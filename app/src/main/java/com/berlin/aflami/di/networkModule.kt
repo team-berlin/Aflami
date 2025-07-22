@@ -3,6 +3,7 @@ package com.berlin.aflami.di
 import com.berlin.aflami.BuildConfig
 import com.berlin.aflami.util.ApiKeyInterceptor
 import com.berlin.aflami.util.SessionIdInterceptor
+import com.berlin.remote.network.AuthenticationApiService
 import com.berlin.remote.network.MovieApiService
 import com.berlin.remote.network.SearchApiService
 import com.berlin.remote.network.TVShowApiService
@@ -27,7 +28,7 @@ val networkModule = module {
     single {
         OkHttpClient.Builder()
             .addInterceptor(ApiKeyInterceptor())
-            .addInterceptor(SessionIdInterceptor())
+           // .addInterceptor(SessionIdInterceptor(get()))
             .addInterceptor(get<HttpLoggingInterceptor>())
             .build()
     }
@@ -51,4 +52,5 @@ val networkModule = module {
     single { get<Retrofit>().create(MovieApiService::class.java) }
     single { get<Retrofit>().create(TVShowApiService::class.java) }
     single { get<Retrofit>().create(SearchApiService::class.java) }
+    single { get<Retrofit>().create(AuthenticationApiService::class.java) }
 }

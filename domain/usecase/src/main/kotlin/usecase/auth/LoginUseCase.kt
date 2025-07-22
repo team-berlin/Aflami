@@ -6,7 +6,7 @@ class LoginUseCase(
     private val authenticationRepository: AuthenticationRepository
 
 ) {
-    operator fun invoke(userName: String, password: String) =
-        authenticationRepository.login(userName,password)
+//    operator fun invoke(userName: String, password: String) =
+//      //  authenticationRepository.login(userName,password)
 
 }

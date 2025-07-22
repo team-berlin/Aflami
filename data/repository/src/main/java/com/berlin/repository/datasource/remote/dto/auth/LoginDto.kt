@@ -1,11 +1,10 @@
-package com.berlin.repository.datasource.remote.dto
+package com.berlin.repository.datasource.remote.dto.auth
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginResponse (
-
+data class LoginDto(
     @SerialName("success")
     val success: Boolean,
     @SerialName("expires_at")
@@ -14,11 +13,3 @@ data class LoginResponse (
     val requestToken: String,
 )
 
-data class LoginRequestDTO(
-    val userName: String,
-    val password: String,
-    val requestToken: String? = null
-)
-data class RequestTokenRequestDTO(
-    val requestToken: String
-)
