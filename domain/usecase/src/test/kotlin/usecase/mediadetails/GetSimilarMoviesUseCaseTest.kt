@@ -80,6 +80,4 @@ class GetSimilarMoviesUseCaseTest {
         }
         return movieList
     }
-
-
 }

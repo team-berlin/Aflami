@@ -72,6 +72,4 @@ class GetSeriesCastUseCaseTest {
         }
         return castList
     }
-
-
 }

@@ -12,7 +12,6 @@ import repository.MovieDetailsRepository
 
 class GetMovieReviewUseCaseTest {
 
-
     private val movieDetailsRepository = mockk<MovieDetailsRepository>()
     private lateinit var getMovieReviewUseCase: GetMovieReviewUseCase
 
@@ -39,10 +38,10 @@ class GetMovieReviewUseCaseTest {
     }
 
     @Test
-    fun `should return empty list when review is not found`()= runTest {
+    fun `should return empty list when review is not found`() = runTest {
         //given
         val mediaId = 2L
-        coEvery { movieDetailsRepository.getReviews(mediaId)} returns emptyList()
+        coEvery { movieDetailsRepository.getReviews(mediaId) } returns emptyList()
 
         //when
         val result = getMovieReviewUseCase.invoke(mediaId)

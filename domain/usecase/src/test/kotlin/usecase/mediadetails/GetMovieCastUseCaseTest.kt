@@ -57,14 +57,14 @@ class GetMovieCastUseCaseTest {
 
         //then
         assertThat(result).isEmpty()
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieCastDetails(mediaId,language) }
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieCastDetails(mediaId, language) }
 
     }
 
     private fun getMovieCast(): List<MediaCast> {
 
         val castList = mutableListOf<MediaCast>()
-        for (i in 0 ..5) {
+        for (i in 0..5) {
             castList.add(
                 MediaCast(
                     mediaId = i.toLong(),
@@ -75,6 +75,4 @@ class GetMovieCastUseCaseTest {
         }
         return castList
     }
-
-
 }

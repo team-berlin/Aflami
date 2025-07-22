@@ -88,5 +88,4 @@ class GetTvShowDetailsUseCaseTest {
             numberOfSeasons = 5
         )
     }
-
 }
