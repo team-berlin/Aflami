@@ -3,6 +3,7 @@ package com.berlin.aflami.di
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
+import com.berlin.local.datasource.AuthenticationLocalDataSourceImp
 import com.berlin.local.datasource.CategoriesPreferencesDataSourceImpl
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
 import com.berlin.local.datasource.SearchLocalDataSourceImpl
@@ -10,6 +11,7 @@ import com.berlin.remote.AuthenticationRemoteDataSourceImpl
 import com.berlin.remote.MovieDetailsRemoteDataSourceImpl
 import com.berlin.remote.SearchRemoteDataSourceImpl
 import com.berlin.remote.TvShowDetailsRemoteDataSourceImpl
+import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
@@ -21,10 +23,13 @@ import org.koin.dsl.module
 
 val dataSourceModule = module {
     single<SearchRemoteDataSource> { SearchRemoteDataSourceImpl(get()) }
-    single<SearchLocalDataSource> { SearchLocalDataSourceImpl(get<SearchDao>()) }
-    single<RecentHistoryLocalDataSource> { RecentHistoryLocalDataSourceImpl(get<RecentHistoryDao>()) }
     single<CategoriesPreferencesDataSource> { CategoriesPreferencesDataSourceImpl(get<CategoriesPreferencesDao>()) }
     single<MovieDetailsRemoteDataSource> { MovieDetailsRemoteDataSourceImpl(get()) }
     single<TvShowDetailsRemoteDataSource> { TvShowDetailsRemoteDataSourceImpl(get()) }
     single<AuthenticationRemoteDataSource> { AuthenticationRemoteDataSourceImpl(get()) }
+
+
+    single<SearchLocalDataSource> { SearchLocalDataSourceImpl(get<SearchDao>()) }
+    single<RecentHistoryLocalDataSource> { RecentHistoryLocalDataSourceImpl(get<RecentHistoryDao>()) }
+    single<AuthenticationLocalDataSource> { AuthenticationLocalDataSourceImp(get()) }
 }

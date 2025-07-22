@@ -2,7 +2,6 @@ package com.berlin.aflami.di
 
 import com.berlin.aflami.BuildConfig
 import com.berlin.aflami.util.ApiKeyInterceptor
-import com.berlin.aflami.util.SessionIdInterceptor
 import com.berlin.remote.network.AuthenticationApiService
 import com.berlin.remote.network.MovieApiService
 import com.berlin.remote.network.SearchApiService
@@ -30,6 +29,7 @@ val networkModule = module {
             .addInterceptor(ApiKeyInterceptor())
            // .addInterceptor(SessionIdInterceptor(get()))
             .addInterceptor(get<HttpLoggingInterceptor>())
+
             .build()
     }
 

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SessionDto (
     @SerialName("success")
-    val success: Boolean? ,
+    val success: Boolean,
     @SerialName("session_id")
     val sessionId: String?
 )
