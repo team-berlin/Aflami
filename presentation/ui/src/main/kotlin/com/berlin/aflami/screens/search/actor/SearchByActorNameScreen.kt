@@ -141,10 +141,10 @@ private fun SearchByActorNameContent(
                     )
                 }
                 else -> {
-                    MediaGridList(
-                        media = pagedMovies,
-                        onMovieClick = listener::onMovieClicked,
-                    )
+//                    MediaGridList(
+//                        media = pagedMovies,
+//                        onMovieClick = listener::onMovieClicked,
+//                    )
                 }
             }
         }

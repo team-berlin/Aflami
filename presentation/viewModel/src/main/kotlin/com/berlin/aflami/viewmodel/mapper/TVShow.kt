@@ -20,8 +20,8 @@ fun TVShow.toUIStateMedia(): MediaUiState {
     return MediaUiState(
         id = id,
         title = title,
-        rating = rating.toString(),
-        releaseYear = releaseYear.toString(),
+        rating = DecimalFormat("#.#").format(rating).toString(),
+        releaseYear = releaseYear.year.toString(),
         genre = genre,
         poster = poster
     )

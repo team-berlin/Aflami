@@ -1,10 +1,8 @@
 package com.berlin.aflami.viewmodel.search
 
-import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
-
 import androidx.paging.PagingData
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
-import com.berlin.aflami.viewmodel.uistate.TVShowUiState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

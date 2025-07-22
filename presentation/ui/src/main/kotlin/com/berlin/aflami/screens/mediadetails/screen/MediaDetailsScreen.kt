@@ -93,7 +93,7 @@ fun MediaDetailsScreen(
     val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
     val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsState()
-    val navMediaType = com.example.navigation.MediaType.valueOf(viewModel.type.name)
+    val navMediaType = MediaType.valueOf(viewModel.type.name)
 
     LaunchedEffect(Unit) {
         viewModel.getMediaCast(viewModel.id, viewModel.type, "US-EG")
@@ -105,7 +105,7 @@ fun MediaDetailsScreen(
                     navController.navigate(
                         Destination.CastScreen.route(
                             viewModel.id,
-                            navMediaType
+                            navMediaType.name
                         )
                     )
                 }

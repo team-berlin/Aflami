@@ -9,7 +9,7 @@ import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIState
-import com.berlin.aflami.viewmodel.uistate.MediaUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.util.MediaType
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

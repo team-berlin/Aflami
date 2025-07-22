@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.mapper
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.entity.Movie
+import java.text.DecimalFormat
 
 fun Movie.toUIState(): MovieUIState {
     return MovieUIState(
@@ -20,7 +21,7 @@ fun Movie.toUIStateMedia(): MediaUiState {
     return MediaUiState(
         id = id,
         title = title,
-        rating = rating.toString().take(3),
+        rating = DecimalFormat("#.#").format(rating).toString(),
         releaseYear = releaseYear.year.toString(),
         genre = genre,
         poster = poster

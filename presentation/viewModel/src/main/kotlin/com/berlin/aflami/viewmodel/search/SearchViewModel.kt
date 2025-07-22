@@ -13,9 +13,9 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.selectByGenre
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
-import com.berlin.aflami.viewmodel.uistate.TVShowUiState
-import com.berlin.aflami.viewmodel.util.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
