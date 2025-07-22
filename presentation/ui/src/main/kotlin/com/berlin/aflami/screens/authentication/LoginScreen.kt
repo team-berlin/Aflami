@@ -60,20 +60,15 @@ fun LoginContent() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ){
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-            ) {
-                LoginLogo()
-                WelcomeText()
-                FormLogin()
+            LoginLogo()
+            WelcomeText()
+            FormLogin()
             }
             Spacer(modifier = Modifier.height(48.dp))
 
             LoginButtons()
-        }
 
         Row(
             modifier = Modifier

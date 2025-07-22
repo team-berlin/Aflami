@@ -30,7 +30,7 @@ fun IconButton(
     paddingValues: PaddingValues = PaddingValues(10.dp),
     withBorder: Boolean = false,
     containerColor: Color = Theme.color.surfaceHigh,
-    tint: Color? = null,
+    tint: Color = Color.Unspecified,
     shape: Shape = RoundedCornerShape(12.dp),
     onClick: () -> Unit = {}
 ) {
@@ -51,7 +51,7 @@ fun IconButton(
     ) {
         Icon(
             painter = painter,
-            tint = tint ?: Color.Unspecified,
+            tint = tint,
             contentDescription = contentDescription,
             modifier = Modifier.padding(paddingValues)
         )
