@@ -1,4 +1,4 @@
-package com.berlin.aflami.extension
+package com.berlin.aflami.utils
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping

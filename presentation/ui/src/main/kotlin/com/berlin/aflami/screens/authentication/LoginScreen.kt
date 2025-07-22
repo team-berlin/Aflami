@@ -118,7 +118,6 @@ fun LoginLogo() {
         paddingValues = PaddingValues(8.dp),
         withBorder = true,
         containerColor = Theme.color.primaryVariant,
-        onClick = {}
     )
 }
 
@@ -163,7 +162,7 @@ fun FormLogin() {
             errorMessage = if (passwordError) stringResource(R.string.incorrect_password) else "",
             isObscured = true,
             onValueChange = { password = it },
-            trailingIcon = R.drawable.heroicons_outline,
+            trailingIcon = R.drawable.eye,
             onTrailingClick = { },
             modifier = Modifier.fillMaxWidth()
         )
