@@ -56,22 +56,17 @@ fun LoginContent() {
             )
             .padding(horizontal = 12.dp),
     ) {
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 24.dp),
-        ){
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-            ) {
-                LoginLogo()
-                WelcomeText()
-                FormLogin()
-            }
-            Spacer(modifier = Modifier.height(48.dp))
+            verticalArrangement = Arrangement.spacedBy(24.dp),
 
+            ) {
+            LoginLogo()
+            WelcomeText()
+            FormLogin()
+            Spacer(modifier = Modifier.height(24.dp))
             LoginButtons()
         }
 
@@ -99,6 +94,7 @@ fun LoginContent() {
 
     }
 }
+
 @Composable
 fun LoginLogo() {
     IconButton(
@@ -143,7 +139,7 @@ fun WelcomeText() {
 fun FormLogin() {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    Column{
+    Column {
         TextField(
             text = username,
             leadingIcon = R.drawable.user_square,
@@ -201,7 +197,7 @@ fun LoginButtons() {
         }
 
         PrimaryButton(
-            onClick = {  },
+            onClick = { },
             containerColor = Theme.color.primaryVariant,
             modifier = Modifier
                 .fillMaxWidth()
