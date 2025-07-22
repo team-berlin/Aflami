@@ -47,11 +47,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.berlin.aflami.utils.AsteriskVisualTransformation
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -111,7 +111,7 @@ fun TextField(
         ) {
             if (leadingIcon != null) {
                 val imageColor by animateColorAsState(
-                    targetValue = if (text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.body
+                    targetValue = if (text.isEmpty()) Theme.color.textColors.body else Theme.color.textColors.hint
                 )
                 LeadingIcon(leadingIcon, imageColor)
                 VerticalDivider()
@@ -138,7 +138,7 @@ fun TextField(
                     .onFocusChanged { focusState -> isFocused = focusState.isFocused },
                 textStyle = style.copy(color = Theme.color.textColors.title),
                 singleLine = maxLines == 1,
-                visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
+                visualTransformation = if (isObscured) AsteriskVisualTransformation() else VisualTransformation.None,
                 decorationBox = { innerTextField ->
                     InnerTextFieldWithHint(innerTextField, text, hintText, style)
                 })
