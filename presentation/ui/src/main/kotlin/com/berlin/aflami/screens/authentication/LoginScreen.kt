@@ -1,5 +1,7 @@
 package com.berlin.aflami.screens.authentication
 
+import android.content.Context
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,9 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.ui.theme.AflamiTheme
@@ -45,6 +49,7 @@ fun LoginScreen() {
 
 @Composable
 fun LoginContent() {
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -87,7 +92,12 @@ fun LoginContent() {
                 style = Theme.textStyle.body.small,
                 color = Theme.color.primary,
                 modifier = Modifier
-                    .clickable { }
+                    .clickable {
+                        launchCustomBrowserTab(
+                            loadUrl = REGISTER_URL,
+                            context = context
+                        )
+                    }
                     .padding(start = 4.dp)
             )
         }
@@ -219,4 +229,14 @@ fun LoginScreenPreview() {
     AflamiTheme(isDarkTheme = false) {
         LoginScreen()
     }
+}
+
+private const val REGISTER_URL = "https://www.themoviedb.org/signup"
+
+private fun launchCustomBrowserTab(loadUrl: String, context: Context) {
+    val intent = CustomTabsIntent.Builder()
+        .setShowTitle(true)
+        .setUrlBarHidingEnabled(true)
+        .build()
+    intent.launchUrl(context, loadUrl.toUri())
 }
