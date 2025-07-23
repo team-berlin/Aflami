@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.mediadetails.details
 
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
@@ -153,11 +152,20 @@ class MediaDetailsViewModel(
     }
 
     override fun onShowCastClicked() {
-        sendNewEffect(MediaDetailsScreenEffect.NavigateToShowAllCastScreen)
+        sendNewEffect(
+            MediaDetailsScreenEffect.NavigateToShowAllCastScreen(
+                mediaId = id,
+                mediaType = type
+            )
+        )
     }
 
     override fun onRateIconClicked(id: Long) {
-        sendNewEffect(MediaDetailsScreenEffect.ShowRatingSheet(id = id))
+        if (true) {
+            _showLoginRequiredDialog.value = true
+        } else {
+            sendNewEffect(MediaDetailsScreenEffect.ShowRatingDialog(id))
+        }
     }
 
     override fun onSelectRateClicked(rate: Float) {
@@ -173,12 +181,17 @@ class MediaDetailsViewModel(
     }
 
     override fun onAddMediaToFavouriteListClicked(favouriteListId: Int, mediaId: Int) {
-        sendNewEffect(
-            MediaDetailsScreenEffect.ShowAddToFavoriteListSheet(
-                favouriteListId = favouriteListId,
-                mediaId = mediaId
+        if (true) {
+            _showLoginRequiredDialog.value = true
+        } else {
+            sendNewEffect(
+                MediaDetailsScreenEffect.ShowAddToFavoriteListDialog(
+                    favouriteListId = favouriteListId,
+                    mediaId = mediaId
+                )
             )
-        )
+        }
+
     }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {

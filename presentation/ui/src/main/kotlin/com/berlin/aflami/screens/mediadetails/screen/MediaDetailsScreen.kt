@@ -51,7 +51,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
@@ -81,14 +80,13 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
-import com.example.navigation.Destination
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MediaDetailsScreen(
     viewModel: MediaDetailsViewModel = koinViewModel(),
-    navController: NavController
+    onEffect: (MediaDetailsScreenEffect) -> Unit
 ) {
     val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
@@ -101,27 +99,14 @@ fun MediaDetailsScreen(
         viewModel.onShowReviewsClicked(viewModel.id, viewModel.type)
         viewModel.effect.collect { event ->
             when (event) {
-                is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
-                    navController.navigate(
-                        Destination.CastScreen.route(
-                            viewModel.id,
-                            navMediaType.name
-                        )
-                    )
+                is MediaDetailsScreenEffect.ShowRatingDialog -> {
+                    // Actual implementation once login is in place
+                }
+                is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {
+                    // Actual implementation once login is in place
                 }
 
-                MediaDetailsScreenEffect.NavigateBack -> {
-                    navController.popBackStack()
-                }
-
-                is MediaDetailsScreenEffect.PlayMedia -> {}
-                is MediaDetailsScreenEffect.ShowAddToFavoriteListSheet -> {
-                    viewModel.showLoginDialog(true)
-                }
-
-                is MediaDetailsScreenEffect.ShowRatingSheet -> {
-                    viewModel.showLoginDialog(true)
-                }
+                else -> onEffect(event)
             }
         }
     }
@@ -462,7 +447,7 @@ fun RowSection(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        items(visibleTabs) { tab ->
+        items(visibleTabs, key = { it.name}) { tab ->
             Chips(
                 title = stringResource(movieDetailsTabsMapper(tab)),
                 icon = painterResource(getMovieDetailsTabsIcon(tab)),

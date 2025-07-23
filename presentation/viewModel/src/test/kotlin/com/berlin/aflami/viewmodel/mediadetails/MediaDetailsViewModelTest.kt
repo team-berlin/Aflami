@@ -477,7 +477,7 @@ class MediaDetailsViewModelTest {
         advanceUntilIdle()
 
         // Then
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.ShowRatingSheet(id = 1))
+        assertThat(effects).containsExactly(MediaDetailsScreenEffect.ShowRatingDialog(id = 1))
         job.cancel()
     }
 
@@ -494,7 +494,7 @@ class MediaDetailsViewModelTest {
 
             // Then
             assertThat(effects).containsExactly(
-                MediaDetailsScreenEffect.ShowAddToFavoriteListSheet(
+                MediaDetailsScreenEffect.ShowAddToFavoriteListDialog(
                     favouriteListId = 1,
                     mediaId = 2
                 )
@@ -686,7 +686,7 @@ class MediaDetailsViewModelTest {
         viewModel.onAddMediaToFavouriteListClicked(7, 9)
         advanceUntilIdle()
         assertThat(effects).containsExactly(
-            MediaDetailsScreenEffect.ShowAddToFavoriteListSheet(7, 9)
+            MediaDetailsScreenEffect.ShowAddToFavoriteListDialog(7, 9)
         )
         job.cancel()
     }

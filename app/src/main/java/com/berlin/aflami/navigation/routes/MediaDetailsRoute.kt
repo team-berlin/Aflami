@@ -6,6 +6,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.berlin.aflami.screens.mediadetails.screen.MediaDetailsScreen
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
+import com.example.navigation.Destination
 import com.example.navigation.Destination.MediaDetailsScreen
 
 
@@ -20,7 +22,24 @@ fun NavGraphBuilder.mediaDetailsRoute(
         )
     ) {
         MediaDetailsScreen(
-            navController = navController,
+            onEffect = { effect ->
+                when (effect) {
+                    is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
+                        navController.navigate(
+                            Destination.CastScreen.route(
+                                id=effect.mediaId,
+                                mediaType = effect.mediaType.name
+                            )
+                        )
+                    }
+                    is MediaDetailsScreenEffect.NavigateBack -> {
+                        navController.popBackStack()
+                    }
+                    is MediaDetailsScreenEffect.PlayMedia -> {}
+
+                    else -> {}
+                }
+            }
         )
 
     }
