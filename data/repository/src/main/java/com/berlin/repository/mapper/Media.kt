@@ -1,6 +1,7 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.Media
+import com.berlin.repository.datasource.local.dto.MediaContinueWatchingEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.MediaDto
 import java.time.Instant
@@ -30,5 +31,28 @@ fun SearchingEntity.toMedia(): Media {
         genre = this.genre,
         poster = this.poster,
         mediaType = this.mediaType
+    )
+}
+
+fun MediaContinueWatchingEntity.toMedia():Media{
+    return Media(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseYear = stringToLocalDate(this.releaseYear),
+        genre = emptyList(),
+        poster = this.posterUrl ,
+        mediaType = this.typeOfMedia
+    )
+}
+
+fun Media.toLocalEntity():MediaContinueWatchingEntity{
+    return MediaContinueWatchingEntity(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseYear = this.releaseYear.toString(),
+        posterUrl = this.poster,
+        typeOfMedia = this.mediaType
     )
 }

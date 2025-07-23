@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 
 @Composable
-fun MoviesCastGrid(
+fun MediaCastGrid(
     modifier: Modifier = Modifier,
     mediaCast: List<MediaCastUiState>,
 ) {
