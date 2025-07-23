@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.authentication
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,8 +13,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,8 +37,12 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.berlin.aflami.component.IconButton
 import com.berlin.ui.R
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberInfiniteTransition
+
 
 @Composable
 fun LoginScreen() {
@@ -56,6 +64,7 @@ fun LoginContent() {
             )
             .padding(horizontal = 12.dp),
     ) {
+        CirclesBackground()
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -212,10 +221,58 @@ fun LoginButtons() {
     }
 }
 
+data class Circles(val size: Dp, val xScreen: Int, val yScreen: Int)
+
+@SuppressLint("ConfigurationScreenWidthHeight")
+@Composable
+fun CirclesBackground() {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+    val screenHeight = configuration.screenHeightDp
+
+    val circles = listOf(
+        Circles(32.dp, 34, -18),
+        Circles(64.dp, 193, -10),
+        Circles(64.dp, 304, 128),
+        Circles(64.dp, 234, 358),
+        Circles(64.dp, 324, 498),
+        Circles(24.dp, 246, 657),
+        Circles(32.dp, 167, 566),
+        Circles(100.dp, -22, 734),
+        Circles(100.dp, -22, 304),
+        Circles(24.dp, 16, 617),
+        Circles(40.dp, 339, 19)
+    )
+
+    circles.forEach { circle ->
+        val infiniteTransition = rememberInfiniteTransition()
+        val animatedScale by infiniteTransition.animateFloat(
+            initialValue = 0.9f,
+            targetValue = 1.1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 3000, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+
+        Box(
+            modifier = Modifier
+                .size(circle.size * animatedScale)
+                .offset(
+                    x = (circle.xScreen / 360f * screenWidth).dp,
+                    y = (circle.yScreen / 800f * screenHeight).dp
+                )
+                .clip(CircleShape)
+                .background(
+                    Theme.color.statusColors.backgroundCircles.copy(alpha = 0.04f)
+                )
+        )
+    }
+}
 
 @Preview(showBackground = true, heightDp = 800, widthDp = 360)
 @Composable
-fun LoginScreenPreview() {
+private fun LoginScreenPreview() {
     AflamiTheme(isDarkTheme = false) {
         LoginScreen()
     }
