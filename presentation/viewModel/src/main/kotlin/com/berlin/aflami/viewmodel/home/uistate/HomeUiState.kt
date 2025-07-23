@@ -9,12 +9,12 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 
 data class HomeUiState(
 
-    val mediaUiState:List<MediaUiState> = emptyList(),
+    val mediaContinueWatching:List<MediaUiState> = emptyList(),
     val upcomingMovies: UpComingUiState = UpComingUiState(),
     val isLoading: Boolean = false,
     val error: String? = null,
 
-)
+    )
 
 data class UpComingUiState(
     val upcomingMovies: List<MovieUIState> = emptyList(),
