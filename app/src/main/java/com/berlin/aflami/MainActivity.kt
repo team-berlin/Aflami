@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.navigation.AflamiNavGraph
+import com.berlin.aflami.screens.search.country.SearchByCountryScreen
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 
@@ -24,6 +25,18 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
+
+            //val getMovieDetailsUseCase: GetMovieDetailsUseCase = get()
+            //val getTvShowDetailsUseCase: GetTvShowDetailsUseCase = get()
+
+//            LaunchedEffect(Unit) {
+//                //val movieDetails = getMovieDetailsUseCase(603, "en-US")
+//                //Log.d("DEBUG", "Movie: ${movieDetails?.title}")
+//                val tvShowDetails = getTvShowDetailsUseCase(20, "en-US")
+//                Log.d("DEBUG", "Tv Show: ${tvShowDetails?.seasons[0]}")
+//            }
+
+
             AflamiTheme {
                 AflamiNavGraph(
                     navController,
@@ -33,6 +46,7 @@ class MainActivity : ComponentActivity() {
                         .statusBarsPadding()
                         .navigationBarsPadding()
                 )
+
             }
         }
     }
