@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -41,15 +43,15 @@ import androidx.compose.ui.unit.Dp
 import com.berlin.aflami.component.IconButton
 import com.berlin.ui.R
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 
 
 @Composable
 fun LoginScreen() {
-
     LoginContent()
 }
-
 
 @Composable
 fun LoginContent() {
