@@ -1,6 +1,12 @@
 package com.berlin.remote.network
 
-import com.berlin.repository.datasource.remote.dto.*
+import com.berlin.repository.datasource.remote.dto.BaseResponse
+import com.berlin.repository.datasource.remote.dto.MediaCastResponse
+import com.berlin.repository.datasource.remote.dto.MediaImagesResponse
+import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
+import com.berlin.repository.datasource.remote.dto.MovieItemDto
+import com.berlin.repository.datasource.remote.dto.MovieResponse
+import com.berlin.repository.datasource.remote.dto.ReviewResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -12,14 +18,12 @@ interface MovieApiService {
 
     @GET(ApiConstants.MOVIE_DETAILS)
     suspend fun getMovieDetails(
-        @Path(ApiConstants.MOVIE_ID) id: Long,
-        @Query(ApiConstants.LANGUAGE) language: String
+        @Path(ApiConstants.MOVIE_ID) id: Long, @Query(ApiConstants.LANGUAGE) language: String
     ): MovieDetailsDto
 
     @GET(ApiConstants.MOVIE_CAST)
     suspend fun getMovieCastDetails(
-        @Path(ApiConstants.MOVIE_ID) movieId: Long,
-        @Query(ApiConstants.LANGUAGE) language: String
+        @Path(ApiConstants.MOVIE_ID) movieId: Long, @Query(ApiConstants.LANGUAGE) language: String
     ): MediaCastResponse
 
     @GET(ApiConstants.MOVIE_MORE_LIKE_THIS)
@@ -31,4 +35,7 @@ interface MovieApiService {
     suspend fun getMovieReviews(
         @Path(ApiConstants.MOVIE_ID) id: Long
     ): ReviewResponse
+
+    @GET(ApiConstants.MOVIE_UPCOMING)
+    suspend fun getUpcomingMovie(): BaseResponse<MovieItemDto>
 }
