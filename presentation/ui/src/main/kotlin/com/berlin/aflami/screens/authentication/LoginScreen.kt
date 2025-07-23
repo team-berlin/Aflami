@@ -1,7 +1,6 @@
 package com.berlin.aflami.screens.authentication
 
-import android.content.Context
-import androidx.browser.customtabs.CustomTabsIntent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,29 +26,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.berlin.aflami.component.IconButton
 import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import androidx.compose.ui.tooling.preview.Preview
-import com.berlin.aflami.component.IconButton
 import com.berlin.ui.R
+import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
 
 @Composable
-fun LoginScreen() {
-
-    LoginContent()
+fun LoginScreen(
+    navController: NavController
+) {
+    LoginContent(navController)
 }
 
 
 @Composable
-fun LoginContent() {
-    val context = LocalContext.current
+fun LoginContent(
+    navController: NavController
+) {
 
     Box(
         modifier = Modifier
@@ -70,7 +72,12 @@ fun LoginContent() {
             ) {
             LoginLogo()
             WelcomeText()
-            FormLogin()
+            FormLogin(
+                onForgotPasswordClick = {
+                    val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
+                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                }
+            )
             Spacer(modifier = Modifier.height(24.dp))
             LoginButtons()
         }
@@ -93,10 +100,8 @@ fun LoginContent() {
                 color = Theme.color.primary,
                 modifier = Modifier
                     .clickable {
-                        launchCustomBrowserTab(
-                            loadUrl = REGISTER_URL,
-                            context = context
-                        )
+                        val encodedUrl = Uri.encode(REGISTER_URL)
+                        navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
                     }
                     .padding(start = 4.dp)
             )
@@ -146,7 +151,9 @@ fun WelcomeText() {
 }
 
 @Composable
-fun FormLogin() {
+fun FormLogin(
+    onForgotPasswordClick: () -> Unit,
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     Column {
@@ -180,7 +187,7 @@ fun FormLogin() {
             color = Theme.color.primary,
             modifier = Modifier
                 .align(Alignment.End)
-                .clickable {}
+                .clickable { onForgotPasswordClick() }
                 .padding(top = 4.dp)
         )
     }
@@ -227,16 +234,9 @@ fun LoginButtons() {
 @Composable
 fun LoginScreenPreview() {
     AflamiTheme(isDarkTheme = false) {
-        LoginScreen()
+        LoginScreen(navController = rememberNavController())
     }
 }
 
 private const val REGISTER_URL = "https://www.themoviedb.org/signup"
-
-private fun launchCustomBrowserTab(loadUrl: String, context: Context) {
-    val intent = CustomTabsIntent.Builder()
-        .setShowTitle(true)
-        .setUrlBarHidingEnabled(true)
-        .build()
-    intent.launchUrl(context, loadUrl.toUri())
-}
+private const val RESET_PASSWORD_URL = "https://www.themoviedb.org/reset-password"
