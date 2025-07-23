@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.aflami.custom.plugin)
+
 }
 
 android {
@@ -13,8 +14,7 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.koin)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.bundles.ktor)
+    implementation(libs.bundles.retrofit)
 
     implementation(project(":data:repository"))
 }

@@ -13,4 +13,5 @@ class Converters {
         return if (data.isEmpty()) emptyList()
         else data.split(",").map { it.toInt() }
     }
+
 }

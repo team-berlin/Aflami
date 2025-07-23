@@ -1,6 +1,5 @@
 package com.berlin.aflami.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +15,7 @@ import com.berlin.designsystem.R
 @Composable
 fun SearchSuggestionHub(
     modifier: Modifier = Modifier,
-    onWorldTourClick: () -> Unit,
+    onSearchByCountryClick: () -> Unit,
     onSearchByActorClick: () -> Unit
 ) {
     Row(
@@ -24,29 +23,26 @@ fun SearchSuggestionHub(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         SearchSuggestionItem(
-            modifier = Modifier
-                .weight(1f)
-                .clickable { onWorldTourClick() },
+            modifier = Modifier.weight(1f),
             title = stringResource(R.string.world_tour),
             subtitle = stringResource(R.string.explore_world_cinema),
+            contentDescription = "world tour",
             gradientBackground = darkPurpleLinearGradient,
             painter = painterResource(R.drawable.news_img),
-            contentDescription = "world tour"
+            onClick = onSearchByCountryClick
         )
+
         SearchSuggestionItem(
-            modifier = Modifier
-                .weight(1f)
-                .clickable { onSearchByActorClick() },
+            modifier = Modifier.weight(1f),
             title = stringResource(R.string.find_by_actor),
             subtitle = stringResource(R.string.search_by_favorite_actor),
+            contentDescription = "Find by actor",
             gradientBackground = blueLinearGradient,
             painter = painterResource(R.drawable.find_by_actor),
-            contentDescription = "Find by actor"
-
+            onClick = onSearchByActorClick
         )
     }
 }
-
 
 @ThemeAndLocalePreviews
 @Composable

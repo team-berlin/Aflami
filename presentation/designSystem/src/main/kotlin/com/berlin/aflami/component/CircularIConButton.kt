@@ -32,7 +32,9 @@ fun CircularIConButton(
     dropShadowColor: Color = Theme.color.primary,
     dropShadowAlpha: Float = 0.03f,
     blur: Int = 4,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    tint: Color = Theme.color.primary,
+    enabled: Boolean = true
 ) {
     Box(
         modifier = modifier
@@ -49,7 +51,7 @@ fun CircularIConButton(
                 else Modifier
             )
             .clip(RoundedCornerShape(50))
-            .clickable { onClick() }
+            .then(if (enabled) Modifier.clickable { onClick() } else Modifier)
             .background(backgroundColor)
             .border(
                 width = borderWidth.dp,
@@ -61,7 +63,7 @@ fun CircularIConButton(
         Icon(
             painter = painter,
             contentDescription = stringResource(R.string.icon_button),
-            tint = Theme.color.primary,
+            tint = tint,
             modifier = Modifier.size((size / 2).dp)
         )
     }

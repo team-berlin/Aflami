@@ -41,6 +41,7 @@
     <string name="incorrect_password">خطا بكلمة السر</string>
 
     <string name="tv_shows">البرامج التلفزيونية</string>
+
     <string name="movies">الأفلام</string>
     <!--    content description-->
     <string name="icon_cd">أيقونة</string>
@@ -77,5 +78,12 @@
     <string name="documentary">وثائقي</string>
     <string name="animation">انمي</string>
     <string name="filter_result">فرز النتائج</string>
+    <string name="search_discribtion">"ابدا بالتصفح! ابحث عن ممثلك , مسلسلاتك , وبرامجك المفضلة"</string>
+
+    <string name="more_like_this">اقتراحات مشابهة</string>
+    <string name="reviews">تقييمات</string>
+    <string name="gallery">المعرض</string>
+    <string name="company_production">إنتاج\nالشركة</string>
+    <string name="season">الموسم</string>
 
 </resources>
