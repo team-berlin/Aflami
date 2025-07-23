@@ -13,6 +13,7 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.util.toggle
 import com.berlin.entity.Episodes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,15 +47,18 @@ class MediaDetailsViewModel(
     MediaDetailsUiState()
 ), MediaInteractionListener {
 
-    private val MOVIE_DESCRIPTION_KEY = "MOVIE_DESCRIPTION"
-    val id: Long = savedStateHandle.get<String>("id")?.toLongOrNull() ?: 0L
-    val type: MediaType = savedStateHandle.get<String>("media_type")
+    private companion object {
+        const val ID_KEY = "id"
+        const val MEDIA_TYPE_KEY = "media_type"
+    }
+
+    val id: Long = savedStateHandle.get<String>(ID_KEY)?.toLongOrNull() ?: 0L
+    val type: MediaType = savedStateHandle.get<String>(MEDIA_TYPE_KEY)
         ?.let { MediaType.valueOf(it) } ?: MediaType.MOVIE
 
     private val _tabSelectedUiState = MutableStateFlow(MovieDetailsTabsUiState())
     val tabSelectedUiState = _tabSelectedUiState.asStateFlow()
 
-    private val _expandedUiStates = mutableStateMapOf<Long, Boolean>()
     var companyProductionCache: List<CompanyProductionUiState>? = null
 
     private val _showLoginRequiredDialog = MutableStateFlow(false)
@@ -108,11 +112,11 @@ class MediaDetailsViewModel(
     }
 
     fun isDescriptionExpanded(): Boolean {
-        return _expandedUiStates[MOVIE_DESCRIPTION_KEY.hashCode().toLong()] ?: false
+        return _state.value.isDescriptionExpanded
     }
 
     fun isReviewExpanded(id: Long): Boolean {
-        return _expandedUiStates[id] ?: false
+        return _state.value.expandedReviewIds.contains(id)
     }
 
     fun showLoginDialog(show: Boolean) {
@@ -133,12 +137,19 @@ class MediaDetailsViewModel(
     }
 
     override fun onReadMoreDescriptionClicked() {
-        val key = MOVIE_DESCRIPTION_KEY.hashCode().toLong()
-        _expandedUiStates[key] = !(_expandedUiStates[key] ?: false)
+        _state.update { state ->
+            state.copy(
+                isDescriptionExpanded = !state.isDescriptionExpanded
+            )
+        }
     }
 
     override fun onReadMoreReviewClicked(id: Long) {
-        _expandedUiStates[id] = !(_expandedUiStates[id] ?: false)
+        _state.update { state ->
+            state.copy(
+                expandedReviewIds = state.expandedReviewIds.toggle(id)
+            )
+        }
     }
 
     override fun onShowCastClicked() {

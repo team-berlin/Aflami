@@ -23,6 +23,8 @@ data class MediaDetailsUiState(
     val mediaCast: List<MediaCastUiState> = emptyList(),
     val country: String = "",
     val options: List<MediaOptions> = emptyList(),
+    val isDescriptionExpanded: Boolean = false,
+    val expandedReviewIds: Set<Long> = emptySet(),
     val isLoading: Boolean = true,
     val originalCountry: String? = null,
     val duration: String? = null,
