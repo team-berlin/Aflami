@@ -20,6 +20,8 @@ import usecase.mediadetails.GetSeriesGalleryUseCase
 import usecase.mediadetails.GetSeriesCastUseCase
 import usecase.mediadetails.GetSeriesReviewUseCase
 import usecase.SearchByCountryUseCase
+import usecase.home.GetWatchedMediaUseCase
+import usecase.mediadetails.InsertWatchedMediaUseCase
 
 val useCaseModule = module {
     single { SearchByCountryUseCase(get()) }
@@ -42,5 +44,7 @@ val useCaseModule = module {
     single { GetMovieReviewUseCase(get()) }
     single { GetSeriesReviewUseCase(get()) }
     single { GetSeasonEpisodesUseCase(get()) }
+    single{ InsertWatchedMediaUseCase(get()) }
+    single { GetWatchedMediaUseCase(get()) }
 
 }
