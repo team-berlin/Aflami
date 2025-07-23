@@ -24,7 +24,12 @@ class AuthenticationRepositoryImpl(
     }
 
     override suspend fun requestToken(): LoginToken {
-        return remoteDataSource.requestToken().toDomain()
+
+        return try {
+            remoteDataSource.requestToken().toDomain()
+        } catch (e: Exception){
+            throw e
+        }
     }
 
     override suspend fun createSession(requestToken: String): Session {
