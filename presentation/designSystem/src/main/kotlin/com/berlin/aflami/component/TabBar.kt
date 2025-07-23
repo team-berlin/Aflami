@@ -14,14 +14,8 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,8 +26,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
 data class TabBarItem(
-    val text: String,
-    val isSelected: Boolean
+    val text: String, val isSelected: Boolean
 )
 
 @Composable
@@ -41,31 +34,26 @@ fun TabBar(
     items: List<TabBarItem>,
     onTabChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = Theme.color.surfaceHigh
+    containerColor: Color = Theme.color.surfaceHigh,
+    selectedTabIndex: Int = 0
 ) {
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
     val borderColor = Theme.color.stroke
 
     TabRow(
         selectedTabIndex = selectedTabIndex,
-        modifier =
-            modifier
-                .fillMaxWidth()
-                ,
+        modifier = modifier.fillMaxWidth(),
         divider = {
             HorizontalDivider(thickness = 1.dp, color = borderColor)
-        }
-        ,
+        },
         indicator = @Composable { tabPositions ->
             val currentTabPosition = tabPositions[selectedTabIndex]
             Box(
-                modifier =
-                    Modifier
-                        .tabIndicatorOffset(currentTabPosition)
-                        .height(5.dp)
-                        .padding(horizontal = 24.dp)
-                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                        .background(Theme.color.secondary),
+                modifier = Modifier
+                    .tabIndicatorOffset(currentTabPosition)
+                    .height(5.dp)
+                    .padding(horizontal = 24.dp)
+                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                    .background(Theme.color.secondary),
             )
         },
         containerColor = containerColor,
@@ -82,7 +70,6 @@ fun TabBar(
             Tab(
                 selected = isSelected,
                 onClick = {
-                    selectedTabIndex = index
                     onTabChange(index)
                 },
             ) {
@@ -90,10 +77,9 @@ fun TabBar(
                     text = status.text,
                     style = titleStyle,
                     color = titleColor,
-                    modifier =
-                        Modifier
-                            .padding(vertical = 16.dp)
-                            .animateContentSize(),
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .animateContentSize(),
                 )
             }
         }
@@ -102,9 +88,7 @@ fun TabBar(
 
 
 @Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    backgroundColor = 0xFF0D090B
+    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF0D090B
 )
 @Preview(
     showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO,
@@ -115,12 +99,9 @@ private fun TabBarPreview() {
         TabBar(
             items = listOf(
                 TabBarItem(
-                    text = stringResource(R.string.movies),
-                    isSelected = true
-                ),
-                TabBarItem(
-                    text = stringResource(R.string.tv_shows),
-                    isSelected = false
+                    text = stringResource(R.string.movies), isSelected = true
+                ), TabBarItem(
+                    text = stringResource(R.string.tv_shows), isSelected = false
                 )
             ),
             onTabChange = {},
