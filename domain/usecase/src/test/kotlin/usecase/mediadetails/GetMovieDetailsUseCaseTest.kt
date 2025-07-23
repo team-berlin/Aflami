@@ -10,6 +10,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
 
 class GetMovieDetailsUseCaseTest {
@@ -48,6 +49,22 @@ class GetMovieDetailsUseCaseTest {
         assertThat(result).isNull()
         coVerify(exactly = 1) { repository.getMovieDetails(movieId, language) }
     }
+
+    @Test
+    fun `should throw exception when repository throws exception`() = runTest {
+        // Given
+        val movieId = 3L
+        val language = "en-US"
+        val exception = RuntimeException()
+
+        coEvery { repository.getMovieDetails(movieId, language) } throws exception
+
+        // When + Then
+        assertThrows<RuntimeException>{
+            getMovieDetailsUseCase(movieId, language)
+        }
+    }
+
 
     private fun getFakeMovieDetails(): MovieDetails {
         return MovieDetails(

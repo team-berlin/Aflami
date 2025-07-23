@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
 
 class GetSimilarMoviesUseCaseTest {
@@ -33,9 +34,10 @@ class GetSimilarMoviesUseCaseTest {
 
         //when
         val result = getSimilarMoviesUseCase.invoke(mediaId)
+        val expected = getSimilarMovie()
 
         // then
-        Truth.assertThat(result).isEqualTo(getSimilarMovie())
+        Truth.assertThat(result).isEqualTo(expected)
         coVerify(exactly = 1) { movieDetailsRepository.getMovieSimilar(mediaId) }
     }
 
@@ -56,6 +58,19 @@ class GetSimilarMoviesUseCaseTest {
         Truth.assertThat(result).isEmpty()
         coVerify(exactly = 1) { movieDetailsRepository.getMovieSimilar(mediaId) }
 
+    }
+    @Test
+    fun `should throw exception if movieDetailsRepository throw exception `()= runTest {
+        //give
+        val mediaId = 3L
+        val exception=Exception()
+        coEvery { movieDetailsRepository.getMovieSimilar(
+            mediaId,
+        ) } throws exception
+        //when & then
+        assertThrows<Exception> {
+            getSimilarMoviesUseCase.invoke(mediaId)
+        }
     }
 
 

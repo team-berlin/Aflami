@@ -7,8 +7,10 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import repository.TvShowDetailsRepository
 
 class GetSimilarSeriesUseCaseTest {
@@ -33,9 +35,10 @@ class GetSimilarSeriesUseCaseTest {
 
         //when
         val result = getSimilarSeriesUseCase.invoke(mediaId)
+        val expected=getSimilarSeries()
 
         // then
-        Truth.assertThat(result).isEqualTo(getSimilarSeries())
+        Truth.assertThat(result).isEqualTo(expected)
         coVerify(exactly = 1) { seriesDetailsRepository.getSeriesSimilar(mediaId) }
     }
 
@@ -56,6 +59,20 @@ class GetSimilarSeriesUseCaseTest {
         Truth.assertThat(result).isEmpty()
         coVerify(exactly = 1) { seriesDetailsRepository.getSeriesSimilar(mediaId) }
 
+    }
+
+    @Test
+    fun `should throw exception if seriesDetailsRepository throw exception `()= runTest {
+        //give
+        val mediaId = 3L
+        val exception=Exception()
+        coEvery { seriesDetailsRepository.getSeriesSimilar(
+                mediaId,
+            ) } throws exception
+        //when & then
+        assertThrows<Exception> {
+            getSimilarSeriesUseCase.invoke(mediaId)
+        }
     }
 
     private fun getSimilarSeries(): List<TVShow> {

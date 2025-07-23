@@ -7,6 +7,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import repository.TvShowDetailsRepository
 
 class GetSeriesGalleryUseCaseTest {
@@ -30,5 +31,15 @@ class GetSeriesGalleryUseCaseTest {
         coVerify(exactly = 1) { seriesDetailsRepository.getSeriesImages(movieID) }
     }
 
+    @Test
+    fun `should throw exception if movieRepository throws exception`() = runTest {
+        val exception = RuntimeException()
+        val movieID: Long = 505
+        coEvery { seriesDetailsRepository.getSeriesImages(505) } throws exception
+
+        assertThrows<RuntimeException> {
+            getSeriesGalleryUseCase(movieID)
+        }
+    }
 
 }

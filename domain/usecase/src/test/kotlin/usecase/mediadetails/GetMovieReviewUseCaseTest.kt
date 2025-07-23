@@ -8,6 +8,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
 
 class GetMovieReviewUseCaseTest {
@@ -31,9 +32,9 @@ class GetMovieReviewUseCaseTest {
 
         //when
         val result = getMovieReviewUseCase.invoke(mediaId)
-
+        val expected=getMovieReview()
         // then
-        assertThat(result).isEqualTo(getMovieReview())
+        assertThat(result).isEqualTo(expected)
         coVerify(exactly = 1) { movieDetailsRepository.getReviews(mediaId) }
     }
 
@@ -51,6 +52,20 @@ class GetMovieReviewUseCaseTest {
         coVerify(exactly = 1) { movieDetailsRepository.getReviews(mediaId) }
 
     }
+
+    @Test
+    fun `should throw exception if movieDetailsRepository throw exception `()= runTest {
+        //give
+        val mediaId = 3L
+        val exception=Exception()
+        coEvery { movieDetailsRepository.getReviews(mediaId) } throws exception
+
+        //when & then
+        assertThrows<Exception> {
+            getMovieReviewUseCase.invoke(mediaId)
+        }
+    }
+
 
     private fun getMovieReview(): List<Review> {
 

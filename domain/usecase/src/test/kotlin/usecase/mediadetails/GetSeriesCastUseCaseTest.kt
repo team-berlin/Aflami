@@ -7,6 +7,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.assertThrows
 import repository.TvShowDetailsRepository
 
 class GetSeriesCastUseCaseTest {
@@ -33,9 +35,10 @@ class GetSeriesCastUseCaseTest {
 
         //when
         val result = getSeriesCastUseCase.invoke(mediaId, language)
+        val expected=getSeriesCast()
 
         // then
-        assertThat(result).isEqualTo(getSeriesCast())
+        assertThat(result).isEqualTo(expected)
     }
 
     @Test
@@ -56,6 +59,19 @@ class GetSeriesCastUseCaseTest {
         //then
         assertThat(result).isEmpty()
 
+    }
+
+    @Test
+    fun `should throw exception if movieDetailsRepository throw exception `()= runTest {
+        //give
+        val mediaId = 3L
+        val language = "en-US"
+        val exception=Exception()
+        coEvery { seriesDetailsRepository.getSeriesCastDetails(mediaId, language) } throws exception
+        //when & then
+        assertThrows<Exception> {
+            getSeriesCastUseCase.invoke(mediaId, language)
+        }
     }
 
     private fun getSeriesCast(): List<MediaCast> {

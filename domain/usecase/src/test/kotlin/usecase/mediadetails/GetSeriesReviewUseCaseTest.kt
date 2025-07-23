@@ -32,9 +32,10 @@ class GetSeriesReviewUseCaseTest {
 
         //when
         val result = getSeriesReviewUseCase.invoke(mediaId)
+        val expected= getSeriesReview()
 
         // then
-        Truth.assertThat(result).isEqualTo(getSeriesReview())
+        Truth.assertThat(result).isEqualTo(expected)
         coVerify(exactly = 1) { seriesDetailsRepository.getReviews(mediaId) }
     }
 
@@ -52,6 +53,20 @@ class GetSeriesReviewUseCaseTest {
         coVerify(exactly = 1) { seriesDetailsRepository.getReviews(mediaId) }
 
     }
+
+    @Test
+    fun `should throw exception if seriesDetailsRepository throw exception `() = runTest {
+        //give
+        val mediaId = 3L
+        val exception = Exception()
+        coEvery { seriesDetailsRepository.getReviews(mediaId) } throws exception
+
+        //when & then
+        org.junit.jupiter.api.assertThrows<Exception> {
+            getSeriesReviewUseCase.invoke(mediaId)
+        }
+    }
+
 
     private fun getSeriesReview(): List<Review> {
 
