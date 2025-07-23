@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.mediadetails.components.MoviesCastGrid
 import com.berlin.aflami.screens.search.components.Loading
@@ -26,27 +25,21 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsEffect
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsListener
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastViewModel
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CastDetailsScreen(
-    navController: NavController,
+    onEffect: (CastDetailsEffect) -> Unit,
     viewmodel: CastViewModel = koinViewModel(),
 ) {
 
     val castState by viewmodel.state.collectAsState()
 
-
     LaunchedEffect(Unit) {
-        viewmodel.effect.collect{event->
-            when(event) {
-                is CastDetailsEffect.CastNavigationBack ->{
-                    navController.popBackStack()
-                }
-            }
+        viewmodel.effect.collect { event ->
+            onEffect(event)
         }
     }
     if (castState.isLoading) {
@@ -97,7 +90,6 @@ fun CastContent(
         )
         MoviesCastGrid(
             mediaCast = castState
-
         )
     }
 
