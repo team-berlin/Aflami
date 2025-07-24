@@ -10,12 +10,12 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModelOf(:: LoginViewmodel)
+    viewModelOf(::LoginViewmodel)
     viewModelOf(::SearchByCountryViewModel)
     viewModelOf(::SearchByActorViewModel)
     viewModel { SearchByCountryViewModel(get()) }
     viewModelOf(::SearchViewModel)
     viewModelOf(::SearchByCountryViewModel)
-    viewModel { SearchViewModel(get(), get(), get(), get(),get(),get()) }
-    viewModelOf(:: MediaDetailsViewmodel)
+    viewModel { SearchViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModelOf(::MediaDetailsViewmodel)
 }
