@@ -78,9 +78,6 @@ fun MediaDetailsScreen(
     val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getMediaCast(viewModel.id, viewModel.type, "US-EG")
-        viewModel.getMediaDetails(viewModel.id, viewModel.type, "en-US")
-        viewModel.onShowReviewsClicked(viewModel.id, viewModel.type)
         viewModel.effect.collect { event ->
             when (event) {
                 is MediaDetailsScreenEffect.ShowRatingDialog -> {

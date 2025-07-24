@@ -70,6 +70,15 @@ class MediaDetailsViewModel(
     private val _showLoginRequiredDialog = MutableStateFlow(false)
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
+    init {
+        if (_state.value.id == 0L && id != 0L) {
+            getMediaCast(id, type)
+            getMediaDetails(id, type, "en-US")
+            onShowReviewsClicked(id, type)
+        }
+    }
+
+
     fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
 
         updateState {
