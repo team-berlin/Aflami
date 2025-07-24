@@ -337,7 +337,6 @@ class SearchViewModel(
                 selectedGenres = genreId,
                 genreType = currentTab
             )
-            // Update the appropriate tab's filter state and genres
             when (currentTab) {
                 TabOption.MOVIES -> {
                     movieFilterState = newFilterTabSelected
