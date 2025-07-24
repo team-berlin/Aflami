@@ -1,6 +1,7 @@
 package com.berlin.remote.network
 
 import com.berlin.repository.datasource.remote.dto.BaseResponse
+import com.berlin.repository.datasource.remote.dto.GenreResponse
 import com.berlin.repository.datasource.remote.dto.MediaCastResponse
 import com.berlin.repository.datasource.remote.dto.MediaImagesResponse
 import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
@@ -98,4 +99,14 @@ interface ApiService {
         @Path(ApiConstants.SERIES_ID) seriesId: Long,
         @Path(ApiConstants.SEASON_NUMBER) seasonNumber: Int
     ): Response<EpisodesSeasonDto>
+    @GET(ApiConstants.MOVIE_GENRES)
+    suspend fun getMovieGenres(
+        @Query(ApiConstants.LANGUAGE)
+        language: String): Response<GenreResponse>
+
+    @GET(ApiConstants.TV_GENRES)
+    suspend fun getTVGenres(
+        @Query(ApiConstants.LANGUAGE) language: String
+    ): Response<GenreResponse>
+
 }

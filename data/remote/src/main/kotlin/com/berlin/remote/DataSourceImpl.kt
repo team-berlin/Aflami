@@ -3,6 +3,7 @@ package com.berlin.remote
 import com.berlin.remote.network.ApiService
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.datasource.remote.dto.BaseResponse
+import com.berlin.repository.datasource.remote.dto.GenreResponse
 import com.berlin.repository.datasource.remote.dto.MediaCastResponse
 import com.berlin.repository.datasource.remote.dto.MediaImagesResponse
 import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
@@ -80,6 +81,16 @@ class DataSourceImpl(
         require(seriesId > 0) { "Invalid seriesId: $seriesId" }
         require(seasonNumber >= 0) { "Invalid seasonNumber: $seasonNumber" }
         return wrapApiResponse { apiService.getEpisodeSeasonSeries(seriesId, seasonNumber) }
+    }
+
+    override suspend fun getMovieGenres(language: String): GenreResponse {
+        require(language.isNotBlank())
+        return wrapApiResponse { apiService.getMovieGenres(language) }
+    }
+
+    override suspend fun getTVGenres(language: String): GenreResponse {
+        require(language.isNotBlank())
+        return wrapApiResponse { apiService.getTVGenres(language) }
     }
 
     override suspend fun searchMoviesByCountry(

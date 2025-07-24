@@ -1,6 +1,7 @@
 package com.berlin.repository.datasource.remote
 
 import com.berlin.repository.datasource.remote.dto.BaseResponse
+import com.berlin.repository.datasource.remote.dto.GenreResponse
 import com.berlin.repository.datasource.remote.dto.MediaCastResponse
 import com.berlin.repository.datasource.remote.dto.MediaImagesResponse
 import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
@@ -42,4 +43,8 @@ interface RemoteDataSource {
     suspend fun getSeriesSimilar(seriesId: Long): TVShowResponse
     suspend fun getTVReviews(id: Long): ReviewResponse
     suspend fun getEpisodeSeasonSeries(seriesId: Long, seasonNumber: Int): EpisodesSeasonDto
+
+    suspend fun getMovieGenres(language: String): GenreResponse
+    suspend fun getTVGenres(language: String): GenreResponse
+
 }
