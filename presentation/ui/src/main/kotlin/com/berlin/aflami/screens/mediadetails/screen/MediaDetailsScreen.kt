@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
-
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -94,7 +93,6 @@ fun MediaDetailsScreen(
             }
         }
     }
-
 
     if (uiState.isLoading) {
         Loading()
@@ -290,11 +288,6 @@ fun MediaDetailsContent(
 
 }
 
-
-
-
-
-
 @Composable
 fun TabSection(
     tabState: MovieDetailsTabs,
@@ -422,8 +415,6 @@ fun BoxScope.Indicator(pagerState: PagerState) {
 }
 
 
-
-
 private fun DrawScope.drawIndicator(
     x: Float,
     y: Float,
@@ -442,4 +433,3 @@ private fun DrawScope.drawIndicator(
     val path = Path().apply { addRoundRect(rect) }
     drawPath(path = path, color = color)
 }
-

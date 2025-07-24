@@ -47,9 +47,13 @@ class MediaDetailsViewModel(
     MediaDetailsUiState()
 ), MediaInteractionListener {
 
-    private companion object {
+    companion object {
         const val ID_KEY = "id"
         const val MEDIA_TYPE_KEY = "media_type"
+        val NO_RES_ID = R.string.there_is_no_reviews
+        val NO_GALLERY = R.string.there_is_no_gallery
+        val NO_MORE_MEDIA = R.string.there_is_no_more_media
+        val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
     }
 
     val id: Long = savedStateHandle.get<String>(ID_KEY)?.toLongOrNull() ?: 0L
@@ -236,7 +240,7 @@ class MediaDetailsViewModel(
                 if (moreLikeMedia.isEmpty()) {
                     _state.update {
                         it.copy(
-                            rowSection = RowSectionUiState.NoDataFound(messageRes = R.string.there_is_no_more_media)
+                            rowSection = RowSectionUiState.NoDataFound(messageRes = NO_MORE_MEDIA)
                         )
                     }
                 } else {
@@ -275,7 +279,7 @@ class MediaDetailsViewModel(
                 if (reviewResult.isEmpty()) {
                     _state.update {
                         it.copy(
-                            rowSection = RowSectionUiState.NoDataFound(messageRes = R.string.there_is_no_reviews)
+                            rowSection = RowSectionUiState.NoDataFound(messageRes = NO_RES_ID)
                         )
                     }
                 } else {
@@ -314,7 +318,7 @@ class MediaDetailsViewModel(
                 if (gallery.isEmpty()) {
                     _state.update {
                         it.copy(
-                            rowSection = RowSectionUiState.NoDataFound(messageRes = R.string.there_is_no_gallery)
+                            rowSection = RowSectionUiState.NoDataFound(messageRes = NO_GALLERY)
                         )
                     }
                 } else {
@@ -349,7 +353,7 @@ class MediaDetailsViewModel(
                 if (companyProductionCache?.isEmpty() == true) {
                     _state.update { companyProduction ->
                         companyProduction.copy(
-                            rowSection = RowSectionUiState.NoDataFound(messageRes = R.string.there_is_no_company_production)
+                            rowSection = RowSectionUiState.NoDataFound(messageRes = NO_COMPANY_PRODUCTION)
                         )
                     }
                 } else {

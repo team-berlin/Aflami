@@ -5,7 +5,10 @@ import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel.Companion.NO_GALLERY
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel.Companion.NO_RES_ID
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -26,6 +29,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDate
@@ -109,21 +113,6 @@ class MediaDetailsViewModelTest {
     @Test
     fun `getMediaDetails for movie should update state with movie details`() = runTest {
         // Given
-//        val movie = mockk<MovieDetails> {
-//            every { id } returns 1
-//            every { title } returns "Test Movie"
-//            every { overview } returns "A test movie"
-//            every { posterUrl } returns "poster.jpg"
-//            every { backdropUrl } returns "backdrop.jpg"
-//            every { releaseDate } returns "2023-01-01"
-//            every { rating } returns 20.0
-//            every { runtime } returns 120
-//            every { genres } returns listOf(GenreEntity(1, "Action"))
-//            every { productionCompanies } returns listOf(ProductionCompanyEntity(1, "Test Studio"))
-//            every { hasVideo } returns false
-//            every { originCountry } returns "US"
-//            every { duration } returns null
-//        }
         val movie = MovieDetails(
             id = 1,
             title = "Test Movie",
@@ -169,22 +158,6 @@ class MediaDetailsViewModelTest {
     @Test
     fun `getMediaDetails for tv show should update state with tv show details`() = runTest {
         // Given
-//        val tvShow = mockk<TvShowDetails> {
-//            every { id } returns 2
-//            every { title } returns "Test Show"
-//            every { overview } returns "A test TV show"
-//            every { posterUrl } returns "poster.jpg"
-//            every { backdropUrl } returns "backdrop.jpg"
-//            every { releaseDate } returns "2022-01-01"
-//            every { rating } returns 7.5
-//            every { runtime } returns 45
-//            every { genres } returns listOf(GenreEntity(2, "Drama"))
-//            every { productionCompanies } returns listOf(ProductionCompanyEntity(2, "Test Network"))
-//            every { seasons } returns emptyList()
-//            every { numberOfSeasons } returns 3
-//            every { originCountry } returns "US"
-//        }
-
         val tvShow = TvShowDetails(
             id = 2,
             title = "Test Show",
@@ -317,7 +290,8 @@ class MediaDetailsViewModelTest {
         val state = viewModel.state.value
         assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
         val noDataState = state.rowSection as RowSectionUiState.NoDataFound
-        assertThat(noDataState.message).isEqualTo("There is no reviews!")
+        assertThat(noDataState.message).isEqualTo(null)
+        assertThat(noDataState.messageRes).isEqualTo(NO_RES_ID)
     }
 
     @Test
@@ -353,7 +327,8 @@ class MediaDetailsViewModelTest {
             val state = viewModel.state.value
             assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
             val noDataState = state.rowSection as RowSectionUiState.NoDataFound
-            assertThat(noDataState.message).isEqualTo("There is no gallery!")
+            assertThat(noDataState.message).isEqualTo(null)
+            assertThat(noDataState.messageRes).isEqualTo(NO_GALLERY)
         }
 
     @Test
@@ -466,41 +441,55 @@ class MediaDetailsViewModelTest {
         job.cancel()
     }
 
+//    @Test
+//    fun `onRateIconClicked should send ShowRatingSheet effect`() = runTest {
+//        // Given
+//        val effects = mutableListOf<MediaDetailsScreenEffect>()
+//        val job = launch { viewModel.effect.collect { effects.add(it) } }
+//
+//        // When
+//        viewModel.onRateIconClicked(1)
+//        advanceUntilIdle()
+//
+//        // Then
+//        assertThat(effects).containsExactly(MediaDetailsScreenEffect.ShowRatingDialog(id = 1))
+//        job.cancel()
+//    }
+
     @Test
-    fun `onRateIconClicked should send ShowRatingSheet effect`() = runTest {
-        // Given
-        val effects = mutableListOf<MediaDetailsScreenEffect>()
-        val job = launch { viewModel.effect.collect { effects.add(it) } }
-
-        // When
+    fun `onRateIconClicked when not logged in should show login dialog`() = runTest {
         viewModel.onRateIconClicked(1)
-        advanceUntilIdle()
-
-        // Then
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.ShowRatingDialog(id = 1))
-        job.cancel()
+        runCurrent()
+        assertThat(viewModel.showLoginRequiredDialog.value).isTrue()
     }
 
+//    @Test
+//    fun `onAddMediaToFavouriteListClicked should send ShowAddToFavoriteListSheet effect`() =
+//        runTest {
+//            // Given
+//            val effects = mutableListOf<MediaDetailsScreenEffect>()
+//            val job = launch { viewModel.effect.collect { effects.add(it) } }
+//
+//            // When
+//            viewModel.onAddMediaToFavouriteListClicked(1, 2)
+//            advanceUntilIdle()
+//
+//            // Then
+//            assertThat(effects).containsExactly(
+//                MediaDetailsScreenEffect.ShowAddToFavoriteListDialog(
+//                    favouriteListId = 1,
+//                    mediaId = 2
+//                )
+//            )
+//            job.cancel()
+//        }
+
     @Test
-    fun `onAddMediaToFavouriteListClicked should send ShowAddToFavoriteListSheet effect`() =
-        runTest {
-            // Given
-            val effects = mutableListOf<MediaDetailsScreenEffect>()
-            val job = launch { viewModel.effect.collect { effects.add(it) } }
-
-            // When
-            viewModel.onAddMediaToFavouriteListClicked(1, 2)
-            advanceUntilIdle()
-
-            // Then
-            assertThat(effects).containsExactly(
-                MediaDetailsScreenEffect.ShowAddToFavoriteListDialog(
-                    favouriteListId = 1,
-                    mediaId = 2
-                )
-            )
-            job.cancel()
-        }
+    fun `onAddToListIconClicked when not logged in should show login dialog`() = runTest {
+        viewModel.onAddMediaToFavouriteListClicked(1,1)
+        runCurrent()
+        assertThat(viewModel.showLoginRequiredDialog.value).isTrue()
+    }
 
     @Test
     fun `onReadMoreDescriptionClicked should toggle expanded state`() = runTest {
@@ -676,18 +665,7 @@ class MediaDetailsViewModelTest {
         val job = launch { viewModel.effect.collect { effects.add(it) } }
         viewModel.onShowCastClicked()
         advanceUntilIdle()
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.NavigateToShowAllCastScreen)
-        job.cancel()
-    }
-
-    @Test fun `onAddMediaToFavouriteListClicked triggers sheet effect`() = runTest {
-        val effects = mutableListOf<MediaDetailsScreenEffect>()
-        val job = launch { viewModel.effect.collect { effects.add(it) } }
-        viewModel.onAddMediaToFavouriteListClicked(7, 9)
-        advanceUntilIdle()
-        assertThat(effects).containsExactly(
-            MediaDetailsScreenEffect.ShowAddToFavoriteListDialog(7, 9)
-        )
+        assertThat(effects).containsExactly(MediaDetailsScreenEffect.NavigateToShowAllCastScreen(1, MediaType.MOVIE))
         job.cancel()
     }
 }
