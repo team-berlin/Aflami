@@ -82,8 +82,6 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                 )
             )
             .padding(horizontal = 12.dp)
-            .navigationBarsPadding()
-            .statusBarsPadding(),
     ) {
         CirclesBackground()
         Column(
