@@ -1,13 +1,18 @@
 package com.berlin.aflami.screens.mediadetails.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -17,6 +22,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 
@@ -26,20 +33,39 @@ fun MediaCastItem(
     name: String,
     poster: String,
 ) {
+    val painter = rememberAsyncImagePainter(poster)
+    val state by painter.state.collectAsState()
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        AsyncImage(
-            error = painterResource(R.drawable.place_holder),
-            placeholder = painterResource(R.drawable.place_holder),
-            fallback = painterResource(R.drawable.place_holder),
+
+        Box(
             modifier = modifier
                 .clip(RoundedCornerShape(16.dp))
                 .border(1.dp, color = Theme.color.stroke, RoundedCornerShape(16.dp)),
-            model = poster,
-            contentDescription = stringResource(R.string.cast_image),
-            contentScale = ContentScale.Crop
-        )
+        ){
+            when (state) {
+                is AsyncImagePainter.State.Success ->
+                    AsyncImage(
+                        modifier = modifier,
+                        model = poster,
+                        contentDescription = stringResource(R.string.cast_image),
+                        contentScale = ContentScale.Crop
+                    )
+
+                else -> {
+                    Image(
+                        painter = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .align(Alignment.Center),
+                        contentScale = ContentScale.Inside,
+                    )
+                }
+            }
+        }
+
         Text(
             text = name,
             style = Theme.textStyle.label.small,

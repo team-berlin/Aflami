@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.berlin.aflami.screens.mediadetails.screen.CastDetailsScreen
+import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsEffect
 import com.example.navigation.Destination
 
 fun NavGraphBuilder.castDetails(
@@ -19,7 +20,11 @@ fun NavGraphBuilder.castDetails(
     )
     ) {
         CastDetailsScreen(
-            navController = navController,
+            onEffect = {effect->
+                when (effect) {
+                    is CastDetailsEffect.CastNavigationBack -> navController.popBackStack()
+                }
+            }
         )
     }
 

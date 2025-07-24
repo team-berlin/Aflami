@@ -1,17 +1,19 @@
 package com.berlin.aflami.screens.mediadetails.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,17 +25,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.CompanyProductionItem
+import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.ui.R
 
 @Composable
 fun CompanyProductionItem(
     modifier: Modifier = Modifier,
-    item: CompanyProductionItem
+    item: CompanyProductionUiState
 ) {
+    val painter = rememberAsyncImagePainter(item.image)
+    val state by painter.state.collectAsState()
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
@@ -41,26 +47,35 @@ fun CompanyProductionItem(
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(12.dp))
 
     ) {
-        AsyncImage(
-            modifier = Modifier
-                .fillMaxSize()
-                .width(160.dp)
-                .height(145.dp),
-            model = item.image,
-            contentDescription = stringResource(R.string.company_production_image_cd),
-            contentScale = ContentScale.Fit,
-            error = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
-            fallback = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
-        )
+        when (state) {
+            is AsyncImagePainter.State.Success -> {
+                AsyncImage(
+                    modifier = modifier,
+                    model = item.image,
+                    contentDescription = stringResource(R.string.company_production_image_cd),
+                    contentScale = ContentScale.Crop,
+                )
+            }
+
+            else -> {
+                Image(
+                    painter = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .align(Alignment.Center),
+                    contentScale = ContentScale.Inside,
+                )
+            }
+        }
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(72.dp)
+                .fillMaxHeight(0.5f)
                 .align(Alignment.BottomCenter)
                 .background(ExtraColors.overlayGradient)
         )
-
         Column(
             modifier = Modifier
                 .padding(8.dp)
@@ -70,7 +85,7 @@ fun CompanyProductionItem(
                 text = item.name,
                 style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.onPrimary,
-                maxLines = 1,
+                maxLines = 2,
                 lineHeight = 24.sp,
                 overflow = TextOverflow.Ellipsis
             )
@@ -91,7 +106,7 @@ fun CompanyProductionItem(
 fun CompanyProductionItemPreview() {
     AflamiTheme {
         CompanyProductionItem(
-            item = CompanyProductionItem(
+            item = CompanyProductionUiState(
                 id = "1",
                 image = "https://image.tmdb.org/t/p/w500/c9dVHPOL3cqCr2593Ahk0nEKTEM.png",
                 name = "Universal",

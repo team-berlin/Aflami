@@ -1,6 +1,8 @@
 package com.berlin.aflami.viewmodel.home
 
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
+import usecase.GetUpComingMoviesUseCase
 import com.berlin.aflami.viewmodel.search.GenreType
 import com.berlin.aflami.viewmodel.search.selectByMovieGenre
 import com.berlin.aflami.viewmodel.search.toGenreMovieType
@@ -12,6 +14,21 @@ class HomeViewModel(
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,
     private val homeUiStateMapper: HomeUiStateMapper,
 ) : BaseViewModel<HomeUiState, HomeUiEffect>(HomeUiState()), HomeInteractionListener {
+    override fun onSearchClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onShowAllContinueWatchingClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onShowAllTopRating() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMoodPickerClicked() {
+        TODO("Not yet implemented")
+    }
 
     init {
         getUpComingMoviesByGenre()
@@ -58,6 +75,5 @@ class HomeViewModel(
             )
         }
     }
-
 
 }

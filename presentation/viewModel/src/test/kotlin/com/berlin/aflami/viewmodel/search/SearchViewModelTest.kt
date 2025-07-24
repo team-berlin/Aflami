@@ -2,7 +2,7 @@ package com.berlin.aflami.viewmodel.search
 
 
 import android.util.Log
-import com.berlin.aflami.viewmodel.uistate.MediaUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import com.google.common.truth.Truth.assertThat
