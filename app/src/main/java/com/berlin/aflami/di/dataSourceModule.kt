@@ -6,18 +6,23 @@ import com.berlin.local.dao.SearchDao
 import com.berlin.local.datasource.CategoriesPreferencesDataSourceImpl
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
 import com.berlin.local.datasource.SearchLocalDataSourceImpl
+//import com.berlin.remote.HomeRemoteDataSourceImp
+import com.berlin.remote.HomeRemoteDataSourceImp
 import com.berlin.remote.MovieDetailsRemoteDataSourceImpl
 import com.berlin.remote.SearchRemoteDataSourceImpl
 import com.berlin.remote.TvShowDetailsRemoteDataSourceImpl
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
+//import com.berlin.repository.datasource.remote.HomeRemoteDataSource
+import com.berlin.repository.datasource.remote.HomeRemoteDataSource
 import com.berlin.repository.datasource.remote.MovieDetailsRemoteDataSource
 import com.berlin.repository.datasource.remote.SearchRemoteDataSource
 import com.berlin.repository.datasource.remote.TvShowDetailsRemoteDataSource
 import org.koin.dsl.module
 
 val dataSourceModule = module {
+    single<HomeRemoteDataSource>{ HomeRemoteDataSourceImp(get())}
     single<SearchRemoteDataSource> { SearchRemoteDataSourceImpl(get()) }
     single<SearchLocalDataSource> { SearchLocalDataSourceImpl(get<SearchDao>()) }
     single<RecentHistoryLocalDataSource> { RecentHistoryLocalDataSourceImpl(get<RecentHistoryDao>()) }

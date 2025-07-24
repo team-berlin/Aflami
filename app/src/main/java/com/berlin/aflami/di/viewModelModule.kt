@@ -1,5 +1,7 @@
 package com.berlin.aflami.di
 
+//import com.berlin.aflami.viewmodel.home.HomeViewModel
+import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
 import org.koin.core.module.dsl.viewModelOf
@@ -9,6 +11,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
+    viewModel { HomeViewModel(get(), get()) }
     viewModelOf(::SearchByCountryViewModel)
     viewModelOf(::SearchByActorViewModel)
     viewModel { SearchByCountryViewModel(get()) }

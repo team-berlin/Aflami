@@ -27,4 +27,8 @@ object ApiConstants {
     const val SERIES_REVIEW = "tv/{series_id}/reviews"
     const val EPISODE_SEASON_SERIES = "tv/{series_id}/season/{season_number}"
     const val SEASON_NUMBER = "season_number"
+
+    const val POPULAR_MOVIES = "movie/popular"
+
+    const val POPULAR_TV_SHOWS = "tv/popular"
 }

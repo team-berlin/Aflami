@@ -2,6 +2,8 @@ package com.berlin.aflami.di
 
 import com.berlin.aflami.BuildConfig
 import com.berlin.aflami.util.ApiKeyInterceptor
+//import com.berlin.remote.network.HomeApiService
+import com.berlin.remote.network.HomeApiService
 import com.berlin.remote.network.MovieApiService
 import com.berlin.remote.network.SearchApiService
 import com.berlin.remote.network.TVShowApiService
@@ -45,6 +47,7 @@ val networkModule = module {
             .build()
     }
 
+    single { get<Retrofit>().create(HomeApiService::class.java) }
     single { get<Retrofit>().create(MovieApiService::class.java) }
     single { get<Retrofit>().create(TVShowApiService::class.java) }
     single { get<Retrofit>().create(SearchApiService::class.java) }

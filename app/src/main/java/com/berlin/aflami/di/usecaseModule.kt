@@ -9,6 +9,10 @@ import usecase.GetMovieGalleryUseCase
 import usecase.SearchByActorNameUseCase
 import usecase.GetMovieCastUseCase
 import usecase.GetMovieReviewUseCase
+//import usecase.GetPopularMoviesUseCase
+//import usecase.GetPopularTVShowsUseCase
+import usecase.GetPopularTVShowsUseCase
+import usecase.GetPopularMoviesUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
@@ -22,6 +26,10 @@ import usecase.GetSeriesReviewUseCase
 import usecase.SearchByCountryUseCase
 
 val useCaseModule = module {
+
+    single { GetPopularMoviesUseCase(get()) }
+    single { GetPopularTVShowsUseCase(get()) }
+
     single { SearchByCountryUseCase(get()) }
     single { SearchByActorNameUseCase(get()) }
     single { GetSearchMoviesUseCase(get()) }
