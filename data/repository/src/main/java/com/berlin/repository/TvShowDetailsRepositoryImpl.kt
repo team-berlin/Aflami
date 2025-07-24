@@ -1,6 +1,7 @@
 package com.berlin.repository
 
 import com.berlin.entity.Episodes
+import com.berlin.entity.Genre
 import com.berlin.entity.MediaCast
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
@@ -57,5 +58,9 @@ class TvShowDetailsRepositoryImpl(
     ): List<Episodes?> {
         return remoteDataSource.getEpisodeSeasonSeries(seriesId, seasonNumber).toDomain().episodes
             ?: emptyList()
+    }
+
+    override suspend fun getTVGenres(language: String): List<Genre> {
+        return remoteDataSource.getTVGenres(language).genres.map { it.toDomain() }
     }
 }

@@ -29,9 +29,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import usecase.ClearSearchHistoryUseCase
 import usecase.DeleteQueryFromHistoryUseCase
+import usecase.GetMovieGenresUseCase
 import usecase.GetRecentHistoryUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
+import usecase.GetSeriesGenresUseCase
 import usecase.SaveRecentHistoryUseCase
 
 class SearchViewModel(
@@ -40,7 +42,9 @@ class SearchViewModel(
     private val getRecentHistoryUseCase: GetRecentHistoryUseCase,
     private val saveRecentHistoryUseCase: SaveRecentHistoryUseCase,
     private val deleteQueryFromHistoryUseCase: DeleteQueryFromHistoryUseCase,
-    private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase
+    private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase,
+    private val getMovieGenresUseCase: GetMovieGenresUseCase,
+    private val getSeriesGenresUseCase: GetSeriesGenresUseCase
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()), SearchInteractionListener,
     FilterInteractionListener {
 
