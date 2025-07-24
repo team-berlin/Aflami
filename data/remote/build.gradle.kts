@@ -15,6 +15,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.koin)
     implementation(libs.bundles.retrofit)
-
+    implementation(project(":domain:entity"))
     implementation(project(":data:repository"))
 }
