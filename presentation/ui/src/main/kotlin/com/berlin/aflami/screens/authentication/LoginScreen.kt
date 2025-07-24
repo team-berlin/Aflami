@@ -57,13 +57,17 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.unit.Dp
 import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.viewmodel.login.FormUiState
+import com.berlin.aflami.viewmodel.login.LoginEffect
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
+import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -74,6 +78,22 @@ fun LoginScreen(
 ) {
     val uiState by viewmodel.state.collectAsState()
     LoginContent(uiState, viewmodel)
+
+    LaunchedEffect(Unit) {
+        viewmodel.effect.collect {
+            when (it) {
+                LoginEffect.NavigateToHome -> { } // TODO: naviagte to home screen
+                LoginEffect.NavigateToCreateAccount -> {
+                    val encodedUrl = Uri.encode(REGISTER_URL)
+                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                }
+                LoginEffect.NavigateToForgotPassword -> {
+                    val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
+                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                }
+            }
+        }
+    }
 }
 
 
@@ -351,7 +371,7 @@ fun CirclesBackground() {
 @Composable
 private fun LoginScreenPreview() {
     AflamiTheme(isDarkTheme = false) {
-        LoginScreen()
+        LoginScreen(navController = rememberNavController())
     }
 }
 

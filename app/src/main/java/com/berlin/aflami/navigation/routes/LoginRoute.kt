@@ -10,6 +10,6 @@ fun NavGraphBuilder.loginRoute(
     navController: NavHostController
 ){
     composable(route = Destination.LoginScreen.route) {
-        LoginScreen(navController)
+        LoginScreen(navController = navController)
     }
 }
