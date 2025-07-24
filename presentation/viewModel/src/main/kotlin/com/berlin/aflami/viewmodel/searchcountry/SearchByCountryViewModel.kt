@@ -8,6 +8,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.util.getCountriesNames
@@ -76,9 +77,9 @@ class SearchByCountryViewModel(
         _state.update { it.copy(isLoading = false, movies = movies) }
     }
 
-    private fun onSearchError(throwable: Throwable) {
+    private fun onSearchError(error: ErrorUiState) {
         // TODO: Handle error
-        _state.update { it.copy(error = throwable.message, isLoading = false) }
+        _state.update { it.copy(error = error.message, isLoading = false) }
     }
 
     override fun onDismissDropDown() {
