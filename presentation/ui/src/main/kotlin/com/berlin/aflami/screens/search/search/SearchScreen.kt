@@ -49,7 +49,6 @@ import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.SearchData
-import com.berlin.aflami.screens.search.screen.FilterDialog
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchInteractionListener
@@ -362,10 +361,24 @@ private fun SearchScreenContent(
                 }
             }
             if (state.isDialogVisible) {
-                FilterDialog(
-                    state = state.filterItemUiState,
-                    filterListener = filterSearch,
-                )
+                when (state.selectedTabOption) {
+                    TabOption.MOVIES -> {
+                            FilterDialog(
+                                state = state.filterItemUiState,
+                                filterListener = filterSearch,
+                                mediaType = TabOption.MOVIES,
+                            )
+                        }
+                    TabOption.TV_SHOWS -> {
+
+                        FilterDialog(
+                            state = state.filterItemUiState,
+                            filterListener = filterSearch,
+                            mediaType = TabOption.TV_SHOWS,
+                        )
+
+                    }
+                }
             }
         }
     }
