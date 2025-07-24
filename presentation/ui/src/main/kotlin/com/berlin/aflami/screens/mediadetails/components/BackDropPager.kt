@@ -24,7 +24,6 @@ import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.Rating
-import com.berlin.aflami.screens.mediadetails.screen.Indicator
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.utils.formatRating
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
@@ -67,7 +66,7 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                     }
                 }
             }
-            Indicator(pagerState)
+            Indicator(pagerState = pagerState)
             Box(modifier = Modifier.align(Alignment.BottomStart).padding(4.dp)) {
                 Rating(rating = formatRating(state.rating))
             }

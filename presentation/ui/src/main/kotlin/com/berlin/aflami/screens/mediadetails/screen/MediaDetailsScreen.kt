@@ -139,9 +139,6 @@ fun MediaDetailsScreen(
     }
 }
 
-val PagerState.pageOffset: Float
-    get() = currentPage + currentPageOffsetFraction
-
 @Composable
 fun MediaDetailsContent(
     state: MediaDetailsUiState,
@@ -371,82 +368,4 @@ fun UiText.asString(): String {
         is UiText.Dynamic -> value
         is UiText.Resource -> stringResource(id = resId)
     }
-}
-
-@Composable
-fun BoxScope.Indicator(pagerState: PagerState) {
-    val count = 4
-
-    val circleSpacing = 4.dp
-    val dotWidth = 8.dp
-    val dotHeight = 8.dp
-    val activeLineWidth = 24.dp
-    val radius = with(LocalDensity.current) { CornerRadius(4.dp.toPx(), 4.dp.toPx()) }
-    val activeIndicatorColor = Theme.color.primary
-    val inactiveIndicatorColor = Theme.color.textColors.hint
-    val backGroundColor = Theme.color.primaryVariant
-
-    Canvas(
-        modifier = Modifier
-            .width(8.dp)
-            .align(Alignment.BottomEnd)
-            .padding(end = 8.dp, bottom = 8.dp)
-    ) {
-        val spacing = circleSpacing.toPx()
-        val dotWidthPx = dotWidth.toPx()
-        val dotHeightPx = dotHeight.toPx()
-        val activeDotHeightPx = activeLineWidth.toPx()
-        var y = size.height
-        val x = center.x
-
-        drawRoundRect(
-            color = backGroundColor,
-            size = size,
-        )
-
-        repeat(count) { i ->
-            val posOffset = pagerState.pageOffset
-            val dotOffset = posOffset % 1
-            val current = posOffset.toInt()
-
-            val factor = (dotOffset * (activeDotHeightPx - dotHeightPx))
-
-            val calculatedHeight = when {
-                i == current -> activeDotHeightPx - factor
-                i - 1 == current || (i == 0 && posOffset > count - 1) -> dotHeightPx + factor
-                else -> dotHeightPx
-            }
-            val indicatorColor =
-                if (i == current) activeIndicatorColor else inactiveIndicatorColor
-            drawIndicator(
-                x = x,
-                y = y - calculatedHeight / 2,
-                width = dotWidthPx,
-                height = calculatedHeight,
-                radius = radius,
-                color = indicatorColor
-            )
-            y -= calculatedHeight + spacing
-        }
-    }
-}
-
-
-private fun DrawScope.drawIndicator(
-    x: Float,
-    y: Float,
-    width: Float,
-    height: Float,
-    radius: CornerRadius,
-    color: Color
-) {
-    val rect = RoundRect(
-        x - width / 2,
-        y - height / 2,
-        x + width / 2,
-        y + height / 2,
-        radius
-    )
-    val path = Path().apply { addRoundRect(rect) }
-    drawPath(path = path, color = color)
 }
