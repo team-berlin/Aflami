@@ -12,13 +12,13 @@ class AuthenticationRemoteDataSourceImpl(
     private val authenticationApiService: AuthenticationApiService
 ) : AuthenticationRemoteDataSource {
     override suspend fun login(userName: String, password: String,requestToken: String): LoginDto {
-        return authenticationApiService.login(
+        return wrapApiResponse { authenticationApiService.login(
             LoginRequestDTO(
                 userName = userName,
                 password = password,
                 requestToken=requestToken
             )
-        )
+        ) }
     }
 
     override suspend fun createSession(token: String): SessionDto {
@@ -28,7 +28,7 @@ class AuthenticationRemoteDataSourceImpl(
     }
 
     override suspend fun requestToken(): LoginDto {
-        return authenticationApiService.requestToken()
+        return wrapApiResponse { authenticationApiService.requestToken() }
     }
 
 

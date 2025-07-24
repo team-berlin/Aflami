@@ -10,6 +10,6 @@ interface AuthenticationRepository {
     suspend fun requestToken(): LoginToken
     suspend fun createSession(requestToken:String): Session
 
-    suspend fun login(userName: String, password: String, requestToken:String): LoginToken
+    suspend fun login(userName: String, password: String ): LoginToken
     suspend fun logout()
 }
