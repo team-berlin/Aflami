@@ -6,7 +6,7 @@ data class MovieDetailsTabsUiState(
     val isSelected: Boolean = false,
 )
 
-enum class MovieDetailsTabs() {
+enum class MovieDetailsTabs {
     MORE_LIKE_THIS,
     REVIEWS,
     GALLERY,

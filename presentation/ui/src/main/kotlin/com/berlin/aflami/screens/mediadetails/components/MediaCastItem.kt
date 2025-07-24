@@ -2,23 +2,25 @@ package com.berlin.aflami.screens.mediadetails.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.ui.R
+import com.berlin.designsystem.R
 
 @Composable
 fun MediaCastItem(
@@ -29,17 +31,25 @@ fun MediaCastItem(
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        AsyncImage(
-            error = painterResource(R.drawable.place_holder),
-            placeholder = painterResource(R.drawable.place_holder),
-            fallback = painterResource(R.drawable.place_holder),
+        Box(
             modifier = modifier
+                .size(48.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .border(1.dp, color = Theme.color.stroke, RoundedCornerShape(16.dp)),
-            model = poster,
-            contentDescription = stringResource(R.string.cast_image),
-            contentScale = ContentScale.Crop
-        )
+                .border(1.dp, color = Theme.color.stroke,
+                    RoundedCornerShape(16.dp)),
+            contentAlignment = Alignment.Center
+        ){
+            AsyncImage(
+                model = poster,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+                placeholder = painterResource(R.drawable.place_holder),
+                error = painterResource(R.drawable.place_holder),
+                fallback = painterResource(R.drawable.place_holder),
+            )
+        }
+
         Text(
             text = name,
             style = Theme.textStyle.label.small,
@@ -47,7 +57,6 @@ fun MediaCastItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.width(74.dp)
-
         )
     }
 }

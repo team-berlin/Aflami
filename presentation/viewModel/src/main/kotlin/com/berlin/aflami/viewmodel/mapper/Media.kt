@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.mapper
 
-import com.berlin.aflami.viewmodel.uistate.MediaUiState
-import com.berlin.aflami.viewmodel.util.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.entity.Media
 
 fun Media.toUIState(): MediaUiState {
@@ -12,6 +12,6 @@ fun Media.toUIState(): MediaUiState {
         releaseYear = releaseYear.year.toString(),
         genre = genre,
         poster = poster,
-        mediaType = MediaType.MOVIE
+        mediaType = MediaType.valueOf(mediaType)
     )
 }

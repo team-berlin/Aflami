@@ -4,23 +4,23 @@ import org.koin.dsl.module
 import usecase.ClearSearchHistoryUseCase
 import usecase.DeleteQueryFromHistoryUseCase
 import usecase.GetRecentHistoryUseCase
-import usecase.GetMovieDetailsUseCase
-import usecase.GetMovieGalleryUseCase
+import usecase.mediadetails.GetMovieDetailsUseCase
+import usecase.mediadetails.GetMovieGalleryUseCase
 import usecase.SearchByActorNameUseCase
-import usecase.GetMovieCastUseCase
 import usecase.GetMovieGenresUseCase
-import usecase.GetMovieReviewUseCase
+import usecase.mediadetails.GetMovieCastUseCase
+import usecase.mediadetails.GetMovieReviewUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
-import usecase.GetSeasonEpisodesUseCase
-import usecase.GetSimilarMoviesUseCase
-import usecase.GetSimilarSeriesUseCase
-import usecase.GetTvShowDetailsUseCase
-import usecase.GetSeriesGalleryUseCase
-import usecase.GetSeriesCastUseCase
 import usecase.GetSeriesGenresUseCase
-import usecase.GetSeriesReviewUseCase
+import usecase.mediadetails.GetSeasonEpisodesUseCase
+import usecase.mediadetails.GetSimilarMoviesUseCase
+import usecase.mediadetails.GetSimilarSeriesUseCase
+import usecase.mediadetails.GetTvShowDetailsUseCase
+import usecase.mediadetails.GetSeriesGalleryUseCase
+import usecase.mediadetails.GetSeriesCastUseCase
+import usecase.mediadetails.GetSeriesReviewUseCase
 import usecase.SearchByCountryUseCase
 
 val useCaseModule = module {
