@@ -8,8 +8,9 @@ data class LoginDto(
     @SerialName("success")
     val success: Boolean,
     @SerialName("expires_at")
-    val expiresAt: String,
+    val expiresAt: String?,
     @SerialName("request_token")
-    val requestToken: String,
+    val requestToken: String? = null,
+    @SerialName("status_code")
+    val statusCode: Int? = null,
 )
-

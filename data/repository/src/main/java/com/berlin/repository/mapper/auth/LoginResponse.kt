@@ -6,7 +6,7 @@ import com.berlin.repository.datasource.remote.dto.auth.LoginDto
 fun LoginDto.toDomain(): LoginToken{
     return LoginToken(
         success = this.success,
-        expiresAt = this.expiresAt,
-        requestToken = this.requestToken
+        expiresAt = this.expiresAt.toString(),
+        requestToken = this.requestToken.toString()
     )
 }
