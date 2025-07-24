@@ -2,7 +2,6 @@ package com.berlin.aflami.viewmodel.home
 
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
-import usecase.GetUpComingMoviesUseCase
 import com.berlin.aflami.viewmodel.search.GenreType
 import com.berlin.aflami.viewmodel.search.selectByMovieGenre
 import com.berlin.aflami.viewmodel.search.toGenreMovieType

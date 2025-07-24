@@ -9,20 +9,13 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 
 data class HomeUiState(
 
-    val mediaUiState:List<MediaUiState> = emptyList(),
-    val upcomingMovies: UpComingUiState = UpComingUiState(),
-    val isLoading: Boolean = false,
-    val error: String? = null,
-
-)
-
-data class UpComingUiState(
+    val mediaUiState: List<MediaUiState> = emptyList(),
     val upcomingMovies: List<MovieUIState> = emptyList(),
     val upcomingMovieGenres: List<GenreUiState> = defaultMovieGenres,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val notFound: Boolean = false,
-)
+
+    )
 
 val defaultMovieGenres = GenreType.entries.toTypedArray().mapIndexed { index, category ->
     GenreUiState(
