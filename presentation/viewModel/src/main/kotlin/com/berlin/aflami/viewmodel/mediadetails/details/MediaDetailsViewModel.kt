@@ -400,14 +400,6 @@ class MediaDetailsViewModel(
         )
     }
 
-    override fun onShowSeasonEpisodesClicked(tvShowId: Long, seasonId: Long) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onHideSeasonEpisodesClicked(seasonId: Long) {
-        TODO("Not yet implemented")
-    }
-
     fun getMediaCast(mediaId: Long, mediaType: MediaType, language: String = "US-EG") {
         updateState {
             it.copy(error = null, isLoading = true)

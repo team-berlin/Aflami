@@ -5,11 +5,10 @@ import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel.Companion.NO_GALLERY
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel.Companion.NO_REVIEWS
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
+import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.entity.Episodes
 import com.berlin.entity.GenreEntity
@@ -225,12 +224,13 @@ class MediaDetailsViewModelTest {
 
         // Then
         val state = viewModel.state.value
-        //println("State after error: ${state}")
+
         assertThat(state.isLoading).isFalse()
-        assertThat(state.error).isEqualTo(errorMessage)
+        assertThat(state.error).isEqualTo(UiText.Dynamic(errorMessage)) // ✅ Correct check
+
         assertThat(state.rowSection).isInstanceOf(RowSectionUiState.Error::class.java)
         val err = state.rowSection as RowSectionUiState.Error
-        assertThat(err.message).isEqualTo(errorMessage)
+        assertThat(err.message).isEqualTo(errorMessage) // ✅ Still valid, because you store String in Error.message
     }
 
     @Test
@@ -288,9 +288,9 @@ class MediaDetailsViewModelTest {
         // Then
         val state = viewModel.state.value
         assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
+
         val noDataState = state.rowSection as RowSectionUiState.NoDataFound
-        assertThat(noDataState.message).isEqualTo(null)
-        assertThat(noDataState.messageRes).isEqualTo(NO_REVIEWS)
+        assertThat(noDataState.message).isEqualTo(UiText.Resource(MediaDetailsViewModel.NO_REVIEWS))
     }
 
     @Test
@@ -325,9 +325,9 @@ class MediaDetailsViewModelTest {
             // Then
             val state = viewModel.state.value
             assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
+
             val noDataState = state.rowSection as RowSectionUiState.NoDataFound
-            assertThat(noDataState.message).isEqualTo(null)
-            assertThat(noDataState.messageRes).isEqualTo(NO_GALLERY)
+            assertThat(noDataState.message).isEqualTo(UiText.Resource(MediaDetailsViewModel.NO_GALLERY))
         }
 
     @Test
@@ -642,20 +642,30 @@ class MediaDetailsViewModelTest {
         assertThat(content.items[1]).isEqualTo(listOf(episode2.toUiState()))
     }
 
-    @Test fun `description expanded toggles`() = runTest {
+    @Test
+    fun `description expanded toggles`() = runTest {
         assertThat(viewModel.isDescriptionExpanded()).isFalse()
+
         viewModel.onReadMoreDescriptionClicked()
+        advanceUntilIdle()
         assertThat(viewModel.isDescriptionExpanded()).isTrue()
+
         viewModel.onReadMoreDescriptionClicked()
+        advanceUntilIdle()
         assertThat(viewModel.isDescriptionExpanded()).isFalse()
     }
 
-    @Test fun `review expanded toggles by id`() = runTest {
+    @Test
+    fun `review expanded toggles by id`() = runTest {
         val id = 123L
         assertThat(viewModel.isReviewExpanded(id)).isFalse()
+
         viewModel.onReadMoreReviewClicked(id)
+        advanceUntilIdle()
         assertThat(viewModel.isReviewExpanded(id)).isTrue()
+
         viewModel.onReadMoreReviewClicked(id)
+        advanceUntilIdle()
         assertThat(viewModel.isReviewExpanded(id)).isFalse()
     }
 
