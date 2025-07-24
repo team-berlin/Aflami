@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.screen
+package com.berlin.aflami.screens.search.search
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
@@ -42,17 +42,19 @@ import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
 import com.berlin.aflami.viewmodel.search.FilterItemUiState
-import com.berlin.aflami.viewmodel.search.GenreType
+import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.designsystem.R
 
 @Composable
 fun FilterDialog(
-    filterListener: FilterInteractionListener, state: FilterItemUiState
+    filterListener: FilterInteractionListener,
+    state: FilterItemUiState,
+    mediaType: TabOption
 ) {
-
     Dialog(onDismissRequest = filterListener::onCancelButtonClicked) {
         Surface(
-            shape = RoundedCornerShape(16.dp), color = Theme.color.surface
+            shape = RoundedCornerShape(16.dp),
+            color = Theme.color.surface
         ) {
             Column(
                 modifier = Modifier
@@ -99,7 +101,7 @@ fun FilterDialog(
                     RatingBar(
                         modifier = Modifier,
                         onValueChange = { filterListener.onRatingStarChanged(it) },
-                        currentRating = state.selectedRating
+                        currentRating = state.filterTabSelected.selectedRating
                     )
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
@@ -115,13 +117,19 @@ fun FilterDialog(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(
-                            items = state.mediaGenres
-                        ) { genre ->
+                            items = state.genreUiStates
+                        ) { filterGenre ->
                             Chips(
-                                title = stringResource(genreMapper(genre.genres.type)),
-                                icon = painterResource(getGenreIcon(genre.genres.type)),
-                                isSelected = genre.genres.isSelected,
-                                onClick = { filterListener.onGenreButtonChanged(genre.genres.type) })
+                                title = filterGenre.name,
+                                icon = painterResource(
+                                    when (mediaType) {
+                                        TabOption.MOVIES -> getMovieGenreIcon(filterGenre.id)
+                                        TabOption.TV_SHOWS -> getTvShowGenreIcon(filterGenre.id)
+                                    }
+                                ),
+                                isSelected = filterGenre.isSelected,
+                                onClick = { filterListener.onFilterGenreChanged(filterGenre.id) }
+                            )
                         }
                     }
                 }
@@ -132,10 +140,7 @@ fun FilterDialog(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     PrimaryButton(
-                        onClick = {
-                            filterListener.onApplyButtonClicked()
-                            filterListener.onCancelButtonClicked()
-                        },
+                        onClick = { filterListener.onApplyButtonClicked() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
@@ -167,30 +172,6 @@ fun FilterDialog(
     }
 }
 
-fun getGenreIcon(genre: GenreType): Int {
-    return when (genre) {
-        GenreType.ALL -> R.drawable.all_movies
-        GenreType.ROMANCE -> R.drawable.romance
-        GenreType.SCIENCE_FICTION -> R.drawable.science_fiction
-        GenreType.FAMILY -> R.drawable.family
-        GenreType.MYSTERY -> R.drawable.mystery
-        GenreType.HISTORY -> R.drawable.history
-        GenreType.WAR -> R.drawable.war
-        GenreType.ACTION -> R.drawable.action
-        GenreType.CRIME -> R.drawable.crime
-        GenreType.COMEDY -> R.drawable.comedy
-        GenreType.HORROR -> R.drawable.horror
-        GenreType.WESTERN -> R.drawable.western
-        GenreType.MUSIC -> R.drawable.music
-        GenreType.ADVENTURE -> R.drawable.adventure
-        GenreType.TV_MOVIE -> R.drawable.television_movie
-        GenreType.FANTASY -> R.drawable.fantasy
-        GenreType.THRILLER -> R.drawable.thriller
-        GenreType.DRAMA -> R.drawable.drama
-        GenreType.DOCUMENTARY -> R.drawable.documentary
-        GenreType.ANIMATION -> R.drawable.animation
-    }
-}
 
 @Composable
 fun Chips(
@@ -306,27 +287,52 @@ private fun FilterDialogPreview() {
     }
 }
 
-fun genreMapper(genre: GenreType): Int {
-    return when (genre) {
-        GenreType.ALL -> R.string.all
-        GenreType.ROMANCE -> R.string.romance
-        GenreType.SCIENCE_FICTION -> R.string.science_fiction
-        GenreType.FAMILY -> R.string.family
-        GenreType.MYSTERY -> R.string.mystery
-        GenreType.HISTORY -> R.string.history
-        GenreType.WAR -> R.string.war
-        GenreType.ACTION -> R.string.action
-        GenreType.CRIME -> R.string.crime
-        GenreType.COMEDY -> R.string.comedy
-        GenreType.HORROR -> R.string.horror
-        GenreType.WESTERN -> R.string.western
-        GenreType.MUSIC -> R.string.music
-        GenreType.ADVENTURE -> R.string.adventure
-        GenreType.TV_MOVIE -> R.string.tv_movie
-        GenreType.FANTASY -> R.string.fantasy
-        GenreType.THRILLER -> R.string.thriller
-        GenreType.DRAMA -> R.string.drama
-        GenreType.DOCUMENTARY -> R.string.documentary
-        GenreType.ANIMATION -> R.string.animation
+
+fun getMovieGenreIcon(id: Int): Int {
+    return when (id) {
+        -1 -> R.drawable.all_movies
+        28 -> R.drawable.action
+        12 -> R.drawable.adventure
+        16 -> R.drawable.animation
+        35 -> R.drawable.comedy
+        80 -> R.drawable.crime
+        99 -> R.drawable.documentary
+        18 -> R.drawable.drama
+        10751 -> R.drawable.family
+        14 -> R.drawable.fantasy
+        36 -> R.drawable.history
+        27 -> R.drawable.horror
+        10402 -> R.drawable.music
+        9648 -> R.drawable.mystery
+        10749 -> R.drawable.romance
+        878 -> R.drawable.science_fiction
+        10770 -> R.drawable.television_movie
+        53 -> R.drawable.thriller
+        10752 -> R.drawable.war
+        37 -> R.drawable.western
+        else -> R.drawable.all_movies
+    }
+}
+
+fun getTvShowGenreIcon(id: Int): Int {
+    return when (id) {
+        -1 -> R.drawable.all_movies
+        10759 -> R.drawable.action
+        16 -> R.drawable.animation
+        35 -> R.drawable.comedy
+        80 -> R.drawable.crime
+        99 -> R.drawable.documentary
+        18 -> R.drawable.drama
+        10751 -> R.drawable.family
+        10762 -> R.drawable.kids
+        9648 -> R.drawable.mystery
+        10763 -> R.drawable.news
+        10764 -> R.drawable.reality
+        10765 -> R.drawable.science_fiction
+        10766 -> R.drawable.soap
+        10767 -> R.drawable.talk
+        10768 -> R.drawable.war
+        37 -> R.drawable.western
+        else -> R.drawable.all_movies
     }
 }
