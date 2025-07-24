@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.mediadetails.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -8,12 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,8 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
-import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -38,8 +32,6 @@ fun CompanyProductionItem(
     modifier: Modifier = Modifier,
     item: CompanyProductionUiState
 ) {
-    val painter = rememberAsyncImagePainter(item.image)
-    val state by painter.state.collectAsState()
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
@@ -47,27 +39,15 @@ fun CompanyProductionItem(
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(12.dp))
 
     ) {
-        when (state) {
-            is AsyncImagePainter.State.Success -> {
-                AsyncImage(
-                    modifier = modifier,
-                    model = item.image,
-                    contentDescription = stringResource(R.string.company_production_image_cd),
-                    contentScale = ContentScale.Crop,
-                )
-            }
-
-            else -> {
-                Image(
-                    painter = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .align(Alignment.Center),
-                    contentScale = ContentScale.Inside,
-                )
-            }
-        }
+        AsyncImage(
+            modifier = modifier,
+            model = item.image,
+            contentDescription = stringResource(R.string.company_production_image_cd),
+            contentScale = ContentScale.Crop,
+            error = painterResource(com.berlin.ui.R.drawable.place_holder),
+            fallback = painterResource(com.berlin.ui.R.drawable.place_holder),
+            placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
+        )
 
         Box(
             modifier = Modifier

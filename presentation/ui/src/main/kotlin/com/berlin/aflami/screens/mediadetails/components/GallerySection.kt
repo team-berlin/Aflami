@@ -1,23 +1,17 @@
 package com.berlin.aflami.screens.mediadetails.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,11 +22,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
-import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
-import kotlin.jvm.Throws
 
 @Composable
 fun GallerySection(
@@ -65,37 +56,21 @@ fun GallerySection(
                     for (col in 0 until columns) {
                         val index = row * columns + col
                         if (index < mediaImages.size) {
-                            val painter = rememberAsyncImagePainter(mediaImages[index])
-                            val state by painter.state.collectAsState()
-                            when(state) {
-                                is AsyncImagePainter.State.Success -> {
-                                    AsyncImage(
-                                        model = mediaImages[index],
-                                        contentDescription = stringResource(R.string.cast),
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .width(cellWidth)
-                                            .height(cellHeight)
-                                            .clip(RoundedCornerShape(12.dp))
-                                            .border(1.dp, Theme.color.stroke)
-                                    )
-                                }
-                                else -> {
-                                    Box(
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Image(
-                                            painter = painterResource(com.berlin.designsystem.R.drawable.ic_placeholder),
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .size(48.dp),
-                                            contentScale = ContentScale.Inside,
-                                        )
-                                    }
-                                }
-                            }
-                        } else {
+                            AsyncImage(
+                                model = mediaImages[index],
+                                contentDescription = stringResource(R.string.cast),
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .width(cellWidth)
+                                    .height(cellHeight)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .border(1.dp, Theme.color.stroke),
+                                placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
+                                error = painterResource(com.berlin.ui.R.drawable.place_holder),
+                                fallback = painterResource(com.berlin.ui.R.drawable.place_holder),
+                            )
+                        }
+                        else {
                             Spacer(
                                 Modifier.weight(1f)
                             )

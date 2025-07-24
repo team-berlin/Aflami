@@ -2,21 +2,14 @@ package com.berlin.aflami.screens.mediadetails.screen
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.HorizontalDivider
@@ -39,21 +32,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.component.Chips
 import com.berlin.aflami.component.DefaultBar
-import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
-import com.berlin.aflami.screens.mediadetails.components.CircularDot
-import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
-import com.berlin.aflami.screens.mediadetails.components.ExpandableText
-import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
-import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
-import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
-import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
-import com.berlin.aflami.screens.mediadetails.components.getMovieDetailsTabsIcon
-import com.berlin.aflami.screens.mediadetails.components.movieDetailsTabsMapper
-import com.berlin.aflami.screens.mediadetails.components.tabsections.CastSection
+import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
+import com.berlin.aflami.screens.mediadetails.components.screensections.DescriptionSection
+import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
+import com.berlin.aflami.screens.mediadetails.components.screensections.TabSection
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
@@ -62,7 +47,6 @@ import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
@@ -168,86 +152,14 @@ fun MediaDetailsContent(
     Box(Modifier.fillMaxSize()) {
         LazyColumn(state = listState) {
             item { BackdropPager(state = state, onPlayClick = { listener.onPlayClicked(state.id) }) }
+
             item {
-                Spacer(Modifier.height(12.dp))
-                Column(Modifier.padding(horizontal = 16.dp)) {
-                    Text(
-                        text = state.title,
-                        style = Theme.textStyle.title.large,
-                        color = Theme.color.textColors.title,
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    Row {
-                        state.genres.forEach { g ->
-                            Box(modifier = Modifier.padding(end = 4.dp)) {
-                                GenersChip(label = g)
-                            }
-                        }
-                    }
-                }
+                MediaOverviewSection(state = state)
             }
 
             item {
-                Spacer(Modifier.height(8.dp))
-
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        state.releaseYear,
-                        style = Theme.textStyle.label.small,
-                        color = Theme.color.textColors.hint
-                    )
-                    state.duration.takeIf { !it.isNullOrEmpty() }?.let { duration ->
-                        CircularDot()
-                        Text(
-                            duration,
-                            style = Theme.textStyle.label.small,
-                            color = Theme.color.textColors.hint
-                        )
-                    }
-
-                    state.numberOfSeasons?.toString()?.let { numberOfSeasons ->
-                        CircularDot()
-                        Text(
-                            "$numberOfSeasons ${stringResource(com.berlin.ui.R.string.season)}",
-                            style = Theme.textStyle.label.small,
-                            color = Theme.color.textColors.hint
-                        )
-                    }
-
-                    state.originalCountry.takeIf { !it.isNullOrEmpty() }?.let { originalCountry ->
-                        CircularDot()
-                        Text(
-                            originalCountry,
-                            style = Theme.textStyle.label.small,
-                            color = Theme.color.textColors.hint
-                        )
-                    }
-                }
-            }
-
-            item {
-                Spacer(Modifier.height(24.dp))
-                Column(Modifier.padding(horizontal = 16.dp)) {
-                    Text(
-                        text = stringResource(com.berlin.ui.R.string.description),
-                        color = Theme.color.textColors.title,
-                        style = Theme.textStyle.title.small,
-                    )
-
-                    ExpandableText(
-                        text = state.overview,
-                        isExpanded = isDescriptionExpanded,
-                        onToggleExpand = onToggleDescriptionExpand,
-                        previewColor = Theme.color.textColors.hint,
-                        suffixColor = Theme.color.primary,
-                        previewStyle = Theme.textStyle.body.small,
-                        suffixStyle = Theme.textStyle.label.medium
-                    )
-                }
+                DescriptionSection( state.overview, isExpanded = isDescriptionExpanded,
+                    onToggleExpand = onToggleDescriptionExpand)
             }
 
             item {
@@ -297,64 +209,7 @@ fun MediaDetailsContent(
 
 }
 
-@Composable
-fun TabSection(
-    tabState: MovieDetailsTabs,
-    onChipClick: (MovieDetailsTabs) -> Unit,
-    rowState: RowSectionUiState,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
-    mediaType: MediaType
-) {
-    val visibleTabs = MovieDetailsTabs.entries.filter {
-        !(mediaType == MediaType.MOVIE && it == MovieDetailsTabs.SEASON)
-    }
 
-    LazyRow(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-            .height(96.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
-        items(visibleTabs, key = { it.name }) { tab ->
-            Chips(
-                title = stringResource(movieDetailsTabsMapper(tab)),
-                icon = painterResource(getMovieDetailsTabsIcon(tab)),
-                isSelected = tab == tabState,
-                onClick = { onChipClick(tab) }
-            )
-        }
-    }
-
-    when (val content = rowState) {
-        is RowSectionUiState.Error,
-        is RowSectionUiState.NoDataFound -> {
-            Box(
-                Modifier.padding(top = 32.dp, bottom = 82.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    modifier = Modifier.fillMaxSize(),
-                    text = content.getDisplayMessage(),
-                    style = Theme.textStyle.label.large,
-                    color = Theme.color.textColors.body,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-
-        is RowSectionUiState.Loading -> Loading()
-
-        is RowSectionUiState.Success -> when (val tab = content.content) {
-            is TabContent.MoreLikeThis -> MoreLikeThisSection(mediaList = tab.items, mediaType = mediaType)
-            is TabContent.Reviews -> ReviewsSection(reviews = tab.items, isExpanded = isExpanded, onToggleExpand = onToggleExpand)
-            is TabContent.Gallery -> GallerySection(mediaImages = tab.items)
-            is TabContent.CompanyProduction -> CompanyProductionSection(companyProductions = tab.items)
-            is TabContent.Season -> SeasonsSection(seasonsMap = tab.items)
-        }
-    }
-}
 
 @Composable
 fun RowSectionUiState.getDisplayMessage(): String {

@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.mediadetails.components.tabsections
+package com.berlin.aflami.screens.mediadetails.components.screensections
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

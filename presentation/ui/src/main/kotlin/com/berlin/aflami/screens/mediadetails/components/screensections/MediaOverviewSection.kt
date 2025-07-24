@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.mediadetails.components.tabsections
+package com.berlin.aflami.screens.mediadetails.components.screensections
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

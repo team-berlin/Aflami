@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.search.mediadetails
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,14 +20,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
-import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.RatingCard
-import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.designsystem.R
@@ -101,27 +94,16 @@ private fun ImageWithRatingBadge(
             ),
         contentAlignment = Alignment.Center
     ) {
-        val painter = rememberAsyncImagePainter(imageUrl)
-        val state by painter.state.collectAsState()
-
-        when (state) {
-            is AsyncImagePainter.State.Success -> {
-                AsyncImage(
-                    modifier = Modifier.fillMaxSize(),
-                    model = imageUrl,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    alignment = Alignment.TopCenter
-                )
-            }
-
-            else -> {
-                Image(
-                    painter = painterResource(com.berlin.ui.R.drawable.place_holder),
-                    contentDescription = stringResource(com.berlin.ui.R.string.episode_image)
-                )
-            }
-        }
+        AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            model = imageUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.TopCenter,
+            error = painterResource(com.berlin.ui.R.drawable.place_holder),
+            fallback = painterResource(com.berlin.ui.R.drawable.place_holder),
+            placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
+        )
 
         RatingCard(
             modifier = Modifier.align(Alignment.TopEnd),
