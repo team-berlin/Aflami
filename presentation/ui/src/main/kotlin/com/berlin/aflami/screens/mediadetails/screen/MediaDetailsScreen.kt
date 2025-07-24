@@ -63,6 +63,7 @@ import com.berlin.aflami.viewmodel.mediadetails.details.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
+import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 import org.koin.androidx.compose.koinViewModel
@@ -97,7 +98,18 @@ fun MediaDetailsScreen(
     if (uiState.isLoading) {
         Loading()
     } else if (uiState.error != null) {
-        TODO("UI error")
+        Box(
+            Modifier.padding(top = 32.dp, bottom = 82.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                modifier = Modifier.fillMaxSize(),
+                text = uiState.error?.asString()?:"",
+                style = Theme.textStyle.label.large,
+                color = Theme.color.textColors.body,
+                textAlign = TextAlign.Center
+            )
+        }
     } else {
         MediaDetailsContent(
             state = uiState,
@@ -350,9 +362,17 @@ fun TabSection(
 @Composable
 fun RowSectionUiState.getDisplayMessage(): String {
     return when (this) {
-        is RowSectionUiState.Error -> messageRes?.let { stringResource(it) } ?: message.orEmpty()
-        is RowSectionUiState.NoDataFound -> messageRes?.let { stringResource(it) } ?: message.orEmpty()
-        else -> ""
+        is RowSectionUiState.Error -> this.message.orEmpty()
+        is RowSectionUiState.NoDataFound -> this.message.asString()
+        else -> "Unknown error!"
+    }
+}
+
+@Composable
+fun UiText.asString(): String {
+    return when (this) {
+        is UiText.Dynamic -> value
+        is UiText.Resource -> stringResource(id = resId)
     }
 }
 

@@ -6,8 +6,8 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 sealed class RowSectionUiState {
     object Loading : RowSectionUiState()
     data class Success(val content: TabContent) : RowSectionUiState()
-    data class Error(val message: String? = null, @StringRes val messageRes: Int? = null) : RowSectionUiState()
-    data class NoDataFound(val message: String? = null, @StringRes val messageRes: Int? = null) : RowSectionUiState()
+    data class Error(val message: String? = null) : RowSectionUiState()
+    data class NoDataFound(val message: UiText) : RowSectionUiState()
 }
 
 sealed class TabContent {
@@ -18,3 +18,8 @@ sealed class TabContent {
     data class CompanyProduction(val items: List<CompanyProductionUiState>) : TabContent()
 }
 
+
+sealed class UiText {
+    data class Dynamic(val value: String) : UiText()
+    data class Resource(@StringRes val resId: Int) : UiText()
+}

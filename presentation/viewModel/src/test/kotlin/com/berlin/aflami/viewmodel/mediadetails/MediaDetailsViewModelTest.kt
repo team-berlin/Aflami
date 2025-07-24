@@ -6,9 +6,8 @@ import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel.Companion.NO_GALLERY
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel.Companion.NO_RES_ID
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel.Companion.NO_REVIEWS
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -291,7 +290,7 @@ class MediaDetailsViewModelTest {
         assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
         val noDataState = state.rowSection as RowSectionUiState.NoDataFound
         assertThat(noDataState.message).isEqualTo(null)
-        assertThat(noDataState.messageRes).isEqualTo(NO_RES_ID)
+        assertThat(noDataState.messageRes).isEqualTo(NO_REVIEWS)
     }
 
     @Test
