@@ -32,7 +32,7 @@ class GetMovieReviewUseCaseTest {
 
         //when
         val result = getMovieReviewUseCase.invoke(mediaId)
-        val expected=getMovieReview()
+        val expected = getMovieReview()
         // then
         assertThat(result).isEqualTo(expected)
         coVerify(exactly = 1) { movieDetailsRepository.getReviews(mediaId) }
@@ -54,10 +54,10 @@ class GetMovieReviewUseCaseTest {
     }
 
     @Test
-    fun `should throw exception if movieDetailsRepository throw exception `()= runTest {
+    fun `should throw exception if movieDetailsRepository throw exception `() = runTest {
         //give
         val mediaId = 3L
-        val exception=Exception()
+        val exception = Exception()
         coEvery { movieDetailsRepository.getReviews(mediaId) } throws exception
 
         //when & then
