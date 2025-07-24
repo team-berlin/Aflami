@@ -1,8 +1,10 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,17 +47,32 @@ import com.berlin.ui.R
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.runtime.collectAsState
+import com.berlin.aflami.component.SnackBar
+import com.berlin.aflami.component.SnackBarStatus
+import com.berlin.aflami.viewmodel.login.FormUiState
+import com.berlin.aflami.viewmodel.login.LoginInteractionListener
+import com.berlin.aflami.viewmodel.login.LoginUiState
+import com.berlin.aflami.viewmodel.login.LoginViewmodel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun LoginScreen() {
-    LoginContent()
+fun LoginScreen(viewmodel: LoginViewmodel = koinViewModel()) {
+    val uiState by viewmodel.state.collectAsState()
+    LoginContent(uiState, viewmodel)
 }
 
 @Composable
-fun LoginContent() {
-
+fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -64,7 +81,9 @@ fun LoginContent() {
                     colors = Theme.color.gradientColors.streakGradient
                 )
             )
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 12.dp)
+            .navigationBarsPadding()
+            .statusBarsPadding(),
     ) {
         CirclesBackground()
         Column(
@@ -76,33 +95,27 @@ fun LoginContent() {
             ) {
             LoginLogo()
             WelcomeText()
-            FormLogin()
-            Spacer(modifier = Modifier.height(24.dp))
-            LoginButtons()
-        }
-
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.dont_have_account),
-                style = Theme.textStyle.body.small,
+            FormLogin(
+                modifier = Modifier.padding(bottom = 24.dp),
+                uiState = uiState.formUiState,
+                onUsernameChanged = listener::onUsernameChanged,
+                onPasswordChanged = listener::onPasswordChanged,
+                onTrailingIconClicked = listener::onTrailingIconClicked,
+                onForgotPasswordClicked = listener::onForgotPasswordClicked
             )
-            Text(
-                text = stringResource(R.string.create_account),
-                style = Theme.textStyle.body.small,
-                color = Theme.color.primary,
-                modifier = Modifier
-                    .clickable { }
-                    .padding(start = 4.dp)
+            LoginButtons(
+                onLoginClicked = listener::onLoginClicked,
+                onContinueAsGuestClicked = listener::onContinueAsGuestClicked
+            )
+            CreateAccount(
+                modifier = Modifier.weight(1f),
+                onCreateAccountClicked = listener::onCreateAccountClicked
             )
         }
-
+        AnimatedSnackBar(
+            modifier = Modifier.fillMaxWidth().align(alignment = Alignment.TopCenter),
+            isSnackBarVisible = uiState.isError
+        )
     }
 }
 
@@ -147,30 +160,35 @@ fun WelcomeText() {
 }
 
 @Composable
-fun FormLogin() {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    Column {
+private fun FormLogin(
+    modifier: Modifier = Modifier,
+    uiState: FormUiState,
+    onUsernameChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onTrailingIconClicked: () -> Unit,
+    onForgotPasswordClicked: () -> Unit,
+) {
+    Column(modifier = modifier) {
         TextField(
-            text = username,
+            text = uiState.username,
             leadingIcon = R.drawable.user_square,
             hintText = stringResource(R.string.username),
-            onValueChange = { username = it },
+            onValueChange = { onUsernameChanged(it) },
             modifier = Modifier.fillMaxWidth()
         )
         var passwordError by remember { mutableStateOf(false) }
         Spacer(modifier = Modifier.height(12.dp))
 
         TextField(
-            text = password,
+            text = uiState.password,
             hintText = stringResource(R.string.password),
             leadingIcon = R.drawable.door_lock,
             isError = passwordError,
             errorMessage = if (passwordError) stringResource(R.string.incorrect_password) else "",
-            isObscured = true,
-            onValueChange = { password = it },
+            isObscured = uiState.isPasswordObscured,
+            onValueChange = { onPasswordChanged(it) },
             trailingIcon = R.drawable.eye,
-            onTrailingClick = { },
+            onTrailingIconClicked = onTrailingIconClicked,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -181,19 +199,19 @@ fun FormLogin() {
             color = Theme.color.primary,
             modifier = Modifier
                 .align(Alignment.End)
-                .clickable {}
+                .clickable { onForgotPasswordClicked() }
                 .padding(top = 4.dp)
         )
     }
 }
 
 @Composable
-fun LoginButtons() {
+fun LoginButtons(onLoginClicked: () -> Unit, onContinueAsGuestClicked: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         PrimaryButton(
-            onClick = { },
+            onClick = onLoginClicked,
             containerColor = Theme.color.primary,
             modifier = Modifier
                 .fillMaxWidth()
@@ -208,7 +226,7 @@ fun LoginButtons() {
         }
 
         PrimaryButton(
-            onClick = { },
+            onClick = onContinueAsGuestClicked,
             containerColor = Theme.color.primaryVariant,
             modifier = Modifier
                 .fillMaxWidth()
@@ -220,6 +238,57 @@ fun LoginButtons() {
                 color = Theme.color.primary
             )
         }
+    }
+}
+
+@Composable
+private fun CreateAccount(modifier: Modifier, onCreateAccountClicked: () -> Unit) {
+    Row(
+        modifier = modifier
+            .padding(bottom = 24.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(R.string.dont_have_account),
+            style = Theme.textStyle.body.small,
+        )
+        Text(
+            text = stringResource(R.string.create_account),
+            style = Theme.textStyle.body.small,
+            color = Theme.color.primary,
+            modifier = Modifier
+                .clickable { onCreateAccountClicked() }
+                .padding(start = 4.dp)
+        )
+    }
+}
+
+@Composable
+private fun AnimatedSnackBar(
+    modifier: Modifier = Modifier,
+    isSnackBarVisible: Boolean
+) {
+    AnimatedVisibility(
+        visible = isSnackBarVisible, enter = slideInVertically(
+            initialOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
+                stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioMediumBouncy
+            )
+        ) + fadeIn(),
+
+        exit = slideOutVertically(
+            targetOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
+                stiffness = Spring.StiffnessMedium, dampingRatio = Spring.DampingRatioNoBouncy
+            )
+        ) + fadeOut()
+    ) {
+        SnackBar(
+            modifier = modifier,
+            status = SnackBarStatus.ERROR,
+            text = stringResource(id = R.string.login_error_message),
+            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error)
+        )
     }
 }
 

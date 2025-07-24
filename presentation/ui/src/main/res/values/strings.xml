@@ -38,4 +38,5 @@
     <string name="dont_have_account">Don\'t have account?</string>
     <string name="create_account">Create account</string>
     <string name="logo">logo</string>
+    <string name="login_error_message">incorrect password or username</string>
 </resources>
