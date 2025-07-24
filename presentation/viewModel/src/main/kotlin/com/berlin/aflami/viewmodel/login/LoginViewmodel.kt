@@ -1,12 +1,12 @@
 package com.berlin.aflami.viewmodel.login
 
 import com.berlin.aflami.viewmodel.base.BaseViewModel
-import usecase.PasswordValidationUseCase
-import usecase.UsernameValidationUseCase
+import usecase.ValidatePasswordUseCase
+import usecase.ValidateUsernameUseCase
 
 class LoginViewmodel(
-    val usernameValidationUseCase: UsernameValidationUseCase,
-    val passwordValidationUseCase: PasswordValidationUseCase
+    val usernameValidationUseCase: ValidateUsernameUseCase,
+    val passwordValidationUseCase: ValidatePasswordUseCase
 ) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
     LoginInteractionListener {
     override fun onUsernameChanged(username: String) {
@@ -25,8 +25,11 @@ class LoginViewmodel(
         sendNewEffect(LoginEffect.NavigateToForgotPassword)
     }
 
-    override fun onLoginClicked(username: String, password: String) {
-        val isValidated = usernameValidationUseCase(username) && passwordValidationUseCase(password)
+    override fun onLoginClicked() {
+        val isValidated =
+            usernameValidationUseCase(state.value.formUiState.username) && passwordValidationUseCase(
+                state.value.formUiState.password
+            )
         if (!isValidated) {
             updateState { it.copy(isError = true) }
             return

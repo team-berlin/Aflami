@@ -87,36 +87,20 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
             FormLogin(
                 modifier = Modifier.padding(bottom = 24.dp),
                 uiState = uiState.formUiState,
-                listener::onUsernameChanged,
-                listener::onPasswordChanged,
-                listener::onTrailingIconClicked
+                onUsernameChanged = listener::onUsernameChanged,
+                onPasswordChanged = listener::onPasswordChanged,
+                onTrailingIconClicked = listener::onTrailingIconClicked,
+                onForgotPasswordClicked = listener::onForgotPasswordClicked
             )
-            LoginButtons()
-        }
-
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.dont_have_account),
-                style = Theme.textStyle.body.small,
+            LoginButtons(
+                onLoginClicked = listener::onLoginClicked,
+                onContinueAsGuestClicked = listener::onContinueAsGuestClicked
             )
-            Text(
-                text = stringResource(R.string.create_account),
-                style = Theme.textStyle.body.small,
-                color = Theme.color.primary,
-                modifier = Modifier
-                    .clickable { }
-                    .padding(start = 4.dp)
+            CreateAccount(
+                modifier = Modifier.weight(1f),
+                onCreateAccountClicked = listener::onCreateAccountClicked
             )
         }
-
-
     }
 }
 
@@ -166,7 +150,8 @@ private fun FormLogin(
     uiState: FormUiState,
     onUsernameChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
-    onTrailingIconClicked: () -> Unit
+    onTrailingIconClicked: () -> Unit,
+    onForgotPasswordClicked: () -> Unit,
 ) {
     Column(modifier = modifier) {
         TextField(
@@ -199,19 +184,19 @@ private fun FormLogin(
             color = Theme.color.primary,
             modifier = Modifier
                 .align(Alignment.End)
-                .clickable {}
+                .clickable { onForgotPasswordClicked() }
                 .padding(top = 4.dp)
         )
     }
 }
 
 @Composable
-fun LoginButtons() {
+fun LoginButtons(onLoginClicked: () -> Unit, onContinueAsGuestClicked: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         PrimaryButton(
-            onClick = { },
+            onClick = onLoginClicked,
             containerColor = Theme.color.primary,
             modifier = Modifier
                 .fillMaxWidth()
@@ -226,7 +211,7 @@ fun LoginButtons() {
         }
 
         PrimaryButton(
-            onClick = { },
+            onClick = onContinueAsGuestClicked,
             containerColor = Theme.color.primaryVariant,
             modifier = Modifier
                 .fillMaxWidth()
@@ -238,6 +223,30 @@ fun LoginButtons() {
                 color = Theme.color.primary
             )
         }
+    }
+}
+
+@Composable
+private fun CreateAccount(modifier: Modifier, onCreateAccountClicked: () -> Unit) {
+    Row(
+        modifier = modifier
+            .padding(bottom = 24.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(R.string.dont_have_account),
+            style = Theme.textStyle.body.small,
+        )
+        Text(
+            text = stringResource(R.string.create_account),
+            style = Theme.textStyle.body.small,
+            color = Theme.color.primary,
+            modifier = Modifier
+                .clickable { onCreateAccountClicked() }
+                .padding(start = 4.dp)
+        )
     }
 }
 
