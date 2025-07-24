@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.mediadetails.components
+package com.berlin.aflami.component
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

@@ -25,7 +25,7 @@ import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
-import com.berlin.ui.R
+import com.berlin.designsystem.R
 
 @Composable
 fun CompanyProductionItem(
@@ -42,11 +42,11 @@ fun CompanyProductionItem(
         AsyncImage(
             modifier = modifier,
             model = item.image,
-            contentDescription = stringResource(R.string.company_production_image_cd),
+            contentDescription = stringResource(com.berlin.ui.R.string.company_production_image_cd),
             contentScale = ContentScale.Crop,
-            error = painterResource(com.berlin.ui.R.drawable.place_holder),
-            fallback = painterResource(com.berlin.ui.R.drawable.place_holder),
-            placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
+            error = painterResource(R.drawable.place_holder),
+            fallback = painterResource(R.drawable.place_holder),
+            placeholder = painterResource(R.drawable.place_holder),
         )
 
         Box(

@@ -100,9 +100,9 @@ private fun ImageWithRatingBadge(
             contentDescription = null,
             contentScale = ContentScale.Crop,
             alignment = Alignment.TopCenter,
-            error = painterResource(com.berlin.ui.R.drawable.place_holder),
-            fallback = painterResource(com.berlin.ui.R.drawable.place_holder),
-            placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
+            error = painterResource(R.drawable.place_holder),
+            fallback = painterResource(R.drawable.place_holder),
+            placeholder = painterResource(R.drawable.place_holder),
         )
 
         RatingCard(

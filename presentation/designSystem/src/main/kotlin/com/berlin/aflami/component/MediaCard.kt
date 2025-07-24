@@ -1,7 +1,6 @@
 package com.berlin.aflami.component
 
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -56,27 +54,25 @@ fun MediaCard(
                 onClick?.invoke()
             }
     ) {
-        when (state) {
-            is AsyncImagePainter.State.Success -> {
-                AsyncImage(
-                    model = mediaImg,
-                    contentDescription = stringResource(R.string.api_image_card_content),
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop,
-                )
-            }
-            else -> {
-                Image(
-                    painter = painterResource(R.drawable.ic_placeholder),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .align(Alignment.Center),
-                    contentScale = ContentScale.Inside,
-                )
-            }
-
+        val imageState by painter.state.collectAsState()
+        val contentScale = when (imageState) {
+            is AsyncImagePainter.State.Success, is AsyncImagePainter.State.Loading -> ContentScale.Crop
+            else -> ContentScale.Inside
         }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            AsyncImage(
+                model = mediaImg,
+                contentDescription = null,
+                contentScale = contentScale,
+                modifier = Modifier.fillMaxSize(),
+                error = painterResource(R.drawable.place_holder),
+                fallback = painterResource(R.drawable.place_holder),
+            )
+            if (imageState is AsyncImagePainter.State.Loading) {
+                ShimmerBox(modifier = Modifier.fillMaxSize())
+            }
+        }
+
 //        SafeImageViewer(
 //            imageUri = mediaImg,
 //            modifier = Modifier.fillMaxSize(),

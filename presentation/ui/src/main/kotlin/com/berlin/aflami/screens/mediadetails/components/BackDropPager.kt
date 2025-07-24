@@ -24,6 +24,7 @@ import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.component.CircularIConButton
 import com.berlin.aflami.component.Rating
+import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.utils.formatRating
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
@@ -58,8 +59,8 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                         contentDescription = null,
                         contentScale = contentScale,
                         modifier = Modifier.fillMaxSize(),
-                        error = painterResource(com.berlin.ui.R.drawable.place_holder),
-                        fallback = painterResource(com.berlin.ui.R.drawable.place_holder),
+                        error = painterResource(R.drawable.place_holder),
+                        fallback = painterResource(R.drawable.place_holder),
                     )
                     if (imageState is AsyncImagePainter.State.Loading) {
                         ShimmerBox(modifier = Modifier.fillMaxSize())

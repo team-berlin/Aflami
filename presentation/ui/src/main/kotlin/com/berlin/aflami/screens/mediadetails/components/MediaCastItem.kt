@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.designsystem.R
 
 @Composable
 fun MediaCastItem(
@@ -43,9 +44,9 @@ fun MediaCastItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
-                placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
-                error = painterResource(com.berlin.ui.R.drawable.place_holder),
-                fallback = painterResource(com.berlin.ui.R.drawable.place_holder),
+                placeholder = painterResource(R.drawable.place_holder),
+                error = painterResource(R.drawable.place_holder),
+                fallback = painterResource(R.drawable.place_holder),
             )
         }
 

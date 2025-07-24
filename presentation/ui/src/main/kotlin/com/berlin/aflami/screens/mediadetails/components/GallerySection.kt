@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.ui.R
+import com.berlin.designsystem.R
 
 @Composable
 fun GallerySection(
@@ -58,16 +58,16 @@ fun GallerySection(
                         if (index < mediaImages.size) {
                             AsyncImage(
                                 model = mediaImages[index],
-                                contentDescription = stringResource(R.string.cast),
+                                contentDescription = stringResource(com.berlin.ui.R.string.cast),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .width(cellWidth)
                                     .height(cellHeight)
                                     .clip(RoundedCornerShape(12.dp))
                                     .border(1.dp, Theme.color.stroke),
-                                placeholder = painterResource(com.berlin.ui.R.drawable.place_holder),
-                                error = painterResource(com.berlin.ui.R.drawable.place_holder),
-                                fallback = painterResource(com.berlin.ui.R.drawable.place_holder),
+                                placeholder = painterResource(R.drawable.place_holder),
+                                error = painterResource(R.drawable.place_holder),
+                                fallback = painterResource(R.drawable.place_holder),
                             )
                         }
                         else {
