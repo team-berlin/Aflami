@@ -73,7 +73,7 @@ fun TextField(
     borderColor: Color = Theme.color.stroke,
     borderErrorColor: Color = Theme.color.statusColors.redAccent,
     borderFocusedColor: Color = Theme.color.primary,
-    onTrailingClick: (() -> Unit)? = null,
+    onTrailingIconClicked: (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     onValueChange: (String) -> Unit = {}
@@ -147,7 +147,7 @@ fun TextField(
                     targetValue = if (text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.title
                 )
                 VerticalDivider()
-                TrailingIcon(trailingIcon, imageColor, onTrailingClick)
+                TrailingIcon(trailingIcon, imageColor, onTrailingIconClicked)
             }
         }
         AnimatedMaxCharacters(
