@@ -22,7 +22,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
 @Composable
-fun CircularIConButton(
+fun CircularIconButton(
     modifier: Modifier = Modifier,
     painter: Painter,
     hasDropShadow: Boolean = false,
@@ -73,7 +73,7 @@ fun CircularIConButton(
 @ThemeAndLocalePreviews
 private fun CircularIConButtonPreview() {
     AflamiTheme(isDarkTheme = false) {
-        CircularIConButton(
+        CircularIconButton(
             painter = painterResource(R.drawable.play),
             hasDropShadow = true,
             size = 64,
@@ -87,7 +87,7 @@ private fun CircularIConButtonPreview() {
 @ThemeAndLocalePreviews
 private fun CircularIConButtonDarkPreview() {
     AflamiTheme(isDarkTheme = true) {
-        CircularIConButton(
+        CircularIconButton(
             painter = painterResource(R.drawable.play),
             hasDropShadow = true,
             size = 64,
