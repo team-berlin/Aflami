@@ -44,7 +44,7 @@ fun MediaCard(
     onClick: (() -> Unit)? = null
 ) {
     val painter = rememberAsyncImagePainter(mediaImg)
-    val state by painter.state.collectAsState()
+    val imageState by painter.state.collectAsState()
 
     Box(
         modifier = modifier
@@ -54,7 +54,6 @@ fun MediaCard(
                 onClick?.invoke()
             }
     ) {
-        val imageState by painter.state.collectAsState()
         val contentScale = when (imageState) {
             is AsyncImagePainter.State.Success, is AsyncImagePainter.State.Loading -> ContentScale.Crop
             else -> ContentScale.Inside

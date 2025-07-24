@@ -67,6 +67,7 @@ fun MediaDetailsScreen(
                 is MediaDetailsScreenEffect.ShowRatingDialog -> {
                     TODO("Actual implementation once login is in place")
                 }
+
                 is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {
                     TODO("Actual implementation once login is in place")
                 }
@@ -85,7 +86,7 @@ fun MediaDetailsScreen(
         ) {
             Text(
                 modifier = Modifier.fillMaxSize(),
-                text = uiState.error?.asString()?:"",
+                text = uiState.error?.asString() ?: "",
                 style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.body,
                 textAlign = TextAlign.Center
@@ -139,7 +140,8 @@ fun MediaDetailsContent(
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
     val appBarAlpha by remember {
         derivedStateOf {
-            val offset = if (listState.firstVisibleItemIndex == 0) listState.firstVisibleItemScrollOffset else appBarFadeHeightPx
+            val offset =
+                if (listState.firstVisibleItemIndex == 0) listState.firstVisibleItemScrollOffset else appBarFadeHeightPx
             (offset / appBarFadeHeightPx.toFloat()).coerceIn(0f, 1f)
         }
     }
@@ -148,15 +150,21 @@ fun MediaDetailsContent(
 
     Box(Modifier.fillMaxSize()) {
         LazyColumn(state = listState) {
-            item { BackdropPager(state = state, onPlayClick = { listener.onPlayClicked(state.id) }) }
+            item {
+                BackdropPager(
+                    state = state,
+                    onPlayClick = { listener.onPlayClicked(state.id) })
+            }
 
             item {
                 MediaOverviewSection(state = state)
             }
 
             item {
-                DescriptionSection( state.overview, isExpanded = isDescriptionExpanded,
-                    onToggleExpand = onToggleDescriptionExpand)
+                DescriptionSection(
+                    state.overview, isExpanded = isDescriptionExpanded,
+                    onToggleExpand = onToggleDescriptionExpand
+                )
             }
 
             item {
@@ -202,10 +210,9 @@ fun MediaDetailsContent(
             containerColor = appBarBgColor,
 
             )
-        }
+    }
 
 }
-
 
 
 @Composable
