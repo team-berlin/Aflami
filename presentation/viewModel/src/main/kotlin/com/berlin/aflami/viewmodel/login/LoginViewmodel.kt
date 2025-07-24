@@ -1,6 +1,10 @@
 package com.berlin.aflami.viewmodel.login
 
+import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.util.SNACK_BAR_DURATION
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import usecase.ValidatePasswordUseCase
 import usecase.ValidateUsernameUseCase
 
@@ -32,6 +36,10 @@ class LoginViewmodel(
             )
         if (!isValidated) {
             updateState { it.copy(isError = true) }
+            viewModelScope.launch {
+                delay(SNACK_BAR_DURATION)
+                updateState { it.copy(isError = false) }
+            }
             return
         }
         updateState { it.copy(isLoading = true) }

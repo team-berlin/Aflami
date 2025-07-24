@@ -1,8 +1,10 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,9 +47,17 @@ import com.berlin.ui.R
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.collectAsState
+import com.berlin.aflami.component.SnackBar
+import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.viewmodel.login.FormUiState
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
@@ -72,7 +82,8 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                 )
             )
             .padding(horizontal = 12.dp)
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .statusBarsPadding(),
     ) {
         CirclesBackground()
         Column(
@@ -101,6 +112,10 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                 onCreateAccountClicked = listener::onCreateAccountClicked
             )
         }
+        AnimatedSnackBar(
+            modifier = Modifier.fillMaxWidth().align(alignment = Alignment.TopCenter),
+            isSnackBarVisible = uiState.isError
+        )
     }
 }
 
@@ -246,6 +261,33 @@ private fun CreateAccount(modifier: Modifier, onCreateAccountClicked: () -> Unit
             modifier = Modifier
                 .clickable { onCreateAccountClicked() }
                 .padding(start = 4.dp)
+        )
+    }
+}
+
+@Composable
+private fun AnimatedSnackBar(
+    modifier: Modifier = Modifier,
+    isSnackBarVisible: Boolean
+) {
+    AnimatedVisibility(
+        visible = isSnackBarVisible, enter = slideInVertically(
+            initialOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
+                stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioMediumBouncy
+            )
+        ) + fadeIn(),
+
+        exit = slideOutVertically(
+            targetOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
+                stiffness = Spring.StiffnessMedium, dampingRatio = Spring.DampingRatioNoBouncy
+            )
+        ) + fadeOut()
+    ) {
+        SnackBar(
+            modifier = modifier,
+            status = SnackBarStatus.ERROR,
+            text = stringResource(id = R.string.login_error_message),
+            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error)
         )
     }
 }

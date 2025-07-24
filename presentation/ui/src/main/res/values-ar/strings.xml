@@ -38,6 +38,7 @@
     <string name="dont_have_account">ليس لديك حساب؟</string>
     <string name="create_account">إنشاء حساب</string>
     <string name="logo">شعار</string>
+    <string name="login_error_message">كلمة المرور أو اسم المستخدم غير صحيح</string>
 
 
 </resources>
