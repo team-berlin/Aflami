@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -9,7 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.screens.home.component.ContinueWatchingSection
+import com.berlin.aflami.screens.home.component.HomeSections
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
 import com.berlin.aflami.viewmodel.home.HomeViewModel
@@ -47,7 +46,7 @@ fun HomeContent(
     Column (
         modifier = Modifier.padding(top = 6.dp)
     ){
-        ContinueWatchingSection(
+        HomeSections(
             onShowAllContinueWatchingClick = {
                 listener.onShowAllContinueWatchingClicked()
             },

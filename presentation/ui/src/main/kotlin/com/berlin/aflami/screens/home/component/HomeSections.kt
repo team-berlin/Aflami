@@ -24,7 +24,7 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
 
 @Composable
-fun ContinueWatchingSection(
+fun HomeSections(
     modifier: Modifier = Modifier,
     onShowAllContinueWatchingClick: () -> Unit,
     state: List<MediaUiState>,
