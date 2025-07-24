@@ -1,5 +1,6 @@
 package com.berlin.repository
 
+import com.berlin.entity.Genre
 import com.berlin.entity.MediaCast
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
@@ -48,4 +49,10 @@ class MovieDetailsRepositoryImpl(
         return remoteDataSource.getMovieReviews(id).results?.filterNotNull()
             ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
     }
+
+    override suspend fun getMovieGenres(language: String): List<Genre> {
+        return remoteDataSource.getMovieGenres(language).genres.map { it.toDomain() }
+    }
+
+
 }
