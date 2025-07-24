@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,13 +37,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.berlin.aflami.component.IconButton
 import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import com.berlin.aflami.component.IconButton
 import com.berlin.ui.R
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -55,21 +57,45 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.unit.Dp
 import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.viewmodel.login.FormUiState
+import com.berlin.aflami.viewmodel.login.LoginEffect
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
+import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
 import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun LoginScreen(viewmodel: LoginViewmodel = koinViewModel()) {
+fun LoginScreen(
+    viewmodel: LoginViewmodel = koinViewModel(),
+    navController: NavController
+) {
     val uiState by viewmodel.state.collectAsState()
     LoginContent(uiState, viewmodel)
+
+    LaunchedEffect(Unit) {
+        viewmodel.effect.collect {
+            when (it) {
+                LoginEffect.NavigateToHome -> { } // TODO: naviagte to home screen
+                LoginEffect.NavigateToCreateAccount -> {
+                    val encodedUrl = Uri.encode(REGISTER_URL)
+                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                }
+                LoginEffect.NavigateToForgotPassword -> {
+                    val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
+                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                }
+            }
+        }
+    }
 }
+
 
 @Composable
 fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
@@ -345,6 +371,9 @@ fun CirclesBackground() {
 @Composable
 private fun LoginScreenPreview() {
     AflamiTheme(isDarkTheme = false) {
-        LoginScreen()
+        LoginScreen(navController = rememberNavController())
     }
 }
+
+private const val REGISTER_URL = "https://www.themoviedb.org/signup"
+private const val RESET_PASSWORD_URL = "https://www.themoviedb.org/reset-password"
