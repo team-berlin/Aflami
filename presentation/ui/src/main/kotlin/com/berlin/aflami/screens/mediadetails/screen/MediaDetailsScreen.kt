@@ -1,9 +1,8 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
-import android.annotation.SuppressLint
+
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -67,6 +66,7 @@ import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
 import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
+import com.berlin.aflami.screens.mediadetails.components.ShimmerBox
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.utils.formatRating
@@ -91,7 +91,6 @@ fun MediaDetailsScreen(
     val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
     val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsState()
-    val navMediaType = MediaType.valueOf(viewModel.type.name)
 
     LaunchedEffect(Unit) {
         viewModel.getMediaCast(viewModel.id, viewModel.type, "US-EG")
@@ -100,10 +99,10 @@ fun MediaDetailsScreen(
         viewModel.effect.collect { event ->
             when (event) {
                 is MediaDetailsScreenEffect.ShowRatingDialog -> {
-                    // Actual implementation once login is in place
+                    TODO("Actual implementation once login is in place")
                 }
                 is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {
-                    // Actual implementation once login is in place
+                    TODO("Actual implementation once login is in place")
                 }
 
                 else -> onEffect(event)
@@ -115,7 +114,7 @@ fun MediaDetailsScreen(
     if (uiState.isLoading) {
         Loading()
     } else if (uiState.error != null) {
-        // Your error UI
+        TODO("UI error")
     } else {
         MediaDetailsContent(
             state = uiState,
@@ -139,7 +138,6 @@ fun MediaDetailsScreen(
             LoginRequiredDialog(
                 onLoginClick = {
                     viewModel.showLoginDialog(false)
-                    //navController.navigate("login")
                 },
                 onDismiss = { viewModel.showLoginDialog(false) },
                 title = stringResource(com.berlin.ui.R.string.login_required),
@@ -229,41 +227,36 @@ fun MediaDetailsContent(
                                 pagerState.animateScrollToPage(nextPage)
                             }
                         }
-
-                        val painter = rememberAsyncImagePainter(state.backdropUrl)
-                        val imageState by painter.state.collectAsState()
-
                         HorizontalPager(
                             state = pagerState,
                             modifier = Modifier.fillMaxSize()
                         ) { page ->
-                            when (imageState) {
-                                is AsyncImagePainter.State.Success ->
-                                    AsyncImage(
-                                        model = state.backdropUrl,
-                                        contentDescription = null,
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentScale = ContentScale.Crop,
-                                    )
+                            val model = state.backdropUrl
+                            val painter = rememberAsyncImagePainter(model)
+                            val imageState by painter.state.collectAsState()
 
-                                else -> {
-                                    Box(
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentAlignment = Alignment.Center
-
-                                    ) {
-                                        Image(
-                                            painter = painterResource(R.drawable.ic_placeholder),
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .size(48.dp),
-                                            contentScale = ContentScale.Inside,
-                                        )
-                                    }
+                            val contentScale = when (imageState) {
+                                is AsyncImagePainter.State.Success,
+                                is AsyncImagePainter.State.Loading -> ContentScale.Crop
+                                is AsyncImagePainter.State.Empty -> ContentScale.Inside
+                                else -> ContentScale.Inside
+                            }
+                            Box(modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center,) {
+                                AsyncImage(
+                                    model = model,
+                                    contentDescription = null,
+                                    contentScale = contentScale,
+                                    modifier = Modifier.fillMaxSize(),
+                                    error = painterResource(com.berlin.ui.R.drawable.place_holder),
+                                    fallback = painterResource(com.berlin.ui.R.drawable.place_holder),
+                                    placeholder = painterResource(com.berlin.ui.R.drawable.place_holder)
+                                )
+                                if (imageState is AsyncImagePainter.State.Loading) {
+                                    ShimmerBox(modifier = Modifier.fillMaxSize())
                                 }
                             }
-
-                        }
+                    }
 
                         Indicator(pagerState)
 
@@ -465,7 +458,7 @@ fun RowSection(
             ) {
                 Text(
                     modifier = Modifier.fillMaxSize(),
-                    text = sectionState.message,
+                    text = sectionState.getDisplayMessage(),
                     style = Theme.textStyle.label.large,
                     color = Theme.color.textColors.body,
                     textAlign = TextAlign.Center
@@ -480,7 +473,7 @@ fun RowSection(
             ) {
                 Text(
                     modifier = Modifier.fillMaxSize(),
-                    text = sectionState.message,
+                    text = sectionState.getDisplayMessage(),
                     style = Theme.textStyle.label.large,
                     color = Theme.color.textColors.body,
                     textAlign = TextAlign.Center
@@ -534,8 +527,15 @@ fun RowSection(
 
 }
 
+@Composable
+fun RowSectionUiState.getDisplayMessage(): String {
+    return when (this) {
+        is RowSectionUiState.Error -> messageRes?.let { stringResource(it) } ?: message.orEmpty()
+        is RowSectionUiState.NoDataFound -> messageRes?.let { stringResource(it) } ?: message.orEmpty()
+        else -> ""
+    }
+}
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Cast(
     modifier: Modifier = Modifier,
@@ -572,7 +572,7 @@ fun Cast(
         }
 
         BoxWithConstraints {
-            val screenWidth = maxWidth
+            val screenWidth = this.maxWidth
             val cardSize = 78.dp
             val spaceBetween = 8.dp
             val totalCardWidth = cardSize + spaceBetween

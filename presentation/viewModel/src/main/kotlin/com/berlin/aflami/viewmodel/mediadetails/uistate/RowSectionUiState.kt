@@ -1,12 +1,13 @@
 package com.berlin.aflami.viewmodel.mediadetails.uistate
 
+import androidx.annotation.StringRes
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 
 sealed class RowSectionUiState {
     object Loading : RowSectionUiState()
     data class Success(val content: TabContent) : RowSectionUiState()
-    data class Error(val message: String) : RowSectionUiState()
-    data class NoDataFound(val message: String) : RowSectionUiState()
+    data class Error(val message: String? = null, @StringRes val messageRes: Int? = null) : RowSectionUiState()
+    data class NoDataFound(val message: String? = null, @StringRes val messageRes: Int? = null) : RowSectionUiState()
 }
 
 sealed class TabContent {

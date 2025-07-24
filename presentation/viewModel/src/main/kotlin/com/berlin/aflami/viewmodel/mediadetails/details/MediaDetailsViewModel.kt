@@ -14,6 +14,7 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.util.toggle
 import com.berlin.entity.Episodes
+import com.berlin.viewModel.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -235,7 +236,7 @@ class MediaDetailsViewModel(
                 if (moreLikeMedia.isEmpty()) {
                     _state.update {
                         it.copy(
-                            rowSection = RowSectionUiState.NoDataFound("There is no more media!")
+                            rowSection = RowSectionUiState.NoDataFound(messageRes = R.string.there_is_no_more_media)
                         )
                     }
                 } else {
@@ -274,7 +275,7 @@ class MediaDetailsViewModel(
                 if (reviewResult.isEmpty()) {
                     _state.update {
                         it.copy(
-                            rowSection = RowSectionUiState.NoDataFound("There is no reviews!")
+                            rowSection = RowSectionUiState.NoDataFound(messageRes = R.string.there_is_no_reviews)
                         )
                     }
                 } else {
@@ -313,7 +314,7 @@ class MediaDetailsViewModel(
                 if (gallery.isEmpty()) {
                     _state.update {
                         it.copy(
-                            rowSection = RowSectionUiState.NoDataFound("There is no gallery!")
+                            rowSection = RowSectionUiState.NoDataFound(messageRes = R.string.there_is_no_gallery)
                         )
                     }
                 } else {
@@ -348,7 +349,7 @@ class MediaDetailsViewModel(
                 if (companyProductionCache?.isEmpty() == true) {
                     _state.update { companyProduction ->
                         companyProduction.copy(
-                            rowSection = RowSectionUiState.NoDataFound("There is no company production!")
+                            rowSection = RowSectionUiState.NoDataFound(messageRes = R.string.there_is_no_company_production)
                         )
                     }
                 } else {
@@ -485,9 +486,14 @@ class MediaDetailsViewModel(
     private fun handleErrorState(message: String?, updateRowSection: Boolean = false) {
         _state.update {
             if (updateRowSection) {
+                val rowError = if (message != null) {
+                    RowSectionUiState.Error(message = message)
+                } else {
+                    RowSectionUiState.Error(messageRes = R.string.unknown_error)
+                }
                 it.copy(
                     error = message,
-                    rowSection = RowSectionUiState.Error(message ?: "Unknown error"),
+                    rowSection = rowError,
                     isLoading = false
                 )
             } else {
