@@ -1,13 +1,19 @@
 package com.berlin.aflami.viewmodel.home
 
+import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
+import kotlinx.coroutines.launch
+import usecase.GetSearchTvShowsUseCase
+import usecase.GetTopRatedMovies
+import usecase.GetTopRatedSeries
 
 class HomeViewModel(
-
-):BaseViewModel<HomeUiState, HomeScreenEffect>(
+    private val getTopRatedMovies: GetTopRatedMovies,
+    private val getTopRatedSeries: GetTopRatedSeries,
+) : BaseViewModel<HomeUiState, HomeScreenEffect>(
     HomeUiState()
-),HomeInteractionListener{
+), HomeInteractionListener {
     override fun onSearchClicked() {
         TODO("Not yet implemented")
     }
@@ -17,7 +23,9 @@ class HomeViewModel(
     }
 
     override fun onShowAllTopRating() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            val topRatedMoviesAndSeries = getTopRatedMovies(1).plus(getTopRatedSeries(1))
+        }
     }
 
     override fun onMoodPickerClicked() {
