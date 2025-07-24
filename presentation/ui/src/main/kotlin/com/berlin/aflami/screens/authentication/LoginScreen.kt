@@ -1,5 +1,11 @@
 package com.berlin.aflami.screens.authentication
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,8 +18,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,27 +33,72 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.component.PrimaryButton
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.berlin.aflami.component.IconButton
+import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import androidx.compose.ui.tooling.preview.Preview
-import com.berlin.aflami.component.IconButton
 import com.berlin.ui.R
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.unit.Dp
+import com.berlin.aflami.component.SnackBar
+import com.berlin.aflami.component.SnackBarStatus
+import com.berlin.aflami.component.buttons.ButtonState
+import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.viewmodel.login.FormUiState
+import com.berlin.aflami.viewmodel.login.LoginEffect
+import com.berlin.aflami.viewmodel.login.LoginInteractionListener
+import com.berlin.aflami.viewmodel.login.LoginUiState
+import com.berlin.aflami.viewmodel.login.LoginViewmodel
+import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
+import org.koin.androidx.compose.koinViewModel
+
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    viewmodel: LoginViewmodel = koinViewModel(),
+    navController: NavController
+) {
+    val uiState by viewmodel.state.collectAsState()
+    LoginContent(uiState, viewmodel)
 
-    LoginContent()
+    LaunchedEffect(Unit) {
+        viewmodel.effect.collect {
+            when (it) {
+                LoginEffect.NavigateToHome -> { } // TODO: naviagte to home screen
+                LoginEffect.NavigateToCreateAccount -> {
+                    val encodedUrl = Uri.encode(REGISTER_URL)
+                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                }
+                LoginEffect.NavigateToForgotPassword -> {
+                    val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
+                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                }
+            }
+        }
+    }
 }
 
 
 @Composable
-fun LoginContent() {
-
+fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -54,8 +107,9 @@ fun LoginContent() {
                     colors = Theme.color.gradientColors.streakGradient
                 )
             )
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 12.dp)
     ) {
+        CirclesBackground()
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,38 +119,37 @@ fun LoginContent() {
             ) {
             LoginLogo()
             WelcomeText()
-            FormLogin()
-            Spacer(modifier = Modifier.height(24.dp))
-            LoginButtons()
+            FormLogin(
+                modifier = Modifier.padding(bottom = 24.dp),
+                uiState = uiState.formUiState,
+                onUsernameChanged = listener::onUsernameChanged,
+                onPasswordChanged = listener::onPasswordChanged,
+                onTrailingIconClicked = listener::onTrailingIconClicked,
+                onForgotPasswordClicked = listener::onForgotPasswordClicked
+            )
+            LoginButtons(
+                isLoading = uiState.isLoading,
+                isError = uiState.isError,
+                isLoginButtonEnabled = uiState.isLoginButtonEnabled,
+                onLoginClicked = listener::onLoginClicked,
+                onContinueAsGuestClicked = listener::onContinueAsGuestClicked
+            )
+            CreateAccount(
+                modifier = Modifier.weight(1f),
+                onCreateAccountClicked = listener::onCreateAccountClicked
+            )
         }
-
-        Row(
+        AnimatedSnackBar(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.dont_have_account),
-                style = Theme.textStyle.body.small,
-            )
-            Text(
-                text = stringResource(R.string.create_account),
-                style = Theme.textStyle.body.small,
-                color = Theme.color.primary,
-                modifier = Modifier
-                    .clickable { }
-                    .padding(start = 4.dp)
-            )
-        }
-
+                .fillMaxWidth()
+                .align(alignment = Alignment.TopCenter),
+            isSnackBarVisible = uiState.isError
+        )
     }
 }
 
 @Composable
-fun LoginLogo() {
+private fun LoginLogo() {
     IconButton(
         painter = painterResource(com.berlin.designsystem.R.drawable.home_logo),
         contentDescription = stringResource(R.string.logo),
@@ -118,7 +171,7 @@ fun LoginLogo() {
 }
 
 @Composable
-fun WelcomeText() {
+private fun WelcomeText() {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -136,30 +189,35 @@ fun WelcomeText() {
 }
 
 @Composable
-fun FormLogin() {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    Column {
+private fun FormLogin(
+    modifier: Modifier = Modifier,
+    uiState: FormUiState,
+    onUsernameChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onTrailingIconClicked: () -> Unit,
+    onForgotPasswordClicked: () -> Unit,
+) {
+    Column(modifier = modifier) {
         TextField(
-            text = username,
+            text = uiState.username,
             leadingIcon = R.drawable.user_square,
             hintText = stringResource(R.string.username),
-            onValueChange = { username = it },
+            onValueChange = { onUsernameChanged(it) },
             modifier = Modifier.fillMaxWidth()
         )
         var passwordError by remember { mutableStateOf(false) }
         Spacer(modifier = Modifier.height(12.dp))
 
         TextField(
-            text = password,
+            text = uiState.password,
             hintText = stringResource(R.string.password),
             leadingIcon = R.drawable.door_lock,
             isError = passwordError,
             errorMessage = if (passwordError) stringResource(R.string.incorrect_password) else "",
-            isObscured = true,
-            onValueChange = { password = it },
+            isObscured = uiState.isPasswordObscured,
+            onValueChange = { onPasswordChanged(it) },
             trailingIcon = R.drawable.eye,
-            onTrailingClick = { },
+            onTrailingIconClicked = onTrailingIconClicked,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -170,24 +228,33 @@ fun FormLogin() {
             color = Theme.color.primary,
             modifier = Modifier
                 .align(Alignment.End)
-                .clickable {}
+                .clickable { onForgotPasswordClicked() }
                 .padding(top = 4.dp)
         )
     }
 }
 
 @Composable
-fun LoginButtons() {
+fun LoginButtons(
+    isLoading: Boolean,
+    isLoginButtonEnabled: Boolean,
+    onLoginClicked: () -> Unit,
+    onContinueAsGuestClicked: () -> Unit,
+    isError: Boolean,
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         PrimaryButton(
-            onClick = { },
-            containerColor = Theme.color.primary,
+            onClick = onLoginClicked,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            gradientColor = Theme.color.primaryButton
+            state = when {
+                isError || !isLoginButtonEnabled -> ButtonState.DISABLED
+                isLoading -> ButtonState.LOADING
+                else -> ButtonState.IDLE
+            }
         ) {
             Text(
                 stringResource(R.string.login),
@@ -196,12 +263,12 @@ fun LoginButtons() {
             )
         }
 
-        PrimaryButton(
-            onClick = { },
-            containerColor = Theme.color.primaryVariant,
+        SecondaryButton(
+            onClick = onContinueAsGuestClicked,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
+            border = null
         ) {
             Text(
                 stringResource(R.string.continue_as_guest),
@@ -212,11 +279,113 @@ fun LoginButtons() {
     }
 }
 
+@Composable
+private fun CreateAccount(modifier: Modifier, onCreateAccountClicked: () -> Unit) {
+    Row(
+        modifier = modifier
+            .padding(bottom = 24.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(R.string.dont_have_account),
+            style = Theme.textStyle.body.small,
+        )
+        Text(
+            text = stringResource(R.string.create_account),
+            style = Theme.textStyle.body.small,
+            color = Theme.color.primary,
+            modifier = Modifier
+                .clickable { onCreateAccountClicked() }
+                .padding(start = 4.dp)
+        )
+    }
+}
+
+@Composable
+private fun AnimatedSnackBar(
+    modifier: Modifier = Modifier,
+    isSnackBarVisible: Boolean
+) {
+    AnimatedVisibility(
+        visible = isSnackBarVisible, enter = slideInVertically(
+            initialOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
+                stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioMediumBouncy
+            )
+        ) + fadeIn(),
+
+        exit = slideOutVertically(
+            targetOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
+                stiffness = Spring.StiffnessMedium, dampingRatio = Spring.DampingRatioNoBouncy
+            )
+        ) + fadeOut()
+    ) {
+        SnackBar(
+            modifier = modifier,
+            status = SnackBarStatus.ERROR,
+            text = stringResource(id = R.string.login_error_message),
+            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error)
+        )
+    }
+}
+
+data class Circles(val size: Dp, val xScreen: Int, val yScreen: Int)
+
+@SuppressLint("ConfigurationScreenWidthHeight")
+@Composable
+fun CirclesBackground() {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+    val screenHeight = configuration.screenHeightDp
+
+    val circles = listOf(
+        Circles(32.dp, 34, -18),
+        Circles(64.dp, 193, -10),
+        Circles(64.dp, 304, 128),
+        Circles(64.dp, 234, 358),
+        Circles(64.dp, 324, 498),
+        Circles(24.dp, 246, 657),
+        Circles(32.dp, 167, 566),
+        Circles(100.dp, -22, 734),
+        Circles(100.dp, -22, 304),
+        Circles(24.dp, 16, 617),
+        Circles(40.dp, 339, 19)
+    )
+
+    circles.forEach { circle ->
+        val infiniteTransition = rememberInfiniteTransition()
+        val animatedScale by infiniteTransition.animateFloat(
+            initialValue = 0.9f,
+            targetValue = 1.1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 3000, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+
+        Box(
+            modifier = Modifier
+                .size(circle.size * animatedScale)
+                .offset(
+                    x = (circle.xScreen / 360f * screenWidth).dp,
+                    y = (circle.yScreen / 800f * screenHeight).dp
+                )
+                .clip(CircleShape)
+                .background(
+                    Theme.color.statusColors.backgroundCircles.copy(alpha = 0.04f)
+                )
+        )
+    }
+}
 
 @Preview(showBackground = true, heightDp = 800, widthDp = 360)
 @Composable
-fun LoginScreenPreview() {
+private fun LoginScreenPreview() {
     AflamiTheme(isDarkTheme = false) {
-        LoginScreen()
+        LoginScreen(navController = rememberNavController())
     }
 }
+
+private const val REGISTER_URL = "https://www.themoviedb.org/signup"
+private const val RESET_PASSWORD_URL = "https://www.themoviedb.org/reset-password"

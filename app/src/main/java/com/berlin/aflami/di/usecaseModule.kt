@@ -24,6 +24,9 @@ import usecase.auth.CreateSessionUseCase
 import usecase.auth.LoginUseCase
 
 val useCaseModule = module {
+    single { ValidateUsernameUseCase() }
+    single { ValidatePasswordUseCase() }
+
     single { SearchByCountryUseCase(get()) }
     single { SearchByActorNameUseCase(get()) }
     single { GetSearchMoviesUseCase(get()) }

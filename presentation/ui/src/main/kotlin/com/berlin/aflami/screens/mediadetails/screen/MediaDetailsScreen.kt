@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
@@ -49,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.berlin.aflami.component.Chips
-import com.berlin.aflami.component.CircularIConButton
+import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.Rating
@@ -243,7 +242,7 @@ fun MediaDetailsContent(
                         .background(Theme.color.surface, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularIConButton(
+                    CircularIconButton(
                         modifier = Modifier.align(Alignment.Center),
                         painter = painterResource(R.drawable.play_arrow),
                         onClick = { listener.onPlayClicked(state.id) },
