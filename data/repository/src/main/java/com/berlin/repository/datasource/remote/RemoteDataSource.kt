@@ -45,6 +45,6 @@ interface RemoteDataSource {
     suspend fun getEpisodeSeasonSeries(seriesId: Long, seasonNumber: Int): EpisodesSeasonDto
 
     suspend fun getMovieGenres(language: String): GenreResponse
-    suspend fun getTVGenres(language: String): GenreResponse
+    suspend fun getSeriesGenres(language: String): GenreResponse
 
 }

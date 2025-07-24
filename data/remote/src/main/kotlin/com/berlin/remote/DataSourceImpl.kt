@@ -88,9 +88,9 @@ class DataSourceImpl(
         return wrapApiResponse { apiService.getMovieGenres(language) }
     }
 
-    override suspend fun getTVGenres(language: String): GenreResponse {
+    override suspend fun getSeriesGenres(language: String): GenreResponse {
         require(language.isNotBlank())
-        return wrapApiResponse { apiService.getTVGenres(language) }
+        return wrapApiResponse { apiService.getSeriesGenres(language) }
     }
 
     override suspend fun searchMoviesByCountry(

@@ -61,6 +61,6 @@ class TvShowDetailsRepositoryImpl(
     }
 
     override suspend fun getTVGenres(language: String): List<Genre> {
-        return remoteDataSource.getTVGenres(language).genres.map { it.toDomain() }
+        return remoteDataSource.getSeriesGenres(language).genres.map { it.toDomain() }
     }
 }

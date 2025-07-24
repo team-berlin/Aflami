@@ -104,8 +104,8 @@ interface ApiService {
         @Query(ApiConstants.LANGUAGE)
         language: String): Response<GenreResponse>
 
-    @GET(ApiConstants.TV_GENRES)
-    suspend fun getTVGenres(
+    @GET(ApiConstants.SERIES_GENRES)
+    suspend fun getSeriesGenres(
         @Query(ApiConstants.LANGUAGE) language: String
     ): Response<GenreResponse>
 
