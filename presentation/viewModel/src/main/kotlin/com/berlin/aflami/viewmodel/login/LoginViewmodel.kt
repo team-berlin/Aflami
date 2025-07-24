@@ -17,19 +17,19 @@ class LoginViewmodel : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
     }
 
     override fun onForgotPasswordClicked() {
-        TODO("Not yet implemented")
+        sendNewEffect(LoginEffect.NavigateToForgotPassword)
     }
 
     override fun onLoginClicked(username: String, password: String) {
-        TODO("Not yet implemented")
+        //validate username and password
+        //call login usecase
     }
 
     override fun onContinueAsGuestClicked() {
-        TODO("Not yet implemented")
+        sendNewEffect(LoginEffect.NavigateToHome)
     }
 
     override fun onCreateAccountClicked() {
-        TODO("Not yet implemented")
+        sendNewEffect(LoginEffect.NavigateToCreateAccount)
     }
-
 }
