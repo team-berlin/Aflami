@@ -103,7 +103,7 @@ fun FilterDialog(
                     RatingBar(
                         modifier = Modifier,
                         onValueChange = { filterListener.onRatingStarChanged(it) },
-                        currentRating = state.filterTabSelected.selectedRating
+                        currentRating = state.filterMovieSelected.selectedRating
                     )
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),

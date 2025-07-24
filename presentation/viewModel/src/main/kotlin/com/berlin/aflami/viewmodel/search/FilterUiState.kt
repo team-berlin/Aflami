@@ -6,14 +6,14 @@ data class GenreUiState(
     val isSelected: Boolean = false
 )
 
-data class FilterTabSelected(
+data class FilterMediaSelected(
     val selectedRating: Float = 1f,
     val selectedGenres: Int = -1,
-    val genreType: TabOption? = null
 )
 
 data class FilterItemUiState(
-    val filterTabSelected: FilterTabSelected = FilterTabSelected(),
+    val filterTvShowSelected: FilterMediaSelected = FilterMediaSelected(),
+    val filterMovieSelected: FilterMediaSelected = FilterMediaSelected(),
     val genreUiStates: List<GenreUiState> = defaultGenres,
     val isLoading: Boolean = false
 ) {
