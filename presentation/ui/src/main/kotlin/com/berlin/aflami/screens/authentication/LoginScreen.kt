@@ -118,7 +118,7 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
 }
 
 @Composable
-fun LoginLogo() {
+private fun LoginLogo() {
     IconButton(
         painter = painterResource(com.berlin.designsystem.R.drawable.home_logo),
         contentDescription = stringResource(R.string.logo),
@@ -140,7 +140,7 @@ fun LoginLogo() {
 }
 
 @Composable
-fun WelcomeText() {
+private fun WelcomeText() {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
