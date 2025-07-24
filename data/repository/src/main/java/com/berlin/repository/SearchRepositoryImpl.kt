@@ -8,7 +8,7 @@ import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
-import com.berlin.repository.datasource.remote.SearchRemoteDataSource
+import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
@@ -19,7 +19,7 @@ import java.time.Instant
 
 class SearchRepositoryImpl(
     private val localDataSource: SearchLocalDataSource,
-    private val remoteDataSource: SearchRemoteDataSource,
+    private val remoteDataSource: RemoteDataSource,
     private val recentHistoryLocalDataSource: RecentHistoryLocalDataSource,
     private val categoriesPreferencesDataSource: CategoriesPreferencesDataSource,
     // sharedPref

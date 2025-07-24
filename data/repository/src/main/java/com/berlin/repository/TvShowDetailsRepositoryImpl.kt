@@ -1,23 +1,19 @@
 package com.berlin.repository
 
-import android.util.Log
 import com.berlin.entity.Episodes
-import com.berlin.entity.EpisodesSeason
 import com.berlin.entity.MediaCast
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
-import com.berlin.repository.datasource.remote.TvShowDetailsRemoteDataSource
-import com.berlin.repository.datasource.remote.dto.details.EpisodeDto
+import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
-import com.berlin.repository.mapper.toEpisode
 import com.berlin.repository.mapper.toTVShow
 import exceptions.AflamiExceptions
 import repository.TvShowDetailsRepository
 
 class TvShowDetailsRepositoryImpl(
-    private val remoteDataSource: TvShowDetailsRemoteDataSource,
+    private val remoteDataSource: RemoteDataSource,
 ) : TvShowDetailsRepository {
     override suspend fun getTvShowDetails(id: Long, language: String): TvShowDetails? {
         return try {
@@ -29,10 +25,7 @@ class TvShowDetailsRepositoryImpl(
 
     override suspend fun getSeriesImages(id: Long): List<String> {
         return try {
-            remoteDataSource
-                .getSeriesImages(seriesId = id)
-                .posters
-                ?.map { POSTER_PREFIX + it.filePath }
+            remoteDataSource.getSeriesImages(seriesId = id).posters?.map { POSTER_PREFIX + it.filePath }
                 ?: throw Exception()
         } catch (e: Exception) {
             throw e
@@ -41,8 +34,7 @@ class TvShowDetailsRepositoryImpl(
 
     override suspend fun getSeriesCastDetails(seriesId: Long, language: String): List<MediaCast> {
         return remoteDataSource.getSeriesCastDetails(
-            seriesId,
-            language
+            seriesId, language
         ).cast?.mapNotNull { castItemDto ->
             castItemDto?.toDomain()
         } ?: emptyList()
@@ -55,18 +47,15 @@ class TvShowDetailsRepositoryImpl(
     }
 
     override suspend fun getReviews(id: Long): List<Review> {
-        return remoteDataSource.getReviews(id).results
-            ?.filterNotNull()
-            ?.map { reviewDto -> reviewDto.toDomain() }
-            ?: emptyList()
+        return remoteDataSource.getMovieReviews(id).results?.filterNotNull()
+            ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
     }
 
     override suspend fun getSeasonEpisodes(
         seriesId: Long,
         seasonNumber: Int,
     ): List<Episodes?> {
-        return remoteDataSource.getEpisodeSeasonSeries(seriesId, seasonNumber)
-            .toDomain()
-            .episodes ?: emptyList()
+        return remoteDataSource.getEpisodeSeasonSeries(seriesId, seasonNumber).toDomain().episodes
+            ?: emptyList()
     }
 }
