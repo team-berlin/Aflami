@@ -1,5 +1,6 @@
 package com.berlin.repository.mapper
 
+import com.berlin.entity.Genre
 import com.berlin.entity.Media
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.GenreDto
@@ -33,6 +34,6 @@ fun SearchingEntity.toMedia(): Media {
         mediaType = this.mediaType
     )
 }
-fun GenreDto.toDomain(): com.berlin.entity.Genre {
-    return com.berlin.entity.Genre(id = this.id, name = this.name)
+fun GenreDto.toDomain(): Genre {
+    return Genre(id = this.id, name = this.name)
 }

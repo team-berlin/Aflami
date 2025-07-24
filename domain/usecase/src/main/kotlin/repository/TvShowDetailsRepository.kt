@@ -15,5 +15,5 @@ interface TvShowDetailsRepository {
     suspend fun getSeriesSimilar(seriesId: Long): List<TVShow>
     suspend fun getReviews(id: Long): List<Review>
     suspend fun getSeasonEpisodes(seriesId: Long, seasonNumber: Int): List<Episodes?>
-    suspend fun getTVGenres(language: String): List<Genre>
+    suspend fun getSeriesGenres(language: String): List<Genre>
 }

@@ -5,6 +5,6 @@ import repository.TvShowDetailsRepository
 
 class GetSeriesGenresUseCase(private val tvShowDetailsRepository: TvShowDetailsRepository) {
     suspend operator fun invoke(language: String): List<Genre> {
-        return tvShowDetailsRepository.getTVGenres(language)
+        return tvShowDetailsRepository.getSeriesGenres(language)
     }
 }
