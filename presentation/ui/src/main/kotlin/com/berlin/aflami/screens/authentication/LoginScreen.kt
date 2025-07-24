@@ -46,16 +46,23 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.runtime.collectAsState
+import com.berlin.aflami.viewmodel.login.FormUiState
+import com.berlin.aflami.viewmodel.login.LoginInteractionListener
+import com.berlin.aflami.viewmodel.login.LoginUiState
+import com.berlin.aflami.viewmodel.login.LoginViewmodel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun LoginScreen() {
-    LoginContent()
+fun LoginScreen(viewmodel: LoginViewmodel = koinViewModel()) {
+    val uiState by viewmodel.state.collectAsState()
+    LoginContent(uiState, viewmodel)
 }
 
 @Composable
-fun LoginContent() {
-
+fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -64,7 +71,8 @@ fun LoginContent() {
                     colors = Theme.color.gradientColors.streakGradient
                 )
             )
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 12.dp)
+            .navigationBarsPadding(),
     ) {
         CirclesBackground()
         Column(
@@ -76,8 +84,13 @@ fun LoginContent() {
             ) {
             LoginLogo()
             WelcomeText()
-            FormLogin()
-            Spacer(modifier = Modifier.height(24.dp))
+            FormLogin(
+                modifier = Modifier.padding(bottom = 24.dp),
+                uiState = uiState.formUiState,
+                listener::onUsernameChanged,
+                listener::onPasswordChanged,
+                listener::onTrailingIconClicked
+            )
             LoginButtons()
         }
 
@@ -102,6 +115,7 @@ fun LoginContent() {
                     .padding(start = 4.dp)
             )
         }
+
 
     }
 }
@@ -147,30 +161,34 @@ fun WelcomeText() {
 }
 
 @Composable
-fun FormLogin() {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    Column {
+private fun FormLogin(
+    modifier: Modifier = Modifier,
+    uiState: FormUiState,
+    onUsernameChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onTrailingIconClicked: () -> Unit
+) {
+    Column(modifier = modifier) {
         TextField(
-            text = username,
+            text = uiState.username,
             leadingIcon = R.drawable.user_square,
             hintText = stringResource(R.string.username),
-            onValueChange = { username = it },
+            onValueChange = { onUsernameChanged(it) },
             modifier = Modifier.fillMaxWidth()
         )
         var passwordError by remember { mutableStateOf(false) }
         Spacer(modifier = Modifier.height(12.dp))
 
         TextField(
-            text = password,
+            text = uiState.password,
             hintText = stringResource(R.string.password),
             leadingIcon = R.drawable.door_lock,
             isError = passwordError,
             errorMessage = if (passwordError) stringResource(R.string.incorrect_password) else "",
-            isObscured = true,
-            onValueChange = { password = it },
+            isObscured = uiState.isPasswordObscured,
+            onValueChange = { onPasswordChanged(it) },
             trailingIcon = R.drawable.eye,
-            onTrailingClick = { },
+            onTrailingIconClicked = onTrailingIconClicked,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
