@@ -117,7 +117,7 @@ private fun HomeContent(
                     )
                     Row() {
                         media.genre.forEach { genre ->
-                            Box(modifier = Modifier.padding(end = 4.dp)) {
+                            Box(modifier = Modifier.padding(end = 4.dp).align(Alignment.CenterVertically)) {
                                 GenersChip(label = genre.toString())
                             }
                         }

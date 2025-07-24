@@ -19,8 +19,8 @@ class HomeViewModel(
 ) : BaseViewModel<PopularMediaUiState, HomeScreenEffect>(PopularMediaUiState()),
     HomeInteractionListener {
 
-    private val _movies = MutableStateFlow(MediaUiState())
-    private val _tvShows = MutableStateFlow(MediaUiState())
+    private val _movies = MutableStateFlow<List<MediaUiState>>(emptyList())
+    private val _tvShows = MutableStateFlow<List<MediaUiState>>(emptyList())
 
     init {
         popularMedia("en-US")
@@ -36,9 +36,7 @@ class HomeViewModel(
         tryToCall(
             call = { popularMoviesUseCase(language) },
             onSuccess = { movieList ->
-                val firstMovie = movieList.firstOrNull()?.let {
-                    _movies.value = it.toUIState(MediaType.MOVIE)
-                }
+                _movies.value = movieList.map { it.toUIState(MediaType.MOVIE) }
             },
             onError = ::onPopularMediaError,
         )
@@ -46,9 +44,7 @@ class HomeViewModel(
         tryToCall(
             call = { popularTVShowsUseCase(language) },
             onSuccess = { tvShowList ->
-                val firstTVShow = tvShowList.firstOrNull()?.let {
-                    _tvShows.value = it.toUIState(MediaType.TV_SHOW)
-                }
+                _tvShows.value = tvShowList.map { it.toUIState(MediaType.TV_SHOW) }
             },
             onError = ::onPopularMediaError,
         )
@@ -56,10 +52,19 @@ class HomeViewModel(
 
     private fun combineMediaAndUpdateUi() {
         viewModelScope.launch {
-            combine(_movies, _tvShows) { movie, tvShow ->
-                listOf(movie, tvShow)
+            combine(_movies, _tvShows) { movieList, tvShowList ->
+
+                val mergedList = mutableListOf<MediaUiState>()
+                val maxSize = maxOf(movieList.size, tvShowList.size)
+
+                for (i in 0 until maxSize) {
+                    if (i < movieList.size) mergedList.add(movieList[i])
+                    if (i < tvShowList.size) mergedList.add(tvShowList[i])
+                }
+
+                mergedList
             }.collect { combinedList ->
-                Log.d("CombinedMediaList" , "$combinedList")
+                Log.d("CombinedMediaList", "$combinedList")
                 updateState {
                     it.copy(
                         isLoading = false,
