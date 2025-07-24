@@ -15,4 +15,5 @@ val repositoryModule = module {
     single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get()) }
     single<TvShowDetailsRepository> { TvShowDetailsRepositoryImpl(get()) }
     single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(),get()) }
+    single<SearchRepository> { SearchRepositoryImpl(get(), get(), get(), get()) }
 }

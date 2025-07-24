@@ -2,32 +2,28 @@ package com.berlin.repository
 
 import com.berlin.entity.MediaCast
 import com.berlin.entity.Movie
-import com.berlin.repository.datasource.remote.MovieDetailsRemoteDataSource
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.Review
-import exceptions.AflamiExceptions
+import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
+import exceptions.AflamiExceptions
 import repository.MovieDetailsRepository
 
 class MovieDetailsRepositoryImpl(
-    private val remoteDataSource: MovieDetailsRemoteDataSource
+    private val remoteDataSource: RemoteDataSource
 ) : MovieDetailsRepository {
     override suspend fun getMovieCastDetails(movieId: Long, language: String): List<MediaCast> {
         return remoteDataSource.getMovieCastDetails(
-            movieId,
-            language
+            movieId, language
         ).cast?.mapNotNull { castItemDto ->
             castItemDto?.toDomain()
-        }?: emptyList()
+        } ?: emptyList()
     }
 
     override suspend fun getMovieImages(movieId: Long): List<String> {
         return try {
-            remoteDataSource
-                .getMovieImages(movieId)
-                .backdrops
-                ?.map { POSTER_PREFIX + it.filePath }
+            remoteDataSource.getMovieImages(movieId).backdrops?.map { POSTER_PREFIX + it.filePath }
                 ?: throw Exception()
         } catch (e: Exception) {
             throw e
@@ -41,6 +37,7 @@ class MovieDetailsRepositoryImpl(
             throw exception
         }
     }
+
     override suspend fun getMovieSimilar(movieId: Long): List<Movie> {
         return remoteDataSource.getMovieSimilar(movieId).results?.mapNotNull { movieDto ->
             movieDto?.toDomain()
@@ -48,9 +45,7 @@ class MovieDetailsRepositoryImpl(
     }
 
     override suspend fun getReviews(id: Long): List<Review> {
-        return remoteDataSource.getReviews(id).results
-            ?.filterNotNull()
-            ?.map { reviewDto -> reviewDto.toDomain() }
-            ?: emptyList()
+        return remoteDataSource.getMovieReviews(id).results?.filterNotNull()
+            ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
     }
 }
