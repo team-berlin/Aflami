@@ -360,20 +360,17 @@ private fun SearchScreenContent(
                     }
                 }
             }
-            when (state.selectedTabOption) {
+            if (state.isDialogVisible) {
+                when (state.selectedTabOption) {
+                    TabOption.MOVIES -> {
+                            FilterDialog(
+                                state = state.filterItemUiState,
+                                filterListener = filterSearch,
+                                mediaType = TabOption.MOVIES,
+                            )
+                        }
+                    TabOption.TV_SHOWS -> {
 
-                TabOption.MOVIES -> {
-                    if (state.isDialogVisible) {
-                        FilterDialog(
-                            state = state.filterItemUiState,
-                            filterListener = filterSearch,
-                            mediaType = TabOption.MOVIES,
-                        )
-                    }
-                }
-
-                TabOption.TV_SHOWS -> {
-                    if (state.isDialogVisible) {
                         FilterDialog(
                             state = state.filterItemUiState,
                             filterListener = filterSearch,
