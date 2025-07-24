@@ -14,11 +14,21 @@ class LoginViewmodel(
 ) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
     LoginInteractionListener {
     override fun onUsernameChanged(username: String) {
-        updateState { it.copy(formUiState = it.formUiState.copy(username = username)) }
+        updateState {
+            it.copy(
+                formUiState = it.formUiState.copy(username = username),
+                isLoginButtonEnabled = username.isNotBlank() && it.formUiState.password.isNotBlank()
+            )
+        }
     }
 
     override fun onPasswordChanged(password: String) {
-        updateState { it.copy(formUiState = it.formUiState.copy(password = password)) }
+        updateState {
+            it.copy(
+                formUiState = it.formUiState.copy(password = password),
+                isLoginButtonEnabled = password.isNotBlank() && it.formUiState.username.isNotBlank()
+            )
+        }
     }
 
     override fun onTrailingIconClicked() {
@@ -39,6 +49,7 @@ class LoginViewmodel(
             viewModelScope.launch {
                 delay(SNACK_BAR_DURATION)
                 updateState { it.copy(isError = false) }
+                updateState { it.copy(isLoginButtonEnabled = false) }
             }
             return
         }

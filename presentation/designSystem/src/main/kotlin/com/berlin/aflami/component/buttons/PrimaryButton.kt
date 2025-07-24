@@ -1,20 +1,21 @@
-package com.example.aflami.ui.component.buttons
+package com.berlin.aflami.component.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.aflami.designsystem.theme.Theme
+import com.berlin.aflami.ui.theme.Theme
 
 @Composable
-fun NegativeButton(
+fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     state: ButtonState = ButtonState.IDLE,
-    enabled: Boolean = state != ButtonState.DISABLED,
+    enabled: Boolean = state != ButtonState.DISABLED && state != ButtonState.LOADING,
     shape: Shape = ButtonDefaults.defaultShape,
     contentPadding: PaddingValues = ButtonDefaults.defaultPadding,
     buttonColors: ButtonColors = ButtonDefaults.colors(),
@@ -27,8 +28,12 @@ fun NegativeButton(
         enabled = enabled,
         contentPadding = contentPadding,
         colors = buttonColors.copy(
-            backgroundColor = Theme.color.statusColors.redVariant,
-            contentColor =Theme.color.statusColors.redAccent,
+            backgroundGradient = Brush.verticalGradient(
+                colors = listOf(
+                    Theme.color.primary,
+                    Theme.color.primaryButton
+                )
+            )
         ),
         shape = shape,
         content = content
@@ -37,8 +42,8 @@ fun NegativeButton(
 
 @Preview(showSystemUi = false, showBackground = true)
 @Composable
-private fun NegativeButtonPreview() {
-    NegativeButton(
+private fun PrimaryButtonPreview() {
+    PrimaryButton(
         onClick = {},
         content = {
             Text(
@@ -50,8 +55,8 @@ private fun NegativeButtonPreview() {
 
 @Preview(showSystemUi = false, showBackground = true)
 @Composable
-private fun NegativeButtonLoadingPreview() {
-    NegativeButton(
+private fun PrimaryButtonLoadingPreview() {
+    PrimaryButton(
         onClick = {},
         state = ButtonState.LOADING,
         content = {
@@ -64,8 +69,8 @@ private fun NegativeButtonLoadingPreview() {
 
 @Preview(showSystemUi = false, showBackground = true)
 @Composable
-private fun NegativeButtonDisabledPreview() {
-    NegativeButton(
+private fun PrimaryButtonDisabledPreview() {
+    PrimaryButton(
         onClick = {},
         state = ButtonState.DISABLED,
         content = {
@@ -78,8 +83,8 @@ private fun NegativeButtonDisabledPreview() {
 
 @Preview(showSystemUi = false, showBackground = true)
 @Composable
-private fun NegativeButtonErrorPreview() {
-    NegativeButton(
+private fun PrimaryButtonErrorPreview() {
+    PrimaryButton(
         onClick = {},
         state = ButtonState.ERROR,
         content = {

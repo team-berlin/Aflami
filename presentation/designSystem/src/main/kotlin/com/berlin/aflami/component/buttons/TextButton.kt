@@ -1,6 +1,5 @@
-package com.example.aflami.ui.component.buttons
+package com.berlin.aflami.component.buttons
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.Text
@@ -9,11 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.aflami.designsystem.theme.Theme
+import com.berlin.aflami.ui.theme.Theme
 
 @Composable
-fun SecondaryButton(
+fun TextButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     state: ButtonState = ButtonState.IDLE,
@@ -31,15 +29,11 @@ fun SecondaryButton(
         contentPadding = contentPadding,
         colors = buttonColors.copy(
             backgroundColor = Color.Transparent,
-            contentColor = Theme.color.primary,
-            disabledBackgroundColor = Color.Transparent,
-            disabledContentColor = Theme.color.stroke,
             errorBackgroundColor = Color.Transparent,
+            disabledBackgroundColor = Color.Transparent,
+            contentColor = Theme.color.primary,
+            disabledContentColor =Theme.color.disable ,
             errorContentColor = Theme.color.statusColors.redAccent,
-        ),
-        border = BorderStroke(
-            1.dp,
-            Theme.color.disable
         ),
         shape = shape,
         content = content
@@ -48,8 +42,8 @@ fun SecondaryButton(
 
 @Preview(showSystemUi = false, showBackground = true)
 @Composable
-private fun SecondaryButtonPreview() {
-    SecondaryButton(
+private fun TextButtonPreview() {
+    TextButton(
         onClick = {},
         content = {
             Text(
@@ -61,8 +55,8 @@ private fun SecondaryButtonPreview() {
 
 @Preview(showSystemUi = false, showBackground = true)
 @Composable
-private fun SecondaryButtonLoadingPreview() {
-    SecondaryButton(
+private fun TextButtonLoadingPreview() {
+    TextButton(
         onClick = {},
         state = ButtonState.LOADING,
         content = {
@@ -73,10 +67,10 @@ private fun SecondaryButtonLoadingPreview() {
     )
 }
 
-@Preview(showSystemUi = false, showBackground = true)
+@Preview(showBackground = true)
 @Composable
-private fun SecondaryButtonDisabledPreview() {
-    SecondaryButton(
+private fun TextButtonDisabledPreview() {
+    TextButton(
         onClick = {},
         state = ButtonState.DISABLED,
         content = {
@@ -87,10 +81,10 @@ private fun SecondaryButtonDisabledPreview() {
     )
 }
 
-@Preview(showSystemUi = false, showBackground = true)
+@Preview(showBackground = true, showSystemUi = false)
 @Composable
-private fun SecondaryButtonErrorPreview() {
-    SecondaryButton(
+private fun TextButtonErrorPreview() {
+    TextButton(
         onClick = {},
         state = ButtonState.ERROR,
         content = {

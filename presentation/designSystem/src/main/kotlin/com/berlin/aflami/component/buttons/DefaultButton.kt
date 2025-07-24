@@ -1,4 +1,4 @@
-package com.example.aflami.ui.component.buttons
+package com.berlin.aflami.component.buttons
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
@@ -28,7 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.aflami.ui.component.SpinningProgressIndicatorLines
+import com.berlin.aflami.component.SpinningProgressIndicatorLines
 
 @Composable
 fun DefaultButton(

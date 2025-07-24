@@ -1,4 +1,4 @@
-package com.example.aflami.ui.component.buttons
+package com.berlin.aflami.component.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.aflami.designsystem.theme.Theme
+import com.berlin.aflami.ui.theme.Theme
 
 @Composable
 fun NegativeTextButton(

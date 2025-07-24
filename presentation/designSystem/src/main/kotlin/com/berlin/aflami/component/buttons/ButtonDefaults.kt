@@ -1,13 +1,12 @@
-package com.example.aflami.ui.component.buttons
+package com.berlin.aflami.component.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.aflami.designsystem.theme.Theme
+import com.berlin.aflami.ui.theme.Theme
 
 data class ButtonColors(
     val backgroundColor: Color = Color.Unspecified,
@@ -20,7 +19,7 @@ data class ButtonColors(
 )
 
 object ButtonDefaults {
-    val defaultShape: RoundedCornerShape = CircleShape
+    val defaultShape: RoundedCornerShape = RoundedCornerShape(16.dp)
     val defaultPadding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 16.dp)
     val defaultFabPadding: PaddingValues = PaddingValues(horizontal = 18.dp, vertical = 18.dp)
 

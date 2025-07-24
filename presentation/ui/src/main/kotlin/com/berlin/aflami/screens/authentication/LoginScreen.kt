@@ -36,7 +36,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.component.PrimaryButton
+import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -53,11 +53,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.collectAsState
 import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
+import com.berlin.aflami.component.buttons.ButtonState
+import com.berlin.aflami.component.buttons.SecondaryButton
 import com.berlin.aflami.viewmodel.login.FormUiState
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
@@ -102,6 +102,9 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                 onForgotPasswordClicked = listener::onForgotPasswordClicked
             )
             LoginButtons(
+                isLoading = uiState.isLoading,
+                isError = uiState.isError,
+                isLoginButtonEnabled = uiState.isLoginButtonEnabled,
                 onLoginClicked = listener::onLoginClicked,
                 onContinueAsGuestClicked = listener::onContinueAsGuestClicked
             )
@@ -111,7 +114,9 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
             )
         }
         AnimatedSnackBar(
-            modifier = Modifier.fillMaxWidth().align(alignment = Alignment.TopCenter),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(alignment = Alignment.TopCenter),
             isSnackBarVisible = uiState.isError
         )
     }
@@ -204,17 +209,26 @@ private fun FormLogin(
 }
 
 @Composable
-fun LoginButtons(onLoginClicked: () -> Unit, onContinueAsGuestClicked: () -> Unit) {
+fun LoginButtons(
+    isLoading: Boolean,
+    isLoginButtonEnabled: Boolean,
+    onLoginClicked: () -> Unit,
+    onContinueAsGuestClicked: () -> Unit,
+    isError: Boolean,
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         PrimaryButton(
             onClick = onLoginClicked,
-            containerColor = Theme.color.primary,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            gradientColor = Theme.color.primaryButton
+            state = when {
+                isError || !isLoginButtonEnabled -> ButtonState.DISABLED
+                isLoading -> ButtonState.LOADING
+                else -> ButtonState.IDLE
+            }
         ) {
             Text(
                 stringResource(R.string.login),
@@ -223,12 +237,12 @@ fun LoginButtons(onLoginClicked: () -> Unit, onContinueAsGuestClicked: () -> Uni
             )
         }
 
-        PrimaryButton(
+        SecondaryButton(
             onClick = onContinueAsGuestClicked,
-            containerColor = Theme.color.primaryVariant,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
+            border = null
         ) {
             Text(
                 stringResource(R.string.continue_as_guest),

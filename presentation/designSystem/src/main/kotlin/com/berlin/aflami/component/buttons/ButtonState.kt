@@ -1,4 +1,4 @@
-package com.example.aflami.ui.component.buttons
+package com.berlin.aflami.component.buttons
 
 enum class ButtonState {
     IDLE, LOADING, DISABLED, ERROR
