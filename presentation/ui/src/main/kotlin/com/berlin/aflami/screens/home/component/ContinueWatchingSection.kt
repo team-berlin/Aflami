@@ -27,7 +27,8 @@ import com.berlin.ui.R
 fun ContinueWatchingSection(
     modifier: Modifier = Modifier,
     onShowAllContinueWatchingClick: () -> Unit,
-    state: List<MediaUiState>
+    state: List<MediaUiState>,
+    sectionTitleId:Int
 ) {
     Column(
         modifier = modifier,
@@ -40,7 +41,7 @@ fun ContinueWatchingSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = stringResource(R.string.continue_watching),
+                text = stringResource(sectionTitleId),
                 style = Theme.textStyle.headline.small,
                 color = Theme.color.textColors.title
             )

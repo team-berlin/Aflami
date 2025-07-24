@@ -14,6 +14,7 @@ import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
 import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
+import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -50,7 +51,8 @@ fun HomeContent(
             onShowAllContinueWatchingClick = {
                 listener.onShowAllContinueWatchingClicked()
             },
-            state = state.mediaContinueWatching
+            state = state.mediaContinueWatching,
+            sectionTitleId = R.string.continue_watching
         )
     }
 
