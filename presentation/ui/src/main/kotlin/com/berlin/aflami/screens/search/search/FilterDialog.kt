@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.search.search
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,15 +44,16 @@ import com.berlin.aflami.screens.search.getTvShowGenreIcon
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
-import com.berlin.aflami.viewmodel.search.FilterItemUiState
+import com.berlin.aflami.viewmodel.search.FilterMediaSelected
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.designsystem.R
+import kotlin.reflect.KFunction1
 
 @Composable
 fun FilterDialog(
     filterListener: FilterInteractionListener,
-    state: FilterItemUiState,
-    mediaType: TabOption
+    state: FilterMediaSelected,
+    getIcon: KFunction1<Int,Int>
 ) {
     Dialog(onDismissRequest = filterListener::onCancelButtonClicked) {
         Surface(
@@ -100,10 +102,11 @@ fun FilterDialog(
                         style = Theme.textStyle.title.small,
                         color = Theme.color.textColors.title
                     )
+
                     RatingBar(
                         modifier = Modifier,
                         onValueChange = { filterListener.onRatingStarChanged(it) },
-                        currentRating = state.filterMovieSelected.selectedRating
+                        currentRating = state.selectedRating
                     )
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
@@ -121,13 +124,11 @@ fun FilterDialog(
                         items(
                             items = state.genreUiStates
                         ) { filterGenre ->
+                            Log.e("we", filterGenre.id.toString())
                             Chips(
                                 title = filterGenre.name,
                                 icon = painterResource(
-                                    when (mediaType) {
-                                        TabOption.MOVIES -> getMovieGenreIcon(filterGenre.id)
-                                        TabOption.TV_SHOWS -> getTvShowGenreIcon(filterGenre.id)
-                                    }
+                                    getIcon(filterGenre.id)
                                 ),
                                 isSelected = filterGenre.isSelected,
                                 onClick = { filterListener.onFilterGenreChanged(filterGenre.id) }
