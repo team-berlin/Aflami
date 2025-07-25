@@ -4,9 +4,12 @@ import org.koin.dsl.module
 import usecase.ClearSearchHistoryUseCase
 import usecase.DeleteQueryFromHistoryUseCase
 import usecase.GetRecentHistoryUseCase
-import usecase.GetMovieDetailsUseCase
-import usecase.GetMovieGalleryUseCase
+import usecase.mediadetails.GetMovieDetailsUseCase
+import usecase.mediadetails.GetMovieGalleryUseCase
 import usecase.SearchByActorNameUseCase
+import usecase.GetMovieGenresUseCase
+import usecase.mediadetails.GetMovieCastUseCase
+import usecase.mediadetails.GetMovieReviewUseCase
 import usecase.GetMovieCastUseCase
 import usecase.GetMovieReviewUseCase
 //import usecase.GetPopularMoviesUseCase
@@ -16,14 +19,19 @@ import usecase.GetPopularMoviesUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
-import usecase.GetSeasonEpisodesUseCase
-import usecase.GetSimilarMoviesUseCase
-import usecase.GetSimilarSeriesUseCase
-import usecase.GetTvShowDetailsUseCase
-import usecase.GetSeriesGalleryUseCase
-import usecase.GetSeriesCastUseCase
-import usecase.GetSeriesReviewUseCase
+import usecase.GetSeriesGenresUseCase
+import usecase.mediadetails.GetSeasonEpisodesUseCase
+import usecase.mediadetails.GetSimilarMoviesUseCase
+import usecase.mediadetails.GetSimilarSeriesUseCase
+import usecase.mediadetails.GetTvShowDetailsUseCase
+import usecase.mediadetails.GetSeriesGalleryUseCase
+import usecase.mediadetails.GetSeriesCastUseCase
+import usecase.mediadetails.GetSeriesReviewUseCase
 import usecase.SearchByCountryUseCase
+import usecase.home.GetContinueWatchingMovieUseCase
+import usecase.home.GetContinueWatchingTVShowUseCase
+import usecase.mediadetails.AddContinueWatchingMovieUseCase
+import usecase.mediadetails.AddContinueWatchingTVShowUseCase
 
 val useCaseModule = module {
 
@@ -50,5 +58,11 @@ val useCaseModule = module {
     single { GetMovieReviewUseCase(get()) }
     single { GetSeriesReviewUseCase(get()) }
     single { GetSeasonEpisodesUseCase(get()) }
+    single{ AddContinueWatchingMovieUseCase(get()) }
+    single { GetContinueWatchingMovieUseCase(get()) }
+    single { GetContinueWatchingTVShowUseCase(get()) }
+    single { AddContinueWatchingTVShowUseCase(get()) }
+    single { GetMovieGenresUseCase(get()) }
+    single { GetSeriesGenresUseCase(get()) }
 
 }

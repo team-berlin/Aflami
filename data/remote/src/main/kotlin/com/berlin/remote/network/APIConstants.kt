@@ -18,6 +18,7 @@ object ApiConstants {
     const val MOVIE_CAST = "movie/{movie_id}/credits"
     const val MOVIE_MORE_LIKE_THIS = "movie/{movie_id}/similar"
     const val MOVIE_REVIEW = "movie/{movie_id}/reviews"
+    const val MOVIE_GENRES = "genre/movie/list"
 
     const val SERIES_ID = "series_id"
     const val SERIES_DETAILS = "tv/{series_id}"
@@ -31,4 +32,5 @@ object ApiConstants {
     const val POPULAR_MOVIES = "movie/popular"
 
     const val POPULAR_TV_SHOWS = "tv/popular"
+    const val SERIES_GENRES = "genre/tv/list"
 }

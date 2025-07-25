@@ -1,7 +1,13 @@
 package com.berlin.repository.mapper
 
+import com.berlin.entity.Genre
 import com.berlin.entity.Media
+import com.berlin.entity.Movie
+import com.berlin.entity.TVShow
+import com.berlin.repository.datasource.local.dto.ContinueWatchingMovieEntity
+import com.berlin.repository.datasource.local.dto.ContinueWatchingTVShowEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.remote.dto.GenreDto
 import com.berlin.repository.datasource.remote.dto.MediaDto
 import java.time.Instant
 
@@ -30,5 +36,51 @@ fun SearchingEntity.toMedia(): Media {
         genre = this.genre,
         poster = this.poster,
         mediaType = this.mediaType
+    )
+}
+fun GenreDto.toDomain(): Genre {
+    return Genre(id = this.id, name = this.name)
+}
+
+fun ContinueWatchingMovieEntity.toMovie():Movie{
+    return Movie(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseYear = stringToLocalDate(this.releaseYear),
+        genre = emptyList(),
+        poster = this.posterUrl ,
+    )
+}
+fun ContinueWatchingTVShowEntity.toTVShow():TVShow{
+    return TVShow(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseYear = stringToLocalDate(this.releaseYear),
+        genre = emptyList(),
+        poster = this.posterUrl ,
+    )
+}
+
+
+fun Movie.toLocalEntity():ContinueWatchingMovieEntity{
+    return ContinueWatchingMovieEntity(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseYear = this.releaseYear.toString(),
+        posterUrl = this.poster,
+        typeOfMedia = "Movie"
+    )
+}
+fun TVShow.toLocalEntity():ContinueWatchingTVShowEntity{
+    return ContinueWatchingTVShowEntity(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseYear = this.releaseYear.toString(),
+        posterUrl = this.poster,
+        typeOfMedia = "TVShow"
     )
 }

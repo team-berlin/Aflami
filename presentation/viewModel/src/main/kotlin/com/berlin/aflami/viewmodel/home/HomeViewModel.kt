@@ -16,6 +16,8 @@ import usecase.GetPopularMoviesUseCase
 import usecase.GetPopularTVShowsUseCase
 
 class HomeViewModel(
+    private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
+    private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase
     private val popularMoviesUseCase: GetPopularMoviesUseCase,
     private val popularTVShowsUseCase: GetPopularTVShowsUseCase
 ) : BaseViewModel<PopularMediaUiState, HomeScreenEffect>(PopularMediaUiState()),
@@ -95,28 +97,60 @@ class HomeViewModel(
     private fun onPopularMediaError(throwable: Throwable) {
         _state.update { it.copy(error = throwable.message, isLoading = false) }
     }
-
     override fun onSearchClicked() {
-        TODO("Not yet implemented")
     }
 
     override fun onShowAllContinueWatchingClicked() {
-        TODO("Not yet implemented")
+        sendNewEffect(HomeScreenEffect.NavigateToContinueWatching)
     }
 
     override fun onShowAllTopRating() {
-        TODO("Not yet implemented")
     }
 
     override fun onMoodPickerClicked() {
-        TODO("Not yet implemented")
     }
 
-    override fun onUpcomingClicked(genreId: Int) {
-        TODO("Not yet implemented")
+    override fun onUpcomingTabClicked(genreId: Int) {
     }
 
     override fun onUpComingMovieCardClick() {
-        TODO("Not yet implemented")
+    }
+
+    fun getContinueWatchingMedia() {
+        _state.update {
+            it.copy(isLoading = true, error = null)
+        }
+        tryToCall(
+            call = {
+                coroutineScope {
+                    val moviesList = async {  getWatchedMovieUseCase().map { it.toUIStateMedia() }}
+                    val tvShowsList = async { getWatchedTVShowUseCase().map { it.toUIStateMedia() }}
+
+                    val movies = moviesList.await()
+                    val tvShows = tvShowsList.await()
+
+                    val combinedList = (movies + tvShows)
+                        .shuffled()
+                    combinedList
+                }
+            },
+            onSuccess = {continueWatchingMedia->
+                _state.update {
+                    it.copy(
+                        mediaContinueWatching = continueWatchingMedia,
+                        isLoading = false,
+                    )
+                }
+
+            },
+            onError = { throwable ->
+                _state.update {
+                    it.copy(
+                        error = throwable.message
+                    )
+                }
+            },
+        )
+
     }
 }

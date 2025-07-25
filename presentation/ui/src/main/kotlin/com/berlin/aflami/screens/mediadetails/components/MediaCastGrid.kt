@@ -10,10 +10,10 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 
 @Composable
-fun MoviesCastGrid(
+fun MediaCastGrid(
     modifier: Modifier = Modifier,
     mediaCast: List<MediaCastUiState>,
 ) {

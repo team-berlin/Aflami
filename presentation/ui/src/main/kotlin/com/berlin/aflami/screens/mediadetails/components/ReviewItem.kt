@@ -21,9 +21,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.berlin.aflami.component.Rating
-import com.berlin.aflami.screens.search.components.ExpandableText
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.uistate.ReviewUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
 import com.berlin.designsystem.R
 
 @Composable
@@ -88,6 +87,10 @@ fun ReviewItem(
             text = review.content,
             isExpanded = isExpanded,
             onToggleExpand = onToggleExpand,
+            previewColor = Theme.color.textColors.hint,
+            suffixColor = Theme.color.primary,
+            previewStyle = Theme.textStyle.body.small,
+            suffixStyle = Theme.textStyle.label.medium,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 12.dp),
