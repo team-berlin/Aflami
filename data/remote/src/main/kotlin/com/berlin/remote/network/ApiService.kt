@@ -109,4 +109,14 @@ interface ApiService {
         @Query(ApiConstants.LANGUAGE) language: String
     ): Response<GenreResponse>
 
+    @GET(ApiConstants.POPULAR_MOVIES)
+    suspend fun popularMovies(
+        @Query(ApiConstants.LANGUAGE) language: String
+    ): MovieResponse
+
+    @GET(ApiConstants.POPULAR_TV_SHOWS)
+    suspend fun popularTVShows(
+        @Query(ApiConstants.LANGUAGE) language: String
+    ): TVShowResponse
+
 }
