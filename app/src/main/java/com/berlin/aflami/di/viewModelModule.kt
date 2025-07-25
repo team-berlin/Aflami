@@ -12,7 +12,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModelOf(::SearchByCountryViewModel)
     viewModelOf(::SearchByActorViewModel)
-    viewModelOf(:: SearchByCountryViewModel)
+    viewModelOf(::SearchByCountryViewModel)
     viewModelOf(::SearchViewModel)
     viewModelOf(::SearchByCountryViewModel)
     viewModelOf(::MediaDetailsViewModel)

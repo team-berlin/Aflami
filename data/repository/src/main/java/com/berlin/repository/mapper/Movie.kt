@@ -5,15 +5,13 @@ import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.ProductionCompanyEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
-import com.berlin.repository.datasource.remote.dto.Genre
+import com.berlin.repository.datasource.remote.dto.GenreDto
 import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import kotlinx.datetime.LocalDate
 import java.time.Instant
 
 import com.berlin.repository.datasource.remote.dto.ProductionCompany
-
-import kotlinx.datetime.toLocalDate
 
 fun SearchingEntity.toDomain(): Movie {
     return Movie(
@@ -78,7 +76,7 @@ fun stringToLocalDate(dateString: String): LocalDate {
     }.getOrElse { LocalDate.parse("1960-01-01") }
 }
 
-fun Genre.toEntity() = GenreEntity(
+fun GenreDto.toEntity() = GenreEntity(
     id = this.id ?: 0,
     name = this.name.orEmpty()
 )

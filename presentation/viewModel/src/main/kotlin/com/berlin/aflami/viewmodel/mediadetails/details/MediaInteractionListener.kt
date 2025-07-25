@@ -28,6 +28,4 @@ interface ExtraMediaContentInteractionListener : TVShowSeasonsInteractionListene
 
 interface TVShowSeasonsInteractionListener {
     fun onSeasonsClicked(seriesId: Long, numberOfSeasons:Int)
-    fun onShowSeasonEpisodesClicked(tvShowId: Long, seasonId: Long)
-    fun onHideSeasonEpisodesClicked(seasonId: Long)
 }
