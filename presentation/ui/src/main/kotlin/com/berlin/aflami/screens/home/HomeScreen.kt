@@ -24,7 +24,7 @@ fun HomeScreen(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getContinueWatching()
+        viewModel.getContinueWatchingMedia()
         viewModel.effect.collect{
             onEffect(it)
         }

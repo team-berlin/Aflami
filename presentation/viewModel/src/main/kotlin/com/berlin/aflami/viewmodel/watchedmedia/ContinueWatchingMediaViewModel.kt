@@ -1,41 +1,39 @@
-package com.berlin.aflami.viewmodel.home
+package com.berlin.aflami.viewmodel.watchedmedia
 
-import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
-import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.watchedmedia.uistate.ContinueWatchingMediaUiState
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import usecase.home.GetContinueWatchingMovieUseCase
 import usecase.home.GetContinueWatchingTVShowUseCase
 
-class HomeViewModel(
+class ContinueWatchingMediaViewModel(
     private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
     private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase
-): BaseViewModel<HomeUiState, HomeScreenEffect>(
-    HomeUiState()
-),HomeInteractionListener{
+) : BaseViewModel<ContinueWatchingMediaUiState, ContinueWatchingMediaEffect>(
+    ContinueWatchingMediaUiState()
+), ContinueWatchingMediaInteractionListener {
 
-    override fun onSearchClicked() {
+    init {
+        viewModelScope.launch {
+            getContinueWatchingMedia()
+        }
     }
 
-    override fun onShowAllContinueWatchingClicked() {
-        sendNewEffect(HomeScreenEffect.NavigateToContinueWatching)
+    override fun onBackClicked() {
+        sendNewEffect(ContinueWatchingMediaEffect.onBackClicked)
     }
 
-    override fun onShowAllTopRating() {
-    }
+    override fun onMediaCardClick(id: Long, type: MediaType) {
+        sendNewEffect(ContinueWatchingMediaEffect.NavigateToDetails(id, type))
 
-    override fun onMoodPickerClicked() {
     }
-
-    override fun onUpcomingTabClicked(genreId: Int) {
-    }
-
-    override fun onUpComingMovieCardClick() {
-    }
-
-    fun getContinueWatchingMedia() {
+    private fun getContinueWatchingMedia() {
         _state.update {
             it.copy(isLoading = true, error = null)
         }
@@ -51,7 +49,7 @@ class HomeViewModel(
             onSuccess = {continueWatchingMedia->
                 _state.update {
                     it.copy(
-                        mediaContinueWatching = continueWatchingMedia,
+                        continueWatchingItems = continueWatchingMedia,
                         isLoading = false,
                     )
                 }
@@ -67,4 +65,6 @@ class HomeViewModel(
         )
 
     }
+
+
 }

@@ -27,17 +27,17 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.watchedmedia.WatchedMediaEffect
-import com.berlin.aflami.viewmodel.watchedmedia.WatchedMediaInteractionListener
-import com.berlin.aflami.viewmodel.watchedmedia.WatchedMediaViewModel
-import com.berlin.aflami.viewmodel.watchedmedia.uistate.WatchedMediaUiState
+import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaEffect
+import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaInteractionListener
+import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
+import com.berlin.aflami.viewmodel.watchedmedia.uistate.ContinueWatchingMediaUiState
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun WatchedMediaScreen(
-    viewModel: WatchedMediaViewModel = koinViewModel(),
-    onEffect: (WatchedMediaEffect) -> Unit
+fun ContinueWatchingScreen(
+    viewModel: ContinueWatchingMediaViewModel = koinViewModel(),
+    onEffect: (ContinueWatchingMediaEffect) -> Unit
 ) {
 
     val state by viewModel.state.collectAsState()
@@ -59,8 +59,8 @@ fun WatchedMediaScreen(
 
 @Composable
 fun WatchedMediaContent(
-    state: WatchedMediaUiState,
-    listener: WatchedMediaInteractionListener
+    state: ContinueWatchingMediaUiState,
+    listener: ContinueWatchingMediaInteractionListener
 ) {
 
     Column {
@@ -102,12 +102,12 @@ fun WatchedMediaContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
-                count = state.continueWatchingMedia.size,
+                count = state.continueWatchingItems.size,
                 key = { index ->
-                    state.continueWatchingMedia[index].id
+                    state.continueWatchingItems[index].id
                 }
             ) { index ->
-                val watchedMedia = state.continueWatchingMedia[index]
+                val watchedMedia = state.continueWatchingItems[index]
                 MediaCard(
                     modifier = Modifier.height(222.dp),
                     mediaImg = watchedMedia.poster,

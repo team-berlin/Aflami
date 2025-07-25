@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 
 import com.berlin.entity.Media
+import com.berlin.entity.Movie
+import com.berlin.entity.TVShow
 import kotlinx.datetime.LocalDate
 
 data class MediaDetailsUiState(
@@ -34,15 +36,32 @@ data class MediaDetailsUiState(
     val error: String? = "",
     val rowSection: RowSectionUiState = RowSectionUiState.Loading
 ){
-    fun toMedia():Media{
-        return Media(
+    fun toMovie():Movie{
+        return Movie(
             id = id,
             title = title,
-            rating=rating,
-            releaseYear =LocalDate.parse(releaseYear),
-            mediaType = mediaType.name,
+            overview = overview,
+            releaseYear = LocalDate.parse(releaseYear),
+            rating = rating,
+            runtime = 0,
             genre = emptyList(),
-            poster = posterUrl
+            poster = posterUrl,
+            backdropPath = backdropUrl,
+            releaseDate =releaseYear,
+        )
+    }
+    fun toTVShow():TVShow{
+        return TVShow(
+            id = id,
+            title = title,
+            overview = overview,
+            releaseYear = LocalDate.parse(releaseYear),
+            rating = rating,
+            runtime = 0,
+            genre = emptyList() ,
+            poster = posterUrl,
+            backdropPath = backdropUrl,
+            releaseDate = releaseYear,
         )
     }
 }

@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.berlin.aflami.screens.home.WatchedMediaScreen
-import com.berlin.aflami.viewmodel.watchedmedia.WatchedMediaEffect
+import com.berlin.aflami.screens.home.ContinueWatchingScreen
+import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaEffect
 import com.example.navigation.Destination
 
 fun NavGraphBuilder.watchedMedia(
@@ -19,10 +19,10 @@ fun NavGraphBuilder.watchedMedia(
             navArgument(MediaDetailsArgs.MEDIA_TYPE) { NavType.StringType }
         )
     ) {
-        WatchedMediaScreen(
+        ContinueWatchingScreen(
             onEffect = { effect ->
                 when (effect) {
-                    is WatchedMediaEffect.NavigateToDetails -> {
+                    is ContinueWatchingMediaEffect.NavigateToDetails -> {
                         navController.navigate(
                             Destination.MediaDetailsScreen.route(
                                 effect.id,
@@ -30,7 +30,7 @@ fun NavGraphBuilder.watchedMedia(
                             )
                         )
                     }
-                    is WatchedMediaEffect.onBackClicked->{
+                    is ContinueWatchingMediaEffect.onBackClicked->{
                         navController.popBackStack()
                     }
                 }

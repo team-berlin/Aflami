@@ -2,7 +2,9 @@ package com.berlin.aflami.viewmodel.mapper
 
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.entity.Movie
+import com.berlin.entity.TVShow
 import java.text.DecimalFormat
 
 fun Movie.toUIState(): MovieUIState {

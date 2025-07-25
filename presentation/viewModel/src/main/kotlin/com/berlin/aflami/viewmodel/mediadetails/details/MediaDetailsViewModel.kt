@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
@@ -22,7 +23,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import usecase.mediadetails.InsertWatchedMediaUseCase
+import usecase.mediadetails.AddContinueWatchingMovieUseCase
+import usecase.mediadetails.AddContinueWatchingTVShowUseCase
 import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
 import usecase.mediadetails.GetMovieGalleryUseCase
@@ -48,12 +50,13 @@ class MediaDetailsViewModel(
     private val movieReviewUseCase: GetMovieReviewUseCase,
     private val seriesReviewUseCase: GetSeriesReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
-    private val insertWatchedMediaUseCase: InsertWatchedMediaUseCase
+    private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
+    private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase
 ) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
     MediaDetailsUiState()
 ), MediaInteractionListener {
 
-    companion object {
+    private companion object {
         const val ID_KEY = "id"
         const val MEDIA_TYPE_KEY = "media_type"
         val NO_REVIEWS = R.string.there_is_no_reviews
@@ -119,19 +122,23 @@ class MediaDetailsViewModel(
                             runtime = details.runtime,
                             genres = details.genres,
                             isLoading = false,
+                            mediaType = mediaType,
                             originalCountry = details.originalCountry,
                         )
                     }
-                    saveWatchedMedia()
+                    saveWatchedMedia(mediaType=mediaType)
                 }
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
-    private fun saveWatchedMedia(){
+    private fun saveWatchedMedia(mediaType: MediaType){
         viewModelScope.launch {
-            insertWatchedMediaUseCase.invoke(_state.value.toMedia())
+            when (mediaType) {
+                MediaType.MOVIE -> addContinueWatchingMovieUseCase(_state.value.toMovie())
+                MediaType.TV_SHOW -> addContinueWatchingTVShowUseCase(_state.value.toTVShow())
+            }
         }
     }
 
@@ -487,28 +494,6 @@ class MediaDetailsViewModel(
         }
     }
 
-//    private fun handleErrorState(message: String?, updateRowSection: Boolean = false) {
-//        updateState {
-//            if (updateRowSection) {
-//                val rowError = if (message != null) {
-//                    RowSectionUiState.Error(message = message)
-//                } else {
-//                    RowSectionUiState.Error(messageRes = R.string.unknown_error)
-//                }
-//                it.copy(
-//                    error = message,
-//                    rowSection = rowError,
-//                    isLoading = false
-//                )
-//            } else {
-//                it.copy(
-//                    error = message,
-//                    isLoading = false
-//                )
-//            }
-//        }
-//    }
-
     private fun handleErrorState(errorUiState: ErrorUiState, updateRowSection: Boolean = false) {
         updateState {
             val rowSection = if (updateRowSection) {
@@ -516,7 +501,7 @@ class MediaDetailsViewModel(
             } else it.rowSection
 
             it.copy(
-                error = UiText.Dynamic(errorUiState.message),
+                error = UiText.Dynamic(errorUiState.message).toString(),
                 rowSection = rowSection,
                 isLoading = false
             )

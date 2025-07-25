@@ -2,9 +2,10 @@ package com.berlin.aflami.viewmodel.watchedmedia.uistate
 
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 
-data class WatchedMediaUiState(
+data class ContinueWatchingMediaUiState(
 
-    val continueWatchingMedia: List<MediaUiState> = emptyList(),
+    val continueWatchingItems: List<MediaUiState> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
 )
+
