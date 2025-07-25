@@ -28,12 +28,12 @@ import com.example.navigation.Destination
  */
 
 @Composable
-fun AflamiNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
-
+fun AflamiNavGraph(navController: NavHostController, modifier: Modifier = Modifier,isLoggedIn: Boolean) {
+   val startDestination = if (isLoggedIn) Destination.SearchScreen.route else Destination.LoginScreen.route
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Destination.LoginScreen.route,
+        startDestination = startDestination,
         enterTransition = {
             EnterTransition.None
         },

@@ -2,10 +2,11 @@ package usecase.auth
 
 import repository.AuthenticationRepository
 
-class LogoutUseCase(
+class IsLoggedInUseCase(
     private val authenticationRepository: AuthenticationRepository
 ) {
-    operator fun invoke() {
-        TODO()
+    suspend operator fun invoke(): Boolean {
+        return authenticationRepository.isLoggedIn()
     }
+
 }

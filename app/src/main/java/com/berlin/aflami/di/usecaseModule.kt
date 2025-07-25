@@ -22,7 +22,7 @@ import usecase.GetSeriesReviewUseCase
 import usecase.SearchByCountryUseCase
 import usecase.ValidatePasswordUseCase
 import usecase.ValidateUsernameUseCase
-import usecase.auth.CreateSessionUseCase
+import usecase.auth.IsLoggedInUseCase
 import usecase.auth.LoginUseCase
 
 val useCaseModule = module {
@@ -51,6 +51,6 @@ val useCaseModule = module {
     single { GetSeasonEpisodesUseCase(get()) }
 
     single { LoginUseCase(get()) }
-    single { CreateSessionUseCase(get()) }
+    single { IsLoggedInUseCase(get()) }
 
 }

@@ -13,6 +13,7 @@ class LoginViewmodel(
     val usernameValidationUseCase: ValidateUsernameUseCase,
     val passwordValidationUseCase: ValidatePasswordUseCase,
     val loginUseCase: LoginUseCase,
+
 ) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
     LoginInteractionListener {
     override fun onUsernameChanged(username: String) {
