@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.mapper
 
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
@@ -26,6 +27,7 @@ fun Movie.toUIStateMedia(): MediaUiState {
         rating = DecimalFormat("#.#").format(rating).toString(),
         releaseYear = releaseYear.year.toString(),
         genre = genre,
-        poster = poster
+        poster = poster,
+        mediaType =MediaType.MOVIE
     )
 }
