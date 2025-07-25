@@ -239,7 +239,6 @@ class SearchViewModel(
                 filterTrigger = !it.filterTrigger
             )
         }
-        loadFilterOptions()
         onSearchQueryChanged(state.value.searchQuery)
     }
 
