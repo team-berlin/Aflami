@@ -58,11 +58,18 @@ class HomeViewModel(
             combine(_movies, _tvShows) { movieList, tvShowList ->
 
                 val mergedList = mutableListOf<MediaUiState>()
-                val maxSize = maxOf(movieList.size, tvShowList.size)
+                var movieIndex = 0
+                var tvShowIndex = 0
 
-                for (i in 0 until maxSize) {
-                    if (i < movieList.size) mergedList.add(movieList[i])
-                    if (i < tvShowList.size) mergedList.add(tvShowList[i])
+                while (movieIndex < movieList.size || tvShowIndex < tvShowList.size) {
+                    if (movieIndex < movieList.size) {
+                        mergedList.add(movieList[movieIndex])
+                        movieIndex++
+                    }
+                    if (tvShowIndex < tvShowList.size) {
+                        mergedList.add(tvShowList[tvShowIndex])
+                        tvShowIndex++
+                    }
                 }
 
                 mergedList
