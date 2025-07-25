@@ -39,6 +39,7 @@
     <string name="create_account">إنشاء حساب</string>
     <string name="logo">شعار</string>
     <string name="login_error_message">كلمة المرور أو اسم المستخدم غير صحيح</string>
+    <string name="loading">جاري التحميل...</string>
 
 
 </resources>
