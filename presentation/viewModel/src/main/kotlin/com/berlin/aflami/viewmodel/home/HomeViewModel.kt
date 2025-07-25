@@ -3,9 +3,10 @@ package com.berlin.aflami.viewmodel.home
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
-import com.berlin.aflami.viewmodel.uistate.MediaUiState
-import com.berlin.aflami.viewmodel.util.MediaType
+import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,14 +15,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.GetPopularMoviesUseCase
 import usecase.GetPopularTVShowsUseCase
+import usecase.home.GetContinueWatchingMovieUseCase
+import usecase.home.GetContinueWatchingTVShowUseCase
 
 class HomeViewModel(
     private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
-    private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase
+    private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase,
     private val popularMoviesUseCase: GetPopularMoviesUseCase,
     private val popularTVShowsUseCase: GetPopularTVShowsUseCase
-) : BaseViewModel<PopularMediaUiState, HomeScreenEffect>(PopularMediaUiState()),
-    HomeInteractionListener {
+) : BaseViewModel<HomeUiState, HomeScreenEffect>(
+    HomeUiState()
+), HomeInteractionListener {
 
     private val _movies = MutableStateFlow<List<MediaUiState>>(emptyList())
     private val _tvShows = MutableStateFlow<List<MediaUiState>>(emptyList())
@@ -30,7 +34,7 @@ class HomeViewModel(
         popularMedia("en-US")
     }
 
-    fun popularMedia(language: String) {
+    private fun popularMedia(language: String) {
 
         updateState {
             it.copy(isLoading = true, error = null)
@@ -41,8 +45,8 @@ class HomeViewModel(
                     val movie = async { popularMoviesUseCase(language) }
                     val tvShow = async { popularTVShowsUseCase(language) }
 
-                    val movieList = movie.await().map { it.toUIState(MediaType.MOVIE) }
-                    val tvShowList = tvShow.await().map { it.toUIState(MediaType.TV_SHOW) }
+                    val movieList = movie.await().map { it.toUIState() }
+                    val tvShowList = tvShow.await().map { it.toUIState() }
 
                     _movies.value = movieList
                     _tvShows.value = tvShowList
@@ -86,7 +90,7 @@ class HomeViewModel(
                 updateState {
                     it.copy(
                         isLoading = false,
-                        popularMedia = combinedList
+                        popularMedia = combinedList.
                     )
                 }
             }
@@ -108,6 +112,10 @@ class HomeViewModel(
     }
 
     override fun onMoodPickerClicked() {
+    }
+
+    override fun onUpcomingClicked(genreId: Int) {
+        TODO("Not yet implemented")
     }
 
     override fun onUpcomingTabClicked(genreId: Int) {

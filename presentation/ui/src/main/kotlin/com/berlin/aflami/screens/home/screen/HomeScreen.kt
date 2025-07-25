@@ -133,36 +133,6 @@ private fun HomeContent(
         }
     }
 }
-
-@Composable
-fun MoviesPosterSlider(
-    modifier: Modifier = Modifier,
-    mediaList: List<MediaUiState>,
-    onClick: (MediaUiState) -> Unit = {},
-    pagerState: PagerState,
-) {
-
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val itemWidth = 244.dp
-    val contentPadding = (screenWidth - itemWidth) / 2
-    HorizontalPager(
-        state = pagerState,
-        pageSize = PageSize.Fixed(itemWidth),
-        contentPadding = PaddingValues(horizontal = contentPadding),
-        modifier = modifier.fillMaxWidth()
-    ) { pageIndex ->
-        val mediaItem = mediaList.getOrNull(pageIndex)
-        mediaItem?.let {
-            MovieCard(
-                isCentered = pageIndex == pagerState.currentPage,
-                onClick = { onClick(it) },
-                rating = it.rating,
-                posterImageUrl = it.poster
-            )
-        }
-    }
-}
-
 @Preview
 @Composable
 fun HomeScreenPreview() {

@@ -11,6 +11,7 @@ data class HomeUiState(
 
     val mediaContinueWatching:List<MediaUiState> = emptyList(),
     val upcomingMovies: UpComingUiState = UpComingUiState(),
+    val popularMedia: PopularMediaUiState = PopularMediaUiState(),
     val isLoading: Boolean = false,
     val error: String? = null,
 
@@ -22,6 +23,14 @@ data class UpComingUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val notFound: Boolean = false,
+)
+
+data class PopularMediaUiState (
+    val isLoading: Boolean = false,
+    val popularMedia: List<MediaUiState> = emptyList(),
+    val moviesOnly: List<MediaUiState> = emptyList(),
+    val tvShowsOnly: List<MediaUiState> = emptyList(),
+    val error: String? = null
 )
 
 //val defaultMovieGenres = GenreType.entries.toTypedArray().mapIndexed { index, category ->
