@@ -370,12 +370,13 @@ private fun SearchScreenContent(
                             filterListener = filterSearch,
                             getIcon = ::getMovieGenreIcon,
                         )
-                        }
+                    }
+
                     TabOption.TV_SHOWS -> {
                         FilterDialog(
                             state = state.filterItemUiState.filterTvShowSelected,
                             filterListener = filterSearch,
-                            getIcon =::getTvShowGenreIcon,
+                            getIcon = ::getTvShowGenreIcon,
                         )
                     }
                 }

@@ -49,7 +49,7 @@ import com.berlin.designsystem.R
 fun FilterDialog(
     filterListener: FilterInteractionListener,
     state: FilterMediaSelected,
-    getIcon:(Int)->Int
+    getIcon: (Int) -> Int
 ) {
     Dialog(onDismissRequest = filterListener::onCancelButtonClicked) {
         Surface(
