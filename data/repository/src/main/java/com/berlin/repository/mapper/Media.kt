@@ -1,8 +1,10 @@
 package com.berlin.repository.mapper
 
+import com.berlin.entity.Genre
 import com.berlin.entity.Media
 import com.berlin.repository.datasource.local.dto.MediaContinueWatchingEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.remote.dto.GenreDto
 import com.berlin.repository.datasource.remote.dto.MediaDto
 import java.time.Instant
 
@@ -32,6 +34,9 @@ fun SearchingEntity.toMedia(): Media {
         poster = this.poster,
         mediaType = this.mediaType
     )
+}
+fun GenreDto.toDomain(): Genre {
+    return Genre(id = this.id, name = this.name)
 }
 
 fun MediaContinueWatchingEntity.toMedia():Media{

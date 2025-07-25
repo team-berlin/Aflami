@@ -15,7 +15,7 @@ data class MovieDetailsDto(
     @SerialName("budget")
     val budget: Int?,
     @SerialName("genres")
-    val genres: List<Genre>?,
+    val genres: List<GenreDto>?,
     @SerialName("homepage")
     val homepage: String?,
     @SerialName("id")

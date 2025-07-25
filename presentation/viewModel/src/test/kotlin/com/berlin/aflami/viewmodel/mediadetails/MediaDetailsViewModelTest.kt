@@ -8,6 +8,7 @@ import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
+import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.entity.Episodes
 import com.berlin.entity.GenreEntity
@@ -26,6 +27,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDate
@@ -109,21 +111,6 @@ class MediaDetailsViewModelTest {
     @Test
     fun `getMediaDetails for movie should update state with movie details`() = runTest {
         // Given
-//        val movie = mockk<MovieDetails> {
-//            every { id } returns 1
-//            every { title } returns "Test Movie"
-//            every { overview } returns "A test movie"
-//            every { posterUrl } returns "poster.jpg"
-//            every { backdropUrl } returns "backdrop.jpg"
-//            every { releaseDate } returns "2023-01-01"
-//            every { rating } returns 20.0
-//            every { runtime } returns 120
-//            every { genres } returns listOf(GenreEntity(1, "Action"))
-//            every { productionCompanies } returns listOf(ProductionCompanyEntity(1, "Test Studio"))
-//            every { hasVideo } returns false
-//            every { originCountry } returns "US"
-//            every { duration } returns null
-//        }
         val movie = MovieDetails(
             id = 1,
             title = "Test Movie",
@@ -169,22 +156,6 @@ class MediaDetailsViewModelTest {
     @Test
     fun `getMediaDetails for tv show should update state with tv show details`() = runTest {
         // Given
-//        val tvShow = mockk<TvShowDetails> {
-//            every { id } returns 2
-//            every { title } returns "Test Show"
-//            every { overview } returns "A test TV show"
-//            every { posterUrl } returns "poster.jpg"
-//            every { backdropUrl } returns "backdrop.jpg"
-//            every { releaseDate } returns "2022-01-01"
-//            every { rating } returns 7.5
-//            every { runtime } returns 45
-//            every { genres } returns listOf(GenreEntity(2, "Drama"))
-//            every { productionCompanies } returns listOf(ProductionCompanyEntity(2, "Test Network"))
-//            every { seasons } returns emptyList()
-//            every { numberOfSeasons } returns 3
-//            every { originCountry } returns "US"
-//        }
-
         val tvShow = TvShowDetails(
             id = 2,
             title = "Test Show",
@@ -253,12 +224,13 @@ class MediaDetailsViewModelTest {
 
         // Then
         val state = viewModel.state.value
-        //println("State after error: ${state}")
+
         assertThat(state.isLoading).isFalse()
-        assertThat(state.error).isEqualTo(errorMessage)
+        assertThat(state.error).isEqualTo(UiText.Dynamic(errorMessage)) // ✅ Correct check
+
         assertThat(state.rowSection).isInstanceOf(RowSectionUiState.Error::class.java)
         val err = state.rowSection as RowSectionUiState.Error
-        assertThat(err.message).isEqualTo(errorMessage)
+        assertThat(err.message).isEqualTo(errorMessage) // ✅ Still valid, because you store String in Error.message
     }
 
     @Test
@@ -316,8 +288,9 @@ class MediaDetailsViewModelTest {
         // Then
         val state = viewModel.state.value
         assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
+
         val noDataState = state.rowSection as RowSectionUiState.NoDataFound
-        assertThat(noDataState.message).isEqualTo("There is no reviews!")
+        assertThat(noDataState.message).isEqualTo(UiText.Resource(MediaDetailsViewModel.NO_REVIEWS))
     }
 
     @Test
@@ -352,8 +325,9 @@ class MediaDetailsViewModelTest {
             // Then
             val state = viewModel.state.value
             assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
+
             val noDataState = state.rowSection as RowSectionUiState.NoDataFound
-            assertThat(noDataState.message).isEqualTo("There is no gallery!")
+            assertThat(noDataState.message).isEqualTo(UiText.Resource(MediaDetailsViewModel.NO_GALLERY))
         }
 
     @Test
@@ -466,41 +440,55 @@ class MediaDetailsViewModelTest {
         job.cancel()
     }
 
+//    @Test
+//    fun `onRateIconClicked should send ShowRatingSheet effect`() = runTest {
+//        // Given
+//        val effects = mutableListOf<MediaDetailsScreenEffect>()
+//        val job = launch { viewModel.effect.collect { effects.add(it) } }
+//
+//        // When
+//        viewModel.onRateIconClicked(1)
+//        advanceUntilIdle()
+//
+//        // Then
+//        assertThat(effects).containsExactly(MediaDetailsScreenEffect.ShowRatingDialog(id = 1))
+//        job.cancel()
+//    }
+
     @Test
-    fun `onRateIconClicked should send ShowRatingSheet effect`() = runTest {
-        // Given
-        val effects = mutableListOf<MediaDetailsScreenEffect>()
-        val job = launch { viewModel.effect.collect { effects.add(it) } }
-
-        // When
+    fun `onRateIconClicked when not logged in should show login dialog`() = runTest {
         viewModel.onRateIconClicked(1)
-        advanceUntilIdle()
-
-        // Then
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.ShowRatingDialog(id = 1))
-        job.cancel()
+        runCurrent()
+        assertThat(viewModel.showLoginRequiredDialog.value).isTrue()
     }
 
+//    @Test
+//    fun `onAddMediaToFavouriteListClicked should send ShowAddToFavoriteListSheet effect`() =
+//        runTest {
+//            // Given
+//            val effects = mutableListOf<MediaDetailsScreenEffect>()
+//            val job = launch { viewModel.effect.collect { effects.add(it) } }
+//
+//            // When
+//            viewModel.onAddMediaToFavouriteListClicked(1, 2)
+//            advanceUntilIdle()
+//
+//            // Then
+//            assertThat(effects).containsExactly(
+//                MediaDetailsScreenEffect.ShowAddToFavoriteListDialog(
+//                    favouriteListId = 1,
+//                    mediaId = 2
+//                )
+//            )
+//            job.cancel()
+//        }
+
     @Test
-    fun `onAddMediaToFavouriteListClicked should send ShowAddToFavoriteListSheet effect`() =
-        runTest {
-            // Given
-            val effects = mutableListOf<MediaDetailsScreenEffect>()
-            val job = launch { viewModel.effect.collect { effects.add(it) } }
-
-            // When
-            viewModel.onAddMediaToFavouriteListClicked(1, 2)
-            advanceUntilIdle()
-
-            // Then
-            assertThat(effects).containsExactly(
-                MediaDetailsScreenEffect.ShowAddToFavoriteListDialog(
-                    favouriteListId = 1,
-                    mediaId = 2
-                )
-            )
-            job.cancel()
-        }
+    fun `onAddToListIconClicked when not logged in should show login dialog`() = runTest {
+        viewModel.onAddMediaToFavouriteListClicked(1,1)
+        runCurrent()
+        assertThat(viewModel.showLoginRequiredDialog.value).isTrue()
+    }
 
     @Test
     fun `onReadMoreDescriptionClicked should toggle expanded state`() = runTest {
@@ -654,20 +642,30 @@ class MediaDetailsViewModelTest {
         assertThat(content.items[1]).isEqualTo(listOf(episode2.toUiState()))
     }
 
-    @Test fun `description expanded toggles`() = runTest {
+    @Test
+    fun `description expanded toggles`() = runTest {
         assertThat(viewModel.isDescriptionExpanded()).isFalse()
+
         viewModel.onReadMoreDescriptionClicked()
+        advanceUntilIdle()
         assertThat(viewModel.isDescriptionExpanded()).isTrue()
+
         viewModel.onReadMoreDescriptionClicked()
+        advanceUntilIdle()
         assertThat(viewModel.isDescriptionExpanded()).isFalse()
     }
 
-    @Test fun `review expanded toggles by id`() = runTest {
+    @Test
+    fun `review expanded toggles by id`() = runTest {
         val id = 123L
         assertThat(viewModel.isReviewExpanded(id)).isFalse()
+
         viewModel.onReadMoreReviewClicked(id)
+        advanceUntilIdle()
         assertThat(viewModel.isReviewExpanded(id)).isTrue()
+
         viewModel.onReadMoreReviewClicked(id)
+        advanceUntilIdle()
         assertThat(viewModel.isReviewExpanded(id)).isFalse()
     }
 
@@ -676,18 +674,7 @@ class MediaDetailsViewModelTest {
         val job = launch { viewModel.effect.collect { effects.add(it) } }
         viewModel.onShowCastClicked()
         advanceUntilIdle()
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.NavigateToShowAllCastScreen)
-        job.cancel()
-    }
-
-    @Test fun `onAddMediaToFavouriteListClicked triggers sheet effect`() = runTest {
-        val effects = mutableListOf<MediaDetailsScreenEffect>()
-        val job = launch { viewModel.effect.collect { effects.add(it) } }
-        viewModel.onAddMediaToFavouriteListClicked(7, 9)
-        advanceUntilIdle()
-        assertThat(effects).containsExactly(
-            MediaDetailsScreenEffect.ShowAddToFavoriteListDialog(7, 9)
-        )
+        assertThat(effects).containsExactly(MediaDetailsScreenEffect.NavigateToShowAllCastScreen(1, MediaType.MOVIE))
         job.cancel()
     }
 }

@@ -7,11 +7,13 @@ import usecase.GetRecentHistoryUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
 import usecase.mediadetails.GetMovieGalleryUseCase
 import usecase.SearchByActorNameUseCase
+import usecase.GetMovieGenresUseCase
 import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieReviewUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
+import usecase.GetSeriesGenresUseCase
 import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
@@ -46,5 +48,7 @@ val useCaseModule = module {
     single { GetSeasonEpisodesUseCase(get()) }
     single{ InsertWatchedMediaUseCase(get()) }
     single { GetWatchedMediaUseCase(get()) }
+    single { GetMovieGenresUseCase(get()) }
+    single { GetSeriesGenresUseCase(get()) }
 
 }

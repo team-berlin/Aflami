@@ -79,12 +79,4 @@
     <string name="animation">animation</string>
     <string name="filter_result">Filter Result</string>
     <string name="search_discribtion">\"Start exploring! Search for your favorite movies, series and shows\"</string>
-
-
-    <string name="more_like_this">More like this</string>
-    <string name="reviews">Reviews</string>
-    <string name="gallery">Gallery</string>
-    <string name="company_production">company\nproduction</string>
-    <string name="season">season</string>
-
 </resources>

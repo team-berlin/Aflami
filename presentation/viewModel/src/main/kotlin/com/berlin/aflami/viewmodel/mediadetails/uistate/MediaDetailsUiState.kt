@@ -20,7 +20,7 @@ data class MediaDetailsUiState(
     val numberOfSeasons: Int? = null,
     val isFavorite: Boolean = false,
     val isOverviewExpanded: Boolean = false,
-    val mediaType: MediaType =MediaType.MOVIE,
+    val mediaType: MediaType = MediaType.MOVIE,
     val isPlaying: Boolean = false,
     val mediaCast: List<MediaCastUiState> = emptyList(),
     val country: String = "",

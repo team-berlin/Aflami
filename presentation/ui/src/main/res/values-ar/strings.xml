@@ -29,4 +29,8 @@
     <string name="login_required">التسجيل مطلوب</string>
     <string name="continue_watching">Continue watching</string>
 
+    <string name="more_like_this">اقتراحات مشابهة</string>
+    <string name="reviews">تقييمات</string>
+    <string name="gallery">المعرض</string>
+    <string name="company_production">إنتاج\nالشركة</string>
 </resources>

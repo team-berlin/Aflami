@@ -3,18 +3,21 @@ package com.berlin.aflami.viewmodel.mediadetails.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
+import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.util.toggle
 import com.berlin.entity.Episodes
+import com.berlin.viewModel.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -50,9 +53,13 @@ class MediaDetailsViewModel(
     MediaDetailsUiState()
 ), MediaInteractionListener {
 
-    private companion object {
+    companion object {
         const val ID_KEY = "id"
         const val MEDIA_TYPE_KEY = "media_type"
+        val NO_REVIEWS = R.string.there_is_no_reviews
+        val NO_GALLERY = R.string.there_is_no_gallery
+        val NO_MORE_MEDIA = R.string.there_is_no_more_media
+        val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
     }
 
     val id: Long = savedStateHandle.get<String>(ID_KEY)?.toLongOrNull() ?: 0L
@@ -67,9 +74,18 @@ class MediaDetailsViewModel(
     private val _showLoginRequiredDialog = MutableStateFlow(false)
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
+    init {
+        if (_state.value.id == 0L && id != 0L) {
+            getMediaCast(id, type)
+            getMediaDetails(id, type, "en-US")
+            onShowReviewsClicked(id, type)
+        }
+    }
+
+
     fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
 
-        _state.update {
+        updateState {
             it.copy(isLoading = true, error = null)
         }
         tryToCall(
@@ -90,7 +106,7 @@ class MediaDetailsViewModel(
             },
             onSuccess = { details ->
                 details?.let {
-                    _state.update {
+                    updateState {
                         it.copy(
                             id = details.id,
                             title = details.title,
@@ -109,9 +125,7 @@ class MediaDetailsViewModel(
                     saveWatchedMedia()
                 }
             },
-            onError = { throwable ->
-                handleErrorState(throwable.message, true)
-            },
+            onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
@@ -138,7 +152,7 @@ class MediaDetailsViewModel(
     }
 
     override fun onPlayClicked(id: Long) {
-        _state.update {
+        updateState {
             it.copy(
                 isPlaying = true
             )
@@ -147,7 +161,7 @@ class MediaDetailsViewModel(
     }
 
     override fun onReadMoreDescriptionClicked() {
-        _state.update { state ->
+        updateState { state ->
             state.copy(
                 isDescriptionExpanded = !state.isDescriptionExpanded
             )
@@ -155,7 +169,7 @@ class MediaDetailsViewModel(
     }
 
     override fun onReadMoreReviewClicked(id: Long) {
-        _state.update { state ->
+        updateState { state ->
             state.copy(
                 expandedReviewIds = state.expandedReviewIds.toggle(id)
             )
@@ -230,7 +244,7 @@ class MediaDetailsViewModel(
     }
 
     override fun onShowMoreMediaLikeThisClicked(mediaId: Long, mediaType: MediaType) {
-        _state.update {
+        updateState {
             it.copy(
                 rowSection = RowSectionUiState.Loading
             )
@@ -244,13 +258,13 @@ class MediaDetailsViewModel(
             },
             onSuccess = { moreLikeMedia ->
                 if (moreLikeMedia.isEmpty()) {
-                    _state.update {
+                    updateState {
                         it.copy(
-                            rowSection = RowSectionUiState.NoDataFound("There is no more media!")
+                            rowSection = RowSectionUiState.NoDataFound(UiText.Resource(NO_MORE_MEDIA))
                         )
                     }
                 } else {
-                    _state.update {
+                    updateState {
                         it.copy(
                             rowSection = RowSectionUiState.Success(
                                 content = TabContent.MoreLikeThis(
@@ -262,14 +276,12 @@ class MediaDetailsViewModel(
                 }
 
             },
-            onError = { throwable ->
-                handleErrorState(throwable.message, true)
-            },
+            onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
     override fun onShowReviewsClicked(mediaId: Long, mediaType: MediaType) {
-        _state.update {
+        updateState {
             it.copy(
                 rowSection = RowSectionUiState.Loading
             )
@@ -283,13 +295,13 @@ class MediaDetailsViewModel(
             },
             onSuccess = { reviewResult ->
                 if (reviewResult.isEmpty()) {
-                    _state.update {
+                    updateState {
                         it.copy(
-                            rowSection = RowSectionUiState.NoDataFound("There is no reviews!")
+                            rowSection = RowSectionUiState.NoDataFound(UiText.Resource(NO_REVIEWS))
                         )
                     }
                 } else {
-                    _state.update {
+                    updateState {
                         it.copy(
                             rowSection = RowSectionUiState.Success(
                                 content = TabContent.Reviews(
@@ -301,14 +313,12 @@ class MediaDetailsViewModel(
                     }
                 }
             },
-            onError = { throwable ->
-                handleErrorState(throwable.message, true)
-            },
+            onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
     override fun onShowMediaGalleryClicked(id: Long, mediaType: MediaType) {
-        _state.update {
+        updateState {
             it.copy(
                 rowSection = RowSectionUiState.Loading
             )
@@ -322,13 +332,13 @@ class MediaDetailsViewModel(
             },
             onSuccess = { gallery ->
                 if (gallery.isEmpty()) {
-                    _state.update {
+                    updateState {
                         it.copy(
-                            rowSection = RowSectionUiState.NoDataFound("There is no gallery!")
+                            rowSection = RowSectionUiState.NoDataFound(UiText.Resource(NO_GALLERY))
                         )
                     }
                 } else {
-                    _state.update {
+                    updateState {
                         it.copy(
                             rowSection = RowSectionUiState.Success(
                                 content = TabContent.Gallery(
@@ -341,14 +351,12 @@ class MediaDetailsViewModel(
 
 
             },
-            onError = { throwable ->
-                handleErrorState(throwable.message, true)
-            },
+            onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
     override fun onShowCompanyProductionClicked() {
-        _state.update {
+        updateState {
             it.copy(
                 rowSection = RowSectionUiState.Loading
             )
@@ -357,13 +365,13 @@ class MediaDetailsViewModel(
             call = {},
             onSuccess = {
                 if (companyProductionCache?.isEmpty() == true) {
-                    _state.update { companyProduction ->
+                    updateState { companyProduction ->
                         companyProduction.copy(
-                            rowSection = RowSectionUiState.NoDataFound("There is no company production!")
+                            rowSection = RowSectionUiState.NoDataFound(UiText.Resource(NO_COMPANY_PRODUCTION))
                         )
                     }
                 } else {
-                    _state.update { companyProduction ->
+                    updateState { companyProduction ->
                         companyProduction.copy(
                             rowSection = RowSectionUiState.Success(
                                 content = TabContent.CompanyProduction(
@@ -374,14 +382,12 @@ class MediaDetailsViewModel(
                     }
                 }
             },
-            onError = { throwable ->
-                handleErrorState(throwable.message, true)
-            },
+            onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
     override fun onSeasonsClicked(seriesId: Long, numberOfSeasons: Int) {
-        _state.update {
+        updateState {
             it.copy(
                 rowSection = RowSectionUiState.Loading
             )
@@ -395,7 +401,7 @@ class MediaDetailsViewModel(
                 }
             },
             onSuccess = { seasons ->
-                _state.update {
+                updateState {
                     it.copy(
                         rowSection = RowSectionUiState.Success(
                             content = TabContent.Season(
@@ -410,22 +416,12 @@ class MediaDetailsViewModel(
                     )
                 }
             },
-            onError = { throwable ->
-                handleErrorState(throwable.message, true)
-            },
+            onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
-    override fun onShowSeasonEpisodesClicked(tvShowId: Long, seasonId: Long) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onHideSeasonEpisodesClicked(seasonId: Long) {
-        TODO("Not yet implemented")
-    }
-
     fun getMediaCast(mediaId: Long, mediaType: MediaType, language: String = "US-EG") {
-        _state.update {
+        updateState {
             it.copy(error = null, isLoading = true)
         }
         tryToCall(
@@ -439,7 +435,7 @@ class MediaDetailsViewModel(
                 }
             },
             onSuccess = { cast ->
-                _state.update {
+                updateState {
                     it.copy(
                         mediaCast = cast,
                         mediaType = mediaType,
@@ -447,9 +443,7 @@ class MediaDetailsViewModel(
                     )
                 }
             },
-            onError = { throwable ->
-                handleErrorState(throwable.message)
-            },
+            onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
@@ -493,20 +487,39 @@ class MediaDetailsViewModel(
         }
     }
 
-    private fun handleErrorState(message: String?, updateRowSection: Boolean = false) {
-        _state.update {
-            if (updateRowSection) {
-                it.copy(
-                    error = message,
-                    rowSection = RowSectionUiState.Error(message ?: "Unknown error"),
-                    isLoading = false
-                )
-            } else {
-                it.copy(
-                    error = message,
-                    isLoading = false
-                )
-            }
+//    private fun handleErrorState(message: String?, updateRowSection: Boolean = false) {
+//        updateState {
+//            if (updateRowSection) {
+//                val rowError = if (message != null) {
+//                    RowSectionUiState.Error(message = message)
+//                } else {
+//                    RowSectionUiState.Error(messageRes = R.string.unknown_error)
+//                }
+//                it.copy(
+//                    error = message,
+//                    rowSection = rowError,
+//                    isLoading = false
+//                )
+//            } else {
+//                it.copy(
+//                    error = message,
+//                    isLoading = false
+//                )
+//            }
+//        }
+//    }
+
+    private fun handleErrorState(errorUiState: ErrorUiState, updateRowSection: Boolean = false) {
+        updateState {
+            val rowSection = if (updateRowSection) {
+                RowSectionUiState.Error(message = errorUiState.message)
+            } else it.rowSection
+
+            it.copy(
+                error = UiText.Dynamic(errorUiState.message),
+                rowSection = rowSection,
+                isLoading = false
+            )
         }
     }
 }
