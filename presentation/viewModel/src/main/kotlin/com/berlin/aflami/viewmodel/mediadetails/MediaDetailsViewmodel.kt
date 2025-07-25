@@ -48,8 +48,8 @@ class MediaDetailsViewmodel(
 ) : ViewModel(), MediaInteractionListener {
 
 
-     val id: Long = savedStateHandle.get<String>("id")?.toLongOrNull() ?: 0L
-     val type: MediaType = savedStateHandle.get<String>("media_type")
+    val id: Long = savedStateHandle.get<String>("id")?.toLongOrNull() ?: 0L
+    val type: MediaType = savedStateHandle.get<String>("media_type")
         ?.let { MediaType.valueOf(it) } ?: MediaType.MOVIE
 
 
@@ -76,10 +76,10 @@ class MediaDetailsViewmodel(
     var companyProductionCache: List<CompanyProductionItem>? = null
 
     init {
-        getReviews(id,type)
+        getReviews(id, type)
     }
 
-   fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
+    fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _error.value = null
             val uiState = try {
@@ -109,7 +109,7 @@ class MediaDetailsViewmodel(
 
             uiState?.let {
                 _uiState.value = _uiState.value.copy(
-                    id=it.id,
+                    id = it.id,
                     title = it.title,
                     overview = it.overview,
                     posterUrl = it.posterUrl,
@@ -120,7 +120,7 @@ class MediaDetailsViewmodel(
                     runtime = it.runtime,
                     genres = it.genres,
                 )
-                _loading.value=false
+                _loading.value = false
 
             }
 
@@ -133,14 +133,11 @@ class MediaDetailsViewmodel(
             _rowSectionUiState.update { RowSectionUiState.Loading }
 
             try {
-                Log.e("id=$id","type=$type")
-
                 val result = when (mediaType) {
                     MediaType.MOVIE -> movieReviewUseCase(mediaId).map { it.toUiState() }
                     MediaType.TV_SHOW -> seriesReviewUseCase(mediaId).map { it.toUiState() }
                 }
-                Log.e("Review","$result")
-                _loading.value=false
+                _loading.value = false
                 if (result.isEmpty()) {
                     _rowSectionUiState.update { RowSectionUiState.Error("There is no reviews!") }
                 } else {
@@ -256,7 +253,7 @@ class MediaDetailsViewmodel(
 
     override fun onRateIconClicked(id: Long) {
         viewModelScope.launch {
-            _uiEffect.emit(MediaDetailsScreenEffect.ShowRatingSheet(id=id))
+            _uiEffect.emit(MediaDetailsScreenEffect.ShowRatingSheet(id = id))
         }
     }
 
@@ -277,8 +274,13 @@ class MediaDetailsViewmodel(
         mediaId: Int,
     ) {
         viewModelScope.launch {
-            _uiEffect.emit(MediaDetailsScreenEffect
-                .ShowAddToFavoriteListSheet( favouriteListId = favouriteListId, mediaId=mediaId))
+            _uiEffect.emit(
+                MediaDetailsScreenEffect
+                    .ShowAddToFavoriteListSheet(
+                        favouriteListId = favouriteListId,
+                        mediaId = mediaId
+                    )
+            )
         }
     }
 
@@ -381,10 +383,6 @@ class MediaDetailsViewmodel(
                 repeat(numberOfSeasons) { seasonNumber ->
                     val episodes: List<Episodes?> = getSeasonEpisodesUseCase(seriesId, seasonNumber)
                     result.put(seasonNumber, episodes)
-                    Log.d(
-                        "Khairy",
-                        "id = ${_uiState.value.id} ,number of seasons = ${_uiState.value.numberOfSeasons}:$episodes "
-                    )
                 }
                 if (result.isEmpty()) {
                     RowSectionUiState.Error("No seasons found!")
@@ -432,7 +430,7 @@ class MediaDetailsViewmodel(
                     }
 
                 }
-                _loading.value=false
+                _loading.value = false
                 _uiState.update { newCastState ->
                     newCastState.copy(
                         mediaCast = cast,
