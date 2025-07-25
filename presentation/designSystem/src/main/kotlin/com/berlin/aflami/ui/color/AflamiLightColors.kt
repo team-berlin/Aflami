@@ -18,7 +18,7 @@ val AflamiLightColors = AflamiColors(
     primaryButton=  Color(0xFF973A66),
     gradientColors = GradientColors(
         overly = listOf(Color(0x00FAF5F7),Color(0xFFFAF5F7)),
-        streakGradient = listOf(Color(0xFFD85895),Color(0x52D85895)),
+        streakGradient = listOf(Color(0x52D85895),Color(0x00D85895)),
         pointsOverly = listOf(Color(0xFFD02C7A),Color(0xFF7D1C4A)),
     ),
     textColors = TextColors(

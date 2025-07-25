@@ -25,6 +25,21 @@
     <string name="description">Description</string>
     <string name="read_less">Read less</string>
     <string name="read_more">Read more</string>
+
+    //login
+    <string name="welcome_back">Welcome back!</string>
+    <string name="please_enter_info">Please enter your information to login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="incorrect_password">Incorrect password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login">Login</string>
+    <string name="continue_as_guest">Continue as guest</string>
+    <string name="dont_have_account">Don\'t have account?</string>
+    <string name="create_account">Create account</string>
+    <string name="logo">logo</string>
+    <string name="login_error_message">incorrect password or username</string>
+    <string name="loading">Loading...</string>
     <string name="login_required_warning">Please login to access your account details\nand other features!</string>
     <string name="login_required">Login Required</string>
 

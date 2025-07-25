@@ -38,20 +38,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.berlin.aflami.screens.search.getMovieGenreIcon
-import com.berlin.aflami.screens.search.getTvShowGenreIcon
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
-import com.berlin.aflami.viewmodel.search.FilterItemUiState
-import com.berlin.aflami.viewmodel.search.TabOption
+import com.berlin.aflami.viewmodel.search.FilterMediaSelected
 import com.berlin.designsystem.R
 
 @Composable
 fun FilterDialog(
     filterListener: FilterInteractionListener,
-    state: FilterItemUiState,
-    mediaType: TabOption
+    state: FilterMediaSelected,
+    getIcon: (Int) -> Int
 ) {
     Dialog(onDismissRequest = filterListener::onCancelButtonClicked) {
         Surface(
@@ -100,10 +97,11 @@ fun FilterDialog(
                         style = Theme.textStyle.title.small,
                         color = Theme.color.textColors.title
                     )
+
                     RatingBar(
                         modifier = Modifier,
                         onValueChange = { filterListener.onRatingStarChanged(it) },
-                        currentRating = state.filterTabSelected.selectedRating
+                        currentRating = state.selectedRating
                     )
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
@@ -124,10 +122,7 @@ fun FilterDialog(
                             Chips(
                                 title = filterGenre.name,
                                 icon = painterResource(
-                                    when (mediaType) {
-                                        TabOption.MOVIES -> getMovieGenreIcon(filterGenre.id)
-                                        TabOption.TV_SHOWS -> getTvShowGenreIcon(filterGenre.id)
-                                    }
+                                    getIcon(filterGenre.id)
                                 ),
                                 isSelected = filterGenre.isSelected,
                                 onClick = { filterListener.onFilterGenreChanged(filterGenre.id) }

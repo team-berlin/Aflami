@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
-import com.berlin.aflami.component.CircularIConButton
+import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
@@ -76,7 +76,7 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
             Modifier.align(Alignment.BottomCenter).size(72.dp).background(Theme.color.surface, CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            CircularIConButton(
+            CircularIconButton(
                 modifier = Modifier.align(Alignment.Center),
                 painter = painterResource(R.drawable.play_arrow),
                 onClick = onPlayClick,

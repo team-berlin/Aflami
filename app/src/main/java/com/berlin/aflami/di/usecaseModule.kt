@@ -29,8 +29,14 @@ import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
 import usecase.mediadetails.GetMovieGalleryUseCase
 import usecase.mediadetails.GetMovieReviewUseCase
+import usecase.ValidatePasswordUseCase
+import usecase.ValidateUsernameUseCase
+import usecase.auth.IsLoggedInUseCase
+import usecase.auth.LoginUseCase
 
 val useCaseModule = module {
+    single { ValidateUsernameUseCase() }
+    single { ValidatePasswordUseCase() }
     single { GetPopularMoviesUseCase(get()) }
     single { GetPopularTVShowsUseCase(get()) }
     single { SearchByCountryUseCase(get()) }
@@ -59,5 +65,8 @@ val useCaseModule = module {
     single { GetUpComingMoviesUseCase(get()) }
     single { GetMovieGenresUseCase(get()) }
     single { GetSeriesGenresUseCase(get()) }
+
+    single { LoginUseCase(get()) }
+    single { IsLoggedInUseCase(get()) }
 
 }
