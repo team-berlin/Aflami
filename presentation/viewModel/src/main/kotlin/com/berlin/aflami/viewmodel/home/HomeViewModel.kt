@@ -5,6 +5,8 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.update
 import usecase.home.GetContinueWatchingMovieUseCase
 import usecase.home.GetContinueWatchingTVShowUseCase
@@ -41,12 +43,17 @@ class HomeViewModel(
         }
         tryToCall(
             call = {
-                val movies = getWatchedMovieUseCase().map { it.toUIStateMedia() }
-                val tvShows = getWatchedTVShowUseCase().map { it.toUIStateMedia() }
+                coroutineScope {
+                    val moviesList = async {  getWatchedMovieUseCase().map { it.toUIStateMedia() }}
+                    val tvShowsList = async { getWatchedTVShowUseCase().map { it.toUIStateMedia() }}
 
-                val combinedList = (movies + tvShows)
-                    .shuffled()
-                combinedList
+                    val movies = moviesList.await()
+                    val tvShows = tvShowsList.await()
+
+                    val combinedList = (movies + tvShows)
+                        .shuffled()
+                    combinedList
+                }
             },
             onSuccess = {continueWatchingMedia->
                 _state.update {

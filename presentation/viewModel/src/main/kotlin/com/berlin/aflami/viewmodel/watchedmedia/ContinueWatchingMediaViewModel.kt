@@ -2,11 +2,11 @@ package com.berlin.aflami.viewmodel.watchedmedia
 
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
-import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
-import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.watchedmedia.uistate.ContinueWatchingMediaUiState
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.home.GetContinueWatchingMovieUseCase
@@ -33,20 +33,27 @@ class ContinueWatchingMediaViewModel(
         sendNewEffect(ContinueWatchingMediaEffect.NavigateToDetails(id, type))
 
     }
+
     private fun getContinueWatchingMedia() {
         _state.update {
             it.copy(isLoading = true, error = null)
         }
         tryToCall(
             call = {
-                val movies = getWatchedMovieUseCase().map { it.toUIStateMedia() }
-                val tvShows = getWatchedTVShowUseCase().map { it.toUIStateMedia() }
+                coroutineScope {
+                    val moviesList = async { getWatchedMovieUseCase().map { it.toUIStateMedia() } }
+                    val tvShowsList =
+                        async { getWatchedTVShowUseCase().map { it.toUIStateMedia() } }
 
-                val combinedList = (movies + tvShows)
-                    .shuffled()
-                combinedList
+                    val movies = moviesList.await()
+                    val tvShows = tvShowsList.await()
+                    
+                    val combinedList = (movies + tvShows)
+                        .shuffled()
+                    combinedList
+                }
             },
-            onSuccess = {continueWatchingMedia->
+            onSuccess = { continueWatchingMedia ->
                 _state.update {
                     it.copy(
                         continueWatchingItems = continueWatchingMedia,
