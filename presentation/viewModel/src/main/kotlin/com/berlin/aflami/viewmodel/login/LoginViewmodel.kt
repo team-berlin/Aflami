@@ -48,12 +48,7 @@ class LoginViewmodel(
                 state.value.formUiState.password
             )
         if (!isValidated) {
-            updateState { it.copy(isError = true) }
-            viewModelScope.launch {
-                delay(SNACK_BAR_DURATION)
-                updateState { it.copy(isError = false) }
-                updateState { it.copy(isLoginButtonEnabled = false) }
-            }
+            handleErrorState()
             return
         }
         updateState { it.copy(isLoading = true) }
@@ -63,7 +58,7 @@ class LoginViewmodel(
                 updateState { it.copy(isLoading = false) }
                 sendNewEffect(newEffect = LoginEffect.NavigateToHome)
             } catch (e: Exception) {
-                updateState { it.copy(isLoading = false, isError = true) }
+                handleErrorState()
             }
         }
     }
@@ -74,5 +69,19 @@ class LoginViewmodel(
 
     override fun onCreateAccountClicked() {
         sendNewEffect(LoginEffect.NavigateToCreateAccount)
+    }
+
+    private fun handleErrorState() {
+        updateState { it.copy(isError = true) }
+        viewModelScope.launch {
+            delay(SNACK_BAR_DURATION)
+            updateState {
+                it.copy(
+                    isError = false,
+                    isLoginButtonEnabled = false,
+                    isLoading = false
+                )
+            }
+        }
     }
 }
