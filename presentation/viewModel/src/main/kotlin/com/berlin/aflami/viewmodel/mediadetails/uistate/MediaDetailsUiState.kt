@@ -3,6 +3,10 @@ package com.berlin.aflami.viewmodel.mediadetails.uistate
 import androidx.compose.ui.graphics.painter.Painter
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 
+import com.berlin.entity.Media
+import com.berlin.entity.Movie
+import com.berlin.entity.TVShow
+import kotlinx.datetime.LocalDate
 
 data class MediaDetailsUiState(
     val id: Long = 0L,
@@ -30,8 +34,37 @@ data class MediaDetailsUiState(
     val duration: String? = null,
     val hasVideo: Boolean = false,
     val error: String? = "",
-    val rowSection:RowSectionUiState = RowSectionUiState.Loading
-)
+    val rowSection: RowSectionUiState = RowSectionUiState.Loading
+){
+    fun toMovie():Movie{
+        return Movie(
+            id = id,
+            title = title,
+            overview = overview,
+            releaseYear = LocalDate.parse(releaseYear),
+            rating = rating,
+            runtime = 0,
+            genre = emptyList(),
+            poster = posterUrl,
+            backdropPath = backdropUrl,
+            releaseDate =releaseYear,
+        )
+    }
+    fun toTVShow():TVShow{
+        return TVShow(
+            id = id,
+            title = title,
+            overview = overview,
+            releaseYear = LocalDate.parse(releaseYear),
+            rating = rating,
+            runtime = 0,
+            genre = emptyList() ,
+            poster = posterUrl,
+            backdropPath = backdropUrl,
+            releaseDate = releaseYear,
+        )
+    }
+}
 
 data class EpisodesUiState(
     val stillPath: String,

@@ -63,8 +63,7 @@ abstract class BaseViewModel<S, E>(
             } catch (e: Exception) {
                 onError(ErrorUiState(e.message.toString()))
             } catch (exception: Exception) {
-                //Log.e("CATCH", "tryToCall: ", exception)
-                onError(exception)
+                onError(ErrorUiState(exception.message.toString()))
             }
         }
     }

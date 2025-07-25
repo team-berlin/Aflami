@@ -8,8 +8,8 @@ object NavigationConstants{
         const val SEARCH_BY_ACTOR_NAME_SCREEN="searchByActorNameScreen"
         const val MEDIA_DETAILS_SCREEN="mediaDetailsScreen/{id}/{media_type}"
         const val CAST_SCREEN="castScreen/{id}/{media_type}"
+        const val WATCHED_MEDIA_DETAILS="watchedMediaDetails/{id}/{media_type}"
         const val HOME_SCREEN="homeScreen"
-
     }
     object Routes{
         const val MEDIA_DETAILS_ROUTE="mediaDetailsScreen"

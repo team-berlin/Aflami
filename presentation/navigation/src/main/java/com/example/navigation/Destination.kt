@@ -6,6 +6,7 @@ import com.example.navigation.NavigationConstants.Destination.MEDIA_DETAILS_SCRE
 import com.example.navigation.NavigationConstants.Destination.SEARCH_BY_ACTOR_NAME_SCREEN
 import com.example.navigation.NavigationConstants.Destination.SEARCH_BY_COUNTRY_SCREEN
 import com.example.navigation.NavigationConstants.Destination.SEARCH_SCREEN
+import com.example.navigation.NavigationConstants.Destination.WATCHED_MEDIA_DETAILS
 import com.example.navigation.NavigationConstants.Routes.CAST_ROUTE
 import com.example.navigation.NavigationConstants.Routes.MEDIA_DETAILS_ROUTE
 
@@ -24,6 +25,7 @@ sealed class Destination(val route: String) {
             return "$CAST_ROUTE/$id/$mediaType"
         }
     }
+    object WatchedMediaDetails:Destination(WATCHED_MEDIA_DETAILS)
     object HomeScreen:Destination(HOME_SCREEN)
 }
 

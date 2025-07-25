@@ -1,7 +1,6 @@
 package com.berlin.aflami.navigation.routes
 
 
-
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -18,7 +17,11 @@ fun NavGraphBuilder.home(
         HomeScreen(
             onEffect = { effect ->
                 when (effect) {
-                    is HomeScreenEffect.NavigateToContinueWatching ->{}
+                    is HomeScreenEffect.NavigateToContinueWatching ->{
+                        navController.navigate(
+                            Destination.WatchedMediaDetails.route
+                        )
+                    }
                     is HomeScreenEffect.NavigateToSearch->{}
                     is HomeScreenEffect.NavigateToTopRating->{}
                     is HomeScreenEffect.NavigateToMovieDetails->{}

@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import kotlinx.coroutines.flow.update
 import usecase.mediadetails.GetMovieCastUseCase
@@ -49,7 +50,7 @@ class CastViewModel(
             onError = { throwable ->
                 _state.update {
                     it.copy(
-                        error = throwable.message,
+                        error = UiText.Dynamic(throwable.message).toString(),
                     )
                 }
             },
