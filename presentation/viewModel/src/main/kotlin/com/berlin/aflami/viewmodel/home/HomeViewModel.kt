@@ -61,15 +61,21 @@ class HomeViewModel(
                 var movieIndex = 0
                 var tvShowIndex = 0
 
-                while (movieIndex < movieList.size || tvShowIndex < tvShowList.size) {
-                    if (movieIndex < movieList.size) {
-                        mergedList.add(movieList[movieIndex])
-                        movieIndex++
-                    }
-                    if (tvShowIndex < tvShowList.size) {
-                        mergedList.add(tvShowList[tvShowIndex])
-                        tvShowIndex++
-                    }
+                while (movieIndex < movieList.size && tvShowIndex < tvShowList.size) {
+                    mergedList.add(movieList[movieIndex])
+                    movieIndex++
+                    mergedList.add(tvShowList[tvShowIndex])
+                    tvShowIndex++
+                }
+
+                while (movieIndex < movieList.size) {
+                    mergedList.add(movieList[movieIndex])
+                    movieIndex++
+                }
+
+                while (tvShowIndex < tvShowList.size) {
+                    mergedList.add(tvShowList[tvShowIndex])
+                    tvShowIndex++
                 }
 
                 mergedList
