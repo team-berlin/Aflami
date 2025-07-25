@@ -44,13 +44,12 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
 import com.berlin.aflami.viewmodel.search.FilterMediaSelected
 import com.berlin.designsystem.R
-import kotlin.reflect.KFunction1
 
 @Composable
 fun FilterDialog(
     filterListener: FilterInteractionListener,
     state: FilterMediaSelected,
-    getIcon: KFunction1<Int,Int>
+    getIcon:(Int)->Int
 ) {
     Dialog(onDismissRequest = filterListener::onCancelButtonClicked) {
         Surface(
