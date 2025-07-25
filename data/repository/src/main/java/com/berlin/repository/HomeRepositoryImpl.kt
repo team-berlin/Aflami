@@ -16,7 +16,7 @@ class HomeRepositoryImpl(
 ) : HomeRepository {
 
     init {
-        Log.d("DI", "HomeRepositoryImpl created")
+        Log.d("DIHomeRepositoryImpl", "HomeRepositoryImpl created")
     }
     override suspend fun getPopularMovies(language: String): List<Media> {
         return try {

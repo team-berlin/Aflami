@@ -6,6 +6,8 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.aflami.viewmodel.util.MediaType
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
@@ -24,7 +26,6 @@ class HomeViewModel(
 
     init {
         popularMedia("en-US")
-        combineMediaAndUpdateUi()
     }
 
     fun popularMedia(language: String) {
@@ -32,22 +33,24 @@ class HomeViewModel(
         updateState {
             it.copy(isLoading = true, error = null)
         }
+        viewModelScope.launch {
+            try {
+                coroutineScope {
+                    val movie = async { popularMoviesUseCase(language) }
+                    val tvShow = async { popularTVShowsUseCase(language) }
 
-        tryToCall(
-            call = { popularMoviesUseCase(language) },
-            onSuccess = { movieList ->
-                _movies.value = movieList.map { it.toUIState(MediaType.MOVIE) }
-            },
-            onError = ::onPopularMediaError,
-        )
+                    val movieList = movie.await().map { it.toUIState(MediaType.MOVIE) }
+                    val tvShowList = tvShow.await().map { it.toUIState(MediaType.TV_SHOW) }
 
-        tryToCall(
-            call = { popularTVShowsUseCase(language) },
-            onSuccess = { tvShowList ->
-                _tvShows.value = tvShowList.map { it.toUIState(MediaType.TV_SHOW) }
-            },
-            onError = ::onPopularMediaError,
-        )
+                    _movies.value = movieList
+                    _tvShows.value = tvShowList
+
+                    combineMediaAndUpdateUi()
+                }
+            } catch (t: Throwable) {
+                onPopularMediaError(t)
+            }
+        }
     }
 
     private fun combineMediaAndUpdateUi() {
