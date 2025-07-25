@@ -1,27 +1,24 @@
 package com.berlin.aflami.viewmodel.home
 
 import androidx.lifecycle.viewModelScope
-import android.util.Log
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
-import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
-import usecase.home.GetContinueWatchingMovieUseCase
 import kotlinx.coroutines.launch
-import usecase.GetSearchTvShowsUseCase
-import usecase.GetTopRatedMovies
-import usecase.GetTopRatedSeries
+import usecase.GetTopRatedMoviesUseCase
+import usecase.GetTopRatedSeriesUseCase
+import usecase.home.GetContinueWatchingMovieUseCase
+import usecase.home.GetContinueWatchingTVShowUseCase
 
 class HomeViewModel(
     private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
-    private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase
-): BaseViewModel<HomeUiState, HomeScreenEffect>(
-    private val getTopRatedMovies: GetTopRatedMovies,
-    private val getTopRatedSeries: GetTopRatedSeries,
-) : BaseViewModel<HomeUiState, HomeScreenEffect>(
-    HomeUiState()
-), HomeInteractionListener {
+    private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase,
+    private val getTopRatedSeriesUseCase: GetTopRatedSeriesUseCase,
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+) : BaseViewModel<HomeUiState, HomeScreenEffect>(HomeUiState()), HomeInteractionListener {
+
     override fun onSearchClicked() {
     }
 
@@ -31,7 +28,38 @@ class HomeViewModel(
 
     override fun onShowAllTopRating() {
         viewModelScope.launch {
-            val topRatedMoviesAndSeries = getTopRatedMovies(1).plus(getTopRatedSeries(1))
+            tryToCall(
+                call = {
+                    val topRatedMovies =
+                        getTopRatedMoviesUseCase(1).map { movie -> movie.toUIStateMedia() }
+                    val topRatedSeries =
+                        getTopRatedSeriesUseCase(1).map { series -> series.toUIStateMedia() }
+                    (topRatedMovies + topRatedSeries).sortedByDescending { it.rating }
+                },
+                onSuccess = { newTopRatedMedia ->
+                    _state.update { oldState ->
+                        oldState.copy(
+                            topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
+                                topRatedMedia = newTopRatedMedia,
+                                isLoading = false,
+                                errorMessage = null,
+                            )
+                        )
+                    }
+                },
+                onError = { errorUIState ->
+                    _state.update { oldState ->
+                        oldState.copy(
+                            topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
+                                topRatedMedia = null,
+                                isLoading = false,
+                                errorMessage = errorUIState.message
+                            )
+                        )
+                    }
+                },
+                dispatcher = Dispatchers.Default
+            )
         }
     }
 
@@ -57,7 +85,7 @@ class HomeViewModel(
                     .shuffled()
                 combinedList
             },
-            onSuccess = {continueWatchingMedia->
+            onSuccess = { continueWatchingMedia ->
                 _state.update {
                     it.copy(
                         mediaContinueWatching = continueWatchingMedia,
