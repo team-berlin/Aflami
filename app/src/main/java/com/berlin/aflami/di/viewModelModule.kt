@@ -1,13 +1,14 @@
 package com.berlin.aflami.di
 
-import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
+import com.berlin.aflami.viewmodel.login.LoginViewmodel
+import com.berlin.aflami.viewmodel.main.MainViewModel
 import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
+import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.aflami.viewmodel.search.SearchViewModel
+
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import com.berlin.aflami.viewmodel.login.LoginViewmodel
-import com.berlin.aflami.viewmodel.main.MainViewModel
 
 val viewModelModule = module {
 

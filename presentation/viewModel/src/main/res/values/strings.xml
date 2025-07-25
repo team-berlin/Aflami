@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="there_is_no_company_production">There is no company production!</string>
+    <string name="there_is_no_reviews">There is no reviews!</string>
+    <string name="there_is_no_more_media">There is no more media!</string>
+    <string name="there_is_no_gallery">There is no gallery!</string>
+    <string name="unknown_error" >Unknown Error</string>
+</resources>

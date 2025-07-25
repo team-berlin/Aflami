@@ -18,68 +18,80 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.mediadetails.components.MoviesCastGrid
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
-import com.berlin.aflami.viewmodel.uistate.MediaCastUiState
+import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsEffect
+import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsListener
+import com.berlin.aflami.viewmodel.mediadetails.cast.CastViewModel
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CastDetailsScreen(
-    navController: NavController,
-    viewmodel: MediaDetailsViewmodel = koinViewModel(),
+    onEffect: (CastDetailsEffect) -> Unit,
+    viewmodel: CastViewModel = koinViewModel(),
 ) {
 
-    val castState by viewmodel.uiState.collectAsState()
-    val loading by viewmodel.loading.collectAsState()
+    val castState by viewmodel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewmodel.getMovieCast(
-            mediaId = viewmodel.id, mediaType = viewmodel.type, language = "US-EG"
-        )
+        viewmodel.effect.collect { event ->
+            onEffect(event)
+        }
     }
-    if (loading) {
+    if (castState.isLoading) {
         Loading()
     } else {
         CastContent(
-            navController = navController, castState = castState.mediaCast
+            listener = viewmodel,
+            castState = castState.mediaCast
         )
     }
+
+
 }
 
 @Composable
 fun CastContent(
-    navController: NavController, castState: List<MediaCastUiState>
+    listener: CastDetailsListener,
+    castState: List<MediaCastUiState>
 ) {
     Column {
-        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
-            Text(
-                text = stringResource(R.string.cast),
-                style = Theme.textStyle.title.large,
-                color = Theme.color.textColors.title
-            )
-        }, leadingIcon = {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Theme.color.surfaceHigh)
-                    .clickable {
-                        navController.popBackStack()
-                    }
-                    .padding(10.dp), contentAlignment = Alignment.Center) {
-                Icon(
-                    painter = painterResource(R.drawable.arrow_left),
-                    contentDescription = stringResource(R.string.arrow_back),
-                    tint = Theme.color.textColors.title
+        TopBar(
+            modifier = Modifier.padding(vertical = 8.dp),
+            title = {
+                Text(
+                    text = stringResource(R.string.cast),
+                    style = Theme.textStyle.title.large,
+                    color = Theme.color.textColors.title
                 )
+            },
+            leadingIcon = {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Theme.color.surfaceHigh)
+                        .clickable {
+                            listener.onCastBackClicked()
+                        }
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.arrow_left),
+                        contentDescription = stringResource(R.string.arrow_back),
+                        tint = Theme.color.textColors.title
+                    )
+                }
             }
-        })
+        )
         MoviesCastGrid(
             mediaCast = castState
         )
     }
+
+
 }

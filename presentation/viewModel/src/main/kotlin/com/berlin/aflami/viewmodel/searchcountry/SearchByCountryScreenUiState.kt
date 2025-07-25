@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.searchcountry
 
 import androidx.paging.PagingData
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

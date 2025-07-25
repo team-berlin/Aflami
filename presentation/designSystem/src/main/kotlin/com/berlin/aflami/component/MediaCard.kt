@@ -16,19 +16,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
-import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun MediaCard(
@@ -40,6 +43,9 @@ fun MediaCard(
     rating: String,
     onClick: (() -> Unit)? = null
 ) {
+    val painter = rememberAsyncImagePainter(mediaImg)
+    val imageState by painter.state.collectAsState()
+
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
@@ -48,12 +54,24 @@ fun MediaCard(
                 onClick?.invoke()
             }
     ) {
-        AsyncImage(
-            model = mediaImg,
-            contentDescription = stringResource(R.string.api_image_card_content),
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+        val contentScale = when (imageState) {
+            is AsyncImagePainter.State.Success, is AsyncImagePainter.State.Loading -> ContentScale.Crop
+            else -> ContentScale.Inside
+        }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            AsyncImage(
+                model = mediaImg,
+                contentDescription = null,
+                contentScale = contentScale,
+                modifier = Modifier.fillMaxSize(),
+                error = painterResource(R.drawable.place_holder),
+                fallback = painterResource(R.drawable.place_holder),
+            )
+            if (imageState is AsyncImagePainter.State.Loading) {
+                ShimmerBox(modifier = Modifier.fillMaxSize())
+            }
+        }
+
 //        SafeImageViewer(
 //            imageUri = mediaImg,
 //            modifier = Modifier.fillMaxSize(),
