@@ -1,27 +1,40 @@
 package com.berlin.aflami.viewmodel.home
 
+import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
+import com.berlin.aflami.viewmodel.home.uistate.PopularMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import usecase.GetPopularMoviesUseCase
+import usecase.GetPopularTVShowsUseCase
 import usecase.GetMovieGenresUseCase
 import usecase.GetUpComingMoviesUseCase
 import usecase.home.GetContinueWatchingMovieUseCase
 import usecase.home.GetContinueWatchingTVShowUseCase
 
-
 class HomeViewModel(
+    private val popularMoviesUseCase: GetPopularMoviesUseCase,
+    private val popularTVShowsUseCase: GetPopularTVShowsUseCase
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,
     private val getMoviesByGenreUseCase: GetMovieGenresUseCase,
     private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
     private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase
-) : BaseViewModel<HomeUiState, HomeScreenEffect>(
+): BaseViewModel<HomeUiState, HomeScreenEffect>(
     HomeUiState()
 ), HomeInteractionListener {
+
+    private val _movies = MutableStateFlow<List<MediaUiState>>(emptyList())
+    private val _tvShows = MutableStateFlow<List<MediaUiState>>(emptyList())
 
     init {
         updateState {
@@ -30,9 +43,68 @@ class HomeViewModel(
         getContinueWatchingMedia()
         loadGenresMovies()
         getUpComingMoviesByGenre()
+        popularMedia("en-US")
+    }
+
+    private fun popularMedia(language: String) {
+
+        updateState {
+            it.copy(isLoading = true, error = null)
+        }
+        viewModelScope.launch {
+            try {
+                coroutineScope {
+                    val movie = async { popularMoviesUseCase(language) }
+                    val tvShow = async { popularTVShowsUseCase(language) }
+
+                    val movieList = movie.await().map { it.toUIState() }
+                    val tvShowList = tvShow.await().map { it.toUIState() }
+
+                    _movies.value = movieList
+                    _tvShows.value = tvShowList
+
+                    combineMediaAndUpdateUi()
+                }
+            } catch (t: Throwable) {
+                onPopularMediaError(t)
+            }
+        }
+    }
+
+    private fun combineMediaAndUpdateUi() {
+        viewModelScope.launch {
+            combine(_movies, _tvShows) { movieList, tvShowList ->
+
+                val mergedList = mutableListOf<MediaUiState>()
+                val maxSize = maxOf(movieList.size, tvShowList.size)
+
+                for (i in 0 until maxSize) {
+                    if (i < movieList.size) mergedList.add(movieList[i])
+                    if (i < tvShowList.size) mergedList.add(tvShowList[i])
+                }
+
+                mergedList
+
+            }.collect { combinedList ->
+                Log.d("CombinedMediaList", "$combinedList")
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        popularMedia  = PopularMediaUiState(
+                            popularMedia = combinedList
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+
+    private fun onPopularMediaError(throwable: Throwable) {
+        _state.update { it.copy(error = throwable.message, isLoading = false) }
     }
     override fun onSearchClicked() {
-        TODO("Not yet implemented")
+        sendNewEffect(HomeScreenEffect.NavigateToSearch)
     }
 
     override fun onShowAllContinueWatchingClicked() {

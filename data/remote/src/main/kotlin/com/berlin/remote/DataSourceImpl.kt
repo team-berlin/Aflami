@@ -139,6 +139,12 @@ class DataSourceImpl(
         return wrapApiResponse { apiService.searchTvShows(query, language, page) }
     }
 
+    override suspend fun getPopularMovies(language: String): MovieResponse {
+        return apiService.popularMovies(language)
+    }
 
+    override suspend fun getPopularTVShows(language: String): TVShowResponse {
+        return apiService.popularTVShows(language)
+    }
 
 }

@@ -1,5 +1,8 @@
 package com.berlin.aflami.viewmodel.home.uistate
 
+//import com.berlin.aflami.viewmodel.search.GenreType
+//import com.berlin.aflami.viewmodel.search.GenreUiState
+//import com.berlin.aflami.viewmodel.search.Selectable
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
@@ -13,11 +16,18 @@ data class HomeUiState(
     val upcomingMovieGenres: List<GenreUiState> = defaultGenres,
     val selectedRating: Float = 1f,
     val selectedGenres: Int = -1,
+    val popularMedia: PopularMediaUiState = PopularMediaUiState(),
     val isLoading: Boolean = false,
-    val error: ErrorUiState? = null
-) {
+    val error: ErrorUiState? = null,
+
+    ) {
     companion object {
         val defaultGenres = listOf(GenreUiState(-1, "All", isSelected = true))
     }
 }
 
+data class PopularMediaUiState(
+    val isLoading: Boolean = false,
+    val popularMedia: List<MediaUiState> = emptyList(),
+    val error: String? = null
+)

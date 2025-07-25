@@ -3,17 +3,15 @@ package com.berlin.aflami.di
 import org.koin.dsl.module
 import usecase.ClearSearchHistoryUseCase
 import usecase.DeleteQueryFromHistoryUseCase
-import usecase.GetRecentHistoryUseCase
-import usecase.mediadetails.GetMovieDetailsUseCase
-import usecase.mediadetails.GetMovieGalleryUseCase
-import usecase.SearchByActorNameUseCase
 import usecase.GetMovieGenresUseCase
-import usecase.mediadetails.GetMovieCastUseCase
-import usecase.mediadetails.GetMovieReviewUseCase
+import usecase.GetRecentHistoryUseCase
+import usecase.GetPopularTVShowsUseCase
+import usecase.GetPopularMoviesUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
 import usecase.GetSeriesGenresUseCase
+import usecase.SearchByActorNameUseCase
 import usecase.GetUpComingMoviesUseCase
 import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
@@ -27,8 +25,14 @@ import usecase.home.GetContinueWatchingMovieUseCase
 import usecase.home.GetContinueWatchingTVShowUseCase
 import usecase.mediadetails.AddContinueWatchingMovieUseCase
 import usecase.mediadetails.AddContinueWatchingTVShowUseCase
+import usecase.mediadetails.GetMovieCastUseCase
+import usecase.mediadetails.GetMovieDetailsUseCase
+import usecase.mediadetails.GetMovieGalleryUseCase
+import usecase.mediadetails.GetMovieReviewUseCase
 
 val useCaseModule = module {
+    single { GetPopularMoviesUseCase(get()) }
+    single { GetPopularTVShowsUseCase(get()) }
     single { SearchByCountryUseCase(get()) }
     single { SearchByActorNameUseCase(get()) }
     single { GetSearchMoviesUseCase(get()) }
@@ -37,7 +41,6 @@ val useCaseModule = module {
     single { SaveRecentHistoryUseCase(get()) }
     single { ClearSearchHistoryUseCase(get()) }
     single { DeleteQueryFromHistoryUseCase(get()) }
-
     single { GetSimilarMoviesUseCase(get()) }
     single { GetSimilarSeriesUseCase(get()) }
     single { GetMovieDetailsUseCase(get()) }
