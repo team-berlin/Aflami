@@ -6,18 +6,29 @@ import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import usecase.GetMovieGenresUseCase
 import usecase.GetUpComingMoviesUseCase
+import com.berlin.aflami.viewmodel.mapper.toUIState
+import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.update
+import usecase.home.GetContinueWatchingMovieUseCase
+import usecase.home.GetContinueWatchingTVShowUseCase
 
 
 class HomeViewModel(
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,
     private val getMoviesByGenreUseCase: GetMovieGenresUseCase,
-) : BaseViewModel<HomeUiState, HomeUiEffect>(HomeUiState()), HomeInteractionListener {
+    private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
+    private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase
+):BaseViewModel<HomeUiState, HomeScreenEffect>(
+    HomeUiState()
+),HomeInteractionListener{
     override fun onSearchClicked() {
         TODO("Not yet implemented")
     }
 
     override fun onShowAllContinueWatchingClicked() {
-        TODO("Not yet implemented")
+        sendNewEffect(HomeScreenEffect.NavigateToContinueWatching)
     }
 
     override fun onShowAllTopRating() {
@@ -28,18 +39,50 @@ class HomeViewModel(
         TODO("Not yet implemented")
     }
 
-    init {
-        loadGenresMovies()
-        getUpComingMoviesByGenre()
-    }
-
-
     override fun onClickUpcomingMovieCard(id: Long) {
         sendNewEffect(
             HomeUiEffect.NavigatedToMovieDetailsScreen(
                 id.toInt()
             )
         )
+    }
+
+    fun getContinueWatchingMedia() {
+        _state.update {
+            it.copy(isLoading = true, error = null)
+        }
+        tryToCall(
+            call = {
+                coroutineScope {
+                    val moviesList = async {  getWatchedMovieUseCase().map { it.toUIStateMedia() }}
+                    val tvShowsList = async { getWatchedTVShowUseCase().map { it.toUIStateMedia() }}
+
+                    val movies = moviesList.await()
+                    val tvShows = tvShowsList.await()
+
+                    val combinedList = (movies + tvShows)
+                        .shuffled()
+                    combinedList
+                }
+            },
+            onSuccess = {continueWatchingMedia->
+                _state.update {
+                    it.copy(
+                        mediaContinueWatching = continueWatchingMedia,
+                        isLoading = false,
+                    )
+                }
+
+            },
+            onError = { throwable ->
+                _state.update {
+                    it.copy(
+                        error = throwable.message
+                    )
+                }
+            },
+        )
+
     }
 
     override fun onChangeUpcomingMovieGenre(genreId: Int) {
@@ -112,4 +155,5 @@ class HomeViewModel(
             },
         )
     }
+
 }
