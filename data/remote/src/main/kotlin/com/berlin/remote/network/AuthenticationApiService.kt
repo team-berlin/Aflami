@@ -16,7 +16,7 @@ interface AuthenticationApiService {
     suspend fun login(@Body loginRequestDTO: LoginRequestDTO): Response<LoginDto>
 
     @POST(ApiConstants.CREATE_SESSION_ENDPOINT)
-    suspend fun createSession(@Body token: RequestTokenDTO): SessionDto
+    suspend fun createSession(@Body token: RequestTokenDTO):  Response<SessionDto>
 
     @GET(ApiConstants.NEW_TOKEN_ENDPOINT)
     suspend fun requestToken() : Response<LoginDto>
