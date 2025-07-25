@@ -1,6 +1,7 @@
 package com.berlin.remote.network
 
 object ApiConstants {
+    //search
     const val PAGE = "page"
     const val SEARCH_BY_COUNTRY = "discover/movie"
     const val WITH_ORIGIN_COUNTRY = "with_origin_country"
@@ -12,6 +13,7 @@ object ApiConstants {
     const val SEARCH_MOVIE = "search/movie"
     const val SEARCH_TV = "search/tv"
 
+    //details
     const val MOVIE_ID = "movie_id"
     const val MOVIE_DETAILS = "movie/{movie_id}"
     const val MOVIE_IMAGES = "movie/{movie_id}/images"
@@ -29,4 +31,15 @@ object ApiConstants {
     const val EPISODE_SEASON_SERIES = "tv/{series_id}/season/{season_number}"
     const val SEASON_NUMBER = "season_number"
     const val SERIES_GENRES = "genre/tv/list"
+
+    //auth
+    const val NEW_TOKEN_ENDPOINT = "authentication/token/new"
+    const val CREATE_SESSION_WITH_LOGIN_ENDPOINT = "authentication/token/validate_with_login"
+    const val CREATE_SESSION_ENDPOINT = "authentication/session/new"
+    const val DELETE_SESSION_ENDPOINT = "authentication/session"
+
+    const val SESSION_ID = "session_id"
+    const val REQUEST_TOKEN = "request_token"
+    const val LOGIN_USERNAME = "username"
+    const val LOGIN_PASSWORD = "password"
 }

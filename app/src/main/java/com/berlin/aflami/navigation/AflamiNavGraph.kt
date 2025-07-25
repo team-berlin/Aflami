@@ -7,10 +7,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.berlin.aflami.navigation.routes.castDetails
+import com.berlin.aflami.navigation.routes.loginRoute
 import com.berlin.aflami.navigation.routes.mediaDetailsRoute
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchRoute
 import com.berlin.aflami.navigation.routes.searchByCountryRoute
+import com.berlin.aflami.navigation.routes.webView
 import com.example.navigation.Destination
 
 /**
@@ -26,12 +28,12 @@ import com.example.navigation.Destination
  */
 
 @Composable
-fun AflamiNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
-
+fun AflamiNavGraph(navController: NavHostController, modifier: Modifier = Modifier,isLoggedIn: Boolean) {
+   val startDestination = if (isLoggedIn) Destination.SearchScreen.route else Destination.LoginScreen.route
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Destination.SearchScreen.route,
+        startDestination = startDestination,
         enterTransition = {
             EnterTransition.None
         },
@@ -44,5 +46,7 @@ fun AflamiNavGraph(navController: NavHostController, modifier: Modifier = Modifi
         searchByActorNameRoute(navController)
         mediaDetailsRoute(navController)
         castDetails(navController)
+        loginRoute(navController)
+        webView(navController)
     }
 }

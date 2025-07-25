@@ -179,7 +179,7 @@ private fun SearchScreenContent(
                     }),
                 onValueChange = listenerSearch::onSearchQueryChanged,
                 trailingIcon = R.drawable.filter_vertical,
-                onTrailingClick = listenerSearch::onFilterButtonClicked
+                onTrailingIconClicked = listenerSearch::onFilterButtonClicked
             )
 
             when {

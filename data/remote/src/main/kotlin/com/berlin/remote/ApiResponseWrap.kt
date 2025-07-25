@@ -10,6 +10,7 @@ import com.berlin.entity.NotFoundException
 import com.berlin.entity.RateLimitException
 import com.berlin.entity.ServerException
 import com.berlin.entity.ValidationException
+import com.berlin.remote.network.getStatusCodeFromResponse
 import okio.IOException
 import retrofit2.Response
 import java.net.UnknownHostException
@@ -24,7 +25,10 @@ suspend fun <T> wrapApiResponse(
         } else {
             throw when (response.code()) {
                 400 -> BadRequestException(response.message())
-                401 -> ValidationException("Invalid username or password")
+                401 -> {
+                    val statusCode = response.getStatusCodeFromResponse()
+                    ValidationException(statusCode)
+                }
                 403 -> ForbiddenException("Access forbidden")
                 404 -> NotFoundException("Not found")
                 429 -> RateLimitException("Rate limit exceeded")
