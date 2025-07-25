@@ -7,10 +7,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import usecase.ValidatePasswordUseCase
 import usecase.ValidateUsernameUseCase
+import usecase.auth.LoginUseCase
 
 class LoginViewmodel(
     val usernameValidationUseCase: ValidateUsernameUseCase,
-    val passwordValidationUseCase: ValidatePasswordUseCase
+    val passwordValidationUseCase: ValidatePasswordUseCase,
+    val loginUseCase: LoginUseCase,
 ) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
     LoginInteractionListener {
     override fun onUsernameChanged(username: String) {
@@ -54,7 +56,11 @@ class LoginViewmodel(
             return
         }
         updateState { it.copy(isLoading = true) }
-        //call login usecase
+        viewModelScope.launch {
+            loginUseCase(state.value.formUiState.username, state.value.formUiState.password)
+            updateState { it.copy(isLoading = false) }
+            sendNewEffect(newEffect = LoginEffect.NavigateToHome)
+        }
     }
 
     override fun onContinueAsGuestClicked() {

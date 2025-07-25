@@ -20,6 +20,8 @@ import usecase.GetSeriesGalleryUseCase
 import usecase.GetSeriesCastUseCase
 import usecase.GetSeriesReviewUseCase
 import usecase.SearchByCountryUseCase
+import usecase.ValidatePasswordUseCase
+import usecase.ValidateUsernameUseCase
 import usecase.auth.CreateSessionUseCase
 import usecase.auth.LoginUseCase
 
