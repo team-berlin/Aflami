@@ -3,16 +3,15 @@ package com.berlin.repository.mapper
 import com.berlin.entity.GenreEntity
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
-import com.berlin.entity.MovieGenre
 import com.berlin.entity.ProductionCompanyEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
-import com.berlin.repository.datasource.remote.dto.Genre
+import com.berlin.repository.datasource.remote.dto.GenreDto
 import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.MovieDto
-import com.berlin.repository.datasource.remote.dto.MovieItemDto
-import com.berlin.repository.datasource.remote.dto.ProductionCompany
 import kotlinx.datetime.LocalDate
 import java.time.Instant
+
+import com.berlin.repository.datasource.remote.dto.ProductionCompany
 
 fun SearchingEntity.toDomain(): Movie {
     return Movie(
@@ -21,8 +20,7 @@ fun SearchingEntity.toDomain(): Movie {
         rating = this.rating,
         releaseYear = stringToLocalDate(releaseYear),
         genre = this.genre,
-        poster = this.poster,
-        categories = mapGenreIdsToCategories(this.genre),
+        poster = this.poster
     )
 }
 
@@ -47,12 +45,9 @@ fun MovieDto.toDomain(): Movie {
         id = this.id?.toLong() ?: 0L,
         title = this.title.orEmpty(),
         rating = (this.voteAverage ?: 0.0),
-        releaseYear = stringToLocalDate(releaseDate ?: ""),
+        releaseYear = stringToLocalDate(releaseDate?:""),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
-        categories = mapGenreIdsToCategories(
-            this.genreIds?.filterNotNull() ?: emptyList()
-        ),
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
 
@@ -72,37 +67,18 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
         } ?: emptyList(),
         hasVideo = this.video,
         originCountry = this.originCountry?.get(0),
-        duration = this.runtime.formatRuntime())
-}
-
-fun MovieItemDto.toMovie(): Movie {
-    return Movie(
-        id = this.id,
-        title = this.title ?: "",
-        rating = this.voteAverage ?: 0.0,
-        releaseYear = stringToLocalDate(this.releaseDate ?: ""),
-        genre = this.genreIds ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
-        categories = mapGenreIdsToCategories(this.genreIds ?: emptyList()),
-        backdropPath = this.backdropPath?.let { "$BACKDROP_PREFIX$it" },
-        overview = this.overview,
-        releaseDate = this.releaseDate,
-        runtime = this.runtime
+        duration = this.runtime.formatRuntime()
     )
 }
-
-private fun mapGenreIdsToCategories(genreIds: List<Int>): List<MovieGenre> {
-    return genreIds.map { it.toLong().toMovieCategory() }
-}
-
 fun stringToLocalDate(dateString: String): LocalDate {
     return runCatching {
         LocalDate.parse(dateString)
     }.getOrElse { LocalDate.parse("1960-01-01") }
 }
 
-fun Genre.toEntity() = GenreEntity(
-    id = this.id ?: 0, name = this.name.orEmpty()
+fun GenreDto.toEntity() = GenreEntity(
+    id = this.id ?: 0,
+    name = this.name.orEmpty()
 )
 
 fun ProductionCompany.toEntity() = ProductionCompanyEntity(
