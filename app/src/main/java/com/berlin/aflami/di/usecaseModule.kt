@@ -19,9 +19,11 @@ import usecase.GetTvShowDetailsUseCase
 import usecase.GetSeriesGalleryUseCase
 import usecase.GetSeriesCastUseCase
 import usecase.GetSeriesReviewUseCase
-import usecase.ValidatePasswordUseCase
 import usecase.SearchByCountryUseCase
+import usecase.ValidatePasswordUseCase
 import usecase.ValidateUsernameUseCase
+import usecase.auth.IsLoggedInUseCase
+import usecase.auth.LoginUseCase
 
 val useCaseModule = module {
     single { ValidateUsernameUseCase() }
@@ -47,5 +49,8 @@ val useCaseModule = module {
     single { GetMovieReviewUseCase(get()) }
     single { GetSeriesReviewUseCase(get()) }
     single { GetSeasonEpisodesUseCase(get()) }
+
+    single { LoginUseCase(get()) }
+    single { IsLoggedInUseCase(get()) }
 
 }

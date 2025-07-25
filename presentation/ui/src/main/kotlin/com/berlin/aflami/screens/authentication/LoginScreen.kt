@@ -1,6 +1,7 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -57,6 +58,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
@@ -79,7 +81,14 @@ fun LoginScreen(
 ) {
     val uiState by viewmodel.state.collectAsState()
     LoginContent(uiState, viewmodel)
-
+    val context = LocalContext.current
+    val sharedPrefs = context.getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE)
+    val sessionId = sharedPrefs.getString("userSessionId", null)
+    if (sessionId!=null) {
+        navController.navigate(
+            Destination.SearchScreen.route
+        )
+    }
     LaunchedEffect(Unit) {
         viewmodel.effect.collect {
             when (it) {
