@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
+import com.berlin.aflami.viewmodel.home.uistate.PopularMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
@@ -64,33 +65,45 @@ class HomeViewModel(
             combine(_movies, _tvShows) { movieList, tvShowList ->
 
                 val mergedList = mutableListOf<MediaUiState>()
-                var movieIndex = 0
-                var tvShowIndex = 0
+                val maxSize = maxOf(movieList.size, tvShowList.size)
 
-                while (movieIndex < movieList.size && tvShowIndex < tvShowList.size) {
-                    mergedList.add(movieList[movieIndex])
-                    movieIndex++
-                    mergedList.add(tvShowList[tvShowIndex])
-                    tvShowIndex++
-                }
-
-                while (movieIndex < movieList.size) {
-                    mergedList.add(movieList[movieIndex])
-                    movieIndex++
-                }
-
-                while (tvShowIndex < tvShowList.size) {
-                    mergedList.add(tvShowList[tvShowIndex])
-                    tvShowIndex++
+                for (i in 0 until maxSize) {
+                    if (i < movieList.size) mergedList.add(movieList[i])
+                    if (i < tvShowList.size) mergedList.add(tvShowList[i])
                 }
 
                 mergedList
+
+//                val mergedList = mutableListOf<MediaUiState>()
+//                var movieIndex = 0
+//                var tvShowIndex = 0
+//
+//                while (movieIndex < movieList.size && tvShowIndex < tvShowList.size) {
+//                    mergedList.add(movieList[movieIndex])
+//                    movieIndex++
+//                    mergedList.add(tvShowList[tvShowIndex])
+//                    tvShowIndex++
+//                }
+//
+//                while (movieIndex < movieList.size) {
+//                    mergedList.add(movieList[movieIndex])
+//                    movieIndex++
+//                }
+//
+//                while (tvShowIndex < tvShowList.size) {
+//                    mergedList.add(tvShowList[tvShowIndex])
+//                    tvShowIndex++
+//                }
+//
+//                mergedList
             }.collect { combinedList ->
                 Log.d("CombinedMediaList", "$combinedList")
                 updateState {
                     it.copy(
                         isLoading = false,
-                        popularMedia = combinedList.
+                        popularMedia  = PopularMediaUiState(
+                            popularMedia = combinedList
+                        )
                     )
                 }
             }
@@ -159,6 +172,5 @@ class HomeViewModel(
                 }
             },
         )
-
     }
 }
