@@ -3,12 +3,16 @@ package com.berlin.aflami.screens.home.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -17,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,12 +31,10 @@ import androidx.navigation.NavController
 import com.berlin.aflami.component.BlurredPosterBackground
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
-import com.berlin.aflami.component.MoviesPosterSlider
+import com.berlin.aflami.component.MovieCard
 import com.berlin.aflami.component.SectionTitle
-import com.berlin.aflami.component.moviesLists
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeViewModel
-import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.uistate.MediaUiState
 import com.berlin.designsystem.R
 import org.koin.androidx.compose.koinViewModel
@@ -98,8 +101,7 @@ private fun HomeContent(
 
                 MoviesPosterSlider(
                     modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
-                    poster = currentMedia?.poster ?: com.berlin.ui.R.drawable.place_holder.toString(),
-                    rating = currentMedia?.rating ?: "0.0",
+                    mediaList = mediaList,
                     pagerState = pagerState,
                     onClick = { }
                 )
@@ -117,7 +119,11 @@ private fun HomeContent(
                     )
                     Row() {
                         media.genre.forEach { genre ->
-                            Box(modifier = Modifier.padding(end = 4.dp).align(Alignment.CenterVertically)) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(end = 4.dp)
+                                    .align(Alignment.CenterVertically)
+                            ) {
                                 GenersChip(label = genre.toString())
                             }
                         }
@@ -128,6 +134,34 @@ private fun HomeContent(
     }
 }
 
+@Composable
+fun MoviesPosterSlider(
+    modifier: Modifier = Modifier,
+    mediaList: List<MediaUiState>,
+    onClick: (MediaUiState) -> Unit = {},
+    pagerState: PagerState,
+) {
+
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val itemWidth = 244.dp
+    val contentPadding = (screenWidth - itemWidth) / 2
+    HorizontalPager(
+        state = pagerState,
+        pageSize = PageSize.Fixed(itemWidth),
+        contentPadding = PaddingValues(horizontal = contentPadding),
+        modifier = modifier.fillMaxWidth()
+    ) { pageIndex ->
+        val mediaItem = mediaList.getOrNull(pageIndex)
+        mediaItem?.let {
+            MovieCard(
+                isCentered = pageIndex == pagerState.currentPage,
+                onClick = { onClick(it) },
+                rating = it.rating,
+                posterImageUrl = it.poster
+            )
+        }
+    }
+}
 
 @Preview
 @Composable

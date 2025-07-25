@@ -78,7 +78,7 @@ fun MoviesPosterSlider(
 }
 
 @Composable
-private fun MovieCard(
+fun MovieCard(
     isCentered: Boolean,
     onClick: () -> Unit,
     rating: String,
