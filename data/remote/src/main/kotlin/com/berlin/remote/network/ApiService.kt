@@ -19,7 +19,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    
+
     @GET(ApiConstants.MOVIE_IMAGES)
     suspend fun getMovieImages(@Path(ApiConstants.MOVIE_ID) movieId: Long): Response<MediaImagesResponse>
 
@@ -99,14 +99,18 @@ interface ApiService {
         @Path(ApiConstants.SERIES_ID) seriesId: Long,
         @Path(ApiConstants.SEASON_NUMBER) seasonNumber: Int
     ): Response<EpisodesSeasonDto>
+
     @GET(ApiConstants.MOVIE_GENRES)
     suspend fun getMovieGenres(
-        @Query(ApiConstants.LANGUAGE)
-        language: String): Response<GenreResponse>
+        @Query(ApiConstants.LANGUAGE) language: String
+    ): Response<GenreResponse>
 
     @GET(ApiConstants.SERIES_GENRES)
     suspend fun getSeriesGenres(
         @Query(ApiConstants.LANGUAGE) language: String
     ): Response<GenreResponse>
+
+    @GET(ApiConstants.MOVIE_UPCOMING)
+    suspend fun getUpcomingMovie(): Response<BaseResponse<MovieDto>>
 
 }

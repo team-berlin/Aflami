@@ -2,16 +2,13 @@ package com.berlin.aflami.viewmodel.home
 
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
-import com.berlin.aflami.viewmodel.search.GenreType
-import com.berlin.aflami.viewmodel.search.selectByMovieGenre
-import com.berlin.aflami.viewmodel.search.toGenreMovieType
-import com.berlin.entity.Movie
-import com.berlin.entity.MovieGenre
+import com.berlin.aflami.viewmodel.search.GenreUiState
+import usecase.GetMovieGenresUseCase
 import usecase.GetUpComingMoviesUseCase
 
 class HomeViewModel(
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,
-    private val homeUiStateMapper: HomeUiStateMapper,
+    private val getMoviesByGenreUseCase: GetMovieGenresUseCase,
 ) : BaseViewModel<HomeUiState, HomeUiEffect>(HomeUiState()), HomeInteractionListener {
     override fun onSearchClicked() {
         TODO("Not yet implemented")
@@ -33,15 +30,6 @@ class HomeViewModel(
         getUpComingMoviesByGenre()
     }
 
-    override fun onChangeUpcomingMovieGenre(genre: GenreType) {
-        updateState {
-            it.copy(
-                upcomingMovieGenres = it.upcomingMovieGenres.selectByMovieGenre(genre)
-            )
-        }
-        getUpComingMoviesByGenre(selectedGenre = genre.toGenreMovieType())
-    }
-
 
     override fun onClickUpcomingMovieCard(id: Long) {
         sendNewEffect(
@@ -51,28 +39,52 @@ class HomeViewModel(
         )
     }
 
-    private fun getUpComingMoviesByGenre(selectedGenre: MovieGenre = MovieGenre.ALL) {
+    override fun onChangeUpcomingMovieGenre(genreId: Int) {
         updateState {
+            val selected = it.upcomingMovieGenres.map { genre ->
+                genre.copy(isSelected = genre.id == genreId)
+            }
             it.copy(
-                isLoading = true, error = null
+                selectedGenres = genreId,
+                upcomingMovieGenres = selected,
+                isLoading = true
             )
         }
+    }
+
+    private fun getUpComingMoviesByGenre() {
+
+    }
+
+    private fun loadGenresMovies(language: String = "en") {
         tryToCall(
-            call = { getUpComingMoviesUseCase(selectedGenre) },
-            onSuccess = ::onGetUpComingMoviesSuccess,
+            call = {
+                val movieGenres = getMoviesByGenreUseCase(language)
+                val all = GenreUiState(
+                    id = -1, name = "All", isSelected = true
+                )
+                val genres = movieGenres.map { genre ->
+                    GenreUiState(
+                        id = genre.id ?: -1, name = genre.name ?: "Unknown", isSelected = true
+                    )
+                }
+                listOf(all) + genres
+            },
+            onSuccess = { genreMovie ->
+                updateState { state ->
+                    state.copy(
+                        upcomingMovieGenres = genreMovie, isLoading = false
+                    )
+                }
+            },
             onError = { error ->
-                updateState { it.copy(error = error.message) }
+                updateState { state ->
+                    state.copy(
+                        error = error, isLoading = false
+                    )
+                }
             },
         )
-
     }
-
-    private fun onGetUpComingMoviesSuccess(movies: List<Movie>) {
-        updateState {
-            it.copy(
-                upcomingMovies = homeUiStateMapper.moviesToMoviesUiState(movies),
-            )
-        }
-    }
-
 }
+

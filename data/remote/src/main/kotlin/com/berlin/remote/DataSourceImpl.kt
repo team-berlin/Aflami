@@ -48,6 +48,12 @@ class DataSourceImpl(
         return wrapApiResponse { apiService.getMovieReviews(movieId) }
     }
 
+    override suspend fun getUpComingMovies(): BaseResponse<MovieDto> {
+        return wrapApiResponse {
+            apiService.getUpcomingMovie()
+        }
+    }
+
     override suspend fun getSeriesImages(seriesId: Long): MediaImagesResponse {
         require(seriesId > 0) { "Invalid seriesId: $seriesId" }
         return wrapApiResponse { apiService.getSeriesImages(seriesId) }
@@ -132,5 +138,7 @@ class DataSourceImpl(
         require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse { apiService.searchTvShows(query, language, page) }
     }
+
+
 
 }

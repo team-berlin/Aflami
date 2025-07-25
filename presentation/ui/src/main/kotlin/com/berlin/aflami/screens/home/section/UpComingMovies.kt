@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.home.section
+package com.berlin.aflami.screens.home.section
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,24 +13,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.screens.search.screen.Chips
-import com.berlin.aflami.screens.search.screen.genreMapper
-import com.berlin.aflami.screens.search.screen.getGenreIcon
+import com.berlin.aflami.screens.search.getMovieGenreIcon
+import com.berlin.aflami.screens.search.search.Chips
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.search.GenreType
 import com.berlin.aflami.viewmodel.search.GenreUiState
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 
 
 fun LazyListScope.upcomingMovies(
     movies: List<MovieUIState>,
     onMovieClicked: (movieId: Long) -> Unit,
     moviesGenres: List<GenreUiState>,
-    onChangeMovieGenre: (genreType: GenreType) -> Unit,
+    onChangeMovieGenre: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     stickyHeader {
@@ -56,12 +53,11 @@ fun LazyListScope.upcomingMovies(
                 items(
                     items = moviesGenres
                 ) { genre ->
-                    val genreItem = genre.genres.type
                     Chips(
-                        title = stringResource(genreMapper(genreItem)),
-                        icon = painterResource(getGenreIcon(genreItem)),
-                        isSelected = genre.genres.isSelected,
-                        onClick = { onChangeMovieGenre(genreItem) })
+                        title = genre.name,
+                        icon = painterResource(getMovieGenreIcon(genre.id)),
+                        isSelected = genre.isSelected,
+                        onClick = { onChangeMovieGenre(genre.id) })
                 }
             }
         }
