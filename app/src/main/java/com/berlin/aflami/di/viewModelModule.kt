@@ -2,7 +2,7 @@ package com.berlin.aflami.di
 
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.aflami.viewmodel.main.MainViewModel
-import com.berlin.aflami.viewmodel.mediadetails.MediaDetailsViewmodel
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 
@@ -19,7 +19,6 @@ val viewModelModule = module {
     viewModelOf(::SearchByCountryViewModel)
     viewModelOf(::SearchViewModel)
     viewModelOf(::SearchByCountryViewModel)
-    viewModelOf(::MediaDetailsViewmodel)
     viewModelOf(::SearchViewModel)
-    viewModelOf(::MediaDetailsViewmodel)
+    viewModelOf(::MediaDetailsViewModel)
 }
