@@ -91,7 +91,9 @@ fun HomeContent(
 
                     HomeBar(
                         modifier = Modifier.fillMaxWidth(),
-                        onSearchClicked = {}
+                        onSearchClicked = {
+                            listener.onSearchClicked()
+                        },
                     )
 
                     SectionTitle(

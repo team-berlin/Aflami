@@ -4,7 +4,7 @@ import android.util.Log
 import com.berlin.entity.Media
 import com.berlin.repository.MediaType.MOVIE
 import com.berlin.repository.MediaType.TV_SHOW
-import com.berlin.repository.datasource.remote.HomeRemoteDataSource
+import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.datasource.remote.dto.MovieDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.mapper.POSTER_PREFIX
@@ -12,7 +12,7 @@ import com.berlin.repository.mapper.stringToLocalDate
 import repository.HomeRepository
 
 class HomeRepositoryImpl(
-    private val remoteDataSource: HomeRemoteDataSource
+    private val remoteDataSource: RemoteDataSource
 ) : HomeRepository {
 
     init {

@@ -74,28 +74,6 @@ class HomeViewModel(
 
                 mergedList
 
-//                val mergedList = mutableListOf<MediaUiState>()
-//                var movieIndex = 0
-//                var tvShowIndex = 0
-//
-//                while (movieIndex < movieList.size && tvShowIndex < tvShowList.size) {
-//                    mergedList.add(movieList[movieIndex])
-//                    movieIndex++
-//                    mergedList.add(tvShowList[tvShowIndex])
-//                    tvShowIndex++
-//                }
-//
-//                while (movieIndex < movieList.size) {
-//                    mergedList.add(movieList[movieIndex])
-//                    movieIndex++
-//                }
-//
-//                while (tvShowIndex < tvShowList.size) {
-//                    mergedList.add(tvShowList[tvShowIndex])
-//                    tvShowIndex++
-//                }
-//
-//                mergedList
             }.collect { combinedList ->
                 Log.d("CombinedMediaList", "$combinedList")
                 updateState {
@@ -115,6 +93,7 @@ class HomeViewModel(
         _state.update { it.copy(error = throwable.message, isLoading = false) }
     }
     override fun onSearchClicked() {
+        sendNewEffect(HomeScreenEffect.NavigateToSearch)
     }
 
     override fun onShowAllContinueWatchingClicked() {
