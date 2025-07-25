@@ -415,64 +415,88 @@ class SearchViewModel(
     }
 
 
+    private var movieGenres = FilterItemUiState.defaultGenres
+    private var tvShowGenres = FilterItemUiState.defaultGenres
 
     private fun loadFilterOptions(language: String = "en") {
-        viewModelScope.launch {
-            val selectedTab = state.value.selectedTabOption
-                tryToCall(
-                    call = {
-                        val genres = when (selectedTab) {
-                            TabOption.MOVIES -> getMovieGenresUseCase(language)
-                            TabOption.TV_SHOWS -> getSeriesGenresUseCase(language)
-                        }
-                        val selectedGenreId = when (selectedTab) {
-                            TabOption.MOVIES -> state.value.filterItemUiState.filterMovieSelected.selectedGenres
-                            TabOption.TV_SHOWS -> state.value.filterItemUiState.filterTvShowSelected.selectedGenres
-                        }
-                        Log.e("aaa",genres.size.toString())
-                        val all = GenreUiState(-1, "All", isSelected = selectedGenreId == -1)
-                        val realGenre = genres.map { genre ->
-                            Log.e("nour", genre.id.toString())
-                            GenreUiState(
-                                id = genre.id ?: -1,
-                                name = genre.name ?: "Unknown",
-                                isSelected = genre.id == selectedGenreId
-                            )
-                        }
+        val selectedTab = state.value.selectedTabOption
+        val cachedGenres = when (selectedTab) {
+            TabOption.MOVIES -> movieGenres
+            TabOption.TV_SHOWS -> tvShowGenres
+        }
+        if (cachedGenres != FilterItemUiState.defaultGenres) {
+            updateState {
+                it.copy(
+                    filterItemUiState = it.filterItemUiState.copy(
+                        isLoading = false
+                    )
+                )
+            }
+        } else {
+            tryToCall(
+                call = {
+                    val genres = when (selectedTab) {
+                        TabOption.MOVIES -> getMovieGenresUseCase(language)
+                        TabOption.TV_SHOWS -> getSeriesGenresUseCase(language)
+                    }
+                    val selectedGenreId = when (selectedTab) {
+                        TabOption.MOVIES -> state.value.filterItemUiState.filterMovieSelected.selectedGenres
+                        TabOption.TV_SHOWS -> state.value.filterItemUiState.filterTvShowSelected.selectedGenres
+                    }
+                    val all = GenreUiState(-1, "All", isSelected = selectedGenreId == -1)
+                    val realGenre = genres.map { genre ->
+                        GenreUiState(
+                            id = genre.id ?: -1,
+                            name = genre.name ?: "Unknown",
+                            isSelected = genre.id == selectedGenreId
+                        )
+                    }
 
-                        listOf(all) + realGenre
-                    },
-                    onSuccess = { filterGenres ->
-                        when (selectedTab) {
-                            TabOption.MOVIES ->
-                                updateState {
-                                    it.copy(
-                                        filterItemUiState = it.filterItemUiState.copy(
-                                            filterMovieSelected= it.filterItemUiState.filterMovieSelected.copy(genreUiStates = filterGenres))
-                                    )
-                                }
-                            TabOption.TV_SHOWS ->   updateState {
+                    listOf(all) + realGenre
+                },
+                onSuccess = { filterGenres ->
+                    when (selectedTab) {
+                        TabOption.MOVIES -> {
+                            movieGenres = filterGenres
+                            updateState {
                                 it.copy(
                                     filterItemUiState = it.filterItemUiState.copy(
-                                        filterTvShowSelected = it.filterItemUiState.filterTvShowSelected.copy(genreUiStates = filterGenres))
+                                        filterMovieSelected = it.filterItemUiState.filterMovieSelected.copy(
+                                            genreUiStates = filterGenres
+                                        )
+                                    )
                                 )
-
                             }
                         }
 
-                    },
-                    onError = { error ->
-                        updateState {
-                            it.copy(
-                                errorMessage = error.message,
-                                isLoading = false
-                            )
+                        TabOption.TV_SHOWS -> {
+                            tvShowGenres = filterGenres
+                            updateState {
+                                it.copy(
+                                    filterItemUiState = it.filterItemUiState.copy(
+                                        filterTvShowSelected = it.filterItemUiState.filterTvShowSelected.copy(
+                                            genreUiStates = filterGenres
+                                        )
+                                    )
+                                )
+                            }
+
                         }
                     }
-                )
-            }
-        }
 
+                },
+                onError = { error ->
+                    updateState {
+                        it.copy(
+                            errorMessage = error.message,
+                            isLoading = false
+                        )
+                    }
+                }
+            )
+
+        }
+    }
     fun onItemClicked(query: String) {
         updateState { it.copy(searchQuery = query, isLoading = true) }
     }
