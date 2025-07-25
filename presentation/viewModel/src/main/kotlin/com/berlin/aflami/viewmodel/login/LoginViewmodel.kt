@@ -14,7 +14,7 @@ class LoginViewmodel(
     val passwordValidationUseCase: ValidatePasswordUseCase,
     val loginUseCase: LoginUseCase,
 
-) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
+    ) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
     LoginInteractionListener {
     override fun onUsernameChanged(username: String) {
         updateState {
@@ -58,9 +58,13 @@ class LoginViewmodel(
         }
         updateState { it.copy(isLoading = true) }
         viewModelScope.launch {
-            loginUseCase(state.value.formUiState.username, state.value.formUiState.password)
-            updateState { it.copy(isLoading = false) }
-            sendNewEffect(newEffect = LoginEffect.NavigateToHome)
+            try {
+                loginUseCase(state.value.formUiState.username, state.value.formUiState.password)
+                updateState { it.copy(isLoading = false) }
+                sendNewEffect(newEffect = LoginEffect.NavigateToHome)
+            } catch (e: Exception) {
+                updateState { it.copy(isLoading = false, isError = true) }
+            }
         }
     }
 
