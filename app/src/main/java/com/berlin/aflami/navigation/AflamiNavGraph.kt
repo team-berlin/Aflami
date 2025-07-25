@@ -32,7 +32,7 @@ fun AflamiNavGraph(navController: NavHostController, modifier: Modifier = Modifi
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Destination.SearchScreen.route,
+        startDestination = Destination.HomeScreen.route,
         enterTransition = {
             EnterTransition.None
         },

@@ -2,9 +2,11 @@ package com.berlin.aflami.viewmodel.home
 
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
+import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import usecase.GetMovieGenresUseCase
 import usecase.GetUpComingMoviesUseCase
+
 
 class HomeViewModel(
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,
@@ -27,6 +29,7 @@ class HomeViewModel(
     }
 
     init {
+        loadGenresMovies()
         getUpComingMoviesByGenre()
     }
 
@@ -45,15 +48,38 @@ class HomeViewModel(
                 genre.copy(isSelected = genre.id == genreId)
             }
             it.copy(
-                selectedGenres = genreId,
-                upcomingMovieGenres = selected,
-                isLoading = true
+                selectedGenres = genreId, upcomingMovieGenres = selected, isLoading = true
             )
         }
+        getUpComingMoviesByGenre()
     }
 
     private fun getUpComingMoviesByGenre() {
-
+        tryToCall(call = {
+            getUpComingMoviesUseCase()
+        }, onSuccess = { movies ->
+            val genreId = state.value.selectedGenres
+            val filteredMovies = if (genreId == -1) {
+                movies
+            } else {
+                movies.filter { movie ->
+                    movie.genre.contains(genreId) == true
+                }
+            }
+            updateState { state ->
+                state.copy(
+                    upcomingMovies = filteredMovies.map { movie ->
+                        movie.toUIState()
+                    }, isLoading = false
+                )
+            }
+        }, onError = { error ->
+            updateState { state ->
+                state.copy(
+                    error = error, isLoading = false
+                )
+            }
+        })
     }
 
     private fun loadGenresMovies(language: String = "en") {
@@ -65,7 +91,7 @@ class HomeViewModel(
                 )
                 val genres = movieGenres.map { genre ->
                     GenreUiState(
-                        id = genre.id ?: -1, name = genre.name ?: "Unknown", isSelected = true
+                        id = genre.id ?: -1, name = genre.name ?: "Unknown", isSelected = false
                     )
                 }
                 listOf(all) + genres
@@ -87,4 +113,3 @@ class HomeViewModel(
         )
     }
 }
-

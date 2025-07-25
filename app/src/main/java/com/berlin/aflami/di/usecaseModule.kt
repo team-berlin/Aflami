@@ -14,6 +14,7 @@ import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
 import usecase.GetSeriesGenresUseCase
+import usecase.GetUpComingMoviesUseCase
 import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase

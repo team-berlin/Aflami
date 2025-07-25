@@ -11,27 +11,27 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.berlin.aflami.screens.home.section.upcomingMovies
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
+import com.berlin.aflami.viewmodel.home.HomeScreenEffect
 import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
+    onEffect: (HomeScreenEffect) -> Unit = {},
     modifier: Modifier = Modifier,
-    navController: NavController,
     homeViewModel: HomeViewModel = koinViewModel()
 ) {
     val state by homeViewModel.state.collectAsStateWithLifecycle()
+
 
 
     HomeScreenContent(
         modifier = modifier,
         state = state,
         interactionListener = homeViewModel,
-        navController = navController
     )
 
 }
@@ -41,7 +41,6 @@ private fun HomeScreenContent(
     state: HomeUiState,
     interactionListener: HomeInteractionListener,
     modifier: Modifier = Modifier,
-    navController: NavController
 ) {
     val lazyListState = rememberLazyListState()
     Box(
