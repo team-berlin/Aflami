@@ -67,6 +67,7 @@ import com.berlin.aflami.viewmodel.login.LoginEffect
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
+import com.example.navigation.Destination
 import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
 import org.koin.androidx.compose.koinViewModel
 
@@ -82,11 +83,17 @@ fun LoginScreen(
     LaunchedEffect(Unit) {
         viewmodel.effect.collect {
             when (it) {
-                LoginEffect.NavigateToHome -> { } // TODO: naviagte to home screen
+                LoginEffect.NavigateToHome -> {
+                    navController.navigate(
+                        Destination.SearchScreen.route
+                    )
+                }
+
                 LoginEffect.NavigateToCreateAccount -> {
                     val encodedUrl = Uri.encode(REGISTER_URL)
                     navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
                 }
+
                 LoginEffect.NavigateToForgotPassword -> {
                     val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
                     navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
@@ -107,16 +114,14 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                     colors = Theme.color.gradientColors.streakGradient
                 )
             )
-            .padding(horizontal = 12.dp)
+            .padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 16.dp)
     ) {
         CirclesBackground()
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-
-            ) {
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
             LoginLogo()
             WelcomeText()
             FormLogin(
@@ -134,8 +139,8 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                 onLoginClicked = listener::onLoginClicked,
                 onContinueAsGuestClicked = listener::onContinueAsGuestClicked
             )
+            Spacer(modifier = Modifier.weight(1f))
             CreateAccount(
-                modifier = Modifier.weight(1f),
                 onCreateAccountClicked = listener::onCreateAccountClicked
             )
         }
@@ -280,11 +285,9 @@ fun LoginButtons(
 }
 
 @Composable
-private fun CreateAccount(modifier: Modifier, onCreateAccountClicked: () -> Unit) {
+private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked: () -> Unit) {
     Row(
-        modifier = modifier
-            .padding(bottom = 24.dp)
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
