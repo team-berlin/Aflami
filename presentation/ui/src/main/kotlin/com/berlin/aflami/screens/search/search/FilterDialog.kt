@@ -39,13 +39,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.berlin.aflami.screens.search.getMovieGenreIcon
-import com.berlin.aflami.screens.search.getTvShowGenreIcon
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
 import com.berlin.aflami.viewmodel.search.FilterMediaSelected
-import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.designsystem.R
 import kotlin.reflect.KFunction1
 
@@ -124,7 +121,6 @@ fun FilterDialog(
                         items(
                             items = state.genreUiStates
                         ) { filterGenre ->
-                            Log.e("we", filterGenre.id.toString())
                             Chips(
                                 title = filterGenre.name,
                                 icon = painterResource(
