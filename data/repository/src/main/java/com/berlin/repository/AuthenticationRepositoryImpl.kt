@@ -34,11 +34,12 @@ class AuthenticationRepositoryImpl(
 
     override suspend fun createSession(requestToken: String): Session {
         return try {
-            val result = remoteDataSource.createSession(requestToken)
-            if (result.success) {
-                localDataSource.saveUserSessionId(result.sessionId.toString())
+            val result = remoteDataSource.createSession(requestToken).also {
+                localDataSource.saveUserSessionId(it.sessionId.toString())
             }
             result.toDomain()
+        } catch (e: ValidationException) {
+            throw e.message.toException()
         } catch (e: Exception) {
             throw e
         }
@@ -52,8 +53,7 @@ class AuthenticationRepositoryImpl(
             val result =
                 remoteDataSource.login(userName, password, requestToken().requestToken).also {
                     localDataSource.saveUserToken(it.requestToken.toString())
-                    val session=createSession(it.requestToken.toString())
-                    localDataSource.saveUserSessionId(session.sessionId.toString())
+                    createSession(it.requestToken.toString())
                 }
             result.toDomain()
         } catch (e: ValidationException) {
@@ -64,8 +64,9 @@ class AuthenticationRepositoryImpl(
     }
 
     override suspend fun isLoggedIn(): Boolean {
-       return localDataSource.getUserSessionId()!=null
+        return localDataSource.getUserSessionId() != null
     }
+
     override suspend fun logout() {
         TODO("Not yet implemented")
     }

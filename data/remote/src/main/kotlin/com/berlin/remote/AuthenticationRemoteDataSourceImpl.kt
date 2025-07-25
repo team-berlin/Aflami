@@ -11,20 +11,22 @@ import com.berlin.repository.datasource.remote.dto.auth.SessionDto
 class AuthenticationRemoteDataSourceImpl(
     private val authenticationApiService: AuthenticationApiService
 ) : AuthenticationRemoteDataSource {
-    override suspend fun login(userName: String, password: String,requestToken: String): LoginDto {
-        return wrapApiResponse { authenticationApiService.login(
-            LoginRequestDTO(
-                userName = userName,
-                password = password,
-                requestToken=requestToken
+    override suspend fun login(userName: String, password: String, requestToken: String): LoginDto {
+        return wrapApiResponse {
+            authenticationApiService.login(
+                LoginRequestDTO(
+                    userName = userName,
+                    password = password,
+                    requestToken = requestToken
+                )
             )
-        ) }
+        }
     }
 
     override suspend fun createSession(token: String): SessionDto {
-        return authenticationApiService.createSession(
-            RequestTokenDTO(token)
-        )
+        return wrapApiResponse {
+            authenticationApiService.createSession(RequestTokenDTO(token))
+        }
     }
 
     override suspend fun requestToken(): LoginDto {
