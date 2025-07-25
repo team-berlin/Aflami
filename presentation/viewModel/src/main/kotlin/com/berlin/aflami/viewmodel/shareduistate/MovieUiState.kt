@@ -1,0 +1,11 @@
+package com.berlin.aflami.viewmodel.shareduistate
+
+data class MovieUIState(
+    val id: Long = 0L,
+    val title: String = "",
+    val rating: String = "",
+    val releaseYear: String = "",
+    val genre: List<Int> = emptyList(),
+    val poster: String = "",
+    val mediaType: String = "",
+)

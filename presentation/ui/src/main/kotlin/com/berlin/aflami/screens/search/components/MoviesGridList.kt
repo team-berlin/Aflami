@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.viewmodel.uistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.ui.R
 
 @Composable
