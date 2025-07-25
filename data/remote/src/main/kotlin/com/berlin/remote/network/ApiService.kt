@@ -99,14 +99,29 @@ interface ApiService {
         @Path(ApiConstants.SERIES_ID) seriesId: Long,
         @Path(ApiConstants.SEASON_NUMBER) seasonNumber: Int
     ): Response<EpisodesSeasonDto>
+
     @GET(ApiConstants.MOVIE_GENRES)
     suspend fun getMovieGenres(
-        @Query(ApiConstants.LANGUAGE)
-        language: String): Response<GenreResponse>
+        @Query(ApiConstants.LANGUAGE) language: String
+    ): Response<GenreResponse>
 
     @GET(ApiConstants.SERIES_GENRES)
     suspend fun getSeriesGenres(
         @Query(ApiConstants.LANGUAGE) language: String
     ): Response<GenreResponse>
+
+    @GET(ApiConstants.MOVIE_UPCOMING)
+    suspend fun getUpcomingMovie(): Response<BaseResponse<MovieDto>>
+
+    @GET(ApiConstants.POPULAR_MOVIES)
+    suspend fun popularMovies(
+        @Query(ApiConstants.LANGUAGE) language: String
+    ): MovieResponse
+
+    @GET(ApiConstants.POPULAR_TV_SHOWS)
+    suspend fun popularTVShows(
+        @Query(ApiConstants.LANGUAGE) language: String
+    ): TVShowResponse
+
 
 }
