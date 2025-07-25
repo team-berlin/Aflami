@@ -54,7 +54,7 @@ class SearchViewModel(
 
     init {
         observeSearchKeywordChanges()
-        loadFilterOptions()
+        loadFilterOptions( )
     }
 
     private fun loadRecentSearches() {
@@ -260,6 +260,7 @@ class SearchViewModel(
     }
 
     override fun onFilterButtonClicked() {
+        loadFilterOptions()
         updateState { it.copy(isDialogVisible = true, isLoading = false) }
 
     }
