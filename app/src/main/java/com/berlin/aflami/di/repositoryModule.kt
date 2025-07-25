@@ -8,11 +8,11 @@ import org.koin.dsl.module
 import repository.MovieDetailsRepository
 import repository.SearchRepository
 import repository.TvShowDetailsRepository
-import repository.WatchedMediaRepository
+import repository.ContinueWatchingRepository
 
 val repositoryModule = module {
     single<SearchRepository> { SearchRepositoryImpl(get(), get(),get(),get()) }
     single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get()) }
     single<TvShowDetailsRepository> { TvShowDetailsRepositoryImpl(get()) }
-    single <WatchedMediaRepository>{ WatchedMediaRepositoryImpl(get()) }
+    single <ContinueWatchingRepository>{ WatchedMediaRepositoryImpl(get()) }
 }

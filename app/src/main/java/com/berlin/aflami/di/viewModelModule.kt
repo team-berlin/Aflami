@@ -6,7 +6,7 @@ import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
 
 import com.berlin.aflami.viewmodel.home.HomeViewModel
-import com.berlin.aflami.viewmodel.watchedmedia.WatchedMediaViewModel
+import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
 
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -21,7 +21,7 @@ val viewModelModule = module {
     viewModelOf(::MediaDetailsViewModel)
     viewModelOf(::CastViewModel)
     viewModelOf(::HomeViewModel)
-    viewModelOf(::WatchedMediaViewModel)
+    viewModelOf(::ContinueWatchingMediaViewModel)
 
 
 }
