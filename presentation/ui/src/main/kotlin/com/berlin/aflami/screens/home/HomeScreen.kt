@@ -65,7 +65,7 @@ fun HomeContent(
 ){
 
     Column (
-        modifier = Modifier.padding(top = 6.dp)
+        modifier = Modifier.padding(vertical = 6.dp)
     ){
         val pagerState = rememberPagerState(initialPage = 0, pageCount = { state.popularMedia.popularMedia.size })
 
