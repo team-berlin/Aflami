@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.home.section
+package com.berlin.aflami.screens.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -3,14 +3,13 @@ package com.berlin.aflami.viewmodel.home
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
-import com.berlin.aflami.viewmodel.search.GenreUiState
-import usecase.GetMovieGenresUseCase
-import usecase.GetUpComingMoviesUseCase
-import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import com.berlin.aflami.viewmodel.search.GenreUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.update
+import usecase.GetMovieGenresUseCase
+import usecase.GetUpComingMoviesUseCase
 import usecase.home.GetContinueWatchingMovieUseCase
 import usecase.home.GetContinueWatchingTVShowUseCase
 
@@ -20,9 +19,18 @@ class HomeViewModel(
     private val getMoviesByGenreUseCase: GetMovieGenresUseCase,
     private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
     private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase
-):BaseViewModel<HomeUiState, HomeScreenEffect>(
+) : BaseViewModel<HomeUiState, HomeScreenEffect>(
     HomeUiState()
-),HomeInteractionListener{
+), HomeInteractionListener {
+
+    init {
+        updateState {
+            it.copy(isLoading = true, error = null)
+        }
+        getContinueWatchingMedia()
+        loadGenresMovies()
+        getUpComingMoviesByGenre()
+    }
     override fun onSearchClicked() {
         TODO("Not yet implemented")
     }
@@ -40,50 +48,9 @@ class HomeViewModel(
     }
 
     override fun onClickUpcomingMovieCard(id: Long) {
-        sendNewEffect(
-            HomeUiEffect.NavigatedToMovieDetailsScreen(
-                id.toInt()
-            )
-        )
+        sendNewEffect(HomeScreenEffect.NavigateToMovieDetails)
     }
 
-    fun getContinueWatchingMedia() {
-        _state.update {
-            it.copy(isLoading = true, error = null)
-        }
-        tryToCall(
-            call = {
-                coroutineScope {
-                    val moviesList = async {  getWatchedMovieUseCase().map { it.toUIStateMedia() }}
-                    val tvShowsList = async { getWatchedTVShowUseCase().map { it.toUIStateMedia() }}
-
-                    val movies = moviesList.await()
-                    val tvShows = tvShowsList.await()
-
-                    val combinedList = (movies + tvShows)
-                        .shuffled()
-                    combinedList
-                }
-            },
-            onSuccess = {continueWatchingMedia->
-                _state.update {
-                    it.copy(
-                        mediaContinueWatching = continueWatchingMedia,
-                        isLoading = false,
-                    )
-                }
-
-            },
-            onError = { throwable ->
-                _state.update {
-                    it.copy(
-                        error = throwable.message
-                    )
-                }
-            },
-        )
-
-    }
 
     override fun onChangeUpcomingMovieGenre(genreId: Int) {
         updateState {
@@ -156,4 +123,42 @@ class HomeViewModel(
         )
     }
 
+
+    fun getContinueWatchingMedia() {
+        _state.update {
+            it.copy(isLoading = true, error = null)
+        }
+        tryToCall(
+            call = {
+                coroutineScope {
+                    val moviesList = async {  getWatchedMovieUseCase().map { it.toUIStateMedia() }}
+                    val tvShowsList = async { getWatchedTVShowUseCase().map { it.toUIStateMedia() }}
+
+                    val movies = moviesList.await()
+                    val tvShows = tvShowsList.await()
+
+                    val combinedList = (movies + tvShows)
+                        .shuffled()
+                    combinedList
+                }
+            },
+            onSuccess = {continueWatchingMedia->
+                _state.update {
+                    it.copy(
+                        mediaContinueWatching = continueWatchingMedia,
+                        isLoading = false,
+                    )
+                }
+
+            },
+            onError = { throwable ->
+                _state.update {
+                    it.copy(
+                        error = throwable
+                    )
+                }
+            },
+        )
+
+    }
 }

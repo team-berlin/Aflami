@@ -24,7 +24,11 @@ fun NavGraphBuilder.home(
                     }
                     is HomeScreenEffect.NavigateToSearch->{}
                     is HomeScreenEffect.NavigateToTopRating->{}
-                    is HomeScreenEffect.NavigateToMovieDetails->{}
+                    is HomeScreenEffect.NavigateToMovieDetails->{
+                        navController.navigate(
+                            Destination.MediaDetailsScreen.route
+                        )
+                    }
 
                     else -> {}
                 }

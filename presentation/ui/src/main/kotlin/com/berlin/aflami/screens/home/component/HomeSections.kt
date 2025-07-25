@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.home.component
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun HomeSections(
     modifier: Modifier = Modifier,
