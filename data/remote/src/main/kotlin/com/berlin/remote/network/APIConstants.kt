@@ -21,6 +21,7 @@ object ApiConstants {
     const val MOVIE_MORE_LIKE_THIS = "movie/{movie_id}/similar"
     const val MOVIE_REVIEW = "movie/{movie_id}/reviews"
     const val MOVIE_GENRES = "genre/movie/list"
+    const val MOVIE_UPCOMING = "movie/upcoming"
 
     const val SERIES_ID = "series_id"
     const val SERIES_DETAILS = "tv/{series_id}"
@@ -30,6 +31,10 @@ object ApiConstants {
     const val SERIES_REVIEW = "tv/{series_id}/reviews"
     const val EPISODE_SEASON_SERIES = "tv/{series_id}/season/{season_number}"
     const val SEASON_NUMBER = "season_number"
+
+    const val POPULAR_MOVIES = "movie/popular"
+
+    const val POPULAR_TV_SHOWS = "tv/popular"
     const val SERIES_GENRES = "genre/tv/list"
 
     //auth

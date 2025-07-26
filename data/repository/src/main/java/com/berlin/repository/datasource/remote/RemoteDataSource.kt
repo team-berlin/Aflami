@@ -20,6 +20,7 @@ interface RemoteDataSource {
     suspend fun getMovieDetails(movieId: Long, language: String): MovieDetailsDto
     suspend fun getMovieCastDetails(movieId: Long, language: String): MediaCastResponse
     suspend fun getMovieReviews(movieId: Long): ReviewResponse
+    suspend fun getUpComingMovies(): BaseResponse<MovieDto>
 
     suspend fun searchMoviesByCountry(
         countryName: String, language: String, page: Int
@@ -46,5 +47,7 @@ interface RemoteDataSource {
 
     suspend fun getMovieGenres(language: String): GenreResponse
     suspend fun getSeriesGenres(language: String): GenreResponse
+    suspend fun getPopularMovies(language: String) : MovieResponse
+    suspend fun getPopularTVShows(language: String) : TVShowResponse
 
 }
