@@ -20,7 +20,6 @@
     <string name="label_categories">Categories</string>
     <string name="label_lets_play">Let\'s Play</string>
     <string name="label_profile">Profile</string>
-    <string name="popular">Popular</string>
 
     <string name="action">Action</string>
 
@@ -33,7 +32,7 @@
     <string name="search_by_favorite_actor">Search by favorite Actor</string>
 
 
-    <string name="aflami_title">AFLAMI</string>
+    <string name="aflami_title">Aflami</string>
     <string name="aflami_description">More than just watching.</string>
     <string name="my_account">My account</string>
     <string name="list_added_success">Added new list successfully.</string>

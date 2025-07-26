@@ -86,7 +86,7 @@ fun MediaDetailsScreen(
         ) {
             Text(
                 modifier = Modifier.fillMaxSize(),
-                text = uiState.error?:"",
+                text = uiState.error?.asString() ?: "",
                 style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.body,
                 textAlign = TextAlign.Center

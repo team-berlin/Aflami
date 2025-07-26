@@ -19,7 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.screens.mediadetails.components.MediaCastGrid
+import com.berlin.aflami.screens.mediadetails.components.MoviesCastGrid
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsEffect
@@ -88,7 +88,7 @@ fun CastContent(
                 }
             }
         )
-        MediaCastGrid(
+        MoviesCastGrid(
             mediaCast = castState
         )
     }
