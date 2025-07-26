@@ -1,16 +1,13 @@
 package com.berlin.aflami.component
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,37 +23,31 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.berlin.aflami.ui.color.ExtraColors.black50
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
 
+
 data class MovieCardUiState(
     val id: String,
-    val posterImage: Int,
+    val posterImage: String,
     val rating: String
 )
 
 @Composable
 fun MoviesPosterSlider(
-    modifier: Modifier = Modifier,
-    poster: String,
-    rating: String,
-    onClick: () -> Unit = {},
-    pagerState: PagerState,
+    modifier: Modifier,
+    moviesList: List<MovieCardUiState>,
+    onClick: (String) -> Unit = { },
 ) {
+    val pagerState = rememberPagerState(initialPage = 1, pageCount = { moviesList.size })
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val itemWidth = 244.dp
@@ -68,22 +58,23 @@ fun MoviesPosterSlider(
         contentPadding = PaddingValues(horizontal = contentPadding),
         modifier = modifier.fillMaxWidth()
     ) { pageIndex ->
+        val movie = moviesList[pageIndex]
         MovieCard(
+            movieCardUiState = movie,
             isCentered = pageIndex == pagerState.currentPage,
-            onClick = onClick,
-            rating = rating,
-            posterImageUrl = poster
+            onClick = onClick
         )
+
     }
 }
 
 @Composable
 fun MovieCard(
+    movieCardUiState: MovieCardUiState,
     isCentered: Boolean,
-    onClick: () -> Unit,
-    rating: String,
-    posterImageUrl: String,
+    onClick: (String) -> Unit,
 ) {
+
     val cardWidth = animateDpAsState(
         targetValue = if (isCentered) 244.dp else 207.dp,
     ).value
@@ -92,12 +83,11 @@ fun MovieCard(
     ).value
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
+            .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
-            model = posterImageUrl,
+            model = movieCardUiState.posterImage,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -108,10 +98,10 @@ fun MovieCard(
         if (isCentered) {
             RatingCard(
                 modifier = Modifier.align(Alignment.TopEnd),
-                rating = rating,
+                rating = movieCardUiState.rating,
             )
             PlayButton(
-                onClick = { }
+                onClick = { onClick(movieCardUiState.id) }
             )
         }
     }
@@ -179,9 +169,11 @@ fun PlayButton(onClick: () -> Unit) {
                 onClick()
             }, contentAlignment = Alignment.Center
     )
+
     {
         Icon(
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier
+                .size(40.dp),
             painter = painterResource(R.drawable.play_arrow),
             contentDescription = "Featured",
             tint = Theme.color.primary,
@@ -190,66 +182,47 @@ fun PlayButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun BlurredPosterBackground(
-    imageUrl: String,
-    modifier: Modifier = Modifier
-) {
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = "Blurred Poster Background",
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(black50)
-            .blur(16.dp),
-    )
-}
-
-@Composable
-@Preview
+@ThemeAndLocalePreviews
 fun SliderPreview() {
     AflamiTheme(
         isDarkTheme = true
     ) {
-//        MoviesPosterSlider(
-//            modifier = Modifier,
-//            poster = R.drawable.movie_poster2.toString(),
-//            rating = "3.4",
-//            onClick = { },
-//
-//        )
+        MoviesPosterSlider(
+            modifier = Modifier,
+            moviesList = moviesLists,
+        )
     }
 }
 
 val moviesLists = listOf(
     MovieCardUiState(
         id = "0",
-        posterImage = R.drawable.movie_poster2,
+        posterImage =R.drawable.movie_poster2.toString(),
         "9.9",
     ),
     MovieCardUiState(
         id = "1",
-        posterImage = R.drawable.movie_poster3,
+        posterImage = R.drawable.movie_poster3.toString(),
         rating = "9.9"
     ),
     MovieCardUiState(
         id = "2",
-        posterImage = R.drawable.movie_poster2,
+        posterImage = R.drawable.movie_poster2.toString(),
         rating = "7.4"
     ),
     MovieCardUiState(
         id = "3",
-        posterImage = R.drawable.movie_poster2,
+        posterImage = R.drawable.movie_poster2.toString(),
         "9.9",
     ),
     MovieCardUiState(
         id = "4",
-        posterImage = R.drawable.movie_poster3,
+        posterImage = R.drawable.movie_poster3.toString(),
         rating = "9.9"
     ),
     MovieCardUiState(
         id = "5",
-        posterImage = R.drawable.movie_poster2,
+        posterImage = R.drawable.movie_poster2.toString(),
         rating = "7.4"
     ),
 )

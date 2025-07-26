@@ -8,9 +8,10 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.GenreDto
 import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.MovieDto
-import com.berlin.repository.datasource.remote.dto.ProductionCompany
 import kotlinx.datetime.LocalDate
 import java.time.Instant
+
+import com.berlin.repository.datasource.remote.dto.ProductionCompany
 
 fun SearchingEntity.toDomain(): Movie {
     return Movie(
@@ -44,7 +45,7 @@ fun MovieDto.toDomain(): Movie {
         id = this.id?.toLong() ?: 0L,
         title = this.title.orEmpty(),
         rating = (this.voteAverage ?: 0.0),
-        releaseYear = stringToLocalDate(releaseDate ?: ""),
+        releaseYear = stringToLocalDate(releaseDate?:""),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
@@ -66,9 +67,9 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
         } ?: emptyList(),
         hasVideo = this.video,
         originCountry = this.originCountry?.get(0),
-        duration = this.runtime.formatRuntime())
+        duration = this.runtime.formatRuntime()
+    )
 }
-
 fun stringToLocalDate(dateString: String): LocalDate {
     return runCatching {
         LocalDate.parse(dateString)
@@ -76,7 +77,8 @@ fun stringToLocalDate(dateString: String): LocalDate {
 }
 
 fun GenreDto.toEntity() = GenreEntity(
-    id = this.id ?: 0, name = this.name.orEmpty()
+    id = this.id ?: 0,
+    name = this.name.orEmpty()
 )
 
 fun ProductionCompany.toEntity() = ProductionCompanyEntity(

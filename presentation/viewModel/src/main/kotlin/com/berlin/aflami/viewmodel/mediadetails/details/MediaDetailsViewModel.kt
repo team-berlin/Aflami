@@ -1,30 +1,25 @@
 package com.berlin.aflami.viewmodel.mediadetails.details
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
-import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.util.toggle
 import com.berlin.entity.Episodes
 import com.berlin.viewModel.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import usecase.mediadetails.AddContinueWatchingMovieUseCase
-import usecase.mediadetails.AddContinueWatchingTVShowUseCase
 import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
 import usecase.mediadetails.GetMovieGalleryUseCase
@@ -50,13 +45,11 @@ class MediaDetailsViewModel(
     private val movieReviewUseCase: GetMovieReviewUseCase,
     private val seriesReviewUseCase: GetSeriesReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
-    private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
-    private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase
 ) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
     MediaDetailsUiState()
 ), MediaInteractionListener {
 
-    private companion object {
+    companion object {
         const val ID_KEY = "id"
         const val MEDIA_TYPE_KEY = "media_type"
         val NO_REVIEWS = R.string.there_is_no_reviews
@@ -122,24 +115,13 @@ class MediaDetailsViewModel(
                             runtime = details.runtime,
                             genres = details.genres,
                             isLoading = false,
-                            mediaType = mediaType,
                             originalCountry = details.originalCountry,
                         )
                     }
-                    saveWatchedMedia(mediaType=mediaType)
                 }
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
-    }
-
-    private fun saveWatchedMedia(mediaType: MediaType){
-        viewModelScope.launch {
-            when (mediaType) {
-                MediaType.MOVIE -> addContinueWatchingMovieUseCase(_state.value.toMovie())
-                MediaType.TV_SHOW -> addContinueWatchingTVShowUseCase(_state.value.toTVShow())
-            }
-        }
     }
 
     fun isDescriptionExpanded(): Boolean {
@@ -494,6 +476,28 @@ class MediaDetailsViewModel(
         }
     }
 
+//    private fun handleErrorState(message: String?, updateRowSection: Boolean = false) {
+//        updateState {
+//            if (updateRowSection) {
+//                val rowError = if (message != null) {
+//                    RowSectionUiState.Error(message = message)
+//                } else {
+//                    RowSectionUiState.Error(messageRes = R.string.unknown_error)
+//                }
+//                it.copy(
+//                    error = message,
+//                    rowSection = rowError,
+//                    isLoading = false
+//                )
+//            } else {
+//                it.copy(
+//                    error = message,
+//                    isLoading = false
+//                )
+//            }
+//        }
+//    }
+
     private fun handleErrorState(errorUiState: ErrorUiState, updateRowSection: Boolean = false) {
         updateState {
             val rowSection = if (updateRowSection) {
@@ -501,7 +505,7 @@ class MediaDetailsViewModel(
             } else it.rowSection
 
             it.copy(
-                error = UiText.Dynamic(errorUiState.message).toString(),
+                error = UiText.Dynamic(errorUiState.message),
                 rowSection = rowSection,
                 isLoading = false
             )

@@ -11,10 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.berlin.aflami.ui.textstyle.nicomoji
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -30,11 +27,7 @@ fun HomeBar(
         Text(
             text = stringResource(R.string.aflami_title),
             color = Theme.color.textColors.title,
-            style = Theme.textStyle.label.medium.copy(
-                fontFamily = nicomoji,
-                fontWeight = FontWeight.Normal,
-                lineHeight = 20.sp
-            )
+            style = Theme.textStyle.label.large
         )
     }, containerColor = containerColor, subTitle = {
         Text(
