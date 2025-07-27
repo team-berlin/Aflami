@@ -17,6 +17,8 @@ object ApiConstants {
     const val MOVIE_ID = "movie_id"
     const val MOVIE_DETAILS = "movie/{movie_id}"
     const val MOVIE_IMAGES = "movie/{movie_id}/images"
+    const val TOP_RATED_MOVIES = "movie/top_rated"
+    const val TOP_RATED_SERIES = "tv/top_rated"
     const val MOVIE_CAST = "movie/{movie_id}/credits"
     const val MOVIE_MORE_LIKE_THIS = "movie/{movie_id}/similar"
     const val MOVIE_REVIEW = "movie/{movie_id}/reviews"

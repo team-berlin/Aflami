@@ -1,11 +1,14 @@
 package com.berlin.aflami.viewmodel.home
 
+import androidx.lifecycle.viewModelScope
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.home.uistate.HomeUiState
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import kotlinx.coroutines.Dispatchers
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import kotlinx.coroutines.async
@@ -13,6 +16,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import usecase.GetTopRatedMoviesUseCase
+import usecase.GetTopRatedSeriesUseCase
 import kotlinx.coroutines.launch
 import usecase.GetMovieGenresUseCase
 import usecase.GetPopularMoviesUseCase
@@ -27,6 +33,10 @@ class HomeViewModel(
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,
     private val getMoviesByGenreUseCase: GetMovieGenresUseCase,
     private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
+    private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase,
+    private val getTopRatedSeriesUseCase: GetTopRatedSeriesUseCase,
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+) : BaseViewModel<HomeUiState, HomeScreenEffect>(HomeUiState()), HomeInteractionListener {
     private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase
 ) : BaseViewModel<HomeUiState, HomeScreenEffect>(
     HomeUiState()
@@ -111,6 +121,40 @@ class HomeViewModel(
     }
 
     override fun onShowAllTopRating() {
+        viewModelScope.launch {
+            tryToCall(
+                call = {
+                    val topRatedMovies =
+                        getTopRatedMoviesUseCase(1).map { movie -> movie.toUIStateMedia() }
+                    val topRatedSeries =
+                        getTopRatedSeriesUseCase(1).map { series -> series.toUIStateMedia() }
+                    (topRatedMovies + topRatedSeries).sortedByDescending { it.rating }
+                },
+                onSuccess = { newTopRatedMedia ->
+                    _state.update { oldState ->
+                        oldState.copy(
+                            topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
+                                topRatedMedia = newTopRatedMedia,
+                                isLoading = false,
+                                errorMessage = null,
+                            )
+                        )
+                    }
+                },
+                onError = { errorUIState ->
+                    _state.update { oldState ->
+                        oldState.copy(
+                            topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
+                                topRatedMedia = null,
+                                isLoading = false,
+                                errorMessage = errorUIState.message
+                            )
+                        )
+                    }
+                },
+                dispatcher = Dispatchers.Default
+            )
+        }
     }
 
     override fun onMoodPickerClicked() {
