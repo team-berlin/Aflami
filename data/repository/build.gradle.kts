@@ -33,6 +33,5 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlin.datex)
     testImplementation(libs.bundles.test)
-
     implementation(project(":domain:usecase"))
 }

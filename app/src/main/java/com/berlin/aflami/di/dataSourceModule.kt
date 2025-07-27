@@ -19,16 +19,18 @@ import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
 import com.berlin.repository.datasource.local.ContinueWatchingLocalDataSource
 import com.berlin.repository.datasource.remote.HomeRemoteDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 
 import org.koin.dsl.module
 
 val dataSourceModule = module {
-    single<SearchLocalDataSource> { SearchLocalDataSourceImpl(get<SearchDao>()) }
-    single<RecentHistoryLocalDataSource> { RecentHistoryLocalDataSourceImpl(get<RecentHistoryDao>()) }
-    single<CategoriesPreferencesDataSource> { CategoriesPreferencesDataSourceImpl(get<CategoriesPreferencesDao>()) }
-    single<RemoteDataSource> { DataSourceImpl(get()) }
-    single<AuthenticationRemoteDataSource> { AuthenticationRemoteDataSourceImpl(get()) }
-    single<AuthenticationLocalDataSource> { AuthenticationLocalDataSourceImp(get()) }
-    single<ContinueWatchingLocalDataSource>{ ContinueWatchingLocalDataSourceImpl(get()) }
-    single<HomeRemoteDataSource>{ HomeRemoteDataSourceImpl(get()) }
+    singleOf (::SearchLocalDataSourceImpl) bind SearchLocalDataSource::class
+    singleOf(::RecentHistoryLocalDataSourceImpl) bind RecentHistoryLocalDataSource::class
+    singleOf(::CategoriesPreferencesDataSourceImpl) bind CategoriesPreferencesDataSource::class
+    singleOf(::DataSourceImpl) bind RemoteDataSource::class
+    singleOf(::AuthenticationRemoteDataSourceImpl) bind AuthenticationRemoteDataSource::class
+    singleOf(::AuthenticationLocalDataSourceImp) bind AuthenticationLocalDataSource::class
+    singleOf(::ContinueWatchingLocalDataSourceImpl) bind ContinueWatchingLocalDataSource::class
+    singleOf(::HomeRemoteDataSourceImpl) bind HomeRemoteDataSource::class
 }

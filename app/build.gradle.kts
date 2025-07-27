@@ -38,8 +38,6 @@ android {
         buildConfigField("String", "API_KEY", "\"${properties["API_KEY"]}\"")
     }
 
-
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -62,7 +60,9 @@ android {
         buildConfig = true
     }
 
-    configurations { implementation.get().exclude(mapOf("group" to "org.jetbrains", "module" to "annotations"))}
+    configurations {
+        implementation.get().exclude(mapOf("group" to "org.jetbrains", "module" to "annotations"))
+    }
 }
 
 dependencies {
@@ -73,24 +73,17 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.bundles.retrofit)
     implementation(libs.kotlinx.serialization.json)
-
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
-    implementation(libs.bundles.room)
     ksp(libs.roomCompiler)
-    implementation(libs.androidx.navigation)
-
-
-
-    api(project(":presentation:ui"))
+    implementation(libs.bundles.room)
+    implementation(project(":presentation:ui"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:viewModel"))
-    implementation(project(":presentation:navigation"))
     implementation(project(":domain:usecase"))
     implementation(project(":data:repository"))
-    implementation(project(":presentation:safeImageViewer"))
     implementation(project(":data:local"))
     implementation(project(":data:remote"))
 }

@@ -1,5 +1,6 @@
 package com.berlin.aflami.di
 
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 import usecase.ClearSearchHistoryUseCase
 import usecase.DeleteQueryFromHistoryUseCase
@@ -37,40 +38,40 @@ import usecase.auth.IsLoggedInUseCase
 import usecase.auth.LoginUseCase
 
 val useCaseModule = module {
-    single { ValidateUsernameUseCase() }
-    single { ValidatePasswordUseCase() }
-    single { GetPopularMoviesUseCase(get()) }
-    single { GetPopularTVShowsUseCase(get()) }
-    single { SearchByCountryUseCase(get()) }
-    single { SearchByActorNameUseCase(get()) }
-    single { GetSearchMoviesUseCase(get()) }
-    single { GetSearchTvShowsUseCase(get()) }
-    single { GetRecentHistoryUseCase(get()) }
-    single { SaveRecentHistoryUseCase(get()) }
-    single { ClearSearchHistoryUseCase(get()) }
-    single { DeleteQueryFromHistoryUseCase(get()) }
-    single { GetSimilarMoviesUseCase(get()) }
-    single { GetSimilarSeriesUseCase(get()) }
-    single { GetMovieDetailsUseCase(get()) }
-    single { GetTvShowDetailsUseCase(get()) }
-    single { GetMovieGalleryUseCase(get()) }
-    single { GetSeriesGalleryUseCase(get()) }
-    single { GetMovieCastUseCase(get()) }
-    single { GetSeriesCastUseCase(get()) }
-    single { GetMovieReviewUseCase(get()) }
-    single { GetSeriesReviewUseCase(get()) }
-    single { GetSeasonEpisodesUseCase(get()) }
-    single{ AddContinueWatchingMovieUseCase(get()) }
-    single { GetContinueWatchingMovieUseCase(get()) }
-    single { GetContinueWatchingTVShowUseCase(get()) }
-    single { AddContinueWatchingTVShowUseCase(get()) }
-    single { GetUpComingMoviesUseCase(get()) }
-    single { GetMovieGenresUseCase(get()) }
-    single { GetSeriesGenresUseCase(get()) }
+    factoryOf(::ValidateUsernameUseCase)
+    factoryOf(::ValidatePasswordUseCase)
+    factoryOf(::GetPopularMoviesUseCase)
+    factoryOf(::GetPopularTVShowsUseCase)
+    factoryOf(::SearchByCountryUseCase)
+    factoryOf(::SearchByActorNameUseCase)
+    factoryOf(::GetSearchMoviesUseCase)
+    factoryOf(::GetSearchTvShowsUseCase)
+    factoryOf(::GetRecentHistoryUseCase)
+    factoryOf(::SaveRecentHistoryUseCase)
+    factoryOf(::ClearSearchHistoryUseCase)
+    factoryOf(::DeleteQueryFromHistoryUseCase)
+    factoryOf(::GetSimilarMoviesUseCase)
+    factoryOf(::GetSimilarSeriesUseCase)
+    factoryOf(::GetMovieDetailsUseCase)
+    factoryOf(::GetTvShowDetailsUseCase)
+    factoryOf(::GetMovieGalleryUseCase)
+    factoryOf(::GetSeriesGalleryUseCase)
+    factoryOf(::GetMovieCastUseCase)
+    factoryOf(::GetSeriesCastUseCase)
+    factoryOf(::GetMovieReviewUseCase)
+    factoryOf(::GetSeriesReviewUseCase)
+    factoryOf(::GetSeasonEpisodesUseCase)
+    factoryOf(::AddContinueWatchingMovieUseCase)
+    factoryOf(::GetContinueWatchingMovieUseCase)
+    factoryOf(::GetContinueWatchingTVShowUseCase)
+    factoryOf(::AddContinueWatchingTVShowUseCase)
+    factoryOf(::GetUpComingMoviesUseCase)
+    factoryOf(::GetMovieGenresUseCase)
+    factoryOf(::GetSeriesGenresUseCase)
+    factoryOf(::LoginUseCase)
+    factoryOf(::IsLoggedInUseCase)
+    factoryOf(::GetTopRatedSeriesUseCase)
+    factoryOf(::GetTopRatedMoviesUseCase)
 
-    single { LoginUseCase(get()) }
-    single { IsLoggedInUseCase(get()) }
-    single { GetTopRatedSeriesUseCase(get()) }
-    single { GetTopRatedMoviesUseCase(get()) }
 
 }

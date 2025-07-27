@@ -71,11 +71,11 @@ fun MediaCard(
                 ShimmerBox(modifier = Modifier.fillMaxSize())
             }
         }
-
 //        SafeImageViewer(
 //            imageUri = mediaImg,
 //            modifier = Modifier.fillMaxSize(),
 //        )
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()

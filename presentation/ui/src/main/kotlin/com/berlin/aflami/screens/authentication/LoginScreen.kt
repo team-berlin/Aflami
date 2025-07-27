@@ -64,13 +64,13 @@ import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.component.buttons.ButtonState
 import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.navigation.Destination
+import com.berlin.aflami.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
 import com.berlin.aflami.viewmodel.login.FormUiState
 import com.berlin.aflami.viewmodel.login.LoginEffect
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
-import com.example.navigation.Destination
-import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
 import org.koin.androidx.compose.koinViewModel
 
 
