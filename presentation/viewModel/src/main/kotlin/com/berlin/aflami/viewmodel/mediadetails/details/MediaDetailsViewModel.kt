@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
-import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
@@ -100,7 +99,7 @@ class MediaDetailsViewModel(
                         movie?.toUiState()
                     }
 
-                    MediaType.TV_SHOW -> {
+                    MediaType.TVSHOW -> {
                         val movie = getTvShowDetailsUseCase(mediaId, language)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
                         movie?.toUiState()
@@ -137,7 +136,7 @@ class MediaDetailsViewModel(
         viewModelScope.launch {
             when (mediaType) {
                 MediaType.MOVIE -> addContinueWatchingMovieUseCase(_state.value.toMovie())
-                MediaType.TV_SHOW -> addContinueWatchingTVShowUseCase(_state.value.toTVShow())
+                MediaType.TVSHOW -> addContinueWatchingTVShowUseCase(_state.value.toTVShow())
             }
         }
     }
@@ -260,7 +259,7 @@ class MediaDetailsViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> getSimilarMoviesUseCase(mediaId).map { it.toUIStateMedia() }
-                    MediaType.TV_SHOW -> getSimilarTVShowsUseCase(mediaId).map { it.toUIStateMedia() }
+                    MediaType.TVSHOW -> getSimilarTVShowsUseCase(mediaId).map { it.toUIStateMedia() }
                 }
             },
             onSuccess = { moreLikeMedia ->
@@ -297,7 +296,7 @@ class MediaDetailsViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> movieReviewUseCase(mediaId).map { it.toUiState() }
-                    MediaType.TV_SHOW -> seriesReviewUseCase(mediaId).map { it.toUiState() }
+                    MediaType.TVSHOW -> seriesReviewUseCase(mediaId).map { it.toUiState() }
                 }
             },
             onSuccess = { reviewResult ->
@@ -334,7 +333,7 @@ class MediaDetailsViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> getMovieGalleryUseCase(id)
-                    MediaType.TV_SHOW -> getSeriesGalleryUseCase(id)
+                    MediaType.TVSHOW -> getSeriesGalleryUseCase(id)
                 }
             },
             onSuccess = { gallery ->
@@ -435,7 +434,7 @@ class MediaDetailsViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
-                    MediaType.TV_SHOW -> getSeriesCastUseCase(
+                    MediaType.TVSHOW -> getSeriesCastUseCase(
                         mediaId,
                         language
                     ).map { it.toUiState() }

@@ -7,6 +7,7 @@ import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.search.GenreUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -155,7 +156,11 @@ class HomeViewModel(
 
 
     override fun onClickUpcomingMovieCard(id: Long) {
-        sendNewEffect(HomeScreenEffect.NavigateToMovieDetails)
+        sendNewEffect(HomeScreenEffect.NavigateToMovieDetails(id, MediaType.MOVIE.name))
+    }
+
+    override fun onClickPopularMovieCard(id: Long, mediaType: MediaType) {
+        sendNewEffect(HomeScreenEffect.NavigateToMovieDetails(id, mediaType.name))
     }
 
 

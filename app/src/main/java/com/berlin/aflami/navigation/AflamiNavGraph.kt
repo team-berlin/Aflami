@@ -34,7 +34,7 @@ fun AflamiNavGraph(
     navController: NavHostController, modifier: Modifier = Modifier, isLoggedIn: Boolean
 ) {
     val startDestination =
-        if (isLoggedIn) Destination.SearchScreen.route else Destination.SearchScreen.route
+        if (isLoggedIn) Destination.HomeScreen.route else Destination.LoginScreen.route
     NavHost(
         modifier = modifier,
         navController = navController,

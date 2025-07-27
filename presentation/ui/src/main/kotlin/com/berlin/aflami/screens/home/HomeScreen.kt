@@ -30,7 +30,6 @@ import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
 import com.berlin.aflami.screens.home.component.MediaSections
 import com.berlin.aflami.screens.home.component.PosterSlider
-import com.berlin.aflami.screens.home.component.upcomingMovies
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
@@ -115,7 +114,8 @@ private fun HomeContent(
                             modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
                             mediaList = state.popularMedia.popularMedia,
                             pagerState = pagerState,
-                            onClick = { })
+                            onClick = { listener.onClickPopularMovieCard(it.id,it.mediaType) }
+                        )
 
                         currentMedia?.let { media ->
                             Text(
@@ -154,19 +154,15 @@ private fun HomeContent(
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
-                Column(modifier = Modifier.padding(bottom = 100.dp)) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = lazyListState,
-                    ) {
-                        upcomingMovies(
-                            moviesGenres = state.upcomingMovieGenres,
-                            movies = state.upcomingMovies,
-                            onMovieClicked = listener::onClickUpcomingMovieCard,
-                            onChangeMovieGenre = listener::onChangeUpcomingMovieGenre,
-                        )
-                    }
-                }
+//                Column(modifier = Modifier.padding(bottom = 100.dp))
+//                {
+//                        upcomingMovies(
+//                            moviesGenres = state.upcomingMovieGenres,
+//                            movies = state.upcomingMovies,
+//                            onMovieClicked = listener::onClickUpcomingMovieCard,
+//                            onChangeMovieGenre = listener::onChangeUpcomingMovieGenre,
+//                        )
+//                }
             }
         }
     }

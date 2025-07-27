@@ -12,6 +12,13 @@ fun Media.toUIState(): MediaUiState {
         releaseYear = releaseYear.year.toString(),
         genre = genre,
         poster = poster,
-        mediaType = MediaType.valueOf(mediaType)
+        mediaType = MediaType.valueOf(mediaTypeMapper(mediaType.uppercase()))
     )
+}
+fun mediaTypeMapper(mediatype:String):String{
+    return when(mediatype){
+        "TV" -> MediaType.TVSHOW.name
+        "MOVIE" -> MediaType.MOVIE.name
+        else -> MediaType.MOVIE.name
+    }
 }

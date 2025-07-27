@@ -81,23 +81,15 @@ fun LoginScreen(
 ) {
     val uiState by viewmodel.state.collectAsState()
     LoginContent(uiState, viewmodel)
-    val context = LocalContext.current
-    val sharedPrefs = context.getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE)
-    val sessionId = sharedPrefs.getString("userSessionId", null)
-    if (sessionId!=null) {
-        navController.navigate(
-            Destination.SearchScreen.route
-        )
-    }
+
     LaunchedEffect(Unit) {
         viewmodel.effect.collect {
             when (it) {
                 LoginEffect.NavigateToHome -> {
                     navController.navigate(
-                        Destination.SearchScreen.route
+                        Destination.HomeScreen.route
                     )
                 }
-
                 LoginEffect.NavigateToCreateAccount -> {
                     val encodedUrl = Uri.encode(REGISTER_URL)
                     navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")

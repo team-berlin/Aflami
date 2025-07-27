@@ -1,6 +1,7 @@
 package com.berlin.aflami.di
 
 import com.berlin.repository.AuthenticationRepositoryImpl
+import com.berlin.repository.HomeRepositoryImpl
 import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
 import com.berlin.repository.SearchRepositoryImpl
@@ -13,6 +14,7 @@ import repository.MovieRepository
 import repository.SearchRepository
 import repository.TvShowDetailsRepository
 import repository.ContinueWatchingRepository
+import repository.HomeRepository
 
 val repositoryModule = module {
     single<SearchRepository> { SearchRepositoryImpl(get(), get(),get(),get()) }
@@ -21,4 +23,5 @@ val repositoryModule = module {
     single <ContinueWatchingRepository>{ WatchedMediaRepositoryImpl(get()) }
     single<MovieRepository> { MovieRepositoryImpl(get()) }
     single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(),get()) }
+    single<HomeRepository> { HomeRepositoryImpl(get()) }
 }

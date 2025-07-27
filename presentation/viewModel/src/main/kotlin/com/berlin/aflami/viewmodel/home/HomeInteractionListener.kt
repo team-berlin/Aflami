@@ -1,5 +1,7 @@
 package com.berlin.aflami.viewmodel.home
 
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
+
 interface HomeInteractionListener{
 
     fun onSearchClicked()
@@ -7,5 +9,7 @@ interface HomeInteractionListener{
     fun onShowAllTopRating()
     fun onMoodPickerClicked()
     fun onClickUpcomingMovieCard(id: Long)
+    fun onClickPopularMovieCard(id: Long, mediaType: MediaType)
     fun onChangeUpcomingMovieGenre(genreId: Int)
+
 }

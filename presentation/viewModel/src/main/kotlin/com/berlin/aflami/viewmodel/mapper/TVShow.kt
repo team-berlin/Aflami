@@ -25,6 +25,6 @@ fun TVShow.toUIStateMedia(): MediaUiState {
         releaseYear = releaseYear.year.toString(),
         genre = genre,
         poster = poster,
-        mediaType = MediaType.TV_SHOW
+        mediaType = MediaType.TVSHOW
     )
 }

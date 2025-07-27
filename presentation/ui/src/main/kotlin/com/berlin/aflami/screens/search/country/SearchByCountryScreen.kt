@@ -60,7 +60,7 @@ fun SearchByCountryScreen(
                 SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
                 is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
                     navController.navigate(
-                        "mediaDetailsScreen/${effect.movieId}"
+                        "mediaDetailsScreen/${effect.movieId}/${"MOVIE"}"
                     )
                 }
             }

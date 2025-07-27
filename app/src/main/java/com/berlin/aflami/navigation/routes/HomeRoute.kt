@@ -30,7 +30,7 @@ fun NavGraphBuilder.home(
                     is HomeScreenEffect.NavigateToTopRating->{}
                     is HomeScreenEffect.NavigateToMovieDetails->{
                         navController.navigate(
-                            Destination.MediaDetailsScreen.route
+                            Destination.MediaDetailsScreen.route(effect.id.toLong(), effect.mediaType)
                         )
                     }
 

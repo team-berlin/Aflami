@@ -1,6 +1,7 @@
 package com.berlin.aflami
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -22,6 +23,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         val isLoggedIn = mainViewModel.state.value
+        Log.d("MainActivity", "isLoggedInss: $isLoggedIn")
         setContent {
             val navController = rememberNavController()
             AflamiTheme {

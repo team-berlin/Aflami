@@ -11,6 +11,8 @@ import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
 import usecase.GetSeriesGenresUseCase
+import usecase.GetTopRatedMoviesUseCase
+import usecase.GetTopRatedSeriesUseCase
 import usecase.SearchByActorNameUseCase
 import usecase.GetUpComingMoviesUseCase
 import usecase.mediadetails.GetSeasonEpisodesUseCase
@@ -68,5 +70,7 @@ val useCaseModule = module {
 
     single { LoginUseCase(get()) }
     single { IsLoggedInUseCase(get()) }
+    single { GetTopRatedSeriesUseCase(get()) }
+    single { GetTopRatedMoviesUseCase(get()) }
 
 }

@@ -1,6 +1,6 @@
 package com.berlin.aflami.viewmodel.shareduistate
 
-enum class MediaType { MOVIE, TV_SHOW }
+enum class MediaType { MOVIE, TVSHOW }
 
 data class MediaUiState(
     val id: Long = 0L,
