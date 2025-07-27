@@ -1,6 +1,7 @@
 package com.berlin.aflami
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,16 +18,15 @@ import com.berlin.aflami.viewmodel.main.MainViewModel
 import org.koin.android.ext.android.getKoin
 
 class MainActivity : ComponentActivity() {
-    val mainViewModel: MainViewModel = getKoin().get()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        val isLoggedIn = mainViewModel.state.value
         setContent {
             val navController = rememberNavController()
             AflamiTheme {
                 AflamiNavGraph(
-                    isLoggedIn = isLoggedIn,
+
                     navController = navController,
                     modifier = Modifier
                         .fillMaxSize()

@@ -35,7 +35,7 @@ class CastViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
-                    MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId, language).map { it.toUiState() }
+                    MediaType.TVSHOW -> getSeriesCastUseCase(mediaId, language).map { it.toUiState() }
                 }
             },
             onSuccess = { cast ->
@@ -50,7 +50,7 @@ class CastViewModel(
             onError = { throwable ->
                 _state.update {
                     it.copy(
-                        error = UiText.Dynamic(throwable.message),
+                        error = UiText.Dynamic(throwable.message).toString(),
                     )
                 }
             },

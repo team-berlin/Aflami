@@ -27,6 +27,7 @@
     <string name="read_more">قراءة اقل</string>
     <string name="login_required_warning">قم بتسجيل الدخول من اجل استخدام الميزات الإضافية للتطبيق!</string>
     <string name="login_required">التسجيل مطلوب</string>
+    <string name="continue_watching">Continue watching</string>
 
     //login
     <string name="welcome_back">أهلاً بعودتك!</string>
@@ -48,4 +49,5 @@
     <string name="reviews">تقييمات</string>
     <string name="gallery">المعرض</string>
     <string name="company_production">إنتاج\nالشركة</string>
+    <string name="upcoming">حصريات</string>
 </resources>

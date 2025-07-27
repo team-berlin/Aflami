@@ -47,4 +47,6 @@
     <string name="reviews">Reviews</string>
     <string name="gallery">Gallery</string>
     <string name="company_production">company\nproduction</string>
+    <string name="continue_watching">Continue watching</string>
+    <string name="upcoming">Upcoming</string>
 </resources>

@@ -11,9 +11,9 @@ import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
+import com.berlin.aflami.viewmodel.util.MediaType
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -460,31 +460,14 @@ class SearchViewModel(
     }
 
 
-    private var movieGenres = FilterItemUiState.defaultGenres
-    private var tvShowGenres = FilterItemUiState.defaultGenres
-
     private fun loadFilterOptions(language: String = "en") {
         val selectedTab = state.value.selectedTabOption
-        val cachedGenres = when (selectedTab) {
-            TabOption.MOVIES -> movieGenres
-            TabOption.TV_SHOWS -> tvShowGenres
-        }
 
-        if (cachedGenres != FilterItemUiState.defaultGenres) {
-            updateState {
-                it.copy(
-                    filterItemUiState = it.filterItemUiState.copy(
-                        isLoading = false
-                    )
-                )
-            }
-        } else {
-            tryToCall(
-                call = { buildGenreList(selectedTab, language) },
-                onSuccess = { filterGenres -> updateGenres(selectedTab, filterGenres) },
-                onError = { error -> setErrorState(error.message) }
-            )
-        }
+        tryToCall(
+            call = { buildGenreList(selectedTab, language) },
+            onSuccess = { filterGenres -> updateGenres(selectedTab, filterGenres) },
+            onError = { error -> setErrorState(error.message) }
+        )
     }
 
     private suspend fun buildGenreList(
@@ -509,10 +492,9 @@ class SearchViewModel(
     }
 
     private fun updateGenres(selectedTab: TabOption, filterGenres: List<GenreUiState>) {
-        when (selectedTab) {
-            TabOption.MOVIES -> {
-                movieGenres = filterGenres
-                updateState {
+        updateState {
+            when (selectedTab) {
+                TabOption.MOVIES -> {
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterMovieSelected = it.filterItemUiState.filterMovieSelected.copy(
@@ -521,11 +503,8 @@ class SearchViewModel(
                         )
                     )
                 }
-            }
 
-            TabOption.TV_SHOWS -> {
-                tvShowGenres = filterGenres
-                updateState {
+                TabOption.TV_SHOWS -> {
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterTvShowSelected = it.filterItemUiState.filterTvShowSelected.copy(
@@ -546,6 +525,7 @@ class SearchViewModel(
             )
         }
     }
+
     fun onItemClicked(query: String) {
         updateState { it.copy(searchQuery = query, isLoading = true) }
     }

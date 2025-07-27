@@ -10,6 +10,8 @@ object NavigationConstants{
         const val CAST_SCREEN="castScreen/{id}/{media_type}"
         const val LOGIN_SCREEN="login"
         const val WEB_VIEW_SCREEN="webViewScreen/{url}"
+        const val WATCHED_MEDIA_DETAILS="watchedMediaDetails/{id}/{media_type}"
+        const val HOME_SCREEN="homeScreen"
     }
     object Routes{
         const val MEDIA_DETAILS_ROUTE="mediaDetailsScreen"

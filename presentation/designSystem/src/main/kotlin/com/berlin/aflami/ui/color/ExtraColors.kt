@@ -31,4 +31,6 @@ object ExtraColors {
             Color(0xFF0D090B)
         )
     )
+
+    val black50 = Color(0x80000000)
 }

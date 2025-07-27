@@ -87,7 +87,7 @@ class SearchByCountryViewModel(
     }
 
     override fun onMovieClicked(movieId: Int) {
-        sendNewEffect(SearchByCountryEffect.NavigatedToMovieDetailsScreen(movieId))
+        sendNewEffect(SearchByCountryEffect.NavigatedToMovieDetailsScreen(movieId,"MOVIE"))
     }
 
     override fun onBackClicked() {

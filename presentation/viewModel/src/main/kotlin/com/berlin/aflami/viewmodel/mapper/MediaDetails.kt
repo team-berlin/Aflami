@@ -53,7 +53,7 @@ fun TvShowDetails.toUiState(
     numberOfSeasons = numberOfSeasons,
     isFavorite = isFavorite,
     isOverviewExpanded = isOverviewExpanded,
-    mediaType = MediaType.TV_SHOW,
+    mediaType = MediaType.TVSHOW,
     originalCountry = originCountry,
 )
 
