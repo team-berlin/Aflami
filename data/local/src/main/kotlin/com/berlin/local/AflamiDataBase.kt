@@ -23,7 +23,7 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
         ContinueWatchingMovieEntity::class,
         ContinueWatchingTVShowEntity::class
     ],
-    version = 1
+    version = 2
 )
 abstract class SearchDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao

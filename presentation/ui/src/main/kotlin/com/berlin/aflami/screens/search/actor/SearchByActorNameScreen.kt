@@ -56,7 +56,7 @@ fun SearchByActorNameScreen(
                     navController.navigate(
                         Destination.MediaDetailsScreen.route(
                             it.movieId,
-                            it.mediaType
+                            "MOVIE"
                         )
                     )
                 }
@@ -141,10 +141,10 @@ private fun SearchByActorNameContent(
                     )
                 }
                 else -> {
-//                    MediaGridList(
-//                        media = pagedMovies,
-//                        onMovieClick = listener::onMovieClicked,
-//                    )
+                    MediaGridList(
+                        media = pagedMovies,
+                        onMovieClick = listener::onMovieClicked,
+                    )
                 }
             }
         }

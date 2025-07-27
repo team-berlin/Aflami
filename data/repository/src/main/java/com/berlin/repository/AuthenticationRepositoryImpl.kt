@@ -65,8 +65,7 @@ class AuthenticationRepositoryImpl(
 
     override suspend fun isLoggedIn(): Boolean {
         val result= localDataSource.getUserSessionId()
-        print(result)
-        return localDataSource.getUserSessionId() != null
+         return result != null
     }
 
     override suspend fun logout() {

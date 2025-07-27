@@ -18,17 +18,15 @@ import com.berlin.aflami.viewmodel.main.MainViewModel
 import org.koin.android.ext.android.getKoin
 
 class MainActivity : ComponentActivity() {
-    val mainViewModel: MainViewModel = getKoin().get()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        val isLoggedIn = mainViewModel.state.value
-        Log.d("MainActivity", "isLoggedInss: $isLoggedIn")
         setContent {
             val navController = rememberNavController()
             AflamiTheme {
                 AflamiNavGraph(
-                    isLoggedIn = isLoggedIn,
+
                     navController = navController,
                     modifier = Modifier
                         .fillMaxSize()

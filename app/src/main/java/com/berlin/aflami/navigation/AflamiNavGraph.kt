@@ -15,7 +15,9 @@ import com.berlin.aflami.navigation.routes.searchByCountryRoute
 import com.berlin.aflami.navigation.routes.searchRoute
 import com.berlin.aflami.navigation.routes.watchedMedia
 import com.berlin.aflami.navigation.routes.webView
+import com.berlin.aflami.viewmodel.main.MainViewModel
 import com.example.navigation.Destination
+import org.koin.compose.getKoin
 
 /**
  * Sets up the navigation graph for the Aflami app using Jetpack Compose Navigation 2.
@@ -31,10 +33,11 @@ import com.example.navigation.Destination
 
 @Composable
 fun AflamiNavGraph(
-    navController: NavHostController, modifier: Modifier = Modifier, isLoggedIn: Boolean
+    navController: NavHostController, modifier: Modifier = Modifier,
+    mainViewModel: MainViewModel = getKoin().get(),
 ) {
     val startDestination =
-        if (isLoggedIn) Destination.HomeScreen.route else Destination.LoginScreen.route
+        if (mainViewModel.loginState) Destination.HomeScreen.route else Destination.LoginScreen.route
     NavHost(
         modifier = modifier,
         navController = navController,

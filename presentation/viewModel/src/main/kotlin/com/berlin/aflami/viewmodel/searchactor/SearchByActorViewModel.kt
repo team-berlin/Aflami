@@ -41,7 +41,11 @@ class SearchByActorViewModel(
         }
     }
 
-    override fun onMovieClicked(movieId: Long, mediaType: MediaType) {
+
+    override fun onMovieClicked(
+        movieId: Long,
+        mediaType: com.berlin.aflami.viewmodel.shareduistate.MediaType
+    ) {
         sendNewEffect(SearchByActorEffect.NavigatedToMediaDetailsScreen(movieId, mediaType.name))
     }
 

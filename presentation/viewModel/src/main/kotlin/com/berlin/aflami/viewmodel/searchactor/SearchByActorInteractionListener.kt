@@ -1,6 +1,6 @@
 package com.berlin.aflami.viewmodel.searchactor
 
-import com.berlin.aflami.viewmodel.util.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 
 
 interface SearchByActorInteractionListener {

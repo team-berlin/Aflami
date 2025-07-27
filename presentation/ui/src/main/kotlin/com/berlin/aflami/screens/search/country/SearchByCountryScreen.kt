@@ -159,7 +159,7 @@ private fun SearchByCountryContent(
                             navController.navigate(
                                 Destination.MediaDetailsScreen.route(
                                     movieId,
-                                    mediaType
+                                    "MOVIE"
                                 )
                             )
                         }
