@@ -13,6 +13,7 @@ data class HomeUiState(
     val upcomingMovieGenres: List<GenreUiState> = defaultGenres,
     val selectedRating: Float = 1f,
     val selectedGenres: Int = -1,
+    val topRatedMediaUiState: TopRatedMediaUiState = TopRatedMediaUiState(),
     val popularMedia: PopularMediaUiState = PopularMediaUiState(),
     val isLoading: Boolean = false,
     val error: ErrorUiState? = null
@@ -21,6 +22,12 @@ data class HomeUiState(
         val defaultGenres = listOf(GenreUiState(-1, "All", isSelected = true))
     }
 }
+
+data class TopRatedMediaUiState(
+    val topRatedMedia: List<MediaUiState>? = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+)
 
 data class PopularMediaUiState(
     val isLoading: Boolean = false,
