@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.search
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -50,14 +49,10 @@ class SearchViewModel(
     private val _recentSearchState = MutableStateFlow<List<String>>(emptyList())
     val recentSearchState = _recentSearchState.asStateFlow()
 
-    private var movieFilterState = FilterTabSelected()
-    private var tvShowFilterState = FilterTabSelected()
-    private var movieGenres = FilterItemUiState.defaultGenres
-    private var tvShowGenres = FilterItemUiState.defaultGenres
 
     init {
         observeSearchKeywordChanges()
-        loadRecentSearch()
+        loadFilterOptions()
     }
 
     private fun loadRecentSearches() {
@@ -114,17 +109,26 @@ class SearchViewModel(
                     config = PagingConfig(pageSize = 20, initialLoadSize = 20),
                     pagingSourceFactory = {
                         BasePagingSource(
-                            call = { page -> searchTvShowsUseCase.invoke(query = query, page = page) }
+                            call = { page ->
+                                searchTvShowsUseCase.invoke(
+                                    query = query,
+                                    page = page
+                                )
+                            }
                         )
                     }
                 ).flow
                     .map { it.map { it.toUiState() } }
                     .map { pagingData ->
                         pagingData.filter { tvUiState ->
-                            val selectedRating = state.value.filterItemUiState.filterTabSelected.selectedRating
-                            val selectedGenreId = state.value.filterItemUiState.filterTabSelected.selectedGenres
-                            val matchesRating = tvUiState.rating.toFloatOrNull()?.let { it > selectedRating } == true
-                            val matchesGenre = selectedGenreId == -1 || tvUiState.genre.any { it == selectedGenreId }
+                            val selectedRating =
+                                state.value.filterItemUiState.filterTvShowSelected.selectedRating
+                            val selectedGenreId =
+                                state.value.filterItemUiState.filterTvShowSelected.selectedGenres
+                            val matchesRating = tvUiState.rating.toFloatOrNull()
+                                ?.let { it > selectedRating } == true
+                            val matchesGenre =
+                                selectedGenreId == -1 || tvUiState.genre.any { it == selectedGenreId }
                             matchesGenre && matchesRating
                         }
                     }.cachedIn(viewModelScope)
@@ -146,17 +150,26 @@ class SearchViewModel(
                     config = PagingConfig(pageSize = 10, initialLoadSize = 10),
                     pagingSourceFactory = {
                         BasePagingSource(
-                            call = { page -> searchMoviesUseCase.invoke(query = query, page = page) }
+                            call = { page ->
+                                searchMoviesUseCase.invoke(
+                                    query = query,
+                                    page = page
+                                )
+                            }
                         )
                     }
                 ).flow
                     .map { pagingData -> pagingData.map { it.toUIState() } }
                     .map { pagingData ->
                         pagingData.filter { movieUiState ->
-                            val selectedRating = state.value.filterItemUiState.filterTabSelected.selectedRating
-                            val selectedGenreId = state.value.filterItemUiState.filterTabSelected.selectedGenres
-                            val matchesRating = movieUiState.rating.toFloatOrNull()?.let { it > selectedRating } == true
-                            val matchesGenre = selectedGenreId == -1 || movieUiState.genre.any { it == selectedGenreId }
+                            val selectedRating =
+                                state.value.filterItemUiState.filterMovieSelected.selectedRating
+                            val selectedGenreId =
+                                state.value.filterItemUiState.filterMovieSelected.selectedGenres
+                            val matchesRating = movieUiState.rating.toFloatOrNull()
+                                ?.let { it > selectedRating } == true
+                            val matchesGenre =
+                                selectedGenreId == -1 || movieUiState.genre.any { it == selectedGenreId }
                             matchesGenre && matchesRating
                         }
                     }.cachedIn(viewModelScope)
@@ -183,7 +196,14 @@ class SearchViewModel(
         tryToCall(
             call = { saveRecentHistoryUseCase },
             onSuccess = { updateState { it.copy(isLoading = false) } },
-            onError = { error -> updateState { it.copy(errorMessage = error.message, isLoading = false) } }
+            onError = { error ->
+                updateState {
+                    it.copy(
+                        errorMessage = error.message,
+                        isLoading = false
+                    )
+                }
+            }
         )
     }
 
@@ -208,33 +228,17 @@ class SearchViewModel(
     }
 
     override fun onTabOptionClicked(tabOption: TabOption) {
-        when (state.value.selectedTabOption) {
-            TabOption.MOVIES -> {
-                movieFilterState = state.value.filterItemUiState.filterTabSelected
-                movieGenres = state.value.filterItemUiState.genreUiStates
-            }
-            TabOption.TV_SHOWS -> {
-                tvShowFilterState = state.value.filterItemUiState.filterTabSelected
-                tvShowGenres = state.value.filterItemUiState.genreUiStates
-            }
-        }
-        val (filterState, genres) = when (tabOption) {
-            TabOption.MOVIES -> Pair(movieFilterState, movieGenres)
-            TabOption.TV_SHOWS -> Pair(tvShowFilterState, tvShowGenres)
-        }
         updateState {
             it.copy(
-                isLoading = true,
+                isLoading = false,
                 selectedTabOption = tabOption,
                 filterItemUiState = FilterItemUiState(
-                    filterTabSelected = filterState.copy(genreType = tabOption),
-                    genreUiStates = genres,
-                    isLoading = false
+                    filterMovieSelected = state.value.filterItemUiState.filterMovieSelected,
+                    filterTvShowSelected = state.value.filterItemUiState.filterTvShowSelected
                 ),
                 filterTrigger = !it.filterTrigger
             )
         }
-        loadFilterOptions()
         onSearchQueryChanged(state.value.searchQuery)
     }
 
@@ -258,7 +262,11 @@ class SearchViewModel(
             onSuccess = { loadRecentSearches() },
             onError = { error ->
                 updateState {
-                    it.copy(errorMessage = error.message, isLoading = false, isDialogVisible = false)
+                    it.copy(
+                        errorMessage = error.message,
+                        isLoading = false,
+                        isDialogVisible = false
+                    )
                 }
             }
         )
@@ -271,15 +279,20 @@ class SearchViewModel(
             onSuccess = ::onClearAllRecentSearchesSuccess,
             onError = { error ->
                 updateState {
-                    it.copy(errorMessage = error.message, isLoading = false, isDialogVisible = false)
+                    it.copy(
+                        errorMessage = error.message,
+                        isLoading = false,
+                        isDialogVisible = false
+                    )
                 }
             }
         )
     }
 
     override fun onFilterButtonClicked() {
-        updateState { it.copy(isDialogVisible = true, isLoading = false) }
         loadFilterOptions()
+        updateState { it.copy(isDialogVisible = true, isLoading = false) }
+
     }
 
     override fun onSearchCleared() {
@@ -288,14 +301,6 @@ class SearchViewModel(
                 searchQuery = "",
                 isLoading = false,
                 isDialogVisible = false,
-                filterItemUiState = FilterItemUiState(
-                    filterTabSelected = when (state.value.selectedTabOption) {
-                        TabOption.MOVIES -> movieFilterState.copy(selectedRating = 1f, selectedGenres = -1, genreType = TabOption.MOVIES)
-                        TabOption.TV_SHOWS -> tvShowFilterState.copy(selectedRating = 1f, selectedGenres = -1, genreType = TabOption.TV_SHOWS)
-                    },
-                    genreUiStates = FilterItemUiState.defaultGenres,
-                    isLoading = false
-                ),
                 filterTrigger = !it.filterTrigger
             )
         }
@@ -312,92 +317,124 @@ class SearchViewModel(
 
     override fun onRatingStarChanged(ratingIndex: Float) {
         updateState {
-            val newFilterTabSelected = it.filterItemUiState.filterTabSelected.copy(
-                selectedRating = ratingIndex,
-                genreType = state.value.selectedTabOption
-            )
             when (state.value.selectedTabOption) {
-                TabOption.MOVIES -> movieFilterState = newFilterTabSelected
-                TabOption.TV_SHOWS -> tvShowFilterState = newFilterTabSelected
+                TabOption.MOVIES -> {
+                    it.copy(
+                        filterItemUiState = it.filterItemUiState.copy(
+                            filterMovieSelected = it.filterItemUiState.filterMovieSelected.copy(
+                                selectedRating = ratingIndex
+                            )
+                        )
+                    )
+                }
+
+                TabOption.TV_SHOWS -> {
+                    it.copy(
+                        filterItemUiState = it.filterItemUiState.copy(
+                            filterTvShowSelected = it.filterItemUiState.filterTvShowSelected.copy(
+                                selectedRating = ratingIndex
+                            )
+                        )
+                    )
+                }
             }
-            it.copy(
-                filterItemUiState = it.filterItemUiState.copy(
-                    filterTabSelected = newFilterTabSelected
-                )
-            )
         }
     }
+
 
     override fun onFilterGenreChanged(genreId: Int) {
-        val currentTab = state.value.selectedTabOption
-        val currentGenres = state.value.filterItemUiState.genreUiStates
-        val isValidGenre = currentGenres.any { it.id == genreId }
-        if (isValidGenre) {
-            val newFilterTabSelected = state.value.filterItemUiState.filterTabSelected.copy(
-                selectedGenres = genreId,
-                genreType = currentTab
-            )
-            when (currentTab) {
-                TabOption.MOVIES -> {
-                    movieFilterState = newFilterTabSelected
-                    movieGenres = state.value.filterItemUiState.genreUiStates.map { genre ->
-                        genre.copy(isSelected = genre.id == genreId)
-                    }
-                }
-                TabOption.TV_SHOWS -> {
-                    tvShowFilterState = newFilterTabSelected
-                    tvShowGenres = state.value.filterItemUiState.genreUiStates.map { genre ->
-                        genre.copy(isSelected = genre.id == genreId)
-                    }
-                }
-            }
-            updateState {
-                it.copy(
-                    filterItemUiState = it.filterItemUiState.copy(
-                        filterTabSelected = newFilterTabSelected,
-                        genreUiStates = state.value.filterItemUiState.genreUiStates.map { genre ->
+        when (state.value.selectedTabOption) {
+            TabOption.MOVIES -> {
+                updateState {
+                    val updatedGenres =
+                        it.filterItemUiState.filterMovieSelected.genreUiStates.map { genre ->
                             genre.copy(isSelected = genre.id == genreId)
-                        },
-                        isLoading = true
-                    ),
-                    filterTrigger = !it.filterTrigger
-                )
+                        }
+
+                    it.copy(
+                        filterItemUiState = it.filterItemUiState.copy(
+                            filterMovieSelected = it.filterItemUiState.filterMovieSelected.copy(
+                                selectedGenres = genreId,
+                                genreUiStates = updatedGenres
+                            )
+                        ),
+                        isLoading = false
+                    )
+                }
             }
-        } else {
-            Log.w("SearchViewModel", "Invalid genre ID $genreId for $currentTab")
+
+            TabOption.TV_SHOWS -> {
+                updateState {
+                    val updatedGenres =
+                        it.filterItemUiState.filterTvShowSelected.genreUiStates.map { genre ->
+                            genre.copy(isSelected = genre.id == genreId)
+                        }
+
+                    it.copy(
+                        filterItemUiState = it.filterItemUiState.copy(
+                            filterTvShowSelected = it.filterItemUiState.filterTvShowSelected.copy(
+                                selectedGenres = genreId,
+                                genreUiStates = updatedGenres
+                            )
+                        ),
+                        isLoading = false
+                    )
+                }
+            }
         }
     }
 
+
     override fun onApplyButtonClicked() {
-        updateState { it.copy(filterTrigger = !it.filterTrigger, isDialogVisible = false, isLoading = true) }
+        updateState {
+            it.copy(
+                filterTrigger = !it.filterTrigger,
+                isDialogVisible = false,
+                isLoading = true
+            )
+        }
     }
 
     override fun onClearButtonClicked() {
-        val currentTab = state.value.selectedTabOption
-        val newFilterTabSelected = FilterTabSelected(
-            selectedRating = 1f,
-            selectedGenres = -1,
-            genreType = currentTab
-        )
-        when (currentTab) {
+        when (state.value.selectedTabOption) {
+
             TabOption.MOVIES -> {
-                movieFilterState = newFilterTabSelected
-                movieGenres = FilterItemUiState.defaultGenres
+                updateState {
+                    val updatedGenres =
+                        it.filterItemUiState.filterMovieSelected.genreUiStates.map { genre ->
+                            genre.copy(isSelected = genre.id == -1)
+                        }
+                    it.copy(
+                        filterItemUiState = it.filterItemUiState.copy(
+                            filterMovieSelected = FilterMediaSelected(
+                                selectedRating = 1f,
+                                genreUiStates = updatedGenres,
+
+                                )
+                        ),
+                        isLoading = false
+                    )
+                }
             }
+
             TabOption.TV_SHOWS -> {
-                tvShowFilterState = newFilterTabSelected
-                tvShowGenres = FilterItemUiState.defaultGenres
+                updateState {
+                    val updatedGenres =
+                        it.filterItemUiState.filterTvShowSelected.genreUiStates.map { genre ->
+                            genre.copy(isSelected = genre.id == -1)
+                        }
+                    it.copy(
+                        filterItemUiState = it.filterItemUiState.copy(
+                            filterTvShowSelected = FilterMediaSelected(
+                                selectedRating = 1f,
+                                selectedGenres = -1,
+                                genreUiStates = updatedGenres
+                            )
+                        ),
+                        isLoading = false
+                    )
+                }
             }
-        }
-        updateState {
-            it.copy(
-                filterItemUiState = FilterItemUiState(
-                    filterTabSelected = newFilterTabSelected,
-                    genreUiStates = FilterItemUiState.defaultGenres,
-                    isLoading = false
-                ),
-                filterTrigger = !it.filterTrigger
-            )
         }
     }
 
@@ -422,57 +459,93 @@ class SearchViewModel(
         }
     }
 
-    private fun loadFilterOptions(language: String = "en") {
-        viewModelScope.launch {
-            val selectedTab = state.value.selectedTabOption
-            val currentFilterState = state.value.filterItemUiState.filterTabSelected
-            tryToCall(
-                call = {
-                    val genres = when (selectedTab) {
-                        TabOption.MOVIES -> getMovieGenresUseCase(language)
-                        TabOption.TV_SHOWS -> getSeriesGenresUseCase(language)
-                    }
 
-                    val selectedGenreId = currentFilterState.selectedGenres
-                    val all = GenreUiState(-1, "All", isSelected = selectedGenreId == -1)
-                    val real = genres.map { genre ->
-                        GenreUiState(
-                            id = genre.id ?: -2,
-                            name = genre.name ?: "Unknown",
-                            isSelected = genre.id == selectedGenreId
-                        )
-                    }
-                    listOf(all) + real
-                },
-                onSuccess = { filterGenres ->
-                    when (selectedTab) {
-                        TabOption.MOVIES -> movieGenres = filterGenres
-                        TabOption.TV_SHOWS -> tvShowGenres = filterGenres
-                    }
-                    updateState {
-                        it.copy(
-                            filterItemUiState = it.filterItemUiState.copy(
-                                filterTabSelected = it.filterItemUiState.filterTabSelected.copy(
-                                    genreType = selectedTab
-                                ),
-                                genreUiStates = filterGenres,
-                                isLoading = false
-                            )
-                        )
-                    }
-                },
-                onError = { error ->
-                    updateState {
-                        it.copy(
-                            errorMessage = error.message,
-                            isLoading = false
-                        )
-                    }
-                }
+    private var movieGenres = FilterItemUiState.defaultGenres
+    private var tvShowGenres = FilterItemUiState.defaultGenres
+
+    private fun loadFilterOptions(language: String = "en") {
+        val selectedTab = state.value.selectedTabOption
+        val cachedGenres = when (selectedTab) {
+            TabOption.MOVIES -> movieGenres
+            TabOption.TV_SHOWS -> tvShowGenres
+        }
+
+        if (cachedGenres != FilterItemUiState.defaultGenres) {
+            updateState {
+                it.copy(
+                    filterItemUiState = it.filterItemUiState.copy(
+                        isLoading = false
+                    )
+                )
+            }
+        } else {
+            tryToCall(
+                call = { buildGenreList(selectedTab, language) },
+                onSuccess = { filterGenres -> updateGenres(selectedTab, filterGenres) },
+                onError = { error -> setErrorState(error.message) }
             )
         }
     }
 
+    private suspend fun buildGenreList(
+        selectedTab: TabOption,
+        language: String
+    ): List<GenreUiState> {
+        val genres = when (selectedTab) {
+            TabOption.MOVIES -> getMovieGenresUseCase(language)
+            TabOption.TV_SHOWS -> getSeriesGenresUseCase(language)
+        }
+
+        val all = FilterItemUiState.defaultGenres.first()
+        val realGenre = genres.map { genre ->
+            GenreUiState(
+                id = genre.id ?: -1,
+                name = genre.name ?: "Unknown",
+                isSelected = false
+            )
+        }
+
+        return listOf(all) + realGenre
+    }
+
+    private fun updateGenres(selectedTab: TabOption, filterGenres: List<GenreUiState>) {
+        when (selectedTab) {
+            TabOption.MOVIES -> {
+                movieGenres = filterGenres
+                updateState {
+                    it.copy(
+                        filterItemUiState = it.filterItemUiState.copy(
+                            filterMovieSelected = it.filterItemUiState.filterMovieSelected.copy(
+                                genreUiStates = filterGenres
+                            )
+                        )
+                    )
+                }
+            }
+
+            TabOption.TV_SHOWS -> {
+                tvShowGenres = filterGenres
+                updateState {
+                    it.copy(
+                        filterItemUiState = it.filterItemUiState.copy(
+                            filterTvShowSelected = it.filterItemUiState.filterTvShowSelected.copy(
+                                genreUiStates = filterGenres
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setErrorState(message: String?) {
+        updateState {
+            it.copy(
+                errorMessage = message,
+                isLoading = false
+            )
+        }
+    }
     fun onItemClicked(query: String) {
         updateState { it.copy(searchQuery = query, isLoading = true) }
     }

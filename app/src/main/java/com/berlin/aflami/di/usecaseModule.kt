@@ -3,17 +3,16 @@ package com.berlin.aflami.di
 import org.koin.dsl.module
 import usecase.ClearSearchHistoryUseCase
 import usecase.DeleteQueryFromHistoryUseCase
-import usecase.GetRecentHistoryUseCase
-import usecase.mediadetails.GetMovieDetailsUseCase
-import usecase.mediadetails.GetMovieGalleryUseCase
-import usecase.SearchByActorNameUseCase
 import usecase.GetMovieGenresUseCase
-import usecase.mediadetails.GetMovieCastUseCase
-import usecase.mediadetails.GetMovieReviewUseCase
+import usecase.GetRecentHistoryUseCase
+import usecase.GetPopularTVShowsUseCase
+import usecase.GetPopularMoviesUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.SaveRecentHistoryUseCase
 import usecase.GetSeriesGenresUseCase
+import usecase.SearchByActorNameUseCase
+import usecase.GetUpComingMoviesUseCase
 import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
@@ -26,8 +25,20 @@ import usecase.home.GetContinueWatchingMovieUseCase
 import usecase.home.GetContinueWatchingTVShowUseCase
 import usecase.mediadetails.AddContinueWatchingMovieUseCase
 import usecase.mediadetails.AddContinueWatchingTVShowUseCase
+import usecase.mediadetails.GetMovieCastUseCase
+import usecase.mediadetails.GetMovieDetailsUseCase
+import usecase.mediadetails.GetMovieGalleryUseCase
+import usecase.mediadetails.GetMovieReviewUseCase
+import usecase.ValidatePasswordUseCase
+import usecase.ValidateUsernameUseCase
+import usecase.auth.IsLoggedInUseCase
+import usecase.auth.LoginUseCase
 
 val useCaseModule = module {
+    single { ValidateUsernameUseCase() }
+    single { ValidatePasswordUseCase() }
+    single { GetPopularMoviesUseCase(get()) }
+    single { GetPopularTVShowsUseCase(get()) }
     single { SearchByCountryUseCase(get()) }
     single { SearchByActorNameUseCase(get()) }
     single { GetSearchMoviesUseCase(get()) }
@@ -36,7 +47,6 @@ val useCaseModule = module {
     single { SaveRecentHistoryUseCase(get()) }
     single { ClearSearchHistoryUseCase(get()) }
     single { DeleteQueryFromHistoryUseCase(get()) }
-
     single { GetSimilarMoviesUseCase(get()) }
     single { GetSimilarSeriesUseCase(get()) }
     single { GetMovieDetailsUseCase(get()) }
@@ -52,7 +62,11 @@ val useCaseModule = module {
     single { GetContinueWatchingMovieUseCase(get()) }
     single { GetContinueWatchingTVShowUseCase(get()) }
     single { AddContinueWatchingTVShowUseCase(get()) }
+    single { GetUpComingMoviesUseCase(get()) }
     single { GetMovieGenresUseCase(get()) }
     single { GetSeriesGenresUseCase(get()) }
+
+    single { LoginUseCase(get()) }
+    single { IsLoggedInUseCase(get()) }
 
 }

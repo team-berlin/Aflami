@@ -16,8 +16,7 @@ fun NavGraphBuilder.watchedMedia(
         route = Destination.WatchedMediaDetails.route,
         arguments = listOf(
             navArgument(MediaDetailsArgs.ID) { NavType.LongType },
-            navArgument(MediaDetailsArgs.MEDIA_TYPE) { NavType.StringType }
-        )
+            navArgument(MediaDetailsArgs.MEDIA_TYPE) { NavType.StringType })
     ) {
         ContinueWatchingScreen(
             onEffect = { effect ->
@@ -25,17 +24,16 @@ fun NavGraphBuilder.watchedMedia(
                     is ContinueWatchingMediaEffect.NavigateToDetails -> {
                         navController.navigate(
                             Destination.MediaDetailsScreen.route(
-                                effect.id,
-                                effect.type.name
+                                effect.id, effect.type.name
                             )
                         )
                     }
-                    is ContinueWatchingMediaEffect.onBackClicked->{
+
+                    is ContinueWatchingMediaEffect.OnBackClicked -> {
                         navController.popBackStack()
                     }
                 }
-            }
-        )
+            })
 
     }
 

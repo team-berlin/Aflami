@@ -22,9 +22,17 @@ fun NavGraphBuilder.home(
                             Destination.WatchedMediaDetails.route
                         )
                     }
-                    is HomeScreenEffect.NavigateToSearch->{}
+                    is HomeScreenEffect.NavigateToSearch->{
+                        navController.navigate(
+                            Destination.SearchScreen.route
+                        )
+                    }
                     is HomeScreenEffect.NavigateToTopRating->{}
-                    is HomeScreenEffect.NavigateToMovieDetails->{}
+                    is HomeScreenEffect.NavigateToMovieDetails->{
+                        navController.navigate(
+                            Destination.MediaDetailsScreen.route
+                        )
+                    }
 
                     else -> {}
                 }

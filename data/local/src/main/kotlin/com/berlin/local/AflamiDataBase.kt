@@ -16,7 +16,13 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 
 @TypeConverters(Converters::class)
 @Database(
-    entities = [SearchingEntity::class, RecentHistoryEntity::class, CategoriesPreferencesEntity::class, ContinueWatchingMovieEntity::class,ContinueWatchingTVShowEntity::class],
+    entities = [
+        SearchingEntity::class,
+        RecentHistoryEntity::class,
+        CategoriesPreferencesEntity::class,
+        ContinueWatchingMovieEntity::class,
+        ContinueWatchingTVShowEntity::class
+    ],
     version = 1
 )
 abstract class SearchDatabase : RoomDatabase() {
@@ -24,5 +30,4 @@ abstract class SearchDatabase : RoomDatabase() {
     abstract fun recentHistoryDao(): RecentHistoryDao
     abstract fun categoriesPreferencesDao(): CategoriesPreferencesDao
     abstract fun continueWatchingDao(): ContinueWatchingDao
-
 }

@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.berlin.aflami.component.CircularIConButton
+import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
@@ -60,7 +60,7 @@ fun EpisodeCard(
                 date = episode.airDate
             )
 
-            CircularIConButton(
+            CircularIconButton(
                 painter = painterResource(R.drawable.play),
                 onClick = onClickPlay
             )

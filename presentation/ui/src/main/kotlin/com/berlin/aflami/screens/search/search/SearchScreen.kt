@@ -49,6 +49,8 @@ import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.SearchData
+import com.berlin.aflami.screens.search.getMovieGenreIcon
+import com.berlin.aflami.screens.search.getTvShowGenreIcon
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchInteractionListener
@@ -177,7 +179,7 @@ private fun SearchScreenContent(
                     }),
                 onValueChange = listenerSearch::onSearchQueryChanged,
                 trailingIcon = R.drawable.filter_vertical,
-                onTrailingClick = listenerSearch::onFilterButtonClicked
+                onTrailingIconClicked = listenerSearch::onFilterButtonClicked
             )
 
             when {
@@ -363,20 +365,19 @@ private fun SearchScreenContent(
             if (state.isDialogVisible) {
                 when (state.selectedTabOption) {
                     TabOption.MOVIES -> {
-                            FilterDialog(
-                                state = state.filterItemUiState,
-                                filterListener = filterSearch,
-                                mediaType = TabOption.MOVIES,
-                            )
-                        }
-                    TabOption.TV_SHOWS -> {
-
                         FilterDialog(
-                            state = state.filterItemUiState,
+                            state = state.filterItemUiState.filterMovieSelected,
                             filterListener = filterSearch,
-                            mediaType = TabOption.TV_SHOWS,
+                            getIcon = ::getMovieGenreIcon,
                         )
+                    }
 
+                    TabOption.TV_SHOWS -> {
+                        FilterDialog(
+                            state = state.filterItemUiState.filterTvShowSelected,
+                            filterListener = filterSearch,
+                            getIcon = ::getTvShowGenreIcon,
+                        )
                     }
                 }
             }

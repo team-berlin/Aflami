@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,11 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaEffect
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaInteractionListener
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
-import com.berlin.aflami.viewmodel.watchedmedia.uistate.ContinueWatchingMediaUiState
+import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaUiState
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -48,50 +50,46 @@ fun ContinueWatchingScreen(
         }
     }
 
-    WatchedMediaContent(
-        state = state,
-        listener = viewModel
-    )
-
+    AnimatedVisibility(state.isLoading) {
+        Loading()
+    }
+    AnimatedVisibility(state.isLoading != true) {
+        WatchedMediaContent(
+            state = state, listener = viewModel
+        )
+    }
 
 }
 
 
 @Composable
 fun WatchedMediaContent(
-    state: ContinueWatchingMediaUiState,
-    listener: ContinueWatchingMediaInteractionListener
+    state: ContinueWatchingMediaUiState, listener: ContinueWatchingMediaInteractionListener
 ) {
 
     Column {
-        TopBar(
-            modifier = Modifier.padding(vertical = 8.dp),
-            title = {
-                Text(
-                    text = "Continue watching",
-                    style = Theme.textStyle.title.large,
-                    color = Theme.color.textColors.title,
+        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+            Text(
+                text = "Continue watching",
+                style = Theme.textStyle.title.large,
+                color = Theme.color.textColors.title,
+            )
+        }, leadingIcon = {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Theme.color.surfaceHigh)
+                    .clickable {
+                        listener.onBackClicked()
+                    }
+                    .padding(10.dp), contentAlignment = Alignment.Center) {
+                Icon(
+                    painter = painterResource(R.drawable.arrow_left),
+                    contentDescription = stringResource(R.string.arrow_back),
+                    tint = Theme.color.textColors.title
                 )
-            },
-            leadingIcon = {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Theme.color.surfaceHigh)
-                        .clickable {
-                            listener.onBackClicked()
-                        }
-                        .padding(10.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.arrow_left),
-                        contentDescription = stringResource(R.string.arrow_back),
-                        tint = Theme.color.textColors.title
-                    )
-                }
             }
-        )
+        })
         LazyVerticalGrid(
             modifier = Modifier.fillMaxSize(),
             columns = GridCells.Adaptive(minSize = 160.dp),
@@ -102,20 +100,17 @@ fun WatchedMediaContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
-                count = state.continueWatchingItems.size,
-                key = { index ->
+                count = state.continueWatchingItems.size, key = { index ->
                     state.continueWatchingItems[index].id
-                }
-            ) { index ->
+                }) { index ->
                 val watchedMedia = state.continueWatchingItems[index]
                 MediaCard(
                     modifier = Modifier.height(222.dp),
                     mediaImg = watchedMedia.poster,
                     title = watchedMedia.title,
                     onClick = {
-                        listener.onMediaCardClick(
-                            id = watchedMedia.id,
-                            type = watchedMedia.mediaType
+                        listener.onMediaCardClicked(
+                            id = watchedMedia.id, type = watchedMedia.mediaType
                         )
                     },
                     typeOfMedia = watchedMedia.mediaType.name,

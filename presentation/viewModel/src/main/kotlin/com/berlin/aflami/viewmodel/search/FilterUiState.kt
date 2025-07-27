@@ -1,20 +1,23 @@
 package com.berlin.aflami.viewmodel.search
 
+import com.berlin.aflami.viewmodel.search.FilterItemUiState.Companion.defaultGenres
+
 data class GenreUiState(
     val id: Int,
     val name: String,
     val isSelected: Boolean = false
 )
 
-data class FilterTabSelected(
+data class FilterMediaSelected(
     val selectedRating: Float = 1f,
     val selectedGenres: Int = -1,
-    val genreType: TabOption? = null
-)
+    val genreUiStates: List<GenreUiState> = defaultGenres,
+
+    )
 
 data class FilterItemUiState(
-    val filterTabSelected: FilterTabSelected = FilterTabSelected(),
-    val genreUiStates: List<GenreUiState> = defaultGenres,
+    val filterTvShowSelected: FilterMediaSelected = FilterMediaSelected(),
+    val filterMovieSelected: FilterMediaSelected = FilterMediaSelected(),
     val isLoading: Boolean = false
 ) {
     companion object {

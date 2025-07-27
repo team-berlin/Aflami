@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.home.component
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -23,16 +24,16 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun HomeSections(
+fun MediaSections(
     modifier: Modifier = Modifier,
     onShowAllContinueWatchingClick: () -> Unit,
     state: List<MediaUiState>,
-    sectionTitleId:Int
+    sectionTitleId: Int
 ) {
     Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Row(
             modifier = Modifier
@@ -49,32 +50,32 @@ fun HomeSections(
                 text = stringResource(R.string.all),
                 style = Theme.textStyle.label.medium,
                 color = Theme.color.primary,
-                modifier = Modifier
-                    .clickable(
+                modifier = Modifier.clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) {
                         onShowAllContinueWatchingClick()
-                    }
-            )
+                    })
         }
         BoxWithConstraints {
             val screenWidth = maxWidth
             val spaceBetween = 8.dp
 
-            val maxCardsInRow = (screenWidth / (156.dp+spaceBetween)).toInt().coerceAtLeast(2)
+            val maxCardsInRow = (screenWidth / (156.dp + spaceBetween)).toInt().coerceAtLeast(2)
 
 
             val totalSpacing = spaceBetween * (maxCardsInRow - 1)
             val cardWidth = (screenWidth - totalSpacing) / maxCardsInRow
             LazyRow(
-            modifier = Modifier.padding(top = 12.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+                modifier = Modifier.padding(top = 12.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 items(state.size) {
                     MediaCard(
-                        Modifier.height(222.dp).width(cardWidth),
+                        Modifier
+                            .height(222.dp)
+                            .width(cardWidth),
                         mediaImg = state[it].poster,
                         title = state[it].title,
                         typeOfMedia = state[it].mediaType.name,
@@ -85,5 +86,4 @@ fun HomeSections(
             }
         }
     }
-
 }

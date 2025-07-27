@@ -10,7 +10,7 @@ import com.berlin.repository.datasource.local.dto.ContinueWatchingTVShowEntity
 @Dao
 interface ContinueWatchingDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addContinueWatchingMovies(movieEntity: ContinueWatchingMovieEntity)
+    suspend fun addContinueWatchingMovie(movieEntity: ContinueWatchingMovieEntity)
 
     @Query("SELECT * FROM Movie_Continue_Watching ")
     suspend fun getContinueWatchingMovies(): List<ContinueWatchingMovieEntity>
@@ -19,5 +19,5 @@ interface ContinueWatchingDao {
     suspend fun addContinueWatchingTVShow(tvShowEntity: ContinueWatchingTVShowEntity )
 
     @Query("SELECT * FROM TVShow_Continue_Watching ")
-    suspend fun getContinueWatchingTVShow(): List<ContinueWatchingTVShowEntity>
+    suspend fun getContinueWatchingTVShows(): List<ContinueWatchingTVShowEntity>
 }
