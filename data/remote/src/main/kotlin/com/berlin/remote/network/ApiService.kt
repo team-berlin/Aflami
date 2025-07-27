@@ -19,7 +19,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    
+
     @GET(ApiConstants.MOVIE_IMAGES)
     suspend fun getMovieImages(@Path(ApiConstants.MOVIE_ID) movieId: Long): Response<MediaImagesResponse>
 
@@ -111,7 +111,8 @@ interface ApiService {
     ): Response<GenreResponse>
 
     @GET(ApiConstants.MOVIE_UPCOMING)
-    suspend fun getUpcomingMovie(): Response<BaseResponse<MovieDto>>
+    suspend fun getUpcomingMovies():
+            Response<BaseResponse<MovieDto>>
 
     @GET(ApiConstants.POPULAR_MOVIES)
     suspend fun popularMovies(

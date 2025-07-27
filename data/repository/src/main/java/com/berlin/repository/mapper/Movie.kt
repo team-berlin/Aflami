@@ -1,6 +1,7 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.GenreEntity
+import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.ProductionCompanyEntity
@@ -67,6 +68,18 @@ fun MovieDetailsDto.toDomain(): MovieDetails {
         hasVideo = this.video,
         originCountry = this.originCountry?.get(0),
         duration = this.runtime.formatRuntime())
+}
+
+fun MovieDto.toDomain(mediaType: String): Media {
+    return Media(
+        id = this.id?.toLong() ?: 0L,
+        title = this.title.orEmpty(),
+        rating = this.voteAverage ?: 0.0,
+        releaseYear = stringToLocalDate(releaseDate ?: ""),
+        mediaType = mediaType,
+        genre = this.genreIds?.filterNotNull() ?: emptyList(),
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+    )
 }
 
 fun stringToLocalDate(dateString: String): LocalDate {

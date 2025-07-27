@@ -1,7 +1,5 @@
 package com.berlin.repository.datasource.remote.dto
 
-
-import com.berlin.entity.Genre
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

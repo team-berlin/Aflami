@@ -14,9 +14,3 @@ data class Movie(
     val releaseDate: String? = null,
     val runtime: Int? = null,
 )
-
-data class GenreEntity(val id: Int, val name: String)
-
-data class ProductionCompanyEntity(
-    val id: Int, val name: String, val poster: String? = null, val originCountry: String? = null
-)

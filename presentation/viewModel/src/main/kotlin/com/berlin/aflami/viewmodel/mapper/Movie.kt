@@ -19,7 +19,6 @@ fun Movie.toUIState(): MovieUIState {
     )
 }
 
-
 fun Movie.toUIStateMedia(): MediaUiState {
     return MediaUiState(
         id = id,

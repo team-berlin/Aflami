@@ -28,7 +28,4 @@ val dataSourceModule = module {
     single<AuthenticationRemoteDataSource> { AuthenticationRemoteDataSourceImpl(get()) }
     single<AuthenticationLocalDataSource> { AuthenticationLocalDataSourceImp(get()) }
     single<ContinueWatchingLocalDataSource>{ ContinueWatchingLocalDataSourceImpl(get()) }
-    single <RemoteDataSource>{ DataSourceImpl(get()) }
-
-
 }

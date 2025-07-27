@@ -50,7 +50,7 @@ class DataSourceImpl(
 
     override suspend fun getUpComingMovies(): BaseResponse<MovieDto> {
         return wrapApiResponse {
-            apiService.getUpcomingMovie()
+            apiService.getUpcomingMovies()
         }
     }
 

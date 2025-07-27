@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
@@ -20,7 +21,9 @@ import com.berlin.aflami.screens.search.getMovieGenreIcon
 import com.berlin.aflami.screens.search.search.Chips
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.GenreUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.ui.R
 
 
 fun LazyListScope.upcomingMovies(
@@ -37,7 +40,7 @@ fun LazyListScope.upcomingMovies(
                     .fillParentMaxWidth()
                     .background(Theme.color.surface)
                     .padding(start = 16.dp, end = 16.dp, top = 24.dp),
-                text = "Upcoming",
+                text = stringResource(R.string.upcoming),
                 style = Theme.textStyle.title.medium,
                 color = Theme.color.textColors.title,
                 textAlign = TextAlign.Start,
@@ -75,7 +78,7 @@ fun LazyListScope.upcomingMovies(
                 title = movie.title,
                 date = movie.releaseYear,
                 rating = movie.rating,
-                typeOfMedia = "Movies",
+                typeOfMedia = MediaType.MOVIE.name,
                 onClick = {
                     onMovieClicked(movie.id)
                 })

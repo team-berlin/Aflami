@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.watchedmedia.uistate.ContinueWatchingMediaUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.update
@@ -26,10 +25,10 @@ class ContinueWatchingMediaViewModel(
     }
 
     override fun onBackClicked() {
-        sendNewEffect(ContinueWatchingMediaEffect.onBackClicked)
+        sendNewEffect(ContinueWatchingMediaEffect.OnBackClicked)
     }
 
-    override fun onMediaCardClick(id: Long, type: MediaType) {
+    override fun onMediaCardClicked(id: Long, type: MediaType) {
         sendNewEffect(ContinueWatchingMediaEffect.NavigateToDetails(id, type))
 
     }
@@ -47,9 +46,8 @@ class ContinueWatchingMediaViewModel(
 
                     val movies = moviesList.await()
                     val tvShows = tvShowsList.await()
-                    
-                    val combinedList = (movies + tvShows)
-                        .shuffled()
+
+                    val combinedList = (movies + tvShows).shuffled()
                     combinedList
                 }
             },
@@ -70,8 +68,5 @@ class ContinueWatchingMediaViewModel(
                 }
             },
         )
-
     }
-
-
 }

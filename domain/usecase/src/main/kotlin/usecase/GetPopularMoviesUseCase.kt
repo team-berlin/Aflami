@@ -1,10 +1,10 @@
 package usecase
 
 import com.berlin.entity.Media
-import repository.HomeRepository
+import repository.MovieRepository
 
 class GetPopularMoviesUseCase(
-    private val homeRepository: HomeRepository
+    private val homeRepository: MovieRepository
 ) {
     suspend operator fun invoke(language: String): List<Media> =
         homeRepository.getPopularMovies(language)

@@ -9,4 +9,3 @@ interface ContinueWatchingRepository {
     suspend fun getContinueWatchingTVShows(): List<TVShow>
     suspend fun addContinueWatchingTVShow(tvShow: TVShow)
 }
-
