@@ -6,6 +6,6 @@ data class Season(
     val episodes: List<Episode>,
     val name: String,
     val description: String,
-    val poster: String,
+    val posterURL: String,
     val seasonNumber: Int,
 )

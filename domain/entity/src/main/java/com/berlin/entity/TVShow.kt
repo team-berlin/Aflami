@@ -4,7 +4,7 @@ data class TVShow(
     val id :Long,
     val title:String,
     val rating: Double,
-    val poster:String,
+    val posterURL:String,
     val releaseDate: String,
     val screenShot: String,
     val description: String,

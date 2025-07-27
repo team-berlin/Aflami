@@ -1,13 +1,12 @@
 package com.berlin.entity
 
-import kotlinx.datetime.LocalDate
 
 data class Movie(
     val id: Long,
     val title: String,
     val rating: Double,
-    val releaseDate: LocalDate,
-    val poster: String,
+    val releaseDate: String,
+    val posterURL: String,
     val screenShot: String,
     val description: String,
     val genres: List<Genre>,
