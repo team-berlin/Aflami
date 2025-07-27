@@ -1,9 +1,8 @@
 package com.berlin.repository
 
 import com.berlin.entity.Genre
-import com.berlin.entity.MediaCast
+import com.berlin.entity.Actor
 import com.berlin.entity.Movie
-import com.berlin.entity.MovieDetails
 import com.berlin.entity.Review
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
@@ -14,7 +13,7 @@ import repository.MovieDetailsRepository
 class MovieDetailsRepositoryImpl(
     private val remoteDataSource: RemoteDataSource
 ) : MovieDetailsRepository {
-    override suspend fun getMovieCastDetails(movieId: Long, language: String): List<MediaCast> {
+    override suspend fun getMovieCastDetails(movieId: Long, language: String): List<Actor> {
         return remoteDataSource.getMovieCastDetails(
             movieId, language
         ).cast?.mapNotNull { castItemDto ->

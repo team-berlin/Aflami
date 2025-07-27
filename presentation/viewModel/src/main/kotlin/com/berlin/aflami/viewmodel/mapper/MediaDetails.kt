@@ -7,11 +7,9 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.entity.Episodes
-import com.berlin.entity.EpisodesSeason
-import com.berlin.entity.MediaCast
-import com.berlin.entity.MovieDetails
-import com.berlin.entity.ProductionCompanyEntity
+import com.berlin.entity.Episode
+import com.berlin.entity.Actor
+import com.berlin.entity.ProductionCompany
 import com.berlin.entity.Review
 import com.berlin.entity.TvShowDetails
 
@@ -57,24 +55,24 @@ fun TvShowDetails.toUiState(
     originalCountry = originCountry,
 )
 
-fun ProductionCompanyEntity.toUiState() = CompanyProductionUiState(
+fun ProductionCompany.toUiState() = CompanyProductionUiState(
     id = id.toString(),
     image = poster,
     name = name,
     country = originCountry ?: ""
 )
 
-fun Episodes.toUiState(): EpisodesUiState {
+fun Episode.toUiState(): EpisodesUiState {
     return EpisodesUiState(
         airDate = this.airDate ?: "",
         episodeNumber = this.episodeNumber ?: 0,
         episodeType = this.episodeType ?: "",
-        id = this.id ?: 0,
+        id = this.episodeId ?: 0,
         name = this.name ?: "",
-        overview = this.overview ?: "",
+        overview = this.description ?: "",
         runtime =
-            this.runtime ?: "",
-        voteAverage = this.voteAverage ?: 0.0,
+            this.duration ?: "",
+        voteAverage = this.rating ?: 0.0,
         stillPath = this.stillPath ?: ""
     )
 }
@@ -101,7 +99,7 @@ fun Review.toUiState(): ReviewUiState {
     )
 }
 
-fun MediaCast.toUiState(): MediaCastUiState {
+fun Actor.toUiState(): MediaCastUiState {
     return MediaCastUiState(
         name = name,
         poster = poster

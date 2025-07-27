@@ -1,6 +1,6 @@
 package com.berlin.repository
 
-import com.berlin.entity.ValidationException
+import com.berlin.exception.ValidationException
 import com.berlin.entity.auth.LoginToken
 import com.berlin.entity.auth.Session
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource

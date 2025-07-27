@@ -1,8 +1,8 @@
 package com.berlin.repository
 
-import com.berlin.entity.Episodes
+import com.berlin.entity.Episode
 import com.berlin.entity.Genre
-import com.berlin.entity.MediaCast
+import com.berlin.entity.Actor
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
@@ -33,7 +33,7 @@ class TvShowDetailsRepositoryImpl(
         }
     }
 
-    override suspend fun getSeriesCastDetails(seriesId: Long, language: String): List<MediaCast> {
+    override suspend fun getSeriesCastDetails(seriesId: Long, language: String): List<Actor> {
         return remoteDataSource.getSeriesCastDetails(
             seriesId, language
         ).cast?.mapNotNull { castItemDto ->
@@ -55,7 +55,7 @@ class TvShowDetailsRepositoryImpl(
     override suspend fun getSeasonEpisodes(
         seriesId: Long,
         seasonNumber: Int,
-    ): List<Episodes?> {
+    ): List<Episode?> {
         return remoteDataSource.getEpisodeSeasonSeries(seriesId, seasonNumber).toDomain().episodes
             ?: emptyList()
     }

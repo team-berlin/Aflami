@@ -72,13 +72,13 @@ class GetTopRatedMoviesTest {
                 id = 5472,
                 title = "noster",
                 rating = 2.3,
-                releaseYear = LocalDate(2025, 1, 1),
-                genre = listOf(),
+                releaseDate = LocalDate(2025, 1, 1),
+                genres = listOf(),
                 poster = "ceteros",
-                backdropPath = "eu",
-                overview = "tantas",
+                screenShot = "eu",
+                description = "tantas",
                 releaseDate = "facilisi",
-                runtime = 6071
+                duration = 6071
             )
         )
     }

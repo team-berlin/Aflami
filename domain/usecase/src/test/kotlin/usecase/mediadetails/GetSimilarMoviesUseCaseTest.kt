@@ -83,13 +83,13 @@ class GetSimilarMoviesUseCaseTest {
                     id = 1L,
                     title = "Inception$i",
                     rating = 8.8,
-                    releaseYear = LocalDate(2010, 7, 16),
-                    genre = listOf(28, 12, 878),
+                    releaseDate = LocalDate(2010, 7, 16),
+                    genres = listOf(28, 12, 878),
                     poster = "https://poster$i",
-                    backdropPath = "https://backdrop$i",
-                    overview = "A thief who steals corporate secrets through the use of dream-sharing technology...",
+                    screenShot = "https://backdrop$i",
+                    description = "A thief who steals corporate secrets through the use of dream-sharing technology...",
                     releaseDate = "2010-07-16",
-                    runtime = 148
+                    duration = 148
                 )
             )
         }

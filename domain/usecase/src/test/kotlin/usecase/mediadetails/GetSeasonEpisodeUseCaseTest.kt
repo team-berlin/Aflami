@@ -1,6 +1,6 @@
 package usecase.mediadetails
 
-import com.berlin.entity.Episodes
+import com.berlin.entity.Episode
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -11,7 +11,7 @@ import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TvShowDetailsRepository
 
-class GetSeasonEpisodesUseCaseTest {
+class GetSeasonEpisodeUseCaseTest {
 
     private val tvShowDetailsRepository = mockk<TvShowDetailsRepository>()
     private lateinit var getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase
@@ -76,14 +76,14 @@ class GetSeasonEpisodesUseCaseTest {
     }
 
 
-    private fun getFakeEpisodes(): List<Episodes> {
+    private fun getFakeEpisodes(): List<Episode> {
         return (1..5).map { i ->
-            Episodes(
-                id = i,
+            Episode(
+                episodeId = i,
                 episodeNumber = i,
                 name = "Episode $i",
-                overview = "Overview of episode $i",
-                voteAverage = 8.0 + i,
+                description = "Overview of episode $i",
+                rating = 8.0 + i,
                 stillPath = "https://image.tmdb.org/t/p/w500/still_$i.jpg",
                 airDate = "2020-0$i-01"
             )

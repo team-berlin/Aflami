@@ -2,16 +2,16 @@ package com.berlin.aflami.viewmodel.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.berlin.entity.BadRequestException
-import com.berlin.entity.DataParseException
-import com.berlin.entity.ForbiddenException
-import com.berlin.entity.NetworkException
-import com.berlin.entity.NoInternetException
-import com.berlin.entity.NotFoundException
-import com.berlin.entity.NullResultException
-import com.berlin.entity.RateLimitException
-import com.berlin.entity.ServerException
-import com.berlin.entity.ValidationException
+import com.berlin.exception.BadRequestException
+import com.berlin.exception.DataParseException
+import com.berlin.exception.ForbiddenException
+import com.berlin.exception.NetworkException
+import com.berlin.exception.NoInternetException
+import com.berlin.exception.NotFoundException
+import com.berlin.exception.NullResultException
+import com.berlin.exception.RateLimitException
+import com.berlin.exception.ServerException
+import com.berlin.exception.ValidationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

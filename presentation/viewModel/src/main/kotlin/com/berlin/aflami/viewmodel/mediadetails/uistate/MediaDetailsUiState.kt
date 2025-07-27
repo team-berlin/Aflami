@@ -3,7 +3,6 @@ package com.berlin.aflami.viewmodel.mediadetails.uistate
 import androidx.compose.ui.graphics.painter.Painter
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 
-import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import kotlinx.datetime.LocalDate
@@ -40,13 +39,13 @@ data class MediaDetailsUiState(
         return Movie(
             id = id,
             title = title,
-            overview = overview,
-            releaseYear = LocalDate.parse(releaseYear),
+            description = overview,
+            releaseDate = LocalDate.parse(releaseYear),
             rating = rating,
-            runtime = 0,
-            genre = emptyList(),
+            duration = 0,
+            genres = emptyList(),
             poster = posterUrl,
-            backdropPath = backdropUrl,
+            screenShot = backdropUrl,
             releaseDate =releaseYear,
         )
     }

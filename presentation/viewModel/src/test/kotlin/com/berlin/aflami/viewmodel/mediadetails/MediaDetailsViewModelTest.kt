@@ -10,11 +10,9 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.entity.Episodes
-import com.berlin.entity.GenreEntity
+import com.berlin.entity.Episode
 import com.berlin.entity.Movie
-import com.berlin.entity.MovieDetails
-import com.berlin.entity.ProductionCompanyEntity
+import com.berlin.entity.ProductionCompany
 import com.berlin.entity.Review
 import com.berlin.entity.TvShowDetails
 import com.google.common.truth.Truth.assertThat
@@ -121,7 +119,7 @@ class MediaDetailsViewModelTest {
             releaseDate = "2023-01-01",
             rating = 20.0,
             runtime = 120,
-            productionCompanies = listOf(ProductionCompanyEntity(1, "Test Studio", null, null)),
+            productionCompanies = listOf(ProductionCompany(1, "Test Studio", null, null)),
             hasVideo = false,
             originCountry = "US",
             duration = null
@@ -166,7 +164,7 @@ class MediaDetailsViewModelTest {
             releaseDate = "2022-01-01",
             rating = 7.5,
             runtime = 45,
-            productionCompanies = listOf(ProductionCompanyEntity(2, "Test Network", null, null)),
+            productionCompanies = listOf(ProductionCompany(2, "Test Network", null, null)),
             seasons = emptyList(),
             numberOfSeasons = 3,
             originCountry = "US",
@@ -355,15 +353,15 @@ class MediaDetailsViewModelTest {
     @Test
     fun `onSeasonsClicked with episodes should update state with season episodes`() = runTest {
         // Given
-        val episode = Episodes(
-            id = 1,
+        val episode = Episode(
+            episodeId = 1,
             name = "Episode 1",
-            overview = "Episode overview",
+            description = "Episode overview",
             episodeNumber = 1,
             airDate = null,
             episodeType = null,
-            runtime = null,
-            voteAverage = null,
+            duration = null,
+            rating = null,
             stillPath = null
         )
         coEvery { getSeasonEpisodesUseCase(1, 0) } returns listOf(episode)
@@ -405,8 +403,8 @@ class MediaDetailsViewModelTest {
                 id = 55,
                 title = "Matrix",
                 rating = 8.8,
-                genre = listOf(28, 12, 878),
-                releaseYear = LocalDate.parse("1999-03-31"),
+                genres = listOf(28, 12, 878),
+                releaseDate = LocalDate.parse("1999-03-31"),
                 poster = "poster.png"
             )
             val mappedUiState = movie.toUIStateMedia()
@@ -548,9 +546,9 @@ class MediaDetailsViewModelTest {
     @Test
     fun `toggleMovieDetailsTab to SEASON should load seasons`() = runTest {
         // GIVEN
-        val episode = Episodes(
-            id = 1, name = "E1", overview = "E1", episodeNumber = 1,
-            airDate = null, episodeType = null, runtime = null, voteAverage = null, stillPath = null
+        val episode = Episode(
+            episodeId = 1, name = "E1", description = "E1", episodeNumber = 1,
+            airDate = null, episodeType = null, duration = null, rating = null, stillPath = null
         )
         coEvery { getSeasonEpisodesUseCase(1, 0) } returns listOf(episode)
         // Use a TV Show with numberOfSeasons = 1
@@ -631,8 +629,8 @@ class MediaDetailsViewModelTest {
 
     @Test
     fun `onSeasonsClicked with multiple seasons adds all episodes`() = runTest {
-        val episode1 = Episodes(id = 111, name = "E1", overview = "", episodeNumber = 1, airDate = null, episodeType = null, runtime = null, voteAverage = null, stillPath = null)
-        val episode2 = Episodes(id = 222, name = "E2", overview = "", episodeNumber = 1, airDate = null, episodeType = null, runtime = null, voteAverage = null, stillPath = null)
+        val episode1 = Episode(episodeId = 111, name = "E1", description = "", episodeNumber = 1, airDate = null, episodeType = null, duration = null, rating = null, stillPath = null)
+        val episode2 = Episode(episodeId = 222, name = "E2", description = "", episodeNumber = 1, airDate = null, episodeType = null, duration = null, rating = null, stillPath = null)
         coEvery { getSeasonEpisodesUseCase(1, 0) } returns listOf(episode1)
         coEvery { getSeasonEpisodesUseCase(1, 1) } returns listOf(episode2)
         viewModel.onSeasonsClicked(1, 2)

@@ -1,6 +1,5 @@
 package com.berlin.repository
 
-import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource

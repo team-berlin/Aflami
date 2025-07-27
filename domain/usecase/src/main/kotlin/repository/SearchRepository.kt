@@ -1,6 +1,5 @@
 package repository
 
-import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 

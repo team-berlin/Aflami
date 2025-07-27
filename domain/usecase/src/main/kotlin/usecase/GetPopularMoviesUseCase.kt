@@ -1,6 +1,5 @@
 package usecase
 
-import com.berlin.entity.Media
 import repository.MovieRepository
 
 class GetPopularMoviesUseCase(

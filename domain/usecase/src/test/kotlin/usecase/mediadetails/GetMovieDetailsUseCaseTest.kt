@@ -1,8 +1,6 @@
 package usecase.mediadetails
 
-import com.berlin.entity.MovieDetails
-import com.berlin.entity.GenreEntity
-import com.berlin.entity.ProductionCompanyEntity
+import com.berlin.entity.ProductionCompany
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -81,7 +79,7 @@ class GetMovieDetailsUseCaseTest {
                 GenreEntity(id = 878, name = "Science Fiction")
             ),
             productionCompanies = listOf(
-                ProductionCompanyEntity(
+                ProductionCompany(
                     id = 1,
                     name = "Legendary Pictures",
                     poster = "https://image.tmdb.org/t/p/w500/company_logo.jpg",

@@ -1,4 +1,4 @@
-package com.berlin.entity
+package com.berlin.exception
 
 
 open class AflamiException(message: String?): Exception(message)
@@ -15,7 +15,7 @@ class DataParseException(message: String) : Exception(message)
 class ForbiddenException(message: String) : Exception(message)
 class RateLimitException(message: String) : Exception(message)
 
-open class AuthenticationsExceptions(message: String):AflamiException(message)
+open class AuthenticationsExceptions(message: String): AflamiException(message)
 class InvalidUsernameOrPasswordException(message: String): AuthenticationsExceptions(message)
 class InvalidLoginTokenException(message: String): AuthenticationsExceptions(message)
 class InvalidLoginApiKeyException(message: String): AuthenticationsExceptions(message)
