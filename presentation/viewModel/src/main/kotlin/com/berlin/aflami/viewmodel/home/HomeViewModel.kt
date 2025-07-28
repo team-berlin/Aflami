@@ -10,6 +10,8 @@ import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.entity.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -165,46 +167,78 @@ class HomeViewModel(
         }
     }
 
+    private fun List<String>.toGenreIds(): List<Int> {
+        return state.value.movieGenres.filter { this.contains(it.name) }.map { it.id }
+    }
+
     override fun onGetNowClicked() {
-        viewModelScope.launch {
-            try {
-                Log.w("genre", state.value.movieGenres.toString())
+        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(isLoading = true)) }
+        val selectedMood = state.value.moodPickerUiState.selectedMood?.userMood ?: return
+        tryToCall(
+            call = {
+                getMoviesByMoodUseCase(selectedMood.moodGenres.toGenreIds())
+            },
+            onSuccess = { ::onGetMoviesByMoodSuccess },
+            onError = { ::onError },
+        )
+    }
 
-                val selectedMood = state.value.moodPickerUiState.selectedMood?.userMood
-                Log.w("selectedMood",selectedMood.toString())
-
-                if (selectedMood != null) {
-                    val moodGenreNames = selectedMood.moodGenres
-                    Log.w("moodGenreNames",moodGenreNames.toString())
-
-                    val genreIds = state.value.movieGenres
-                        .filter { moodGenreNames.contains(it.name) }
-                        .map { it.id }
-                    Log.w("genreIds",genreIds.toString())
-
-                    val movies = getMoviesByMoodUseCase(genreIds)
-                    Log.w("movies",movies.toString())
-                    updateState {
-                        it.copy(
-                            moodPickerUiState = it.moodPickerUiState.copy(
-                                isLoading = false,
-                                movies = movies.map { movie -> movie.toUIState() },
-                                isSelectedAction = true
-                            )
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                updateState {
-                    it.copy(
-                        moodPickerUiState = it.moodPickerUiState.copy(
-                            isLoading = false,
-                            error = ErrorUiState(e.message!!)
-                        )
-                    )
-                }
-            }
+    private fun onGetMoviesByMoodSuccess(movies: List<Movie>) {
+        if (movies.isEmpty()) {
+            updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(isLoading = false)) }
+            return
         }
+        val moviesUiStates = movies.map { it.toUIState() }
+        updateState {
+            it.copy(
+                moodPickerUiState = it.moodPickerUiState.copy(
+                    isLoading = false, movies = moviesUiStates, isSelectedAction = true
+                )
+            )
+        }
+    }
+
+    private fun onError(e: Exception) {
+        updateState {
+            it.copy(
+                moodPickerUiState = it.moodPickerUiState.copy(
+                    isLoading = false, error = ErrorUiState(e.message ?: "An error occurred")
+                )
+            )
+        }
+    }
+
+
+    override fun onDismissMoodPickerDialog() {
+        updateState {
+            it.copy(
+                moodPickerUiState = it.moodPickerUiState.copy(
+                    openMovieDialog = false, isSelectedAction = false
+                )
+            )
+        }
+    }
+
+    override fun onClickViewDetails() {
+        onDismissMoodPickerDialog()
+        sendNewEffect(
+            HomeScreenEffect.NavigateToMovieDetails(
+                state.value.moodPickerUiState.movies.first().id, MediaType.MOVIE.name
+            )
+        )
+    }
+
+    override fun onClickGetAnotherMovie() {
+        val currentMovieIndex = state.value.moodPickerUiState.movies.indexOf(
+            state.value.moodPickerUiState.selectedMovie
+        )
+        val nextMovie: MovieUIState
+        if (currentMovieIndex == state.value.moodPickerUiState.movies.size - 1) {
+            nextMovie = state.value.moodPickerUiState.movies[0]
+            return
+        }
+        nextMovie = state.value.moodPickerUiState.movies[currentMovieIndex + 1]
+        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(selectedMovie = nextMovie)) }
     }
 
 
