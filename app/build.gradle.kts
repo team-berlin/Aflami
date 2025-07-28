@@ -14,8 +14,6 @@ val properties = Properties().apply {
     load(rootProject.file("local.properties").inputStream())
 }
 
-
-
 android {
     namespace = "com.berlin.aflami"
     compileSdk = 35
@@ -52,9 +50,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         compose = true
         buildConfig = true

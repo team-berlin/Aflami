@@ -16,5 +16,4 @@ dependencies {
     debugImplementation(libs.bundles.composeUiDebug)
     implementation(libs.bundles.coil)
     implementation(project(":presentation:safeImageViewer"))
-
 }

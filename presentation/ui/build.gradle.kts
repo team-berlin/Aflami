@@ -19,10 +19,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
     implementation(libs.bundles.koin)
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:viewModel"))
-    implementation(libs.androidx.paging.runtime)
-    implementation(libs.androidx.paging.compose)
-
 }

@@ -39,6 +39,5 @@ dependencies {
     testImplementation(libs.bundles.test)
     implementation(libs.kotlin.datex)
     implementation(libs.androidx.paging.runtime)
-
     implementation(project(":domain:usecase"))
 }
