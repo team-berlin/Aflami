@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -29,12 +28,14 @@ import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
 import com.berlin.aflami.screens.home.component.MediaSections
+import com.berlin.aflami.screens.home.component.MoodPicker
 import com.berlin.aflami.screens.home.component.PosterSlider
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
 import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.aflami.viewmodel.home.HomeUiState
+import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -150,10 +151,43 @@ private fun HomeContent(
                     listener.onShowAllContinueWatchingClicked()
                 }, state = state.mediaContinueWatching, sectionTitleId = R.string.continue_watching
             )
-            val lazyListState = rememberLazyListState()
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
+            val moodIcons = listOf(
+                com.berlin.designsystem.R.drawable.ic_sad,
+                com.berlin.designsystem.R.drawable.ic_look_top,
+                com.berlin.designsystem.R.drawable.ic_love,
+                com.berlin.designsystem.R.drawable.ic_angry,
+                com.berlin.designsystem.R.drawable.ic_unhappy,
+                com.berlin.designsystem.R.drawable.ic_sad_dizzy
+            )
+
+            val selectedMoodIcon = state.moodPickerUiState.selectedMood?.userMood?.let { mood ->
+                when (mood) {
+                    UserMood.SAD -> moodIcons[0]
+                    UserMood.NEUTRAL -> moodIcons[1]
+                    UserMood.ROMANTIC -> moodIcons[2]
+                    UserMood.ANGRY -> moodIcons[3]
+                    UserMood.DEPRESSED -> moodIcons[4]
+                    UserMood.SAD_DIZZY -> moodIcons[5]
+                }
+            }
+
+            MoodPicker(
+                moodIcons = moodIcons,
+                headerText = stringResource(com.berlin.designsystem.R.string.mood_picker_title),
+                promptText = stringResource(com.berlin.designsystem.R.string.mood_picker_prompt),
+                actionText = stringResource(com.berlin.designsystem.R.string.mood_picker_get_now),
+                imagePainter = painterResource(com.berlin.designsystem.R.drawable.clown),
+                selectedMood = selectedMoodIcon,
+                viewModel = listener as HomeViewModel,
+                onEffect = { }
+            )
+
+
+        }
+//            val lazyListState = rememberLazyListState()
+//            Box(
+//                modifier = Modifier.fillMaxSize()
+//            ) {
 //                Column(modifier = Modifier.padding(bottom = 100.dp))
 //                {
 //                        upcomingMovies(
@@ -165,5 +199,3 @@ private fun HomeContent(
 //                }
             }
         }
-    }
-}

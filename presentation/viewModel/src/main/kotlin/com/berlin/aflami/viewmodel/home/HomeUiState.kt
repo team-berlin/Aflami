@@ -46,5 +46,6 @@ data class MoodPickerUiState(
 
 data class UserMoodUiState(
     val userMood: UserMood? = null,
+
     val isSelectingMood: Boolean = false,
 )

@@ -9,6 +9,7 @@ interface HomeInteractionListener{
     fun onShowAllContinueWatchingClicked()
     fun onShowAllTopRating()
     fun onMoodPickerClicked(mood: UserMood)
+    fun onGetNowClicked()
     fun onClickUpcomingMovieCard(id: Long)
     fun onClickPopularMovieCard(id: Long, mediaType: MediaType)
     fun onChangeUpcomingMovieGenre(genreId: Int)

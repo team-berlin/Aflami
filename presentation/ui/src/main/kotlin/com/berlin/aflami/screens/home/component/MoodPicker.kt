@@ -1,4 +1,4 @@
-package com.berlin.aflami.component
+package com.berlin.aflami.screens.home.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,8 +27,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.home.HomeScreenEffect
+import com.berlin.aflami.viewmodel.home.HomeViewModel
+import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.designsystem.R
 
 @Composable
@@ -40,8 +42,8 @@ fun MoodPicker(
     actionText: String,
     imagePainter: Painter,
     selectedMood: Int? = null,
-    onMoodSelected: (Int) -> Unit = {},
-    onActionTextClicked: () -> Unit = {}
+    viewModel: HomeViewModel,
+    onEffect: (HomeScreenEffect) -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -77,16 +79,19 @@ fun MoodPicker(
             promptText = promptText,
             getNowText = actionText,
             selectedMood = selectedMood,
-            onMoodSelected = onMoodSelected,
-            onGetNowClick = onActionTextClicked
+            onMoodSelected = { selectedIconRes ->
+                val mood = moodFromIcon(selectedIconRes, moodIcons)
+                if (mood != null) {
+                    viewModel.onMoodPickerClicked(mood)
+                }
+            },
+            onGetNowClick = { viewModel.onGetNowClicked() }
         )
     }
 }
 
 @Composable
-private fun MoodPickerHeader(
-    headerText: String
-) {
+private fun MoodPickerHeader(headerText: String) {
     Column {
         BlurredIcon()
         Text(
@@ -165,9 +170,7 @@ private fun MoodIcon(
 }
 
 @Composable
-private fun BlurredIcon(
-    modifier: Modifier = Modifier
-) {
+private fun BlurredIcon(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .padding(start = 12.dp, top = 12.dp)
@@ -195,24 +198,14 @@ private fun BlurredIcon(
     }
 }
 
-@ThemeAndLocalePreviews
-@Composable
-private fun MoodMoodPickerPreview() {
-    AflamiTheme {
-        val moodIcons = listOf(
-            R.drawable.ic_sad,
-            R.drawable.ic_look_top,
-            R.drawable.ic_love,
-            R.drawable.ic_angry,
-            R.drawable.ic_unhappy,
-            R.drawable.ic_sad_dizzy
-        )
-            MoodPicker(
-                moodIcons = moodIcons,
-                headerText = stringResource(R.string.mood_picker_title),
-                promptText = stringResource(R.string.mood_picker_prompt), // Pass prompt text
-                actionText = stringResource(R.string.mood_picker_get_now), // Pass get now text
-                imagePainter = painterResource(R.drawable.clown),
-            )
+private fun moodFromIcon(iconRes: Int, moodIcons: List<Int>): UserMood? {
+    return when (iconRes) {
+        moodIcons[0] -> UserMood.SAD
+        moodIcons[1] -> UserMood.NEUTRAL
+        moodIcons[2] -> UserMood.ROMANTIC
+        moodIcons[3] -> UserMood.ANGRY
+        moodIcons[4] -> UserMood.DEPRESSED
+        moodIcons[5] -> UserMood.SAD_DIZZY
+        else -> null
     }
 }

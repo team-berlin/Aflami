@@ -155,7 +155,56 @@ class HomeViewModel(
     }
 
     override fun onMoodPickerClicked(mood: UserMood) {
+        updateState {
+            it.copy(
+                moodPickerUiState = it.moodPickerUiState.copy(
+                    isLoading = true,
+                    selectedMood = UserMoodUiState(userMood = mood, isSelectingMood = true),
+                )
+            )
+        }
+    }
 
+    override fun onGetNowClicked() {
+        viewModelScope.launch {
+            try {
+                Log.w("genre", state.value.movieGenres.toString())
+
+                val selectedMood = state.value.moodPickerUiState.selectedMood?.userMood
+                Log.w("selectedMood",selectedMood.toString())
+
+                if (selectedMood != null) {
+                    val moodGenreNames = selectedMood.moodGenres
+                    Log.w("moodGenreNames",moodGenreNames.toString())
+
+                    val genreIds = state.value.movieGenres
+                        .filter { moodGenreNames.contains(it.name) }
+                        .map { it.id }
+                    Log.w("genreIds",genreIds.toString())
+
+                    val movies = getMoviesByMoodUseCase(genreIds)
+                    Log.w("movies",movies.toString())
+                    updateState {
+                        it.copy(
+                            moodPickerUiState = it.moodPickerUiState.copy(
+                                isLoading = false,
+                                movies = movies.map { movie -> movie.toUIState() },
+                                isSelectedAction = true
+                            )
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                updateState {
+                    it.copy(
+                        moodPickerUiState = it.moodPickerUiState.copy(
+                            isLoading = false,
+                            error = ErrorUiState(e.message!!)
+                        )
+                    )
+                }
+            }
+        }
     }
 
 
