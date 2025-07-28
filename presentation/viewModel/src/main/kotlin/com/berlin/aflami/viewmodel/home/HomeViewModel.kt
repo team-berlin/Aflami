@@ -160,11 +160,11 @@ class HomeViewModel(
 
 
     override fun onClickUpcomingMovieCard(id: Long) {
-        sendNewEffect(HomeScreenEffect.NavigateToMovieDetails(id, MediaType.MOVIE.name))
+        sendNewEffect(HomeScreenEffect.NavigateToDetails(id, MediaType.MOVIE.name))
     }
 
     override fun onClickPopularMovieCard(id: Long, mediaType: MediaType) {
-        sendNewEffect(HomeScreenEffect.NavigateToMovieDetails(id, mediaType.name))
+        sendNewEffect(HomeScreenEffect.NavigateToDetails(id, mediaType.name))
     }
 
 
@@ -178,6 +178,10 @@ class HomeViewModel(
             )
         }
         getUpComingMoviesByGenre()
+    }
+
+    override fun onClickCard(id: Long, mediaType: MediaType) {
+        sendNewEffect(HomeScreenEffect.NavigateToDetails(id, mediaType.name))
     }
 
     private fun getUpComingMoviesByGenre() {

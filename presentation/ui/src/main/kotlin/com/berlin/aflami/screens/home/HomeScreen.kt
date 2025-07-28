@@ -147,14 +147,19 @@ private fun HomeContent(
             }
         }
 
-        item {
-            MediaSections(
-                onShowAllContinueWatchingClick = {
-                    listener.onShowAllContinueWatchingClicked()
-                },
-                state = pagedMovies,
-                sectionTitleId = R.string.continue_watching
-            )
+        if(pagedMovies.itemCount>0) {
+            item {
+                MediaSections(
+                    seeAllOnClick = {
+                        listener.onShowAllContinueWatchingClicked()
+                    },
+                    state = pagedMovies,
+                    sectionTitleId = R.string.continue_watching,
+                    cardClick = { id, type ->
+                        listener.onClickCard(id, type)
+                    },
+                )
+            }
         }
 //            val lazyListState = rememberLazyListState()
 //            Box(

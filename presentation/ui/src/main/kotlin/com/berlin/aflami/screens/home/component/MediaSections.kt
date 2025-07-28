@@ -16,12 +16,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
 
@@ -29,7 +31,8 @@ import com.berlin.ui.R
 @Composable
 fun MediaSections(
     modifier: Modifier = Modifier,
-    onShowAllContinueWatchingClick: () -> Unit,
+    seeAllOnClick: () -> Unit,
+    cardClick: (id:Long,type:MediaType) -> Unit,
     state: LazyPagingItems<MediaUiState>,
     sectionTitleId: Int
 ) {
@@ -39,8 +42,9 @@ fun MediaSections(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(start = 16.dp, end = 16.dp, top = 6.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(sectionTitleId),
@@ -55,7 +59,7 @@ fun MediaSections(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) {
-                        onShowAllContinueWatchingClick()
+                        seeAllOnClick()
                     })
         }
         BoxWithConstraints {
@@ -68,7 +72,6 @@ fun MediaSections(
             val totalSpacing = spaceBetween * (maxCardsInRow - 1)
             val cardWidth = (screenWidth - totalSpacing) / maxCardsInRow
             LazyRow(
-                modifier = Modifier.padding(top = 12.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -84,7 +87,9 @@ fun MediaSections(
                             typeOfMedia = it.mediaType.name,
                             date = it.releaseYear,
                             rating = it.rating,
-                        )
+                        ){
+                            cardClick(it.id,it.mediaType)
+                        }
                     }
                 }
 

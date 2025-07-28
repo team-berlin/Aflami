@@ -11,5 +11,6 @@ interface HomeInteractionListener{
     fun onClickUpcomingMovieCard(id: Long)
     fun onClickPopularMovieCard(id: Long, mediaType: MediaType)
     fun onChangeUpcomingMovieGenre(genreId: Int)
+    fun onClickCard(id:Long,mediaType: MediaType)
 
 }
