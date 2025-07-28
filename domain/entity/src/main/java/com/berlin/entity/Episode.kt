@@ -7,7 +7,7 @@ data class Episode(
     val episodeId: Long,
     val name: String,
     val description: String,
-    val duration: String,
+    val duration: Int,
     val tvShowId: Int,
     val rating: Double,
 )
