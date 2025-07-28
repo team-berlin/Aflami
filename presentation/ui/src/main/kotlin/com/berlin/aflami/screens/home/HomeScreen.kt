@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.BlurredPosterBackground
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
+import com.berlin.aflami.component.NavBar
 import com.berlin.aflami.component.SectionTitle
 import com.berlin.aflami.screens.home.component.MediaSections
 import com.berlin.aflami.screens.home.component.PosterSlider
@@ -164,6 +165,13 @@ private fun HomeContent(
 //                        )
 //                }
             }
+
+
+            NavBar(
+                navDestinations = listOf(),
+                currentRoute = "",
+                onNavDestinationClicked = {},
+            )
         }
     }
 }
