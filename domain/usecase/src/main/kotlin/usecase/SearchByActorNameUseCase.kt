@@ -1,11 +1,12 @@
 package usecase
 
-import repository.SearchRepository
+import com.berlin.entity.Movie
+import repository.MovieRepository
 
 class SearchByActorNameUseCase(
-    private val searchRepository: SearchRepository
+    private val repository: MovieRepository
 ) {
-    suspend operator fun invoke(actorName: String, page: Int): List<Media> {
-        return searchRepository.getMediaByActorName(actorName, page)
+    suspend operator fun invoke(actorName: String, page: Int): List<Movie> {
+        return repository.getMediaByActorName(actorName, page)
     }
 }

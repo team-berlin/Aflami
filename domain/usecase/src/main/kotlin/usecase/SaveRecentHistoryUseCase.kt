@@ -1,7 +1,6 @@
 package usecase
 
-import repository.SearchRepository
-
+// need to be divided into SaveRecentMoviesHistoryUseCase and SaveRecentTVShowsHistoryUseCase
 class SaveRecentHistoryUseCase(
     private val searchRepository: SearchRepository
 ) {

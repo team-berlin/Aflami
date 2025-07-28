@@ -1,10 +1,10 @@
 package usecase.mediadetails
 
 import com.berlin.entity.Movie
-import repository.ContinueWatchingRepository
+import repository.MovieRepository
 
 class AddContinueWatchingMovieUseCase (
-    private val repository: ContinueWatchingRepository
+    private val repository: MovieRepository
 ){
     suspend operator fun invoke(movie: Movie) {
         repository.addContinueWatchingMovie(movie)

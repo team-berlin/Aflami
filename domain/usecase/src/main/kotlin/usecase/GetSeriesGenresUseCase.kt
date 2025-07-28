@@ -1,10 +1,10 @@
 package usecase
 
 import com.berlin.entity.Genre
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 
-class GetSeriesGenresUseCase(private val tvShowDetailsRepository: TvShowDetailsRepository) {
+class GetSeriesGenresUseCase(private val tvShowDetailsRepository: TVShowDetailsRepository) {
     suspend operator fun invoke(language: String): List<Genre> {
-        return tvShowDetailsRepository.getSeriesGenres(language)
+        return tvShowDetailsRepository.getTVShowGenres(language)
     }
 }

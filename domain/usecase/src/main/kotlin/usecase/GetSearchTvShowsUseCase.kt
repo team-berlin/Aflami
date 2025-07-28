@@ -1,11 +1,11 @@
 package usecase
 
 import com.berlin.entity.TVShow
-import repository.SearchRepository
+import repository.TVShowRepository
 
 class GetSearchTvShowsUseCase(
-    private val searchRepository: SearchRepository
+    private val repository: TVShowRepository
 ) {
     suspend operator fun invoke(query: String, page: Int): List<TVShow> =
-        searchRepository.searchTVShow(query, page)
+        repository.searchTVShow(query, page)
 }

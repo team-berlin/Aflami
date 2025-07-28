@@ -9,7 +9,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import org.junit.Before
 import org.junit.Test
-import repository.SearchRepository
 
 class SearchByCountryUseCaseTest {
 

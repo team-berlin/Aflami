@@ -1,9 +1,9 @@
 package usecase.mediadetails
 
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 
 class GetTvShowDetailsUseCase(
-    private val repository: TvShowDetailsRepository
+    private val repository: TVShowDetailsRepository
 ) {
-    suspend operator fun invoke(id: Long, language: String) = repository.getTvShowDetails(id, language)
+    suspend operator fun invoke(id: Long, language: String) = repository.getTVShowDetails(id, language)
 }

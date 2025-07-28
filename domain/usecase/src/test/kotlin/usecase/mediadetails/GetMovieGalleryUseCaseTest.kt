@@ -23,19 +23,19 @@ class GetMovieGalleryUseCaseTest {
     fun `should return list of strings when calling repository`() = runTest {
         val movieID: Long = 505
         val posters = listOf("https", "https")
-        coEvery { movieDetailsRepository.getMovieImages(movieID) } returns posters
+        coEvery { movieDetailsRepository.getMovieGallery(movieID) } returns posters
 
         val callResult = getMovieGalleryUseCase(movieID)
 
         assertThat(callResult).isEqualTo(posters)
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieImages(movieID) }
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieGallery(movieID) }
     }
 
     @Test
     fun `should throw exception if movieRepository throws exception`() = runTest {
         val exception = RuntimeException()
         val movieID: Long = 505
-        coEvery { movieDetailsRepository.getMovieImages(505) } throws exception
+        coEvery { movieDetailsRepository.getMovieGallery(505) } throws exception
 
         assertThrows<RuntimeException> {
             getMovieGalleryUseCase(movieID)

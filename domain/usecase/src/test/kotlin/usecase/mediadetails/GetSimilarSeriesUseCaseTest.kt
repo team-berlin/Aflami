@@ -11,11 +11,11 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 
 class GetSimilarSeriesUseCaseTest {
 
-    private val seriesDetailsRepository = mockk<TvShowDetailsRepository>()
+    private val seriesDetailsRepository = mockk<TVShowDetailsRepository>()
     private lateinit var getSimilarSeriesUseCase: GetSimilarSeriesUseCase
 
     @Before
@@ -28,7 +28,7 @@ class GetSimilarSeriesUseCaseTest {
         // given
         val mediaId = 0L
         coEvery {
-            seriesDetailsRepository.getSeriesSimilar(
+            seriesDetailsRepository.getSimilarTVShows(
                 mediaId,
             )
         } returns getSimilarSeries()
@@ -39,7 +39,7 @@ class GetSimilarSeriesUseCaseTest {
 
         // then
         Truth.assertThat(result).isEqualTo(expected)
-        coVerify(exactly = 1) { seriesDetailsRepository.getSeriesSimilar(mediaId) }
+        coVerify(exactly = 1) { seriesDetailsRepository.getSimilarTVShows(mediaId) }
     }
 
     @Test
@@ -47,7 +47,7 @@ class GetSimilarSeriesUseCaseTest {
         //given
         val mediaId = 2L
         coEvery {
-            seriesDetailsRepository.getSeriesSimilar(
+            seriesDetailsRepository.getSimilarTVShows(
                 mediaId,
             )
         } returns emptyList()
@@ -57,7 +57,7 @@ class GetSimilarSeriesUseCaseTest {
 
         //then
         Truth.assertThat(result).isEmpty()
-        coVerify(exactly = 1) { seriesDetailsRepository.getSeriesSimilar(mediaId) }
+        coVerify(exactly = 1) { seriesDetailsRepository.getSimilarTVShows(mediaId) }
 
     }
 
@@ -66,7 +66,7 @@ class GetSimilarSeriesUseCaseTest {
         //give
         val mediaId = 3L
         val exception=Exception()
-        coEvery { seriesDetailsRepository.getSeriesSimilar(
+        coEvery { seriesDetailsRepository.getSimilarTVShows(
                 mediaId,
             ) } throws exception
         //when & then

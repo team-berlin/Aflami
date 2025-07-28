@@ -8,10 +8,10 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 
 class GetSeriesGalleryUseCaseTest {
-    private val seriesDetailsRepository: TvShowDetailsRepository = mockk()
+    private val seriesDetailsRepository: TVShowDetailsRepository = mockk()
     private lateinit var getSeriesGalleryUseCase: GetSeriesGalleryUseCase
 
     @Before
@@ -23,19 +23,19 @@ class GetSeriesGalleryUseCaseTest {
     fun `should return list of strings when calling repository`() = runTest {
         val movieID: Long = 505
         val posters = listOf("https", "https")
-        coEvery { seriesDetailsRepository.getSeriesImages(movieID) } returns posters
+        coEvery { seriesDetailsRepository.getTVShowGallery(movieID) } returns posters
 
         val callResult = getSeriesGalleryUseCase(movieID)
 
         assertThat(callResult).isEqualTo(posters)
-        coVerify(exactly = 1) { seriesDetailsRepository.getSeriesImages(movieID) }
+        coVerify(exactly = 1) { seriesDetailsRepository.getTVShowGallery(movieID) }
     }
 
     @Test
     fun `should throw exception if movieRepository throws exception`() = runTest {
         val exception = RuntimeException()
         val movieID: Long = 505
-        coEvery { seriesDetailsRepository.getSeriesImages(505) } throws exception
+        coEvery { seriesDetailsRepository.getTVShowGallery(505) } throws exception
 
         assertThrows<RuntimeException> {
             getSeriesGalleryUseCase(movieID)

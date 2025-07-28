@@ -7,5 +7,5 @@ class GetSimilarMoviesUseCase(
     private val movieDetailsRepository: MovieDetailsRepository
 ) {
     suspend operator fun invoke(movieId: Long): List<Movie> =
-        movieDetailsRepository.getMovieSimilar(movieId)
+        movieDetailsRepository.getSimilarMovies(movieId)
 }

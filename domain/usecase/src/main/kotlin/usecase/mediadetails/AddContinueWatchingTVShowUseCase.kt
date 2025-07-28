@@ -1,10 +1,10 @@
 package usecase.mediadetails
 
 import com.berlin.entity.TVShow
-import repository.ContinueWatchingRepository
+import repository.TVShowRepository
 
 class AddContinueWatchingTVShowUseCase (
-    private val repository: ContinueWatchingRepository
+    private val repository: TVShowRepository
 ){
     suspend operator fun invoke(tvShow: TVShow) {
         repository.addContinueWatchingTVShow(tvShow)

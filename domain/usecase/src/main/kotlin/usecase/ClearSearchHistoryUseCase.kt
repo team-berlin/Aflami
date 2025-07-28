@@ -1,7 +1,6 @@
 package usecase
 
-import repository.SearchRepository
-
+// need to be divided into ClearMoviesSearchHistoryUseCase and ClearTVShowSearchHistoryUseCase
 class ClearSearchHistoryUseCase(
     private val searchRepository: SearchRepository
 ) {

@@ -1,12 +1,12 @@
 package usecase
 
 import com.berlin.entity.Movie
-import repository.SearchRepository
+import repository.MovieRepository
 
 class SearchByCountryUseCase(
-    private val searchRepository: SearchRepository
+    private val repository: MovieRepository
 ) {
     suspend operator fun invoke(query: String, page: Int): List<Movie> {
-        return searchRepository.getMoviesByCountry(query, page)
+        return repository.getMoviesByCountry(query, page)
     }
 }

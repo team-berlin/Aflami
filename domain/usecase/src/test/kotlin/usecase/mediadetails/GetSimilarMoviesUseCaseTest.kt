@@ -27,7 +27,7 @@ class GetSimilarMoviesUseCaseTest {
         // given
         val mediaId = 0L
         coEvery {
-            movieDetailsRepository.getMovieSimilar(
+            movieDetailsRepository.getSimilarMovies(
                 mediaId,
             )
         } returns getSimilarMovie()
@@ -38,7 +38,7 @@ class GetSimilarMoviesUseCaseTest {
 
         // then
         Truth.assertThat(result).isEqualTo(expected)
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieSimilar(mediaId) }
+        coVerify(exactly = 1) { movieDetailsRepository.getSimilarMovies(mediaId) }
     }
 
     @Test
@@ -46,7 +46,7 @@ class GetSimilarMoviesUseCaseTest {
         //given
         val mediaId = 2L
         coEvery {
-            movieDetailsRepository.getMovieSimilar(
+            movieDetailsRepository.getSimilarMovies(
                 mediaId,
             )
         } returns emptyList()
@@ -56,7 +56,7 @@ class GetSimilarMoviesUseCaseTest {
 
         //then
         Truth.assertThat(result).isEmpty()
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieSimilar(mediaId) }
+        coVerify(exactly = 1) { movieDetailsRepository.getSimilarMovies(mediaId) }
 
     }
     @Test
@@ -64,7 +64,7 @@ class GetSimilarMoviesUseCaseTest {
         //give
         val mediaId = 3L
         val exception=Exception()
-        coEvery { movieDetailsRepository.getMovieSimilar(
+        coEvery { movieDetailsRepository.getSimilarMovies(
             mediaId,
         ) } throws exception
         //when & then

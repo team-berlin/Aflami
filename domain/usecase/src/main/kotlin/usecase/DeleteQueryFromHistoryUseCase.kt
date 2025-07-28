@@ -1,7 +1,6 @@
 package usecase
 
-import repository.SearchRepository
-
+// need to be divided into DeleteQueryFromMoviesHistoryUseCase and DeleteQueryFromTVShowsHistoryUseCase
 class DeleteQueryFromHistoryUseCase(
     private val searchRepository: SearchRepository
 ) {

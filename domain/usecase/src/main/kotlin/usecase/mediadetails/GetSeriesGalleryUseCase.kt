@@ -1,8 +1,8 @@
 package usecase.mediadetails
 
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 
-class GetSeriesGalleryUseCase(private val tvShowDetailsRepository: TvShowDetailsRepository) {
+class GetSeriesGalleryUseCase(private val tvShowDetailsRepository: TVShowDetailsRepository) {
     suspend operator fun invoke(movieId: Long): List<String> =
-        tvShowDetailsRepository.getSeriesImages(id = movieId)
+        tvShowDetailsRepository.getTVShowGallery(tvShowId = movieId)
 }

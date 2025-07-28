@@ -1,7 +1,6 @@
 package usecase
 
 import com.berlin.entity.TVShow
-import repository.HomeRepository
 
 class GetTopRatedSeriesUseCase(
     private val homeRepository: HomeRepository

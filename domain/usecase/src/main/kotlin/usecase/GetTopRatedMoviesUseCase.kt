@@ -1,8 +1,8 @@
 package usecase
 
 import com.berlin.entity.Movie
-import repository.HomeRepository
+import repository.MovieRepository
 
-class GetTopRatedMoviesUseCase(private val homeRepository: HomeRepository) {
+class GetTopRatedMoviesUseCase(private val homeRepository: MovieRepository) {
     suspend operator fun invoke(page: Int):List<Movie> = homeRepository.getTopRatedMovies(page)
 }

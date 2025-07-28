@@ -25,7 +25,7 @@ class GetMovieReviewUseCaseTest {
     fun `should return review related to media id when repository is called`() = runTest {
         val mediaId = 0L
         coEvery {
-            movieDetailsRepository.getReviews(
+            movieDetailsRepository.getMovieReviews(
                 mediaId,
             )
         } returns getMovieReview()
@@ -35,21 +35,21 @@ class GetMovieReviewUseCaseTest {
         val expected = getMovieReview()
         // then
         assertThat(result).isEqualTo(expected)
-        coVerify(exactly = 1) { movieDetailsRepository.getReviews(mediaId) }
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieReviews(mediaId) }
     }
 
     @Test
     fun `should return empty list when review is not found`() = runTest {
         //given
         val mediaId = 2L
-        coEvery { movieDetailsRepository.getReviews(mediaId) } returns emptyList()
+        coEvery { movieDetailsRepository.getMovieReviews(mediaId) } returns emptyList()
 
         //when
         val result = getMovieReviewUseCase.invoke(mediaId)
 
         //then
         assertThat(result).isEmpty()
-        coVerify(exactly = 1) { movieDetailsRepository.getReviews(mediaId) }
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieReviews(mediaId) }
 
     }
 
@@ -58,7 +58,7 @@ class GetMovieReviewUseCaseTest {
         //give
         val mediaId = 3L
         val exception = Exception()
-        coEvery { movieDetailsRepository.getReviews(mediaId) } throws exception
+        coEvery { movieDetailsRepository.getMovieReviews(mediaId) } throws exception
 
         //when & then
         assertThrows<Exception> {

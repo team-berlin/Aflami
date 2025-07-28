@@ -8,12 +8,12 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 
 class GetSeriesReviewUseCaseTest {
 
 
-    private val seriesDetailsRepository = mockk<TvShowDetailsRepository>()
+    private val seriesDetailsRepository = mockk<TVShowDetailsRepository>()
     private lateinit var getSeriesReviewUseCase: GetSeriesReviewUseCase
 
     @Before
@@ -25,7 +25,7 @@ class GetSeriesReviewUseCaseTest {
     fun `should return review related to media id when repository is called`() = runTest {
         val mediaId = 0L
         coEvery {
-            seriesDetailsRepository.getReviews(
+            seriesDetailsRepository.getTVShowReviews(
                 mediaId,
             )
         } returns getSeriesReview()
@@ -36,21 +36,21 @@ class GetSeriesReviewUseCaseTest {
 
         // then
         Truth.assertThat(result).isEqualTo(expected)
-        coVerify(exactly = 1) { seriesDetailsRepository.getReviews(mediaId) }
+        coVerify(exactly = 1) { seriesDetailsRepository.getTVShowReviews(mediaId) }
     }
 
     @Test
     fun `should return empty list when review is not found`() = runTest {
         //given
         val mediaId = 2L
-        coEvery { seriesDetailsRepository.getReviews(mediaId) } returns emptyList()
+        coEvery { seriesDetailsRepository.getTVShowReviews(mediaId) } returns emptyList()
 
         //when
         val result = getSeriesReviewUseCase.invoke(mediaId)
 
         //then
         Truth.assertThat(result).isEmpty()
-        coVerify(exactly = 1) { seriesDetailsRepository.getReviews(mediaId) }
+        coVerify(exactly = 1) { seriesDetailsRepository.getTVShowReviews(mediaId) }
 
     }
 
@@ -59,7 +59,7 @@ class GetSeriesReviewUseCaseTest {
         //give
         val mediaId = 3L
         val exception = Exception()
-        coEvery { seriesDetailsRepository.getReviews(mediaId) } throws exception
+        coEvery { seriesDetailsRepository.getTVShowReviews(mediaId) } throws exception
 
         //when & then
         org.junit.jupiter.api.assertThrows<Exception> {

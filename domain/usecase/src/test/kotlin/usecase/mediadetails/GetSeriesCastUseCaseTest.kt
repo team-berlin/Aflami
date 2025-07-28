@@ -8,11 +8,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 
 class GetSeriesCastUseCaseTest {
 
-    private val seriesDetailsRepository = mockk<TvShowDetailsRepository>()
+    private val seriesDetailsRepository = mockk<TVShowDetailsRepository>()
     private lateinit var getSeriesCastUseCase: GetSeriesCastUseCase
 
     @Before
@@ -26,7 +26,7 @@ class GetSeriesCastUseCaseTest {
         val mediaId = 0L
         val language = "en-US"
         coEvery {
-            seriesDetailsRepository.getSeriesCastDetails(
+            seriesDetailsRepository.getTVShowActors(
                 mediaId,
                 language
             )
@@ -46,7 +46,7 @@ class GetSeriesCastUseCaseTest {
         val seriesId = 2L
         val language = "en-US"
         coEvery {
-            seriesDetailsRepository.getSeriesCastDetails(
+            seriesDetailsRepository.getTVShowActors(
                 seriesId,
                 language
             )
@@ -66,7 +66,7 @@ class GetSeriesCastUseCaseTest {
         val mediaId = 3L
         val language = "en-US"
         val exception=Exception()
-        coEvery { seriesDetailsRepository.getSeriesCastDetails(mediaId, language) } throws exception
+        coEvery { seriesDetailsRepository.getTVShowActors(mediaId, language) } throws exception
         //when & then
         assertThrows<Exception> {
             getSeriesCastUseCase.invoke(mediaId, language)

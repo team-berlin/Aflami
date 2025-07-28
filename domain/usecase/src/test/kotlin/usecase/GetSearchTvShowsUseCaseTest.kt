@@ -10,7 +10,6 @@ import kotlinx.datetime.LocalDate
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
-import repository.SearchRepository
 
 class GetSearchTvShowsUseCaseTest {
 

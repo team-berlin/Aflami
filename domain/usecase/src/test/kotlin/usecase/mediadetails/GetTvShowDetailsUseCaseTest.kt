@@ -11,11 +11,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 
 class GetTvShowDetailsUseCaseTest {
 
-    private val repository = mockk<TvShowDetailsRepository>()
+    private val repository = mockk<TVShowDetailsRepository>()
     private lateinit var getTvShowDetailsUseCase: GetTvShowDetailsUseCase
 
     @Before
@@ -29,12 +29,12 @@ class GetTvShowDetailsUseCaseTest {
         val language = "en-US"
         val expectedDetails = getFakeTvShowDetails()
 
-        coEvery { repository.getTvShowDetails(tvShowId, language) } returns expectedDetails
+        coEvery { repository.getTVShowDetails(tvShowId, language) } returns expectedDetails
 
         val result = getTvShowDetailsUseCase(tvShowId, language)
 
         assertThat(result).isEqualTo(expectedDetails)
-        coVerify(exactly = 1) { repository.getTvShowDetails(tvShowId, language) }
+        coVerify(exactly = 1) { repository.getTVShowDetails(tvShowId, language) }
     }
 
     @Test
@@ -42,12 +42,12 @@ class GetTvShowDetailsUseCaseTest {
         val tvShowId = 2L
         val language = "en-US"
 
-        coEvery { repository.getTvShowDetails(tvShowId, language) } returns null
+        coEvery { repository.getTVShowDetails(tvShowId, language) } returns null
 
         val result = getTvShowDetailsUseCase(tvShowId, language)
 
         assertThat(result).isNull()
-        coVerify(exactly = 1) { repository.getTvShowDetails(tvShowId, language) }
+        coVerify(exactly = 1) { repository.getTVShowDetails(tvShowId, language) }
     }
 
     @Test
@@ -56,7 +56,7 @@ class GetTvShowDetailsUseCaseTest {
         val movieId = 3L
         val language = "en-US"
         val exception = RuntimeException()
-        coEvery { repository.getTvShowDetails(movieId, language) } throws exception
+        coEvery { repository.getTVShowDetails(movieId, language) } throws exception
 
         // When + Then
         assertThrows<RuntimeException>{

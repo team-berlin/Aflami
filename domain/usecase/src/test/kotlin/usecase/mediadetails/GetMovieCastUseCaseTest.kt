@@ -27,7 +27,7 @@ class GetMovieCastUseCaseTest {
         val mediaId = 0L
         val language = "en-US"
         coEvery {
-            movieDetailsRepository.getMovieCastDetails(
+            movieDetailsRepository.getMovieActors(
                 mediaId,
                 language
             )
@@ -38,7 +38,7 @@ class GetMovieCastUseCaseTest {
 
         // then
         assertThat(result).isEqualTo(getMovieCast())
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieCastDetails(mediaId, language) }
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieActors(mediaId, language) }
     }
 
     @Test
@@ -47,7 +47,7 @@ class GetMovieCastUseCaseTest {
         val mediaId = 2L
         val language = "en-US"
         coEvery {
-            movieDetailsRepository.getMovieCastDetails(
+            movieDetailsRepository.getMovieActors(
                 mediaId,
                 language
             )
@@ -58,7 +58,7 @@ class GetMovieCastUseCaseTest {
 
         //then
         assertThat(result).isEmpty()
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieCastDetails(mediaId, language) }
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieActors(mediaId, language) }
 
     }
 
@@ -68,7 +68,7 @@ class GetMovieCastUseCaseTest {
         val mediaId = 3L
         val language = "en-US"
         val exception=Exception()
-        coEvery { movieDetailsRepository.getMovieCastDetails(mediaId, language) } throws exception
+        coEvery { movieDetailsRepository.getMovieActors(mediaId, language) } throws exception
         //when & then
         assertThrows<Exception> {
             getMovieCastUseCase.invoke(mediaId, language)
