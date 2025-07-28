@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.search.GenreUiState
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.GetMovieGenresUseCase
+import usecase.GetMoviesByMoodUseCase
 import usecase.GetPopularMoviesUseCase
 import usecase.GetPopularTVShowsUseCase
 import usecase.GetTopRatedMoviesUseCase
@@ -34,6 +36,7 @@ class HomeViewModel(
     private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase,
     private val getTopRatedSeriesUseCase: GetTopRatedSeriesUseCase,
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase
 ) : BaseViewModel<HomeUiState, HomeScreenEffect>(HomeUiState()), HomeInteractionListener {
 
     private val _movies = MutableStateFlow<List<MediaUiState>>(emptyList())
@@ -151,7 +154,8 @@ class HomeViewModel(
         }
     }
 
-    override fun onMoodPickerClicked() {
+    override fun onMoodPickerClicked(mood: UserMood) {
+
     }
 
 
@@ -166,11 +170,11 @@ class HomeViewModel(
 
     override fun onChangeUpcomingMovieGenre(genreId: Int) {
         updateState {
-            val selected = it.upcomingMovieGenres.map { genre ->
+            val selected = it.movieGenres.map { genre ->
                 genre.copy(isSelected = genre.id == genreId)
             }
             it.copy(
-                selectedGenres = genreId, upcomingMovieGenres = selected, isLoading = true
+                selectedGenres = genreId, movieGenres = selected, isLoading = true
             )
         }
         getUpComingMoviesByGenre()
@@ -221,7 +225,7 @@ class HomeViewModel(
             onSuccess = { genreMovie ->
                 updateState { state ->
                     state.copy(
-                        upcomingMovieGenres = genreMovie, isLoading = false
+                        movieGenres = genreMovie, isLoading = false,
                     )
                 }
             },
