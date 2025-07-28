@@ -7,7 +7,7 @@ interface MovieRepository {
     suspend fun addContinueWatchingMovie(movie: Movie)
     suspend fun getTopRatedMovies(page: Int): List<Movie>
     suspend fun getUpComingMovies(): List<Movie>
-    suspend fun getPopularMovies(language: String): List<Movie>
+    suspend fun getPopularMovies(): List<Movie>
     suspend fun getMoviesByCountry(query: String, page: Int): List<Movie>
     suspend fun getMediaByActorName(actorName: String, page: Int): List<Movie>
     suspend fun searchMovie(query: String, page: Int): List<Movie>

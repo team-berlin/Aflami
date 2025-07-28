@@ -1,5 +1,6 @@
 package usecase.mediadetails
 
+import com.berlin.entity.Movie
 import com.berlin.entity.ProductionCompany
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
@@ -10,6 +11,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
+import usecase.movie.GetMovieDetailsUseCase
 
 class GetMovieDetailsUseCaseTest {
 
@@ -24,71 +26,56 @@ class GetMovieDetailsUseCaseTest {
     @Test
     fun `should return movie details when repository returns data`() = runTest {
         val movieId = 1L
-        val language = "en-US"
-        val expectedMovieDetails = getFakeMovieDetails()
+        val expectedMovieDetails = movie
 
-        coEvery { repository.getMovieDetails(movieId, language) } returns expectedMovieDetails
+        coEvery { repository.getMovieDetails(movieId) } returns expectedMovieDetails
 
-        val result = getMovieDetailsUseCase(movieId, language)
+        val result = getMovieDetailsUseCase(movieId)
 
         assertThat(result).isEqualTo(expectedMovieDetails)
-        coVerify(exactly = 1) { repository.getMovieDetails(movieId, language) }
+        coVerify(exactly = 1) { repository.getMovieDetails(movieId) }
     }
 
     @Test
     fun `should return null when movie not found`() = runTest {
         val movieId = 2L
-        val language = "en-US"
 
-        coEvery { repository.getMovieDetails(movieId, language) } returns null
+        coEvery { repository.getMovieDetails(movieId) } returns null
 
-        val result = getMovieDetailsUseCase(movieId, language)
+        val result = getMovieDetailsUseCase(movieId)
 
         assertThat(result).isNull()
-        coVerify(exactly = 1) { repository.getMovieDetails(movieId, language) }
+        coVerify(exactly = 1) { repository.getMovieDetails(movieId) }
     }
 
     @Test
     fun `should throw exception when repository throws exception`() = runTest {
-        // Given
         val movieId = 3L
-        val language = "en-US"
         val exception = RuntimeException()
 
-        coEvery { repository.getMovieDetails(movieId, language) } throws exception
+        coEvery { repository.getMovieDetails(movieId) } throws exception
 
-        // When + Then
-        assertThrows<RuntimeException>{
-            getMovieDetailsUseCase(movieId, language)
+        assertThrows<RuntimeException> {
+            getMovieDetailsUseCase(movieId)
         }
     }
 
 
-    private fun getFakeMovieDetails(): MovieDetails {
-        return MovieDetails(
-            id = 1L,
-            title = "Inception",
-            overview = "A thief who steals corporate secrets through dream-sharing technology.",
-            posterUrl = "https://image.tmdb.org/t/p/w500/poster.jpg",
-            backdropUrl = "https://image.tmdb.org/t/p/w500/backdrop.jpg",
-            releaseDate = "2010-07-16",
-            rating = 8.8,
-            runtime = 148,
-            genres = listOf(
-                GenreEntity(id = 28, name = "Action"),
-                GenreEntity(id = 878, name = "Science Fiction")
-            ),
-            productionCompanies = listOf(
-                ProductionCompany(
-                    id = 1,
-                    name = "Legendary Pictures",
-                    poster = "https://image.tmdb.org/t/p/w500/company_logo.jpg",
-                    originCountry = "US",
-                )
-            ),
-            originCountry = "US",
-            duration = "5",
-            hasVideo = true
+    companion object {
+        val movie = Movie(
+            id = 90L,
+            title = "Test Movie",
+            rating = 7.9,
+            releaseDate = "1/12/2001",
+            posterURL = "/test.jpg",
+            screenShot = "/test.jpg",
+            description = "This is the test movie",
+            genres = emptyList(),
+            duration = 3,
+            hasVideo = false,
+            productionCompanies = emptyList(),
+            originCountry = "PS",
+            galleryUrl = emptyList()
         )
     }
 }

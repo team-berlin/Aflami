@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
+import usecase.movie.GetMovieCastUseCase
 
 class GetMovieCastUseCaseTest {
 
@@ -25,53 +26,48 @@ class GetMovieCastUseCaseTest {
     fun `should return media cast related to media id when repository is called`() = runTest {
         // given
         val mediaId = 0L
-        val language = "en-US"
         coEvery {
             movieDetailsRepository.getMovieActors(
                 mediaId,
-                language
             )
         } returns getMovieCast()
 
         //when
-        val result = getMovieCastUseCase.invoke(mediaId, language)
+        val result = getMovieCastUseCase.invoke(mediaId)
 
         // then
         assertThat(result).isEqualTo(getMovieCast())
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieActors(mediaId, language) }
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieActors(mediaId) }
     }
 
     @Test
     fun `should return empty list when media cast is not found`() = runTest {
         //given
         val mediaId = 2L
-        val language = "en-US"
         coEvery {
             movieDetailsRepository.getMovieActors(
                 mediaId,
-                language
             )
         } returns emptyList()
 
         //when
-        val result = getMovieCastUseCase.invoke(mediaId, language)
+        val result = getMovieCastUseCase.invoke(mediaId)
 
         //then
         assertThat(result).isEmpty()
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieActors(mediaId, language) }
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieActors(mediaId) }
 
     }
 
     @Test
-    fun `should throw exception if movieDetailsRepository throw exception `()= runTest {
+    fun `should throw exception if movieDetailsRepository throw exception`() = runTest {
         //give
         val mediaId = 3L
-        val language = "en-US"
         val exception=Exception()
-        coEvery { movieDetailsRepository.getMovieActors(mediaId, language) } throws exception
+        coEvery { movieDetailsRepository.getMovieActors(mediaId) } throws exception
         //when & then
         assertThrows<Exception> {
-            getMovieCastUseCase.invoke(mediaId, language)
+            getMovieCastUseCase.invoke(mediaId)
         }
     }
 
@@ -83,7 +79,7 @@ class GetMovieCastUseCaseTest {
                 Actor(
                     id = i.toLong(),
                     name = "name $i",
-                    poster = "poster $i"
+                    posterURL = "poster $i"
                 )
             )
         }

@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
+import usecase.movie.GetMovieReviewUseCase
 
 class GetMovieReviewUseCaseTest {
 

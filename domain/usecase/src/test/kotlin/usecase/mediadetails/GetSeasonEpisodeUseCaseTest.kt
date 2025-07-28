@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TVShowDetailsRepository
+import usecase.tvshow.GetSeasonEpisodesUseCase
 
 class GetSeasonEpisodeUseCaseTest {
 
@@ -79,13 +80,22 @@ class GetSeasonEpisodeUseCaseTest {
     private fun getFakeEpisodes(): List<Episode> {
         return (1..5).map { i ->
             Episode(
-                episodeId = i,
-                episodeNumber = i,
-                name = "Episode $i",
-                description = "Overview of episode $i",
-                rating = 8.0 + i,
-                stillPath = "https://image.tmdb.org/t/p/w500/still_$i.jpg",
-                airDate = "2020-0$i-01"
+                airDate = TODO(),
+                episodeNumber = TODO(),
+                episodeType = TODO(),
+                episodeId = TODO(),
+                name = TODO(),
+                description = TODO(),
+                duration = TODO(),
+                tvShowId = TODO(),
+                rating = TODO()
+//                episodeId = i,
+//                episodeNumber = i,
+//                name = "Episode $i",
+//                description = "Overview of episode $i",
+//                rating = 8.0 + i,
+//                stillPath = "https://image.tmdb.org/t/p/w500/still_$i.jpg",
+//                airDate = "2020-0$i-01"
             )
         }
     }

@@ -10,6 +10,6 @@ interface MovieDetailsRepository {
     suspend fun getMovieDetails(movieId: Long): Movie?
     suspend fun getMovieActors(movieId: Long): List<Actor>
     suspend fun getSimilarMovies(movieId: Long): List<Movie>
-    suspend fun getMovieReviews(id: Long): List<Review>
+    suspend fun getMovieReviews(movieId: Long): List<Review>
     suspend fun getMovieGenres(): List<Genre>
 }

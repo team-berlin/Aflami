@@ -9,14 +9,15 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TVShowDetailsRepository
+import usecase.tvshow.GetTVShowGalleryUseCase
 
 class GetSeriesGalleryUseCaseTest {
     private val seriesDetailsRepository: TVShowDetailsRepository = mockk()
-    private lateinit var getSeriesGalleryUseCase: GetSeriesGalleryUseCase
+    private lateinit var getSeriesGalleryUseCase: GetTVShowGalleryUseCase
 
     @Before
     fun setUp() {
-        getSeriesGalleryUseCase = GetSeriesGalleryUseCase(seriesDetailsRepository)
+        getSeriesGalleryUseCase = GetTVShowGalleryUseCase(seriesDetailsRepository)
     }
 
     @Test

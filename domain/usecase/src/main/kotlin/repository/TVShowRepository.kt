@@ -7,7 +7,7 @@ interface TVShowRepository {
     suspend fun getContinueWatchingTVShows(): List<TVShow>
     suspend fun addContinueWatchingTVShow(tvShow: TVShow)
     suspend fun getTopRatedSeries(page: Int): List<TVShow>
-    suspend fun getPopularTVShows(language: String): List<Media>
+    suspend fun getPopularTVShows(): List<TVShow>
     suspend fun searchTVShow(query: String, page: Int): List<TVShow>
     suspend fun getRecentTVShowsSearchQueries(): List<String>
     suspend fun saveRecentTVShowsHistory(query: String)

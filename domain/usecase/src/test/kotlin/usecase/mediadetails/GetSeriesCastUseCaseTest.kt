@@ -9,15 +9,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TVShowDetailsRepository
+import usecase.tvshow.GetTVShowCastUseCase
 
 class GetSeriesCastUseCaseTest {
 
     private val seriesDetailsRepository = mockk<TVShowDetailsRepository>()
-    private lateinit var getSeriesCastUseCase: GetSeriesCastUseCase
+    private lateinit var getSeriesCastUseCase: GetTVShowCastUseCase
 
     @Before
     fun setUp() {
-        getSeriesCastUseCase = GetSeriesCastUseCase(seriesDetailsRepository)
+        getSeriesCastUseCase = GetTVShowCastUseCase(seriesDetailsRepository)
     }
 
     @Test
@@ -28,12 +29,11 @@ class GetSeriesCastUseCaseTest {
         coEvery {
             seriesDetailsRepository.getTVShowActors(
                 mediaId,
-                language
             )
         } returns getSeriesCast()
 
         //when
-        val result = getSeriesCastUseCase.invoke(mediaId, language)
+        val result = getSeriesCastUseCase.invoke(mediaId)
         val expected=getSeriesCast()
 
         // then
@@ -48,12 +48,11 @@ class GetSeriesCastUseCaseTest {
         coEvery {
             seriesDetailsRepository.getTVShowActors(
                 seriesId,
-                language
             )
         } returns emptyList()
 
         //when
-        val result = getSeriesCastUseCase.invoke(seriesId, language)
+        val result = getSeriesCastUseCase.invoke(seriesId)
 
         //then
         assertThat(result).isEmpty()
@@ -66,10 +65,10 @@ class GetSeriesCastUseCaseTest {
         val mediaId = 3L
         val language = "en-US"
         val exception=Exception()
-        coEvery { seriesDetailsRepository.getTVShowActors(mediaId, language) } throws exception
+        coEvery { seriesDetailsRepository.getTVShowActors(mediaId) } throws exception
         //when & then
         assertThrows<Exception> {
-            getSeriesCastUseCase.invoke(mediaId, language)
+            getSeriesCastUseCase.invoke(mediaId)
         }
     }
 
@@ -81,7 +80,7 @@ class GetSeriesCastUseCaseTest {
                 Actor(
                     id = i.toLong(),
                     name = "name $i",
-                    poster = "poster $i"
+                    posterURL = "poster $i"
                 )
             )
         }

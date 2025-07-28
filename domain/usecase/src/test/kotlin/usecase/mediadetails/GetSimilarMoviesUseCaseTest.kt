@@ -11,6 +11,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
+import usecase.movie.GetSimilarMoviesUseCase
 
 class GetSimilarMoviesUseCaseTest {
 
@@ -80,16 +81,29 @@ class GetSimilarMoviesUseCaseTest {
         for (i in 0..5) {
             movieList.add(
                 Movie(
-                    id = 1L,
-                    title = "Inception$i",
-                    rating = 8.8,
-                    releaseDate = LocalDate(2010, 7, 16),
-                    genres = listOf(28, 12, 878),
-                    poster = "https://poster$i",
-                    screenShot = "https://backdrop$i",
-                    description = "A thief who steals corporate secrets through the use of dream-sharing technology...",
-                    releaseDate = "2010-07-16",
-                    duration = 148
+                    id = TODO(),
+                    title = TODO(),
+                    rating = TODO(),
+                    releaseDate = TODO(),
+                    posterURL = TODO(),
+                    screenShot = TODO(),
+                    description = TODO(),
+                    genres = TODO(),
+                    duration = TODO(),
+                    hasVideo = TODO(),
+                    productionCompanies = TODO(),
+                    originCountry = TODO(),
+                    galleryUrl = TODO()
+//                    id = 1L,
+//                    title = "Inception$i",
+//                    rating = 8.8,
+//                    releaseDate = LocalDate(2010, 7, 16),
+//                    genres = listOf(28, 12, 878),
+//                    poster = "https://poster$i",
+//                    screenShot = "https://backdrop$i",
+//                    description = "A thief who steals corporate secrets through the use of dream-sharing technology...",
+//                    releaseDate = "2010-07-16",
+//                    duration = 148
                 )
             )
         }

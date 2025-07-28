@@ -12,15 +12,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TVShowDetailsRepository
+import usecase.tvshow.GetSimilarTVShowsUseCase
 
 class GetSimilarSeriesUseCaseTest {
 
     private val seriesDetailsRepository = mockk<TVShowDetailsRepository>()
-    private lateinit var getSimilarSeriesUseCase: GetSimilarSeriesUseCase
+    private lateinit var getSimilarSeriesUseCase: GetSimilarTVShowsUseCase
 
     @Before
     fun setUp() {
-        getSimilarSeriesUseCase = GetSimilarSeriesUseCase(seriesDetailsRepository)
+        getSimilarSeriesUseCase = GetSimilarTVShowsUseCase(seriesDetailsRepository)
     }
 
     @Test
@@ -81,16 +82,31 @@ class GetSimilarSeriesUseCaseTest {
         for (i in 0..5) {
             seriesList.add(
                 TVShow(
-                    id = 1L,
-                    title = "Inception$i",
-                    rating = 8.8,
-                    releaseYear = LocalDate(2010, 7, 16),
-                    genre = listOf(28, 12, 878),
-                    poster = "https://poster$i",
-                    backdropPath = "https://backdrop$i",
-                    overview = "A thief who steals corporate secrets through the use of dream-sharing technology...",
-                    releaseDate = "2010-07-16",
-                    runtime = 148
+                    id = TODO(),
+                    title = TODO(),
+                    rating = TODO(),
+                    posterURL = TODO(),
+                    releaseDate = TODO(),
+                    screenShot = TODO(),
+                    description = TODO(),
+                    genres = TODO(),
+                    duration = TODO(),
+                    hasVideo = TODO(),
+                    productionCompanies = TODO(),
+                    originCountry = TODO(),
+                    seasons = TODO(),
+                    galleryUrl = TODO(),
+                    reviews = TODO()
+//                    id = 1L,
+//                    title = "Inception$i",
+//                    rating = 8.8,
+//                    releaseYear = LocalDate(2010, 7, 16),
+//                    genre = listOf(28, 12, 878),
+//                    poster = "https://poster$i",
+//                    backdropPath = "https://backdrop$i",
+//                    overview = "A thief who steals corporate secrets through the use of dream-sharing technology...",
+//                    releaseDate = "2010-07-16",
+//                    runtime = 148
                 )
             )
         }

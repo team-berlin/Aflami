@@ -9,16 +9,16 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import repository.TVShowDetailsRepository
+import usecase.tvshow.GetTVShowReviewUseCase
 
 class GetSeriesReviewUseCaseTest {
 
-
     private val seriesDetailsRepository = mockk<TVShowDetailsRepository>()
-    private lateinit var getSeriesReviewUseCase: GetSeriesReviewUseCase
+    private lateinit var getSeriesReviewUseCase: GetTVShowReviewUseCase
 
     @Before
     fun setUp() {
-        getSeriesReviewUseCase = GetSeriesReviewUseCase(seriesDetailsRepository)
+        getSeriesReviewUseCase = GetTVShowReviewUseCase(seriesDetailsRepository)
     }
 
     @Test
