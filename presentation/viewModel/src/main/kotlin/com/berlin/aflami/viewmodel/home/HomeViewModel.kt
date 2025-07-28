@@ -2,6 +2,10 @@ package com.berlin.aflami.viewmodel.home
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
@@ -242,17 +246,27 @@ class HomeViewModel(
         }
         tryToCall(
             call = {
-                coroutineScope {
-                    val moviesList = async { getWatchedMovieUseCase().map { it.toUIStateMedia() } }
-                    val tvShowsList =
-                        async { getWatchedTVShowUseCase().map { it.toUIStateMedia() } }
+                Pager(
+                    config = PagingConfig(
+                        pageSize = 20, initialLoadSize = 20
+                    ),
+                    pagingSourceFactory = {
+                        BasePagingSource { page ->
+                            coroutineScope {
+                                val moviesList =
+                                    async { getWatchedMovieUseCase(page).map { it.toUIStateMedia() } }
+                                val tvShowsList =
+                                    async { getWatchedTVShowUseCase(page).map { it.toUIStateMedia() } }
 
-                    val movies = moviesList.await()
-                    val tvShows = tvShowsList.await()
+                                val movies = moviesList.await()
+                                val tvShows = tvShowsList.await()
 
-                    val combinedList = (movies + tvShows).shuffled()
-                    combinedList
-                }
+                                val combinedList = (movies + tvShows).shuffled()
+                                combinedList
+                            }
+                        }
+                    }
+                ).flow.cachedIn(viewModelScope)
             },
             onSuccess = { continueWatchingMedia ->
                 _state.update {

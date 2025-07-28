@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.BlurredPosterBackground
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
@@ -65,6 +66,8 @@ private fun HomeContent(
         initialPage = 0, pageCount = { state.popularMedia.popularMedia.size })
 
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
+    val pagedMovies = state.mediaContinueWatching.collectAsLazyPagingItems()
+
     LazyColumn(
         modifier = Modifier.padding(vertical = 6.dp)
     ) {
@@ -144,26 +147,27 @@ private fun HomeContent(
                 }
             }
         }
+
         item {
             MediaSections(
                 onShowAllContinueWatchingClick = {
                     listener.onShowAllContinueWatchingClicked()
-                }, state = state.mediaContinueWatching, sectionTitleId = R.string.continue_watching
+                },
+                state = pagedMovies,
+                sectionTitleId = R.string.continue_watching
             )
-            val lazyListState = rememberLazyListState()
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-//                Column(modifier = Modifier.padding(bottom = 100.dp))
-//                {
-//                        upcomingMovies(
-//                            moviesGenres = state.upcomingMovieGenres,
-//                            movies = state.upcomingMovies,
-//                            onMovieClicked = listener::onClickUpcomingMovieCard,
-//                            onChangeMovieGenre = listener::onChangeUpcomingMovieGenre,
-//                        )
-//                }
-            }
         }
+//            val lazyListState = rememberLazyListState()
+//            Box(
+//                modifier = Modifier.fillMaxSize()
+//            ) {
+////                Column(modifier = Modifier.padding(bottom = 100.dp))
+////                {
+////                        upcomingMovies(
+////                            moviesGenres = state.upcomingMovieGenres,
+////                            movies = state.upcomingMovies,
+////                            onMovieClicked = listener::onClickUpcomingMovieCard,
+////                            onChangeMovieGenre = listener::onChangeUpcomingMovieGenre,
+////                        )
     }
 }

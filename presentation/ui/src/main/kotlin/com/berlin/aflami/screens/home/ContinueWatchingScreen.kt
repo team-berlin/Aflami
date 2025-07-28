@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,9 +26,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.Loading
+import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaEffect
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaInteractionListener
@@ -90,34 +94,48 @@ fun WatchedMediaContent(
                 )
             }
         })
-        LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize(),
-            columns = GridCells.Adaptive(minSize = 160.dp),
-            contentPadding = PaddingValues(
-                start = 16.dp, end = 16.dp, top = 8.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(
-                count = state.continueWatchingItems.size, key = { index ->
-                    state.continueWatchingItems[index].id
-                }) { index ->
-                val watchedMedia = state.continueWatchingItems[index]
-                MediaCard(
-                    modifier = Modifier.height(222.dp),
-                    mediaImg = watchedMedia.poster,
-                    title = watchedMedia.title,
-                    onClick = {
-                        listener.onMediaCardClicked(
-                            id = watchedMedia.id, type = watchedMedia.mediaType
-                        )
-                    },
-                    typeOfMedia = watchedMedia.mediaType.name,
-                    date = watchedMedia.releaseYear,
-                    rating = watchedMedia.rating
-                )
+//        LazyVerticalGrid(
+//            modifier = Modifier.fillMaxSize(),
+//            columns = GridCells.Adaptive(minSize = 160.dp),
+//            contentPadding = PaddingValues(
+//                start = 16.dp, end = 16.dp, top = 8.dp
+//            ),
+//            verticalArrangement = Arrangement.spacedBy(8.dp),
+//            horizontalArrangement = Arrangement.spacedBy(8.dp)
+//        ) {
+//            items(
+//                count = state.continueWatchingItems.size, key = { index ->
+//                    state.continueWatchingItems[index].id
+//                }) { index ->
+//                val watchedMedia = state.continueWatchingItems[index]
+//                MediaCard(
+//                    modifier = Modifier.height(222.dp),
+//                    mediaImg = watchedMedia.poster,
+//                    title = watchedMedia.title,
+//                    onClick = {
+//                        listener.onMediaCardClicked(
+//                            id = watchedMedia.id, type = watchedMedia.mediaType
+//                        )
+//                    },
+//                    typeOfMedia = watchedMedia.mediaType.name,
+//                    date = watchedMedia.releaseYear,
+//                    rating = watchedMedia.rating
+//                )
+//
+//            }
+//        }
 
+        val pagedMovies = state.continueWatchingItems.collectAsLazyPagingItems()
+
+        when {
+            state.isLoading ->{
+                Loading()
+            }
+            else -> {
+                MediaGridList(
+                    media = pagedMovies,
+                    onMovieClick = listener::onMediaCardClicked,
+                )
             }
         }
 

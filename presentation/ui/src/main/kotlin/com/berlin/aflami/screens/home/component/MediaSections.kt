@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
@@ -29,7 +30,7 @@ import com.berlin.ui.R
 fun MediaSections(
     modifier: Modifier = Modifier,
     onShowAllContinueWatchingClick: () -> Unit,
-    state: List<MediaUiState>,
+    state: LazyPagingItems<MediaUiState>,
     sectionTitleId: Int
 ) {
     Column(
@@ -71,18 +72,22 @@ fun MediaSections(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.size) {
-                    MediaCard(
-                        Modifier
-                            .height(222.dp)
-                            .width(cardWidth),
-                        mediaImg = state[it].poster,
-                        title = state[it].title,
-                        typeOfMedia = state[it].mediaType.name,
-                        date = state[it].releaseYear,
-                        rating = state[it].rating,
-                    )
+                items(state.itemCount) { index ->
+                    val item = state[index]
+                    item?.let {
+                        MediaCard(
+                            Modifier
+                                .height(222.dp)
+                                .width(cardWidth),
+                            mediaImg = it.poster,
+                            title = it.title,
+                            typeOfMedia = it.mediaType.name,
+                            date = it.releaseYear,
+                            rating = it.rating,
+                        )
+                    }
                 }
+
             }
         }
     }
