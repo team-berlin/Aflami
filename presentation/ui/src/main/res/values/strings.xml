@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="world_tour">World Tour</string>
+    <string name="country_name">Country name</string>
+    <string name="country_tour_description">Start exploring the world movie by enter your favorite country in search bar</string>
+    <string name="country_tour">Country tour</string>
+    <string name="no_search_result">No search result</string>
+    <string name="please_try_with_another_keyword">please try with another keyword.</string>
+    <string name="movie">Movie</string>
+    <string name="Tv_Show">Tv Show</string>
+    <string name="countries">Countries</string>
+    <string name="country_tour_exploring">♦Country tour exploring</string>
+    <string name="arrow_back">arrow back</string>
+    <string name="actor_name">Actor name</string>
+    <string name="find_by_actor">Find by actor</string>
+    <string name="find_by_actor_quotation">Start exploring your favorite actor’s movies and enjoy it.</string>
+    <string name="media_image">Media Image</string>
+    <string name="episode_image">Episode image</string>
+    <string name="episode">Episode</string>
+    <string name="cast_image">Cast Image</string>
+    <string name="cast">Cast</string>
+    <string name="all">All</string>
+    <string name="season">Season</string>
+    <string name="company_production_image_cd">Company Production</string>
+    <string name="description">Description</string>
+    <string name="read_less">Read less</string>
+    <string name="read_more">Read more</string>
+
+    //login
+    <string name="welcome_back">Welcome back!</string>
+    <string name="please_enter_info">Please enter your information to login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="incorrect_password">Incorrect password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login">Login</string>
+    <string name="continue_as_guest">Continue as guest</string>
+    <string name="dont_have_account">Don\'t have account?</string>
+    <string name="create_account">Create account</string>
+    <string name="logo">logo</string>
+    <string name="login_error_message">incorrect password or username</string>
+    <string name="loading">Loading...</string>
+    <string name="login_required_warning">Please login to access your account details\nand other features!</string>
+    <string name="login_required">Login Required</string>
+
+    <string name="more_like_this">More like this</string>
+    <string name="reviews">Reviews</string>
+    <string name="gallery">Gallery</string>
+    <string name="company_production">company\nproduction</string>
+    <string name="continue_watching">Continue watching</string>
+    <string name="upcoming">Upcoming</string>
+</resources>

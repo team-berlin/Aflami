@@ -1,0 +1,16 @@
+package com.berlin.aflami.di
+
+import com.berlin.local.SearchDatabase
+import com.berlin.local.dao.CategoriesPreferencesDao
+import com.berlin.local.dao.ContinueWatchingDao
+import com.berlin.local.dao.RecentHistoryDao
+import com.berlin.local.dao.SearchDao
+import org.koin.dsl.module
+
+val daoModule = module{
+    single<SearchDao> { get<SearchDatabase>().searchDao() }
+    single<RecentHistoryDao> { get<SearchDatabase>().recentHistoryDao() }
+    single<CategoriesPreferencesDao> { get<SearchDatabase>().categoriesPreferencesDao() }
+    single<ContinueWatchingDao> { get<SearchDatabase>().continueWatchingDao() }
+
+}

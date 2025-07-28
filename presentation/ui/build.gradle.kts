@@ -1,47 +1,30 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.aflami.custom.plugin)
 }
 
 android {
     namespace = "com.berlin.ui"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 26
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
 }
 
 dependencies {
-    androidCoreKtx()
-    lifecycleRuntimeKtx()
-    androidxUi()
-    navigation()
-    koin()
-    coil()
-    composeUiDebug()
+    implementation(libs.androidx.core.ktx)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.androidxUi)
+    implementation(libs.bundles.coil)
+    implementation(libs.bundles.composeUiDebug)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.navigation.compose)
+    implementation(libs.bundles.koin)
+    implementation(project(":presentation:designSystem"))
+    implementation(project(":presentation:safeImageViewer"))
+    implementation(project(":presentation:navigation"))
+    implementation(project(":presentation:viewModel"))
 
-    safeImageViewer()
-    designSystem()
-    viewModel()
+    val paging_version = "3.3.6"
+    implementation("androidx.paging:paging-runtime:$paging_version")
+    implementation("androidx.paging:paging-compose:$paging_version")
 }

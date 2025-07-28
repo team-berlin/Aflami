@@ -1,0 +1,24 @@
+package com.berlin.aflami.screens.mediadetails.components
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
+
+@Composable
+fun ReviewsSection(
+    reviews: List<ReviewUiState>,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit
+) {
+    Column {
+        reviews.forEachIndexed { index, review ->
+            val isLast = index == reviews.lastIndex
+            ReviewItem(
+                review = review,
+                isLastItem = isLast,
+                isExpanded = isExpanded,
+                onToggleExpand = onToggleExpand
+            )
+        }
+    }
+}

@@ -20,11 +20,12 @@
     <string name="label_categories">Categories</string>
     <string name="label_lets_play">Let\'s Play</string>
     <string name="label_profile">Profile</string>
+    <string name="popular">Popular</string>
 
     <string name="action">Action</string>
 
     <string name="icon_button">Icon button</string>
-
+  
     <string name="world_tour">World Tour</string>
     <string name="explore_world_cinema">Explore World Cinema</string>
 
@@ -32,7 +33,7 @@
     <string name="search_by_favorite_actor">Search by favorite Actor</string>
 
 
-    <string name="aflami_title">Aflami</string>
+    <string name="aflami_title">AFLAMI</string>
     <string name="aflami_description">More than just watching.</string>
     <string name="my_account">My account</string>
     <string name="list_added_success">Added new list successfully.</string>
@@ -49,5 +50,34 @@
     <string name="category_img_content">category img</string>
     <string name="api_image_card_content">api image card</string>
     <string name="drama">Drama</string>
-    <string name="character_image">Character Image</string>
+    <string name="card_rate">card rate</string>
+    <string name="search">Search</string>
+    <string name="search_hint_text">Search...</string>
+    <string name="search_suggestions_hub">Search Suggestions Hub</string>
+    <string name="recent_searches">Recent Searches</string>
+    <string name="clear_all">Clear all</string>
+    <string name="search_by_actor">Find by actor</string>
+    <string name="actor_name_hint">Actor name</string>
+    <string name="find_by_actor_quotation">Start exploring your favorite actor’s movies and enjoy it.</string>
+    <string name="imdb_rating">IMDb rating</string>
+    <string name="Genre">Genre</string>
+    <string name="romance">romance</string>
+    <string name="science_fiction">science fiction</string>
+    <string name="family">family</string>
+    <string name="mystery">mystery</string>
+    <string name="history">history</string>
+    <string name="war">war</string>
+    <string name="crime">crime</string>
+    <string name="comedy">comedy</string>
+    <string name="horror">horror</string>
+    <string name="western">western</string>
+    <string name="music">music</string>
+    <string name="adventure">adventure</string>
+    <string name="tv_movie">tv_movie</string>
+    <string name="fantasy">fantasy</string>
+    <string name="thriller">thriller</string>
+    <string name="documentary">documentary</string>
+    <string name="animation">animation</string>
+    <string name="filter_result">Filter Result</string>
+    <string name="search_discribtion">\"Start exploring! Search for your favorite movies, series and shows\"</string>
 </resources>

@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -26,7 +27,8 @@ include(":presentation:viewModel")
 include(":presentation:designSystem")
 include(":domain:usecase")
 include(":domain:entity")
-include(":data:repository")
 include(":data:local")
 include(":data:remote")
 include(":presentation:safeImageViewer")
+include(":data:repository")
+include(":presentation:navigation")

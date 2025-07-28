@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -45,11 +47,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.berlin.aflami.utils.AsteriskVisualTransformation
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -71,7 +73,9 @@ fun TextField(
     borderColor: Color = Theme.color.stroke,
     borderErrorColor: Color = Theme.color.statusColors.redAccent,
     borderFocusedColor: Color = Theme.color.primary,
-    onTrailingClick: (() -> Unit)? = null,
+    onTrailingIconClicked: (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     onValueChange: (String) -> Unit = {}
 ) {
     var isFocused by remember { mutableStateOf(false) }
@@ -90,7 +94,7 @@ fun TextField(
             style = style,
         )
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .border(
                     width = 1.dp, color = currentBorderColor, shape = RoundedCornerShape(16.dp)
                 )
@@ -107,7 +111,7 @@ fun TextField(
         ) {
             if (leadingIcon != null) {
                 val imageColor by animateColorAsState(
-                    targetValue = if (text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.body
+                    targetValue = if (text.isEmpty()) Theme.color.textColors.body else Theme.color.textColors.hint
                 )
                 LeadingIcon(leadingIcon, imageColor)
                 VerticalDivider()
@@ -122,9 +126,11 @@ fun TextField(
                         )
                     )
                 },
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
                 maxLines = maxLines,
                 enabled = isEnabled,
-                modifier = modifier
+                modifier = Modifier
                     .padding(start = 12.dp)
                     .weight(1f)
                     .defaultMinSize(minHeight = 56.dp)
@@ -132,7 +138,7 @@ fun TextField(
                     .onFocusChanged { focusState -> isFocused = focusState.isFocused },
                 textStyle = style.copy(color = Theme.color.textColors.title),
                 singleLine = maxLines == 1,
-                visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
+                visualTransformation = if (isObscured) AsteriskVisualTransformation() else VisualTransformation.None,
                 decorationBox = { innerTextField ->
                     InnerTextFieldWithHint(innerTextField, text, hintText, style)
                 })
@@ -141,7 +147,7 @@ fun TextField(
                     targetValue = if (text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.title
                 )
                 VerticalDivider()
-                TrailingIcon(trailingIcon, imageColor, onTrailingClick)
+                TrailingIcon(trailingIcon, imageColor, onTrailingIconClicked)
             }
         }
         AnimatedMaxCharacters(

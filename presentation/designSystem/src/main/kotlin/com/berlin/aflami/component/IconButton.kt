@@ -1,5 +1,6 @@
 package com.berlin.aflami.component
 
+import android.health.connect.datatypes.ExerciseCompletionGoal.UnspecifiedGoal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
@@ -28,7 +30,7 @@ fun IconButton(
     paddingValues: PaddingValues = PaddingValues(10.dp),
     withBorder: Boolean = false,
     containerColor: Color = Theme.color.surfaceHigh,
-    tint: Color = Theme.color.textColors.body,
+    tint: Color = Color.Unspecified,
     shape: Shape = RoundedCornerShape(12.dp),
     onClick: () -> Unit = {}
 ) {
@@ -40,8 +42,8 @@ fun IconButton(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
+            .clip(shape)
             .background(
-                shape = shape,
                 color = containerColor,
             )
             .then(borderModifier)

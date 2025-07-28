@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="world_tour">جولة حول العالم</string>
+    <string name="country_name">أسم البلد</string>
+    <string name="country_tour_description">ابدأ استكشاف أفلام العالم عن طريق إدخال دولتك المفضلة في شريط البحث</string>
+    <string name="country_tour">جولة حول البلاد</string>
+    <string name="no_search_result">لا توجد نتائج للبحث</string>
+    <string name="please_try_with_another_keyword">يرجى المحاولة بكلمة مفتاحية أخرى</string>
+    <string name="movie">فيلم</string>
+    <string name="countries">الدول</string>
+    <string name="country_tour_exploring">جولة حول العالم</string>
+    <string name="arrow_back">سهم للخلف</string>
+    <string name="actor_name">اسم الممثل</string>
+    <string name="find_by_actor">ابحث باسم الممثل</string>
+    <string name="Tv_Show">المسلسلات</string>
+    <string name="find_by_actor_quotation">ابدأ باستكشاف افلام لممثلك المفضل واستمتع بها.</string>
+    <string name="media_image">صورة فيلم أو مسلسل</string>
+    <string name="episode_image">صورة الحلقة</string>
+    <string name="episode">حلقة</string>
+    <string name="cast_image">صورة الممثل</string>
+    <string name="cast">طاقم التمثيل</string>
+    <string name="all">الكل</string>
+    <string name="season">موسم</string>
+    <string name="company_production_image_cd">إنتاج الشركة</string>
+    <string name="description">الوصف</string>
+    <string name="read_less">قراءة المزيد</string>
+    <string name="read_more">قراءة اقل</string>
+    <string name="login_required_warning">قم بتسجيل الدخول من اجل استخدام الميزات الإضافية للتطبيق!</string>
+    <string name="login_required">التسجيل مطلوب</string>
+    <string name="continue_watching">Continue watching</string>
+
+    //login
+    <string name="welcome_back">أهلاً بعودتك!</string>
+    <string name="please_enter_info">يرجى إدخال معلوماتك لتسجيل الدخول</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="password">كلمة المرور</string>
+    <string name="incorrect_password">كلمة المرور غير صحيحة</string>
+    <string name="forgot_password">هل نسيت كلمة المرور؟</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="continue_as_guest">المتابعة كزائر</string>
+    <string name="dont_have_account">ليس لديك حساب؟</string>
+    <string name="create_account">إنشاء حساب</string>
+    <string name="logo">شعار</string>
+    <string name="login_error_message">كلمة المرور أو اسم المستخدم غير صحيح</string>
+    <string name="loading">جاري التحميل...</string>
+
+
+    <string name="more_like_this">اقتراحات مشابهة</string>
+    <string name="reviews">تقييمات</string>
+    <string name="gallery">المعرض</string>
+    <string name="company_production">إنتاج\nالشركة</string>
+    <string name="upcoming">حصريات</string>
+</resources>

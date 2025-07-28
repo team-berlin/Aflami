@@ -13,34 +13,39 @@ import com.berlin.aflami.ui.color.ExtraColors.darkPurpleLinearGradient
 import com.berlin.designsystem.R
 
 @Composable
-fun SearchSuggestionHub() {
+fun SearchSuggestionHub(
+    modifier: Modifier = Modifier,
+    onSearchByCountryClick: () -> Unit,
+    onSearchByActorClick: () -> Unit
+) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         SearchSuggestionItem(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.world_tour),
             subtitle = stringResource(R.string.explore_world_cinema),
+            contentDescription = "world tour",
             gradientBackground = darkPurpleLinearGradient,
             painter = painterResource(R.drawable.news_img),
-            contentDescription = "world tour"
+            onClick = onSearchByCountryClick
         )
+
         SearchSuggestionItem(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.find_by_actor),
             subtitle = stringResource(R.string.search_by_favorite_actor),
+            contentDescription = "Find by actor",
             gradientBackground = blueLinearGradient,
             painter = painterResource(R.drawable.find_by_actor),
-            contentDescription = "Find by actor"
-
+            onClick = onSearchByActorClick
         )
     }
 }
 
-
 @ThemeAndLocalePreviews
 @Composable
 private fun SearchSuggestionHubPreview() {
-    SearchSuggestionHub()
+    SearchSuggestionHub(Modifier, {}, {})
 }

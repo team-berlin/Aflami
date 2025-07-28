@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="there_is_no_company_production">لا توجد شركات انتاج!</string>
+    <string name="there_is_no_reviews">لا توجد تقييمات!</string>
+    <string name="there_is_no_more_media">لا توجد وسائط!</string>
+    <string name="there_is_no_gallery">لا توجد صور!</string>
+    <string name="unknown_error">خطأ غير معروف</string>
+</resources>
