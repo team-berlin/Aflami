@@ -18,6 +18,7 @@ object NavigationConstants{
         const val CATEGORY_SCREEN="categoryScreen"
 
 
+        const val TOP_RATING="topRatingScreen/{id}/{media_type}"
     }
     object Routes{
         const val MEDIA_DETAILS_ROUTE="mediaDetailsScreen"

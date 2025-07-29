@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.home.component
+package com.berlin.aflami.screens.home.sections
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
@@ -67,7 +67,7 @@ fun MediaSections(
             val totalSpacing = spaceBetween * (maxCardsInRow - 1)
             val cardWidth = (screenWidth - totalSpacing) / maxCardsInRow
             LazyRow(
-                modifier = Modifier.padding(top = 12.dp),
+                modifier = Modifier,
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -75,7 +75,7 @@ fun MediaSections(
                     MediaCard(
                         Modifier
                             .height(222.dp)
-                            .width(cardWidth),
+                            .width(156.dp),
                         mediaImg = state[it].poster,
                         title = state[it].title,
                         typeOfMedia = state[it].mediaType.name,

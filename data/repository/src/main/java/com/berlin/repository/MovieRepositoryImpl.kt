@@ -27,6 +27,15 @@ class MovieRepositoryImpl(
         return remoteDataSource.getPopularTVShows(language).results?.filterNotNull()
             ?.map { tVShowDto -> tVShowDto.toDomain(TV_SHOW) } ?: emptyList()
     }
+
+    override suspend fun getMoviesByMoods(
+        moods: List<Int>
+    ): List<Movie> {
+        if (moods.isEmpty()) return emptyList()
+        return remoteDataSource.getMoviesByMoodIds(moods).results?.mapNotNull {
+            it?.toDomain()
+        } ?: emptyList()
+    }
 }
 
 object MediaType {

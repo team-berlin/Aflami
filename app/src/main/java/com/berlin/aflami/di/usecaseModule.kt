@@ -4,25 +4,23 @@ import org.koin.dsl.module
 import usecase.ClearSearchHistoryUseCase
 import usecase.DeleteQueryFromHistoryUseCase
 import usecase.GetMovieGenresUseCase
-import usecase.GetRecentHistoryUseCase
-import usecase.GetPopularTVShowsUseCase
+import usecase.GetMoviesByMoodUseCase
 import usecase.GetPopularMoviesUseCase
+import usecase.GetPopularTVShowsUseCase
+import usecase.GetRecentHistoryUseCase
 import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
-import usecase.SaveRecentHistoryUseCase
 import usecase.GetSeriesGenresUseCase
 import usecase.GetTopRatedMoviesUseCase
 import usecase.GetTopRatedSeriesUseCase
-import usecase.SearchByActorNameUseCase
 import usecase.GetUpComingMoviesUseCase
-import usecase.mediadetails.GetSeasonEpisodesUseCase
-import usecase.mediadetails.GetSimilarMoviesUseCase
-import usecase.mediadetails.GetSimilarSeriesUseCase
-import usecase.mediadetails.GetTvShowDetailsUseCase
-import usecase.mediadetails.GetSeriesGalleryUseCase
-import usecase.mediadetails.GetSeriesCastUseCase
-import usecase.mediadetails.GetSeriesReviewUseCase
+import usecase.SaveRecentHistoryUseCase
+import usecase.SearchByActorNameUseCase
 import usecase.SearchByCountryUseCase
+import usecase.ValidatePasswordUseCase
+import usecase.ValidateUsernameUseCase
+import usecase.auth.IsLoggedInUseCase
+import usecase.auth.LoginUseCase
 import usecase.home.GetContinueWatchingMovieUseCase
 import usecase.home.GetContinueWatchingTVShowUseCase
 import usecase.mediadetails.AddContinueWatchingMovieUseCase
@@ -31,10 +29,13 @@ import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
 import usecase.mediadetails.GetMovieGalleryUseCase
 import usecase.mediadetails.GetMovieReviewUseCase
-import usecase.ValidatePasswordUseCase
-import usecase.ValidateUsernameUseCase
-import usecase.auth.IsLoggedInUseCase
-import usecase.auth.LoginUseCase
+import usecase.mediadetails.GetSeasonEpisodesUseCase
+import usecase.mediadetails.GetSeriesCastUseCase
+import usecase.mediadetails.GetSeriesGalleryUseCase
+import usecase.mediadetails.GetSeriesReviewUseCase
+import usecase.mediadetails.GetSimilarMoviesUseCase
+import usecase.mediadetails.GetSimilarSeriesUseCase
+import usecase.mediadetails.GetTvShowDetailsUseCase
 
 val useCaseModule = module {
     single { ValidateUsernameUseCase() }
@@ -67,6 +68,7 @@ val useCaseModule = module {
     single { GetUpComingMoviesUseCase(get()) }
     single { GetMovieGenresUseCase(get()) }
     single { GetSeriesGenresUseCase(get()) }
+    single { GetMoviesByMoodUseCase(get()) }
 
     single { LoginUseCase(get()) }
     single { IsLoggedInUseCase(get()) }
