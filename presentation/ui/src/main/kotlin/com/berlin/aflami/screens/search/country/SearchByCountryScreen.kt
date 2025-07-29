@@ -114,19 +114,6 @@ private fun SearchByCountryContent(
             val movies = state.movies.collectAsLazyPagingItems()
 
             when {
-                state.query.isBlank() && movies.itemCount == 0 -> {
-                    CountryTourExploring(
-                        modifier = Modifier.fillMaxSize(),
-                        image = painterResource(R.drawable.world_tour),
-                        titleId = R.string.country_tour,
-                        messageId = R.string.country_tour_description
-                    )
-                }
-
-                movies.loadState.refresh is LoadState.Loading -> {
-                    Loading()
-                }
-
                 state.query.isBlank() -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
@@ -135,6 +122,10 @@ private fun SearchByCountryContent(
                         messageId = R.string.country_tour_description
                     )
                 }
+                movies.loadState.refresh is LoadState.Loading -> {
+                    Loading()
+                }
+
                 state.isCountrySelected && movies.itemCount == 0
                         && movies.loadState.refresh is LoadState.NotLoading -> {
                     CountryTourExploring(
