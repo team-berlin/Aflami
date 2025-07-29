@@ -14,7 +14,6 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.entity.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -46,26 +45,21 @@ class HomeViewModel(
     private val _tvShows = MutableStateFlow<List<MediaUiState>>(emptyList())
 
     init {
-        viewModelScope.launch {
-            updateState { it.copy(isLoading = true) }
-
-            val popularDeferred = async { popularMedia("en-US") }
-            val continueWatchingDeferred = async { getContinueWatchingMedia() }
-            val topRatedDeferred = async { getTopRatingMovieAndTvShows() }
-            val upcomingDeferred = async { getUpComingMoviesByGenre() }
-            val genresDeferred = async { loadGenresMovies() }
-
-            // Wait for all to complete
-            awaitAll(
-                popularDeferred,
-                continueWatchingDeferred,
-                topRatedDeferred,
-                upcomingDeferred,
-                genresDeferred
+        updateState {
+            it.copy(
+                popularMedia = state.value.popularMedia.copy(isLoading = true),
+                topRatedMediaUiState = state.value.topRatedMediaUiState.copy(isLoading = true),
+                moodPickerUiState = state.value.moodPickerUiState.copy(isLoading = true),
+                upcomingMoviesSectionUiState = state.value.upcomingMoviesSectionUiState.copy(
+                    isLoading = true
+                ),
             )
-
-            updateState { it.copy(isLoading = false) }
         }
+        popularMedia("en-US")
+        loadGenresMovies()
+        getContinueWatchingMedia()
+        getTopRatingMovieAndTvShows()
+        getUpComingMoviesByGenre()
     }
 
 
@@ -156,6 +150,7 @@ class HomeViewModel(
                     oldState.copy(
                         topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
                             topRatedMedia = newTopRatedMedia,
+                            isLoading = false,
                             errorMessage = null,
                         )
                     )
@@ -188,7 +183,9 @@ class HomeViewModel(
     }
 
     private fun List<String>.toGenreIds(): List<Int> {
-        return state.value.movieGenres.filter { this.contains(it.name) }.map { it.id }
+
+        return state.value.upcomingMoviesSectionUiState.movieGenres.filter { this.contains(it.name) }
+            .map { it.id }
     }
 
     override fun onGetNowClicked(selectedMood: UserMood) {
@@ -213,6 +210,7 @@ class HomeViewModel(
             it.copy(
                 moodPickerUiState = it.moodPickerUiState.copy(
                     movies = moviesUiStates,
+                    isLoading = false,
                     selectedMovie = moviesUiStates.firstOrNull() ?: MovieUIState()
                 )
             )
@@ -274,11 +272,15 @@ class HomeViewModel(
 
     override fun onChangeUpcomingMovieGenre(genreId: Int) {
         updateState {
-            val selected = it.movieGenres.map { genre ->
+            val selected = it.upcomingMoviesSectionUiState.movieGenres.map { genre ->
                 genre.copy(isSelected = genre.id == genreId)
             }
             it.copy(
-                selectedGenres = genreId, movieGenres = selected, isLoading = true
+                selectedGenres = genreId,
+                upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(
+                    movieGenres = selected
+                ),
+                isLoading = true
             )
         }
         getUpComingMoviesByGenre()
@@ -298,9 +300,8 @@ class HomeViewModel(
             }
             updateState { state ->
                 state.copy(
-                    upcomingMovies = filteredMovies.map { movie ->
-                        movie.toUIState()
-                    }
+                    upcomingMoviesSectionUiState = state.upcomingMoviesSectionUiState.copy(
+                        isLoading = false, upcomingMovies = filteredMovies.map { it.toUIState() }),
                 )
             }
         }, onError = { error ->
@@ -329,7 +330,9 @@ class HomeViewModel(
             onSuccess = { genreMovie ->
                 updateState { state ->
                     state.copy(
-                        movieGenres = genreMovie,
+                        upcomingMoviesSectionUiState = state.upcomingMoviesSectionUiState.copy(
+                            movieGenres = genreMovie, isLoading = false
+                        )
                     )
                 }
             },

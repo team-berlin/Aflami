@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.BlurredPosterBackground
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
@@ -33,7 +34,6 @@ import com.berlin.aflami.screens.home.sections.MediaSections
 import com.berlin.aflami.screens.home.sections.MoodPickerSection
 import com.berlin.aflami.screens.home.sections.PosterSlider
 import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
-import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
@@ -67,7 +67,20 @@ private fun HomeContent(
 ) {
     val pagerState = rememberPagerState(
         initialPage = 0, pageCount = { state.popularMedia.popularMedia.size })
-    AnimatedVisibility(state.isLoading) { Loading() }
+    AnimatedVisibility(state.isLoading) {
+        Box(
+            modifier = Modifier
+                .background(Theme.color.surface),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(16.dp),
+                text = "Loading..."
+            )
+        }
+    }
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
     AnimatedVisibility(state.isLoading.not()) {
         LazyColumn(
@@ -172,8 +185,8 @@ private fun HomeContent(
             }
             item {
                 UpcomingMoviesSection(
-                    movies = state.upcomingMovies,
-                    genres = state.movieGenres,
+                    movies = state.upcomingMoviesSectionUiState.upcomingMovies,
+                    genres = state.upcomingMoviesSectionUiState.movieGenres,
                     onMovieClick = { listener.onClickUpcomingMovieCard(it) },
                     onGenreClick = { listener.onChangeUpcomingMovieGenre(it) },
                     modifier = Modifier

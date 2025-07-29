@@ -9,8 +9,7 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 
 data class HomeUiState(
     val mediaContinueWatching: List<MediaUiState> = emptyList(),
-    val upcomingMovies: List<MovieUIState> = emptyList(),
-    val movieGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
+    val upcomingMoviesSectionUiState: UpcomingMoviesSectionUiState = UpcomingMoviesSectionUiState(),
     val selectedRating: Float = 1f,
     val selectedGenres: Int = -1,
     val topRatedMediaUiState: TopRatedMediaUiState = TopRatedMediaUiState(),
@@ -25,6 +24,13 @@ data class TopRatedMediaUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 )
+
+data class UpcomingMoviesSectionUiState(
+    val upcomingMovies: List<MovieUIState> = emptyList(),
+    val movieGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
+    val isLoading: Boolean = false,
+)
+
 
 data class PopularMediaUiState(
     val isLoading: Boolean = false,

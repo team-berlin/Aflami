@@ -55,7 +55,7 @@ fun MediaCard(
             }
     ) {
         val contentScale = when (imageState) {
-            is AsyncImagePainter.State.Success, is AsyncImagePainter.State.Loading -> ContentScale.Fit
+            is AsyncImagePainter.State.Success, is AsyncImagePainter.State.Loading -> ContentScale.FillBounds
             else -> ContentScale.Inside
         }
         Box(modifier = Modifier.fillMaxSize(),
@@ -72,11 +72,6 @@ fun MediaCard(
                 ShimmerBox(modifier = Modifier.fillMaxSize())
             }
         }
-
-//        SafeImageViewer(
-//            imageUri = mediaImg,
-//            modifier = Modifier.fillMaxSize(),
-//        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,7 +26,6 @@ import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.ui.color.ExtraColors.primaryGredient
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.ui.R
 
 @Composable
@@ -51,10 +49,7 @@ fun MoodPickerDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 12.dp)
-                    .width(328.dp)
-//                    .height(468.dp)
-                ,
+                    .padding(horizontal = 12.dp, vertical = 12.dp).width(328.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
