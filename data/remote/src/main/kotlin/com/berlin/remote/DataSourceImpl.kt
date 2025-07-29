@@ -147,4 +147,9 @@ class DataSourceImpl(
         return apiService.popularTVShows(language)
     }
 
+    override suspend fun getMoviesByMoodIds(moodIds: List<Int>): MovieResponse {
+        require(moodIds.isNotEmpty()) { "Mood IDs list cannot be empty" }
+        return wrapApiResponse { apiService.getMoviesByMoods(moodIds) }
+    }
+
 }

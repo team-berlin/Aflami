@@ -1,15 +1,18 @@
 package com.berlin.aflami.viewmodel.home
 
+import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 
 interface HomeInteractionListener{
-
     fun onSearchClicked()
     fun onShowAllContinueWatchingClicked()
-    fun onAllTopRatingClicked()
-    fun onMoodPickerClicked()
+    fun onShowAllTopRating()
+    fun onMoodPickerClicked(mood: UserMood)
+    fun onGetNowClicked()
+    fun onDismissMoodPickerDialog()
+    fun onClickViewDetails()
+    fun onClickGetAnotherMovie()
     fun onClickUpcomingMovieCard(id: Long)
     fun onClickPopularMovieCard(id: Long, mediaType: MediaType)
     fun onChangeUpcomingMovieGenre(genreId: Int)
-
 }

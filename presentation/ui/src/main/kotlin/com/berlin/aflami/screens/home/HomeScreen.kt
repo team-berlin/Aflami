@@ -167,20 +167,18 @@ private fun HomeContent(
                     listener.onShowAllContinueWatchingClicked()
                 }, state = state.mediaContinueWatching, sectionTitleId = R.string.continue_watching
             )
-            val lazyListState = rememberLazyListState()
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-//                Column(modifier = Modifier.padding(bottom = 100.dp))
-//                {
-//                        upcomingMovies(
-//                            moviesGenres = state.upcomingMovieGenres,
-//                            movies = state.upcomingMovies,
-//                            onMovieClicked = listener::onClickUpcomingMovieCard,
-//                            onChangeMovieGenre = listener::onChangeUpcomingMovieGenre,
-//                        )
-//                }
-            }
+        }
+        item {
+            MoodPickerSection(state, listener)
+        }
+        item {
+            UpcomingMoviesSection(
+                movies = state.upcomingMovies,
+                genres = state.movieGenres,
+                onMovieClick = { listener.onClickUpcomingMovieCard(it) },
+                onGenreClick = { listener.onChangeUpcomingMovieGenre(it) },
+                modifier = Modifier
+            )
         }
         item {
             MediaSections(
