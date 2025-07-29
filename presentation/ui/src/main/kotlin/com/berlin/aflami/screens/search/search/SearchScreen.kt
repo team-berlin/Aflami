@@ -337,7 +337,6 @@ private fun SearchScreenContent(
                                                 val tvShows = tvShows[index]
                                                 if (tvShows != null) {
 
-
                                                     MediaCard(
                                                         modifier = Modifier.height(222.dp),
                                                         mediaImg = tvShows.poster,

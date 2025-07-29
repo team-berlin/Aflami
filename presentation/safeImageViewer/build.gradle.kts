@@ -24,4 +24,7 @@ dependencies {
     implementation(libs.bundles.androidxUi)
     implementation(libs.bundles.coil)
     testImplementation(libs.bundles.test)
+    implementation(libs.firebase.ml.modeldownloader)
+    implementation (libs.tensorflow.lite.gpu)
+
 }
