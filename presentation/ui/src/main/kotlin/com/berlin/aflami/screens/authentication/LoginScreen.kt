@@ -1,28 +1,18 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
-import android.net.Uri
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,21 +22,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,34 +37,42 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.component.IconButton
-import com.berlin.aflami.component.SnackBar
-import com.berlin.aflami.component.SnackBarStatus
-import com.berlin.aflami.component.TextField
-import com.berlin.aflami.component.buttons.ButtonState
 import com.berlin.aflami.component.buttons.PrimaryButton
-import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.component.TextField
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import androidx.compose.ui.tooling.preview.Preview
+import com.berlin.ui.R
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
+import com.berlin.aflami.component.SnackBar
+import com.berlin.aflami.component.SnackBarStatus
+import com.berlin.aflami.component.buttons.ButtonState
+import com.berlin.aflami.component.buttons.SecondaryButton
 import com.berlin.aflami.viewmodel.login.FormUiState
 import com.berlin.aflami.viewmodel.login.LoginEffect
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
-import com.berlin.ui.R
 import com.example.navigation.Destination
 import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import kotlin.reflect.KFunction1
+
 
 @Composable
 fun LoginScreen(
@@ -125,14 +115,12 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                     colors = Theme.color.gradientColors.streakGradient
                 )
             )
-            .statusBarsPadding()
-            .padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 16.dp),
+            .padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 16.dp)
     ) {
         CirclesBackground()
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             LoginLogo()
@@ -222,6 +210,8 @@ private fun FormLogin(
             hintText = stringResource(R.string.username),
             onValueChange = { onUsernameChanged(it) },
             modifier = Modifier.fillMaxWidth(),
+            maxCharacters = 32
+
         )
         var passwordError by remember { mutableStateOf(false) }
         Spacer(modifier = Modifier.height(12.dp))
@@ -237,6 +227,7 @@ private fun FormLogin(
             trailingIcon = R.drawable.eye,
             onTrailingIconClicked = onTrailingIconClicked,
             modifier = Modifier.fillMaxWidth(),
+            maxCharacters = 32
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -246,11 +237,8 @@ private fun FormLogin(
             color = Theme.color.primary,
             modifier = Modifier
                 .align(Alignment.End)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = { onForgotPasswordClicked() }
-                ).padding(top = 4.dp)
+                .clickable { onForgotPasswordClicked() }
+                .padding(top = 4.dp),
         )
     }
 }
@@ -269,7 +257,8 @@ fun LoginButtons(
         PrimaryButton(
             onClick = onLoginClicked,
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(56.dp),
             state = when {
                 isError || !isLoginButtonEnabled -> ButtonState.DISABLED
                 isLoading -> ButtonState.LOADING
@@ -278,11 +267,7 @@ fun LoginButtons(
         ) {
             Text(
                 stringResource(R.string.login),
-                modifier = Modifier
-                    .fillMaxWidth(),
-                style = Theme.textStyle.label.large.copy(
-                    textAlign = TextAlign.Center
-                ),
+                style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.onPrimary
             )
         }
@@ -290,16 +275,13 @@ fun LoginButtons(
         SecondaryButton(
             onClick = onContinueAsGuestClicked,
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(56.dp),
             border = null
         ) {
             Text(
                 stringResource(R.string.continue_as_guest),
-                modifier = Modifier
-                    .fillMaxWidth(),
-                style = Theme.textStyle.label.large.copy(
-                    textAlign = TextAlign.Center
-                ),
+                style = Theme.textStyle.label.large,
                 color = Theme.color.primary
             )
         }
@@ -308,17 +290,13 @@ fun LoginButtons(
 
 @Composable
 private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked: () -> Unit) {
-    FlowRow(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentSize(Alignment.Center),
+    Row(
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
-        verticalArrangement = Arrangement.Center
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = stringResource(R.string.dont_have_account),
-            modifier = modifier.wrapContentWidth(),
-            color = Theme.color.textColors.hint,
             style = Theme.textStyle.body.small,
         )
         Text(
@@ -326,7 +304,6 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
             style = Theme.textStyle.body.small,
             color = Theme.color.primary,
             modifier = Modifier
-                .wrapContentWidth()
                 .clickable { onCreateAccountClicked() }
                 .padding(start = 4.dp)
         )
