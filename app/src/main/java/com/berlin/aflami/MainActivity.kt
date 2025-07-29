@@ -31,7 +31,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Theme.color.surface)
-                        .statusBarsPadding()
                         .navigationBarsPadding()
                 )
             }

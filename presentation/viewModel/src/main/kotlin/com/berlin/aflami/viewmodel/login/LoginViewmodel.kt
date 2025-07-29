@@ -16,10 +16,10 @@ class LoginViewmodel(
 
     ) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
     LoginInteractionListener {
-    override fun onUsernameChanged(username: String) {
+    override fun onUsernameChanged(username: CharSequence) {
         updateState {
             it.copy(
-                formUiState = it.formUiState.copy(username = username),
+                formUiState = it.formUiState.copy(username = username.toString()),
                 isLoginButtonEnabled = username.isNotBlank() && it.formUiState.password.isNotBlank()
             )
         }

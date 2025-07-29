@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -37,8 +38,8 @@ import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
-import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.aflami.viewmodel.home.HomeUiState
+import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -66,17 +67,17 @@ private fun HomeContent(
     state: HomeUiState, listener: HomeInteractionListener
 ) {
     val pagerState = rememberPagerState(
-        initialPage = 0, pageCount = { state.popularMedia.popularMedia.size })
+        initialPage = 1, pageCount = { state.popularMedia.popularMedia.size })
 
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
     LazyColumn(
-        modifier = Modifier.padding(vertical = 6.dp)
+        modifier = Modifier
+            .fillMaxSize()
+
     ) {
         item {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Theme.color.surface)
+            horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box() {
                     BlurredPosterBackground(
@@ -89,10 +90,15 @@ private fun HomeContent(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(top = 8.dp)
+                        ,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
                         HomeBar(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .statusBarsPadding()
+                            ,
                             onSearchClicked = {
                                 listener.onSearchClicked()
                             },
@@ -126,13 +132,18 @@ private fun HomeContent(
                                 media.title,
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
-                                    .padding(bottom = 8.dp),
+                                    .padding(bottom = 8.dp)
+                                    .padding(horizontal = 16.dp)
+                                ,
                                 style = Theme.textStyle.title.small,
                                 color = Theme.color.textColors.title,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
                             LazyRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                ,
                                 contentPadding = PaddingValues(end = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {

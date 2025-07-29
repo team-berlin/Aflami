@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.login
 
 interface LoginInteractionListener {
-    fun onUsernameChanged(username: String)
+    fun onUsernameChanged(username: CharSequence)
     fun onPasswordChanged(password: String)
     fun onTrailingIconClicked()
     fun onForgotPasswordClicked()

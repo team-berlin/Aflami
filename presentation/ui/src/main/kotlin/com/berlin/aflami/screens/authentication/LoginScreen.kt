@@ -198,7 +198,7 @@ private fun WelcomeText() {
 private fun FormLogin(
     modifier: Modifier = Modifier,
     uiState: FormUiState,
-    onUsernameChanged: (String) -> Unit,
+    onUsernameChanged: (CharSequence) -> Unit,
     onPasswordChanged: (String) -> Unit,
     onTrailingIconClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
