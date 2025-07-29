@@ -2,6 +2,10 @@ package com.berlin.aflami.viewmodel.home
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.UserMood
@@ -241,7 +245,7 @@ class HomeViewModel(
     override fun onClickViewDetails() {
         onDismissMoodPickerDialog()
         sendNewEffect(
-            HomeScreenEffect.NavigateToMovieDetails(
+            HomeScreenEffect.NavigateToDetails(
                 state.value.moodPickerUiState.movies.first().id, MediaType.MOVIE.name
             )
         )
@@ -262,13 +266,8 @@ class HomeViewModel(
 
 
     override fun onClickUpcomingMovieCard(id: Long) {
-        sendNewEffect(HomeScreenEffect.NavigateToMovieDetails(id, MediaType.MOVIE.name))
+        sendNewEffect(HomeScreenEffect.NavigateToDetails(id, MediaType.MOVIE.name))
     }
-
-    override fun onClickPopularMovieCard(id: Long, mediaType: MediaType) {
-        sendNewEffect(HomeScreenEffect.NavigateToMovieDetails(id, mediaType.name))
-    }
-
 
     override fun onChangeUpcomingMovieGenre(genreId: Int) {
         updateState {
@@ -284,6 +283,10 @@ class HomeViewModel(
             )
         }
         getUpComingMoviesByGenre()
+    }
+
+    override fun onClickCard(id: Long, mediaType: MediaType) {
+        sendNewEffect(HomeScreenEffect.NavigateToDetails(id, mediaType.name))
     }
 
     private fun getUpComingMoviesByGenre() {
@@ -348,24 +351,39 @@ class HomeViewModel(
 
 
     fun getContinueWatchingMedia() {
+        var combinedList:List<MediaUiState> = emptyList()
+        _state.update {
+            it.copy(isLoading = true, error = null)
+        }
         tryToCall(
             call = {
-                coroutineScope {
-                    val moviesList = async { getWatchedMovieUseCase().map { it.toUIStateMedia() } }
-                    val tvShowsList =
-                        async { getWatchedTVShowUseCase().map { it.toUIStateMedia() } }
+                Pager(
+                    pagingSourceFactory = {
+                        BasePagingSource { page ->
+                            coroutineScope {
+                                val moviesList =
+                                    async { getWatchedMovieUseCase(1).map { it.toUIStateMedia() } }
+                                val tvShowsList =
+                                    async { getWatchedTVShowUseCase(1).map { it.toUIStateMedia() } }
 
-                    val movies = moviesList.await()
-                    val tvShows = tvShowsList.await()
+                                 val movies = moviesList.await()
+                                 val tvShows = tvShowsList.await()
 
-                    val combinedList = (movies + tvShows).shuffled()
-                    combinedList
-                }
+                                 combinedList = (movies + tvShows).shuffled()
+                                combinedList
+                            }
+                        }
+                    },
+                    config = PagingConfig(
+                        pageSize = combinedList.size, initialLoadSize = combinedList.size
+                ),
+                ).flow.cachedIn(viewModelScope)
             },
             onSuccess = { continueWatchingMedia ->
                 _state.update {
                     it.copy(
                         mediaContinueWatching = continueWatchingMedia,
+                        isLoading = false
                     )
                 }
 

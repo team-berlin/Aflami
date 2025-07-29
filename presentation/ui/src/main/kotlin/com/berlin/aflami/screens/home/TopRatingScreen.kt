@@ -25,7 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.MediaCard
@@ -33,23 +33,35 @@ import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingScreenEffect
-import com.berlin.aflami.viewmodel.home.toprating.TopRatingUiState
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
+import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TopRatingScreen(
     modifier: Modifier = Modifier,
-    onEffect: (TopRatingScreenEffect) -> Unit,
+    navController: NavController,
     topRatingViewModel: TopRatingViewModel = koinViewModel(),
 ) {
     val screenState by topRatingViewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        topRatingViewModel.effect.collect {
-            onEffect(it)
+        topRatingViewModel.effect.collect { effect ->
+            when (effect) {
+                is TopRatingScreenEffect.NavigateToMediaDetailsScreen -> {
+                    navController.navigate(
+                        Destination.MediaDetailsScreen.route(
+                            effect.id, effect.type.name
+                        )
+                    )
+                }
+
+                is TopRatingScreenEffect.NavigateBack -> {
+                    navController.popBackStack()
+                }
+            }
         }
     }
     AnimatedVisibility(screenState.isLoading) {

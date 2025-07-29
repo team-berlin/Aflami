@@ -1,14 +1,21 @@
 package com.berlin.aflami.viewmodel.home
 
+import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.UserMood
+import com.berlin.aflami.viewmodel.search.FilterItemUiState.Companion.defaultGenres
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 
 data class HomeUiState(
-    val mediaContinueWatching: List<MediaUiState> = emptyList(),
+
+    val mediaContinueWatching: Flow<PagingData<MediaUiState>> = emptyFlow(),
+    val upcomingMovies: List<MovieUIState> = emptyList(),
+    val upcomingMovieGenres: List<GenreUiState> = defaultGenres,
     val upcomingMoviesSectionUiState: UpcomingMoviesSectionUiState = UpcomingMoviesSectionUiState(),
     val selectedRating: Float = 1f,
     val selectedGenres: Int = -1,

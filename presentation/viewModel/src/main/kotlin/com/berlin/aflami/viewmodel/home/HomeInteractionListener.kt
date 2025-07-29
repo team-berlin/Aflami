@@ -10,7 +10,7 @@ interface HomeInteractionListener : DialogInteractionListener {
     fun onSelectedMood(mood: UserMood)
     fun onGetNowClicked(mood: UserMood)
     fun onClickUpcomingMovieCard(id: Long)
-    fun onClickPopularMovieCard(id: Long, mediaType: MediaType)
+    fun onClickCard(id: Long, mediaType: MediaType)
     fun onChangeUpcomingMovieGenre(genreId: Int)
 }
 

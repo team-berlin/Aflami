@@ -16,20 +16,24 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun MediaSections(
+fun ContinueWatchingHomeSections(
     modifier: Modifier = Modifier,
-    onShowAllContinueWatchingClick: () -> Unit,
-    state: List<MediaUiState>,
+    seeAllOnClick: () -> Unit,
+    cardClick: (id:Long,type:MediaType) -> Unit,
+    state: LazyPagingItems<MediaUiState>,
     sectionTitleId: Int
 ) {
     Column(
@@ -38,8 +42,9 @@ fun MediaSections(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(start = 16.dp, end = 16.dp, top = 6.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(sectionTitleId),
@@ -54,7 +59,7 @@ fun MediaSections(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) {
-                        onShowAllContinueWatchingClick()
+                        seeAllOnClick()
                     })
         }
         BoxWithConstraints {
@@ -67,22 +72,27 @@ fun MediaSections(
             val totalSpacing = spaceBetween * (maxCardsInRow - 1)
             val cardWidth = (screenWidth - totalSpacing) / maxCardsInRow
             LazyRow(
-                modifier = Modifier,
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.size) {
-                    MediaCard(
-                        Modifier
-                            .height(222.dp)
-                            .width(156.dp),
-                        mediaImg = state[it].poster,
-                        title = state[it].title,
-                        typeOfMedia = state[it].mediaType.name,
-                        date = state[it].releaseYear,
-                        rating = state[it].rating,
-                    )
+                items(state.itemCount) { index ->
+                    val item = state[index]
+                    item?.let {
+                        MediaCard(
+                            Modifier
+                                .height(222.dp)
+                                .width(cardWidth),
+                            mediaImg = it.poster,
+                            title = it.title,
+                            typeOfMedia = it.mediaType.name,
+                            date = it.releaseYear,
+                            rating = it.rating,
+                        ){
+                            cardClick(it.id,it.mediaType)
+                        }
+                    }
                 }
+
             }
         }
     }

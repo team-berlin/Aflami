@@ -24,15 +24,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.BlurredPosterBackground
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
-import com.berlin.aflami.screens.home.sections.MediaSections
+import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
 import com.berlin.aflami.screens.home.sections.MoodPickerSection
 import com.berlin.aflami.screens.home.sections.PosterSlider
+import com.berlin.aflami.screens.home.sections.TopRatingHomeSections
 import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
@@ -40,18 +43,50 @@ import com.berlin.aflami.viewmodel.home.HomeScreenEffect
 import com.berlin.aflami.viewmodel.home.HomeUiState
 import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.ui.R
+import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel(), onEffect: (HomeScreenEffect) -> Unit,
+    navController: NavController,
+    viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-//        viewModel.getContinueWatchingMedia()
-        viewModel.effect.collect {
-            onEffect(it)
+        viewModel.getContinueWatchingMedia()
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                HomeScreenEffect.NavigateToContinueWatching -> {
+                    navController.navigate(
+                        Destination.WatchedMediaDetails.route
+                    )
+
+                }
+
+                is HomeScreenEffect.NavigateToDetails -> {
+                    navController.navigate(
+                        Destination.MediaDetailsScreen.route
+                    )
+
+                }
+
+                HomeScreenEffect.NavigateToMoodPickerDialog -> {
+
+                }
+
+                HomeScreenEffect.NavigateToSearch -> {
+                    navController.navigate(
+                        Destination.SearchScreen.route
+                    )
+                }
+
+                HomeScreenEffect.NavigateToTopRating -> {
+                    navController.navigate(
+                        Destination.TopRatingScreen.route
+                    )
+                }
+            }
         }
     }
     HomeContent(
@@ -68,19 +103,12 @@ private fun HomeContent(
     val pagerState = rememberPagerState(
         initialPage = 0, pageCount = { state.popularMedia.popularMedia.size })
     AnimatedVisibility(state.isLoading) {
-        Box(
-            modifier = Modifier
-                .background(Theme.color.surface),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(16.dp),
-                text = "Loading..."
-            )
-        }
+       CircularProgressIndicator(
+           modifier = Modifier.fillMaxSize(),
+           text = stringResource(R.string.loading)
+       )
     }
+    val pagedMovies = state.mediaContinueWatching.collectAsLazyPagingItems()
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
     AnimatedVisibility(state.isLoading.not()) {
         LazyColumn(
@@ -93,7 +121,7 @@ private fun HomeContent(
                         .fillMaxSize()
                         .background(Theme.color.surface)
                 ) {
-                    Box() {
+                    Box {
                         BlurredPosterBackground(
                             imageUrl = currentMedia?.poster ?: "",
                             modifier = Modifier
@@ -133,7 +161,7 @@ private fun HomeContent(
                                 modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
                                 mediaList = state.popularMedia.popularMedia,
                                 pagerState = pagerState,
-                                onClick = { listener.onClickPopularMovieCard(it.id, it.mediaType) }
+                                onClick = { listener.onClickCard(it.id, it.mediaType) }
                             )
 
                             currentMedia?.let { media ->
@@ -163,21 +191,29 @@ private fun HomeContent(
                     }
                 }
             }
-            item {
-                MediaSections(
-                    onShowAllContinueWatchingClick = {
-                        listener.onShowAllContinueWatchingClicked()
-                    },
-                    state = state.mediaContinueWatching,
-                    sectionTitleId = R.string.continue_watching
-                )
+            if (pagedMovies.itemCount > 0) {
+                item {
+                    ContinueWatchingHomeSections(
+                        seeAllOnClick = {
+                            listener.onShowAllContinueWatchingClicked()
+                        },
+                        state = pagedMovies,
+                        sectionTitleId = R.string.continue_watching,
+                        cardClick = { id, type ->
+                            listener.onClickCard(id, type)
+                        },
+                    )
+                }
             }
             item {
-                MediaSections(
+                TopRatingHomeSections(
                     modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
-                    onShowAllContinueWatchingClick = { listener.onAllTopRatingClicked() },
+                    seeAllOnClick = { listener.onAllTopRatingClicked() },
                     state = state.topRatedMediaUiState.topRatedMedia,
                     sectionTitleId = R.string.top_rating,
+                    cardClick = { id, type ->
+                        listener.onClickCard(id, type)
+                    }
                 )
             }
             item {
