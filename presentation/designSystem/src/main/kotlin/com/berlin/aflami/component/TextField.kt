@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -67,7 +68,7 @@ fun TextField(
     maxLines: Int = 1,
     isObscured: Boolean = false,
     errorMessage: String = "",
-    maxCharacters: Int = Int.MAX_VALUE,
+    maxCharacters: Int = 32,
     @DrawableRes leadingIcon: Int? = null,
     @DrawableRes trailingIcon: Int? = null,
     borderColor: Color = Theme.color.stroke,
@@ -80,7 +81,12 @@ fun TextField(
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val canShowMaxCharacters = maxCharacters - text.length < 5
-
+    // Always show the character counter if maxCharacters is not Int.MAX_VALUE
+    val showCharacterCounter = maxCharacters != Int.MAX_VALUE
+    // Determine if the user is close to the limit (within 5 characters)
+    val isNearLimit = maxCharacters - text.length <= 5
+// Animate the character count for smooth updates
+    val animatedCharCount by animateIntAsState(targetValue = text.length)
     val currentBorderColor by animateColorAsState(
         if (isError) borderErrorColor
         else if (isFocused) borderFocusedColor
@@ -111,7 +117,7 @@ fun TextField(
         ) {
             if (leadingIcon != null) {
                 val imageColor by animateColorAsState(
-                    targetValue = if (text.isEmpty()) Theme.color.textColors.body else Theme.color.textColors.hint
+                    targetValue =  Theme.color.textColors.hint
                 )
                 LeadingIcon(leadingIcon, imageColor)
                 VerticalDivider()
@@ -119,12 +125,11 @@ fun TextField(
             BasicTextField(
                 value = text,
                 onValueChange = {
-                    if (it.length <= maxCharacters) onValueChange(it)
-                    else if (it.length > text.length + 1) onValueChange(
-                        it.substring(
-                            0, maxCharacters
-                        )
-                    )
+                    if (it.length <= maxCharacters) {
+                        onValueChange(it)
+                    } else {
+                        onValueChange(it.substring(0, maxCharacters))
+                    }
                 },
                 keyboardOptions = keyboardOptions,
                 keyboardActions = keyboardActions,
@@ -144,17 +149,21 @@ fun TextField(
                 })
             if (trailingIcon != null) {
                 val imageColor by animateColorAsState(
-                    targetValue = if (text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.title
+                    targetValue = Theme.color.textColors.hint
                 )
                 VerticalDivider()
                 TrailingIcon(trailingIcon, imageColor, onTrailingIconClicked)
             }
         }
+        // Display character counter if applicable
         AnimatedMaxCharacters(
-            canShowMaxCharacters,
-            "${text.length}/$maxCharacters",
-            style,
+            showCharacterCounter = showCharacterCounter,
+            isNearLimit = isNearLimit,
+            currentCount = animatedCharCount,
+            maxCharacters = maxCharacters,
+            style = style,
         )
+
     }
 }
 
@@ -244,31 +253,32 @@ private fun ColumnScope.AnimatedMessage(
 
 @Composable
 private fun ColumnScope.AnimatedMaxCharacters(
-    canShowMaxCharacters: Boolean,
-    message: String,
+    showCharacterCounter: Boolean,
+    isNearLimit: Boolean,
+    currentCount: Int,
+    maxCharacters: Int,
     style: TextStyle,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 4.dp),
-        horizontalArrangement = Arrangement.End
-    ) {
-        AnimatedVisibility(visible = canShowMaxCharacters) {
+    AnimatedVisibility(visible = showCharacterCounter) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
             Text(
-                text = message,
+                text = "$currentCount/$maxCharacters",
                 style = style,
                 fontSize = 12.sp,
-                color = Theme.color.textColors.title,
+                // Change color to warning when near limit
+                color = if (isNearLimit) Theme.color.statusColors.redAccent else Theme.color.textColors.title,
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .padding(top = 4.dp)
-                    .animateContentSize()
             )
         }
     }
 }
-
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Unit)? = null) {
