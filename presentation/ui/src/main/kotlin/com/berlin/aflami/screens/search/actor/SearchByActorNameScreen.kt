@@ -101,7 +101,7 @@ private fun SearchByActorNameContent(
         val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
             text = state.query,
-            hintText = stringResource(R.string.find_by_actor),
+            hintText = stringResource(R.string.actor_name),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 4.dp),
