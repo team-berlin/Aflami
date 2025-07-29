@@ -21,6 +21,7 @@ import com.berlin.aflami.navigation.routes.profileRoute
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchByCountryRoute
 import com.berlin.aflami.navigation.routes.searchRoute
+import com.berlin.aflami.navigation.routes.topRatingMedia
 import com.berlin.aflami.navigation.routes.watchedMedia
 import com.berlin.aflami.navigation.routes.webView
 import com.berlin.aflami.screens.BottomNavigation
@@ -94,6 +95,7 @@ fun AflamiNavGraph(
             listsRoute(navController)
             categoriesRoute(navController)
             gamesRoute(navController)
+            topRatingMedia(navController)
         }
     }
 }

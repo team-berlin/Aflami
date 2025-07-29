@@ -34,7 +34,7 @@ sealed class Destination(val route: String) {
     object LoginScreen : Destination(LOGIN_SCREEN)
     object WebViewScreen : Destination(WEB_VIEW_SCREEN)
     object WatchedMediaDetails : Destination(WATCHED_MEDIA_DETAILS)
-    object TopRatingScreen: Destination(route = TOP_RATING)
+    object TopRatingScreen: Destination(TOP_RATING)
     object HomeScreen : Destination(HOME_SCREEN)
     object GamesScreen : Destination(GAMES_SCREEN)
     object ProfileScreen : Destination(PROFILE_SCREEN)

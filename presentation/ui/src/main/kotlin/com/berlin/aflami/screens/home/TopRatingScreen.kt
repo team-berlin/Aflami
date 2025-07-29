@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.Loading
@@ -65,8 +66,10 @@ fun TopRatingScreen(
         }
     }
     AnimatedVisibility(screenState.isLoading) {
-        Loading()
-    }
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )    }
 
     val topRatedItems = topRatingViewModel.topRatedPagingFlow.collectAsLazyPagingItems()
     AnimatedVisibility(!screenState.isLoading) {

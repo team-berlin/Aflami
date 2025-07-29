@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.MediaGridList
@@ -60,7 +62,10 @@ fun ContinueWatchingScreen(
         }
 
     AnimatedVisibility(state.isLoading) {
-        Loading()
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
     }
     AnimatedVisibility(!state.isLoading) {
         WatchedMediaContent(
