@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.home
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,15 +16,20 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -67,6 +74,18 @@ fun HomeScreen(
 private fun HomeContent(
     state: HomeUiState, listener: HomeInteractionListener,
 ) {
+    val listState = rememberLazyListState()
+    val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
+    val appBarAlpha by remember {
+        derivedStateOf {
+            val offset =
+                if (listState.firstVisibleItemIndex == 0) listState.firstVisibleItemScrollOffset else appBarFadeHeightPx
+            (offset / appBarFadeHeightPx.toFloat()).coerceIn(0f, 1f)
+        }
+    }
+    val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
+    val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
+
     val pagerState = rememberPagerState(
         initialPage = 1, pageCount = { state.popularMedia.popularMedia.size })
 
@@ -98,8 +117,10 @@ private fun HomeContent(
                         HomeBar(
                             modifier = Modifier
                                 .fillMaxWidth()
+
                                 .statusBarsPadding()
                             ,
+                            containerColor=appBarBgColor,
                             onSearchClicked = {
                                 listener.onSearchClicked()
                             },
@@ -119,15 +140,18 @@ private fun HomeContent(
                                     tint = Theme.color.secondary,
                                     contentDescription = stringResource(com.berlin.designsystem.R.string.trending)
                                 )
-                            })
-
-                        PosterSlider(
-                            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
-                            mediaList = state.popularMedia.popularMedia,
-                            pagerState = pagerState,
-                            onClick = { listener.onClickPopularMovieCard(it.id, it.mediaType) }
+                            }
                         )
-
+                        Box (
+                            Modifier.height(300.dp).fillMaxWidth()
+                        ){
+                            PosterSlider(
+                                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+                                mediaList = state.popularMedia.popularMedia,
+                                pagerState = pagerState,
+                                onClick = { listener.onClickPopularMovieCard(it.id, it.mediaType) }
+                            )
+                        }
                         currentMedia?.let { media ->
                             Text(
                                 media.title,
@@ -147,6 +171,7 @@ private fun HomeContent(
                                     .align(Alignment.CenterHorizontally)
                                 ,
                                 contentPadding = PaddingValues(end = 8.dp),
+                                horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 items(items = media.genre) { genreId ->

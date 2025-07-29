@@ -11,9 +11,9 @@ import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
-import com.berlin.aflami.viewmodel.util.MediaType
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,7 +84,9 @@ class SearchViewModel(
     private fun observeSearchKeywordChanges() {
         viewModelScope.launch {
             combine(
-                _state.map { it.searchQuery.trim() }.debounce(800).filter { it.isNotEmpty() }
+                _state.map { it.searchQuery.trim() }
+                    .debounce(800)
+                    .filter { it.isNotEmpty() }
                     .distinctUntilChanged(),
                 _state.map { it.filterTrigger }.distinctUntilChanged()
             ) { query, _ -> query }
@@ -245,7 +247,7 @@ class SearchViewModel(
     override fun onCardClicked(id: Int) {
         val mediaType = when (state.value.selectedTabOption) {
             TabOption.MOVIES -> MediaType.MOVIE.name
-            TabOption.TV_SHOWS -> MediaType.TV_SHOW.name
+            TabOption.TV_SHOWS -> MediaType.TVSHOW.name
         }
         sendNewEffect(SearchUiEffect.NavigatedToMovieDetailsScreen(id = id, mediaType))
     }

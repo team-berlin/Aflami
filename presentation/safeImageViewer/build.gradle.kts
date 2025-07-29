@@ -26,5 +26,6 @@ dependencies {
     testImplementation(libs.bundles.test)
     implementation(libs.firebase.ml.modeldownloader)
     implementation (libs.tensorflow.lite.gpu)
+    implementation(libs.bundles.koin)
 
 }

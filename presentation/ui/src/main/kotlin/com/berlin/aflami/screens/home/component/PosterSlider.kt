@@ -1,13 +1,10 @@
 package com.berlin.aflami.screens.home.component
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -17,16 +14,12 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
-import coil3.compose.AsyncImage
 import com.berlin.aflami.component.PlayButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
@@ -56,10 +49,12 @@ fun PosterSlider(
         state = pagerState,
         pageSize = PageSize.Fixed(itemWidth),
         contentPadding = PaddingValues(horizontal = contentPadding),
-        modifier = modifier.fillMaxWidth().height(300.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .height(300.dp)
     ) { pageIndex ->
         val actualIndex = pageIndex % mediaList.size
-        val mediaItem = mediaList.getOrNull(actualIndex )
+        val mediaItem = mediaList.getOrNull(actualIndex)
         mediaItem?.let {
             SliderCard(
                 isCentered = pageIndex == pagerState.currentPage,
@@ -79,14 +74,8 @@ fun SliderCard(
     rating: String,
     posterImageUrl: String,
 ) {
-    val progress by animateFloatAsState(
-        targetValue = if (isCentered) 1f else 0f,
-        label = "lerpProgress"
-    )
 
-//    val cardWidth = lerp(207.dp, 244.dp , fraction = progress)
-//    val cardHeight = lerp(276.dp, 300.dp, fraction = progress)
-        val cardWidth = animateDpAsState(
+    val cardWidth = animateDpAsState(
         targetValue = if (isCentered) 244.dp else 207.dp,
     ).value
     val cardHeight = animateDpAsState(
@@ -95,9 +84,14 @@ fun SliderCard(
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
+            .fillMaxSize()
+            .clickable(
+                onClick = { onClick() },
+                interactionSource = null,
+                indication = null,
+
+            ) ,
+        contentAlignment = Alignment.BottomCenter
     ) {
 
         SafeImageViewer(
@@ -106,6 +100,7 @@ fun SliderCard(
                 .width(cardWidth)
                 .height(cardHeight)
                 .clip(RoundedCornerShape(24.dp))
+            ,
         )
         if (isCentered) {
             RatingCard(
@@ -113,11 +108,11 @@ fun SliderCard(
                 rating = rating,
             )
             PlayButton(
+                modifier = Modifier.align(Alignment.Center),
                 onClick = { })
         }
     }
 }
-
 
 
 //@Composable

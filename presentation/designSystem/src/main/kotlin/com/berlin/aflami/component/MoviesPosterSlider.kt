@@ -38,83 +38,83 @@ data class MovieCardUiState(
     val id: String, val posterImage: Int, val rating: String
 )
 
-@Composable
-fun MoviesPosterSlider(
-    modifier: Modifier = Modifier,
-    poster: String,
-    rating: String,
-    onClick: () -> Unit = {},
-    pagerState: PagerState,
-) {
+//@Composable
+//fun MoviesPosterSlider(
+//    modifier: Modifier = Modifier,
+//    poster: String,
+//    rating: String,
+//    onClick: () -> Unit = {},
+//    pagerState: PagerState,
+//) {
+//
+//    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+//    val itemWidth = 244.dp
+//    val contentPadding = (screenWidth - itemWidth) / 2
+//    HorizontalPager(
+//        state = pagerState,
+//        pageSize = PageSize.Fixed(itemWidth),
+//        contentPadding = PaddingValues(horizontal = contentPadding),
+//        modifier = modifier.fillMaxWidth()
+//    ) { pageIndex ->
+//        MovieCard(
+//            isCentered = pageIndex == pagerState.currentPage,
+//            onClick = onClick,
+//            rating = rating,
+//            posterImageUrl = poster
+//        )
+//    }
+//}
 
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val itemWidth = 244.dp
-    val contentPadding = (screenWidth - itemWidth) / 2
-    HorizontalPager(
-        state = pagerState,
-        pageSize = PageSize.Fixed(itemWidth),
-        contentPadding = PaddingValues(horizontal = contentPadding),
-        modifier = modifier.fillMaxWidth()
-    ) { pageIndex ->
-        MovieCard(
-            isCentered = pageIndex == pagerState.currentPage,
-            onClick = onClick,
-            rating = rating,
-            posterImageUrl = poster
-        )
-    }
-}
-
-@Composable
-fun MovieCard(
-    isCentered: Boolean,
-    onClick: () -> Unit,
-    rating: String,
-    posterImageUrl: String,
-) {
-
-//    val cardWidth = animateDpAsState(
-//        targetValue = if (isCentered) 244.dp else 207.dp,
-//    ).value
-//    val cardHeight = animateDpAsState(
-//        targetValue = if (isCentered) 300.dp else 276.dp,
-//    ).value
-
-    val cardWidth = 244.dp
-    val cardHeight = 300.dp
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-//        AsyncImage(
-//            model = posterImageUrl,
-//            contentDescription = null,
-//            contentScale = ContentScale.Crop,
+//@Composable
+//fun MovieCard(
+//    isCentered: Boolean,
+//    onClick: () -> Unit,
+//    rating: String,
+//    posterImageUrl: String,
+//) {
+//
+////    val cardWidth = animateDpAsState(
+////        targetValue = if (isCentered) 244.dp else 207.dp,
+////    ).value
+////    val cardHeight = animateDpAsState(
+////        targetValue = if (isCentered) 300.dp else 276.dp,
+////    ).value
+//
+//    val cardWidth = 244.dp
+//    val cardHeight = 300.dp
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .clickable { onClick() },
+//        contentAlignment = Alignment.Center
+//    ) {
+////        AsyncImage(
+////            model = posterImageUrl,
+////            contentDescription = null,
+////            contentScale = ContentScale.Crop,
+////            modifier = Modifier
+////                .width(cardWidth)
+////                .height(cardHeight)
+////                .clip(RoundedCornerShape(24.dp))
+////        )
+//        SafeImageViewer(
+//            imageUri = posterImageUrl,
 //            modifier = Modifier
 //                .width(cardWidth)
 //                .height(cardHeight)
 //                .clip(RoundedCornerShape(24.dp))
 //        )
-        SafeImageViewer(
-            imageUri = posterImageUrl,
-            modifier = Modifier
-                .width(cardWidth)
-                .height(cardHeight)
-                .clip(RoundedCornerShape(24.dp))
-        )
-        if (isCentered) {
-            RatingCard(
-                modifier = Modifier.align(Alignment.TopEnd),
-                rating = rating,
-            )
-            PlayButton(
-                onClick = { })
-        }
-    }
-}
+//        if (isCentered) {
+//            RatingCard(
+//                modifier = Modifier.align(Alignment.TopEnd),
+//                rating = rating,
+//            )
+//            PlayButton(
+//                onClick = { })
+//        }
+//    }
+//}
 
 @Composable
 fun RatingCard(
@@ -156,9 +156,12 @@ fun RatingCard(
 }
 
 @Composable
-fun PlayButton(onClick: () -> Unit) {
+fun PlayButton(
+    modifier: Modifier,
+    onClick: () -> Unit
+) {
     Box(
-        Modifier
+        modifier
             .size(64.dp)
             .clip(CircleShape)
             .background(

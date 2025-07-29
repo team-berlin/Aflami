@@ -37,6 +37,8 @@ import com.google.firebase.ml.modeldownloader.FirebaseModelDownloader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import org.koin.compose.currentKoinScope
+import org.koin.compose.getKoin
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.nnapi.NnApiDelegate
@@ -46,7 +48,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
-
 @Composable
 fun SafeImageViewer(
     imageUri: String,
@@ -59,14 +60,17 @@ fun SafeImageViewer(
 
     ) {
     val context = LocalContext.current
-    if (blurCheck) {
+    val modelManager by currentKoinScope().inject<FireBaseModelManager>()
+    val isModelDownloaded by remember { modelManager._downloaded }
+ if (!isModelDownloaded) return
 
+    if (blurCheck) {
         var bitmap by remember { mutableStateOf<Bitmap?>(null) }
         var isSafe by remember { mutableStateOf<Boolean?>(null) }
         var genderResult by remember { mutableStateOf<Boolean??>(null) }
         LaunchedEffect(imageUri) {
-            val nsfwModel = loadFirebaseModel("nsfw")
-            val genderModel = loadFirebaseModel("gender_not_quantized")
+            val nsfwModel = modelManager.getModel("nsfw")
+            val genderModel = modelManager.getModel("gender_not_quantized")
 
             val nsfwInterpreter =
                 Interpreter(nsfwModel, Interpreter.Options().addDelegate(NnApiDelegate()))
@@ -203,19 +207,19 @@ fun SafeImageViewer(
     }
 }
 
-suspend fun loadFirebaseModel(name: String): MappedByteBuffer {
-    val downloader = FirebaseModelDownloader.getInstance()
-    val model = downloader.getModel(
-            name,
-            DownloadType.LOCAL_MODEL,
-            CustomModelDownloadConditions.Builder().requireWifi().build()
-        ).await()
-
-    val file = model.file ?: throw IllegalStateException("Model not downloaded")
-    val inputStream = FileInputStream(file)
-    val fileChannel = inputStream.channel
-    return fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, file.length())
-}
+//suspend fun loadFirebaseModel(name: String): MappedByteBuffer {
+//    val downloader = FirebaseModelDownloader.getInstance()
+//    val model = downloader.getModel(
+//            name,
+//            DownloadType.LOCAL_MODEL,
+//            CustomModelDownloadConditions.Builder().requireWifi().build()
+//        ).await()
+//
+//    val file = model.file ?: throw IllegalStateException("Model not downloaded")
+//    val inputStream = FileInputStream(file)
+//    val fileChannel = inputStream.channel
+//    return fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, file.length())
+//}
 
 @Suppress("DEPRECATION")
 fun blurBitmapRenderScript(context: Context, bitmap: Bitmap, radius: Float): Bitmap {
