@@ -70,7 +70,7 @@ fun AflamiNavGraph(
         modifier = modifier,
         bottomBar = {
             if (shouldShowBottomBar) {
-                BottomNavigation(navController)
+                BottomNavigation(navController,currentRoute?:"")
             }
         }
     ) { innerPadding ->

@@ -20,26 +20,23 @@ sealed class Destination(val route: String) {
     object SearchScreen : Destination(SEARCH_SCREEN)
     object SearchByCountryScreen : Destination(SEARCH_BY_COUNTRY_SCREEN)
     object SearchByActorNameScreen : Destination(SEARCH_BY_ACTOR_NAME_SCREEN)
-
     object MediaDetailsScreen : Destination(MEDIA_DETAILS_SCREEN) {
         fun route(id: Long, mediaType: String): String {
             return "$MEDIA_DETAILS_ROUTE/$id/$mediaType"
         }
     }
-
     object CastScreen : Destination(CAST_SCREEN) {
         fun route(id: Long, mediaType: String): String {
             return "$CAST_ROUTE/$id/$mediaType"
         }
     }
-
     object LoginScreen : Destination(LOGIN_SCREEN)
     object WebViewScreen : Destination(WEB_VIEW_SCREEN)
     object WatchedMediaDetails : Destination(WATCHED_MEDIA_DETAILS)
     object HomeScreen : Destination(HOME_SCREEN)
-    object GamesScreen:Destination(GAMES_SCREEN)
-    object ProfileScreen:Destination(PROFILE_SCREEN)
-    object ListsScreen:Destination(LISTS_SCREEN)
-    object CategoriesScreen:Destination(CATEGORY_SCREEN)
+    object GamesScreen : Destination(GAMES_SCREEN)
+    object ProfileScreen : Destination(PROFILE_SCREEN)
+    object ListsScreen : Destination(LISTS_SCREEN)
+    object CategoriesScreen : Destination(CATEGORY_SCREEN)
 }
 

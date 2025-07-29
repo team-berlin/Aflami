@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -27,15 +26,14 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.BlurredPosterBackground
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
-import com.berlin.aflami.component.NavBar
 import com.berlin.aflami.component.SectionTitle
 import com.berlin.aflami.screens.home.component.MediaSections
 import com.berlin.aflami.screens.home.component.PosterSlider
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
-import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.aflami.viewmodel.home.HomeUiState
+import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -75,7 +73,7 @@ private fun HomeContent(
                     .fillMaxSize()
                     .background(Theme.color.surface)
             ) {
-                Box() {
+                Box {
                     BlurredPosterBackground(
                         imageUrl = currentMedia?.poster ?: "",
                         modifier = Modifier
@@ -115,7 +113,7 @@ private fun HomeContent(
                             modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
                             mediaList = state.popularMedia.popularMedia,
                             pagerState = pagerState,
-                            onClick = { listener.onClickPopularMovieCard(it.id,it.mediaType) }
+                            onClick = { listener.onClickPopularMovieCard(it.id, it.mediaType) }
                         )
 
                         currentMedia?.let { media ->
@@ -150,27 +148,6 @@ private fun HomeContent(
                 onShowAllContinueWatchingClick = {
                     listener.onShowAllContinueWatchingClicked()
                 }, state = state.mediaContinueWatching, sectionTitleId = R.string.continue_watching
-            )
-            val lazyListState = rememberLazyListState()
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-//                Column(modifier = Modifier.padding(bottom = 100.dp))
-//                {
-//                        upcomingMovies(
-//                            moviesGenres = state.upcomingMovieGenres,
-//                            movies = state.upcomingMovies,
-//                            onMovieClicked = listener::onClickUpcomingMovieCard,
-//                            onChangeMovieGenre = listener::onChangeUpcomingMovieGenre,
-//                        )
-//                }
-            }
-
-
-            NavBar(
-                navDestinations = listOf(),
-                currentRoute = "",
-                onNavDestinationClicked = {},
             )
         }
     }

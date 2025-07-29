@@ -12,10 +12,7 @@ import com.berlin.designsystem.R
 import com.example.navigation.Destination
 
 @Composable
-fun BottomNavigation(navController: NavController) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
+fun BottomNavigation(navController: NavController,currentRoute:String) {
     val items = listOf(
         BottomNavItem(
             icon = painterResource(id = R.drawable.home),
@@ -46,7 +43,7 @@ fun BottomNavigation(navController: NavController) {
 
     NavBar(
         navDestinations = items,
-        currentRoute = currentRoute ?: Destination.HomeScreen.route,
+        currentRoute = currentRoute,
         onNavDestinationClicked = { route ->
             if (currentRoute != route) {
                 navController.navigate(route) {
