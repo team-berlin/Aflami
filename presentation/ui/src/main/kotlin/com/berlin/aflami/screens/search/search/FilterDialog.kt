@@ -240,7 +240,7 @@ fun RatingBar(
     onValueChange: (Float) -> Unit, modifier: Modifier = Modifier, currentRating: Float = 0f
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
