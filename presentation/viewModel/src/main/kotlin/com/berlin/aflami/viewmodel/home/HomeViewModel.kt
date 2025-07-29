@@ -156,12 +156,11 @@ class HomeViewModel(
         }
     }
 
-    override fun onMoodPickerClicked(mood: UserMood) {
+    override fun onSelectedMood(mood: UserMood) {
         updateState {
             it.copy(
                 moodPickerUiState = it.moodPickerUiState.copy(
-                    isLoading = true,
-                    selectedMood = UserMoodUiState(userMood = mood, isSelectingMood = true),
+                    selectedMood = UserMoodUiState(userMood = mood),
                 )
             )
         }
@@ -171,28 +170,29 @@ class HomeViewModel(
         return state.value.movieGenres.filter { this.contains(it.name) }.map { it.id }
     }
 
-    override fun onGetNowClicked() {
-        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(isLoading = true)) }
-        val selectedMood = state.value.moodPickerUiState.selectedMood?.userMood ?: return
+    override fun onGetNowClicked(selectedMood: UserMood) {
+        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(openMovieDialog = true)) }
         tryToCall(
             call = {
-                getMoviesByMoodUseCase(selectedMood.moodGenres.toGenreIds())
+                getMoviesByMoodUseCase(selectedMood.moodGenres.toGenreIds()).also {
+                    Log.d(
+                        "HomeViewModel",
+                        "Selected Mood: $selectedMood, Genres: ${selectedMood.moodGenres} movies: $it"
+                    )
+                }
             },
-            onSuccess = { ::onGetMoviesByMoodSuccess },
+            onSuccess = ::onGetMoviesByMoodSuccess,
             onError = { ::onError },
         )
     }
 
     private fun onGetMoviesByMoodSuccess(movies: List<Movie>) {
-        if (movies.isEmpty()) {
-            updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(isLoading = false)) }
-            return
-        }
         val moviesUiStates = movies.map { it.toUIState() }
         updateState {
             it.copy(
                 moodPickerUiState = it.moodPickerUiState.copy(
-                    isLoading = false, movies = moviesUiStates, isSelectedAction = true
+                    movies = moviesUiStates,
+                    selectedMovie = moviesUiStates.firstOrNull() ?: MovieUIState()
                 )
             )
         }
@@ -213,7 +213,7 @@ class HomeViewModel(
         updateState {
             it.copy(
                 moodPickerUiState = it.moodPickerUiState.copy(
-                    openMovieDialog = false, isSelectedAction = false
+                    openMovieDialog = false, isLoading = true
                 )
             )
         }

@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.home.component
+package com.berlin.aflami.screens.home.sections
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable

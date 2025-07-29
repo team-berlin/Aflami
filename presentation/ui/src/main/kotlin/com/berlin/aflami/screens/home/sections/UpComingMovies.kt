@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.home.component
+package com.berlin.aflami.screens.home.sections
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -105,19 +104,12 @@ private fun MoviesRow(
     onMovieClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyRow(
-        modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    Column(
+        modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(
-            items = movies,
-            key = { it.id }
-        ) { movie ->
+        movies.forEach { movie ->
             MediaCard(
                 modifier = modifier
-                    .fillParentMaxWidth()
-                    .animateItem()
                     .height(222.dp)
                     .padding(bottom = 8.dp),
                 mediaImg = movie.poster,
@@ -127,7 +119,8 @@ private fun MoviesRow(
                 typeOfMedia = MediaType.MOVIE.name,
                 onClick = {
                     onMovieClick(movie.id)
-                })
+                },
+            )
         }
     }
 }

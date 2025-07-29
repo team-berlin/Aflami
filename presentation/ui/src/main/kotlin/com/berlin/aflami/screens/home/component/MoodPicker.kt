@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -27,8 +28,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
+import com.berlin.aflami.viewmodel.home.HomeUiState
 import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.designsystem.R
@@ -45,6 +49,7 @@ fun MoodPicker(
     viewModel: HomeViewModel,
     onEffect: (HomeScreenEffect) -> Unit = {}
 ) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -75,17 +80,12 @@ fun MoodPicker(
         )
         MoodPickerHeader(headerText = headerText)
         MoodPickerContent(
+            state = state,
             moodIcons = moodIcons,
             promptText = promptText,
             getNowText = actionText,
             selectedMood = selectedMood,
-            onMoodSelected = { selectedIconRes ->
-                val mood = moodFromIcon(selectedIconRes, moodIcons)
-                if (mood != null) {
-                    viewModel.onMoodPickerClicked(mood)
-                }
-            },
-            onGetNowClick = { viewModel.onGetNowClicked() }
+            listener = viewModel
         )
     }
 }
@@ -109,8 +109,8 @@ private fun MoodPickerContent(
     promptText: String,
     getNowText: String,
     selectedMood: Int? = null,
-    onMoodSelected: (Int) -> Unit,
-    onGetNowClick: () -> Unit
+    listener: HomeInteractionListener,
+    state: State<HomeUiState>,
 ) {
     Column(
         modifier = Modifier
@@ -135,7 +135,11 @@ private fun MoodPickerContent(
                     modifier = Modifier,
                     iconRes = iconRes,
                     isSelected = selectedMood == iconRes,
-                    onClick = { onMoodSelected(iconRes) }
+                    onClick = {
+                        listener.onSelectedMood(
+                            moodFromIcon(iconRes, moodIcons) ?: UserMood.NEUTRAL
+                        )
+                    }
                 )
             }
         }
@@ -145,7 +149,11 @@ private fun MoodPickerContent(
             color = if (selectedMood != null) Theme.color.primary else Theme.color.disable,
             modifier = Modifier
                 .padding(top = 12.dp, bottom = 4.dp)
-                .clickable(enabled = selectedMood != null, onClick = onGetNowClick)
+                .clickable(enabled = selectedMood != null, onClick = {
+                    listener.onGetNowClicked(
+                        state.value.moodPickerUiState.selectedMood?.userMood ?: UserMood.NEUTRAL
+                    )
+                })
         )
     }
 }

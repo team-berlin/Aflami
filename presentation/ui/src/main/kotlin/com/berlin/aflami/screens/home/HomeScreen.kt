@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,10 +28,11 @@ import com.berlin.aflami.component.BlurredPosterBackground
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
-import com.berlin.aflami.screens.home.component.MediaSections
-import com.berlin.aflami.screens.home.component.MoodPickerSection
-import com.berlin.aflami.screens.home.component.PosterSlider
-import com.berlin.aflami.screens.home.component.UpcomingMoviesSection
+import com.berlin.aflami.screens.home.component.MoodPickerDialog
+import com.berlin.aflami.screens.home.sections.MediaSections
+import com.berlin.aflami.screens.home.sections.MoodPickerSection
+import com.berlin.aflami.screens.home.sections.PosterSlider
+import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
@@ -165,4 +167,21 @@ private fun HomeContent(
             )
         }
     }
+
+    AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
+        with(state.moodPickerUiState.selectedMovie) {
+            MoodPickerDialog(
+                mediaImg = poster,
+                title = title,
+                typeOfMedia = mediaType,
+                date = releaseYear,
+                rate = rating,
+                onDismiss = { listener.onDismissMoodPickerDialog() },
+                onClickViewDetails = { listener.onClickViewDetails() },
+                onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
+            )
+        }
+
+    }
+
 }
