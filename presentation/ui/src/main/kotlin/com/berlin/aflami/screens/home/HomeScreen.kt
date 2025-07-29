@@ -3,6 +3,7 @@ package com.berlin.aflami.screens.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
@@ -30,6 +33,7 @@ import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
 import com.berlin.aflami.screens.home.component.MediaSections
 import com.berlin.aflami.screens.home.component.PosterSlider
+import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
@@ -114,7 +118,7 @@ private fun HomeContent(
                             modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
                             mediaList = state.popularMedia.popularMedia,
                             pagerState = pagerState,
-                            onClick = { listener.onClickPopularMovieCard(it.id,it.mediaType) }
+                            onClick = { listener.onClickPopularMovieCard(it.id, it.mediaType) }
                         )
 
                         currentMedia?.let { media ->
@@ -128,14 +132,16 @@ private fun HomeContent(
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
-                            Row {
-                                media.genre.forEach { genre ->
+                            LazyRow(
+                                contentPadding = PaddingValues(end = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                items(items = media.genre) { genreId ->
+                                    val genreName = getGenreNameById(genreId, media.mediaType)
                                     Box(
-                                        modifier = Modifier
-                                            .padding(end = 4.dp)
-                                            .align(Alignment.CenterVertically)
+                                        modifier = Modifier.padding(end = 4.dp)
                                     ) {
-                                        GenersChip(label = genre.toString())
+                                        GenersChip(label = genreName)
                                     }
                                 }
                             }

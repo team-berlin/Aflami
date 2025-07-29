@@ -84,12 +84,17 @@ fun MovieCard(
     rating: String,
     posterImageUrl: String,
 ) {
-    val cardWidth = animateDpAsState(
-        targetValue = if (isCentered) 244.dp else 207.dp,
-    ).value
-    val cardHeight = animateDpAsState(
-        targetValue = if (isCentered) 300.dp else 276.dp,
-    ).value
+
+//    val cardWidth = animateDpAsState(
+//        targetValue = if (isCentered) 244.dp else 207.dp,
+//    ).value
+//    val cardHeight = animateDpAsState(
+//        targetValue = if (isCentered) 300.dp else 276.dp,
+//    ).value
+
+    val cardWidth = 244.dp
+    val cardHeight = 300.dp
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
