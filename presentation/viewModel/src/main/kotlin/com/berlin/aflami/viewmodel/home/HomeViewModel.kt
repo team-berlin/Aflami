@@ -245,31 +245,33 @@ class HomeViewModel(
 
 
     fun getContinueWatchingMedia() {
+        var combinedList:List<MediaUiState> = emptyList()
         _state.update {
             it.copy(isLoading = true, error = null)
         }
         tryToCall(
+
             call = {
                 Pager(
-                    config = PagingConfig(
-                        pageSize = 20, initialLoadSize = 20
-                    ),
                     pagingSourceFactory = {
                         BasePagingSource { page ->
                             coroutineScope {
                                 val moviesList =
-                                    async { getWatchedMovieUseCase(page).map { it.toUIStateMedia() } }
+                                    async { getWatchedMovieUseCase(1).map { it.toUIStateMedia() } }
                                 val tvShowsList =
-                                    async { getWatchedTVShowUseCase(page).map { it.toUIStateMedia() } }
+                                    async { getWatchedTVShowUseCase(1).map { it.toUIStateMedia() } }
 
-                                val movies = moviesList.await()
-                                val tvShows = tvShowsList.await()
+                                 val movies = moviesList.await()
+                                 val tvShows = tvShowsList.await()
 
-                                val combinedList = (movies + tvShows).shuffled()
+                                 combinedList = (movies + tvShows).shuffled()
                                 combinedList
                             }
                         }
-                    }
+                    },
+                    config = PagingConfig(
+                        pageSize = combinedList.size, initialLoadSize = combinedList.size
+                ),
                 ).flow.cachedIn(viewModelScope)
             },
             onSuccess = { continueWatchingMedia ->
