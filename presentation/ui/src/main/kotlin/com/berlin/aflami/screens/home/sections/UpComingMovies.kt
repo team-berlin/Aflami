@@ -31,7 +31,7 @@ fun UpcomingMoviesSection(
     genres: List<GenreUiState>,
     onMovieClick: (Long) -> Unit,
     onGenreClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -40,7 +40,7 @@ fun UpcomingMoviesSection(
     ) {
         SectionTitle(
             text = stringResource(R.string.upcoming),
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp)
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 12.dp)
         )
 
         GenreChipsRow(
@@ -51,10 +51,10 @@ fun UpcomingMoviesSection(
                 .height(96.dp)
         )
 
-        MoviesRow(
+        MoviesColumn(
             movies = movies,
             onMovieClick = onMovieClick,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.padding(horizontal = 8.dp)
         )
     }
 }
@@ -62,7 +62,7 @@ fun UpcomingMoviesSection(
 @Composable
 private fun SectionTitle(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = text,
@@ -77,11 +77,11 @@ private fun SectionTitle(
 private fun GenreChipsRow(
     genres: List<GenreUiState>,
     onGenreClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyRow(
-        modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 12.dp),
+        modifier = modifier.padding(bottom = 12.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
@@ -99,10 +99,10 @@ private fun GenreChipsRow(
 }
 
 @Composable
-private fun MoviesRow(
+private fun MoviesColumn(
     movies: List<MovieUIState>,
     onMovieClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -110,8 +110,7 @@ private fun MoviesRow(
         movies.forEach { movie ->
             MediaCard(
                 modifier = modifier
-                    .height(222.dp)
-                    .padding(bottom = 8.dp),
+                    .height(222.dp),
                 mediaImg = movie.poster,
                 title = movie.title,
                 date = movie.releaseYear,

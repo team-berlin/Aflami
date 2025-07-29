@@ -69,11 +69,12 @@ private fun HomeContent(
 
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
     LazyColumn(
-        modifier = Modifier.padding(vertical = 6.dp)
+        modifier = Modifier
     ) {
         item {
             Column(
                 modifier = Modifier
+                    .padding(bottom = 6.dp)
                     .fillMaxSize()
                     .background(Theme.color.surface)
             ) {
@@ -155,6 +156,14 @@ private fun HomeContent(
             )
         }
         item {
+            MediaSections(
+                modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
+                onShowAllContinueWatchingClick = { listener.onAllTopRatingClicked() },
+                state = state.topRatedMediaUiState.topRatedMedia,
+                sectionTitleId = R.string.top_rating,
+            )
+        }
+        item {
             MoodPickerSection(state, listener)
         }
         item {
@@ -164,13 +173,6 @@ private fun HomeContent(
                 onMovieClick = { listener.onClickUpcomingMovieCard(it) },
                 onGenreClick = { listener.onChangeUpcomingMovieGenre(it) },
                 modifier = Modifier
-            )
-        }
-        item {
-            MediaSections(
-                onShowAllContinueWatchingClick = { listener.onAllTopRatingClicked() },
-                state = state.topRatedMediaUiState.topRatedMedia,
-                sectionTitleId = R.string.top_rating,
             )
         }
     }

@@ -58,7 +58,8 @@ fun MediaCard(
             is AsyncImagePainter.State.Success, is AsyncImagePainter.State.Loading -> ContentScale.Crop
             else -> ContentScale.Inside
         }
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center) {
             AsyncImage(
                 model = mediaImg,
                 contentDescription = null,
