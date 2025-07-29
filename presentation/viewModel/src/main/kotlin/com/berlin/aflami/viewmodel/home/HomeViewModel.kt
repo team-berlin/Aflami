@@ -42,6 +42,7 @@ class HomeViewModel(
     init {
         loadGenresMovies()
         getUpComingMoviesByGenre()
+        getTopRatingMovieAndTvShows()
         popularMedia("en-US")
     }
 
@@ -114,42 +115,49 @@ class HomeViewModel(
         sendNewEffect(HomeScreenEffect.NavigateToContinueWatching)
     }
 
-    override fun onShowAllTopRating() {
-        viewModelScope.launch {
-            tryToCall(
-                call = {
-                    val topRatedMovies =
-                        getTopRatedMoviesUseCase(1).map { movie -> movie.toUIStateMedia() }
-                    val topRatedSeries =
-                        getTopRatedSeriesUseCase(1).map { series -> series.toUIStateMedia() }
-                    (topRatedMovies + topRatedSeries).sortedByDescending { it.rating }
-                },
-                onSuccess = { newTopRatedMedia ->
-                    _state.update { oldState ->
-                        oldState.copy(
-                            topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
-                                topRatedMedia = newTopRatedMedia,
-                                isLoading = false,
-                                errorMessage = null,
-                            )
-                        )
-                    }
-                },
-                onError = { errorUIState ->
-                    _state.update { oldState ->
-                        oldState.copy(
-                            topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
-                                topRatedMedia = null,
-                                isLoading = false,
-                                errorMessage = errorUIState.message
-                            )
-                        )
-                    }
-                },
-                dispatcher = Dispatchers.Default
-            )
-        }
+    override fun onAllTopRatingClicked() {
+        sendNewEffect(HomeScreenEffect.NavigateToTopRating)
     }
+
+    private fun getTopRatingMovieAndTvShows() {
+        tryToCall(
+            call = {
+                coroutineScope {
+                    val moviesDeferred =
+                        async { getTopRatedMoviesUseCase(1).map { it.toUIStateMedia() } }
+                    val seriesDeferred =
+                        async { getTopRatedSeriesUseCase(1).map { it.toUIStateMedia() } }
+                    val topRatedMovies = moviesDeferred.await()
+                    val topRatedSeries = seriesDeferred.await()
+                    (topRatedMovies + topRatedSeries).sortedByDescending { it.rating }
+                }
+            },
+            onSuccess = { newTopRatedMedia ->
+                _state.update { oldState ->
+                    oldState.copy(
+                        topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
+                            topRatedMedia = newTopRatedMedia,
+                            isLoading = false,
+                            errorMessage = null,
+                        )
+                    )
+                }
+            },
+            onError = { errorUIState ->
+                _state.update { oldState ->
+                    oldState.copy(
+                        topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
+                            topRatedMedia = emptyList(),
+                            isLoading = false,
+                            errorMessage = errorUIState.message
+                        )
+                    )
+                }
+            },
+            dispatcher = Dispatchers.Default
+        )
+    }
+
 
     override fun onMoodPickerClicked() {
     }
