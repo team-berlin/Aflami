@@ -37,8 +37,8 @@ fun TabSection(
     tabState: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
     rowState: RowSectionUiState,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
+    isReviewExpanded: (String) -> Boolean,
+    onToggleReviewExpand: (String) -> Unit,
     mediaType: MediaType
 ) {
     val visibleTabs = MovieDetailsTabs.entries.filter {
@@ -83,7 +83,9 @@ fun TabSection(
 
         is RowSectionUiState.Success -> when (val tab = content.content) {
             is TabContent.MoreLikeThis -> MoreLikeThisSection(mediaList = tab.items, mediaType = mediaType)
-            is TabContent.Reviews -> ReviewsSection(reviews = tab.items, isExpanded = isExpanded, onToggleExpand = onToggleExpand)
+            is TabContent.Reviews -> ReviewsSection(reviews = tab.items,
+                isExpanded = { id -> isReviewExpanded(id) },
+                onToggleExpand = { id -> onToggleReviewExpand(id) })
             is TabContent.Gallery -> GallerySection(mediaImages = tab.items)
             is TabContent.CompanyProduction -> CompanyProductionSection(companyProductions = tab.items)
             is TabContent.Season -> SeasonsSection(seasonsMap = tab.items)

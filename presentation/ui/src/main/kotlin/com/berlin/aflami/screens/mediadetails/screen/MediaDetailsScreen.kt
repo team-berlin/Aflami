@@ -96,8 +96,6 @@ fun MediaDetailsScreen(
             listener = viewModel,
             isDescriptionExpanded = viewModel.isDescriptionExpanded(),
             onToggleDescriptionExpand = { viewModel.onReadMoreDescriptionClicked() },
-            isReviewExpanded = viewModel.isReviewExpanded(viewModel.id),
-            onToggleReviewExpand = { viewModel.onReadMoreReviewClicked(viewModel.id) },
             mediaChips = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
@@ -128,8 +126,6 @@ fun MediaDetailsContent(
     listener: MediaInteractionListener,
     isDescriptionExpanded: Boolean,
     onToggleDescriptionExpand: () -> Unit,
-    isReviewExpanded: Boolean,
-    onToggleReviewExpand: () -> Unit,
     mediaChips: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
     mediaType: MediaType
@@ -190,8 +186,8 @@ fun MediaDetailsContent(
                     tabState = mediaChips,
                     rowState = state.rowSection,
                     onChipClick = onChipClick,
-                    isExpanded = isReviewExpanded,
-                    onToggleExpand = onToggleReviewExpand,
+                    isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
+                    onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
                     mediaType = mediaType,
                 )
             }

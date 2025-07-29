@@ -1,4 +1,4 @@
 package com.berlin.aflami.viewmodel.util
 
-fun Set<Long>.toggle(id: Long): Set<Long> =
-    if (contains(id)) this - id else this + id
+fun <T> Set<T>.toggle(item: T): Set<T> =
+    if (contains(item)) this - item else this + item

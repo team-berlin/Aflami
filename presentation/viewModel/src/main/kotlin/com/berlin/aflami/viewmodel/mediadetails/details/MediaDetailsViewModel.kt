@@ -145,7 +145,7 @@ class MediaDetailsViewModel(
         return _state.value.isDescriptionExpanded
     }
 
-    fun isReviewExpanded(id: Long): Boolean {
+    fun isReviewExpanded(id: String): Boolean {
         return _state.value.expandedReviewIds.contains(id)
     }
 
@@ -174,7 +174,7 @@ class MediaDetailsViewModel(
         }
     }
 
-    override fun onReadMoreReviewClicked(id: Long) {
+    override fun onReadMoreReviewClicked(id: String) {
         updateState { state ->
             state.copy(
                 expandedReviewIds = state.expandedReviewIds.toggle(id)
