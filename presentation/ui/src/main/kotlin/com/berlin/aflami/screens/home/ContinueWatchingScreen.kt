@@ -94,36 +94,6 @@ fun WatchedMediaContent(
                 )
             }
         })
-//        LazyVerticalGrid(
-//            modifier = Modifier.fillMaxSize(),
-//            columns = GridCells.Adaptive(minSize = 160.dp),
-//            contentPadding = PaddingValues(
-//                start = 16.dp, end = 16.dp, top = 8.dp
-//            ),
-//            verticalArrangement = Arrangement.spacedBy(8.dp),
-//            horizontalArrangement = Arrangement.spacedBy(8.dp)
-//        ) {
-//            items(
-//                count = state.continueWatchingItems.size, key = { index ->
-//                    state.continueWatchingItems[index].id
-//                }) { index ->
-//                val watchedMedia = state.continueWatchingItems[index]
-//                MediaCard(
-//                    modifier = Modifier.height(222.dp),
-//                    mediaImg = watchedMedia.poster,
-//                    title = watchedMedia.title,
-//                    onClick = {
-//                        listener.onMediaCardClicked(
-//                            id = watchedMedia.id, type = watchedMedia.mediaType
-//                        )
-//                    },
-//                    typeOfMedia = watchedMedia.mediaType.name,
-//                    date = watchedMedia.releaseYear,
-//                    rating = watchedMedia.rating
-//                )
-//
-//            }
-//        }
 
         val pagedMovies = state.continueWatchingItems.collectAsLazyPagingItems()
 
