@@ -262,10 +262,12 @@ private fun ColumnScope.AnimatedMaxCharacters(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .padding(top = 4.dp)
+                    .animateContentSize()
             )
         }
     }
 }
+
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Unit)? = null) {
