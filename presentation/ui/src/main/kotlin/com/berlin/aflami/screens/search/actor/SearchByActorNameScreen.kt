@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +26,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.CountryTourExploring
@@ -120,40 +121,64 @@ private fun SearchByActorNameContent(
         )
 
         Box(
-            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
         ) {
             val pagedMovies = state.movies.collectAsLazyPagingItems()
-            when {
-                state.isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
+            when (pagedMovies.loadState.refresh) {
+                is LoadState.Loading -> {
+                    if (state.query.isBlank()) {
+                        InitContent()
+                    } else {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = stringResource(R.string.loading)
+                        )
+                    }
                 }
 
-                pagedMovies.itemCount == 0 && state.query.isBlank() -> {
-                    CountryTourExploring(
-                        modifier = Modifier.fillMaxSize(),
-                        image = painterResource(R.drawable.find_by_actor),
-                        titleId = R.string.find_by_actor,
-                        messageId = R.string.find_by_actor_quotation
-                    )
+
+                is LoadState.NotLoading -> {
+                    if (state.query.isBlank()) {
+                        InitContent()
+                    } else if (pagedMovies.itemCount == 0 && state.query.isNotBlank()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = stringResource(R.string.loading)
+                        )
+                    } else {
+                        MediaGridList(
+                            media = pagedMovies,
+                            onMovieClick = listener::onMovieClicked,
+                        )
+                    }
                 }
 
-                pagedMovies.itemCount == 0 && state.query.isNotBlank() -> {
-                    CountryTourExploring(
-                        modifier = Modifier.fillMaxSize(),
-                        image = painterResource(R.drawable.no_search_result),
-                        titleId = R.string.no_search_result,
-                        messageId = R.string.please_try_with_another_keyword
-                    )
-                }
-
-                else -> {
-                    MediaGridList(
-                        media = pagedMovies,
-                        onMovieClick = listener::onMovieClicked,
-                    )
+                is LoadState.Error -> {
+                    ErrorContent()
                 }
             }
         }
     }
+}
+
+@Composable
+private fun ErrorContent() {
+    CountryTourExploring(
+        modifier = Modifier.fillMaxSize(),
+        image = painterResource(R.drawable.no_search_result),
+        titleId = R.string.no_search_result,
+        messageId = R.string.please_try_with_another_keyword
+    )
+}
+
+@Composable
+private fun InitContent() {
+    CountryTourExploring(
+        modifier = Modifier.fillMaxSize(),
+        image = painterResource(R.drawable.find_by_actor),
+        titleId = R.string.find_by_actor,
+        messageId = R.string.find_by_actor_quotation
+    )
 }
 
