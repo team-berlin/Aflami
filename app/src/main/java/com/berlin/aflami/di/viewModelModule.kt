@@ -1,6 +1,7 @@
 package com.berlin.aflami.di
 
 import com.berlin.aflami.viewmodel.home.HomeViewModel
+import com.berlin.aflami.viewmodel.home.toprating.TopRatingViewModel
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.aflami.viewmodel.main.MainViewModel
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastViewModel
@@ -23,4 +24,5 @@ val viewModelModule = module {
     viewModelOf(::CastViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::ContinueWatchingMediaViewModel)
+    viewModelOf(::TopRatingViewModel)
 }

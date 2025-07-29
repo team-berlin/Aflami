@@ -7,6 +7,7 @@ import com.example.navigation.NavigationConstants.Destination.MEDIA_DETAILS_SCRE
 import com.example.navigation.NavigationConstants.Destination.SEARCH_BY_ACTOR_NAME_SCREEN
 import com.example.navigation.NavigationConstants.Destination.SEARCH_BY_COUNTRY_SCREEN
 import com.example.navigation.NavigationConstants.Destination.SEARCH_SCREEN
+import com.example.navigation.NavigationConstants.Destination.TOP_RATING
 import com.example.navigation.NavigationConstants.Destination.WATCHED_MEDIA_DETAILS
 import com.example.navigation.NavigationConstants.Destination.WEB_VIEW_SCREEN
 import com.example.navigation.NavigationConstants.Routes.CAST_ROUTE
@@ -32,6 +33,7 @@ sealed class Destination(val route: String) {
     object LoginScreen : Destination(LOGIN_SCREEN)
     object WebViewScreen : Destination(WEB_VIEW_SCREEN)
     object WatchedMediaDetails : Destination(WATCHED_MEDIA_DETAILS)
+    object TopRatingScreen: Destination(route = TOP_RATING)
     object HomeScreen : Destination(HOME_SCREEN)
 }
 

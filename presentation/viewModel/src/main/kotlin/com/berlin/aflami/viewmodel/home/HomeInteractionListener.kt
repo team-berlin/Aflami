@@ -6,7 +6,8 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaType
 interface HomeInteractionListener : DialogInteractionListener {
     fun onSearchClicked()
     fun onShowAllContinueWatchingClicked()
-    fun onShowAllTopRating()
+    fun onAllTopRatingClicked()
+    fun onMoodPickerClicked()
     fun onSelectedMood(mood: UserMood)
     fun onGetNowClicked(mood: UserMood)
     fun onClickUpcomingMovieCard(id: Long)
