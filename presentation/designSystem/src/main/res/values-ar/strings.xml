@@ -80,4 +80,6 @@
     <string name="animation">انمي</string>
     <string name="filter_result">فرز النتائج</string>
     <string name="search_discribtion">"ابدا بالتصفح! ابحث عن ممثلك , مسلسلاتك , وبرامجك المفضلة"</string>
+    <string name="character_image">صورة الشخصية</string>
+
 </resources>
