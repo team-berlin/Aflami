@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -28,13 +28,16 @@ import com.berlin.aflami.component.BlurredPosterBackground
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
-import com.berlin.aflami.screens.home.component.MediaSections
-import com.berlin.aflami.screens.home.component.PosterSlider
+import com.berlin.aflami.screens.home.component.MoodPickerDialog
+import com.berlin.aflami.screens.home.sections.MediaSections
+import com.berlin.aflami.screens.home.sections.MoodPickerSection
+import com.berlin.aflami.screens.home.sections.PosterSlider
+import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
-import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.aflami.viewmodel.home.HomeUiState
+import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -150,20 +153,18 @@ private fun HomeContent(
                     listener.onShowAllContinueWatchingClicked()
                 }, state = state.mediaContinueWatching, sectionTitleId = R.string.continue_watching
             )
-            val lazyListState = rememberLazyListState()
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-//                Column(modifier = Modifier.padding(bottom = 100.dp))
-//                {
-//                        upcomingMovies(
-//                            moviesGenres = state.upcomingMovieGenres,
-//                            movies = state.upcomingMovies,
-//                            onMovieClicked = listener::onClickUpcomingMovieCard,
-//                            onChangeMovieGenre = listener::onChangeUpcomingMovieGenre,
-//                        )
-//                }
-            }
+        }
+        item {
+            MoodPickerSection(state, listener)
+        }
+        item {
+            UpcomingMoviesSection(
+                movies = state.upcomingMovies,
+                genres = state.movieGenres,
+                onMovieClick = { listener.onClickUpcomingMovieCard(it) },
+                onGenreClick = { listener.onChangeUpcomingMovieGenre(it) },
+                modifier = Modifier
+            )
         }
         item {
             MediaSections(
@@ -173,4 +174,21 @@ private fun HomeContent(
             )
         }
     }
+
+    AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
+        with(state.moodPickerUiState.selectedMovie) {
+            MoodPickerDialog(
+                mediaImg = poster,
+                title = title,
+                typeOfMedia = mediaType,
+                date = releaseYear,
+                rate = rating,
+                onDismiss = { listener.onDismissMoodPickerDialog() },
+                onClickViewDetails = { listener.onClickViewDetails() },
+                onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
+            )
+        }
+
+    }
+
 }
