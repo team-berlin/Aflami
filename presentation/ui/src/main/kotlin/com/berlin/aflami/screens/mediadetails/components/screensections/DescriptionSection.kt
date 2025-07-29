@@ -24,6 +24,7 @@ fun DescriptionSection(
             text = stringResource(com.berlin.ui.R.string.description),
             color = Theme.color.textColors.title,
             style = Theme.textStyle.title.small,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
         ExpandableText(
             text = overview,
