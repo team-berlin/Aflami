@@ -67,7 +67,7 @@ fun TextField(
     maxLines: Int = 1,
     isObscured: Boolean = false,
     errorMessage: String = "",
-    maxCharacters: Int = 35,
+    maxCharacters: Int = Int.MAX_VALUE,
     @DrawableRes leadingIcon: Int? = null,
     @DrawableRes trailingIcon: Int? = null,
     borderColor: Color = Theme.color.stroke,
@@ -114,7 +114,6 @@ fun TextField(
                     targetValue =  Theme.color.textColors.hint
                 )
                 LeadingIcon(leadingIcon, imageColor)
-                VerticalDivider()
             }
             BasicTextField(
                 value = text,
