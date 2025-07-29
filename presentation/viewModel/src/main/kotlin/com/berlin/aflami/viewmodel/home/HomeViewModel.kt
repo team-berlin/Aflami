@@ -38,7 +38,7 @@ class HomeViewModel(
     private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase,
     private val getTopRatedSeriesUseCase: GetTopRatedSeriesUseCase,
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
-    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase
+    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
 ) : BaseViewModel<HomeUiState, HomeScreenEffect>(HomeUiState()), HomeInteractionListener {
 
     private val _movies = MutableStateFlow<List<MediaUiState>>(emptyList())
