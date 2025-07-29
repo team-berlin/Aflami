@@ -144,7 +144,7 @@ class HomeViewModel(
                     _state.update { oldState ->
                         oldState.copy(
                             topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
-                                topRatedMedia = null,
+                                topRatedMedia = emptyList(),
                                 isLoading = false,
                                 errorMessage = errorUIState.message
                             )

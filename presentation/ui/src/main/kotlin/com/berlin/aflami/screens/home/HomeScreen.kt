@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -33,7 +32,9 @@ import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
 import com.berlin.aflami.screens.home.component.MediaSections
+import com.berlin.aflami.screens.home.component.MoodPickerSection
 import com.berlin.aflami.screens.home.component.PosterSlider
+import com.berlin.aflami.screens.home.component.UpcomingMoviesSection
 import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
@@ -143,6 +144,7 @@ private fun HomeContent(
                             LazyRow(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally)
                                 ,
                                 contentPadding = PaddingValues(end = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically
@@ -182,7 +184,7 @@ private fun HomeContent(
         }
         item {
             MediaSections(
-                onShowAllContinueWatchingClick = { listener.onAllTopRatingClicked() },
+                onShowAllContinueWatchingClick = { listener.onShowAllTopRating() },
                 state = state.topRatedMediaUiState.topRatedMedia,
                 sectionTitleId = R.string.top_rating,
             )

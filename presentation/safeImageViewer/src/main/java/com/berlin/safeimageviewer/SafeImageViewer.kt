@@ -87,7 +87,6 @@ fun SafeImageViewer(
                 withContext(Dispatchers.Default) {
                     bitmap = bmp
 
-
                     val nsfwBuffer = bitmapToByteBuffer(bmp, 224)
                     val nsfwInput =
                         TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
