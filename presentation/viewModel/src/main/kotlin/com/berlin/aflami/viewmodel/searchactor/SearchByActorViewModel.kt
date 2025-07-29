@@ -36,7 +36,7 @@ class SearchByActorViewModel(
         viewModelScope.launch {
             _state.map {
                 it.query
-            }.debounce(600).filter { it.isNotEmpty() }.distinctUntilChanged()
+            }.debounce(600).distinctUntilChanged()
                 .collect { searchMovies() }
         }
     }

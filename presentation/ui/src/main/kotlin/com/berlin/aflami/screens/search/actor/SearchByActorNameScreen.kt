@@ -50,8 +50,11 @@ fun SearchByActorNameScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect {
-            when (it){
-                is SearchByActorEffect.NavigatedBack -> {navController.popBackStack()}
+            when (it) {
+                is SearchByActorEffect.NavigatedBack -> {
+                    navController.popBackStack()
+                }
+
                 is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {
                     navController.navigate(
                         Destination.MediaDetailsScreen.route(
@@ -121,17 +124,19 @@ private fun SearchByActorNameContent(
         ) {
             val pagedMovies = state.movies.collectAsLazyPagingItems()
             when {
-               state.isLoading ->{
-                   CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-               }
-                pagedMovies.itemCount == 0 && state.query.isBlank() -> {
-                        CountryTourExploring(
-                            modifier = Modifier.fillMaxSize(),
-                            image = painterResource(R.drawable.find_by_actor),
-                            titleId = R.string.find_by_actor,
-                            messageId = R.string.find_by_actor_quotation
-                        )
+                state.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
+
+                pagedMovies.itemCount == 0 && state.query.isBlank() -> {
+                    CountryTourExploring(
+                        modifier = Modifier.fillMaxSize(),
+                        image = painterResource(R.drawable.find_by_actor),
+                        titleId = R.string.find_by_actor,
+                        messageId = R.string.find_by_actor_quotation
+                    )
+                }
+
                 pagedMovies.itemCount == 0 && state.query.isNotBlank() -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
@@ -140,6 +145,7 @@ private fun SearchByActorNameContent(
                         messageId = R.string.please_try_with_another_keyword
                     )
                 }
+
                 else -> {
                     MediaGridList(
                         media = pagedMovies,
