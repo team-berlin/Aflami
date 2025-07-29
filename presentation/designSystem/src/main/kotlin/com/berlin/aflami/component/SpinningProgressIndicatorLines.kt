@@ -6,27 +6,32 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.berlin.aflami.ui.theme.Theme
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
 @Composable
-fun SpinningProgressIndicatorLines(
+fun CircularProgressIndicator(
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
     lineLength: Dp = 6.dp,
     lineWidth: Dp = 1.5.dp,
-    color: Color = Color.Companion.White,
+    color: Color = Theme.color.primary,
     animationDuration: Int = 1000
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "spinning")
@@ -79,5 +84,19 @@ fun SpinningProgressIndicatorLines(
                 cap = StrokeCap.Companion.Round
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun SpinningProgressIndicatorLinesPreview() {
+    Box(Modifier.fillMaxSize()) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center),
+            size = 28.dp,
+            lineLength = 8.dp,
+            lineWidth = 3.dp,
+            color = Theme.color.primary
+        )
     }
 }
