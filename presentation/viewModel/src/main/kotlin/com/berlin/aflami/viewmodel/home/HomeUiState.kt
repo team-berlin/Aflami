@@ -24,7 +24,7 @@ data class HomeUiState(
 }
 
 data class TopRatedMediaUiState(
-    val topRatedMedia: List<MediaUiState>? = emptyList(),
+    val topRatedMedia: List<MediaUiState> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 )

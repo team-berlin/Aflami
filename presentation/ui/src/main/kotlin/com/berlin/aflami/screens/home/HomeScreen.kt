@@ -45,7 +45,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel(), onEffect: (HomeScreenEffect) -> Unit
+    viewModel: HomeViewModel = koinViewModel(), onEffect: (HomeScreenEffect) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -64,7 +64,7 @@ fun HomeScreen(
 
 @Composable
 private fun HomeContent(
-    state: HomeUiState, listener: HomeInteractionListener
+    state: HomeUiState, listener: HomeInteractionListener,
 ) {
     val pagerState = rememberPagerState(
         initialPage = 1, pageCount = { state.popularMedia.popularMedia.size })
@@ -181,6 +181,13 @@ private fun HomeContent(
 //                        )
 //                }
             }
+        }
+        item {
+            MediaSections(
+                onShowAllContinueWatchingClick = { listener.onAllTopRatingClicked() },
+                state = state.topRatedMediaUiState.topRatedMedia,
+                sectionTitleId = R.string.top_rating,
+            )
         }
     }
 }
