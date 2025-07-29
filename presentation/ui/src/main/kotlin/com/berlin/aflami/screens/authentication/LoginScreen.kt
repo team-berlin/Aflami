@@ -222,6 +222,7 @@ private fun FormLogin(
             hintText = stringResource(R.string.username),
             onValueChange = { onUsernameChanged(it) },
             modifier = Modifier.fillMaxWidth(),
+            maxCharacters = 32
         )
         var passwordError by remember { mutableStateOf(false) }
         Spacer(modifier = Modifier.height(12.dp))
@@ -237,6 +238,8 @@ private fun FormLogin(
             trailingIcon = R.drawable.eye,
             onTrailingIconClicked = onTrailingIconClicked,
             modifier = Modifier.fillMaxWidth(),
+            maxCharacters = 32
+
         )
         Spacer(modifier = Modifier.height(8.dp))
 
