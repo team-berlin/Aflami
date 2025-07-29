@@ -28,7 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.component.SpinningProgressIndicatorLines
+import com.berlin.aflami.component.CircularProgressIndicator
 
 @Composable
 fun DefaultButton(
@@ -81,7 +81,7 @@ fun DefaultButton(
             ) {
                 content()
                 AnimatedVisibility(state == ButtonState.LOADING) {
-                    SpinningProgressIndicatorLines(
+                    CircularProgressIndicator(
                         modifier = Modifier.padding(start = if (state == ButtonState.LOADING && !isFabType) 8.dp else 0.dp),
                         size = 16.dp,
                         lineLength = 4.dp,

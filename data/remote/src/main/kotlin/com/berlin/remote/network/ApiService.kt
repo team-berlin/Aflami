@@ -124,5 +124,9 @@ interface ApiService {
         @Query(ApiConstants.LANGUAGE) language: String
     ): TVShowResponse
 
+    @GET(ApiConstants.DISCOVER_MOVIE)
+    suspend fun getMoviesByMoods(
+        @Query(ApiConstants.WITH_GENRES) genresIds: List<Int>,
+    ): Response<MovieResponse>
 
 }

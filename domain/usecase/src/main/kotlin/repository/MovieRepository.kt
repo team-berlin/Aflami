@@ -7,4 +7,5 @@ interface MovieRepository {
     suspend fun getUpComingMovies(): List<Movie>
     suspend fun getPopularMovies(language: String): List<Media>
     suspend fun getPopularTVShows(language: String): List<Media>
+    suspend fun getMoviesByMoods(moods: List<Int>): List<Movie>
 }

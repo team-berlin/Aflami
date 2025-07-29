@@ -1,4 +1,4 @@
-package com.berlin.aflami.component
+package com.berlin.aflami.screens.home.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -27,8 +28,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.ui.theme.AflamiTheme
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.home.HomeInteractionListener
+import com.berlin.aflami.viewmodel.home.HomeScreenEffect
+import com.berlin.aflami.viewmodel.home.HomeUiState
+import com.berlin.aflami.viewmodel.home.HomeViewModel
+import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.designsystem.R
 
 @Composable
@@ -40,9 +46,10 @@ fun MoodPicker(
     actionText: String,
     imagePainter: Painter,
     selectedMood: Int? = null,
-    onMoodSelected: (Int) -> Unit = {},
-    onActionTextClicked: () -> Unit = {}
+    viewModel: HomeViewModel,
+    onEffect: (HomeScreenEffect) -> Unit = {}
 ) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -73,20 +80,18 @@ fun MoodPicker(
         )
         MoodPickerHeader(headerText = headerText)
         MoodPickerContent(
+            state = state,
             moodIcons = moodIcons,
             promptText = promptText,
             getNowText = actionText,
             selectedMood = selectedMood,
-            onMoodSelected = onMoodSelected,
-            onGetNowClick = onActionTextClicked
+            listener = viewModel
         )
     }
 }
 
 @Composable
-private fun MoodPickerHeader(
-    headerText: String
-) {
+private fun MoodPickerHeader(headerText: String) {
     Column {
         BlurredIcon()
         Text(
@@ -104,8 +109,8 @@ private fun MoodPickerContent(
     promptText: String,
     getNowText: String,
     selectedMood: Int? = null,
-    onMoodSelected: (Int) -> Unit,
-    onGetNowClick: () -> Unit
+    listener: HomeInteractionListener,
+    state: State<HomeUiState>,
 ) {
     Column(
         modifier = Modifier
@@ -130,7 +135,11 @@ private fun MoodPickerContent(
                     modifier = Modifier,
                     iconRes = iconRes,
                     isSelected = selectedMood == iconRes,
-                    onClick = { onMoodSelected(iconRes) }
+                    onClick = {
+                        listener.onSelectedMood(
+                            moodFromIcon(iconRes, moodIcons) ?: UserMood.NEUTRAL
+                        )
+                    }
                 )
             }
         }
@@ -140,7 +149,11 @@ private fun MoodPickerContent(
             color = if (selectedMood != null) Theme.color.primary else Theme.color.disable,
             modifier = Modifier
                 .padding(top = 12.dp, bottom = 4.dp)
-                .clickable(enabled = selectedMood != null, onClick = onGetNowClick)
+                .clickable(enabled = selectedMood != null, onClick = {
+                    listener.onGetNowClicked(
+                        state.value.moodPickerUiState.selectedMood?.userMood ?: UserMood.NEUTRAL
+                    )
+                })
         )
     }
 }
@@ -165,9 +178,7 @@ private fun MoodIcon(
 }
 
 @Composable
-private fun BlurredIcon(
-    modifier: Modifier = Modifier
-) {
+private fun BlurredIcon(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .padding(start = 12.dp, top = 12.dp)
@@ -195,24 +206,14 @@ private fun BlurredIcon(
     }
 }
 
-@ThemeAndLocalePreviews
-@Composable
-private fun MoodMoodPickerPreview() {
-    AflamiTheme {
-        val moodIcons = listOf(
-            R.drawable.ic_sad,
-            R.drawable.ic_look_top,
-            R.drawable.ic_love,
-            R.drawable.ic_angry,
-            R.drawable.ic_unhappy,
-            R.drawable.ic_sad_dizzy
-        )
-            MoodPicker(
-                moodIcons = moodIcons,
-                headerText = stringResource(R.string.mood_picker_title),
-                promptText = stringResource(R.string.mood_picker_prompt), // Pass prompt text
-                actionText = stringResource(R.string.mood_picker_get_now), // Pass get now text
-                imagePainter = painterResource(R.drawable.clown),
-            )
+private fun moodFromIcon(iconRes: Int, moodIcons: List<Int>): UserMood? {
+    return when (iconRes) {
+        moodIcons[0] -> UserMood.SAD
+        moodIcons[1] -> UserMood.NEUTRAL
+        moodIcons[2] -> UserMood.ROMANTIC
+        moodIcons[3] -> UserMood.ANGRY
+        moodIcons[4] -> UserMood.DEPRESSED
+        moodIcons[5] -> UserMood.SAD_DIZZY
+        else -> null
     }
 }
