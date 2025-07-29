@@ -15,10 +15,10 @@ fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {
 
 fun getMovieDetailsTabsIcon(tab: MovieDetailsTabs): Int {
     return when (tab) {
-        MovieDetailsTabs.MORE_LIKE_THIS -> com.berlin.ui.R.drawable.camera_video
-        MovieDetailsTabs.REVIEWS -> com.berlin.ui.R.drawable.star
-        MovieDetailsTabs.GALLERY -> com.berlin.ui.R.drawable.album
-        MovieDetailsTabs.COMPANY_PRODUCTION -> com.berlin.ui.R.drawable.city
-        MovieDetailsTabs.SEASON -> com.berlin.ui.R.drawable.season
+        MovieDetailsTabs.MORE_LIKE_THIS -> R.drawable.ic_camera_video
+        MovieDetailsTabs.REVIEWS -> R.drawable.ic_star_review
+        MovieDetailsTabs.GALLERY -> R.drawable.ic_album
+        MovieDetailsTabs.COMPANY_PRODUCTION -> R.drawable.ic_city
+        MovieDetailsTabs.SEASON -> R.drawable.ic_season
     }
 }
