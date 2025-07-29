@@ -67,7 +67,7 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                     }
                 }
             }
-            Indicator(pagerState = pagerState)
+            Indicator(pagerState = pagerState,modifier = Modifier.align(Alignment.BottomEnd))
             Box(modifier = Modifier.align(Alignment.BottomStart).padding(4.dp)) {
                 Rating(rating = formatRating(state.rating))
             }

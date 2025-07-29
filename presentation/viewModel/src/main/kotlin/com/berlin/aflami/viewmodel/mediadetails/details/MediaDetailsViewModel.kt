@@ -8,13 +8,13 @@ import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.util.toggle
 import com.berlin.entity.Episodes
 import com.berlin.viewModel.R
@@ -80,7 +80,7 @@ class MediaDetailsViewModel(
         if (_state.value.id == 0L && id != 0L) {
             getMediaCast(id, type)
             getMediaDetails(id, type, "en-US")
-            onShowReviewsClicked(id, type)
+            onShowMoreMediaLikeThisClicked(id, type)
         }
     }
 
@@ -125,14 +125,14 @@ class MediaDetailsViewModel(
                             originalCountry = details.originalCountry,
                         )
                     }
-                    saveWatchedMedia(mediaType=mediaType)
+                    saveWatchedMedia(mediaType = mediaType)
                 }
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
-    private fun saveWatchedMedia(mediaType: MediaType){
+    private fun saveWatchedMedia(mediaType: MediaType) {
         viewModelScope.launch {
             when (mediaType) {
                 MediaType.MOVIE -> addContinueWatchingMovieUseCase(_state.value.toMovie())
@@ -354,8 +354,6 @@ class MediaDetailsViewModel(
                         )
                     }
                 }
-
-
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
@@ -373,7 +371,11 @@ class MediaDetailsViewModel(
                 if (companyProductionCache?.isEmpty() == true) {
                     updateState { companyProduction ->
                         companyProduction.copy(
-                            rowSection = RowSectionUiState.NoDataFound(UiText.Resource(NO_COMPANY_PRODUCTION))
+                            rowSection = RowSectionUiState.NoDataFound(
+                                UiText.Resource(
+                                    NO_COMPANY_PRODUCTION
+                                )
+                            )
                         )
                     }
                 } else {
@@ -459,12 +461,9 @@ class MediaDetailsViewModel(
         mediaType: MediaType,
     ) {
         _tabSelectedUiState.update { current ->
-            val newSelectedTab = if (current.tab == tab) {
-                MovieDetailsTabs.REVIEWS
-            } else {
-                tab
-            }
-            when (newSelectedTab) {
+            if (current.tab == tab) return@update current
+
+            when (tab) {
                 MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(
                     mediaId = mediaId,
                     mediaType = mediaType
@@ -487,7 +486,7 @@ class MediaDetailsViewModel(
                 )
             }
             current.copy(
-                tab = newSelectedTab,
+                tab = tab,
                 isSelected = true
             )
         }
