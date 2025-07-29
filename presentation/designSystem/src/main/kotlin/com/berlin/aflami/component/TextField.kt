@@ -47,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -65,6 +66,7 @@ fun TextField(
     isEnabled: Boolean = true,
     isError: Boolean = false,
     maxLines: Int = 1,
+    color: Color,
     isObscured: Boolean = false,
     errorMessage: String = "",
     maxCharacters: Int = Int.MAX_VALUE,
@@ -74,7 +76,7 @@ fun TextField(
     borderErrorColor: Color = Theme.color.statusColors.redAccent,
     borderFocusedColor: Color = Theme.color.primary,
     onTrailingIconClicked: (() -> Unit)? = null,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    imeAction: ImeAction = ImeAction.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     onValueChange: (String) -> Unit = {}
 ) {
@@ -82,9 +84,13 @@ fun TextField(
     val canShowMaxCharacters = maxCharacters - text.length < 5
 
     val currentBorderColor by animateColorAsState(
-        if (isError) borderErrorColor
-        else if (isFocused) borderFocusedColor
-        else borderColor
+        if (isError) {
+            borderErrorColor
+        } else if (isFocused) {
+            borderFocusedColor
+        } else {
+            borderColor
+        },
     )
 
     Column {
@@ -126,8 +132,6 @@ fun TextField(
                         )
                     )
                 },
-                keyboardOptions = keyboardOptions,
-                keyboardActions = keyboardActions,
                 maxLines = maxLines,
                 enabled = isEnabled,
                 modifier = Modifier
@@ -136,7 +140,14 @@ fun TextField(
                     .defaultMinSize(minHeight = 56.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .onFocusChanged { focusState -> isFocused = focusState.isFocused },
-                textStyle = style.copy(color = Theme.color.textColors.title),
+                textStyle = style.copy(
+                    color = color,
+                ),
+                keyboardActions = keyboardActions,
+                keyboardOptions =
+                    KeyboardOptions(
+                        imeAction = imeAction,
+                    ),
                 singleLine = maxLines == 1,
                 visualTransformation = if (isObscured) AsteriskVisualTransformation() else VisualTransformation.None,
                 decorationBox = { innerTextField ->
@@ -181,10 +192,12 @@ private fun VerticalDivider() {
             .background(Theme.color.stroke)
     )
 }
-
 @Composable
 private fun RowScope.InnerTextFieldWithHint(
-    innerTextField: @Composable (() -> Unit), text: String, hintText: String, style: TextStyle
+    innerTextField: @Composable (() -> Unit),
+    text: String,
+    hintText: String,
+    style: TextStyle,
 ) {
     Box(
         modifier = Modifier
@@ -197,10 +210,8 @@ private fun RowScope.InnerTextFieldWithHint(
             Text(
                 text = hintText,
                 style = style,
-                fontSize = 16.sp,
-                lineHeight = 20.sp,
                 color = Theme.color.textColors.hint,
-                modifier = Modifier
+                modifier = Modifier,
             )
         }
     }
@@ -296,7 +307,6 @@ private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Un
     }
 }
 
-
 @ThemeAndLocalePreviews
 @Composable
 private fun CustomTextFieldPreview() {
@@ -311,35 +321,41 @@ private fun CustomTextFieldPreview() {
                 "",
                 hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
-                isEnabled = false
+                isEnabled = false,
+                color = Theme.color.textColors.hint
             )
             TextField(
                 "",
                 hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
                 isError = true,
-                errorMessage = stringResource(R.string.incorrect_password)
+                errorMessage = stringResource(R.string.incorrect_password),
+                color = Theme.color.textColors.onPrimary,
             )
             TextField(
                 "This is a test title for field",
                 hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
-                maxCharacters = 32
+                maxCharacters = 32,
+                color = Theme.color.textColors.body,
             )
             TextField(
                 "",
                 hintText = stringResource(R.string.label),
                 leadingIcon = R.drawable.user,
-                isObscured = false
+                isObscured = false,
+                color = Theme.color.textColors.onPrimaryBody,
             )
             TextField(
                 "",
                 hintText = stringResource(R.string.label),
+                color = Theme.color.textColors.onPrimaryBody,
             )
             TextField(
                 "",
                 hintText = stringResource(R.string.label),
                 trailingIcon = R.drawable.filter_vertical,
+                color = Theme.color.textColors.title,
             )
         }
     }

@@ -169,9 +169,6 @@ private fun SearchScreenContent(
                 isEnabled = true,
                 maxLines = 1,
                 borderColor = Theme.color.stroke,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
                 keyboardActions = KeyboardActions(
                     onDone = { keyboardController?.hide() },
                     onSearch = {
@@ -179,7 +176,8 @@ private fun SearchScreenContent(
                     }),
                 onValueChange = listenerSearch::onSearchQueryChanged,
                 trailingIcon = R.drawable.filter_vertical,
-                onTrailingIconClicked = listenerSearch::onFilterButtonClicked
+                onTrailingIconClicked = listenerSearch::onFilterButtonClicked,
+                color = Theme.color.textColors.body,
             )
 
             when {

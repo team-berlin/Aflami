@@ -41,7 +41,7 @@ data class MediaDetailsUiState(
             id = id,
             title = title,
             overview = overview,
-            releaseYear = LocalDate.parse(releaseYear),
+            releaseYear =stringToLocalDate(releaseYear),
             rating = rating,
             runtime = 0,
             genre = emptyList(),
@@ -55,7 +55,7 @@ data class MediaDetailsUiState(
             id = id,
             title = title,
             overview = overview,
-            releaseYear = LocalDate.parse(releaseYear),
+            releaseYear = stringToLocalDate(releaseYear),
             rating = rating,
             runtime = 0,
             genre = emptyList() ,
@@ -114,3 +114,10 @@ data class CompanyProductionUiState(
     val name: String = "",
     val country: String = "",
 )
+
+
+fun stringToLocalDate(dateString: String): LocalDate {
+    return runCatching {
+        LocalDate.parse(dateString)
+    }.getOrElse { LocalDate.parse("1960-01-01") }
+}

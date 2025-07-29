@@ -209,7 +209,9 @@ private fun FormLogin(
             leadingIcon = R.drawable.user_square,
             hintText = stringResource(R.string.username),
             onValueChange = { onUsernameChanged(it) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            color = Theme.color.textColors.title
+
         )
         var passwordError by remember { mutableStateOf(false) }
         Spacer(modifier = Modifier.height(12.dp))
@@ -224,7 +226,8 @@ private fun FormLogin(
             onValueChange = { onPasswordChanged(it) },
             trailingIcon = R.drawable.eye,
             onTrailingIconClicked = onTrailingIconClicked,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            color = Theme.color.textColors.title
         )
         Spacer(modifier = Modifier.height(8.dp))
 

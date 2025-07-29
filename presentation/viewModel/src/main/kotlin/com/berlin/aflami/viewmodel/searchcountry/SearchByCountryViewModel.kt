@@ -10,6 +10,7 @@ import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.util.getCountriesNames
 import com.berlin.aflami.viewmodel.util.getCountryIsoCode
@@ -86,8 +87,8 @@ class SearchByCountryViewModel(
         _state.update { it.copy(dropDownExpanded = false) }
     }
 
-    override fun onMovieClicked(movieId: Int) {
-        sendNewEffect(SearchByCountryEffect.NavigatedToMovieDetailsScreen(movieId,"MOVIE"))
+    override fun onMovieClicked(movieId: Long) {
+        sendNewEffect(SearchByCountryEffect.NavigatedToMovieDetailsScreen(movieId,MediaType.MOVIE.name))
     }
 
     override fun onBackClicked() {

@@ -5,5 +5,5 @@ interface SearchByCountryInteractionListener {
     fun onCountryClicked()
     fun onDismissDropDown()
     fun onBackClicked()
-    fun onMovieClicked(movieId: Int)
+    fun onMovieClicked(movieId: Long)
 }

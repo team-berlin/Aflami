@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,14 +21,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.search.components.CountryTourExploring
+import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
@@ -39,31 +36,22 @@ import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListe
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenUiState
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
 import com.berlin.ui.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchByCountryScreen(
-    navController: NavController,
+    onEffect: (SearchByCountryEffect) -> Unit,
     viewModel: SearchByCountryViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     SearchByCountryContent(
-        navController = navController,
         state = state,
         listener = viewModel
     )
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
-            when (effect) {
-                SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
-                is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
-                    navController.navigate(
-                        "mediaDetailsScreen/${effect.movieId}/${"MOVIE"}"
-                    )
-                }
-            }
+            onEffect(effect)
         }
     }
 }
@@ -72,14 +60,13 @@ fun SearchByCountryScreen(
 private fun SearchByCountryContent(
     state: SearchByCountryScreenUiState,
     listener: SearchByCountryInteractionListener,
-    navController: NavController,
 ) {
     Column {
         TopBar(
             modifier = Modifier.padding(vertical = 8.dp),
             title = {
                 Text(
-                    text = stringResource(R.string.country_tour),
+                    text = stringResource(R.string.world_tour),
                     style = Theme.textStyle.title.large,
                     color = Theme.color.textColors.title,
                 )
@@ -110,9 +97,6 @@ private fun SearchByCountryContent(
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 4.dp),
             onValueChange = listener::onCountryNameChanged,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
-            ),
             keyboardActions = KeyboardActions(
                 onDone = {
                     keyboardController?.hide()
@@ -120,6 +104,7 @@ private fun SearchByCountryContent(
             isEnabled = true,
             borderColor = Theme.color.stroke,
             maxLines = 1,
+            color = Theme.color.textColors.body,
         )
 
         Box(
@@ -129,10 +114,6 @@ private fun SearchByCountryContent(
             val movies = state.movies.collectAsLazyPagingItems()
 
             when {
-                state.isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-
                 state.query.isBlank() && movies.itemCount == 0 -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
@@ -142,6 +123,18 @@ private fun SearchByCountryContent(
                     )
                 }
 
+                movies.loadState.refresh is LoadState.Loading -> {
+                    Loading()
+                }
+
+                state.query.isBlank() -> {
+                    CountryTourExploring(
+                        modifier = Modifier.fillMaxSize(),
+                        image = painterResource(R.drawable.world_tour),
+                        titleId = R.string.country_tour,
+                        messageId = R.string.country_tour_description
+                    )
+                }
                 state.isCountrySelected && movies.itemCount == 0
                         && movies.loadState.refresh is LoadState.NotLoading -> {
                     CountryTourExploring(
@@ -155,13 +148,8 @@ private fun SearchByCountryContent(
                 else -> {
                     MoviesList(
                         movies = movies,
-                        onMovieClick = { movieId,mediaType ->
-                            navController.navigate(
-                                Destination.MediaDetailsScreen.route(
-                                    movieId,
-                                    "MOVIE"
-                                )
-                            )
+                        onMovieClick = { movieId, mediaType ->
+                            listener.onMovieClicked(movieId)
                         }
                     )
                 }

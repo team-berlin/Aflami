@@ -106,14 +106,12 @@ private fun SearchByActorNameContent(
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 4.dp),
             onValueChange = listener::onActorNameChanged,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Search
-            ),
             keyboardActions = KeyboardActions(
                 onSearch = { keyboardController?.hide() }),
             isEnabled = true,
             borderColor = Theme.color.stroke,
             maxLines = 1,
+            color = Theme.color.textColors.body,
         )
 
         Box(
