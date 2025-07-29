@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -51,7 +52,9 @@ fun MoodPickerDialog(
             Column(
                 modifier = Modifier
                     .padding(horizontal = 12.dp, vertical = 12.dp)
-                    .widthIn(min = 280.dp, max = 340.dp),
+                    .width(328.dp)
+//                    .height(468.dp)
+                ,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(

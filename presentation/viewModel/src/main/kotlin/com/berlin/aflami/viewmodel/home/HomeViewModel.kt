@@ -14,6 +14,7 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.entity.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -38,24 +39,37 @@ class HomeViewModel(
     private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase,
     private val getTopRatedSeriesUseCase: GetTopRatedSeriesUseCase,
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
-    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase
+    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
 ) : BaseViewModel<HomeUiState, HomeScreenEffect>(HomeUiState()), HomeInteractionListener {
 
     private val _movies = MutableStateFlow<List<MediaUiState>>(emptyList())
     private val _tvShows = MutableStateFlow<List<MediaUiState>>(emptyList())
 
     init {
-        loadGenresMovies()
-        getUpComingMoviesByGenre()
-        getTopRatingMovieAndTvShows()
-        popularMedia("en-US")
+        viewModelScope.launch {
+            updateState { it.copy(isLoading = true) }
+
+            val popularDeferred = async { popularMedia("en-US") }
+            val continueWatchingDeferred = async { getContinueWatchingMedia() }
+            val topRatedDeferred = async { getTopRatingMovieAndTvShows() }
+            val upcomingDeferred = async { getUpComingMoviesByGenre() }
+            val genresDeferred = async { loadGenresMovies() }
+
+            // Wait for all to complete
+            awaitAll(
+                popularDeferred,
+                continueWatchingDeferred,
+                topRatedDeferred,
+                upcomingDeferred,
+                genresDeferred
+            )
+
+            updateState { it.copy(isLoading = false) }
+        }
     }
 
-    private fun popularMedia(language: String) {
 
-        updateState {
-            it.copy(isLoading = true, error = null)
-        }
+    private fun popularMedia(language: String) {
         viewModelScope.launch {
             try {
                 coroutineScope {
@@ -98,7 +112,7 @@ class HomeViewModel(
                 Log.d("CombinedMediaList", "$combinedList")
                 updateState {
                     it.copy(
-                        isLoading = false, popularMedia = PopularMediaUiState(
+                        popularMedia = PopularMediaUiState(
                             popularMedia = combinedList
                         )
                     )
@@ -142,7 +156,6 @@ class HomeViewModel(
                     oldState.copy(
                         topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
                             topRatedMedia = newTopRatedMedia,
-                            isLoading = false,
                             errorMessage = null,
                         )
                     )
@@ -287,7 +300,7 @@ class HomeViewModel(
                 state.copy(
                     upcomingMovies = filteredMovies.map { movie ->
                         movie.toUIState()
-                    }, isLoading = false
+                    }
                 )
             }
         }, onError = { error ->
@@ -316,7 +329,7 @@ class HomeViewModel(
             onSuccess = { genreMovie ->
                 updateState { state ->
                     state.copy(
-                        movieGenres = genreMovie, isLoading = false,
+                        movieGenres = genreMovie,
                     )
                 }
             },
@@ -332,9 +345,6 @@ class HomeViewModel(
 
 
     fun getContinueWatchingMedia() {
-        _state.update {
-            it.copy(isLoading = true, error = null)
-        }
         tryToCall(
             call = {
                 coroutineScope {
@@ -353,7 +363,6 @@ class HomeViewModel(
                 _state.update {
                     it.copy(
                         mediaContinueWatching = continueWatchingMedia,
-                        isLoading = false,
                     )
                 }
 
