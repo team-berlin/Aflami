@@ -3,17 +3,10 @@ package com.berlin.aflami.screens.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,38 +19,50 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaEffect
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaInteractionListener
-import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaUiState
+import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
 import com.berlin.ui.R
+import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ContinueWatchingScreen(
     viewModel: ContinueWatchingMediaViewModel = koinViewModel(),
-    onEffect: (ContinueWatchingMediaEffect) -> Unit
+    navController: NavController
 ) {
 
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect {
-            onEffect(it)
+        viewModel.effect.collect {effect->
+                when (effect) {
+                    is ContinueWatchingMediaEffect.NavigateToDetails -> {
+                        navController.navigate(
+                            Destination.MediaDetailsScreen.route(
+                                effect.id, effect.type.name
+                            )
+                        )
+                    }
+
+                    is ContinueWatchingMediaEffect.OnBackClicked -> {
+                        navController.popBackStack()
+                    }
+                }
+            }
         }
-    }
 
     AnimatedVisibility(state.isLoading) {
         Loading()
     }
-    AnimatedVisibility(state.isLoading != true) {
+    AnimatedVisibility(!state.isLoading) {
         WatchedMediaContent(
             state = state, listener = viewModel
         )
@@ -74,7 +79,7 @@ fun WatchedMediaContent(
     Column {
         TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
             Text(
-                text = "Continue watching",
+                text = stringResource(R.string.continue_watching),
                 style = Theme.textStyle.title.large,
                 color = Theme.color.textColors.title,
             )
@@ -98,9 +103,10 @@ fun WatchedMediaContent(
         val pagedMovies = state.continueWatchingItems.collectAsLazyPagingItems()
 
         when {
-            state.isLoading ->{
+            state.isLoading -> {
                 Loading()
             }
+
             else -> {
                 MediaGridList(
                     media = pagedMovies,

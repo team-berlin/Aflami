@@ -14,36 +14,7 @@ fun NavGraphBuilder.home(
     composable(
         route = Destination.HomeScreen.route,
     ) {
-        HomeScreen(
-            onEffect = { effect ->
-                when (effect) {
-                    is HomeScreenEffect.NavigateToContinueWatching ->{
-                        navController.navigate(
-                            Destination.WatchedMediaDetails.route
-                        )
-                    }
-                    is HomeScreenEffect.NavigateToSearch->{
-                        navController.navigate(
-                            Destination.SearchScreen.route
-                        )
-                    }
-                    is HomeScreenEffect.NavigateToTopRating->{}
-                    is HomeScreenEffect.NavigateToDetails->{
-                    is HomeScreenEffect.NavigateToTopRating->{
-                        navController.navigate(
-                            Destination.TopRatingScreen.route
-                        )
-                    }
-                    is HomeScreenEffect.NavigateToMovieDetails->{
-                        navController.navigate(
-                            Destination.MediaDetailsScreen.route(effect.id, effect.mediaType)
-                        )
-                    }
-
-                    else -> {}
-                }
-            }
-        )
+        HomeScreen(navController)
 
     }
 

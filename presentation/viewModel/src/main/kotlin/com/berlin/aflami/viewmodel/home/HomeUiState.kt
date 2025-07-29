@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.home
 import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.UserMood
+import com.berlin.aflami.viewmodel.search.FilterItemUiState.Companion.defaultGenres
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState

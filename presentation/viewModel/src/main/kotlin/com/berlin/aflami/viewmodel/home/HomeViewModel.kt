@@ -245,7 +245,7 @@ class HomeViewModel(
     override fun onClickViewDetails() {
         onDismissMoodPickerDialog()
         sendNewEffect(
-            HomeScreenEffect.NavigateToMovieDetails(
+            HomeScreenEffect.NavigateToDetails(
                 state.value.moodPickerUiState.movies.first().id, MediaType.MOVIE.name
             )
         )
@@ -268,11 +268,6 @@ class HomeViewModel(
     override fun onClickUpcomingMovieCard(id: Long) {
         sendNewEffect(HomeScreenEffect.NavigateToDetails(id, MediaType.MOVIE.name))
     }
-
-    override fun onClickPopularMovieCard(id: Long, mediaType: MediaType) {
-        sendNewEffect(HomeScreenEffect.NavigateToDetails(id, mediaType.name))
-    }
-
 
     override fun onChangeUpcomingMovieGenre(genreId: Int) {
         updateState {
@@ -388,6 +383,7 @@ class HomeViewModel(
                 _state.update {
                     it.copy(
                         mediaContinueWatching = continueWatchingMedia,
+                        isLoading = false
                     )
                 }
 

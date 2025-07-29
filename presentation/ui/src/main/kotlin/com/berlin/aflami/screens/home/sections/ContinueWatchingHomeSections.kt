@@ -29,7 +29,7 @@ import com.berlin.ui.R
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun MediaSections(
+fun ContinueWatchingHomeSections(
     modifier: Modifier = Modifier,
     seeAllOnClick: () -> Unit,
     cardClick: (id:Long,type:MediaType) -> Unit,
