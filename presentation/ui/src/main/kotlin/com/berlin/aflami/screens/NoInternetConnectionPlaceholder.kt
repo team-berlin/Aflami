@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.screens.search.components.CountryTourExploring
@@ -34,7 +35,9 @@ fun NoInternetConnectionPlaceholder(
 
         Button(
             onClick = {onClick()},
-            modifier = modifier.padding(top = 16.dp, start =111.dp , end =111.dp ).align(Alignment.CenterHorizontally),
+            modifier = modifier
+                .padding(top = 16.dp, start = 111.dp, end = 111.dp)
+                .align(Alignment.CenterHorizontally),
             enabled = enable,
             shape = RoundedCornerShape(16.dp),
             colors =  ButtonDefaults.buttonColors(
@@ -43,7 +46,7 @@ fun NoInternetConnectionPlaceholder(
             contentPadding = PaddingValues(vertical =16.dp , horizontal = 24.dp),
         ){
             Text(
-                text = "Retry",
+                text = stringResource(R.string.retry),
                 style = Theme.textStyle.label.large,
                 color = Theme.color.primary
             )
