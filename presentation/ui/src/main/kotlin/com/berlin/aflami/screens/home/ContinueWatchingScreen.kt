@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -61,13 +63,21 @@ fun ContinueWatchingScreen(
             }
         }
 
-    AnimatedVisibility(state.isLoading) {
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.isLoading
+    ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
             text = stringResource(R.string.loading)
         )
     }
-    AnimatedVisibility(!state.isLoading) {
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !state.isLoading
+    ) {
         WatchedMediaContent(
             state = state, listener = viewModel
         )
@@ -81,7 +91,7 @@ fun WatchedMediaContent(
     state: ContinueWatchingMediaUiState, listener: ContinueWatchingMediaInteractionListener
 ) {
 
-    Column {
+    Column(modifier = Modifier.fillMaxSize().background(Theme.color.surface)) {
         TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
             Text(
                 text = stringResource(R.string.continue_watching),

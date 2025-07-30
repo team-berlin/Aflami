@@ -2,6 +2,8 @@ package com.berlin.aflami.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -74,7 +76,11 @@ fun TopRatingScreen(
             }
         }
     }
-    AnimatedVisibility(screenState.isLoading) {
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = screenState.isLoading
+    ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
             text = stringResource(R.string.loading)
@@ -82,7 +88,11 @@ fun TopRatingScreen(
     }
 
     val topRatedItems = topRatingViewModel.topRatedPagingFlow.collectAsLazyPagingItems()
-    AnimatedVisibility(!screenState.isLoading) {
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !screenState.isLoading
+    ) {
         TopWatchingContent(
             topRatedMediaItems = topRatedItems, viewModel = topRatingViewModel
         )

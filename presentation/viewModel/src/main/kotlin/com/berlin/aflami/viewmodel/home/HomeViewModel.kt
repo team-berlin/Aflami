@@ -47,8 +47,9 @@ class HomeViewModel(
 
     private val _movies = MutableStateFlow<List<MediaUiState>>(emptyList())
     private val _tvShows = MutableStateFlow<List<MediaUiState>>(emptyList())
-
+    var x = 0
     init {
+        x++
         popularMedia("en-US")
         loadGenresMovies()
         getContinueWatchingMedia()
