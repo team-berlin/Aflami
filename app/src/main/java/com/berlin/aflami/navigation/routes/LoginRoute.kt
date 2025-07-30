@@ -7,7 +7,7 @@ import com.berlin.aflami.screens.authentication.LoginScreen
 import com.example.navigation.Destination
 
 fun NavGraphBuilder.loginRoute(
-    navController: NavHostController
+    navController: NavHostController,
 ){
     composable(route = Destination.LoginScreen.route) {
         LoginScreen(navController = navController)

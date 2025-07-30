@@ -15,10 +15,15 @@ class FireBaseModelManager() {
          val _downloaded = mutableStateOf(false)
 
         suspend fun downloadModelsOnce() {
-            models["nsfw"] = loadFirebaseModel("nsfw")
-            models["gender_not_quantized"] = loadFirebaseModel("gender_not_quantized")
-            Log.d("WOW", "Models downloadeding successfully")
-            _downloaded.value=true
+            try {
+                models["nsfw"] = loadFirebaseModel("nsfw")
+                models["gender_not_quantized"] = loadFirebaseModel("gender_not_quantized")
+                Log.d("WOW", "Models downloadeding successfully")
+                _downloaded.value = true
+            }
+            catch (e: Exception){
+
+            }
         }
 
         fun getModel(name: String): MappedByteBuffer {
@@ -31,7 +36,10 @@ class FireBaseModelManager() {
             val model = downloader.getModel(
                 name,
                 DownloadType.LOCAL_MODEL,
-                CustomModelDownloadConditions.Builder().requireWifi().build()
+                CustomModelDownloadConditions
+                    .Builder()
+                    .requireWifi()
+                    .build()
             ).await()
 
             val file = model.file ?: throw IllegalStateException("Model not downloaded")

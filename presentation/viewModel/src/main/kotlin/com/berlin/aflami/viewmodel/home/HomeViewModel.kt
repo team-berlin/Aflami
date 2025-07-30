@@ -209,6 +209,7 @@ class HomeViewModel(
     }
 
     private fun onGetMoviesByMoodSuccess(movies: List<Movie>) {
+
         val moviesUiStates = movies.map { it.toUIState() }
         updateState {
             it.copy(
@@ -246,7 +247,7 @@ class HomeViewModel(
         onDismissMoodPickerDialog()
         sendNewEffect(
             HomeScreenEffect.NavigateToDetails(
-                state.value.moodPickerUiState.movies.first().id, MediaType.MOVIE.name
+                state.value.moodPickerUiState.selectedMovie.id, MediaType.MOVIE.name
             )
         )
     }

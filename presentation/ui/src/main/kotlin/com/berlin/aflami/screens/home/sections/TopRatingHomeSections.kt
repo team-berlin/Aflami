@@ -64,7 +64,6 @@ fun TopRatingHomeSections(
         BoxWithConstraints {
             val screenWidth = maxWidth
             val spaceBetween = 8.dp
-
             val maxCardsInRow = (screenWidth / (156.dp + spaceBetween)).toInt().coerceAtLeast(2)
 
 

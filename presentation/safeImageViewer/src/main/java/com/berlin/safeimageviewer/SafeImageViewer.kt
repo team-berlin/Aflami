@@ -7,7 +7,6 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,23 +30,16 @@ import coil3.request.SuccessResult
 import coil3.request.allowHardware
 import coil3.request.bitmapConfig
 import coil3.toBitmap
-import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions
-import com.google.firebase.ml.modeldownloader.DownloadType
-import com.google.firebase.ml.modeldownloader.FirebaseModelDownloader
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.koin.compose.currentKoinScope
-import org.koin.compose.getKoin
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.nnapi.NnApiDelegate
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
-import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.MappedByteBuffer
-import java.nio.channels.FileChannel
+
 @Composable
 fun SafeImageViewer(
     imageUri: String,
@@ -56,13 +48,13 @@ fun SafeImageViewer(
     contentScale: ContentScale? = ContentScale.Crop,
     error: Painter? = null,
     fallback: Painter? = null,
-    blurCheck : Boolean = true
+    blurCheck: Boolean = true
 
-    ) {
+) {
     val context = LocalContext.current
     val modelManager by currentKoinScope().inject<FireBaseModelManager>()
     val isModelDownloaded by remember { modelManager._downloaded }
- if (!isModelDownloaded) return
+    if (!isModelDownloaded) return
 
     if (blurCheck) {
         var bitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -78,9 +70,7 @@ fun SafeImageViewer(
                 Interpreter(genderModel, Interpreter.Options().addDelegate(NnApiDelegate()))
 
             val result = context.imageLoader.execute(
-                ImageRequest.Builder(context)
-                    .data(imageUri)
-                    .allowHardware(false)
+                ImageRequest.Builder(context).data(imageUri).allowHardware(false)
                     .bitmapConfig(Bitmap.Config.ARGB_8888).build()
             )
 
@@ -162,17 +152,13 @@ fun SafeImageViewer(
                 )
             }
         }
-    }
-    else {
+    } else {
         var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
         LaunchedEffect(imageUri) {
             val result = context.imageLoader.execute(
-                ImageRequest.Builder(context)
-                    .data(imageUri)
-                    .allowHardware(false)
-                    .bitmapConfig(Bitmap.Config.ARGB_8888)
-                    .build()
+                ImageRequest.Builder(context).data(imageUri).allowHardware(false)
+                    .bitmapConfig(Bitmap.Config.ARGB_8888).build()
             )
             val drawable = (result as? SuccessResult)?.image
             val bmp = drawable?.toBitmap()

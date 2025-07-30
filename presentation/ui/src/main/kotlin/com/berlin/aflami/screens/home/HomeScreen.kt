@@ -2,8 +2,10 @@ package com.berlin.aflami.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -32,6 +36,7 @@ import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
+import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
 import com.berlin.aflami.screens.home.sections.MoodPickerSection
 import com.berlin.aflami.screens.home.sections.PosterSlider
@@ -66,7 +71,9 @@ fun HomeScreen(
 
                 is HomeScreenEffect.NavigateToDetails -> {
                     navController.navigate(
-                        Destination.MediaDetailsScreen.route
+                        Destination.MediaDetailsScreen.route(
+                            effect.id.toLong(), effect.mediaType
+                        )
                     )
 
                 }
@@ -101,7 +108,7 @@ private fun HomeContent(
     state: HomeUiState, listener: HomeInteractionListener,
 ) {
     val pagerState = rememberPagerState(
-        initialPage = 0, pageCount = { state.popularMedia.popularMedia.size })
+        initialPage = 1, pageCount = { state.popularMedia.popularMedia.size })
     AnimatedVisibility(state.isLoading) {
        CircularProgressIndicator(
            modifier = Modifier.fillMaxSize(),
@@ -112,7 +119,7 @@ private fun HomeContent(
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
     AnimatedVisibility(state.isLoading.not()) {
         LazyColumn(
-            modifier = Modifier
+            modifier = Modifier.background(Theme.color.surface)
         ) {
             item {
                 Column(
@@ -175,14 +182,21 @@ private fun HomeContent(
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
-                                Row {
-                                    media.genre.forEach { genre ->
+                                LazyRow(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.CenterHorizontally)
+                                    ,
+                                    contentPadding = PaddingValues(end = 8.dp),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    items(items = media.genre) { genreId ->
+                                        val genreName = getGenreNameById(genreId, media.mediaType)
                                         Box(
-                                            modifier = Modifier
-                                                .padding(end = 4.dp)
-                                                .align(Alignment.CenterVertically)
+                                            modifier = Modifier.padding(end = 4.dp)
                                         ) {
-                                            GenersChip(label = genre.toString())
+                                            GenersChip(label = genreName)
                                         }
                                     }
                                 }

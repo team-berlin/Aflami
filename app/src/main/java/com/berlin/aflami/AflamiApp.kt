@@ -1,7 +1,6 @@
 package com.berlin.aflami
 
 import android.app.Application
-import android.util.Log
 import com.berlin.aflami.di.appModule
 import com.berlin.aflami.di.daoModule
 import com.berlin.aflami.di.dataSourceModule
@@ -33,12 +32,9 @@ class AflamiApp: Application() {
                 useCaseModule,
                 viewModelModule
             )
-
-        }
-        Log.d("WOW", "onCreate:")
-        CoroutineScope(Dispatchers.Default).launch {
-            get<FireBaseModelManager>().downloadModelsOnce()
-            Log.d("WOW", "Models downloadeding successfully")
+            CoroutineScope(Dispatchers.IO).launch {
+                get<FireBaseModelManager>().downloadModelsOnce()
+            }
         }
 
     }
