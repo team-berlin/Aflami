@@ -79,7 +79,6 @@ dependencies {
     implementation(libs.bundles.firebase)
     implementation(libs.bundles.room)
     ksp(libs.roomCompiler)
-    implementation(libs.androidx.navigation)
 
 
 
@@ -87,7 +86,6 @@ dependencies {
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:viewModel"))
-    implementation(project(":presentation:navigation"))
     implementation(project(":domain:usecase"))
     implementation(project(":data:repository"))
     implementation(project(":presentation:safeImageViewer"))
