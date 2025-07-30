@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -186,6 +187,8 @@ fun Chips(
         targetValue = if (isSelected) Theme.color.textColors.onPrimary else Theme.color.textColors.hint
     )
 
+    val isSingleWord = remember(title) { title.trim().split("\\s+".toRegex()).size == 1 }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -212,11 +215,16 @@ fun Chips(
         }
 
         Text(
+            modifier = Modifier
+                .height(32.dp)
+                .let {
+                    if (!isSingleWord) it.width(56.dp) else it
+                },
             text = title,
             color = Theme.color.textColors.body,
             style = Theme.textStyle.label.small,
             textAlign = TextAlign.Center,
-            modifier = Modifier.height(32.dp)
+            maxLines = if (isSingleWord) 1 else 2
         )
     }
 }
