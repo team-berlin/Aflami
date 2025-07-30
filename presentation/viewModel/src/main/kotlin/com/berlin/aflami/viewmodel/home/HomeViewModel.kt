@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.home
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -58,7 +57,6 @@ class HomeViewModel(
 
                     val movieList = movie.await().map { it.toUIState() }
                     val tvShowList = tvShow.await().map { it.toUIState() }
-
                     _movies.value = movieList
                     _tvShows.value = tvShowList
 
@@ -89,7 +87,6 @@ class HomeViewModel(
                 mergedList
 
             }.collect { combinedList ->
-                Log.d("CombinedMediaList", "$combinedList")
                 updateState {
                     it.copy(
                         isLoading = false, popularMedia = PopularMediaUiState(

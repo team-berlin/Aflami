@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.mediadetails.details
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -497,8 +498,9 @@ class MediaDetailsViewModel(
             val rowSection = if (updateRowSection) {
                 RowSectionUiState.Error(message = errorUiState.message)
             } else it.rowSection
-
+            Log.d("CastViewModel", "getMediaCast: ${errorUiState.message}")
             it.copy(
+
                 error = UiText.Dynamic(errorUiState.message).toString(),
                 rowSection = rowSection,
                 isLoading = false

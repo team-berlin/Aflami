@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.mediadetails.cast
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUiState
@@ -48,6 +49,7 @@ class CastViewModel(
                 }
             },
             onError = { throwable ->
+                Log.d("CastViewModel", "getMediaCast: ${throwable.message}")
                 _state.update {
                     it.copy(
                         error = UiText.Dynamic(throwable.message).toString(),

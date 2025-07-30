@@ -133,7 +133,7 @@ private fun SearchByCountryContent(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                state.query.isBlank() && movies.itemCount == 0 -> {
+                state.query.text.isBlank() && movies.itemCount == 0 -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
                         image = painterResource(R.drawable.world_tour),

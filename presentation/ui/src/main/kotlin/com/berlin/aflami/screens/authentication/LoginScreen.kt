@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -200,8 +201,8 @@ private fun WelcomeText() {
 private fun FormLogin(
     modifier: Modifier = Modifier,
     uiState: FormUiState,
-    onUsernameChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
+    onUsernameChanged: (TextFieldValue) -> Unit,
+    onPasswordChanged: (TextFieldValue) -> Unit,
     onTrailingIconClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
 ) {
