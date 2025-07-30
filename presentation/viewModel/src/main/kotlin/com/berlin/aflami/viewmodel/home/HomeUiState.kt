@@ -12,10 +12,7 @@ import kotlinx.coroutines.flow.emptyFlow
 
 
 data class HomeUiState(
-
     val mediaContinueWatching: Flow<PagingData<MediaUiState>> = emptyFlow(),
-    val upcomingMovies: List<MovieUIState> = emptyList(),
-    val upcomingMovieGenres: List<GenreUiState> = defaultGenres,
     val upcomingMoviesSectionUiState: UpcomingMoviesSectionUiState = UpcomingMoviesSectionUiState(),
     val selectedRating: Float = 1f,
     val selectedGenres: Int = -1,
@@ -47,7 +44,6 @@ data class PopularMediaUiState(
 
 data class MoodPickerUiState(
     val selectedMood: UserMoodUiState? = null,
-//    val isSelectedAction: Boolean = false,
     val selectedMovie: MovieUIState = MovieUIState(),
     val movies: List<MovieUIState> = emptyList(),
     val openMovieDialog: Boolean = false,
@@ -57,5 +53,4 @@ data class MoodPickerUiState(
 
 data class UserMoodUiState(
     val userMood: UserMood? = null,
-//    val isSelectingMood: Boolean = false,
 )

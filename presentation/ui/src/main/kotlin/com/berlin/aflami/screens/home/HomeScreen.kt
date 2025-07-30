@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,7 +68,9 @@ fun HomeScreen(
 
                 is HomeScreenEffect.NavigateToDetails -> {
                     navController.navigate(
-                        Destination.MediaDetailsScreen.route
+                        Destination.MediaDetailsScreen.route(
+                            effect.id.toLong(), effect.mediaType
+                        )
                     )
 
                 }
@@ -102,7 +106,11 @@ private fun HomeContent(
 ) {
     val pagerState = rememberPagerState(
         initialPage = 0, pageCount = { state.popularMedia.popularMedia.size })
-    AnimatedVisibility(state.isLoading) {
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.isLoading
+    ) {
        CircularProgressIndicator(
            modifier = Modifier.fillMaxSize(),
            text = stringResource(R.string.loading)

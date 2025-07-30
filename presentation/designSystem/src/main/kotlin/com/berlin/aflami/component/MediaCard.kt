@@ -55,7 +55,7 @@ fun MediaCard(
             }
     ) {
         val contentScale = when (imageState) {
-            is AsyncImagePainter.State.Success, is AsyncImagePainter.State.Loading -> ContentScale.FillBounds
+            is AsyncImagePainter.State.Success, is AsyncImagePainter.State.Loading -> ContentScale.Crop
             else -> ContentScale.Inside
         }
         Box(modifier = Modifier.fillMaxSize(),

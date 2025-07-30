@@ -1,9 +1,8 @@
 package com.berlin.aflami.viewmodel.mediadetails.uistate
 
 import androidx.compose.ui.graphics.painter.Painter
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-
-import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import kotlinx.datetime.LocalDate
@@ -33,7 +32,7 @@ data class MediaDetailsUiState(
     val originalCountry: String? = null,
     val duration: String? = null,
     val hasVideo: Boolean = false,
-    val error: String? = "",
+    val error: ErrorUiState? = null,
     val rowSection: RowSectionUiState = RowSectionUiState.Loading
 ){
     fun toMovie():Movie{
@@ -41,7 +40,7 @@ data class MediaDetailsUiState(
             id = id,
             title = title,
             overview = overview,
-            releaseYear = LocalDate.parse(releaseYear),
+            releaseYear = if (releaseYear.isNotBlank()) LocalDate.parse(releaseYear) else null,
             rating = rating,
             runtime = 0,
             genre = emptyList(),
@@ -55,7 +54,7 @@ data class MediaDetailsUiState(
             id = id,
             title = title,
             overview = overview,
-            releaseYear = LocalDate.parse(releaseYear),
+            releaseYear = if (releaseYear.isNotBlank()) LocalDate.parse(releaseYear) else null,
             rating = rating,
             runtime = 0,
             genre = emptyList() ,

@@ -47,7 +47,6 @@ fun MoodPicker(
     imagePainter: Painter,
     selectedMood: Int? = null,
     viewModel: HomeViewModel,
-    onEffect: (HomeScreenEffect) -> Unit = {}
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     Box(

@@ -49,16 +49,6 @@ class HomeViewModel(
     private val _tvShows = MutableStateFlow<List<MediaUiState>>(emptyList())
 
     init {
-        updateState {
-            it.copy(
-                popularMedia = state.value.popularMedia.copy(isLoading = true),
-                topRatedMediaUiState = state.value.topRatedMediaUiState.copy(isLoading = true),
-                moodPickerUiState = state.value.moodPickerUiState.copy(isLoading = true),
-                upcomingMoviesSectionUiState = state.value.upcomingMoviesSectionUiState.copy(
-                    isLoading = true
-                ),
-            )
-        }
         popularMedia("en-US")
         loadGenresMovies()
         getContinueWatchingMedia()
@@ -246,7 +236,7 @@ class HomeViewModel(
         onDismissMoodPickerDialog()
         sendNewEffect(
             HomeScreenEffect.NavigateToDetails(
-                state.value.moodPickerUiState.movies.first().id, MediaType.MOVIE.name
+                state.value.moodPickerUiState.selectedMovie.id, MediaType.MOVIE.name
             )
         )
     }
@@ -257,7 +247,8 @@ class HomeViewModel(
         )
         val nextMovie: MovieUIState
         if (currentMovieIndex == state.value.moodPickerUiState.movies.size - 1) {
-            nextMovie = state.value.moodPickerUiState.movies[0]
+            if (!state.value.moodPickerUiState.movies.isEmpty())
+                nextMovie = state.value.moodPickerUiState.movies[0]
             return
         }
         nextMovie = state.value.moodPickerUiState.movies[currentMovieIndex + 1]
@@ -278,8 +269,7 @@ class HomeViewModel(
                 selectedGenres = genreId,
                 upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(
                     movieGenres = selected
-                ),
-                isLoading = true
+                ), isLoading = false
             )
         }
         getUpComingMoviesByGenre()

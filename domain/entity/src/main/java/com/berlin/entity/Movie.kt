@@ -6,7 +6,7 @@ data class Movie(
     val id: Long,
     val title: String,
     val rating: Double,
-    val releaseYear: LocalDate,
+    val releaseYear: LocalDate?,
     val genre: List<Int>,
     val poster: String,
     val backdropPath: String? = null,
