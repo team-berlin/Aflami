@@ -38,7 +38,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -202,6 +201,8 @@ fun Chips(
         targetValue = if (isSelected) Theme.color.textColors.onPrimary else Theme.color.textColors.hint
     )
 
+    val isSingleWord = remember(title) { title.trim().split("\\s+".toRegex()).size == 1 }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -228,15 +229,16 @@ fun Chips(
         }
 
         Text(
+            modifier = Modifier
+                .height(32.dp)
+                .let {
+                    if (!isSingleWord) it.width(56.dp) else it
+                },
             text = title,
             color = Theme.color.textColors.body,
             style = Theme.textStyle.label.small,
             textAlign = TextAlign.Center,
-            maxLines = 2,
-            overflow=TextOverflow.Clip,
-            modifier = Modifier
-                .height(32.dp)
-                .width(56.dp)
+            maxLines = if (isSingleWord) 1 else 2
         )
     }
 }
