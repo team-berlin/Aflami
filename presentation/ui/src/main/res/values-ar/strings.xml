@@ -55,4 +55,8 @@
     <string name="mood_picker">المود المناسب</string>
     <string name="view_details">المزيد من التفاصيل</string>
     <string name="get_another_movie">الحصول علي فيلم اخر</string>
+    <string name="offline_title">عذرًا! يبدو أنك غير متصل بالإنترنت.</string>
+    <string name="check_connection_title">تحقق من اتصالك وحاول مرة أخرى، سنكون بانتظارك مع أفلامك والفشار.</string>
+    <string name="retry">إعادة المحاولة</string>
+
 </resources>

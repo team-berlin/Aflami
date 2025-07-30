@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.search
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
@@ -7,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 data class SearchUiState(
-    val searchQuery: String = "",
+    val searchQuery: TextFieldValue = TextFieldValue(""),
     val recentSearches: List<String> = emptyList(),
     val selectedTabOption: TabOption = TabOption.MOVIES,
     val movies: Flow<PagingData<MovieUIState>> = emptyFlow(),

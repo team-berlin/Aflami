@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.home
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -66,7 +65,6 @@ class HomeViewModel(
 
                     val movieList = movie.await().map { it.toUIState() }
                     val tvShowList = tvShow.await().map { it.toUIState() }
-
                     _movies.value = movieList
                     _tvShows.value = tvShowList
 
@@ -97,7 +95,6 @@ class HomeViewModel(
                 mergedList
 
             }.collect { combinedList ->
-                Log.d("CombinedMediaList", "$combinedList")
                 updateState {
                     it.copy(
                         popularMedia = PopularMediaUiState(
