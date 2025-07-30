@@ -78,15 +78,16 @@ private fun TopWatchingContent(
     topRatedMediaItems: LazyPagingItems<MediaUiState>,
     viewModel: TopRatingViewModel,
 ) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = viewModel.state.value.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = state.value.isLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = !viewModel.state.value.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = !state.value.isLoading
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
