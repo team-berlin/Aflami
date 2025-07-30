@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -129,30 +127,34 @@ private fun HomeContent(
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
     val pagerState = rememberPagerState(
-        initialPage = 0, pageCount = { state.popularMedia.popularMedia.size })
+        initialPage = 1, pageCount = { state.popularMedia.popularMedia.size })
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
         visible = state.isLoading
     ) {
-       CircularProgressIndicator(
-           modifier = Modifier.fillMaxSize(),
-           text = stringResource(R.string.loading)
-       )
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
     }
     val pagedMovies = state.mediaContinueWatching.collectAsLazyPagingItems()
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .navigationBarsPadding()
+            .background(Theme.color.surface)
+
+
+
     ) {
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
-            visible =state.isLoading.not()
+            visible = state.isLoading.not()
         ) {
             LazyColumn(
+
                 state = listState
             ) {
                 item {
@@ -167,12 +169,13 @@ private fun HomeContent(
                                 imageUrl = currentMedia?.poster ?: "",
                                 modifier = Modifier
                                     .fillMaxWidth()
+
                                     .height(390.dp)
                             )
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 56.dp)
+                                    .padding(top = 96.dp)
                             ) {
                                 SectionTitle(
                                     title = stringResource(com.berlin.designsystem.R.string.popular),
@@ -292,7 +295,10 @@ private fun HomeContent(
         HomeBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsPadding(), onSearchClicked = {
+                .background(appBarBgColor)
+                .statusBarsPadding()
+
+            , onSearchClicked = {
                 listener.onSearchClicked()
             }, containerColor = appBarBgColor
         )

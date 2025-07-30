@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.search.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -14,6 +15,7 @@ import com.berlin.aflami.ui.theme.Theme
 fun Loading(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
+            .background(Theme.color.surface)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {

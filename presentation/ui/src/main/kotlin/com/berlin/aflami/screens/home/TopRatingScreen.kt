@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,10 +16,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,8 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,7 +34,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.ui.color.ExtraColors.BackgroundGradient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingScreenEffect
@@ -77,21 +69,16 @@ fun TopRatingScreen(
         }
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = screenState.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = screenState.isLoading
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(R.string.loading)
+            modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
 
     val topRatedItems = topRatingViewModel.topRatedPagingFlow.collectAsLazyPagingItems()
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = !screenState.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = !screenState.isLoading
     ) {
         TopWatchingContent(
             topRatedMediaItems = topRatedItems, viewModel = topRatingViewModel
@@ -120,8 +107,7 @@ private fun TopWatchingContent(
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Box(
             modifier = Modifier
@@ -132,14 +118,13 @@ private fun TopWatchingContent(
                 modifier = Modifier.align(Alignment.TopEnd),
                 painter = painterResource(R.drawable.top_rate_icons),
                 contentDescription = null,
-
-                )
+            )
 
             LazyVerticalGrid(
                 state = listState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 56.dp),
+                    .padding(top = 106.dp),
                 columns = GridCells.Adaptive(minSize = 160.dp),
                 contentPadding = PaddingValues(
                     start = 16.dp, end = 16.dp
@@ -167,14 +152,14 @@ private fun TopWatchingContent(
                 }
             }
         }
-
         DefaultBar(
-            modifier = Modifier.statusBarsPadding(),
-            onNavigateBackClicked = {  viewModel.onBackClicked() },
+            modifier = Modifier
+                .background(appBarBgColor)
+                .statusBarsPadding(),
+            onNavigateBackClicked = { viewModel.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
             containerColor = appBarBgColor,
             title = stringResource(R.string.top_rating)
         )
-
     }
 }

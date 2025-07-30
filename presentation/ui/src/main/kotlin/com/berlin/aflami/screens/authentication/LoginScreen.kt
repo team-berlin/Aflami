@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,13 +45,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -80,15 +77,11 @@ import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.ui.R
 import com.example.navigation.Destination
 import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import kotlin.reflect.KFunction1
 
 @Composable
 fun LoginScreen(
-    viewmodel: LoginViewmodel = koinViewModel(),
-    navController: NavController
+    viewmodel: LoginViewmodel = koinViewModel(), navController: NavController
 ) {
     val uiState by viewmodel.state.collectAsState()
     LoginContent(uiState, viewmodel)
@@ -101,6 +94,7 @@ fun LoginScreen(
                         Destination.HomeScreen.route
                     )
                 }
+
                 LoginEffect.NavigateToCreateAccount -> {
                     val encodedUrl = Uri.encode(REGISTER_URL)
                     navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
@@ -121,14 +115,14 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Theme.color.surface)
             .background(
                 brush = Brush.verticalGradient(
                     colors = Theme.color.gradientColors.streakGradient
                 )
-
             )
             .statusBarsPadding()
-            .padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 16.dp),
+            .padding(start = 12.dp, end = 12.dp, bottom = 16.dp),
     ) {
         CirclesBackground()
         Column(
@@ -180,9 +174,7 @@ private fun LoginLogo() {
                 color = Theme.color.primaryVariant,
             )
             .border(
-                width = 1.dp,
-                color = Theme.color.stroke,
-                shape = RoundedCornerShape(12.dp)
+                width = 1.dp, color = Theme.color.stroke, shape = RoundedCornerShape(12.dp)
             ),
         paddingValues = PaddingValues(8.dp),
         withBorder = true,
@@ -254,9 +246,8 @@ private fun FormLogin(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    onClick = { onForgotPasswordClicked() }
-                ).padding(top = 4.dp)
-        )
+                    onClick = { onForgotPasswordClicked() })
+                .padding(top = 4.dp))
     }
 }
 
@@ -272,10 +263,7 @@ fun LoginButtons(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         PrimaryButton(
-            onClick = onLoginClicked,
-            modifier = Modifier
-                .fillMaxWidth(),
-            state = when {
+            onClick = onLoginClicked, modifier = Modifier.fillMaxWidth(), state = when {
                 isError || !isLoginButtonEnabled -> ButtonState.DISABLED
                 isLoading -> ButtonState.LOADING
                 else -> ButtonState.IDLE
@@ -283,8 +271,7 @@ fun LoginButtons(
         ) {
             Text(
                 stringResource(R.string.login),
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 style = Theme.textStyle.label.large.copy(
                     textAlign = TextAlign.Center
                 ),
@@ -293,15 +280,11 @@ fun LoginButtons(
         }
 
         SecondaryButton(
-            onClick = onContinueAsGuestClicked,
-            modifier = Modifier
-                .fillMaxWidth(),
-            border = null
+            onClick = onContinueAsGuestClicked, modifier = Modifier.fillMaxWidth(), border = null
         ) {
             Text(
                 stringResource(R.string.continue_as_guest),
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 style = Theme.textStyle.label.large.copy(
                     textAlign = TextAlign.Center
                 ),
@@ -333,15 +316,13 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
             modifier = Modifier
                 .wrapContentWidth()
                 .clickable { onCreateAccountClicked() }
-                .padding(start = 4.dp)
-        )
+                .padding(start = 4.dp))
     }
 }
 
 @Composable
 private fun AnimatedSnackBar(
-    modifier: Modifier = Modifier,
-    isSnackBarVisible: Boolean
+    modifier: Modifier = Modifier, isSnackBarVisible: Boolean
 ) {
     AnimatedVisibility(
         visible = isSnackBarVisible, enter = slideInVertically(
@@ -391,9 +372,7 @@ fun CirclesBackground() {
     circles.forEach { circle ->
         val infiniteTransition = rememberInfiniteTransition()
         val animatedScale by infiniteTransition.animateFloat(
-            initialValue = 0.9f,
-            targetValue = 1.1f,
-            animationSpec = infiniteRepeatable(
+            initialValue = 0.9f, targetValue = 1.1f, animationSpec = infiniteRepeatable(
                 animation = tween(durationMillis = 3000, easing = FastOutSlowInEasing),
                 repeatMode = RepeatMode.Reverse
             )

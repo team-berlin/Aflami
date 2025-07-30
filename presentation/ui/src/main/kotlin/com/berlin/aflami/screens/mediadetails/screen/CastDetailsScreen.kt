@@ -50,8 +50,6 @@ fun CastDetailsScreen(
             castState = castState.mediaCast
         )
     }
-
-
 }
 
 @Composable
