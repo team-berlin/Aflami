@@ -75,3 +75,14 @@ private fun NoResultPreview() {
 
     )
 }
+@Preview(showBackground = true)
+@Composable
+private fun NoInternetPreview() {
+    CountryTourExploring(
+        modifier = Modifier,
+        painterResource(R.drawable.no_internet_placeholder),
+        R.string.offline_title,
+        R.string.check_connection_title
+
+    )
+}

@@ -127,7 +127,7 @@ private fun SearchByActorNameContent(
 
             when (pagedMovies.loadState.refresh) {
                 is LoadState.Loading -> {
-                    if (state.query.isBlank()) {
+                    if (state.query.text.isBlank()) {
                         InitContent()
                     } else {
                         CircularProgressIndicator(
@@ -139,9 +139,9 @@ private fun SearchByActorNameContent(
 
 
                 is LoadState.NotLoading -> {
-                    if (state.query.isBlank()) {
+                    if (state.query.text.isBlank()) {
                         InitContent()
-                    } else if (pagedMovies.itemCount == 0 && state.query.isNotBlank()) {
+                    } else if (pagedMovies.itemCount == 0 && state.query.text.isNotBlank()) {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)

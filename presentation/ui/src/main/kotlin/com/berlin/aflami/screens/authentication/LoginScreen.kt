@@ -1,12 +1,20 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
-import android.net.Uri
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,10 +30,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,38 +49,27 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.component.IconButton
-import com.berlin.aflami.component.buttons.PrimaryButton
-import com.berlin.aflami.component.TextField
-import com.berlin.aflami.ui.theme.AflamiTheme
-import com.berlin.aflami.ui.theme.Theme
-import androidx.compose.ui.tooling.preview.Preview
-import com.berlin.ui.R
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.Dp
 import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
+import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.buttons.ButtonState
+import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.ui.theme.AflamiTheme
+import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.login.FormUiState
 import com.berlin.aflami.viewmodel.login.LoginEffect
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
+import com.berlin.ui.R
 import com.example.navigation.Destination
 import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
 import org.koin.androidx.compose.koinViewModel
@@ -115,12 +116,14 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                     colors = Theme.color.gradientColors.streakGradient
                 )
             )
-            .padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 16.dp)
-    ) {
+    )
+    {
         CirclesBackground()
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             LoginLogo()
@@ -198,8 +201,8 @@ private fun WelcomeText() {
 private fun FormLogin(
     modifier: Modifier = Modifier,
     uiState: FormUiState,
-    onUsernameChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
+    onUsernameChanged: (TextFieldValue) -> Unit,
+    onPasswordChanged: (TextFieldValue) -> Unit,
     onTrailingIconClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
 ) {
@@ -295,6 +298,8 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
         Text(
             text = stringResource(R.string.dont_have_account),
             style = Theme.textStyle.body.small,
+            color = Theme.color.textColors.hint,
+
         )
         Text(
             text = stringResource(R.string.create_account),

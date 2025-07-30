@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.searchactor
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -11,7 +12,6 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
-import com.berlin.aflami.viewmodel.util.MediaType
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
@@ -36,7 +36,7 @@ class SearchByActorViewModel(
         viewModelScope.launch {
             _state.map {
                 it.query
-            }.debounce(600).filter { it.isNotEmpty() }.distinctUntilChanged()
+            }.debounce(600).filter { it.text.isNotEmpty() }.distinctUntilChanged()
                 .collect { searchMovies() }
         }
     }
@@ -49,8 +49,8 @@ class SearchByActorViewModel(
         sendNewEffect(SearchByActorEffect.NavigatedToMediaDetailsScreen(movieId, mediaType.name))
     }
 
-    override fun onActorNameChanged(actorName: CharSequence) {
-        _state.update { it.copy(query = actorName.toString()) }
+    override fun onActorNameChanged(actorName: TextFieldValue) {
+        _state.update { it.copy(query = actorName) }
     }
 
     override fun onBackClicked() {
@@ -67,7 +67,7 @@ class SearchByActorViewModel(
                     ),
                     pagingSourceFactory = {
                         BasePagingSource { page ->
-                            searchByActorName(actorName = _state.value.query, page = page)
+                            searchByActorName(actorName = _state.value.query.text, page = page)
                         }
                     },
                 ).flow.map {
