@@ -1,34 +1,38 @@
 package com.berlin.aflami.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.BlurredPosterBackground
@@ -36,9 +40,7 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
-import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
-import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
 import com.berlin.aflami.screens.home.sections.MoodPickerSection
 import com.berlin.aflami.screens.home.sections.PosterSlider
@@ -51,6 +53,7 @@ import com.berlin.aflami.viewmodel.home.HomeUiState
 import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.ui.R
 import com.example.navigation.Destination
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -58,11 +61,9 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = koinViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
-
+    val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
-        viewModel.getContinueWatchingMedia()
-        viewModel.effect.collect { effect ->
+        viewModel.effect.collectLatest { effect ->
             when (effect) {
                 HomeScreenEffect.NavigateToContinueWatching -> {
                     navController.navigate(
@@ -109,6 +110,19 @@ fun HomeScreen(
 private fun HomeContent(
     state: HomeUiState, listener: HomeInteractionListener,
 ) {
+    val listState = rememberLazyListState()
+    val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
+
+    val appBarAlpha by remember {
+        derivedStateOf {
+            val offset =
+                if (listState.firstVisibleItemIndex == 0) listState.firstVisibleItemScrollOffset else appBarFadeHeightPx
+            (offset / appBarFadeHeightPx.toFloat()).coerceIn(0f, 1f)
+        }
+    }
+
+    val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
+    val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
     val pagerState = rememberPagerState(
         initialPage = 0, pageCount = { state.popularMedia.popularMedia.size })
     AnimatedVisibility(
@@ -116,32 +130,32 @@ private fun HomeContent(
         exit = fadeOut(),
         visible = state.isLoading
     ) {
-        CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(R.string.loading)
-        )
+       CircularProgressIndicator(
+           modifier = Modifier.fillMaxSize(),
+           text = stringResource(R.string.loading)
+       )
     }
     val pagedMovies = state.mediaContinueWatching.collectAsLazyPagingItems()
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
     Box(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
-            .background(Theme.color.surface)
+            .navigationBarsPadding()
     ) {
-
         AnimatedVisibility(
-            state.error != null
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible =state.isLoading.not()
         ) {
-            NoInternetConnectionPlaceholder()
-        }
-        AnimatedVisibility(state.isLoading.not() && state.error == null) {
-            LazyColumn {
+            LazyColumn(
+                state = listState
+            ) {
                 item {
                     Column(
                         modifier = Modifier
-                            .padding(bottom = 6.dp)
                             .fillMaxSize()
                             .background(Theme.color.surface)
+                            .padding(bottom = 6.dp)
                     ) {
                         Box {
                             BlurredPosterBackground(
@@ -153,16 +167,8 @@ private fun HomeContent(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 8.dp)
+                                    .padding(top = 56.dp)
                             ) {
-
-                                HomeBar(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    onSearchClicked = {
-                                        listener.onSearchClicked()
-                                    },
-                                )
-
                                 SectionTitle(
                                     title = stringResource(com.berlin.designsystem.R.string.popular),
                                     modifier = Modifier
@@ -183,8 +189,7 @@ private fun HomeContent(
                                     modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
                                     mediaList = state.popularMedia.popularMedia,
                                     pagerState = pagerState,
-                                    onClick = { listener.onClickCard(it.id, it.mediaType) }
-                                )
+                                    onClick = { listener.onClickCard(it.id, it.mediaType) })
 
                                 currentMedia?.let { media ->
                                     Text(
@@ -197,21 +202,14 @@ private fun HomeContent(
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
-                                    LazyRow(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .align(Alignment.CenterHorizontally),
-                                        contentPadding = PaddingValues(end = 8.dp),
-                                        horizontalArrangement = Arrangement.Center,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        items(items = media.genre) { genreId ->
-                                            val genreName =
-                                                getGenreNameById(genreId, media.mediaType)
+                                    Row {
+                                        media.genre.forEach { genre ->
                                             Box(
-                                                modifier = Modifier.padding(end = 4.dp)
+                                                modifier = Modifier
+                                                    .padding(end = 4.dp)
+                                                    .align(Alignment.CenterVertically)
                                             ) {
-                                                GenersChip(label = genreName)
+                                                GenersChip(label = genre.toString())
                                             }
                                         }
                                     }
@@ -223,6 +221,7 @@ private fun HomeContent(
                 if (pagedMovies.itemCount > 0) {
                     item {
                         ContinueWatchingHomeSections(
+                            modifier = Modifier.background(Theme.color.surface),
                             seeAllOnClick = {
                                 listener.onShowAllContinueWatchingClicked()
                             },
@@ -236,17 +235,21 @@ private fun HomeContent(
                 }
                 item {
                     TopRatingHomeSections(
-                        modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
+                        modifier = Modifier
+                            .background(Theme.color.surface)
+                            .padding(top = 24.dp, bottom = 24.dp)
+                            .background(Theme.color.surface),
                         seeAllOnClick = { listener.onAllTopRatingClicked() },
                         state = state.topRatedMediaUiState.topRatedMedia,
                         sectionTitleId = R.string.top_rating,
                         cardClick = { id, type ->
                             listener.onClickCard(id, type)
-                        }
-                    )
+                        })
                 }
                 item {
-                    MoodPickerSection(state, listener)
+                    MoodPickerSection(
+                        modifier = Modifier.background(Theme.color.surface), state, listener
+                    )
                 }
                 item {
                     UpcomingMoviesSection(
@@ -254,42 +257,32 @@ private fun HomeContent(
                         genres = state.upcomingMoviesSectionUiState.movieGenres,
                         onMovieClick = { listener.onClickUpcomingMovieCard(it) },
                         onGenreClick = { listener.onChangeUpcomingMovieGenre(it) },
-                        modifier = Modifier
+                        modifier = Modifier.background(Theme.color.surface)
                     )
                 }
             }
         }
-    }
+        AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
+            with(state.moodPickerUiState.selectedMovie) {
+                MoodPickerDialog(
+                    mediaImg = poster,
+                    title = title,
+                    typeOfMedia = mediaType,
+                    date = releaseYear,
+                    rate = rating,
+                    onDismiss = { listener.onDismissMoodPickerDialog() },
+                    onClickViewDetails = { listener.onClickViewDetails() },
+                    onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
+                )
+            }
 
-    AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
-        with(state.moodPickerUiState.selectedMovie) {
-            MoodPickerDialog(
-                mediaImg = poster,
-                title = title,
-                typeOfMedia = mediaType,
-                date = releaseYear,
-                rate = rating,
-                onDismiss = { listener.onDismissMoodPickerDialog() },
-                onClickViewDetails = { listener.onClickViewDetails() },
-                onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
-            )
         }
-
+        HomeBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding(), onSearchClicked = {
+                listener.onSearchClicked()
+            }, containerColor = appBarBgColor
+        )
     }
-    AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
-        with(state.moodPickerUiState.selectedMovie) {
-            MoodPickerDialog(
-                mediaImg = poster,
-                title = title,
-                typeOfMedia = mediaType,
-                date = releaseYear,
-                rate = rating,
-                onDismiss = { listener.onDismissMoodPickerDialog() },
-                onClickViewDetails = { listener.onClickViewDetails() },
-                onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
-            )
-        }
-
-    }
-
 }

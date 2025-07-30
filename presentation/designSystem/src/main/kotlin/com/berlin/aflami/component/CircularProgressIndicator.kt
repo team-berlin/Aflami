@@ -1,5 +1,6 @@
 package com.berlin.aflami.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,7 @@ import com.berlin.aflami.ui.theme.Theme
 @Composable
 fun CircularProgressIndicator(modifier: Modifier = Modifier, text: String? = null) {
     Column(
-        modifier = modifier,
+        modifier = modifier.background(Theme.color.surface),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
