@@ -55,7 +55,8 @@
     <string name="check_connection_title">Check your connection and try again, we’ll be waiting with your movies and popcorn</string>
 
     <string name="top_rating">Top rating</string>
-
+    <string name="read_less">Read less</string>
+    <string name="read_more">Read more</string>
     <string name="retry">Retry</string>
     <string name="apply">Apply</string>
     <string name="clear">Clear</string>

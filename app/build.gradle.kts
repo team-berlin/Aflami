@@ -17,14 +17,7 @@ val properties = Properties().apply {
 android {
     namespace = "com.berlin.aflami"
     compileSdk = 35
-//    splits {
-//        abi {
-//            isEnable = true
-//            isUniversalApk = false
-//            reset()
-//            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-//        }
-//    }
+
     bundle {
         abi {
             enableSplit = true
@@ -37,11 +30,7 @@ android {
         }
     }
     buildTypes {
-//        getByName("release") {
-//            ndk {
-//                abiFilters += listOf("armeabi-v7a", "arm64-v8a","x86", "x86_64")
-//            }
-//        }
+
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -94,7 +83,6 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.bundles.retrofit)
     implementation(libs.kotlinx.serialization.json)
-
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)

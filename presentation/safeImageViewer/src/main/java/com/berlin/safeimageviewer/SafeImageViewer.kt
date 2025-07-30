@@ -49,7 +49,7 @@ fun SafeImageViewer(
     contentScale: ContentScale? = ContentScale.Crop,
     error: Painter? = null,
     fallback: Painter? = null,
-    placeholder : Painter? = null,
+    placeholder: Painter? = null,
     blurCheck: Boolean = true,
     alignment: Alignment = Alignment.Center
 
@@ -64,8 +64,8 @@ fun SafeImageViewer(
         var isSafe by remember { mutableStateOf<Boolean?>(null) }
         var genderResult by remember { mutableStateOf<Boolean??>(null) }
         LaunchedEffect(imageUri) {
-            val nsfwModel = modelManager.getModel("nsfw")
-            val genderModel = modelManager.getModel("gender_not_quantized")
+            val nsfwModel = modelManager.getModel(NSFW_MODEL)
+            val genderModel = modelManager.getModel(GENDER_MODEL)
 
             val nsfwInterpreter =
                 Interpreter(nsfwModel, Interpreter.Options().addDelegate(NnApiDelegate()))
@@ -109,14 +109,14 @@ fun SafeImageViewer(
 
                     val genderClass =
                         when (genderOutput.floatArray.indices.maxByOrNull { genderOutput.floatArray[it] }) {
-                            0 -> "Male"
-                            1 -> "Female"
+                            0 -> Genders.MALE
+                            1 -> Genders.FEMALE
                             else -> "Unknown"
                         }
 
                     withContext(Dispatchers.Main) {
                         isSafe = safe
-                        genderResult = genderClass == "Female"
+                        genderResult = genderClass == Genders.FEMALE
                     }
 
                     nsfwInterpreter.close()
@@ -127,9 +127,7 @@ fun SafeImageViewer(
 
         isSafe?.let { safe ->
             bitmap?.let { image ->
-                val shouldBlur = (
-                        !safe ||
-                        genderResult == true)
+                val shouldBlur = (!safe || genderResult == true)
                 val displayBitmap: Bitmap = remember(image, safe, genderResult) {
                     if (shouldBlur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                         blurBitmapRenderScript(context, image, 25f)
@@ -201,7 +199,6 @@ fun SafeImageViewer(
 }
 
 
-
 @Suppress("DEPRECATION")
 fun blurBitmapRenderScript(context: Context, bitmap: Bitmap, radius: Float): Bitmap {
     val inputBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
@@ -240,6 +237,10 @@ fun bitmapToByteBuffer(bitmap: Bitmap, size: Int): ByteBuffer {
         byteBuffer.putFloat(b)
     }
     return byteBuffer
+}
+
+enum class Genders {
+    MALE, FEMALE
 }
 
 @Composable

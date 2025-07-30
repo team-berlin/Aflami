@@ -21,10 +21,10 @@ class FireBaseModelManager(
         suspend fun downloadModelsOnce() {
             while (!isModelDownloaded.value) {
                 try {
-                    models["nsfw"] = loadFirebaseModel("nsfw")
-                    models["gender_not_quantized"] = loadFirebaseModel("gender_not_quantized")
+                    models[NSFW_MODEL] = loadFirebaseModel(NSFW_MODEL)
+                    models[GENDER_MODEL] = loadFirebaseModel(GENDER_MODEL)
                     prefs.edit(commit = true) {
-                        putBoolean("models_downloaded", true)
+                        putBoolean(IS_MODEL_DOWNLOADED, true)
                         isModelDownloaded.value=true
                     }
                 } catch (e: Exception) {
@@ -53,3 +53,6 @@ class FireBaseModelManager(
             return FileInputStream(file).channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length())
         }
     }
+const val NSFW_MODEL= "nsfw"
+const val GENDER_MODEL = "gender_not_quantized"
+const val IS_MODEL_DOWNLOADED = "models_downloaded"
