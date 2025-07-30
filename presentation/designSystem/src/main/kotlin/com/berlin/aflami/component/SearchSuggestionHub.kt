@@ -26,7 +26,7 @@ fun SearchSuggestionHub(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.world_tour),
             subtitle = stringResource(R.string.explore_world_cinema),
-            contentDescription = "world tour",
+            contentDescription = stringResource(R.string.icon_cd),
             gradientBackground = darkPurpleLinearGradient,
             painter = painterResource(R.drawable.news_img),
             onClick = onSearchByCountryClick
@@ -36,7 +36,7 @@ fun SearchSuggestionHub(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.find_by_actor),
             subtitle = stringResource(R.string.search_by_favorite_actor),
-            contentDescription = "Find by actor",
+            contentDescription = stringResource(R.string.icon_cd),
             gradientBackground = blueLinearGradient,
             painter = painterResource(R.drawable.find_by_actor),
             onClick = onSearchByActorClick

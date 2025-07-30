@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
@@ -52,19 +55,30 @@ fun FilterDialog(
     state: FilterMediaSelected,
     getIcon: (Int) -> Int
 ) {
-    Dialog(onDismissRequest = filterListener::onCancelButtonClicked) {
+    Dialog(
+        onDismissRequest = filterListener::onCancelButtonClicked,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
         Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
             color = Theme.color.surface
         ) {
             Column(
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(vertical = 12.dp)
+                    .verticalScroll(rememberScrollState())
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -230,7 +244,10 @@ fun RatingBar(
     onValueChange: (Float) -> Unit, modifier: Modifier = Modifier, currentRating: Float = 0f
 ) {
     Row(
-        modifier = modifier, horizontalArrangement = Arrangement.spacedBy(6.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         for (i in 1..10) {
             Icon(
