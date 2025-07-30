@@ -22,24 +22,23 @@ class RetrofitRemoteDataSource(
     private val apiService: ApiService
 ) : RemoteDataSource {
 
-    override suspend fun getMovieSimilar(movieId: Long): MovieResponse {
+    override suspend fun getMovieSimilar(movieId: Long): BaseResponse<MovieResponse> {
         return wrapApiResponse { apiService.getMovieSimilar(movieId) }
     }
 
-    override suspend fun getMovieImages(movieId: Long): MediaImagesResponse {
+    override suspend fun getMovieImages(movieId: Long): BaseResponse<MediaImagesResponse> {
         return wrapApiResponse { apiService.getMovieImages(movieId) }
     }
 
-
-    override suspend fun getMovieDetails(movieId: Long, ): MovieDetailsDto {
-        return wrapApiResponse { apiService.getMovieDetails(movieId, ) }
+    override suspend fun getMovieDetails(movieId: Long): BaseResponse<MovieDetailsDto> {
+        return wrapApiResponse { apiService.getMovieDetails(movieId) }
     }
 
-    override suspend fun getMovieCastDetails(movieId: Long, ): MediaCastResponse {
-        return wrapApiResponse { apiService.getMovieCastDetails(movieId, ) }
+    override suspend fun getMovieCastDetails(movieId: Long): BaseResponse<MediaCastResponse> {
+        return wrapApiResponse { apiService.getMovieCastDetails(movieId) }
     }
 
-    override suspend fun getMovieReviews(movieId: Long): ReviewResponse {
+    override suspend fun getMovieReviews(movieId: Long): BaseResponse<ReviewResponse> {
         return wrapApiResponse { apiService.getMovieReviews(movieId) }
     }
 
@@ -49,42 +48,42 @@ class RetrofitRemoteDataSource(
         }
     }
 
-    override suspend fun getSeriesImages(seriesId: Long): MediaImagesResponse {
+    override suspend fun getSeriesImages(seriesId: Long): BaseResponse<MediaImagesResponse> {
         return wrapApiResponse { apiService.getSeriesImages(seriesId) }
     }
 
-    override suspend fun getTvShowDetails(seriesId: Long, ): TVShowDetailsDto {
+    override suspend fun getTvShowDetails(seriesId: Long): BaseResponse<TVShowDetailsDto> {
         return wrapApiResponse { apiService.getTvShowDetails(seriesId) }
     }
 
-    override suspend fun getSeriesCastDetails(seriesId: Long, ): MediaCastResponse {
-        return wrapApiResponse { apiService.getSeriesCastDetails(seriesId, ) }
+    override suspend fun getSeriesCastDetails(seriesId: Long): BaseResponse<MediaCastResponse> {
+        return wrapApiResponse { apiService.getSeriesCastDetails(seriesId) }
     }
 
-    override suspend fun getSeriesSimilar(seriesId: Long): TVShowResponse {
+    override suspend fun getSeriesSimilar(seriesId: Long): BaseResponse<TVShowResponse> {
         return wrapApiResponse { apiService.getSeriesSimilar(seriesId) }
     }
 
-    override suspend fun getTVReviews(id: Long): ReviewResponse {
+    override suspend fun getTVReviews(id: Long): BaseResponse<ReviewResponse> {
         return wrapApiResponse { apiService.getSeriesReviews(id) }
     }
 
     override suspend fun getEpisodeSeasonSeries(
         seriesId: Long, seasonNumber: Int
-    ): EpisodesSeasonDto {
+    ): BaseResponse<EpisodesSeasonDto> {
         return wrapApiResponse { apiService.getEpisodeSeasonSeries(seriesId, seasonNumber) }
     }
 
-    override suspend fun getMovieGenres(): GenreResponse {
+    override suspend fun getMovieGenres(): BaseResponse<GenreResponse> {
         return wrapApiResponse { apiService.getMovieGenres() }
     }
 
-    override suspend fun getSeriesGenres(): GenreResponse {
+    override suspend fun getSeriesGenres(): BaseResponse<GenreResponse> {
         return wrapApiResponse { apiService.getSeriesGenres() }
     }
 
     override suspend fun searchMoviesByCountry(
-        countryName: String,  page: Int
+        countryName: String, page: Int
     ): BaseResponse<MovieDto> {
         return wrapApiResponse {
             apiService.searchMoviesByCountry(
@@ -94,13 +93,13 @@ class RetrofitRemoteDataSource(
     }
 
     override suspend fun searchMoviesByActor(
-        actorName: String,  page: Int
+        actorName: String, page: Int
     ): BaseResponse<PersonDto> {
         return wrapApiResponse { apiService.searchMoviesByActor(actorName, page) }
     }
 
     override suspend fun searchMovies(
-        query: String,  page: Int
+        query: String, page: Int
     ): BaseResponse<MovieDto> {
         return wrapApiResponse { apiService.searchMovies(query, page) }
     }
@@ -111,23 +110,23 @@ class RetrofitRemoteDataSource(
         return wrapApiResponse { apiService.searchTvShows(query, page) }
     }
 
-    override suspend fun getPopularMovies(): MovieResponse {
-        return apiService.popularMovies()
+    override suspend fun getPopularMovies(): BaseResponse<MovieResponse> {
+        return wrapApiResponse { apiService.popularMovies() }
     }
 
-    override suspend fun getPopularTVShows(): TVShowResponse {
-        return apiService.popularTVShows()
+    override suspend fun getPopularTVShows(): BaseResponse<TVShowResponse> {
+        return wrapApiResponse { apiService.popularTVShows() }
     }
 
-    override suspend fun getTopRatedMovies(page: Int): TopRatedMoviesResponse {
-        return apiService.getTopRatedMovies(page)
+    override suspend fun getTopRatedMovies(page: Int): BaseResponse<TopRatedMoviesResponse> {
+        return wrapApiResponse { apiService.getTopRatedMovies(page) }
     }
 
-    override suspend fun getTopRatedSeries(page: Int): TopRatedSeriesResponse {
-        return apiService.getTopRatedSeries(page)
+    override suspend fun getTopRatedSeries(page: Int): BaseResponse<TopRatedSeriesResponse> {
+        return wrapApiResponse { apiService.getTopRatedSeries(page) }
     }
 
-    override suspend fun getMoviesByMoodIds(moodIds: List<Int>): MovieResponse {
+    override suspend fun getMoviesByMoodIds(moodIds: List<Int>): BaseResponse<MovieResponse> {
         return wrapApiResponse { apiService.getMoviesByMoods(moodIds) }
     }
 

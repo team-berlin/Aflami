@@ -23,27 +23,29 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET(ApiConstants.MOVIE_IMAGES)
-    suspend fun getMovieImages(@Path(ApiConstants.MOVIE_ID) movieId: Long): Response<MediaImagesResponse>
+    suspend fun getMovieImages(
+        @Path(ApiConstants.MOVIE_ID) movieId: Long
+    ): Response<BaseResponse<MediaImagesResponse>>
 
     @GET(ApiConstants.MOVIE_DETAILS)
     suspend fun getMovieDetails(
         @Path(ApiConstants.MOVIE_ID) id: Long,
-    ): Response<MovieDetailsDto>
+    ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.MOVIE_CAST)
     suspend fun getMovieCastDetails(
         @Path(ApiConstants.MOVIE_ID) movieId: Long,
-    ): Response<MediaCastResponse>
+    ): Response<BaseResponse<MediaCastResponse>>
 
     @GET(ApiConstants.MOVIE_MORE_LIKE_THIS)
     suspend fun getMovieSimilar(
         @Path(ApiConstants.MOVIE_ID) movieId: Long
-    ): Response<MovieResponse>
+    ): Response<BaseResponse<MovieResponse>>
 
     @GET(ApiConstants.MOVIE_REVIEW)
     suspend fun getMovieReviews(
         @Path(ApiConstants.MOVIE_ID) id: Long
-    ): Response<ReviewResponse>
+    ): Response<BaseResponse<ReviewResponse>>
 
     @GET(ApiConstants.SEARCH_BY_COUNTRY)
     suspend fun searchMoviesByCountry(
@@ -70,40 +72,43 @@ interface ApiService {
     ): Response<BaseResponse<TVShowDto>>
 
     @GET(ApiConstants.SERIES_IMAGES)
-    suspend fun getSeriesImages(@Path(ApiConstants.SERIES_ID) seriesId: Long): Response<MediaImagesResponse>
+    suspend fun getSeriesImages(
+        @Path(ApiConstants.SERIES_ID) seriesId: Long
+    ): Response<BaseResponse<MediaImagesResponse>>
+
     @GET(ApiConstants.SERIES_DETAILS)
     suspend fun getTvShowDetails(
         @Path(ApiConstants.SERIES_ID) seriesId: Long,
-    ): Response<TVShowDetailsDto>
+    ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.SERIES_CAST)
     suspend fun getSeriesCastDetails(
         @Path(ApiConstants.SERIES_ID) seriesId: Long,
-    ): Response<MediaCastResponse>
+    ): Response<BaseResponse<MediaCastResponse>>
 
     @GET(ApiConstants.SERIES_MORE_LIKE_THIS)
     suspend fun getSeriesSimilar(
         @Path(ApiConstants.SERIES_ID) seriesId: Long
-    ): Response<TVShowResponse>
+    ): Response<BaseResponse<TVShowResponse>>
 
     @GET(ApiConstants.SERIES_REVIEW)
     suspend fun getSeriesReviews(
         @Path(ApiConstants.SERIES_ID) id: Long
-    ): Response<ReviewResponse>
+    ): Response<BaseResponse<ReviewResponse>>
 
     @GET(ApiConstants.EPISODE_SEASON_SERIES)
     suspend fun getEpisodeSeasonSeries(
         @Path(ApiConstants.SERIES_ID) seriesId: Long,
         @Path(ApiConstants.SEASON_NUMBER) seasonNumber: Int
-    ): Response<EpisodesSeasonDto>
+    ): Response<BaseResponse<EpisodesSeasonDto>>
 
     @GET(ApiConstants.MOVIE_GENRES)
     suspend fun getMovieGenres(
-    ): Response<GenreResponse>
+    ): Response<BaseResponse<GenreResponse>>
 
     @GET(ApiConstants.SERIES_GENRES)
     suspend fun getSeriesGenres(
-    ): Response<GenreResponse>
+    ): Response<BaseResponse<GenreResponse>>
 
     @GET(ApiConstants.MOVIE_UPCOMING)
     suspend fun getUpcomingMovies():
@@ -111,25 +116,25 @@ interface ApiService {
 
     @GET(ApiConstants.POPULAR_MOVIES)
     suspend fun popularMovies(
-    ): MovieResponse
+    ): Response<BaseResponse<MovieResponse>>
 
     @GET(ApiConstants.POPULAR_TV_SHOWS)
     suspend fun popularTVShows(
-    ): TVShowResponse
+    ): Response<BaseResponse<TVShowResponse>>
 
     @GET(ApiConstants.DISCOVER_MOVIE)
     suspend fun getMoviesByMoods(
         @Query(ApiConstants.WITH_GENRES) genresIds: List<Int>,
-    ): Response<MovieResponse>
+    ): Response<BaseResponse<MovieResponse>>
 
     @GET(ApiConstants.TOP_RATED_MOVIES)
     suspend fun getTopRatedMovies(
         @Query("page") page: Int,
-    ): TopRatedMoviesResponse
+    ): Response<BaseResponse<TopRatedMoviesResponse>>
 
     @GET(ApiConstants.TOP_RATED_SERIES)
     suspend fun getTopRatedSeries(
         @Query("page") page: Int,
-    ): TopRatedSeriesResponse
+    ): Response<BaseResponse<TopRatedSeriesResponse>>
 
 }
