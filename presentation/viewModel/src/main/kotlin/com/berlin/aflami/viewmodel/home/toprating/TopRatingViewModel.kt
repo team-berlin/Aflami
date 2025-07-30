@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.home.toprating
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -14,9 +13,6 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.GetTopRatedMoviesUseCase
@@ -27,14 +23,6 @@ class TopRatingViewModel(
     private val getTopRatedSeriesUseCase: GetTopRatedSeriesUseCase,
 ) : BaseViewModel<TopRatingUiState, TopRatingScreenEffect>(TopRatingUiState()),
     TopRatingInteractionListener {
-
-//    override val state = _state.onStart {
-//        getTopRatingMoviesAndTvShows()
-//    }.stateIn(
-//        viewModelScope,
-//        SharingStarted.WhileSubscribed(5000L),
-//        _state.value
-//    )
 
     val topRatedPagingFlow: Flow<PagingData<MediaUiState>> = Pager(
         config = PagingConfig(pageSize = 20, initialLoadSize = 20),

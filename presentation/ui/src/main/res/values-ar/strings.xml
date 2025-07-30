@@ -50,13 +50,15 @@
     <string name="gallery">المعرض</string>
     <string name="company_production">إنتاج\nالشركة</string>
     <string name="upcoming">حصريات</string>
+    <string name="movie_that_matches_your_mood_is">ألفيلم المناسب لحالتك المزاجية</string>
+    <string name="mood_picker">المود المناسب</string>
+    <string name="view_details">المزيد من التفاصيل</string>
+    <string name="get_another_movie">الحصول علي فيلم اخر</string>
 
     <string name="offline_title">Oops! It looks like you’re offline.</string>
     <string name="check_connection_title">Check your connection and try again, we’ll be waiting with your movies and popcorn</string>
     <string name="top_rating">الأعلى تقييم</string>
 
-    <string name="offline_title">عذرًا! يبدو أنك غير متصل بالإنترنت.</string>
-    <string name="check_connection_title">تحقق من اتصالك وحاول مرة أخرى، سنكون بانتظارك مع أفلامك والفشار.</string>
     <string name="retry">إعادة المحاولة</string>
 
 

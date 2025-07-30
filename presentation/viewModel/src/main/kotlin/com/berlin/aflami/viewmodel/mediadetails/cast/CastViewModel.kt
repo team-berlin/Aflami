@@ -52,7 +52,7 @@ class CastViewModel(
                 Log.d("CastViewModel", "getMediaCast: ${throwable.message}")
                 _state.update {
                     it.copy(
-                        error = UiText.Dynamic(throwable.message).toString(),
+                        error = throwable
                     )
                 }
             },

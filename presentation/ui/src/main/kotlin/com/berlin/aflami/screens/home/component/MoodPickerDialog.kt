@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -49,7 +50,8 @@ fun MoodPickerDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 12.dp).width(328.dp),
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
+                    .width(328.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
@@ -60,7 +62,7 @@ fun MoodPickerDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Mood Picker",
+                        text = stringResource(R.string.mood_picker),
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title,
                     )
@@ -77,7 +79,7 @@ fun MoodPickerDialog(
                     }
                 }
                 Text(
-                    text = "Movie that matches your mood is:",
+                    text = stringResource(R.string.movie_that_matches_your_mood_is),
                     style = Theme.textStyle.body.medium,
                     color = Theme.color.textColors.body,
                 )
@@ -106,7 +108,7 @@ fun MoodPickerDialog(
                 ) {
 
                     Text(
-                        text = "View details",
+                        text = stringResource(R.string.view_details),
                         color = Theme.color.textColors.onPrimary,
                         style = Theme.textStyle.label.large,
                     )
@@ -124,7 +126,7 @@ fun MoodPickerDialog(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = "Get another movie",
+                        text = stringResource(R.string.get_another_movie),
                         color = Theme.color.primary,
                         style = Theme.textStyle.label.large,
                     )

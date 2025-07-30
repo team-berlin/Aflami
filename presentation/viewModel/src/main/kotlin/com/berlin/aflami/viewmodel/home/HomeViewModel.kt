@@ -48,17 +48,6 @@ class HomeViewModel(
     private val _tvShows = MutableStateFlow<List<MediaUiState>>(emptyList())
 
     init {
-        Log.e("HomeViewModel", "popularMedia: ")
-        updateState {
-            it.copy(
-                popularMedia = state.value.popularMedia.copy(isLoading = true),
-                topRatedMediaUiState = state.value.topRatedMediaUiState.copy(isLoading = true),
-                moodPickerUiState = state.value.moodPickerUiState.copy(isLoading = true),
-                upcomingMoviesSectionUiState = state.value.upcomingMoviesSectionUiState.copy(
-                    isLoading = true
-                ),
-            )
-        }
         popularMedia("en-US")
         loadGenresMovies()
         getContinueWatchingMedia()
@@ -83,7 +72,6 @@ class HomeViewModel(
                 }
             } catch (e: Exception) {
                 updateState {
-                    Log.e("HomeViewModel", "popularMedia: ", e)
                     it.copy(error =
                         ErrorUiState(
                             message = e.message ?: "An error occurred while fetching popular media",
@@ -213,7 +201,6 @@ class HomeViewModel(
     }
 
     private fun onGetMoviesByMoodSuccess(movies: List<Movie>) {
-
         val moviesUiStates = movies.map { it.toUIState() }
         updateState {
             it.copy(
@@ -284,15 +271,13 @@ class HomeViewModel(
                 selectedGenres = genreId,
                 upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(
                     movieGenres = selected
-                ),
-                isLoading = true
+                ), isLoading = false
             )
         }
         getUpComingMoviesByGenre()
     }
 
     override fun onClickCard(id: Long, mediaType: MediaType) {
-        Log.e("HomeViewModel", "onClickCard: $id $mediaType")
         sendNewEffect(HomeScreenEffect.NavigateToDetails(id, mediaType.name))
     }
 

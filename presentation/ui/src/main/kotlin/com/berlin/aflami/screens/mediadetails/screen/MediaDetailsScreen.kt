@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
@@ -59,19 +60,17 @@ fun MediaDetailsScreen(
     viewModel: MediaDetailsViewModel = koinViewModel(),
     onEffect: (MediaDetailsScreenEffect) -> Unit
 ) {
-    val uiState by viewModel.state.collectAsState()
-    val tabSelected by viewModel.tabSelectedUiState.collectAsState()
-    val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsState()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val tabSelected by viewModel.tabSelectedUiState.collectAsStateWithLifecycle()
+    val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { event ->
             when (event) {
                 is MediaDetailsScreenEffect.ShowRatingDialog -> {
-                    TODO("Actual implementation once login is in place")
                 }
 
                 is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {
-                    TODO("Actual implementation once login is in place")
                 }
 
                 else -> onEffect(event)
@@ -91,10 +90,10 @@ fun MediaDetailsScreen(
         ) {
             Text(
                 modifier = Modifier.fillMaxSize(),
-                text = uiState.error?:"",
+                text =  uiState.rowSection.getDisplayMessage(),
                 style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.body,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     } else {

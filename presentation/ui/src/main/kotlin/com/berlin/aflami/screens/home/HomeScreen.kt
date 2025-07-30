@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -108,12 +110,16 @@ private fun HomeContent(
     state: HomeUiState, listener: HomeInteractionListener,
 ) {
     val pagerState = rememberPagerState(
-        initialPage = 1, pageCount = { state.popularMedia.popularMedia.size })
-    AnimatedVisibility(state.isLoading) {
-        CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(R.string.loading)
-        )
+        initialPage = 0, pageCount = { state.popularMedia.popularMedia.size })
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.isLoading
+    ) {
+       CircularProgressIndicator(
+           modifier = Modifier.fillMaxSize(),
+           text = stringResource(R.string.loading)
+       )
     }
     val pagedMovies = state.mediaContinueWatching.collectAsLazyPagingItems()
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
@@ -253,37 +259,37 @@ private fun HomeContent(
                 }
             }
         }
-
-        AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
-            with(state.moodPickerUiState.selectedMovie) {
-                MoodPickerDialog(
-                    mediaImg = poster,
-                    title = title,
-                    typeOfMedia = mediaType,
-                    date = releaseYear,
-                    rate = rating,
-                    onDismiss = { listener.onDismissMoodPickerDialog() },
-                    onClickViewDetails = { listener.onClickViewDetails() },
-                    onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
-                )
-            }
-
-        }
-        AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
-            with(state.moodPickerUiState.selectedMovie) {
-                MoodPickerDialog(
-                    mediaImg = poster,
-                    title = title,
-                    typeOfMedia = mediaType,
-                    date = releaseYear,
-                    rate = rating,
-                    onDismiss = { listener.onDismissMoodPickerDialog() },
-                    onClickViewDetails = { listener.onClickViewDetails() },
-                    onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
-                )
-            }
-
-        }
-
     }
 }
+
+        AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
+            with(state.moodPickerUiState.selectedMovie) {
+                MoodPickerDialog(
+                    mediaImg = poster,
+                    title = title,
+                    typeOfMedia = mediaType,
+                    date = releaseYear,
+                    rate = rating,
+                    onDismiss = { listener.onDismissMoodPickerDialog() },
+                    onClickViewDetails = { listener.onClickViewDetails() },
+                    onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
+                )
+            }
+
+        }
+        AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
+            with(state.moodPickerUiState.selectedMovie) {
+                MoodPickerDialog(
+                    mediaImg = poster,
+                    title = title,
+                    typeOfMedia = mediaType,
+                    date = releaseYear,
+                    rate = rating,
+                    onDismiss = { listener.onDismissMoodPickerDialog() },
+                    onClickViewDetails = { listener.onClickViewDetails() },
+                    onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
+                )
+            }
+
+        }
+
