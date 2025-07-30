@@ -33,11 +33,11 @@ import org.koin.compose.getKoin
 
 @Composable
 fun AflamiNavGraph(
-    navController: NavHostController, modifier: Modifier = Modifier,
-    mainViewModel: MainViewModel = getKoin().get(),
+    navController: NavHostController,
+    isLoggedIn: Boolean,
+    modifier: Modifier = Modifier,
 ) {
-    val startDestination =
-        if (mainViewModel.loginState) Destination.HomeScreen.route else Destination.LoginScreen.route
+    val startDestination = if (isLoggedIn) Destination.HomeScreen.route else Destination.LoginScreen.route
     NavHost(
         modifier = modifier,
         navController = navController,
