@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.screen
+package com.berlin.aflami.screens.search.search
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,30 +40,43 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
-import com.berlin.aflami.viewmodel.search.FilterItemUiState
-import com.berlin.aflami.viewmodel.search.GenreType
+import com.berlin.aflami.viewmodel.search.FilterMediaSelected
 import com.berlin.designsystem.R
 
 @Composable
 fun FilterDialog(
-    filterListener: FilterInteractionListener, state: FilterItemUiState
+    filterListener: FilterInteractionListener,
+    state: FilterMediaSelected,
+    getIcon: (Int) -> Int
 ) {
-
-    Dialog(onDismissRequest = filterListener::onCancelButtonClicked) {
+    Dialog(
+        onDismissRequest = filterListener::onCancelButtonClicked,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
         Surface(
-            shape = RoundedCornerShape(16.dp), color = Theme.color.surface
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+            color = Theme.color.surface
         ) {
             Column(
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(vertical = 12.dp)
+                    .verticalScroll(rememberScrollState())
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -96,6 +111,7 @@ fun FilterDialog(
                         style = Theme.textStyle.title.small,
                         color = Theme.color.textColors.title
                     )
+
                     RatingBar(
                         modifier = Modifier,
                         onValueChange = { filterListener.onRatingStarChanged(it) },
@@ -115,13 +131,16 @@ fun FilterDialog(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(
-                            items = state.mediaGenres
-                        ) { genre ->
+                            items = state.genreUiStates
+                        ) { filterGenre ->
                             Chips(
-                                title = stringResource(genreMapper(genre.genres.type)),
-                                icon = painterResource(getGenreIcon(genre.genres.type)),
-                                isSelected = genre.genres.isSelected,
-                                onClick = { filterListener.onGenreButtonChanged(genre.genres.type) })
+                                title = filterGenre.name,
+                                icon = painterResource(
+                                    getIcon(filterGenre.id)
+                                ),
+                                isSelected = filterGenre.isSelected,
+                                onClick = { filterListener.onFilterGenreChanged(filterGenre.id) }
+                            )
                         }
                     }
                 }
@@ -132,10 +151,7 @@ fun FilterDialog(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     PrimaryButton(
-                        onClick = {
-                            filterListener.onApplyButtonClicked()
-                            filterListener.onCancelButtonClicked()
-                        },
+                        onClick = { filterListener.onApplyButtonClicked() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
@@ -167,30 +183,6 @@ fun FilterDialog(
     }
 }
 
-fun getGenreIcon(genre: GenreType): Int {
-    return when (genre) {
-        GenreType.ALL -> R.drawable.all_movies
-        GenreType.ROMANCE -> R.drawable.romance
-        GenreType.SCIENCE_FICTION -> R.drawable.science_fiction
-        GenreType.FAMILY -> R.drawable.family
-        GenreType.MYSTERY -> R.drawable.mystery
-        GenreType.HISTORY -> R.drawable.history
-        GenreType.WAR -> R.drawable.war
-        GenreType.ACTION -> R.drawable.action
-        GenreType.CRIME -> R.drawable.crime
-        GenreType.COMEDY -> R.drawable.comedy
-        GenreType.HORROR -> R.drawable.horror
-        GenreType.WESTERN -> R.drawable.western
-        GenreType.MUSIC -> R.drawable.music
-        GenreType.ADVENTURE -> R.drawable.adventure
-        GenreType.TV_MOVIE -> R.drawable.television_movie
-        GenreType.FANTASY -> R.drawable.fantasy
-        GenreType.THRILLER -> R.drawable.thriller
-        GenreType.DRAMA -> R.drawable.drama
-        GenreType.DOCUMENTARY -> R.drawable.documentary
-        GenreType.ANIMATION -> R.drawable.animation
-    }
-}
 
 @Composable
 fun Chips(
@@ -248,7 +240,10 @@ fun RatingBar(
     onValueChange: (Float) -> Unit, modifier: Modifier = Modifier, currentRating: Float = 0f
 ) {
     Row(
-        modifier = modifier, horizontalArrangement = Arrangement.spacedBy(6.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         for (i in 1..10) {
             Icon(
@@ -306,27 +301,4 @@ private fun FilterDialogPreview() {
     }
 }
 
-fun genreMapper(genre: GenreType): Int {
-    return when (genre) {
-        GenreType.ALL -> R.string.all
-        GenreType.ROMANCE -> R.string.romance
-        GenreType.SCIENCE_FICTION -> R.string.science_fiction
-        GenreType.FAMILY -> R.string.family
-        GenreType.MYSTERY -> R.string.mystery
-        GenreType.HISTORY -> R.string.history
-        GenreType.WAR -> R.string.war
-        GenreType.ACTION -> R.string.action
-        GenreType.CRIME -> R.string.crime
-        GenreType.COMEDY -> R.string.comedy
-        GenreType.HORROR -> R.string.horror
-        GenreType.WESTERN -> R.string.western
-        GenreType.MUSIC -> R.string.music
-        GenreType.ADVENTURE -> R.string.adventure
-        GenreType.TV_MOVIE -> R.string.tv_movie
-        GenreType.FANTASY -> R.string.fantasy
-        GenreType.THRILLER -> R.string.thriller
-        GenreType.DRAMA -> R.string.drama
-        GenreType.DOCUMENTARY -> R.string.documentary
-        GenreType.ANIMATION -> R.string.animation
-    }
-}
+

@@ -3,6 +3,7 @@ package com.berlin.repository.mapper
 import com.berlin.entity.SeasonEntity
 import com.berlin.entity.Episodes
 import com.berlin.entity.EpisodesSeason
+import com.berlin.entity.Media
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.local.dto.SearchingEntity
@@ -71,6 +72,18 @@ fun TVShowDetailsDto.toDomain(): TvShowDetails {
         productionCompanies = this.productionCompanies?.map { company ->
             company.toEntity()
         } ?: emptyList()
+    )
+}
+
+fun TVShowDto.toDomain(mediaType: String): Media {
+    return Media(
+        id = this.id?.toLong() ?: 0L,
+        title = this.name.orEmpty(),
+        rating = this.voteAverage ?: 0.0,
+        releaseYear = stringToLocalDate(firstAirDate ?: ""),
+        mediaType = mediaType,
+        genre = this.genreIds?.filterNotNull() ?: emptyList(),
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
 

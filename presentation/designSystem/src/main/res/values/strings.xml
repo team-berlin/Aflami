@@ -20,6 +20,7 @@
     <string name="label_categories">Categories</string>
     <string name="label_lets_play">Let\'s Play</string>
     <string name="label_profile">Profile</string>
+    <string name="popular">Popular</string>
 
     <string name="action">Action</string>
 
@@ -32,7 +33,7 @@
     <string name="search_by_favorite_actor">Search by favorite Actor</string>
 
 
-    <string name="aflami_title">Aflami</string>
+    <string name="aflami_title">AFLAMI</string>
     <string name="aflami_description">More than just watching.</string>
     <string name="my_account">My account</string>
     <string name="list_added_success">Added new list successfully.</string>
@@ -79,12 +80,6 @@
     <string name="animation">animation</string>
     <string name="filter_result">Filter Result</string>
     <string name="search_discribtion">\"Start exploring! Search for your favorite movies, series and shows\"</string>
-
-
-    <string name="more_like_this">More like this</string>
-    <string name="reviews">Reviews</string>
-    <string name="gallery">Gallery</string>
-    <string name="company_production">company\nproduction</string>
-    <string name="season">season</string>
+    <string name="character_image">Character Image</string>
 
 </resources>

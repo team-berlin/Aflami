@@ -1,6 +1,5 @@
 package com.berlin.repository.datasource.remote.dto
 
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -15,7 +14,7 @@ data class MovieDetailsDto(
     @SerialName("budget")
     val budget: Int?,
     @SerialName("genres")
-    val genres: List<Genre>?,
+    val genres: List<GenreDto>?,
     @SerialName("homepage")
     val homepage: String?,
     @SerialName("id")

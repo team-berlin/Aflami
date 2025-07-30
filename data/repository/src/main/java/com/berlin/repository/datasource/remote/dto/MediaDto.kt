@@ -55,5 +55,9 @@ data class MediaDto(
 
     @SerialName("vote_count")
     val voteCount: Int? = null
-)
+){
+    fun toDomain() {
+
+    }
+}
 

@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -49,7 +50,8 @@ import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.SearchData
-import com.berlin.aflami.screens.search.screen.FilterDialog
+import com.berlin.aflami.screens.search.getMovieGenreIcon
+import com.berlin.aflami.screens.search.getTvShowGenreIcon
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchInteractionListener
@@ -113,7 +115,7 @@ private fun SearchScreenContent(
     listenerSearch: SearchInteractionListener,
     filterSearch: FilterInteractionListener,
     recentSearchState: List<String>,
-    onItemClick: (String) -> Unit,
+    onItemClick: (TextFieldValue) -> Unit,
     onDeleteItem: (String) -> Unit,
     onClearAll: () -> Unit,
     navController: NavController,
@@ -178,11 +180,11 @@ private fun SearchScreenContent(
                     }),
                 onValueChange = listenerSearch::onSearchQueryChanged,
                 trailingIcon = R.drawable.filter_vertical,
-                onTrailingClick = listenerSearch::onFilterButtonClicked
+                onTrailingIconClicked = listenerSearch::onFilterButtonClicked
             )
 
             when {
-                state.searchQuery.isBlank() -> {
+                state.searchQuery.text.isBlank() -> {
                     Text(
                         stringResource(R.string.search_suggestions_hub),
                         color = Theme.color.textColors.title,
@@ -211,7 +213,7 @@ private fun SearchScreenContent(
                     }
                 }
 
-                state.searchQuery.isNotBlank() -> {
+                state.searchQuery.text.isNotBlank() -> {
                     TabBar(
                         selectedTabIndex = state.selectedTabOption.index,
                         containerColor = Theme.color.surface,
@@ -236,7 +238,7 @@ private fun SearchScreenContent(
                     )
 
                     when {
-                        state.searchQuery.isBlank() -> {
+                        state.searchQuery.text.isBlank() -> {
                             NoDataSearch()
                         }
 
@@ -362,10 +364,23 @@ private fun SearchScreenContent(
                 }
             }
             if (state.isDialogVisible) {
-                FilterDialog(
-                    state = state.filterItemUiState,
-                    filterListener = filterSearch,
-                )
+                when (state.selectedTabOption) {
+                    TabOption.MOVIES -> {
+                        FilterDialog(
+                            state = state.filterItemUiState.filterMovieSelected,
+                            filterListener = filterSearch,
+                            getIcon = ::getMovieGenreIcon,
+                        )
+                    }
+
+                    TabOption.TV_SHOWS -> {
+                        FilterDialog(
+                            state = state.filterItemUiState.filterTvShowSelected,
+                            filterListener = filterSearch,
+                            getIcon = ::getTvShowGenreIcon,
+                        )
+                    }
+                }
             }
         }
     }

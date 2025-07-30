@@ -60,7 +60,7 @@ fun SearchByCountryScreen(
                 SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
                 is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
                     navController.navigate(
-                        "mediaDetailsScreen/${effect.movieId}"
+                        "mediaDetailsScreen/${effect.movieId}/${"MOVIE"}"
                     )
                 }
             }
@@ -133,7 +133,7 @@ private fun SearchByCountryContent(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                state.query.isBlank() && movies.itemCount == 0 -> {
+                state.query.text.isBlank() && movies.itemCount == 0 -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
                         image = painterResource(R.drawable.world_tour),
@@ -159,7 +159,7 @@ private fun SearchByCountryContent(
                             navController.navigate(
                                 Destination.MediaDetailsScreen.route(
                                     movieId,
-                                    mediaType
+                                    "MOVIE"
                                 )
                             )
                         }
