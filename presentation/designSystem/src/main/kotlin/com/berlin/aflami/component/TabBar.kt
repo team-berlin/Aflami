@@ -70,7 +70,8 @@ fun TabBar(
             Tab(
                 selected = isSelected,
                 onClick = {
-                    onTabChange(index)
+                    if (!isSelected)
+                        onTabChange(index)
                 },
             ) {
                 Text(
