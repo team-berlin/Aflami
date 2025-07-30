@@ -14,7 +14,7 @@ object ContinueWatchingScreen
 @Serializable
 object TopRatingMediaScreen
 @Serializable
-data class MediaDetailsScreen(val mediaId: Long, val mediaType: MediaType)
+data class MediaDetails(val mediaId: Long, val mediaType: MediaType)
 @Serializable
 data class CastScreen(val mediaId: Long, val mediaType: MediaType)
 

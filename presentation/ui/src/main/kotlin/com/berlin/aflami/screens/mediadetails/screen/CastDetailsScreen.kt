@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.mediadetails.components.MediaCastGrid
 import com.berlin.aflami.screens.search.components.Loading
@@ -32,17 +33,16 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CastDetailsScreen(
-    onEffect: (CastDetailsEffect) -> Unit,
     viewmodel: CastViewModel = koinViewModel(),
     id: Long,
     mediaType: MediaType,
 ) {
-
+    val navController = Theme.navController
     val castState by viewmodel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewmodel.effect.collect { event ->
-            onEffect(event)
+        viewmodel.effect.collect { effect ->
+            onReceiveEffect(navController = navController, castDetailsEffect = effect)
         }
     }
     if (castState.isLoading) {
@@ -53,14 +53,18 @@ fun CastDetailsScreen(
             castState = castState.mediaCast
         )
     }
+}
 
-
+private fun onReceiveEffect(navController: NavController, castDetailsEffect: CastDetailsEffect) {
+    when (castDetailsEffect) {
+        is CastDetailsEffect.CastNavigationBack -> navController.popBackStack()
+    }
 }
 
 @Composable
 fun CastContent(
     listener: CastDetailsListener,
-    castState: List<MediaCastUiState>
+    castState: List<MediaCastUiState>,
 ) {
     Column {
         TopBar(
