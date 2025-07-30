@@ -33,7 +33,6 @@ import org.koin.compose.getKoin
 
 @Composable
 fun AflamiNavGraph(
-//    navController: NavHostController,
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = getKoin().get(),
 ) {
@@ -55,7 +54,7 @@ fun AflamiNavGraph(
         mediaDetailsRoute()
         castDetailsScreen()
         loginRoute()
-        webView(navController)
+        webView()
         watchedMedia()
         homeScreenRoute()
     }

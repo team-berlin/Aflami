@@ -19,16 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun WebView(
-    url: String,
-    onError: () -> Unit
-) {
+fun WebView(url: String) {
     val navController = Theme.navController
     var isLoading by remember { mutableStateOf(true) }
     Box {
@@ -39,7 +37,7 @@ fun WebView(
                     webViewClient = CustomWebViewClient(
                         onPageStarted = { isLoading = true },
                         onPageFinished = { isLoading = false },
-                        onError = onError
+                        onError = { onErrorReceived(navController) }
                     )
                     settings.javaScriptEnabled = true
                     settings.setSupportZoom(true)
@@ -63,6 +61,9 @@ fun WebView(
             }
         }
     }
+}
+private fun onErrorReceived(navController: NavController) {
+    navController.popBackStack()
 }
 
 private class CustomWebViewClient(
