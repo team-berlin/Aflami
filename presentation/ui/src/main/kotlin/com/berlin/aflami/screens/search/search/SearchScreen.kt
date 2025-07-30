@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -114,7 +115,7 @@ private fun SearchScreenContent(
     listenerSearch: SearchInteractionListener,
     filterSearch: FilterInteractionListener,
     recentSearchState: List<String>,
-    onItemClick: (String) -> Unit,
+    onItemClick: (TextFieldValue) -> Unit,
     onDeleteItem: (String) -> Unit,
     onClearAll: () -> Unit,
     navController: NavController,
@@ -183,7 +184,7 @@ private fun SearchScreenContent(
             )
 
             when {
-                state.searchQuery.isBlank() -> {
+                state.searchQuery.text.isBlank() -> {
                     Text(
                         stringResource(R.string.search_suggestions_hub),
                         color = Theme.color.textColors.title,
@@ -212,7 +213,7 @@ private fun SearchScreenContent(
                     }
                 }
 
-                state.searchQuery.isNotBlank() -> {
+                state.searchQuery.text.isNotBlank() -> {
                     TabBar(
                         selectedTabIndex = state.selectedTabOption.index,
                         containerColor = Theme.color.surface,
@@ -237,7 +238,7 @@ private fun SearchScreenContent(
                     )
 
                     when {
-                        state.searchQuery.isBlank() -> {
+                        state.searchQuery.text.isBlank() -> {
                             NoDataSearch()
                         }
 

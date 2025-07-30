@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
@@ -27,7 +28,7 @@ fun AnimatedCountriesList(
     modifier: Modifier = Modifier,
     visible: Boolean,
     filteredCountries: List<String>,
-    onCountryNameChanged: (String) -> Unit,
+    onCountryNameChanged: (TextFieldValue) -> Unit,
     onCountryClick: () -> Unit,
 ) {
     Column(modifier = modifier) {
@@ -78,18 +79,18 @@ fun AnimatedCountriesList(
 @Composable
 private fun CountryItem(
     countryName: String,
-    onCountryClick: (String) -> Unit,
+    onCountryClick: (TextFieldValue) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .clickable { onCountryClick(countryName) }
+            .clickable { onCountryClick(TextFieldValue(countryName)) }
             .padding(start = 16.dp)
             .fillMaxWidth()
             .padding(horizontal = 0.dp, vertical = 16.dp)
     ) {
         Text(
-            text = countryName,
+            text = TextFieldValue(countryName).text,
             style = Theme.textStyle.body.medium,
             color = Theme.color.textColors.body
         )
