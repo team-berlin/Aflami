@@ -38,8 +38,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -57,10 +59,9 @@ import com.berlin.aflami.utils.AsteriskVisualTransformation
 @Composable
 fun TextField(
     text: TextFieldValue,
-
-    //text: String,
     modifier: Modifier = Modifier,
     style: TextStyle = Theme.textStyle.body.medium,
+    cursorBrush: Brush = SolidColor(Theme.color.textColors.hint),
     hintText: String = "",
     isEnabled: Boolean = true,
     isError: Boolean = false,
@@ -76,7 +77,6 @@ fun TextField(
     onTrailingIconClicked: (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    //onValueChange: (String) -> Unit = {}
     onValueChange: (TextFieldValue) -> Unit = {},
 ) {
     var isFocused by remember { mutableStateOf(false) }
@@ -118,21 +118,20 @@ fun TextField(
                 VerticalDivider()
             }
             BasicTextField(
+                cursorBrush = cursorBrush,
                 value = text,
                 onValueChange = {
-                    if (it.text.length <= maxCharacters) onValueChange(it)
-                    /*else if (it.text.length > value.text.length + 1) onValueChange(
-                        it.substring(
-                            0, maxCharacters
+                    if (it.text.length <= maxCharacters) {
+                        onValueChange(it)
+                    } else if (it.text.length > text.text.length + 1) {
+                        onValueChange(
+                            it.copy(
+                                text = it.text.substring(0, maxCharacters),
+                            )
                         )
-                    )*/
-                    /*else it.copy(
-                        text = it.text.take(maxCharacters),
-                        selection = it.selection.copy(
-                            start = minOf(it.selection.start, maxCharacters),
-                            end = minOf(it.selection.end, maxCharacters)
-                        )
-                    )*/
+                    }
+
+
                 },
                 keyboardOptions = keyboardOptions,
                 keyboardActions = keyboardActions,
