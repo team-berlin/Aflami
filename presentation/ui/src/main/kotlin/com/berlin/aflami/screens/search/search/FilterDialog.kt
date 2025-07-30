@@ -145,7 +145,7 @@ fun FilterDialog(
                         gradientColor = Theme.color.primaryButton
                     ) {
                         Text(
-                            "Apply",
+                            stringResource(com.berlin.ui.R.string.apply),
                             style = Theme.textStyle.label.large,
                             color = Theme.color.textColors.onPrimary
                         )
@@ -158,7 +158,7 @@ fun FilterDialog(
                         containerColor = Theme.color.primaryVariant
                     ) {
                         Text(
-                            "Clear",
+                            stringResource(com.berlin.ui.R.string.clear),
                             style = Theme.textStyle.label.large,
                             color = Theme.color.primary
                         )

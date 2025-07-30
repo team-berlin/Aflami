@@ -50,4 +50,6 @@
     <string name="gallery">المعرض</string>
     <string name="company_production">إنتاج\nالشركة</string>
     <string name="upcoming">حصريات</string>
+    <string name="apply">تطبيق</string>
+    <string name="clear">مسح</string>
 </resources>

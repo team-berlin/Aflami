@@ -49,4 +49,6 @@
     <string name="company_production">company\nproduction</string>
     <string name="continue_watching">Continue watching</string>
     <string name="upcoming">Upcoming</string>
+    <string name="apply">Apply</string>
+    <string name="clear">Clear</string>
 </resources>
