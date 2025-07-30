@@ -35,6 +35,5 @@ dependencies {
     implementation(libs.koin.core)
     testImplementation(libs.bundles.test)
     implementation(libs.kotlin.datex)
-
     api(project(":domain:entity"))
 }

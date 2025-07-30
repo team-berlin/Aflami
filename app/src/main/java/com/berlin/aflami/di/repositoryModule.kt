@@ -7,6 +7,8 @@ import com.berlin.repository.MovieRepositoryImpl
 import com.berlin.repository.SearchRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
 import com.berlin.repository.WatchedMediaRepositoryImpl
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
@@ -17,11 +19,11 @@ import repository.ContinueWatchingRepository
 import repository.HomeRepository
 
 val repositoryModule = module {
-    single<SearchRepository> { SearchRepositoryImpl(get(), get(),get(),get()) }
-    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get()) }
-    single<TvShowDetailsRepository> { TvShowDetailsRepositoryImpl(get()) }
-    single <ContinueWatchingRepository>{ WatchedMediaRepositoryImpl(get()) }
-    single<MovieRepository> { MovieRepositoryImpl(get()) }
-    single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(),get()) }
-    single<HomeRepository> { HomeRepositoryImpl(get()) }
+    singleOf(::SearchRepositoryImpl) bind SearchRepository::class
+    singleOf(::MovieDetailsRepositoryImpl) bind MovieDetailsRepository::class
+    singleOf(::TvShowDetailsRepositoryImpl) bind TvShowDetailsRepository::class
+    singleOf(::WatchedMediaRepositoryImpl) bind ContinueWatchingRepository::class
+    singleOf(::MovieRepositoryImpl) bind MovieRepository::class
+    singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
+    singleOf(::HomeRepositoryImpl) bind HomeRepository::class
 }

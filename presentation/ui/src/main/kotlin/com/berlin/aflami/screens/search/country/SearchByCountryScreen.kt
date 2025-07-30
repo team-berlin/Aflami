@@ -30,6 +30,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.navigation.Destination
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
@@ -39,7 +40,6 @@ import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListe
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenUiState
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
 import com.berlin.ui.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

@@ -12,10 +12,8 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.bundles.koin)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.bundles.room)
     ksp(libs.roomCompiler)
-
     implementation(project(":data:repository"))
 }

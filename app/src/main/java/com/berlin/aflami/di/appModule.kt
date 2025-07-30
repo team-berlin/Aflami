@@ -17,7 +17,6 @@ val appModule = module {
     }
     single { provideSharedPref(androidContext()) }
 }
-
 fun provideSharedPref(context: Context): SharedPreferences {
     return context.getSharedPreferences(
         "sharedPreferences",

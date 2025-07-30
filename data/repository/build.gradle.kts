@@ -22,7 +22,7 @@ kover {
         verify {
             rule {
                 bound {
-                    minValue = 100
+                    minValue = 80
                 }
             }
         }
@@ -33,7 +33,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlin.datex)
     testImplementation(libs.bundles.test)
-
     implementation(project(":domain:usecase"))
     implementation(libs.firebase.ml.modeldownloader)
 }

@@ -94,27 +94,21 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.bundles.retrofit)
     implementation(libs.kotlinx.serialization.json)
-
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
     implementation(libs.firebase.crashlytics.ktx)
     implementation(libs.bundles.room)
     ksp(libs.roomCompiler)
-    implementation(libs.androidx.navigation)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.firebase.ml.modeldownloader)
 
-
-
-    api(project(":presentation:ui"))
+    implementation(project(":presentation:ui"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:viewModel"))
-    implementation(project(":presentation:navigation"))
     implementation(project(":domain:usecase"))
     implementation(project(":data:repository"))
-    implementation(project(":presentation:safeImageViewer"))
     implementation(project(":data:local"))
     implementation(project(":data:remote"))
 }

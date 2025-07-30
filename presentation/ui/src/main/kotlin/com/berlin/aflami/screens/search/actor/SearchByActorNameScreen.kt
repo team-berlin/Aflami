@@ -31,6 +31,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.navigation.Destination
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
@@ -39,7 +40,6 @@ import com.berlin.aflami.viewmodel.searchactor.SearchByActorInteractionListener
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenUiState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.ui.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")

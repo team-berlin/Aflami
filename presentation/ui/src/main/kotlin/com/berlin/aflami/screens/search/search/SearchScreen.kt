@@ -61,9 +61,8 @@ import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.designsystem.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
-
+import com.berlin.aflami.navigation.Destination
 @Composable
 fun SearchScreen(
     navController: NavController, viewModel: SearchViewModel = koinViewModel()
