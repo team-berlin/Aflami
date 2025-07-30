@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.search
 
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -252,8 +253,11 @@ class SearchViewModel(
     }
 
     override fun onRecentSearchClicked(query: String) {
-        onSearchQueryChanged(TextFieldValue(query))
-        observeSearchKeywordChanges()
+        onSearchQueryChanged(
+            TextFieldValue(
+                text = query,
+            )
+        )
     }
 
     override fun onRecentSearchCleared(query: String) {
@@ -528,6 +532,7 @@ class SearchViewModel(
     }
 
     fun onItemClicked(query: TextFieldValue) {
-        updateState { it.copy(searchQuery = query, isLoading = true) }
+        val updatedQuery = query.copy(selection = TextRange(query.text.length))
+        updateState { it.copy(searchQuery = updatedQuery, isLoading = true) }
     }
 }
