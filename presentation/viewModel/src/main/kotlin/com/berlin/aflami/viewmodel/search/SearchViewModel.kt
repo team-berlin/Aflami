@@ -246,7 +246,7 @@ class SearchViewModel(
         onSearchQueryChanged(state.value.searchQuery)
     }
 
-    override fun onCardClicked(id: Int) {
+    override fun onCardClicked(id: Long) {
         val mediaType = when (state.value.selectedTabOption) {
             TabOption.MOVIES -> MediaType.MOVIE.name
             TabOption.TV_SHOWS -> MediaType.TVSHOW.name

@@ -25,7 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.CircularProgressIndicator
+import androidx.navigation.NavController
 import com.berlin.aflami.component.DefaultBar
+import com.berlin.aflami.navigation.CastScreen
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
@@ -47,26 +49,21 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MediaDetailsScreen(
+    mediaId: Long,
+    mediaType: MediaType,
     viewModel: MediaDetailsViewModel = koinViewModel(),
-    onEffect: (MediaDetailsScreenEffect) -> Unit
 ) {
+    val navController = Theme.navController
     val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
     val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect { event ->
-            when (event) {
-                is MediaDetailsScreenEffect.ShowRatingDialog -> {
-                    TODO("Actual implementation once login is in place")
-                }
-
-                is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {
-                    TODO("Actual implementation once login is in place")
-                }
-
-                else -> onEffect(event)
-            }
+        viewModel.effect.collect { newEffect ->
+            onReceiveMediaDetailsEffect(
+                navController = navController,
+                mediaDetailsScreenEffect = newEffect
+            )
         }
     }
 
@@ -123,6 +120,27 @@ fun MediaDetailsScreen(
 }
 
 
+private fun onReceiveMediaDetailsEffect(
+    navController: NavController,
+    mediaDetailsScreenEffect: MediaDetailsScreenEffect,
+) {
+    when (mediaDetailsScreenEffect) {
+        is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
+            navController.navigate(
+                CastScreen(mediaDetailsScreenEffect.mediaId, mediaDetailsScreenEffect.mediaType)
+            )
+        }
+
+        is MediaDetailsScreenEffect.NavigateBack -> {
+            navController.popBackStack()
+        }
+
+        is MediaDetailsScreenEffect.PlayMedia -> {}
+        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> TODO()
+        is MediaDetailsScreenEffect.ShowRatingDialog -> TODO()
+    }
+}
+
 @Composable
 fun MediaDetailsContent(
     state: MediaDetailsUiState,
@@ -131,7 +149,7 @@ fun MediaDetailsContent(
     onToggleDescriptionExpand: () -> Unit,
     mediaChips: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
-    mediaType: MediaType
+    mediaType: MediaType,
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }

@@ -18,19 +18,7 @@ android {
     namespace = "com.berlin.aflami"
     compileSdk = 35
 
-    bundle {
-        abi {
-            enableSplit = true
-        }
-        density {
-            enableSplit = true
-        }
-        language {
-            enableSplit = true
-        }
-    }
     buildTypes {
-
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -40,6 +28,7 @@ android {
             )
         }
     }
+
     defaultConfig {
         applicationId = "com.berlin.aflami"
         minSdk = 26
@@ -89,7 +78,6 @@ dependencies {
     implementation(libs.firebase.crashlytics.ktx)
     implementation(libs.bundles.room)
     ksp(libs.roomCompiler)
-    implementation(libs.androidx.navigation)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.firebase.ml.modeldownloader)
 
@@ -99,7 +87,6 @@ dependencies {
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:viewModel"))
-    implementation(project(":presentation:navigation"))
     implementation(project(":domain:usecase"))
     implementation(project(":data:repository"))
     implementation(project(":presentation:safeImageViewer"))

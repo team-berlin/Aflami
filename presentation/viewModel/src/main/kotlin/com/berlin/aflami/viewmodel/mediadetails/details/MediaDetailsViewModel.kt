@@ -64,7 +64,6 @@ class MediaDetailsViewModel(
         val NO_MORE_MEDIA = R.string.there_is_no_more_media
         val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
     }
-
     val id: Long = savedStateHandle.get<String>(ID_KEY)?.toLongOrNull() ?: 0L
     val type: MediaType = savedStateHandle.get<String>(MEDIA_TYPE_KEY)
         ?.let { MediaType.valueOf(it) } ?: MediaType.MOVIE

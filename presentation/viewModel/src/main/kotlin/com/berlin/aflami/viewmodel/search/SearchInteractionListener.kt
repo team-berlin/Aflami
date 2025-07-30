@@ -11,7 +11,7 @@ interface SearchInteractionListener {
     fun onWorldSearchCardClicked()
     fun onActorSearchCardClicked()
     fun onTabOptionClicked(tabOption: TabOption)
-    fun onCardClicked(id: Int)
+    fun onCardClicked(id: Long)
     fun onRecentSearchClicked(query: String)
     fun onRecentSearchCleared(query: String)
     fun onAllRecentSearchesCleared()

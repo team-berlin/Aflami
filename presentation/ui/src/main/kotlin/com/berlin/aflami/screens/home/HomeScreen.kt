@@ -37,11 +37,18 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.navigation.NavController
 import com.berlin.aflami.component.BlurredPosterBackground
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
+import com.berlin.aflami.navigation.ContinueWatchingScreen
+import com.berlin.aflami.navigation.MediaDetails
+import com.berlin.aflami.navigation.SearchScreen
+import com.berlin.aflami.navigation.TopRatingMediaScreen
+import com.berlin.aflami.screens.home.component.MediaSections
+import com.berlin.aflami.screens.home.component.PosterSlider
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
 import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
@@ -54,6 +61,7 @@ import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
 import com.berlin.aflami.viewmodel.home.HomeUiState
 import com.berlin.aflami.viewmodel.home.HomeViewModel
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
 import com.example.navigation.Destination
 import kotlinx.coroutines.flow.collectLatest
@@ -61,45 +69,15 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    navController: NavController,
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val navController = Theme.navController
+
     LaunchedEffect(Unit) {
-        viewModel.effect.collectLatest { effect ->
-            when (effect) {
-                HomeScreenEffect.NavigateToContinueWatching -> {
-                    navController.navigate(
-                        Destination.WatchedMediaDetails.route
-                    )
-
-                }
-
-                is HomeScreenEffect.NavigateToDetails -> {
-                    navController.navigate(
-                        Destination.MediaDetailsScreen.route(
-                            effect.id.toLong(), effect.mediaType
-                        )
-                    )
-
-                }
-
-                HomeScreenEffect.NavigateToMoodPickerDialog -> {
-
-                }
-
-                HomeScreenEffect.NavigateToSearch -> {
-                    navController.navigate(
-                        Destination.SearchScreen.route
-                    )
-                }
-
-                HomeScreenEffect.NavigateToTopRating -> {
-                    navController.navigate(
-                        Destination.TopRatingScreen.route
-                    )
-                }
-            }
+        viewModel.getContinueWatchingMedia()
+        viewModel.effect.collect {
+            onReceiveHomeScreenEffect(navController,it)
         }
     }
     HomeContent(
@@ -108,6 +86,32 @@ fun HomeScreen(
 
 }
 
+private fun onReceiveHomeScreenEffect(navController: NavController,homeScreenEffect: HomeScreenEffect){
+    when (homeScreenEffect) {
+        is HomeScreenEffect.NavigateToContinueWatching -> {
+            navController.navigate(
+                ContinueWatchingScreen
+            )
+        }
+
+        is HomeScreenEffect.NavigateToSearch -> {
+            navController.navigate(
+                SearchScreen
+            )
+        }
+
+        is HomeScreenEffect.NavigateToTopRating -> {
+            TopRatingMediaScreen
+        }
+        is HomeScreenEffect.NavigateToMovieDetails -> {
+            navController.navigate(
+                MediaDetails(homeScreenEffect.id, MediaType.valueOf(homeScreenEffect.mediaType))
+            )
+        }
+
+        HomeScreenEffect.NavigateToMoodPickerDialog -> TODO()
+    }
+}
 
 @Composable
 private fun HomeContent(

@@ -8,9 +8,11 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.ui.color.AflamiDarkColors
 import com.berlin.aflami.ui.color.AflamiLightColors
 import com.berlin.aflami.ui.color.LocalAflamiColors
+import com.berlin.aflami.ui.navcontroller.LocalNavController
 import com.berlin.aflami.ui.textstyle.LocalAflamiTextStyle
 import com.berlin.aflami.ui.textstyle.defaultTextStyle
 
@@ -20,6 +22,7 @@ fun AflamiTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val navController = rememberNavController()
     val colors = if (isDarkTheme) AflamiDarkColors else AflamiLightColors
     val view = LocalView.current
     DisposableEffect(isDarkTheme) {
@@ -42,6 +45,7 @@ fun AflamiTheme(
 
 
     CompositionLocalProvider(
+        LocalNavController provides navController,
         LocalAflamiColors provides colors,
         LocalAflamiTextStyle provides defaultTextStyle
     ) {
