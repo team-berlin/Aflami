@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.extension.dropShadow
+import com.berlin.aflami.extension.singleClick
 import com.berlin.aflami.ui.theme.Theme
 
 @Composable
@@ -38,7 +39,7 @@ fun SearchSuggestionItem(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .clickable { onClick() }
+            .singleClick { onClick() }
             .background(gradientBackground),
         ) {
         Box(
