@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.berlin.aflami.component.SpinningProgressIndicatorLines
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 
@@ -59,12 +59,8 @@ fun WebView(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                SpinningProgressIndicatorLines(color = Theme.color.primary)
-                Text(
-                    modifier = Modifier.padding(top = 8.dp),
+                CircularProgressIndicator(
                     text = stringResource(R.string.loading),
-                    style = Theme.textStyle.label.medium,
-                    color = Theme.color.textColors.body
                 )
             }
         }
