@@ -46,11 +46,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -78,8 +80,10 @@ import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.ui.R
 import com.example.navigation.Destination
 import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import kotlin.reflect.KFunction1
 
 @Composable
 fun LoginScreen(
@@ -121,6 +125,7 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                 brush = Brush.verticalGradient(
                     colors = Theme.color.gradientColors.streakGradient
                 )
+
             )
             .statusBarsPadding()
             .padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 16.dp),
