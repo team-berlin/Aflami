@@ -124,6 +124,7 @@ private fun SearchScreenContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Theme.color.surfaceHigh)
             .clickable(
                 indication = null, interactionSource = remember { MutableInteractionSource() }) {
                 focusManager.clearFocus()

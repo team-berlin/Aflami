@@ -72,11 +72,12 @@ class HomeViewModel(
                 }
             } catch (e: Exception) {
                 updateState {
-                    it.copy(error =
-                        ErrorUiState(
-                            message = e.message ?: "An error occurred while fetching popular media",
-                        )
-                            , isLoading = false
+                    it.copy(
+                        error =
+                            ErrorUiState(
+                                message = e.message
+                                    ?: "An error occurred while fetching popular media",
+                            ), isLoading = false
                     )
                 }
                 onPopularMediaError(
@@ -250,13 +251,12 @@ class HomeViewModel(
         val nextMovie: MovieUIState
         if (currentMovieIndex == state.value.moodPickerUiState.movies.size - 1) {
             if (!state.value.moodPickerUiState.movies.isEmpty())
-            nextMovie = state.value.moodPickerUiState.movies[0]
+                nextMovie = state.value.moodPickerUiState.movies[0]
             return
         }
         nextMovie = state.value.moodPickerUiState.movies[currentMovieIndex + 1]
         updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(selectedMovie = nextMovie)) }
     }
-
 
     override fun onClickUpcomingMovieCard(id: Long) {
         sendNewEffect(HomeScreenEffect.NavigateToDetails(id, MediaType.MOVIE.name))
@@ -271,7 +271,8 @@ class HomeViewModel(
                 selectedGenres = genreId,
                 upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(
                     movieGenres = selected
-                ), isLoading = false
+                ),
+                isLoading = false
             )
         }
         getUpComingMoviesByGenre()
@@ -341,9 +342,8 @@ class HomeViewModel(
         )
     }
 
-
     fun getContinueWatchingMedia() {
-        var combinedList:List<MediaUiState> = emptyList()
+        var combinedList: List<MediaUiState> = emptyList()
         _state.update {
             it.copy(isLoading = true, error = null)
         }
@@ -358,17 +358,17 @@ class HomeViewModel(
                                 val tvShowsList =
                                     async { getWatchedTVShowUseCase(1).map { it.toUIStateMedia() } }
 
-                                 val movies = moviesList.await()
-                                 val tvShows = tvShowsList.await()
+                                val movies = moviesList.await()
+                                val tvShows = tvShowsList.await()
 
-                                 combinedList = (movies + tvShows).shuffled()
+                                combinedList = (movies + tvShows).shuffled()
                                 combinedList
                             }
                         }
                     },
                     config = PagingConfig(
                         pageSize = combinedList.size, initialLoadSize = combinedList.size
-                ),
+                    ),
                 ).flow.cachedIn(viewModelScope)
             },
             onSuccess = { continueWatchingMedia ->

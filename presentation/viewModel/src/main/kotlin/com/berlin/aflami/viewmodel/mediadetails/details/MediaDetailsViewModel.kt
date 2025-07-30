@@ -506,7 +506,7 @@ class MediaDetailsViewModel(
             } else it.rowSection
             Log.d("CastViewModel", "getMediaCast: ${errorUiState.message}")
             it.copy(
-                error = errorUiState,
+                error = errorUiState.message,
                 rowSection = rowSection,
                 isLoading = false
             )

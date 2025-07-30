@@ -44,6 +44,8 @@
     <string name="login_error_message">كلمة المرور أو اسم المستخدم غير صحيح</string>
     <string name="loading">جاري التحميل...</string>
 
+    <string name="offline_title">عذرًا! يبدو أنك غير متصل بالإنترنت.</string>
+    <string name="check_connection_title">تحقق من اتصالك وحاول مرة أخرى، سنكون بانتظارك مع أفلامك والفشار.</string>
 
     <string name="more_like_this">اقتراحات مشابهة</string>
     <string name="reviews">تقييمات</string>
@@ -55,9 +57,7 @@
     <string name="view_details">المزيد من التفاصيل</string>
     <string name="get_another_movie">الحصول علي فيلم اخر</string>
 
-    <string name="offline_title">Oops! It looks like you’re offline.</string>
-    <string name="check_connection_title">Check your connection and try again, we’ll be waiting with your movies and popcorn</string>
-    <string name="top_rating">الأعلى تقييم</string>
+      <string name="top_rating">الأعلى تقييم</string>
 
     <string name="retry">إعادة المحاولة</string>
 

@@ -116,10 +116,10 @@ private fun HomeContent(
         exit = fadeOut(),
         visible = state.isLoading
     ) {
-       CircularProgressIndicator(
-           modifier = Modifier.fillMaxSize(),
-           text = stringResource(R.string.loading)
-       )
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
     }
     val pagedMovies = state.mediaContinueWatching.collectAsLazyPagingItems()
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
@@ -260,36 +260,36 @@ private fun HomeContent(
             }
         }
     }
+
+    AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
+        with(state.moodPickerUiState.selectedMovie) {
+            MoodPickerDialog(
+                mediaImg = poster,
+                title = title,
+                typeOfMedia = mediaType,
+                date = releaseYear,
+                rate = rating,
+                onDismiss = { listener.onDismissMoodPickerDialog() },
+                onClickViewDetails = { listener.onClickViewDetails() },
+                onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
+            )
+        }
+
+    }
+    AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
+        with(state.moodPickerUiState.selectedMovie) {
+            MoodPickerDialog(
+                mediaImg = poster,
+                title = title,
+                typeOfMedia = mediaType,
+                date = releaseYear,
+                rate = rating,
+                onDismiss = { listener.onDismissMoodPickerDialog() },
+                onClickViewDetails = { listener.onClickViewDetails() },
+                onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
+            )
+        }
+
+    }
+
 }
-
-        AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
-            with(state.moodPickerUiState.selectedMovie) {
-                MoodPickerDialog(
-                    mediaImg = poster,
-                    title = title,
-                    typeOfMedia = mediaType,
-                    date = releaseYear,
-                    rate = rating,
-                    onDismiss = { listener.onDismissMoodPickerDialog() },
-                    onClickViewDetails = { listener.onClickViewDetails() },
-                    onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
-                )
-            }
-
-        }
-        AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
-            with(state.moodPickerUiState.selectedMovie) {
-                MoodPickerDialog(
-                    mediaImg = poster,
-                    title = title,
-                    typeOfMedia = mediaType,
-                    date = releaseYear,
-                    rate = rating,
-                    onDismiss = { listener.onDismissMoodPickerDialog() },
-                    onClickViewDetails = { listener.onClickViewDetails() },
-                    onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
-                )
-            }
-
-        }
-
