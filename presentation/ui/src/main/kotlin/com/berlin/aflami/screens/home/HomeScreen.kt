@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,6 +34,7 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
 import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
@@ -110,93 +110,103 @@ private fun HomeContent(
     val pagerState = rememberPagerState(
         initialPage = 1, pageCount = { state.popularMedia.popularMedia.size })
     AnimatedVisibility(state.isLoading) {
-       CircularProgressIndicator(
-           modifier = Modifier.fillMaxSize(),
-           text = stringResource(R.string.loading)
-       )
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
     }
     val pagedMovies = state.mediaContinueWatching.collectAsLazyPagingItems()
     val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
-    AnimatedVisibility(state.isLoading.not()) {
-        LazyColumn(
-            modifier = Modifier.background(Theme.color.surface)
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Theme.color.surface)
+    ) {
+
+        AnimatedVisibility(
+            state.error != null
         ) {
-            item {
-                Column(
-                    modifier = Modifier
-                        .padding(bottom = 6.dp)
-                        .fillMaxSize()
-                        .background(Theme.color.surface)
-                ) {
-                    Box {
-                        BlurredPosterBackground(
-                            imageUrl = currentMedia?.poster ?: "",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(390.dp)
-                        )
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 8.dp)
-                        ) {
-
-                            HomeBar(
-                                modifier = Modifier.fillMaxWidth(),
-                                onSearchClicked = {
-                                    listener.onSearchClicked()
-                                },
-                            )
-
-                            SectionTitle(
-                                title = stringResource(com.berlin.designsystem.R.string.popular),
+            NoInternetConnectionPlaceholder()
+        }
+        AnimatedVisibility(state.isLoading.not() && state.error == null) {
+            LazyColumn {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .padding(bottom = 6.dp)
+                            .fillMaxSize()
+                            .background(Theme.color.surface)
+                    ) {
+                        Box {
+                            BlurredPosterBackground(
+                                imageUrl = currentMedia?.poster ?: "",
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 16.dp),
-                                icon = {
-                                    Icon(
-                                        modifier = Modifier
-                                            .padding(start = 8.dp)
-                                            .size(20.dp),
-                                        painter = painterResource(com.berlin.designsystem.R.drawable.trending),
-                                        tint = Theme.color.secondary,
-                                        contentDescription = stringResource(com.berlin.designsystem.R.string.trending)
-                                    )
-                                })
-
-                            PosterSlider(
-                                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
-                                mediaList = state.popularMedia.popularMedia,
-                                pagerState = pagerState,
-                                onClick = { listener.onClickCard(it.id, it.mediaType) }
+                                    .height(390.dp)
                             )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 8.dp)
+                            ) {
 
-                            currentMedia?.let { media ->
-                                Text(
-                                    media.title,
-                                    modifier = Modifier
-                                        .align(Alignment.CenterHorizontally)
-                                        .padding(bottom = 8.dp),
-                                    style = Theme.textStyle.title.small,
-                                    color = Theme.color.textColors.title,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                                HomeBar(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onSearchClicked = {
+                                        listener.onSearchClicked()
+                                    },
                                 )
-                                LazyRow(
+
+                                SectionTitle(
+                                    title = stringResource(com.berlin.designsystem.R.string.popular),
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .align(Alignment.CenterHorizontally)
-                                    ,
-                                    contentPadding = PaddingValues(end = 8.dp),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    items(items = media.genre) { genreId ->
-                                        val genreName = getGenreNameById(genreId, media.mediaType)
-                                        Box(
-                                            modifier = Modifier.padding(end = 4.dp)
-                                        ) {
-                                            GenersChip(label = genreName)
+                                        .padding(start = 16.dp),
+                                    icon = {
+                                        Icon(
+                                            modifier = Modifier
+                                                .padding(start = 8.dp)
+                                                .size(20.dp),
+                                            painter = painterResource(com.berlin.designsystem.R.drawable.trending),
+                                            tint = Theme.color.secondary,
+                                            contentDescription = stringResource(com.berlin.designsystem.R.string.trending)
+                                        )
+                                    })
+
+                                PosterSlider(
+                                    modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+                                    mediaList = state.popularMedia.popularMedia,
+                                    pagerState = pagerState,
+                                    onClick = { listener.onClickCard(it.id, it.mediaType) }
+                                )
+
+                                currentMedia?.let { media ->
+                                    Text(
+                                        media.title,
+                                        modifier = Modifier
+                                            .align(Alignment.CenterHorizontally)
+                                            .padding(bottom = 8.dp),
+                                        style = Theme.textStyle.title.small,
+                                        color = Theme.color.textColors.title,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    LazyRow(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .align(Alignment.CenterHorizontally),
+                                        contentPadding = PaddingValues(end = 8.dp),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        items(items = media.genre) { genreId ->
+                                            val genreName =
+                                                getGenreNameById(genreId, media.mediaType)
+                                            Box(
+                                                modifier = Modifier.padding(end = 4.dp)
+                                            ) {
+                                                GenersChip(label = genreName)
+                                            }
                                         }
                                     }
                                 }
@@ -204,60 +214,76 @@ private fun HomeContent(
                         }
                     }
                 }
-            }
-            if (pagedMovies.itemCount > 0) {
+                if (pagedMovies.itemCount > 0) {
+                    item {
+                        ContinueWatchingHomeSections(
+                            seeAllOnClick = {
+                                listener.onShowAllContinueWatchingClicked()
+                            },
+                            state = pagedMovies,
+                            sectionTitleId = R.string.continue_watching,
+                            cardClick = { id, type ->
+                                listener.onClickCard(id, type)
+                            },
+                        )
+                    }
+                }
                 item {
-                    ContinueWatchingHomeSections(
-                        seeAllOnClick = {
-                            listener.onShowAllContinueWatchingClicked()
-                        },
-                        state = pagedMovies,
-                        sectionTitleId = R.string.continue_watching,
+                    TopRatingHomeSections(
+                        modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
+                        seeAllOnClick = { listener.onAllTopRatingClicked() },
+                        state = state.topRatedMediaUiState.topRatedMedia,
+                        sectionTitleId = R.string.top_rating,
                         cardClick = { id, type ->
                             listener.onClickCard(id, type)
-                        },
+                        }
+                    )
+                }
+                item {
+                    MoodPickerSection(state, listener)
+                }
+                item {
+                    UpcomingMoviesSection(
+                        movies = state.upcomingMoviesSectionUiState.upcomingMovies,
+                        genres = state.upcomingMoviesSectionUiState.movieGenres,
+                        onMovieClick = { listener.onClickUpcomingMovieCard(it) },
+                        onGenreClick = { listener.onChangeUpcomingMovieGenre(it) },
+                        modifier = Modifier
                     )
                 }
             }
-            item {
-                TopRatingHomeSections(
-                    modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
-                    seeAllOnClick = { listener.onAllTopRatingClicked() },
-                    state = state.topRatedMediaUiState.topRatedMedia,
-                    sectionTitleId = R.string.top_rating,
-                    cardClick = { id, type ->
-                        listener.onClickCard(id, type)
-                    }
-                )
-            }
-            item {
-                MoodPickerSection(state, listener)
-            }
-            item {
-                UpcomingMoviesSection(
-                    movies = state.upcomingMoviesSectionUiState.upcomingMovies,
-                    genres = state.upcomingMoviesSectionUiState.movieGenres,
-                    onMovieClick = { listener.onClickUpcomingMovieCard(it) },
-                    onGenreClick = { listener.onChangeUpcomingMovieGenre(it) },
-                    modifier = Modifier
-                )
-            }
         }
-    }
-    AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
-        with(state.moodPickerUiState.selectedMovie) {
-            MoodPickerDialog(
-                mediaImg = poster,
-                title = title,
-                typeOfMedia = mediaType,
-                date = releaseYear,
-                rate = rating,
-                onDismiss = { listener.onDismissMoodPickerDialog() },
-                onClickViewDetails = { listener.onClickViewDetails() },
-                onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
-            )
+
+        AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
+            with(state.moodPickerUiState.selectedMovie) {
+                MoodPickerDialog(
+                    mediaImg = poster,
+                    title = title,
+                    typeOfMedia = mediaType,
+                    date = releaseYear,
+                    rate = rating,
+                    onDismiss = { listener.onDismissMoodPickerDialog() },
+                    onClickViewDetails = { listener.onClickViewDetails() },
+                    onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
+                )
+            }
+
+        }
+        AnimatedVisibility(state.moodPickerUiState.openMovieDialog) {
+            with(state.moodPickerUiState.selectedMovie) {
+                MoodPickerDialog(
+                    mediaImg = poster,
+                    title = title,
+                    typeOfMedia = mediaType,
+                    date = releaseYear,
+                    rate = rating,
+                    onDismiss = { listener.onDismissMoodPickerDialog() },
+                    onClickViewDetails = { listener.onClickViewDetails() },
+                    onClickGetAnotherMovie = { listener.onClickGetAnotherMovie() },
+                )
+            }
+
         }
 
     }
-
 }

@@ -40,8 +40,10 @@ fun PosterSlider(
     LaunchedEffect(pagerState) {
         while (true) {
             delay(4000)
-            val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
-            pagerState.animateScrollToPage(nextPage)
+            if(pagerState.pageCount>0) {
+                val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
+                pagerState.animateScrollToPage(nextPage)
+            }
         }
     }
 

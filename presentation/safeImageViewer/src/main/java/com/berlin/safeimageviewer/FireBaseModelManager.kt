@@ -1,5 +1,6 @@
 package com.berlin.safeimageviewer
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions
@@ -9,20 +10,26 @@ import kotlinx.coroutines.tasks.await
 import java.io.FileInputStream
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
+import androidx.core.content.edit
 
-class FireBaseModelManager() {
+class FireBaseModelManager(
+    val prefs : SharedPreferences
+) {
          val models = mutableMapOf<String, MappedByteBuffer>()
-         val _downloaded = mutableStateOf(false)
+         val isModelDownloaded = mutableStateOf(false)
 
         suspend fun downloadModelsOnce() {
-            try {
-                models["nsfw"] = loadFirebaseModel("nsfw")
-                models["gender_not_quantized"] = loadFirebaseModel("gender_not_quantized")
-                Log.d("WOW", "Models downloadeding successfully")
-                _downloaded.value = true
-            }
-            catch (e: Exception){
-
+            while (!isModelDownloaded.value) {
+                try {
+                    models["nsfw"] = loadFirebaseModel("nsfw")
+                    models["gender_not_quantized"] = loadFirebaseModel("gender_not_quantized")
+                    prefs.edit(commit = true) {
+                        putBoolean("models_downloaded", true)
+                        isModelDownloaded.value=true
+                    }
+                } catch (e: Exception) {
+                    Log.e("FireBaseModelManager", "Error downloading models: ${e.message}")
+                }
             }
         }
 

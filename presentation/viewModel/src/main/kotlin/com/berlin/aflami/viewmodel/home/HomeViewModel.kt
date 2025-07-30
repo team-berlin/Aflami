@@ -49,6 +49,7 @@ class HomeViewModel(
     private val _tvShows = MutableStateFlow<List<MediaUiState>>(emptyList())
 
     init {
+        Log.e("HomeViewModel", "popularMedia: ")
         updateState {
             it.copy(
                 popularMedia = state.value.popularMedia.copy(isLoading = true),
@@ -69,20 +70,29 @@ class HomeViewModel(
 
     private fun popularMedia(language: String) {
         viewModelScope.launch {
+
             try {
                 coroutineScope {
                     val movie = async { popularMoviesUseCase(language) }
                     val tvShow = async { popularTVShowsUseCase(language) }
-
                     val movieList = movie.await().map { it.toUIState() }
                     val tvShowList = tvShow.await().map { it.toUIState() }
 
                     _movies.value = movieList
                     _tvShows.value = tvShowList
-
                     combineMediaAndUpdateUi()
+
                 }
-            } catch (e: Error) {
+            } catch (e: Exception) {
+                updateState {
+                    Log.e("HomeViewModel", "popularMedia: ", e)
+                    it.copy(error =
+                        ErrorUiState(
+                            message = e.message ?: "An error occurred while fetching popular media",
+                        )
+                            , isLoading = false
+                    )
+                }
                 onPopularMediaError(
                     ErrorUiState(
                         message = e.message ?: "An error occurred while fetching popular media",
@@ -107,7 +117,6 @@ class HomeViewModel(
                 mergedList
 
             }.collect { combinedList ->
-                Log.d("CombinedMediaList", "$combinedList")
                 updateState {
                     it.copy(
                         popularMedia = PopularMediaUiState(
@@ -197,10 +206,7 @@ class HomeViewModel(
         tryToCall(
             call = {
                 getMoviesByMoodUseCase(selectedMood.moodGenres.toGenreIds()).also {
-                    Log.d(
-                        "HomeViewModel",
-                        "Selected Mood: $selectedMood, Genres: ${selectedMood.moodGenres} movies: $it"
-                    )
+
                 }
             },
             onSuccess = ::onGetMoviesByMoodSuccess,
@@ -258,6 +264,7 @@ class HomeViewModel(
         )
         val nextMovie: MovieUIState
         if (currentMovieIndex == state.value.moodPickerUiState.movies.size - 1) {
+            if (!state.value.moodPickerUiState.movies.isEmpty())
             nextMovie = state.value.moodPickerUiState.movies[0]
             return
         }
@@ -287,6 +294,7 @@ class HomeViewModel(
     }
 
     override fun onClickCard(id: Long, mediaType: MediaType) {
+        Log.e("HomeViewModel", "onClickCard: $id $mediaType")
         sendNewEffect(HomeScreenEffect.NavigateToDetails(id, mediaType.name))
     }
 

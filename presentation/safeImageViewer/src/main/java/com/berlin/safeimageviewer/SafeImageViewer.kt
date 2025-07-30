@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
@@ -48,12 +49,14 @@ fun SafeImageViewer(
     contentScale: ContentScale? = ContentScale.Crop,
     error: Painter? = null,
     fallback: Painter? = null,
-    blurCheck: Boolean = true
+    placeholder : Painter? = null,
+    blurCheck: Boolean = true,
+    alignment: Alignment = Alignment.Center
 
 ) {
     val context = LocalContext.current
     val modelManager by currentKoinScope().inject<FireBaseModelManager>()
-    val isModelDownloaded by remember { modelManager._downloaded }
+    val isModelDownloaded by remember { modelManager.isModelDownloaded }
     if (!isModelDownloaded) return
 
     if (blurCheck) {
@@ -125,7 +128,7 @@ fun SafeImageViewer(
         isSafe?.let { safe ->
             bitmap?.let { image ->
                 val shouldBlur = (
-                        //!safe ||
+                        !safe ||
                         genderResult == true)
                 val displayBitmap: Bitmap = remember(image, safe, genderResult) {
                     if (shouldBlur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
@@ -139,6 +142,8 @@ fun SafeImageViewer(
                     contentDescription = contentDescription,
                     error = error,
                     fallback = fallback,
+                    placeholder = placeholder,
+                    alignment = alignment,
                     modifier = modifier
                         .then(
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && shouldBlur) {
@@ -178,6 +183,8 @@ fun SafeImageViewer(
                 contentDescription = contentDescription,
                 error = error,
                 fallback = fallback,
+                placeholder = placeholder,
+                alignment = alignment,
                 modifier = modifier
                     .then(
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -193,19 +200,7 @@ fun SafeImageViewer(
     }
 }
 
-//suspend fun loadFirebaseModel(name: String): MappedByteBuffer {
-//    val downloader = FirebaseModelDownloader.getInstance()
-//    val model = downloader.getModel(
-//            name,
-//            DownloadType.LOCAL_MODEL,
-//            CustomModelDownloadConditions.Builder().requireWifi().build()
-//        ).await()
-//
-//    val file = model.file ?: throw IllegalStateException("Model not downloaded")
-//    val inputStream = FileInputStream(file)
-//    val fileChannel = inputStream.channel
-//    return fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, file.length())
-//}
+
 
 @Suppress("DEPRECATION")
 fun blurBitmapRenderScript(context: Context, bitmap: Bitmap, radius: Float): Bitmap {

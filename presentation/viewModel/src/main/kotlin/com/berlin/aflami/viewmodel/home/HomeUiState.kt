@@ -47,7 +47,6 @@ data class PopularMediaUiState(
 
 data class MoodPickerUiState(
     val selectedMood: UserMoodUiState? = null,
-//    val isSelectedAction: Boolean = false,
     val selectedMovie : MovieUIState = MovieUIState(),
     val movies: List<MovieUIState> = emptyList(),
     val openMovieDialog: Boolean = false,
@@ -57,5 +56,4 @@ data class MoodPickerUiState(
 
 data class UserMoodUiState(
     val userMood: UserMood? = null,
-//    val isSelectingMood: Boolean = false,
 )
