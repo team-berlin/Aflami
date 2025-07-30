@@ -2,6 +2,10 @@ package com.berlin.aflami.viewmodel.home
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.UserMood
@@ -38,23 +42,32 @@ class HomeViewModel(
     private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase,
     private val getTopRatedSeriesUseCase: GetTopRatedSeriesUseCase,
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
-    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase
+    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
 ) : BaseViewModel<HomeUiState, HomeScreenEffect>(HomeUiState()), HomeInteractionListener {
 
     private val _movies = MutableStateFlow<List<MediaUiState>>(emptyList())
     private val _tvShows = MutableStateFlow<List<MediaUiState>>(emptyList())
 
     init {
-        loadGenresMovies()
-        getUpComingMoviesByGenre()
+        updateState {
+            it.copy(
+                popularMedia = state.value.popularMedia.copy(isLoading = true),
+                topRatedMediaUiState = state.value.topRatedMediaUiState.copy(isLoading = true),
+                moodPickerUiState = state.value.moodPickerUiState.copy(isLoading = true),
+                upcomingMoviesSectionUiState = state.value.upcomingMoviesSectionUiState.copy(
+                    isLoading = true
+                ),
+            )
+        }
         popularMedia("en-US")
+        loadGenresMovies()
+        getContinueWatchingMedia()
+        getTopRatingMovieAndTvShows()
+        getUpComingMoviesByGenre()
     }
 
-    private fun popularMedia(language: String) {
 
-        updateState {
-            it.copy(isLoading = true, error = null)
-        }
+    private fun popularMedia(language: String) {
         viewModelScope.launch {
             try {
                 coroutineScope {
@@ -97,7 +110,7 @@ class HomeViewModel(
                 Log.d("CombinedMediaList", "$combinedList")
                 updateState {
                     it.copy(
-                        isLoading = false, popularMedia = PopularMediaUiState(
+                        popularMedia = PopularMediaUiState(
                             popularMedia = combinedList
                         )
                     )
@@ -119,80 +132,90 @@ class HomeViewModel(
         sendNewEffect(HomeScreenEffect.NavigateToContinueWatching)
     }
 
-    override fun onShowAllTopRating() {
-        viewModelScope.launch {
-            tryToCall(
-                call = {
-                    val topRatedMovies =
-                        getTopRatedMoviesUseCase(1).map { movie -> movie.toUIStateMedia() }
-                    val topRatedSeries =
-                        getTopRatedSeriesUseCase(1).map { series -> series.toUIStateMedia() }
-                    (topRatedMovies + topRatedSeries).sortedByDescending { it.rating }
-                },
-                onSuccess = { newTopRatedMedia ->
-                    _state.update { oldState ->
-                        oldState.copy(
-                            topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
-                                topRatedMedia = newTopRatedMedia,
-                                isLoading = false,
-                                errorMessage = null,
-                            )
-                        )
-                    }
-                },
-                onError = { errorUIState ->
-                    _state.update { oldState ->
-                        oldState.copy(
-                            topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
-                                topRatedMedia = emptyList(),
-                                isLoading = false,
-                                errorMessage = errorUIState.message
-                            )
-                        )
-                    }
-                },
-                dispatcher = Dispatchers.Default
-            )
-        }
+    override fun onAllTopRatingClicked() {
+        sendNewEffect(HomeScreenEffect.NavigateToTopRating)
     }
 
-    override fun onMoodPickerClicked(mood: UserMood) {
+    private fun getTopRatingMovieAndTvShows() {
+        tryToCall(
+            call = {
+                coroutineScope {
+                    val moviesDeferred =
+                        async { getTopRatedMoviesUseCase(1).map { it.toUIStateMedia() } }
+                    val seriesDeferred =
+                        async { getTopRatedSeriesUseCase(1).map { it.toUIStateMedia() } }
+                    val topRatedMovies = moviesDeferred.await()
+                    val topRatedSeries = seriesDeferred.await()
+                    (topRatedMovies + topRatedSeries).sortedByDescending { it.rating }
+                }
+            },
+            onSuccess = { newTopRatedMedia ->
+                _state.update { oldState ->
+                    oldState.copy(
+                        topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
+                            topRatedMedia = newTopRatedMedia,
+                            isLoading = false,
+                            errorMessage = null,
+                        )
+                    )
+                }
+            },
+            onError = { errorUIState ->
+                _state.update { oldState ->
+                    oldState.copy(
+                        topRatedMediaUiState = oldState.topRatedMediaUiState.copy(
+                            topRatedMedia = emptyList(),
+                            isLoading = false,
+                            errorMessage = errorUIState.message
+                        )
+                    )
+                }
+            },
+            dispatcher = Dispatchers.Default
+        )
+    }
+
+
+    override fun onSelectedMood(mood: UserMood) {
         updateState {
             it.copy(
                 moodPickerUiState = it.moodPickerUiState.copy(
-                    isLoading = true,
-                    selectedMood = UserMoodUiState(userMood = mood, isSelectingMood = true),
+                    selectedMood = UserMoodUiState(userMood = mood),
                 )
             )
         }
     }
 
     private fun List<String>.toGenreIds(): List<Int> {
-        return state.value.movieGenres.filter { this.contains(it.name) }.map { it.id }
+
+        return state.value.upcomingMoviesSectionUiState.movieGenres.filter { this.contains(it.name) }
+            .map { it.id }
     }
 
-    override fun onGetNowClicked() {
-        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(isLoading = true)) }
-        val selectedMood = state.value.moodPickerUiState.selectedMood?.userMood ?: return
+    override fun onGetNowClicked(selectedMood: UserMood) {
+        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(openMovieDialog = true)) }
         tryToCall(
             call = {
-                getMoviesByMoodUseCase(selectedMood.moodGenres.toGenreIds())
+                getMoviesByMoodUseCase(selectedMood.moodGenres.toGenreIds()).also {
+                    Log.d(
+                        "HomeViewModel",
+                        "Selected Mood: $selectedMood, Genres: ${selectedMood.moodGenres} movies: $it"
+                    )
+                }
             },
-            onSuccess = { ::onGetMoviesByMoodSuccess },
+            onSuccess = ::onGetMoviesByMoodSuccess,
             onError = { ::onError },
         )
     }
 
     private fun onGetMoviesByMoodSuccess(movies: List<Movie>) {
-        if (movies.isEmpty()) {
-            updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(isLoading = false)) }
-            return
-        }
         val moviesUiStates = movies.map { it.toUIState() }
         updateState {
             it.copy(
                 moodPickerUiState = it.moodPickerUiState.copy(
-                    isLoading = false, movies = moviesUiStates, isSelectedAction = true
+                    movies = moviesUiStates,
+                    isLoading = false,
+                    selectedMovie = moviesUiStates.firstOrNull() ?: MovieUIState()
                 )
             )
         }
@@ -213,7 +236,7 @@ class HomeViewModel(
         updateState {
             it.copy(
                 moodPickerUiState = it.moodPickerUiState.copy(
-                    openMovieDialog = false, isSelectedAction = false
+                    openMovieDialog = false, isLoading = true
                 )
             )
         }
@@ -222,7 +245,7 @@ class HomeViewModel(
     override fun onClickViewDetails() {
         onDismissMoodPickerDialog()
         sendNewEffect(
-            HomeScreenEffect.NavigateToMovieDetails(
+            HomeScreenEffect.NavigateToDetails(
                 state.value.moodPickerUiState.movies.first().id, MediaType.MOVIE.name
             )
         )
@@ -243,24 +266,27 @@ class HomeViewModel(
 
 
     override fun onClickUpcomingMovieCard(id: Long) {
-        sendNewEffect(HomeScreenEffect.NavigateToMovieDetails(id, MediaType.MOVIE.name))
+        sendNewEffect(HomeScreenEffect.NavigateToDetails(id, MediaType.MOVIE.name))
     }
-
-    override fun onClickPopularMovieCard(id: Long, mediaType: MediaType) {
-        sendNewEffect(HomeScreenEffect.NavigateToMovieDetails(id, mediaType.name))
-    }
-
 
     override fun onChangeUpcomingMovieGenre(genreId: Int) {
         updateState {
-            val selected = it.movieGenres.map { genre ->
+            val selected = it.upcomingMoviesSectionUiState.movieGenres.map { genre ->
                 genre.copy(isSelected = genre.id == genreId)
             }
             it.copy(
-                selectedGenres = genreId, movieGenres = selected, isLoading = true
+                selectedGenres = genreId,
+                upcomingMoviesSectionUiState = it.upcomingMoviesSectionUiState.copy(
+                    movieGenres = selected
+                ),
+                isLoading = true
             )
         }
         getUpComingMoviesByGenre()
+    }
+
+    override fun onClickCard(id: Long, mediaType: MediaType) {
+        sendNewEffect(HomeScreenEffect.NavigateToDetails(id, mediaType.name))
     }
 
     private fun getUpComingMoviesByGenre() {
@@ -277,9 +303,8 @@ class HomeViewModel(
             }
             updateState { state ->
                 state.copy(
-                    upcomingMovies = filteredMovies.map { movie ->
-                        movie.toUIState()
-                    }, isLoading = false
+                    upcomingMoviesSectionUiState = state.upcomingMoviesSectionUiState.copy(
+                        isLoading = false, upcomingMovies = filteredMovies.map { it.toUIState() }),
                 )
             }
         }, onError = { error ->
@@ -308,7 +333,9 @@ class HomeViewModel(
             onSuccess = { genreMovie ->
                 updateState { state ->
                     state.copy(
-                        movieGenres = genreMovie, isLoading = false,
+                        upcomingMoviesSectionUiState = state.upcomingMoviesSectionUiState.copy(
+                            movieGenres = genreMovie, isLoading = false
+                        )
                     )
                 }
             },
@@ -324,28 +351,39 @@ class HomeViewModel(
 
 
     fun getContinueWatchingMedia() {
+        var combinedList:List<MediaUiState> = emptyList()
         _state.update {
             it.copy(isLoading = true, error = null)
         }
         tryToCall(
             call = {
-                coroutineScope {
-                    val moviesList = async { getWatchedMovieUseCase().map { it.toUIStateMedia() } }
-                    val tvShowsList =
-                        async { getWatchedTVShowUseCase().map { it.toUIStateMedia() } }
+                Pager(
+                    pagingSourceFactory = {
+                        BasePagingSource { page ->
+                            coroutineScope {
+                                val moviesList =
+                                    async { getWatchedMovieUseCase(1).map { it.toUIStateMedia() } }
+                                val tvShowsList =
+                                    async { getWatchedTVShowUseCase(1).map { it.toUIStateMedia() } }
 
-                    val movies = moviesList.await()
-                    val tvShows = tvShowsList.await()
+                                 val movies = moviesList.await()
+                                 val tvShows = tvShowsList.await()
 
-                    val combinedList = (movies + tvShows).shuffled()
-                    combinedList
-                }
+                                 combinedList = (movies + tvShows).shuffled()
+                                combinedList
+                            }
+                        }
+                    },
+                    config = PagingConfig(
+                        pageSize = combinedList.size, initialLoadSize = combinedList.size
+                ),
+                ).flow.cachedIn(viewModelScope)
             },
             onSuccess = { continueWatchingMedia ->
                 _state.update {
                     it.copy(
                         mediaContinueWatching = continueWatchingMedia,
-                        isLoading = false,
+                        isLoading = false
                     )
                 }
 

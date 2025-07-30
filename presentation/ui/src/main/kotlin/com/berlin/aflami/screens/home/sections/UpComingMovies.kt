@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.home.component
+package com.berlin.aflami.screens.home.sections
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -32,7 +31,7 @@ fun UpcomingMoviesSection(
     genres: List<GenreUiState>,
     onMovieClick: (Long) -> Unit,
     onGenreClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -41,7 +40,7 @@ fun UpcomingMoviesSection(
     ) {
         SectionTitle(
             text = stringResource(R.string.upcoming),
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp)
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 12.dp)
         )
 
         GenreChipsRow(
@@ -52,10 +51,10 @@ fun UpcomingMoviesSection(
                 .height(96.dp)
         )
 
-        MoviesRow(
+        MoviesColumn(
             movies = movies,
             onMovieClick = onMovieClick,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.padding(horizontal = 8.dp)
         )
     }
 }
@@ -63,7 +62,7 @@ fun UpcomingMoviesSection(
 @Composable
 private fun SectionTitle(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = text,
@@ -78,11 +77,11 @@ private fun SectionTitle(
 private fun GenreChipsRow(
     genres: List<GenreUiState>,
     onGenreClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyRow(
-        modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 12.dp),
+        modifier = modifier.padding(bottom = 12.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
@@ -100,26 +99,18 @@ private fun GenreChipsRow(
 }
 
 @Composable
-private fun MoviesRow(
+private fun MoviesColumn(
     movies: List<MovieUIState>,
     onMovieClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    LazyRow(
-        modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    Column(
+        modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(
-            items = movies,
-            key = { it.id }
-        ) { movie ->
+        movies.forEach { movie ->
             MediaCard(
                 modifier = modifier
-                    .fillParentMaxWidth()
-                    .animateItem()
-                    .height(222.dp)
-                    .padding(bottom = 8.dp),
+                    .height(222.dp),
                 mediaImg = movie.poster,
                 title = movie.title,
                 date = movie.releaseYear,
@@ -127,7 +118,8 @@ private fun MoviesRow(
                 typeOfMedia = MediaType.MOVIE.name,
                 onClick = {
                     onMovieClick(movie.id)
-                })
+                },
+            )
         }
     }
 }

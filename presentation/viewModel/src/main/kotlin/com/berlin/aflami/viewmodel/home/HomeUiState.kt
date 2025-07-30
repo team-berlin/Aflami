@@ -1,16 +1,22 @@
 package com.berlin.aflami.viewmodel.home
 
+import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.UserMood
+import com.berlin.aflami.viewmodel.search.FilterItemUiState.Companion.defaultGenres
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 
 data class HomeUiState(
-    val mediaContinueWatching: List<MediaUiState> = emptyList(),
+
+    val mediaContinueWatching: Flow<PagingData<MediaUiState>> = emptyFlow(),
     val upcomingMovies: List<MovieUIState> = emptyList(),
-    val movieGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
+    val upcomingMovieGenres: List<GenreUiState> = defaultGenres,
+    val upcomingMoviesSectionUiState: UpcomingMoviesSectionUiState = UpcomingMoviesSectionUiState(),
     val selectedRating: Float = 1f,
     val selectedGenres: Int = -1,
     val topRatedMediaUiState: TopRatedMediaUiState = TopRatedMediaUiState(),
@@ -26,6 +32,13 @@ data class TopRatedMediaUiState(
     val errorMessage: String? = null,
 )
 
+data class UpcomingMoviesSectionUiState(
+    val upcomingMovies: List<MovieUIState> = emptyList(),
+    val movieGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
+    val isLoading: Boolean = false,
+)
+
+
 data class PopularMediaUiState(
     val isLoading: Boolean = false,
     val popularMedia: List<MediaUiState> = emptyList(),
@@ -34,7 +47,7 @@ data class PopularMediaUiState(
 
 data class MoodPickerUiState(
     val selectedMood: UserMoodUiState? = null,
-    val isSelectedAction: Boolean = false,
+//    val isSelectedAction: Boolean = false,
     val selectedMovie: MovieUIState = MovieUIState(),
     val movies: List<MovieUIState> = emptyList(),
     val openMovieDialog: Boolean = false,
@@ -44,5 +57,5 @@ data class MoodPickerUiState(
 
 data class UserMoodUiState(
     val userMood: UserMood? = null,
-    val isSelectingMood: Boolean = false,
+//    val isSelectingMood: Boolean = false,
 )

@@ -18,22 +18,7 @@ fun NavGraphBuilder.topRatingMedia(
             navArgument(MediaDetailsArgs.ID) { NavType.LongType },
             navArgument(MediaDetailsArgs.MEDIA_TYPE) { NavType.StringType })
     ) {
-        TopRatingScreen(
-            onEffect = { effect ->
-                when (effect) {
-                    is TopRatingScreenEffect.NavigateToMediaDetailsScreen -> {
-                        navController.navigate(
-                            Destination.MediaDetailsScreen.route(
-                                effect.id, effect.type.name
-                            )
-                        )
-                    }
-
-                    is TopRatingScreenEffect.NavigateBack -> {
-                        navController.popBackStack()
-                    }
-                }
-            })
+        TopRatingScreen(navController = navController)
 
     }
 

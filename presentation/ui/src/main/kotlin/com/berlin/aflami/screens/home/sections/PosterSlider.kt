@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.home.component
+package com.berlin.aflami.screens.home.sections
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
