@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -49,11 +51,12 @@ fun Rating(
             contentDescription = stringResource(R.string.card_rate),
             tint = Theme.color.statusColors.yellowAccent
         )
-
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = rating,
             style = Theme.textStyle.label.small,
-            color = Theme.color.textColors.body
+            color = Theme.color.textColors.body,
+            textAlign = TextAlign.Center,
         )
     }
 }
