@@ -53,5 +53,6 @@
     <string name="offline_title">عذرًا! يبدو أنك غير متصل بالإنترنت.</string>
     <string name="check_connection_title">تحقق من اتصالك وحاول مرة أخرى، سنكون بانتظارك مع أفلامك والفشار.</string>
     <string name="retry">إعادة المحاولة</string>
-
+    <string name="apply">تطبيق</string>
+    <string name="clear">مسح</string>
 </resources>
