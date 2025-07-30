@@ -7,6 +7,7 @@ import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.toLocalDate
 
 data class MediaDetailsUiState(
     val id: Long = 0L,
@@ -41,7 +42,7 @@ data class MediaDetailsUiState(
             id = id,
             title = title,
             overview = overview,
-            releaseYear = LocalDate.parse(releaseYear),
+            releaseYear = releaseYear.toLocalDate1(),
             rating = rating,
             runtime = 0,
             genre = emptyList(),
@@ -55,7 +56,7 @@ data class MediaDetailsUiState(
             id = id,
             title = title,
             overview = overview,
-            releaseYear = LocalDate.parse(releaseYear),
+            releaseYear = releaseYear.toLocalDate1(),
             rating = rating,
             runtime = 0,
             genre = emptyList() ,
@@ -65,7 +66,13 @@ data class MediaDetailsUiState(
         )
     }
 }
-
+fun String.toLocalDate1(): LocalDate {
+    return try {
+        LocalDate.parse(this)
+    } catch (e: Exception){
+        LocalDate(1970, 1, 1)
+    }
+}
 data class EpisodesUiState(
     val stillPath: String,
     val airDate: String,

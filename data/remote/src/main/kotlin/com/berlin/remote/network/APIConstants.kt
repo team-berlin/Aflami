@@ -12,6 +12,7 @@ object ApiConstants {
 
     //endregion
     const val LANGUAGE = "language"
+    const val WITH_GENRES = "with_genres"
 
     //region details
     const val MOVIE_ID = "movie_id"
@@ -25,6 +26,7 @@ object ApiConstants {
     const val MOVIE_GENRES = "genre/movie/list"
     const val MOVIE_UPCOMING = "movie/upcoming"
     const val POPULAR_MOVIES = "movie/popular"
+    const val DISCOVER_MOVIE = "discover/movie"
     //endregion
 
     //region tv shows

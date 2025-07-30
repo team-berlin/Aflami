@@ -51,5 +51,9 @@
     <string name="upcoming">Upcoming</string>
     <string name="offline_title">Oops! It looks like you’re offline.</string>
     <string name="check_connection_title">Check your connection and try again, we’ll be waiting with your movies and popcorn</string>
+
+    <string name="top_rating">Top rating</string>
+
     <string name="retry">Retry</string>
+
 </resources>

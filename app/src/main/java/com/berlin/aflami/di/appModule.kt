@@ -16,8 +16,6 @@ val appModule = module {
         ).fallbackToDestructiveMigration(false).build()
     }
     single { provideSharedPref(androidContext()) }
-
-
 }
 
 fun provideSharedPref(context: Context): SharedPreferences {

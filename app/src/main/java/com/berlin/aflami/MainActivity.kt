@@ -22,16 +22,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
         setContent {
             val navController = rememberNavController()
             AflamiTheme {
                 AflamiNavGraph(
-
                     navController = navController,
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Theme.color.surface)
-                        .statusBarsPadding()
                         .navigationBarsPadding()
                 )
             }

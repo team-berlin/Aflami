@@ -35,4 +35,5 @@ dependencies {
     testImplementation(libs.bundles.test)
 
     implementation(project(":domain:usecase"))
+    implementation(libs.firebase.ml.modeldownloader)
 }

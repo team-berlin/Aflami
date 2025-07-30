@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,7 +18,7 @@ import com.berlin.aflami.ui.theme.Theme
 fun CircularProgressIndicator(modifier: Modifier = Modifier, text: String? = null) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator(
@@ -28,6 +29,7 @@ fun CircularProgressIndicator(modifier: Modifier = Modifier, text: String? = nul
         )
         text?.let {
             Text(
+                modifier = Modifier.padding(top = 14.dp),
                 text = it,
                 style = Theme.textStyle.label.medium,
                 color = Theme.color.textColors.body

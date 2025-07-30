@@ -2,6 +2,7 @@ package com.berlin.aflami.screens.mediadetails.screen
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
@@ -78,7 +80,10 @@ fun MediaDetailsScreen(
     }
 
     if (uiState.isLoading) {
-        Loading()
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(com.berlin.ui.R.string.loading)
+        )
     } else if (uiState.error != null) {
         Box(
             Modifier.padding(top = 32.dp, bottom = 82.dp),
@@ -148,7 +153,9 @@ fun MediaDetailsContent(
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
 
-    Box(Modifier.fillMaxSize()) {
+    Box(Modifier.fillMaxSize()
+        .background(Theme.color.surface)
+    ) {
         LazyColumn(state = listState) {
             item {
                 BackdropPager(
