@@ -247,7 +247,7 @@ class SearchViewModel(
     override fun onCardClicked(id: Int) {
         val mediaType = when (state.value.selectedTabOption) {
             TabOption.MOVIES -> MediaType.MOVIE.name
-            TabOption.TV_SHOWS -> MediaType.TV_SHOW.name
+            TabOption.TV_SHOWS -> MediaType.TVSHOW.name
         }
         sendNewEffect(SearchUiEffect.NavigatedToMovieDetailsScreen(id = id, mediaType))
     }
