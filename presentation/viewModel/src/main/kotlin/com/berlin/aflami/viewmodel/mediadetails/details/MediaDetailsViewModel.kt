@@ -81,7 +81,7 @@ class MediaDetailsViewModel(
         if (_state.value.id == 0L && id != 0L) {
             getMediaCast(id, type)
             getMediaDetails(id, type, "en-US")
-            onShowReviewsClicked(id, type)
+            onShowMoreMediaLikeThisClicked(id, type)
         }
     }
 
@@ -126,14 +126,14 @@ class MediaDetailsViewModel(
                             originalCountry = details.originalCountry,
                         )
                     }
-                    saveWatchedMedia(mediaType=mediaType)
+                    saveWatchedMedia(mediaType = mediaType)
                 }
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
-    private fun saveWatchedMedia(mediaType: MediaType){
+    private fun saveWatchedMedia(mediaType: MediaType) {
         viewModelScope.launch {
             when (mediaType) {
                 MediaType.MOVIE -> addContinueWatchingMovieUseCase(_state.value.toMovie())
@@ -146,7 +146,7 @@ class MediaDetailsViewModel(
         return _state.value.isDescriptionExpanded
     }
 
-    fun isReviewExpanded(id: Long): Boolean {
+    fun isReviewExpanded(id: String): Boolean {
         return _state.value.expandedReviewIds.contains(id)
     }
 
@@ -175,7 +175,7 @@ class MediaDetailsViewModel(
         }
     }
 
-    override fun onReadMoreReviewClicked(id: Long) {
+    override fun onReadMoreReviewClicked(id: String) {
         updateState { state ->
             state.copy(
                 expandedReviewIds = state.expandedReviewIds.toggle(id)
@@ -360,8 +360,6 @@ class MediaDetailsViewModel(
                         )
                     }
                 }
-
-
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
@@ -379,7 +377,11 @@ class MediaDetailsViewModel(
                 if (companyProductionCache?.isEmpty() == true) {
                     updateState { companyProduction ->
                         companyProduction.copy(
-                            rowSection = RowSectionUiState.NoDataFound(UiText.Resource(NO_COMPANY_PRODUCTION))
+                            rowSection = RowSectionUiState.NoDataFound(
+                                UiText.Resource(
+                                    NO_COMPANY_PRODUCTION
+                                )
+                            )
                         )
                     }
                 } else {
@@ -465,12 +467,9 @@ class MediaDetailsViewModel(
         mediaType: MediaType,
     ) {
         _tabSelectedUiState.update { current ->
-            val newSelectedTab = if (current.tab == tab) {
-                MovieDetailsTabs.REVIEWS
-            } else {
-                tab
-            }
-            when (newSelectedTab) {
+            if (current.tab == tab) return@update current
+
+            when (tab) {
                 MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(
                     mediaId = mediaId,
                     mediaType = mediaType
@@ -493,7 +492,7 @@ class MediaDetailsViewModel(
                 )
             }
             current.copy(
-                tab = newSelectedTab,
+                tab = tab,
                 isSelected = true
             )
         }

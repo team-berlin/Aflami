@@ -2,7 +2,7 @@ package com.berlin.aflami.viewmodel.mediadetails
 
 
 data class MovieDetailsTabsUiState(
-    val tab: MovieDetailsTabs = MovieDetailsTabs.REVIEWS,
+    val tab: MovieDetailsTabs = MovieDetailsTabs.MORE_LIKE_THIS,
     val isSelected: Boolean = false,
 )
 

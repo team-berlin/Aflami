@@ -27,6 +27,7 @@ import com.berlin.aflami.component.Rating
 import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.utils.formatRating
+import com.berlin.aflami.utils.formatRatingForUi
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.designsystem.R
 import com.berlin.safeimageviewer.SafeImageViewer
@@ -68,9 +69,9 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                     }
                 }
             }
-            Indicator(pagerState = pagerState)
+            Indicator(pagerState = pagerState,modifier = Modifier.align(Alignment.BottomEnd))
             Box(modifier = Modifier.align(Alignment.BottomStart).padding(4.dp)) {
-                Rating(rating = formatRating(state.rating))
+                Rating(rating = state.rating.formatRatingForUi())
             }
         }
         Box(

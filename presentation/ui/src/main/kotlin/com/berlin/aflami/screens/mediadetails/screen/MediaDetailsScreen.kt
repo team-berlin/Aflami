@@ -1,40 +1,34 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berlin.aflami.component.CircularProgressIndicator
+import androidx.core.view.WindowCompat
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
@@ -60,17 +54,19 @@ fun MediaDetailsScreen(
     viewModel: MediaDetailsViewModel = koinViewModel(),
     onEffect: (MediaDetailsScreenEffect) -> Unit
 ) {
-    val uiState by viewModel.state.collectAsStateWithLifecycle()
-    val tabSelected by viewModel.tabSelectedUiState.collectAsStateWithLifecycle()
-    val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsStateWithLifecycle()
+    val uiState by viewModel.state.collectAsState()
+    val tabSelected by viewModel.tabSelectedUiState.collectAsState()
+    val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { event ->
             when (event) {
                 is MediaDetailsScreenEffect.ShowRatingDialog -> {
+                    TODO("Actual implementation once login is in place")
                 }
 
                 is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {
+                    TODO("Actual implementation once login is in place")
                 }
 
                 else -> onEffect(event)
@@ -79,10 +75,7 @@ fun MediaDetailsScreen(
     }
 
     if (uiState.isLoading) {
-        CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(com.berlin.ui.R.string.loading)
-        )
+        Loading()
     } else if (uiState.error != null) {
         Box(
             Modifier.padding(top = 32.dp, bottom = 82.dp),
@@ -90,10 +83,10 @@ fun MediaDetailsScreen(
         ) {
             Text(
                 modifier = Modifier.fillMaxSize(),
-                text =  uiState.rowSection.getDisplayMessage(),
+                text = uiState.error ?: "",
                 style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.body,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         }
     } else {
@@ -102,9 +95,7 @@ fun MediaDetailsScreen(
             listener = viewModel,
             isDescriptionExpanded = viewModel.isDescriptionExpanded(),
             onToggleDescriptionExpand = { viewModel.onReadMoreDescriptionClicked() },
-            isReviewExpanded = viewModel.isReviewExpanded(viewModel.id),
-            onToggleReviewExpand = { viewModel.onReadMoreReviewClicked(viewModel.id) },
-            isSelectedTab = tabSelected.tab,
+            mediaChips = tabSelected.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
                     tab = tab,
@@ -134,9 +125,7 @@ fun MediaDetailsContent(
     listener: MediaInteractionListener,
     isDescriptionExpanded: Boolean,
     onToggleDescriptionExpand: () -> Unit,
-    isReviewExpanded: Boolean,
-    onToggleReviewExpand: () -> Unit,
-    isSelectedTab: MovieDetailsTabs,
+    mediaChips: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
     mediaType: MediaType
 ) {
@@ -152,9 +141,8 @@ fun MediaDetailsContent(
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
 
-    Box(Modifier.fillMaxSize()
-        .background(Theme.color.surface)
-    ) {
+
+    Box(Modifier.fillMaxSize()) {
         LazyColumn(state = listState) {
             item {
                 BackdropPager(
@@ -191,35 +179,34 @@ fun MediaDetailsContent(
 
             item {
                 TabSection(
-                    tabState = isSelectedTab,
+                    tabState = mediaChips,
                     rowState = state.rowSection,
                     onChipClick = onChipClick,
-                    isExpanded = isReviewExpanded,
-                    onToggleExpand = onToggleReviewExpand,
+                    isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
+                    onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
                     mediaType = mediaType,
                 )
             }
         }
         DefaultBar(
-            modifier = Modifier.statusBarsPadding(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(appBarBgColor)
+                .statusBarsPadding(),
+
             firstOption = painterResource(R.drawable.ic_rounded_star),
             lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
             onLastOptionClicked = {
-                listener.onAddMediaToFavouriteListClicked(
-                    0,
-                    state.id.toInt()
-                )
+                listener.onAddMediaToFavouriteListClicked(0, state.id.toInt())
             },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
-            containerColor = appBarBgColor,
-
-            )
+            containerColor = Color.Unspecified, // transparent so Modifier.background takes effect
+        )
     }
 
 }
-
 
 @Composable
 fun RowSectionUiState.getDisplayMessage(): String {

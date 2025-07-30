@@ -29,7 +29,7 @@ data class MediaDetailsUiState(
     val country: String = "",
     val options: List<MediaOptions> = emptyList(),
     val isDescriptionExpanded: Boolean = false,
-    val expandedReviewIds: Set<Long> = emptySet(),
+    val expandedReviewIds: Set<String> = emptySet(),
     val isLoading: Boolean = true,
     val originalCountry: String? = null,
     val duration: String? = null,
