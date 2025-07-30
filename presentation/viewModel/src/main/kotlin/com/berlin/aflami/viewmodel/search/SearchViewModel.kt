@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.search
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -125,7 +126,8 @@ class SearchViewModel(
                                 state.value.filterItemUiState.filterTvShowSelected.selectedRating
                             val selectedGenreId =
                                 state.value.filterItemUiState.filterTvShowSelected.selectedGenres
-                            val matchesRating = tvUiState.rating.toFloatOrNull()
+                            val matchesRating = convertArabicToEnglish(tvUiState.rating.replace('٫', '.'))
+                                .toFloatOrNull()
                                 ?.let { it > selectedRating } == true
                             val matchesGenre =
                                 selectedGenreId == -1 || tvUiState.genre.any { it == selectedGenreId }
@@ -166,10 +168,18 @@ class SearchViewModel(
                                 state.value.filterItemUiState.filterMovieSelected.selectedRating
                             val selectedGenreId =
                                 state.value.filterItemUiState.filterMovieSelected.selectedGenres
-                            val matchesRating = movieUiState.rating.toFloatOrNull()
+                            val matchesRating = convertArabicToEnglish(movieUiState.rating.replace('٫', '.'))
+                                .toFloatOrNull()
                                 ?.let { it > selectedRating } == true
                             val matchesGenre =
                                 selectedGenreId == -1 || movieUiState.genre.any { it == selectedGenreId }
+                            Log.d("FilterDebug", "Movie Title: ${movieUiState.title}")
+                            Log.d("FilterDebug", "Selected Rating: $selectedRating")
+                            Log.d("FilterDebug", "Matches Rating: ${movieUiState.rating}")
+                            Log.d("FilterDebug", "Selected Genre ID: $selectedGenreId")
+                            Log.d("FilterDebug", "Movie Genres: $movieGenres")
+                            Log.d("FilterDebug", "Matches Genre: $matchesGenre")
+
                             matchesGenre && matchesRating
                         }
                     }.cachedIn(viewModelScope)
@@ -182,6 +192,16 @@ class SearchViewModel(
             }
         )
     }
+    private fun convertArabicToEnglish(input: String): String {
+        val arabicDigits = "٠١٢٣٤٥٦٧٨٩".toCharArray()
+        val englishDigits = "0123456789"
+
+        return input.map { char ->
+            val index = arabicDigits.indexOf(char)
+            if (index != -1) englishDigits[index] else char
+        }.joinToString("")
+    }
+
 
     private fun onFetchTvShowsSuccess(tvShowsFlow: Flow<PagingData<TVShowUiState>>) {
         updateState { it.copy(tvShows = tvShowsFlow, errorMessage = null, isLoading = false) }
