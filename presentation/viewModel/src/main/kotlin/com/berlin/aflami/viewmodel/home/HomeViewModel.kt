@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.home
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -184,10 +185,7 @@ class HomeViewModel(
         tryToCall(
             call = {
                 getMoviesByMoodUseCase(selectedMood.moodGenres.toGenreIds()).also {
-                    Log.d(
-                        "HomeViewModel",
-                        "Selected Mood: $selectedMood, Genres: ${selectedMood.moodGenres} movies: $it"
-                    )
+
                 }
             },
             onSuccess = ::onGetMoviesByMoodSuccess,
