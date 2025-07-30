@@ -50,5 +50,7 @@
     <string name="gallery">المعرض</string>
     <string name="company_production">إنتاج\nالشركة</string>
     <string name="upcoming">حصريات</string>
+    <string name="offline_title">Oops! It looks like you’re offline.</string>
+    <string name="check_connection_title">Check your connection and try again, we’ll be waiting with your movies and popcorn</string>
     <string name="top_rating">الأعلى تقييم</string>
 </resources>
