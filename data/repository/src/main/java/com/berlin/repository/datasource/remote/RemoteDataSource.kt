@@ -50,4 +50,8 @@ interface RemoteDataSource {
     suspend fun getPopularMovies(language: String) : MovieResponse
     suspend fun getPopularTVShows(language: String) : TVShowResponse
 
+    suspend fun getMoviesByMoodIds(
+        moodIds: List<Int>
+    ): MovieResponse
+
 }

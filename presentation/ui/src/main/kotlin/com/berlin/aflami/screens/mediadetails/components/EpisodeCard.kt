@@ -27,6 +27,7 @@ import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImageViewer
 
 
 @Composable
@@ -94,9 +95,9 @@ private fun ImageWithRatingBadge(
             ),
         contentAlignment = Alignment.Center
     ) {
-        AsyncImage(
+        SafeImageViewer(
             modifier = Modifier.fillMaxSize(),
-            model = imageUrl,
+            imageUri = imageUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             alignment = Alignment.TopCenter,

@@ -2,6 +2,7 @@ package com.berlin.aflami.di
 
 import com.berlin.aflami.BuildConfig
 import com.berlin.aflami.util.ApiKeyInterceptor
+import com.berlin.aflami.util.LanguageInterceptor
 import com.berlin.remote.network.ApiService
 import com.berlin.remote.network.AuthenticationApiService
 import com.berlin.remote.network.HomeApiService
@@ -24,7 +25,9 @@ val networkModule = module {
     }
 
     single {
-        OkHttpClient.Builder().addInterceptor(ApiKeyInterceptor())
+        OkHttpClient.Builder()
+            .addInterceptor(ApiKeyInterceptor())
+            .addInterceptor ( LanguageInterceptor())
             .addInterceptor(get<HttpLoggingInterceptor>()).build()
     }
 

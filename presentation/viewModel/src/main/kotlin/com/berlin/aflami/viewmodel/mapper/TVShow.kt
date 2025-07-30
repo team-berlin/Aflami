@@ -11,7 +11,7 @@ fun TVShow.toUiState(): TVShowUiState {
         id = id,
         title = title,
         rating = DecimalFormat("#.#").format(rating).toString(),
-        releaseYear = releaseYear.year.toString(),
+        releaseYear = releaseYear?.year.toString(),
         genre = genre,
         poster = poster
     )
@@ -22,7 +22,7 @@ fun TVShow.toUIStateMedia(): MediaUiState {
         id = id,
         title = title,
         rating = DecimalFormat("#.#").format(rating).toString(),
-        releaseYear = releaseYear.year.toString(),
+        releaseYear = releaseYear?.year.toString(),
         genre = genre,
         poster = poster,
         mediaType = MediaType.TVSHOW

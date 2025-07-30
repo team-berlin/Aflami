@@ -18,22 +18,7 @@ fun NavGraphBuilder.watchedMedia(
             navArgument(MediaDetailsArgs.ID) { NavType.LongType },
             navArgument(MediaDetailsArgs.MEDIA_TYPE) { NavType.StringType })
     ) {
-        ContinueWatchingScreen(
-            onEffect = { effect ->
-                when (effect) {
-                    is ContinueWatchingMediaEffect.NavigateToDetails -> {
-                        navController.navigate(
-                            Destination.MediaDetailsScreen.route(
-                                effect.id, effect.type.name
-                            )
-                        )
-                    }
-
-                    is ContinueWatchingMediaEffect.OnBackClicked -> {
-                        navController.popBackStack()
-                    }
-                }
-            })
+        ContinueWatchingScreen(navController = navController)
 
     }
 

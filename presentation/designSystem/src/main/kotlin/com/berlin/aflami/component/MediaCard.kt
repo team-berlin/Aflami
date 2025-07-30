@@ -25,13 +25,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun MediaCard(
@@ -59,23 +59,26 @@ fun MediaCard(
             else -> ContentScale.Inside
         }
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            AsyncImage(
-                model = mediaImg,
-                contentDescription = null,
-                contentScale = contentScale,
+//            AsyncImage(
+//                model = mediaImg,
+//                contentDescription = null,
+//                contentScale = contentScale,
+//                modifier = Modifier.fillMaxSize(),
+//                error = painterResource(R.drawable.place_holder),
+//                fallback = painterResource(R.drawable.place_holder),
+//            )
+            SafeImageViewer(
+                imageUri = mediaImg,
                 modifier = Modifier.fillMaxSize(),
+                contentScale = contentScale,
                 error = painterResource(R.drawable.place_holder),
-                fallback = painterResource(R.drawable.place_holder),
+                fallback = painterResource(R.drawable.place_holder)
             )
             if (imageState is AsyncImagePainter.State.Loading) {
                 ShimmerBox(modifier = Modifier.fillMaxSize())
             }
         }
 
-//        SafeImageViewer(
-//            imageUri = mediaImg,
-//            modifier = Modifier.fillMaxSize(),
-//        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()

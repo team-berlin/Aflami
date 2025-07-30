@@ -124,6 +124,7 @@ private fun SearchScreenContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Theme.color.surfaceHigh)
             .clickable(
                 indication = null, interactionSource = remember { MutableInteractionSource() }) {
                 focusManager.clearFocus()
@@ -337,7 +338,6 @@ private fun SearchScreenContent(
                                             ) { index ->
                                                 val tvShows = tvShows[index]
                                                 if (tvShows != null) {
-
 
                                                     MediaCard(
                                                         modifier = Modifier.height(222.dp),

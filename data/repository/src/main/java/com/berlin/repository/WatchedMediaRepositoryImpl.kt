@@ -11,8 +11,11 @@ import repository.ContinueWatchingRepository
 class WatchedMediaRepositoryImpl(
     private val localDataSource: ContinueWatchingLocalDataSource
 ) : ContinueWatchingRepository {
-    override suspend fun getContinueWatchingMovies(): List<Movie> {
-        return localDataSource.getContinueWatchingMovie().map {
+    override suspend fun getContinueWatchingMovies(page: Int): List<Movie> {
+        return localDataSource.getContinueWatchingMovie(
+            pageSize = 20,
+            page = page
+        ).map {
             it.toMovie()
         }
     }
@@ -21,8 +24,11 @@ class WatchedMediaRepositoryImpl(
         localDataSource.addContinueWatchedMovie(movie.toLocalEntity())
     }
 
-    override suspend fun getContinueWatchingTVShows(): List<TVShow> {
-        return localDataSource.getContinueWatchedTVShow().map {
+    override suspend fun getContinueWatchingTVShows(page: Int): List<TVShow> {
+        return localDataSource.getContinueWatchedTVShow(
+            pageSize = 20,
+            page = page
+        ).map {
             it.toTVShow()
         }
     }

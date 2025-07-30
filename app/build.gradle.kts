@@ -102,6 +102,8 @@ dependencies {
     implementation(libs.bundles.room)
     ksp(libs.roomCompiler)
     implementation(libs.androidx.navigation)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.firebase.ml.modeldownloader)
 
 
 

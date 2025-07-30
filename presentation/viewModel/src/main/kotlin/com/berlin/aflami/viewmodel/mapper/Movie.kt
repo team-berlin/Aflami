@@ -13,7 +13,7 @@ fun Movie.toUIState(): MovieUIState {
         id = id,
         title = title,
         rating = DecimalFormat("#.#").format(rating).toString(),
-        releaseYear = releaseYear.year.toString(),
+        releaseYear = releaseYear?.year.toString(),
         genre = genre,
         poster = poster
     )
@@ -24,7 +24,7 @@ fun Movie.toUIStateMedia(): MediaUiState {
         id = id,
         title = title,
         rating = DecimalFormat("#.#").format(rating).toString(),
-        releaseYear = releaseYear.year.toString(),
+        releaseYear = releaseYear?.year.toString(),
         genre = genre,
         poster = poster,
         mediaType =MediaType.MOVIE

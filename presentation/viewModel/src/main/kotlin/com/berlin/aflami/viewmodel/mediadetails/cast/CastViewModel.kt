@@ -48,11 +48,10 @@ class CastViewModel(
                     )
                 }
             },
-            onError = { throwable ->
-                Log.d("CastViewModel", "getMediaCast: ${throwable.message}")
+            onError = { errorUiState ->
                 _state.update {
                     it.copy(
-                        error = UiText.Dynamic(throwable.message).toString(),
+                        error = errorUiState.message
                     )
                 }
             },

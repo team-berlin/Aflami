@@ -1,75 +1,44 @@
 package com.berlin.repository
 
-import com.berlin.entity.ValidationException
-import com.berlin.entity.auth.LoginToken
-import com.berlin.entity.auth.Session
+import com.berlin.entity.NotFoundException
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
-import com.berlin.repository.mapper.auth.toDomain
-import com.berlin.repository.util.toException
 import repository.AuthenticationRepository
 
 class AuthenticationRepositoryImpl(
     private val remoteDataSource: AuthenticationRemoteDataSource,
-    private val localDataSource: AuthenticationLocalDataSource
+    private val localDataSource: AuthenticationLocalDataSource,
 ) : AuthenticationRepository {
-    override suspend fun register(
-        email: String,
-        userName: String,
-        password: String
-    ) {
-        TODO("Not yet implemented")
+
+    private suspend fun requestToken(): String {
+        return remoteDataSource.requestToken().requestToken
+            ?: throw NotFoundException("Token not found")
     }
 
-    override suspend fun requestToken(): LoginToken {
-
-        return try {
-            remoteDataSource.requestToken().toDomain()
-        } catch (e: ValidationException) {
-            throw e.message.toException()
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    override suspend fun createSession(requestToken: String): Session {
-        return try {
-            val result = remoteDataSource.createSession(requestToken).also {
-                localDataSource.saveUserSessionId(it.sessionId.toString())
-            }
-            result.toDomain()
-        } catch (e: ValidationException) {
-            throw e.message.toException()
-        } catch (e: Exception) {
-            throw e
-        }
+    private suspend fun createSession(requestToken: String): String {
+        return remoteDataSource.createSession(requestToken).sessionId
+            ?: throw NotFoundException("Session not found")
     }
 
     override suspend fun login(
         userName: String,
-        password: String
-    ): LoginToken {
-        return try {
-            val result =
-                remoteDataSource.login(userName, password, requestToken().requestToken).also {
-                    localDataSource.saveUserToken(it.requestToken.toString())
-                    createSession(it.requestToken.toString())
-                }
-            result.toDomain()
-        } catch (e: ValidationException) {
-            throw e.message.toException()
-        } catch (e: Exception) {
-            throw e
+        password: String,
+    ) {
+        val requestToken = requestToken()
+        remoteDataSource.login(userName, password, requestToken).also {
+            val session =
+                createSession(it.requestToken ?: throw NotFoundException("Token not found"))
+            localDataSource.saveUserSessionId(session)
         }
     }
 
     override suspend fun isLoggedIn(): Boolean {
-        val result= localDataSource.getUserSessionId()
-         return result != null
+        val result = localDataSource.getUserSessionId()
+        return result != null
     }
 
     override suspend fun logout() {
-        TODO("Not yet implemented")
+
     }
 
 }

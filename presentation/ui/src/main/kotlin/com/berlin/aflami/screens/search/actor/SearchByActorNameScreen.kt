@@ -109,7 +109,7 @@ private fun SearchByActorNameContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 4.dp),
-            onValueChange = listener::onActorNameChanged,
+            onValueChange = { listener.onActorNameChanged(it) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Search
             ),

@@ -12,12 +12,23 @@ interface ContinueWatchingDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addContinueWatchingMovie(movieEntity: ContinueWatchingMovieEntity)
 
-    @Query("SELECT * FROM Movie_Continue_Watching ")
-    suspend fun getContinueWatchingMovies(): List<ContinueWatchingMovieEntity>
+    @Query(
+        """SELECT * FROM Movie_Continue_Watching 
+        LIMIT :pageSize OFFSET :skip"""
+    )
+    suspend fun getContinueWatchingMovies(
+        pageSize: Int,
+        skip: Int
+    ): List<ContinueWatchingMovieEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addContinueWatchingTVShow(tvShowEntity: ContinueWatchingTVShowEntity )
 
-    @Query("SELECT * FROM TVShow_Continue_Watching ")
-    suspend fun getContinueWatchingTVShows(): List<ContinueWatchingTVShowEntity>
+    @Query(
+        """SELECT * FROM TVShow_Continue_Watching 
+        LIMIT :pageSize OFFSET :skip"""
+    )    suspend fun getContinueWatchingTVShows(
+        pageSize: Int,
+        skip: Int
+    ): List<ContinueWatchingTVShowEntity>
 }

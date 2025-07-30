@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun MediaCastItem(
@@ -39,8 +40,8 @@ fun MediaCastItem(
                     RoundedCornerShape(16.dp)),
             contentAlignment = Alignment.Center
         ){
-            AsyncImage(
-                model = poster,
+            SafeImageViewer(
+                imageUri = poster,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),

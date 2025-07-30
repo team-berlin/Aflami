@@ -26,6 +26,7 @@ import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun CompanyProductionItem(
@@ -39,9 +40,9 @@ fun CompanyProductionItem(
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(12.dp))
 
     ) {
-        AsyncImage(
+        SafeImageViewer(
             modifier = modifier,
-            model = item.image,
+            imageUri = item.image?:"",
             contentDescription = stringResource(com.berlin.ui.R.string.company_production_image_cd),
             contentScale = ContentScale.Crop,
             error = painterResource(R.drawable.place_holder),

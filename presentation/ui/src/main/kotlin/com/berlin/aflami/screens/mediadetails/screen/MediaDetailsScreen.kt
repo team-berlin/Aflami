@@ -2,6 +2,7 @@ package com.berlin.aflami.screens.mediadetails.screen
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
@@ -57,19 +60,17 @@ fun MediaDetailsScreen(
     viewModel: MediaDetailsViewModel = koinViewModel(),
     onEffect: (MediaDetailsScreenEffect) -> Unit
 ) {
-    val uiState by viewModel.state.collectAsState()
-    val tabSelected by viewModel.tabSelectedUiState.collectAsState()
-    val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsState()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val tabSelected by viewModel.tabSelectedUiState.collectAsStateWithLifecycle()
+    val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { event ->
             when (event) {
                 is MediaDetailsScreenEffect.ShowRatingDialog -> {
-                    TODO("Actual implementation once login is in place")
                 }
 
                 is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {
-                    TODO("Actual implementation once login is in place")
                 }
 
                 else -> onEffect(event)
@@ -78,7 +79,10 @@ fun MediaDetailsScreen(
     }
 
     if (uiState.isLoading) {
-        Loading()
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(com.berlin.ui.R.string.loading)
+        )
     } else if (uiState.error != null) {
         Box(
             Modifier.padding(top = 32.dp, bottom = 82.dp),
@@ -86,10 +90,10 @@ fun MediaDetailsScreen(
         ) {
             Text(
                 modifier = Modifier.fillMaxSize(),
-                text = uiState.error?:"",
+                text =  uiState.rowSection.getDisplayMessage(),
                 style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.body,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     } else {
@@ -148,7 +152,9 @@ fun MediaDetailsContent(
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
 
-    Box(Modifier.fillMaxSize()) {
+    Box(Modifier.fillMaxSize()
+        .background(Theme.color.surface)
+    ) {
         LazyColumn(state = listState) {
             item {
                 BackdropPager(
