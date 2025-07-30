@@ -6,17 +6,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.berlin.aflami.navigation.routes.castDetails
-import com.berlin.aflami.navigation.routes.home
+import com.berlin.aflami.navigation.routes.castDetailsScreen
+import com.berlin.aflami.navigation.routes.homeScreenRoute
 import com.berlin.aflami.navigation.routes.loginRoute
 import com.berlin.aflami.navigation.routes.mediaDetailsRoute
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchByCountryRoute
-import com.berlin.aflami.navigation.routes.searchRoute
+import com.berlin.aflami.navigation.routes.searchScreenRoute
 import com.berlin.aflami.navigation.routes.watchedMedia
 import com.berlin.aflami.navigation.routes.webView
+import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.main.MainViewModel
-import com.example.navigation.Destination
 import org.koin.compose.getKoin
 
 /**
@@ -33,29 +33,29 @@ import org.koin.compose.getKoin
 
 @Composable
 fun AflamiNavGraph(
-    navController: NavHostController, modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = getKoin().get(),
 ) {
-    val startDestination =
-        if (mainViewModel.loginState) Destination.HomeScreen.route else Destination.LoginScreen.route
+    val navController = Theme.navController
+
     NavHost(
-        modifier = modifier,
         navController = navController,
-        startDestination = startDestination,
+        startDestination = if (mainViewModel.loginState) HomeScreen else LoginScreen,
         enterTransition = {
             EnterTransition.None
         },
         exitTransition = {
             ExitTransition.None
         }) {
-        searchRoute(navController)
-        searchByCountryRoute(navController)
-        searchByActorNameRoute(navController)
-        mediaDetailsRoute(navController)
-        castDetails(navController)
-        loginRoute(navController)
-        webView(navController)
-        watchedMedia(navController)
-        home(navController)
+
+        searchScreenRoute()
+        searchByCountryRoute()
+        searchByActorNameRoute()
+        mediaDetailsRoute()
+        castDetailsScreen()
+        loginRoute()
+        webView()
+        watchedMedia()
+        homeScreenRoute()
     }
 }

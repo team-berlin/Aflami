@@ -25,12 +25,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.navigation.MediaDetails
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
@@ -38,15 +38,16 @@ import com.berlin.aflami.viewmodel.searchactor.SearchByActorEffect
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorInteractionListener
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenUiState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SearchByActorNameScreen(
-    navController: NavController, viewModel: SearchByActorViewModel = koinViewModel()
+    viewModel: SearchByActorViewModel = koinViewModel()
 ) {
+    val navController = Theme.navController
     val uiState by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -58,9 +59,9 @@ fun SearchByActorNameScreen(
 
                 is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {
                     navController.navigate(
-                        Destination.MediaDetailsScreen.route(
+                        MediaDetails(
                             it.movieId,
-                            "MOVIE"
+                            MediaType.valueOf("MOVIE"),
                         )
                     )
                 }
@@ -127,7 +128,7 @@ private fun SearchByActorNameContent(
 
             when (pagedMovies.loadState.refresh) {
                 is LoadState.Loading -> {
-                    if (state.query.isBlank()) {
+                    if (state.query.text.isBlank()) {
                         InitContent()
                     } else {
                         CircularProgressIndicator(
@@ -139,9 +140,9 @@ private fun SearchByActorNameContent(
 
 
                 is LoadState.NotLoading -> {
-                    if (state.query.isBlank()) {
+                    if (state.query.text.isBlank()) {
                         InitContent()
-                    } else if (pagedMovies.itemCount == 0 && state.query.isNotBlank()) {
+                    } else if (pagedMovies.itemCount == 0 && state.query.text.isNotBlank()) {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)

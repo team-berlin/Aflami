@@ -49,11 +49,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.component.IconButton
 import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
@@ -61,6 +60,8 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.buttons.ButtonState
 import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.navigation.HomeScreen
+import com.berlin.aflami.navigation.WebViewScreen
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.login.FormUiState
@@ -69,16 +70,14 @@ import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.ui.R
-import com.example.navigation.Destination
-import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
 import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun LoginScreen(
     viewmodel: LoginViewmodel = koinViewModel(),
-    navController: NavController
 ) {
+    val navController = Theme.navController
     val uiState by viewmodel.state.collectAsState()
     LoginContent(uiState, viewmodel)
 
@@ -87,17 +86,18 @@ fun LoginScreen(
             when (it) {
                 LoginEffect.NavigateToHome -> {
                     navController.navigate(
-                        Destination.HomeScreen.route
+                        HomeScreen
                     )
                 }
+
                 LoginEffect.NavigateToCreateAccount -> {
                     val encodedUrl = Uri.encode(REGISTER_URL)
-                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                    navController.navigate(WebViewScreen(encodedUrl))
                 }
 
                 LoginEffect.NavigateToForgotPassword -> {
                     val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
-                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                    navController.navigate(WebViewScreen(encodedUrl))
                 }
             }
         }
@@ -200,8 +200,8 @@ private fun WelcomeText() {
 private fun FormLogin(
     modifier: Modifier = Modifier,
     uiState: FormUiState,
-    onUsernameChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
+    onUsernameChanged: (TextFieldValue) -> Unit,
+    onPasswordChanged: (TextFieldValue) -> Unit,
     onTrailingIconClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
 ) {
@@ -299,7 +299,7 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
             style = Theme.textStyle.body.small,
             color = Theme.color.textColors.hint,
 
-        )
+            )
         Text(
             text = stringResource(R.string.create_account),
             style = Theme.textStyle.body.small,
@@ -314,7 +314,7 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
 @Composable
 private fun AnimatedSnackBar(
     modifier: Modifier = Modifier,
-    isSnackBarVisible: Boolean
+    isSnackBarVisible: Boolean,
 ) {
     AnimatedVisibility(
         visible = isSnackBarVisible, enter = slideInVertically(
@@ -391,7 +391,7 @@ fun CirclesBackground() {
 @Composable
 private fun LoginScreenPreview() {
     AflamiTheme(isDarkTheme = false) {
-        LoginScreen(navController = rememberNavController())
+        LoginScreen()
     }
 }
 

@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.login
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.util.SNACK_BAR_DURATION
@@ -16,20 +17,20 @@ class LoginViewmodel(
 
     ) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
     LoginInteractionListener {
-    override fun onUsernameChanged(username: String) {
+    override fun onUsernameChanged(username: TextFieldValue) {
         updateState {
             it.copy(
                 formUiState = it.formUiState.copy(username = username),
-                isLoginButtonEnabled = username.isNotBlank() && it.formUiState.password.isNotBlank()
+                isLoginButtonEnabled = username.text.isNotBlank() && it.formUiState.password.text.isNotBlank()
             )
         }
     }
 
-    override fun onPasswordChanged(password: String) {
+    override fun onPasswordChanged(password: TextFieldValue) {
         updateState {
             it.copy(
                 formUiState = it.formUiState.copy(password = password),
-                isLoginButtonEnabled = password.isNotBlank() && it.formUiState.username.isNotBlank()
+                isLoginButtonEnabled = password.text.isNotBlank() && it.formUiState.username.text.isNotBlank()
             )
         }
     }
@@ -44,8 +45,8 @@ class LoginViewmodel(
 
     override fun onLoginClicked() {
         val isValidated =
-            usernameValidationUseCase(state.value.formUiState.username) && passwordValidationUseCase(
-                state.value.formUiState.password
+            usernameValidationUseCase(state.value.formUiState.username.text) && passwordValidationUseCase(
+                state.value.formUiState.password.text
             )
         if (!isValidated) {
             handleErrorState()
@@ -54,7 +55,10 @@ class LoginViewmodel(
         updateState { it.copy(isLoading = true) }
         viewModelScope.launch {
             try {
-                loginUseCase(state.value.formUiState.username, state.value.formUiState.password)
+                loginUseCase(
+                    state.value.formUiState.username.text,
+                    state.value.formUiState.password.text
+                )
                 updateState { it.copy(isLoading = false) }
                 sendNewEffect(newEffect = LoginEffect.NavigateToHome)
             } catch (e: Exception) {

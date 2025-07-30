@@ -1,7 +1,6 @@
-package com.berlin.aflami
+package com.berlin.aflami.screens.mainactivity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,8 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.navigation.AflamiNavGraph
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.main.MainViewModel
-import org.koin.android.ext.android.getKoin
 
 class MainActivity : ComponentActivity() {
 
@@ -26,9 +23,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             AflamiTheme {
                 AflamiNavGraph(
-
-                    navController = navController,
-                    modifier = Modifier
+//                    navController = navController,
+                    modifier = Modifier.Companion
                         .fillMaxSize()
                         .background(Theme.color.surface)
                         .statusBarsPadding()

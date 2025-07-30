@@ -1,5 +1,7 @@
 package com.berlin.aflami.viewmodel.login
 
+import androidx.compose.ui.text.input.TextFieldValue
+
 data class LoginUiState(
     val formUiState: FormUiState = FormUiState(),
     val isLoginButtonEnabled: Boolean = false,
@@ -8,7 +10,7 @@ data class LoginUiState(
 )
 
 data class FormUiState(
-    val username: String = "",
-    val password: String = "",
+    val username: TextFieldValue = TextFieldValue(""),
+    val password: TextFieldValue = TextFieldValue(""),
     val isPasswordObscured: Boolean = true
 )

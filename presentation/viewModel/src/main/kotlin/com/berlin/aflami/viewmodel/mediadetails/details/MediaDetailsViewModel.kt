@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.mediadetails.details
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -63,7 +64,6 @@ class MediaDetailsViewModel(
         val NO_MORE_MEDIA = R.string.there_is_no_more_media
         val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
     }
-
     val id: Long = savedStateHandle.get<String>(ID_KEY)?.toLongOrNull() ?: 0L
     val type: MediaType = savedStateHandle.get<String>(MEDIA_TYPE_KEY)
         ?.let { MediaType.valueOf(it) } ?: MediaType.MOVIE
@@ -498,8 +498,9 @@ class MediaDetailsViewModel(
             val rowSection = if (updateRowSection) {
                 RowSectionUiState.Error(message = errorUiState.message)
             } else it.rowSection
-
+            Log.d("CastViewModel", "getMediaCast: ${errorUiState.message}")
             it.copy(
+
                 error = UiText.Dynamic(errorUiState.message).toString(),
                 rowSection = rowSection,
                 isLoading = false

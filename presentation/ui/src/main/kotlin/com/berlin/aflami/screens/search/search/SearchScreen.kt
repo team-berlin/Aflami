@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -44,6 +45,7 @@ import com.berlin.aflami.component.TabBar
 import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.navigation.MediaDetails
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
@@ -58,14 +60,15 @@ import com.berlin.aflami.viewmodel.search.SearchUiEffect
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
-    navController: NavController, viewModel: SearchViewModel = koinViewModel()
+    viewModel: SearchViewModel = koinViewModel()
 ) {
+    val navController = Theme.navController
     val state by viewModel.state.collectAsStateWithLifecycle()
     val recentSearchState = viewModel.recentSearchState.collectAsState()
 
@@ -89,8 +92,9 @@ fun SearchScreen(
                 is SearchUiEffect.NavigatedToMovieDetailsScreen -> {
 
                     navController.navigate(
-                        Destination.MediaDetailsScreen.route(
-                            effect.id.toLong(), effect.mediaType
+                        MediaDetails(
+                            mediaId = effect.id,
+                            mediaType = MediaType.valueOf("MOVIE"),
                         )
                     )
                 }
@@ -114,7 +118,7 @@ private fun SearchScreenContent(
     listenerSearch: SearchInteractionListener,
     filterSearch: FilterInteractionListener,
     recentSearchState: List<String>,
-    onItemClick: (String) -> Unit,
+    onItemClick: (TextFieldValue) -> Unit,
     onDeleteItem: (String) -> Unit,
     onClearAll: () -> Unit,
     navController: NavController,
@@ -183,7 +187,7 @@ private fun SearchScreenContent(
             )
 
             when {
-                state.searchQuery.isBlank() -> {
+                state.searchQuery.text.isBlank() -> {
                     Text(
                         stringResource(R.string.search_suggestions_hub),
                         color = Theme.color.textColors.title,
@@ -212,7 +216,7 @@ private fun SearchScreenContent(
                     }
                 }
 
-                state.searchQuery.isNotBlank() -> {
+                state.searchQuery.text.isNotBlank() -> {
                     TabBar(
                         selectedTabIndex = state.selectedTabOption.index,
                         containerColor = Theme.color.surface,
@@ -237,7 +241,7 @@ private fun SearchScreenContent(
                     )
 
                     when {
-                        state.searchQuery.isBlank() -> {
+                        state.searchQuery.text.isBlank() -> {
                             NoDataSearch()
                         }
 
@@ -292,7 +296,7 @@ private fun SearchScreenContent(
                                                             modifier = Modifier.height(222.dp),
                                                             onClick = {
                                                                 listenerSearch.onCardClicked(
-                                                                    id = movie.id.toInt()
+                                                                    id = movie.id
                                                                 )
                                                             },
                                                             mediaImg = movie.poster,
@@ -344,7 +348,7 @@ private fun SearchScreenContent(
                                                         title = tvShows.title,
                                                         onClick = {
                                                             listenerSearch.onCardClicked(
-                                                                tvShows.id.toInt()
+                                                                tvShows.id
                                                             )
                                                         },
                                                         typeOfMedia = stringResource(R.string.tv_shows),

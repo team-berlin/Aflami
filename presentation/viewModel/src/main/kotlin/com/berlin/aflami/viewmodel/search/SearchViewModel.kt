@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.search
 
-import android.util.Log
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -85,10 +86,10 @@ class SearchViewModel(
     private fun observeSearchKeywordChanges() {
         viewModelScope.launch {
             combine(
-                _state.map { it.searchQuery.trim() }.debounce(800).filter { it.isNotEmpty() }.distinctUntilChanged(),
-                _state.map { it.filterTrigger }.distinctUntilChanged(),
-                 _state.map { it.selectedTabOption }.distinctUntilChanged()
-            ) { query, _ ,_-> query }
+                _state.map { it.searchQuery.text.trim() }.debounce(800).filter { it.isNotEmpty() }
+                    .distinctUntilChanged(),
+                _state.map { it.filterTrigger }.distinctUntilChanged()
+            ) { query, _ -> query }
                 .collectLatest {
                     onSearchKeywordChanged(it)
                     loadRecentSearch()
@@ -173,13 +174,6 @@ class SearchViewModel(
                                 ?.let { it > selectedRating } == true
                             val matchesGenre =
                                 selectedGenreId == -1 || movieUiState.genre.any { it == selectedGenreId }
-                            Log.d("FilterDebug", "Movie Title: ${movieUiState.title}")
-                            Log.d("FilterDebug", "Selected Rating: $selectedRating")
-                            Log.d("FilterDebug", "Matches Rating: ${movieUiState.rating}")
-                            Log.d("FilterDebug", "Selected Genre ID: $selectedGenreId")
-                            Log.d("FilterDebug", "Movie Genres: $movieGenres")
-                            Log.d("FilterDebug", "Matches Genre: $matchesGenre")
-
                             matchesGenre && matchesRating
                         }
                     }.cachedIn(viewModelScope)
@@ -227,8 +221,8 @@ class SearchViewModel(
         )
     }
 
-    override fun onSearchQueryChanged(query: CharSequence) {
-        updateState { it.copy(searchQuery = query.toString(), isLoading = false) }
+    override fun onSearchQueryChanged(query: TextFieldValue) {
+        updateState { it.copy(searchQuery = query, isLoading = false) }
     }
 
     override fun onBackClicked() {
@@ -256,22 +250,26 @@ class SearchViewModel(
                     filterMovieSelected = state.value.filterItemUiState.filterMovieSelected,
                     filterTvShowSelected = state.value.filterItemUiState.filterTvShowSelected
                 ),
+                filterTrigger = !it.filterTrigger
             )
         }
         onSearchQueryChanged(state.value.searchQuery)
     }
 
-    override fun onCardClicked(id: Int) {
+    override fun onCardClicked(id: Long) {
         val mediaType = when (state.value.selectedTabOption) {
             TabOption.MOVIES -> MediaType.MOVIE.name
-            TabOption.TV_SHOWS -> MediaType.TV_SHOW.name
+            TabOption.TV_SHOWS -> MediaType.TVSHOW.name
         }
         sendNewEffect(SearchUiEffect.NavigatedToMovieDetailsScreen(id = id, mediaType))
     }
 
     override fun onRecentSearchClicked(query: String) {
-        onSearchQueryChanged(query)
-        observeSearchKeywordChanges()
+        onSearchQueryChanged(
+            TextFieldValue(
+                text = query,
+            )
+        )
     }
 
     override fun onRecentSearchCleared(query: String) {
@@ -317,7 +315,7 @@ class SearchViewModel(
     override fun onSearchCleared() {
         updateState {
             it.copy(
-                searchQuery = "",
+                searchQuery = TextFieldValue(""),
                 isLoading = false,
                 isDialogVisible = false,
                 filterTrigger = !it.filterTrigger
@@ -446,7 +444,7 @@ class SearchViewModel(
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterTvShowSelected = FilterMediaSelected(
-                                selectedRating = 0f,
+                                selectedRating = 1f,
                                 selectedGenres = -1,
                                 genreUiStates = updatedGenres
                             )
@@ -563,14 +561,7 @@ class SearchViewModel(
         }
     }
 
-    private fun setErrorState(message: String?) {
-        updateState {
-            it.copy(
-                errorMessage = message,
-                isLoading = false
-            )
-        }
-    }
+
 
     fun onItemClicked(query: String) {
         updateState { it.copy(searchQuery = query, isLoading = true) }
