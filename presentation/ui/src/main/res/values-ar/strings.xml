@@ -23,8 +23,8 @@
     <string name="season">موسم</string>
     <string name="company_production_image_cd">إنتاج الشركة</string>
     <string name="description">الوصف</string>
-    <string name="read_less">قراءة المزيد</string>
-    <string name="read_more">قراءة اقل</string>
+    <string name="read_less">قراءة اقل</string>
+    <string name="read_more">قراءة المزيد</string>
     <string name="login_required_warning">قم بتسجيل الدخول من اجل استخدام الميزات الإضافية للتطبيق!</string>
     <string name="login_required">التسجيل مطلوب</string>
     <string name="continue_watching">مشاهداتك الأخيرة</string>
@@ -60,6 +60,8 @@
       <string name="top_rating">الأعلى تقييم</string>
 
     <string name="retry">إعادة المحاولة</string>
+    <string name="apply">اضافه</string>
+    <string name="clear">مسح</string>
 
 
 </resources>
