@@ -1,8 +1,8 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
-import android.os.Build
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -84,7 +83,7 @@ fun MediaDetailsScreen(
         ) {
             Text(
                 modifier = Modifier.fillMaxSize(),
-                text = uiState.error?:"",
+                text = uiState.error ?: "",
                 style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.body,
                 textAlign = TextAlign.Center
@@ -142,9 +141,6 @@ fun MediaDetailsContent(
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
 
-    SyncStatusBarColorCompat(
-        color = appBarBgColor,
-    )
 
     Box(Modifier.fillMaxSize()) {
         LazyColumn(state = listState) {
@@ -193,45 +189,23 @@ fun MediaDetailsContent(
             }
         }
         DefaultBar(
-            modifier = Modifier.statusBarsPadding(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(appBarBgColor)
+                .statusBarsPadding(),
+
             firstOption = painterResource(R.drawable.ic_rounded_star),
             lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
             onLastOptionClicked = {
-                listener.onAddMediaToFavouriteListClicked(
-                    0,
-                    state.id.toInt()
-                )
+                listener.onAddMediaToFavouriteListClicked(0, state.id.toInt())
             },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
-            containerColor = appBarBgColor,
-
-            )
+            containerColor = Color.Unspecified, // transparent so Modifier.background takes effect
+        )
     }
 
-}
-
-@Composable
-fun SyncStatusBarColorCompat(color: Color) {
-    val activity = LocalActivity.current?: return
-    val window = activity.window
-    val decorView = window.decorView
-    val isDarkTheme = isSystemInDarkTheme()
-    val isLightTheme = !isDarkTheme
-
-    SideEffect {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        val insetsController = WindowCompat.getInsetsController(window, decorView)
-        insetsController.isAppearanceLightStatusBars = isLightTheme
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            window.statusBarColor = color.toArgb()
-        } else {
-            decorView.setBackgroundColor(color.toArgb())
-        }
-    }
 }
 
 @Composable
