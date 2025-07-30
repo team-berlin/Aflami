@@ -44,21 +44,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berlin.aflami.utils.AsteriskVisualTransformation
-import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.designsystem.R
+import com.berlin.aflami.utils.AsteriskVisualTransformation
 
 @Composable
 fun TextField(
-    text: String,
+    text: TextFieldValue,
+
+    //text: String,
     modifier: Modifier = Modifier,
     style: TextStyle = Theme.textStyle.body.medium,
     hintText: String = "",
@@ -76,10 +76,11 @@ fun TextField(
     onTrailingIconClicked: (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    onValueChange: (String) -> Unit = {}
+    //onValueChange: (String) -> Unit = {}
+    onValueChange: (TextFieldValue) -> Unit = {},
 ) {
     var isFocused by remember { mutableStateOf(false) }
-    val canShowMaxCharacters = maxCharacters - text.length < 5
+    val canShowMaxCharacters = maxCharacters - text.text.length < 5
 
     val currentBorderColor by animateColorAsState(
         if (isError) borderErrorColor
@@ -111,7 +112,7 @@ fun TextField(
         ) {
             if (leadingIcon != null) {
                 val imageColor by animateColorAsState(
-                    targetValue = if (text.isEmpty()) Theme.color.textColors.body else Theme.color.textColors.hint
+                    targetValue = if (text.text.isEmpty()) Theme.color.textColors.body else Theme.color.textColors.hint
                 )
                 LeadingIcon(leadingIcon, imageColor)
                 VerticalDivider()
@@ -119,12 +120,19 @@ fun TextField(
             BasicTextField(
                 value = text,
                 onValueChange = {
-                    if (it.length <= maxCharacters) onValueChange(it)
-                    else if (it.length > text.length + 1) onValueChange(
+                    if (it.text.length <= maxCharacters) onValueChange(it)
+                    /*else if (it.text.length > value.text.length + 1) onValueChange(
                         it.substring(
                             0, maxCharacters
                         )
-                    )
+                    )*/
+                    /*else it.copy(
+                        text = it.text.take(maxCharacters),
+                        selection = it.selection.copy(
+                            start = minOf(it.selection.start, maxCharacters),
+                            end = minOf(it.selection.end, maxCharacters)
+                        )
+                    )*/
                 },
                 keyboardOptions = keyboardOptions,
                 keyboardActions = keyboardActions,
@@ -140,11 +148,11 @@ fun TextField(
                 singleLine = maxLines == 1,
                 visualTransformation = if (isObscured) AsteriskVisualTransformation() else VisualTransformation.None,
                 decorationBox = { innerTextField ->
-                    InnerTextFieldWithHint(innerTextField, text, hintText, style)
+                    InnerTextFieldWithHint(innerTextField, text.text, hintText, style)
                 })
             if (trailingIcon != null) {
                 val imageColor by animateColorAsState(
-                    targetValue = if (text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.title
+                    targetValue = if (text.text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.title
                 )
                 VerticalDivider()
                 TrailingIcon(trailingIcon, imageColor, onTrailingIconClicked)
@@ -152,7 +160,7 @@ fun TextField(
         }
         AnimatedMaxCharacters(
             canShowMaxCharacters,
-            "${text.length}/$maxCharacters",
+            "${text.text.length}/$maxCharacters",
             style,
         )
     }
@@ -295,6 +303,7 @@ private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Un
         )
     }
 }
+/*
 
 
 @ThemeAndLocalePreviews
@@ -343,4 +352,4 @@ private fun CustomTextFieldPreview() {
             )
         }
     }
-}
+}*/

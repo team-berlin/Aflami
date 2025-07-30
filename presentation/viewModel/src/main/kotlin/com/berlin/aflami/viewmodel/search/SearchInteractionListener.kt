@@ -1,10 +1,12 @@
 package com.berlin.aflami.viewmodel.search
 
+import androidx.compose.ui.text.input.TextFieldValue
+
 
 interface SearchInteractionListener {
     fun onFilterButtonClicked()
     fun onSearchActionClicked()
-    fun onSearchQueryChanged(query: CharSequence)
+    fun onSearchQueryChanged(query: TextFieldValue)
     fun onBackClicked()
     fun onWorldSearchCardClicked()
     fun onActorSearchCardClicked()

@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.searchcountry
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -26,20 +27,20 @@ class SearchByCountryViewModel(
 
     private val countriesNames = getCountriesNames()
 
-    override fun onCountryNameChanged(countryName: CharSequence) {
+    override fun onCountryNameChanged(countryName: TextFieldValue) {
         _state.update {
             it.copy(
-                query = countryName.toString(),
-                filteredCountries = filterCountriesByName(countryName.toString()),
-                dropDownExpanded = countryName.isNotBlank()
+                query = countryName,
+                filteredCountries = filterCountriesByName(countryName),
+                dropDownExpanded = countryName.text.isNotBlank()
                         && state.value.filteredCountries.isNotEmpty()
             )
         }
     }
 
-    private fun filterCountriesByName(countryName: String): List<String> {
+    private fun filterCountriesByName(countryName: TextFieldValue): List<String> {
         return countriesNames.filter { country ->
-            country.startsWith(countryName.trim(), ignoreCase = true)
+            country.startsWith(countryName.text.trim(), ignoreCase = true)
         }
     }
 
@@ -58,7 +59,7 @@ class SearchByCountryViewModel(
                     pagingSourceFactory = {
                         BasePagingSource(
                             call = { page ->
-                                getCountryIsoCode(state.value.query)?.let {
+                                getCountryIsoCode(state.value.query.text)?.let {
                                     searchByCountry.invoke(query = it, page = page)
                                 } ?: emptyList()
                             }

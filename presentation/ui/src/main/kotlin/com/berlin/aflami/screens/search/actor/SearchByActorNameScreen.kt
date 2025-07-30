@@ -124,7 +124,7 @@ private fun SearchByActorNameContent(
                state.isLoading ->{
                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                }
-                pagedMovies.itemCount == 0 && state.query.isBlank() -> {
+                pagedMovies.itemCount == 0 && state.query.text.isBlank() -> {
                         CountryTourExploring(
                             modifier = Modifier.fillMaxSize(),
                             image = painterResource(R.drawable.find_by_actor),
@@ -132,7 +132,8 @@ private fun SearchByActorNameContent(
                             messageId = R.string.find_by_actor_quotation
                         )
                 }
-                pagedMovies.itemCount == 0 && state.query.isNotBlank() -> {
+
+                pagedMovies.itemCount == 0 && state.query.text.isNotBlank() -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
                         image = painterResource(R.drawable.no_search_result),
