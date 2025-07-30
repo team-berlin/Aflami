@@ -2,6 +2,7 @@ package com.berlin.aflami.screens.mediadetails.components.screensections
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,9 +48,9 @@ fun TabSection(
 
     LazyRow(
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 12.dp)
             .height(96.dp)
             .fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(visibleTabs, key = { it.name }) { tab ->
