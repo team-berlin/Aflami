@@ -18,9 +18,11 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +32,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,6 +55,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -72,8 +78,8 @@ import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.ui.R
 import com.example.navigation.Destination
 import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
-import org.koin.androidx.compose.koinViewModel
 
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
@@ -116,14 +122,14 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                     colors = Theme.color.gradientColors.streakGradient
                 )
             )
-    )
-    {
+            .statusBarsPadding()
+            .padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 16.dp),
+    ) {
         CirclesBackground()
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 16.dp),
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             LoginLogo()
@@ -212,7 +218,8 @@ private fun FormLogin(
             leadingIcon = R.drawable.user_square,
             hintText = stringResource(R.string.username),
             onValueChange = { onUsernameChanged(it) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            maxCharacters = 32
         )
         var passwordError by remember { mutableStateOf(false) }
         Spacer(modifier = Modifier.height(12.dp))
@@ -227,7 +234,9 @@ private fun FormLogin(
             onValueChange = { onPasswordChanged(it) },
             trailingIcon = R.drawable.eye,
             onTrailingIconClicked = onTrailingIconClicked,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            maxCharacters = 32
+
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -237,8 +246,11 @@ private fun FormLogin(
             color = Theme.color.primary,
             modifier = Modifier
                 .align(Alignment.End)
-                .clickable { onForgotPasswordClicked() }
-                .padding(top = 4.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { onForgotPasswordClicked() }
+                ).padding(top = 4.dp)
         )
     }
 }
@@ -257,8 +269,7 @@ fun LoginButtons(
         PrimaryButton(
             onClick = onLoginClicked,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
+                .fillMaxWidth(),
             state = when {
                 isError || !isLoginButtonEnabled -> ButtonState.DISABLED
                 isLoading -> ButtonState.LOADING
@@ -267,7 +278,11 @@ fun LoginButtons(
         ) {
             Text(
                 stringResource(R.string.login),
-                style = Theme.textStyle.label.large,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                style = Theme.textStyle.label.large.copy(
+                    textAlign = TextAlign.Center
+                ),
                 color = Theme.color.textColors.onPrimary
             )
         }
@@ -275,13 +290,16 @@ fun LoginButtons(
         SecondaryButton(
             onClick = onContinueAsGuestClicked,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
+                .fillMaxWidth(),
             border = null
         ) {
             Text(
                 stringResource(R.string.continue_as_guest),
-                style = Theme.textStyle.label.large,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                style = Theme.textStyle.label.large.copy(
+                    textAlign = TextAlign.Center
+                ),
                 color = Theme.color.primary
             )
         }
@@ -290,22 +308,25 @@ fun LoginButtons(
 
 @Composable
 private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked: () -> Unit) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
+    FlowRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentSize(Alignment.Center),
         horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(R.string.dont_have_account),
-            style = Theme.textStyle.body.small,
+            modifier = modifier.wrapContentWidth(),
             color = Theme.color.textColors.hint,
-
+            style = Theme.textStyle.body.small,
         )
         Text(
             text = stringResource(R.string.create_account),
             style = Theme.textStyle.body.small,
             color = Theme.color.primary,
             modifier = Modifier
+                .wrapContentWidth()
                 .clickable { onCreateAccountClicked() }
                 .padding(start = 4.dp)
         )
