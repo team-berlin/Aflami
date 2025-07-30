@@ -21,10 +21,7 @@ interface AuthenticationApiService {
     @GET(ApiConstants.NEW_TOKEN_ENDPOINT)
     suspend fun requestToken() : Response<LoginDto>
 
-    @POST
-    suspend fun logout()
-
-    @POST
-    suspend fun register(email:String,userName: String, password: String)
+    @POST(ApiConstants.DELETE_SESSION_ENDPOINT)
+    suspend fun logout(@Body token: RequestTokenDTO) :Response<Unit>
 
 }

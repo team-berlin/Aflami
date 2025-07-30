@@ -32,8 +32,7 @@ class AuthenticationRemoteDataSourceImpl(
         return wrapApiResponse { authenticationApiService.requestToken() }
     }
 
-
     override suspend fun logout() {
-        authenticationApiService.logout()
+        TODO()
     }
 }

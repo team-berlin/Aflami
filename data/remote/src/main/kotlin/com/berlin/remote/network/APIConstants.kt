@@ -1,6 +1,7 @@
 package com.berlin.remote.network
 
 object ApiConstants {
+
     //region search
     const val QUERY = "query"
     const val PAGE = "page"
@@ -9,12 +10,10 @@ object ApiConstants {
     const val SEARCH_BY_ACTOR = "search/person"
     const val SEARCH_MOVIE = "search/movie"
     const val SEARCH_TV = "search/tv"
-
-    //endregion
-    const val LANGUAGE = "language"
     const val WITH_GENRES = "with_genres"
+    //endregion
 
-    //region details
+    //region movie details
     const val MOVIE_ID = "movie_id"
     const val MOVIE_DETAILS = "movie/{movie_id}"
     const val MOVIE_IMAGES = "movie/{movie_id}/images"
@@ -29,7 +28,7 @@ object ApiConstants {
     const val DISCOVER_MOVIE = "discover/movie"
     //endregion
 
-    //region tv shows
+    //region tv shows details
     const val SERIES_ID = "series_id"
     const val SERIES_DETAILS = "tv/{series_id}"
     const val SERIES_IMAGES = "tv/{series_id}/images"

@@ -56,7 +56,8 @@
     <string name="get_another_movie">الحصول علي فيلم اخر</string>
 
       <string name="top_rating">الأعلى تقييم</string>
-
+    <string name="read_less">قراءة اقل</string>
+    <string name="read_more">قراءة المزيد</string>
     <string name="retry">إعادة المحاولة</string>
     <string name="apply">اضافه</string>
     <string name="clear">مسح</string>

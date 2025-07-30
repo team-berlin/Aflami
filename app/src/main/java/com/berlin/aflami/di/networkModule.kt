@@ -34,7 +34,6 @@ val networkModule = module {
     single {
         Json {
             ignoreUnknownKeys = true
-            classDiscriminator = "media_type"
         }
     }
 
