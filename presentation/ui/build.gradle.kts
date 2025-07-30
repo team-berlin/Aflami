@@ -24,7 +24,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:safeImageViewer"))
-    implementation(project(":presentation:navigation"))
     implementation(project(":presentation:viewModel"))
 
     val paging_version = "3.3.6"

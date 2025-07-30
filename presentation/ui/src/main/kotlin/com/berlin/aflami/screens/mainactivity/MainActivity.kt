@@ -1,4 +1,4 @@
-package com.berlin.aflami
+package com.berlin.aflami.screens.mainactivity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
             AflamiTheme {
                 AflamiNavGraph(
 //                    navController = navController,
-                    modifier = Modifier
+                    modifier = Modifier.Companion
                         .fillMaxSize()
                         .background(Theme.color.surface)
                         .statusBarsPadding()
