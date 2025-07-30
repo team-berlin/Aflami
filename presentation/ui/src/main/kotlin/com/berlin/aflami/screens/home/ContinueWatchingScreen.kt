@@ -31,8 +31,8 @@ import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaEffect
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaInteractionListener
-import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaUiState
+import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -41,7 +41,7 @@ fun ContinueWatchingScreen(
     viewModel: ContinueWatchingMediaViewModel = koinViewModel(),
     onEffect: (ContinueWatchingMediaEffect) -> Unit
 ) {
-
+    val navController = Theme.navController
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {

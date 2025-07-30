@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.aflami.custom.plugin)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -19,6 +20,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
     implementation(libs.bundles.koin)
+    implementation(libs.androidx.navigation)
+    implementation(libs.kotlinx.serialization.json)
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:navigation"))

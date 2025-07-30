@@ -33,8 +33,8 @@ import com.berlin.aflami.screens.home.component.PosterSlider
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
-import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.aflami.viewmodel.home.HomeUiState
+import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -43,6 +43,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(), onEffect: (HomeScreenEffect) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val navController = Theme.navController
 
     LaunchedEffect(Unit) {
         viewModel.getContinueWatchingMedia()

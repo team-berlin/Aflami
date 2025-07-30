@@ -79,7 +79,6 @@ dependencies {
     implementation(libs.bundles.firebase)
     implementation(libs.bundles.room)
     ksp(libs.roomCompiler)
-    implementation(libs.androidx.navigation)
 
 
 

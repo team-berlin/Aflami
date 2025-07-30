@@ -2,34 +2,27 @@ package com.berlin.aflami.navigation.routes
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
+import com.berlin.aflami.navigation.CastScreen
+import com.berlin.aflami.navigation.MediaDetailsScreen
 import com.berlin.aflami.screens.mediadetails.screen.MediaDetailsScreen
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
-import com.example.navigation.Destination
-import com.example.navigation.Destination.MediaDetailsScreen
 
 
 fun NavGraphBuilder.mediaDetailsRoute(
     navController: NavController
 ) {
-    composable(
-        route = MediaDetailsScreen.route,
-        arguments = listOf(
-            navArgument(MediaDetailsArgs.ID) { NavType.LongType },
-            navArgument(MediaDetailsArgs.MEDIA_TYPE) { NavType.StringType }
-        )
-    ) {
+    composable<MediaDetailsScreen> { backStackEntry ->
+        val mediaDetailsParameters = backStackEntry.toRoute<MediaDetailsScreen>()
         MediaDetailsScreen(
+            mediaId = mediaDetailsParameters.mediaId,
+            mediaType = mediaDetailsParameters.mediaType,
             onEffect = { effect ->
                 when (effect) {
                     is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
                         navController.navigate(
-                            Destination.CastScreen.route(
-                                id=effect.mediaId,
-                                mediaType = effect.mediaType.name
-                            )
+                            CastScreen(effect.mediaId, effect.mediaType)
                         )
                     }
                     is MediaDetailsScreenEffect.NavigateBack -> {

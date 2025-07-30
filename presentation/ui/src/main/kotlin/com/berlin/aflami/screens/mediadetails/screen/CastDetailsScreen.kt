@@ -26,6 +26,7 @@ import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsEffect
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsListener
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastViewModel
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -33,6 +34,8 @@ import org.koin.androidx.compose.koinViewModel
 fun CastDetailsScreen(
     onEffect: (CastDetailsEffect) -> Unit,
     viewmodel: CastViewModel = koinViewModel(),
+    id: Long,
+    mediaType: MediaType,
 ) {
 
     val castState by viewmodel.state.collectAsState()
