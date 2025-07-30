@@ -18,7 +18,6 @@ import kotlinx.datetime.LocalDate
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.assertThrows
 import usecase.SearchByCountryUseCase
 
 class SearchByCountryViewModelTest {
@@ -118,9 +117,9 @@ class SearchByCountryViewModelTest {
         id = 1,
         title = "Test Movie",
         rating = 8.5,
-        releaseYear = LocalDate.parse("2023-01-01"),
+        releaseDate = LocalDate.parse("2023-01-01"),
         poster = "poster.jpg",
-        genre = emptyList(),
+        genres = emptyList(),
     )
 
     private val movieUIState = movie.toUIState()

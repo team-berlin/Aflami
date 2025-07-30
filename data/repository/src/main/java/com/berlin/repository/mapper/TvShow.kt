@@ -1,9 +1,7 @@
 package com.berlin.repository.mapper
 
-import com.berlin.entity.SeasonEntity
-import com.berlin.entity.Episodes
-import com.berlin.entity.EpisodesSeason
-import com.berlin.entity.Media
+import com.berlin.entity.Season
+import com.berlin.entity.Episode
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.local.dto.SearchingEntity
@@ -87,7 +85,7 @@ fun TVShowDto.toDomain(mediaType: String): Media {
     )
 }
 
-fun Season.toEntity() = SeasonEntity(
+fun Season.toEntity() = com.berlin.entity.Season(
     airDate = airDate,
     episodeCount = episodeCount,
     id = id,
@@ -107,17 +105,17 @@ fun EpisodesSeasonDto.toDomain(): EpisodesSeason {
         posterPath = this.posterPath?.let { POSTER_PREFIX + it }
     )
 }
-fun EpisodeDto.toEpisode(): Episodes {
-    return Episodes(
+fun EpisodeDto.toEpisode(): Episode {
+    return Episode(
         stillPath = this.stillPath,
         airDate = this.airDate,
         episodeNumber = this.episodeNumber,
         episodeType = this.episodeType,
-        id = this.id,
+        episodeId = this.id,
         name = this.name,
-        overview = this.overview,
-        runtime = this.runtime.formatRuntime(),
-        showId = this.showId,
-        voteAverage = this.voteAverage
+        description = this.overview,
+        duration = this.runtime.formatRuntime(),
+        tvShowId = this.showId,
+        rating = this.voteAverage
     )
 }

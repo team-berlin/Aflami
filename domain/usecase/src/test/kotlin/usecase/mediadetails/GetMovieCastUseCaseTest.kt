@@ -1,6 +1,6 @@
 package usecase.mediadetails
 
-import com.berlin.entity.MediaCast
+import com.berlin.entity.Actor
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -75,13 +75,13 @@ class GetMovieCastUseCaseTest {
         }
     }
 
-    private fun getMovieCast(): List<MediaCast> {
+    private fun getMovieCast(): List<Actor> {
 
-        val castList = mutableListOf<MediaCast>()
+        val castList = mutableListOf<Actor>()
         for (i in 0..5) {
             castList.add(
-                MediaCast(
-                    mediaId = i.toLong(),
+                Actor(
+                    id = i.toLong(),
                     name = "name $i",
                     poster = "poster $i"
                 )

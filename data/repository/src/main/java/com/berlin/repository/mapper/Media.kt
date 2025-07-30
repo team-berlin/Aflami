@@ -1,7 +1,6 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.Genre
-import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import com.berlin.repository.MediaType
@@ -49,8 +48,8 @@ fun ContinueWatchingMovieEntity.toMovie(): Movie {
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseYear = stringToLocalDate(this.releaseYear),
-        genre = emptyList(),
+        releaseDate = stringToLocalDate(this.releaseYear),
+        genres = emptyList(),
         poster = this.posterUrl,
     )
 }
@@ -71,7 +70,7 @@ fun Movie.toLocalEntity(): ContinueWatchingMovieEntity {
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseYear = this.releaseYear.toString(),
+        releaseYear = this.releaseDate.toString(),
         posterUrl = this.poster,
         typeOfMedia = MediaType.MOVIE
     )

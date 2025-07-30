@@ -17,7 +17,7 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.util.toggle
-import com.berlin.entity.Episodes
+import com.berlin.entity.Episode
 import com.berlin.viewModel.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -406,11 +406,11 @@ class MediaDetailsViewModel(
                 rowSection = RowSectionUiState.Loading
             )
         }
-        val result: MutableMap<Int, List<Episodes?>> = mutableMapOf()
+        val result: MutableMap<Int, List<Episode?>> = mutableMapOf()
         tryToCall(
             call = {
                 repeat(numberOfSeasons) { seasonNumber ->
-                    val episodes: List<Episodes?> = getSeasonEpisodesUseCase(seriesId, seasonNumber)
+                    val episodes: List<Episode?> = getSeasonEpisodesUseCase(seriesId, seasonNumber)
                     result.put(seasonNumber, episodes)
                 }
             },

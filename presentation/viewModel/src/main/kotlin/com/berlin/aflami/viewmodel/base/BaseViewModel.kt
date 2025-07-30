@@ -2,16 +2,10 @@ package com.berlin.aflami.viewmodel.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.berlin.entity.BadRequestException
-import com.berlin.entity.DataParseException
-import com.berlin.entity.ForbiddenException
-import com.berlin.entity.NetworkException
-import com.berlin.entity.NoInternetException
-import com.berlin.entity.NotFoundException
-import com.berlin.entity.NullResultException
-import com.berlin.entity.RateLimitException
-import com.berlin.entity.ServerException
-import com.berlin.entity.ValidationException
+import com.berlin.exception.NetworkException
+import com.berlin.exception.NotFoundException
+import com.berlin.exception.ServerException
+import com.berlin.exception.UnauthorizedException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -40,25 +34,13 @@ abstract class BaseViewModel<S, E>(
             try {
                 val result = call()
                 onSuccess(result)
-            } catch (e: ValidationException) {
+            } catch (e: UnauthorizedException) {
                 onError(InvalidationErrorState(e.message.toString()))
-            } catch (e: NullResultException) {
-                onError(NullResultErrorState(e.message.toString()))
-            } catch (e: NetworkException) {
+            }  catch (e: NetworkException) {
                 onError(NetworkErrorState(e.message.toString()))
-            } catch (e: NoInternetException) {
-                onError(NetworkErrorState(e.message.toString()))
-            } catch (e: BadRequestException) {
-                onError(ErrorUiState(e.message.toString()))
-            } catch (e: NotFoundException) {
+            }  catch (e: NotFoundException) {
                 onError(ErrorUiState(e.message.toString()))
             } catch (e: ServerException) {
-                onError(ErrorUiState(e.message.toString()))
-            } catch (e: ForbiddenException) {
-                onError(ErrorUiState(e.message.toString()))
-            } catch (e: RateLimitException) {
-                onError(ErrorUiState(e.message.toString()))
-            } catch (e: DataParseException) {
                 onError(ErrorUiState(e.message.toString()))
             } catch (e: Exception) {
                 onError(ErrorUiState(e.message.toString()))

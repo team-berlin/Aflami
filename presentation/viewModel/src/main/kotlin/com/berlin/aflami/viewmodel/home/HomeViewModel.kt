@@ -292,7 +292,7 @@ class HomeViewModel(
                 movies
             } else {
                 movies.filter { movie ->
-                    movie.genre.contains(genreId) == true
+                    movie.genres.contains(genreId) == true
                 }
             }
             updateState { state ->

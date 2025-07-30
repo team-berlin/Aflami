@@ -9,5 +9,5 @@ data class Review(
     val avatarImage: String,
     val rating: Double,
     val content: String,
-    val date: String,
+    val date: LocalDate,
 )

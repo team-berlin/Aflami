@@ -1,8 +1,7 @@
 package usecase.mediadetails
 
-import com.berlin.entity.GenreEntity
-import com.berlin.entity.ProductionCompanyEntity
-import com.berlin.entity.SeasonEntity
+import com.berlin.entity.ProductionCompany
+import com.berlin.entity.Season
 import com.berlin.entity.TvShowDetails
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
@@ -81,7 +80,7 @@ class GetTvShowDetailsUseCaseTest {
                 GenreEntity(id = 80, name = "Crime")
             ),
             productionCompanies = listOf(
-                ProductionCompanyEntity(
+                ProductionCompany(
                     id = 1,
                     name = "Sony Pictures Television",
                     poster = "https://image.tmdb.org/t/p/w500/company_logo.jpg",
@@ -89,15 +88,15 @@ class GetTvShowDetailsUseCaseTest {
                 )
             ),
             seasons = listOf(
-                SeasonEntity(
+                Season(
                     id = 1,
                     seasonNumber = 1,
                     name = "Season 1",
-                    overview = "First season introduction...",
-                    posterUrl = "https://image.tmdb.org/t/p/w500/season1.jpg",
+                    description = "First season introduction...",
+                    poster = "https://image.tmdb.org/t/p/w500/season1.jpg",
                     episodeCount = 7,
                     airDate = "2008-01-20",
-                    voteAverage = 8.5
+                    rating = 8.5
                 )
             ),
             originCountry = "US",

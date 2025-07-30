@@ -1,7 +1,7 @@
 package com.berlin.entity
 
-data class MediaCast(
-    val mediaId: Long,
+data class Actor(
+    val id: Long,
     val name: String,
     val poster: String
 )

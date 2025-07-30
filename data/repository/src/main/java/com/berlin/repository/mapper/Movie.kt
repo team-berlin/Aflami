@@ -1,10 +1,7 @@
 package com.berlin.repository.mapper
 
-import com.berlin.entity.GenreEntity
-import com.berlin.entity.Media
 import com.berlin.entity.Movie
-import com.berlin.entity.MovieDetails
-import com.berlin.entity.ProductionCompanyEntity
+import com.berlin.entity.ProductionCompany
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.GenreDto
 import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
@@ -18,8 +15,8 @@ fun SearchingEntity.toDomain(): Movie {
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseYear = stringToLocalDate(releaseYear),
-        genre = this.genre,
+        releaseDate = stringToLocalDate(releaseYear),
+        genres = this.genre,
         poster = this.poster
     )
 }
@@ -45,8 +42,8 @@ fun MovieDto.toDomain(): Movie {
         id = this.id?.toLong() ?: 0L,
         title = this.title.orEmpty(),
         rating = (this.voteAverage ?: 0.0),
-        releaseYear = stringToLocalDate(releaseDate ?: ""),
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
+        releaseDate = stringToLocalDate(releaseDate ?: ""),
+        genres = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
     )
 }
@@ -92,7 +89,7 @@ fun GenreDto.toEntity() = GenreEntity(
     id = this.id ?: 0, name = this.name.orEmpty()
 )
 
-fun ProductionCompany.toEntity() = ProductionCompanyEntity(
+fun ProductionCompany.toEntity() = com.berlin.entity.ProductionCompany(
     id = this.id ?: 0,
     name = this.name.orEmpty(),
     poster = this.logoPath?.let { "$POSTER_PREFIX$it" },

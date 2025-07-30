@@ -1,13 +1,12 @@
 package usecase.mediadetails
 
-import com.berlin.entity.MediaCast
+import com.berlin.entity.Actor
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.assertThrows
 import repository.TvShowDetailsRepository
 
@@ -74,13 +73,13 @@ class GetSeriesCastUseCaseTest {
         }
     }
 
-    private fun getSeriesCast(): List<MediaCast> {
+    private fun getSeriesCast(): List<Actor> {
 
-        val castList = mutableListOf<MediaCast>()
+        val castList = mutableListOf<Actor>()
         for (i in 0..5) {
             castList.add(
-                MediaCast(
-                    mediaId = i.toLong(),
+                Actor(
+                    id = i.toLong(),
                     name = "name $i",
                     poster = "poster $i"
                 )
