@@ -30,6 +30,6 @@ class MovieRepositoryImpl(
 }
 
 object MediaType {
-    const val MOVIE = "Movie"
-    const val TV_SHOW = "TVShow"
+    const val MOVIE = "MOVIE"
+    const val TV_SHOW = "TVSHOW"
 }
