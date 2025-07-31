@@ -7,6 +7,7 @@ data class LoginUiState(
     val isLoginButtonEnabled: Boolean = false,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
+    val errorMessage:String? = null
 )
 
 data class FormUiState(
