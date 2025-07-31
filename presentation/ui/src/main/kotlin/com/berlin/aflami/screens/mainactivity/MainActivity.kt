@@ -9,10 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.navigation.AflamiNavGraph
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.main.MainViewModel
+import org.koin.android.ext.android.getKoin
 
 class MainActivity : ComponentActivity() {
     val mainViewModel: MainViewModel = getKoin().get()
@@ -28,7 +29,6 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val navController = rememberNavController()
             AflamiTheme {
                 AflamiNavGraph(
                     isLoggedIn = mainViewModel.loginState,

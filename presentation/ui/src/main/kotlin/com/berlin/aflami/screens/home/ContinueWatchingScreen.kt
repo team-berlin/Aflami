@@ -25,8 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
-import androidx.navigation.NavController
-import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.ContinueWatchingScreen
 import com.berlin.aflami.screens.search.components.Loading
@@ -37,7 +35,6 @@ import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaInteraction
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaUiState
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
 import com.berlin.ui.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
