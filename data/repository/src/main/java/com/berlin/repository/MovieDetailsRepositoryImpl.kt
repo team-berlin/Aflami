@@ -2,6 +2,7 @@ package com.berlin.repository
 
 import com.berlin.entity.Genre
 import com.berlin.entity.MediaCast
+import com.berlin.entity.MediaImage
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.Review
@@ -31,10 +32,20 @@ class MovieDetailsRepositoryImpl(
         } ?: emptyList()
     }
 
-    override suspend fun getMovieImages(movieId: Long): List<String> {
+    override suspend fun getMovieImages(movieId: Long): MediaImage {
         return try {
-            remoteDataSource.getMovieImages(movieId).backdrops?.map { POSTER_PREFIX + it.filePath }
+            val imagesResponse = remoteDataSource.getMovieImages(movieId)
+
+            val backdrops = imagesResponse.backdrops
+                ?.map { POSTER_PREFIX + it.filePath }
                 ?: throw Exception()
+
+            val posters = imagesResponse.posters
+                ?.map { POSTER_PREFIX + it.filePath }
+                ?: throw Exception()
+            MediaImage(
+                backdrops = backdrops,
+                posters = posters)
         } catch (e: Exception) {
             throw e
         }

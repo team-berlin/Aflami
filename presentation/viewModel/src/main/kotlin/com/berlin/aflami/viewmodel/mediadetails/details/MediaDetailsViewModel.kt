@@ -90,18 +90,20 @@ class MediaDetailsViewModel(
                 when (mediaType) {
                     MediaType.MOVIE -> {
                         val movie = getMovieDetailsUseCase(mediaId)
+                        val gallery = getMovieGalleryUseCase(mediaId)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
-                        movie?.toUiState()
+                        Pair(movie?.toUiState(), gallery)
                     }
 
                     MediaType.TVSHOW -> {
-                        val movie = getTvShowDetailsUseCase(mediaId)
-                        companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
-                        movie?.toUiState()
+                        val tvShow = getTvShowDetailsUseCase(mediaId)
+                        val gallery = getSeriesGalleryUseCase(mediaId)
+                        companyProductionCache = tvShow?.productionCompanies?.map { it.toUiState() }
+                        Pair(tvShow?.toUiState(), gallery)
                     }
                 }
             },
-            onSuccess = { details ->
+            onSuccess = { (details, gallery) ->
                 details?.let {
                     updateState {
                         it.copy(
@@ -110,6 +112,7 @@ class MediaDetailsViewModel(
                             overview = details.overview,
                             posterUrl = details.posterUrl,
                             backdropUrl = details.backdropUrl,
+                            posterImages = gallery.backdrops,
                             releaseDate = details.releaseDate,
                             numberOfSeasons = details.numberOfSeasons,
                             rating = details.rating,
@@ -184,6 +187,10 @@ class MediaDetailsViewModel(
                 mediaType = mediaType
             )
         )
+    }
+
+    override fun onMediaClicked(mediaId: Long, mediaType: MediaType) {
+        sendNewEffect(MediaDetailsScreenEffect.NavigateToMediaDetails(mediaId, mediaType))
     }
 
     override fun onRateIconClicked(id: Long) {
@@ -337,7 +344,7 @@ class MediaDetailsViewModel(
                 }
             },
             onSuccess = { gallery ->
-                if (gallery.isEmpty()) {
+                if (gallery.backdrops.isEmpty()) {
                     updateState {
                         it.copy(
                             rowSection = RowSectionUiState.NoDataFound(UiText.Resource(NO_GALLERY))
@@ -348,7 +355,7 @@ class MediaDetailsViewModel(
                         it.copy(
                             rowSection = RowSectionUiState.Success(
                                 content = TabContent.Gallery(
-                                    items = gallery
+                                    items = gallery.backdrops
                                 )
                             )
                         )

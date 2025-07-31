@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -28,6 +29,7 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import androidx.navigation.NavController
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastScreen
+import com.berlin.aflami.navigation.MediaDetails
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
@@ -138,6 +140,16 @@ private fun onReceiveMediaDetailsEffect(
         is MediaDetailsScreenEffect.PlayMedia -> {}
         is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> TODO()
         is MediaDetailsScreenEffect.ShowRatingDialog -> TODO()
+        is MediaDetailsScreenEffect.NavigateToMediaDetails -> {
+            navController.navigate(
+                MediaDetails(
+                    mediaDetailsScreenEffect.mediaId,
+                    mediaDetailsScreenEffect.mediaType
+                )
+            ){
+                launchSingleTop = true
+            }
+        }
     }
 }
 
@@ -194,7 +206,8 @@ fun MediaDetailsContent(
             item {
                 HorizontalDivider(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
                     color = Theme.color.stroke,
                     thickness = 1.dp
                 )
@@ -206,6 +219,7 @@ fun MediaDetailsContent(
                     onChipClick = onChipClick,
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
+                    onMediaClick = { mediaId, type -> listener.onMediaClicked(mediaId, type) },
                     mediaType = mediaType,
                 )
             }

@@ -32,6 +32,7 @@ import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 
 @Composable
 fun TabSection(
@@ -40,7 +41,8 @@ fun TabSection(
     rowState: RowSectionUiState,
     isReviewExpanded: (String) -> Boolean,
     onToggleReviewExpand: (String) -> Unit,
-    mediaType: MediaType
+    mediaType: MediaType,
+    onMediaClick: (Long, MediaType) -> Unit
 ) {
     val visibleTabs = MovieDetailsTabs.entries.filter {
         !(mediaType == MediaType.MOVIE && it == MovieDetailsTabs.SEASON)
@@ -48,7 +50,7 @@ fun TabSection(
 
     LazyRow(
         modifier = Modifier
-            .height(96.dp)
+            .padding(bottom = 12.dp)
             .fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(15.dp)
@@ -83,7 +85,9 @@ fun TabSection(
         is RowSectionUiState.Loading -> Loading()
 
         is RowSectionUiState.Success -> when (val tab = content.content) {
-            is TabContent.MoreLikeThis -> MoreLikeThisSection(mediaList = tab.items, mediaType = mediaType)
+            is TabContent.MoreLikeThis -> MoreLikeThisSection(mediaList = tab.items,
+                mediaType = mediaType,
+                onMediaClick = onMediaClick)
             is TabContent.Reviews -> ReviewsSection(reviews = tab.items,
                 isExpanded = { id -> isReviewExpanded(id) },
                 onToggleExpand = { id -> onToggleReviewExpand(id) })
