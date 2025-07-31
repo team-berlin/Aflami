@@ -30,7 +30,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetails
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
@@ -158,7 +158,7 @@ private fun SearchByCountryContent(
                         movies = movies,
                         onMovieClick = { movieId, mediaType ->
                             navController.navigate(
-                                MediaDetails(
+                                MediaDetailsDestination(
                                     movieId,
                                     MediaType.valueOf("MOVIE"),
                                 )

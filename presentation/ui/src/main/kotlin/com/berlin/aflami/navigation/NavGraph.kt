@@ -1,19 +1,17 @@
 package com.berlin.aflami.navigation
 
-import BottomNavBar
-import BottomNavigationBar
+import android.util.Log
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.berlin.aflami.component.BottomNavItem
+import androidx.navigation.compose.navigation
 import com.berlin.aflami.navigation.routes.castDetailsScreen
 import com.berlin.aflami.navigation.routes.categoriesRoute
 import com.berlin.aflami.navigation.routes.gamesRoute
@@ -28,7 +26,6 @@ import com.berlin.aflami.navigation.routes.searchScreenRoute
 import com.berlin.aflami.navigation.routes.topRatingMedia
 import com.berlin.aflami.navigation.routes.watchedMedia
 import com.berlin.aflami.navigation.routes.webView
-import com.berlin.aflami.ui.theme.Theme
 
 /**
  * Sets up the navigation graph for the Aflami app using Jetpack Compose Navigation 2.
@@ -41,55 +38,27 @@ import com.berlin.aflami.ui.theme.Theme
  * @param navController The [NavHostController] used to manage app navigation and back stack.
  *
  */
-
 @Composable
 fun AflamiNavGraph(
     modifier: Modifier = Modifier,
     isLoggedIn: Boolean,
+    navController: NavHostController,
 ) {
-    val startDestination = if (isLoggedIn) NavBar.HomeScreen else LoginScreen
-    val navController = Theme.navController
-
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentBackStackEntry?.destination?.route
-
-    val bottomNavItems = BottomNavItems.entries.map {
-        BottomNavItem(
-            icon = painterResource(id = it.icon),
-            labelText = stringResource(id = it.label),
-            route = it.route.toString()
-        )
-    }
-    val bottomRoutes = BottomNavItems.entries.map { it.route.toString() }
-    val shouldShowBottomBar = currentRoute in bottomRoutes
-
-
     Scaffold(
         modifier = modifier,
-        if (shouldShowBottomBar) {
-            NavBar(
-                navDestinations = bottomNavItems,
-                currentRoute = currentRoute ?: "",
-                onNavDestinationClicked = { route ->
-                    if (route != currentRoute) {
-                        navController.navigate(route) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                }
-            )
+        bottomBar = {
+            getCurrentNavBarScreen(navController)?.let { selectedRoute ->
+                ShowNavigationBar(selectedRoute, navController)
+            }
         }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = startDestination,
+            startDestination = if (isLoggedIn) NavigationBarDestinations.HomeScreen else LoginDestination,
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None }
         ) {
+            bottomNavigationBarNavGraph()
             searchScreenRoute()
             searchByCountryRoute()
             searchByActorNameRoute()
@@ -99,11 +68,47 @@ fun AflamiNavGraph(
             webView()
             watchedMedia()
             topRatingMedia()
-            homeScreenRoute()
-            listsRoute()
-            profileRoute()
-            categoriesRoute()
-            gamesRoute()
         }
     }
 }
+
+@Composable
+private fun ShowNavigationBar(
+    selectedRoute: NavigationBarDestinations,
+    navController: NavHostController,
+) {
+    NavBar(
+        navDestinations = bottomNavList,
+        currentRoute = selectedRoute,
+        onNavDestinationClicked = { route ->
+            if (route != selectedRoute) {
+                navController.navigate(route) {
+                    Log.d("Nadeen", "Navigating to ${route.toString()}")
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        },
+    )
+}
+
+@Composable
+private fun getCurrentNavBarScreen(navController: NavHostController): NavigationBarDestinations? {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute: String? = backStackEntry?.destination?.route
+    val currentNavigationBarDestinationsDestination: NavigationBarDestinations? =
+        bottomNavBarDestinationsMap[currentRoute]
+    return currentNavigationBarDestinationsDestination
+}
+
+fun NavGraphBuilder.bottomNavigationBarNavGraph() =
+    navigation<BottomNavigationGraph>(startDestination = NavigationBarDestinations.HomeScreen) {
+        homeScreenRoute()
+        listsRoute()
+        profileRoute()
+        categoriesRoute()
+        gamesRoute()
+    }

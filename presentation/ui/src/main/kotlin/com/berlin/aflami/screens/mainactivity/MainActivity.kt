@@ -27,16 +27,11 @@ class MainActivity : ComponentActivity() {
         splashScreen.setKeepOnScreenCondition {
             mainViewModel.isLoading
         }
-        val navController = rememberNavController()
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-
-        val bottomBarRoutes = BottomNavItems.values().map { it.route.toString() }
-
 
         setContent {
             AflamiTheme {
                 AflamiNavGraph(
+                    navController = Theme.navController,
                     isLoggedIn = mainViewModel.loginState,
                     modifier = Modifier.Companion
                         .fillMaxSize()
