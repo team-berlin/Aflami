@@ -42,12 +42,11 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
-import com.berlin.aflami.navigation.ContinueWatchingScreen
-import com.berlin.aflami.navigation.MediaDetails
-import com.berlin.aflami.navigation.SearchScreen
-import com.berlin.aflami.navigation.TopRatingMediaScreen
+import com.berlin.aflami.navigation.ContinueWatchingDestination
+import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.SearchDestination
+import com.berlin.aflami.navigation.TopRatingMediaDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
-import com.berlin.aflami.screens.NoInternetConnectionPlaceholderPreview
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
 import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
@@ -113,25 +112,25 @@ private fun onReceiveHomeScreenEffect(navController: NavController,homeScreenEff
     when (homeScreenEffect) {
         is HomeScreenEffect.NavigateToContinueWatching -> {
             navController.navigate(
-                ContinueWatchingScreen
+                ContinueWatchingDestination
             )
         }
 
         is HomeScreenEffect.NavigateToSearch -> {
             navController.navigate(
-                SearchScreen
+                SearchDestination
             )
         }
 
         is HomeScreenEffect.NavigateToTopRating -> {
             navController.navigate(
-                TopRatingMediaScreen
+                TopRatingMediaDestination
             )
         }
 
         is HomeScreenEffect.NavigateToDetails -> {
             navController.navigate(
-                MediaDetails(homeScreenEffect.id, MediaType.valueOf(homeScreenEffect.mediaType))
+                MediaDetailsDestination(homeScreenEffect.id, MediaType.valueOf(homeScreenEffect.mediaType))
             )
         }
 

@@ -28,7 +28,6 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.MediaCastGrid
-import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsEffect
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsListener
