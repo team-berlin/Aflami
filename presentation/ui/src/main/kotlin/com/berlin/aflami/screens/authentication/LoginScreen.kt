@@ -100,8 +100,7 @@ fun LoginScreen(
                 }
 
                 LoginEffect.NavigateToForgotPassword -> {
-                    val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
-                    navController.navigate(WebViewScreen(encodedUrl))
+                    navController.navigate(WebViewScreen(RESET_PASSWORD_URL))
                 }
             }
         }
