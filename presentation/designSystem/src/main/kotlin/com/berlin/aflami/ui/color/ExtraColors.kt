@@ -33,4 +33,23 @@ object ExtraColors {
     )
 
     val black50 = Color(0x80000000)
+
+    val primaryGredient=Brush.linearGradient(
+        listOf(
+            Color(0xFFF564A9),
+            Color(0xFF973A66)
+        ),
+        end = Offset(0f, Float.POSITIVE_INFINITY)
+
+    )
+    val BackgroundGradient=Brush.linearGradient(
+        listOf(
+            Color(0xCC63163A),
+            Color(0x0063163A),
+        ),
+        end = Offset(0f, Float.POSITIVE_INFINITY)
+
+    )
+
+
 }

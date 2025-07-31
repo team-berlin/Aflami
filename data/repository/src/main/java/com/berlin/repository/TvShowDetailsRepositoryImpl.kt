@@ -16,9 +16,9 @@ import repository.TvShowDetailsRepository
 class TvShowDetailsRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
 ) : TvShowDetailsRepository {
-    override suspend fun getTvShowDetails(id: Long, language: String): TvShowDetails? {
+    override suspend fun getTvShowDetails(id: Long): TvShowDetails? {
         return try {
-            remoteDataSource.getTvShowDetails(id, language).toDomain()
+            remoteDataSource.getTvShowDetails(id).toDomain()
         } catch (exception: AflamiExceptions) {
             throw exception
         }
@@ -33,9 +33,9 @@ class TvShowDetailsRepositoryImpl(
         }
     }
 
-    override suspend fun getSeriesCastDetails(seriesId: Long, language: String): List<MediaCast> {
+    override suspend fun getSeriesCastDetails(seriesId: Long): List<MediaCast> {
         return remoteDataSource.getSeriesCastDetails(
-            seriesId, language
+            seriesId
         ).cast?.mapNotNull { castItemDto ->
             castItemDto?.toDomain()
         } ?: emptyList()
@@ -60,7 +60,7 @@ class TvShowDetailsRepositoryImpl(
             ?: emptyList()
     }
 
-    override suspend fun getSeriesGenres(language: String): List<Genre> {
-        return remoteDataSource.getSeriesGenres(language).genres.map { it.toDomain() }
+    override suspend fun getSeriesGenres(): List<Genre> {
+        return remoteDataSource.getSeriesGenres().genres.map { it.toDomain() }
     }
 }

@@ -15,9 +15,13 @@ class MainViewModel(
     var loginState by mutableStateOf(false)
         private set
 
+    var isLoading by mutableStateOf(true)
+        private set
+
     init {
         viewModelScope.launch {
             loginState = isLoggedInUseCase()
+            isLoading = false
         }
     }
 }

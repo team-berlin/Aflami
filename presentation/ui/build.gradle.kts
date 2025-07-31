@@ -22,6 +22,7 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.androidx.navigation)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.core.splashscreen)
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:viewModel"))

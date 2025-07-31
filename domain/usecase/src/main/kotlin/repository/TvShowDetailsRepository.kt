@@ -9,11 +9,11 @@ import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
 
 interface TvShowDetailsRepository {
-    suspend fun getTvShowDetails(id: Long, language: String): TvShowDetails?
+    suspend fun getTvShowDetails(id: Long): TvShowDetails?
     suspend fun getSeriesImages(id: Long): List<String>
-    suspend fun getSeriesCastDetails(seriesId: Long, language: String): List<MediaCast>
+    suspend fun getSeriesCastDetails(seriesId: Long): List<MediaCast>
     suspend fun getSeriesSimilar(seriesId: Long): List<TVShow>
     suspend fun getReviews(id: Long): List<Review>
     suspend fun getSeasonEpisodes(seriesId: Long, seasonNumber: Int): List<Episodes?>
-    suspend fun getSeriesGenres(language: String): List<Genre>
+    suspend fun getSeriesGenres(): List<Genre>
 }

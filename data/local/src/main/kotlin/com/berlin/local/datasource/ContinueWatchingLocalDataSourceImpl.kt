@@ -8,8 +8,11 @@ import com.berlin.repository.datasource.local.dto.ContinueWatchingTVShowEntity
 class ContinueWatchingLocalDataSourceImpl(
     private val continueWatchingDao: ContinueWatchingDao
 ) : ContinueWatchingLocalDataSource {
-    override suspend fun getContinueWatchingMovie(): List<ContinueWatchingMovieEntity> {
-        return continueWatchingDao.getContinueWatchingMovies()
+    override suspend fun getContinueWatchingMovie( pageSize: Int, page: Int): List<ContinueWatchingMovieEntity> {
+        return continueWatchingDao.getContinueWatchingMovies(
+            pageSize = pageSize,
+            skip = (page - 1) * 20
+        )
     }
 
     override suspend fun addContinueWatchedMovie(movieEntity: ContinueWatchingMovieEntity) {
@@ -17,8 +20,11 @@ class ContinueWatchingLocalDataSourceImpl(
 
     }
 
-    override suspend fun getContinueWatchedTVShow(): List<ContinueWatchingTVShowEntity> {
-        return continueWatchingDao.getContinueWatchingTVShows()
+    override suspend fun getContinueWatchedTVShow( pageSize: Int, page: Int): List<ContinueWatchingTVShowEntity> {
+        return continueWatchingDao.getContinueWatchingTVShows(
+            pageSize = pageSize,
+            skip = (page - 1) * 20
+        )
     }
 
     override suspend fun addContinueWatchedTVShow(tvShowEntity: ContinueWatchingTVShowEntity) {

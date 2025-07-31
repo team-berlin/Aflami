@@ -1,7 +1,6 @@
 package com.berlin.aflami.viewmodel.mediadetails.details
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -9,13 +8,13 @@ import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.util.toggle
 import com.berlin.entity.Episodes
 import com.berlin.viewModel.R
@@ -38,7 +37,6 @@ import usecase.mediadetails.GetSimilarSeriesUseCase
 import usecase.mediadetails.GetTvShowDetailsUseCase
 
 class MediaDetailsViewModel(
-    savedStateHandle: SavedStateHandle,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
@@ -51,22 +49,21 @@ class MediaDetailsViewModel(
     private val seriesReviewUseCase: GetSeriesReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
-    private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase
+    private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
+    val mediaId: Long,
+    val mediaType: MediaType
 ) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
     MediaDetailsUiState()
 ), MediaInteractionListener {
 
     private companion object {
-        const val ID_KEY = "id"
-        const val MEDIA_TYPE_KEY = "media_type"
         val NO_REVIEWS = R.string.there_is_no_reviews
         val NO_GALLERY = R.string.there_is_no_gallery
         val NO_MORE_MEDIA = R.string.there_is_no_more_media
         val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
     }
-    val id: Long = savedStateHandle.get<String>(ID_KEY)?.toLongOrNull() ?: 0L
-    val type: MediaType = savedStateHandle.get<String>(MEDIA_TYPE_KEY)
-        ?.let { MediaType.valueOf(it) } ?: MediaType.MOVIE
+
+//    val mediaType = MediaType.valueOf(mediaType)
 
     private val _tabSelectedUiState = MutableStateFlow(MovieDetailsTabsUiState())
     val tabSelectedUiState = _tabSelectedUiState.asStateFlow()
@@ -77,15 +74,13 @@ class MediaDetailsViewModel(
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
     init {
-        if (_state.value.id == 0L && id != 0L) {
-            getMediaCast(id, type)
-            getMediaDetails(id, type, "en-US")
-            onShowReviewsClicked(id, type)
-        }
+        getMediaCast(mediaId = mediaId, mediaType = mediaType)
+        getMediaDetails(mediaId = mediaId, mediaType = mediaType)
+        onShowMoreMediaLikeThisClicked(mediaId = mediaId, mediaType = mediaType)
     }
 
 
-    fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
+    fun getMediaDetails(mediaId: Long, mediaType: MediaType) {
 
         updateState {
             it.copy(isLoading = true, error = null)
@@ -94,13 +89,13 @@ class MediaDetailsViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> {
-                        val movie = getMovieDetailsUseCase(mediaId, language)
+                        val movie = getMovieDetailsUseCase(mediaId)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
                         movie?.toUiState()
                     }
 
                     MediaType.TVSHOW -> {
-                        val movie = getTvShowDetailsUseCase(mediaId, language)
+                        val movie = getTvShowDetailsUseCase(mediaId)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
                         movie?.toUiState()
                     }
@@ -125,14 +120,14 @@ class MediaDetailsViewModel(
                             originalCountry = details.originalCountry,
                         )
                     }
-                    saveWatchedMedia(mediaType=mediaType)
+                    saveWatchedMedia(mediaType = mediaType)
                 }
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
 
-    private fun saveWatchedMedia(mediaType: MediaType){
+    private fun saveWatchedMedia(mediaType: MediaType) {
         viewModelScope.launch {
             when (mediaType) {
                 MediaType.MOVIE -> addContinueWatchingMovieUseCase(_state.value.toMovie())
@@ -145,7 +140,7 @@ class MediaDetailsViewModel(
         return _state.value.isDescriptionExpanded
     }
 
-    fun isReviewExpanded(id: Long): Boolean {
+    fun isReviewExpanded(id: String): Boolean {
         return _state.value.expandedReviewIds.contains(id)
     }
 
@@ -174,7 +169,7 @@ class MediaDetailsViewModel(
         }
     }
 
-    override fun onReadMoreReviewClicked(id: Long) {
+    override fun onReadMoreReviewClicked(id: String) {
         updateState { state ->
             state.copy(
                 expandedReviewIds = state.expandedReviewIds.toggle(id)
@@ -185,8 +180,8 @@ class MediaDetailsViewModel(
     override fun onShowCastClicked() {
         sendNewEffect(
             MediaDetailsScreenEffect.NavigateToShowAllCastScreen(
-                mediaId = id,
-                mediaType = type
+                mediaId = mediaId,
+                mediaType = mediaType
             )
         )
     }
@@ -200,15 +195,15 @@ class MediaDetailsViewModel(
     }
 
     override fun onSelectRateClicked(rate: Float) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onSubmitRateClicked(rate: Float) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onCancelRatingClicked() {
-        TODO("Not yet implemented")
+
     }
 
     override fun onAddMediaToFavouriteListClicked(favouriteListId: Int, mediaId: Int) {
@@ -226,27 +221,27 @@ class MediaDetailsViewModel(
     }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onCreateNewFavouriteListClicked() {
-        TODO("Not yet implemented")
+
     }
 
     override fun onCancelAddingToFavouriteClicked() {
-        TODO("Not yet implemented")
+
     }
 
     override fun onUpdateNewListTitle(newListTitle: String) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onCreateNewListClicked(listTitle: String) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onCancelCreatingNewListClicked() {
-        TODO("Not yet implemented")
+
     }
 
     override fun onShowMoreMediaLikeThisClicked(mediaId: Long, mediaType: MediaType) {
@@ -282,7 +277,12 @@ class MediaDetailsViewModel(
                 }
 
             },
-            onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
+            onError = { errorState ->
+                handleErrorState(
+                    errorState,
+                    updateRowSection = true
+                )
+            },
         )
     }
 
@@ -354,8 +354,6 @@ class MediaDetailsViewModel(
                         )
                     }
                 }
-
-
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
@@ -373,7 +371,11 @@ class MediaDetailsViewModel(
                 if (companyProductionCache?.isEmpty() == true) {
                     updateState { companyProduction ->
                         companyProduction.copy(
-                            rowSection = RowSectionUiState.NoDataFound(UiText.Resource(NO_COMPANY_PRODUCTION))
+                            rowSection = RowSectionUiState.NoDataFound(
+                                UiText.Resource(
+                                    NO_COMPANY_PRODUCTION
+                                )
+                            )
                         )
                     }
                 } else {
@@ -426,17 +428,16 @@ class MediaDetailsViewModel(
         )
     }
 
-    fun getMediaCast(mediaId: Long, mediaType: MediaType, language: String = "US-EG") {
+    fun getMediaCast(mediaId: Long, mediaType: MediaType) {
         updateState {
             it.copy(error = null, isLoading = true)
         }
         tryToCall(
             call = {
                 when (mediaType) {
-                    MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
+                    MediaType.MOVIE -> getMovieCastUseCase(mediaId).map { it.toUiState() }
                     MediaType.TVSHOW -> getSeriesCastUseCase(
-                        mediaId,
-                        language
+                        mediaId
                     ).map { it.toUiState() }
                 }
             },
@@ -459,12 +460,9 @@ class MediaDetailsViewModel(
         mediaType: MediaType,
     ) {
         _tabSelectedUiState.update { current ->
-            val newSelectedTab = if (current.tab == tab) {
-                MovieDetailsTabs.REVIEWS
-            } else {
-                tab
-            }
-            when (newSelectedTab) {
+            if (current.tab == tab) return@update current
+
+            when (tab) {
                 MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(
                     mediaId = mediaId,
                     mediaType = mediaType
@@ -487,7 +485,7 @@ class MediaDetailsViewModel(
                 )
             }
             current.copy(
-                tab = newSelectedTab,
+                tab = tab,
                 isSelected = true
             )
         }
@@ -500,8 +498,7 @@ class MediaDetailsViewModel(
             } else it.rowSection
             Log.d("CastViewModel", "getMediaCast: ${errorUiState.message}")
             it.copy(
-
-                error = UiText.Dynamic(errorUiState.message).toString(),
+                error = errorUiState.message,
                 rowSection = rowSection,
                 isLoading = false
             )

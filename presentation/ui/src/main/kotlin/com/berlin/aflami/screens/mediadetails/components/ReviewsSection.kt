@@ -7,8 +7,8 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
 @Composable
 fun ReviewsSection(
     reviews: List<ReviewUiState>,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit
+    isExpanded: (String) -> Boolean,
+    onToggleExpand: (String) -> Unit
 ) {
     Column {
         reviews.forEachIndexed { index, review ->
@@ -16,8 +16,8 @@ fun ReviewsSection(
             ReviewItem(
                 review = review,
                 isLastItem = isLast,
-                isExpanded = isExpanded,
-                onToggleExpand = onToggleExpand
+                isExpanded = isExpanded(review.id),
+                onToggleExpand = { onToggleExpand(review.id) }
             )
         }
     }

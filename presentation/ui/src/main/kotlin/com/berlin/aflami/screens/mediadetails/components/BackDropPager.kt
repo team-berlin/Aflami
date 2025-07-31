@@ -27,8 +27,10 @@ import com.berlin.aflami.component.Rating
 import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.utils.formatRating
+import com.berlin.aflami.utils.formatRatingForUi
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImageViewer
 import kotlinx.coroutines.delay
 
 @Composable
@@ -54,8 +56,8 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                     else -> ContentScale.Inside
                 }
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    AsyncImage(
-                        model = model,
+                    SafeImageViewer(
+                        imageUri = model?:"",
                         contentDescription = null,
                         contentScale = contentScale,
                         modifier = Modifier.fillMaxSize(),
@@ -67,9 +69,9 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                     }
                 }
             }
-            Indicator(pagerState = pagerState)
+            Indicator(pagerState = pagerState,modifier = Modifier.align(Alignment.BottomEnd))
             Box(modifier = Modifier.align(Alignment.BottomStart).padding(4.dp)) {
-                Rating(rating = formatRating(state.rating))
+                Rating(rating = state.rating.formatRatingForUi())
             }
         }
         Box(

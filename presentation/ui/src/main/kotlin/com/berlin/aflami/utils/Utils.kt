@@ -1,5 +1,6 @@
 package com.berlin.aflami.utils
 
+import android.annotation.SuppressLint
 import java.util.Locale
 
 fun formatRating(rating: Double): String {
@@ -7,5 +8,14 @@ fun formatRating(rating: Double): String {
         rating.toInt().toString()
     } else {
         String.format(Locale.getDefault(), "%.1f", rating).trimEnd('0').trimEnd('.')
+    }
+}
+
+fun Double.formatRatingForUi(): String {
+    val rounded = String.format("%.1f", this)
+    return if (rounded.endsWith(".0")) {
+        rounded.dropLast(2)
+    } else {
+        rounded
     }
 }
