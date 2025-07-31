@@ -6,7 +6,7 @@
 
     <style name="Theme.Aflami.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/background_color</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/play_arrow</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
         <item name="postSplashScreenTheme">@style/Theme.Aflami</item>
     </style>
 </resources>
