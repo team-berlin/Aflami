@@ -18,13 +18,13 @@ class MovieRepositoryImpl(
         }?: emptyList()
     }
 
-    override suspend fun getPopularMovies(language: String): List<Media> {
-        return remoteDataSource.getPopularMovies(language).results?.filterNotNull()
+    override suspend fun getPopularMovies(): List<Media> {
+        return remoteDataSource.getPopularMovies().results?.filterNotNull()
             ?.map { movieDto -> movieDto.toDomain(MOVIE) } ?: emptyList()
     }
 
-    override suspend fun getPopularTVShows(language: String): List<Media> {
-        return remoteDataSource.getPopularTVShows(language).results?.filterNotNull()
+    override suspend fun getPopularTVShows(): List<Media> {
+        return remoteDataSource.getPopularTVShows().results?.filterNotNull()
             ?.map { tVShowDto -> tVShowDto.toDomain(TVSHOW) } ?: emptyList()
     }
 

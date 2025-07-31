@@ -471,19 +471,18 @@ class SearchViewModel(
         val selectedTab = state.value.selectedTabOption
 
         tryToCall(
-            call = { buildGenreList(selectedTab, language) },
+            call = { buildGenreList(selectedTab) },
             onSuccess = { filterGenres -> updateGenres(selectedTab, filterGenres) },
             onError = { error -> setErrorState(error.message) }
         )
     }
 
     private suspend fun buildGenreList(
-        selectedTab: TabOption,
-        language: String
+        selectedTab: TabOption
     ): List<GenreUiState> {
         val genres = when (selectedTab) {
-            TabOption.MOVIES -> getMovieGenresUseCase(language)
-            TabOption.TV_SHOWS -> getSeriesGenresUseCase(language)
+            TabOption.MOVIES -> getMovieGenresUseCase()
+            TabOption.TV_SHOWS -> getSeriesGenresUseCase()
         }
 
         val all = FilterItemUiState.defaultGenres.first()

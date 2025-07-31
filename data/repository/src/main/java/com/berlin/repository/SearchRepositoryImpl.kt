@@ -22,10 +22,8 @@ class SearchRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val recentHistoryLocalDataSource: RecentHistoryLocalDataSource,
     private val categoriesPreferencesDataSource: CategoriesPreferencesDataSource,
-    // sharedPref
 ) : SearchRepository {
 
-    private val language = "en-US"
 
     override suspend fun getMoviesByCountry(
         query: String, page: Int
@@ -33,7 +31,7 @@ class SearchRepositoryImpl(
         val movies = localDataSource.getCachedSearch(query, QueryType.COUNTRY, page = page)
         if (!isExpiredOrEmpty(movies)) return movies.map { it.toDomain() }
 
-        remoteDataSource.searchMoviesByCountry(query, language, page).results?.filterNotNull()
+        remoteDataSource.searchMoviesByCountry(query, page).results?.filterNotNull()
             ?.map { it.toLocal(query, QueryType.COUNTRY.name, page, "Movie") }
             ?.also { localDataSource.cacheSearch(it) }
 
@@ -49,7 +47,7 @@ class SearchRepositoryImpl(
         val mediaList = if (!isExpiredOrEmpty(cached)) {
             cached.map { it.toMedia() }
         } else {
-            remoteDataSource.searchMoviesByActor(actorName, language, page).results?.filterNotNull()
+            remoteDataSource.searchMoviesByActor(actorName, page).results?.filterNotNull()
                 ?.also { getActingDepartment(it) }?.let { getMediaByActorName(actorName, page, it) }
                 ?.also { localDataSource.cacheSearch(it) }?.map { it.toMedia() } ?: emptyList()
         }
@@ -60,7 +58,7 @@ class SearchRepositoryImpl(
     override suspend fun searchMovie(query: String, page: Int): List<Movie> {
         return (localDataSource.getCachedSearch(query, QueryType.MOVIE, pageSize = 20, page = page)
             .takeIf { !isExpiredOrEmpty(it) }?.map { it.toDomain() }
-            ?: remoteDataSource.searchMovies(query, language, page).results?.filterNotNull()?.map {
+            ?: remoteDataSource.searchMovies(query, page).results?.filterNotNull()?.map {
                 it.toLocal(
                     query, QueryType.MOVIE.name, page, "Movie"
                 )
@@ -70,7 +68,7 @@ class SearchRepositoryImpl(
     override suspend fun searchTVShow(query: String, page: Int): List<TVShow> {
         return (localDataSource.getCachedSearch(query, QueryType.TV, pageSize = 20, page = page)
             .takeIf { !isExpiredOrEmpty(it) }?.map { it.toTVShow() }
-            ?: remoteDataSource.searchTvShows(query, language, page).results?.filterNotNull()?.map {
+            ?: remoteDataSource.searchTvShows(query, page).results?.filterNotNull()?.map {
                 it.toLocal(
                     query, QueryType.TV.name, page, "TVShow"
                 )

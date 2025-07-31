@@ -25,12 +25,12 @@ interface ApiService {
 
     @GET(ApiConstants.MOVIE_DETAILS)
     suspend fun getMovieDetails(
-        @Path(ApiConstants.MOVIE_ID) id: Long, @Query(ApiConstants.LANGUAGE) language: String
+        @Path(ApiConstants.MOVIE_ID) id: Long
     ): Response<MovieDetailsDto>
 
     @GET(ApiConstants.MOVIE_CAST)
     suspend fun getMovieCastDetails(
-        @Path(ApiConstants.MOVIE_ID) movieId: Long, @Query(ApiConstants.LANGUAGE) language: String
+        @Path(ApiConstants.MOVIE_ID) movieId: Long
     ): Response<MediaCastResponse>
 
     @GET(ApiConstants.MOVIE_MORE_LIKE_THIS)
@@ -46,28 +46,24 @@ interface ApiService {
     @GET(ApiConstants.SEARCH_BY_COUNTRY)
     suspend fun searchMoviesByCountry(
         @Query(ApiConstants.WITH_ORIGIN_COUNTRY) countryName: String,
-        @Query(ApiConstants.LANGUAGE) language: String,
         @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<MovieDto>>
 
     @GET(ApiConstants.SEARCH_BY_ACTOR)
     suspend fun searchMoviesByActor(
         @Query(ApiConstants.QUERY) actorName: String,
-        @Query(ApiConstants.LANGUAGE) language: String,
         @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<PersonDto>>
 
     @GET(ApiConstants.SEARCH_MOVIE)
     suspend fun searchMovies(
         @Query(ApiConstants.QUERY) query: String,
-        @Query(ApiConstants.LANGUAGE) language: String,
         @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<MovieDto>>
 
     @GET(ApiConstants.SEARCH_TV)
     suspend fun searchTvShows(
         @Query(ApiConstants.QUERY) query: String,
-        @Query(ApiConstants.LANGUAGE) language: String,
         @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<TVShowDto>>
 
@@ -76,12 +72,12 @@ interface ApiService {
 
     @GET(ApiConstants.SERIES_DETAILS)
     suspend fun getTvShowDetails(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long, @Query(ApiConstants.LANGUAGE) language: String
+        @Path(ApiConstants.SERIES_ID) seriesId: Long
     ): Response<TVShowDetailsDto>
 
     @GET(ApiConstants.SERIES_CAST)
     suspend fun getSeriesCastDetails(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long, @Query(ApiConstants.LANGUAGE) language: String
+        @Path(ApiConstants.SERIES_ID) seriesId: Long
     ): Response<MediaCastResponse>
 
     @GET(ApiConstants.SERIES_MORE_LIKE_THIS)
@@ -101,32 +97,24 @@ interface ApiService {
     ): Response<EpisodesSeasonDto>
 
     @GET(ApiConstants.MOVIE_GENRES)
-    suspend fun getMovieGenres(
-        @Query(ApiConstants.LANGUAGE) language: String
-    ): Response<GenreResponse>
+    suspend fun getMovieGenres(): Response<GenreResponse>
 
     @GET(ApiConstants.SERIES_GENRES)
-    suspend fun getSeriesGenres(
-        @Query(ApiConstants.LANGUAGE) language: String
-    ): Response<GenreResponse>
+    suspend fun getSeriesGenres(): Response<GenreResponse>
 
     @GET(ApiConstants.MOVIE_UPCOMING)
     suspend fun getUpcomingMovies():
             Response<BaseResponse<MovieDto>>
 
     @GET(ApiConstants.POPULAR_MOVIES)
-    suspend fun popularMovies(
-        @Query(ApiConstants.LANGUAGE) language: String
-    ): MovieResponse
+    suspend fun popularMovies(): MovieResponse
 
     @GET(ApiConstants.POPULAR_TV_SHOWS)
-    suspend fun popularTVShows(
-        @Query(ApiConstants.LANGUAGE) language: String
-    ): TVShowResponse
+    suspend fun popularTVShows(): TVShowResponse
 
     @GET(ApiConstants.DISCOVER_MOVIE)
     suspend fun getMoviesByMoods(
-        @Query(ApiConstants.WITH_GENRES) genresIds: List<Int>,
+        genresIds: List<Int>,
     ): Response<MovieResponse>
 
 }

@@ -10,9 +10,9 @@ import com.berlin.entity.Review
 
 interface MovieDetailsRepository {
     suspend fun getMovieImages(movieId: Long): List<String>
-    suspend fun getMovieDetails(id: Long, language: String): MovieDetails?
-    suspend fun getMovieCastDetails(movieId: Long, language: String): List<MediaCast>
+    suspend fun getMovieDetails(id: Long): MovieDetails?
+    suspend fun getMovieCastDetails(movieId: Long): List<MediaCast>
     suspend fun getMovieSimilar(movieId:Long):List<Movie>
     suspend fun getReviews(id: Long): List<Review>
-    suspend fun getMovieGenres(language: String): List<Genre>
+    suspend fun getMovieGenres(): List<Genre>
 }

@@ -49,7 +49,7 @@ class HomeViewModel(
     var x = 0
     init {
         x++
-        popularMedia("en-US")
+        popularMedia()
         loadGenresMovies()
         getContinueWatchingMedia()
         getTopRatingMovieAndTvShows()
@@ -57,13 +57,13 @@ class HomeViewModel(
     }
 
 
-    private fun popularMedia(language: String) {
+    private fun popularMedia() {
         viewModelScope.launch {
 
             try {
                 coroutineScope {
-                    val movie = async { popularMoviesUseCase(language) }
-                    val tvShow = async { popularTVShowsUseCase(language) }
+                    val movie = async { popularMoviesUseCase() }
+                    val tvShow = async { popularTVShowsUseCase() }
                     val movieList = movie.await().map { it.toUIState() }
                     val tvShowList = tvShow.await().map { it.toUIState() }
                     _movies.value = movieList
@@ -310,10 +310,10 @@ class HomeViewModel(
         })
     }
 
-    private fun loadGenresMovies(language: String = "en") {
+    private fun loadGenresMovies() {
         tryToCall(
             call = {
-                val movieGenres = getMoviesByGenreUseCase(language)
+                val movieGenres = getMoviesByGenreUseCase()
                 val all = GenreUiState(
                     id = -1, name = "All", isSelected = true
                 )

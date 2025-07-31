@@ -64,6 +64,7 @@ class MediaDetailsViewModel(
         val NO_MORE_MEDIA = R.string.there_is_no_more_media
         val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
     }
+
     val id: Long = savedStateHandle.get<String>(ID_KEY)?.toLongOrNull() ?: 0L
     val type: MediaType = savedStateHandle.get<String>(MEDIA_TYPE_KEY)
         ?.let { MediaType.valueOf(it) } ?: MediaType.MOVIE
@@ -79,13 +80,13 @@ class MediaDetailsViewModel(
     init {
         if (_state.value.id == 0L && id != 0L) {
             getMediaCast(id, type)
-            getMediaDetails(id, type, "en-US")
+            getMediaDetails(id, type)
             onShowMoreMediaLikeThisClicked(id, type)
         }
     }
 
 
-    fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
+    fun getMediaDetails(mediaId: Long, mediaType: MediaType) {
 
         updateState {
             it.copy(isLoading = true, error = null)
@@ -94,13 +95,13 @@ class MediaDetailsViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> {
-                        val movie = getMovieDetailsUseCase(mediaId, language)
+                        val movie = getMovieDetailsUseCase(mediaId)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
                         movie?.toUiState()
                     }
 
                     MediaType.TVSHOW -> {
-                        val movie = getTvShowDetailsUseCase(mediaId, language)
+                        val movie = getTvShowDetailsUseCase(mediaId)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
                         movie?.toUiState()
                     }
@@ -433,17 +434,16 @@ class MediaDetailsViewModel(
         )
     }
 
-    fun getMediaCast(mediaId: Long, mediaType: MediaType, language: String = "US-EG") {
+    fun getMediaCast(mediaId: Long, mediaType: MediaType) {
         updateState {
             it.copy(error = null, isLoading = true)
         }
         tryToCall(
             call = {
                 when (mediaType) {
-                    MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
+                    MediaType.MOVIE -> getMovieCastUseCase(mediaId).map { it.toUiState() }
                     MediaType.TVSHOW -> getSeriesCastUseCase(
-                        mediaId,
-                        language
+                        mediaId
                     ).map { it.toUiState() }
                 }
             },

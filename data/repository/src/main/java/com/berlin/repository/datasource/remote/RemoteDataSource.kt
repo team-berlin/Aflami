@@ -17,38 +17,38 @@ import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
 interface RemoteDataSource {
     suspend fun getMovieSimilar(movieId: Long): MovieResponse
     suspend fun getMovieImages(movieId: Long): MediaImagesResponse
-    suspend fun getMovieDetails(movieId: Long, language: String): MovieDetailsDto
-    suspend fun getMovieCastDetails(movieId: Long, language: String): MediaCastResponse
+    suspend fun getMovieDetails(movieId: Long): MovieDetailsDto
+    suspend fun getMovieCastDetails(movieId: Long): MediaCastResponse
     suspend fun getMovieReviews(movieId: Long): ReviewResponse
     suspend fun getUpComingMovies(): BaseResponse<MovieDto>
 
     suspend fun searchMoviesByCountry(
-        countryName: String, language: String, page: Int
+        countryName: String, page: Int
     ): BaseResponse<MovieDto>
 
     suspend fun searchMoviesByActor(
-        actorName: String, language: String, page: Int
+        actorName: String, page: Int
     ): BaseResponse<PersonDto>
 
     suspend fun searchMovies(
-        query: String, language: String, page: Int
+        query: String, page: Int
     ): BaseResponse<MovieDto>
 
     suspend fun searchTvShows(
-        query: String, language: String, page: Int
+        query: String, page: Int
     ): BaseResponse<TVShowDto>
 
     suspend fun getSeriesImages(seriesId: Long): MediaImagesResponse
-    suspend fun getTvShowDetails(seriesId: Long, language: String): TVShowDetailsDto
-    suspend fun getSeriesCastDetails(seriesId: Long, language: String): MediaCastResponse
+    suspend fun getTvShowDetails(seriesId: Long): TVShowDetailsDto
+    suspend fun getSeriesCastDetails(seriesId: Long): MediaCastResponse
     suspend fun getSeriesSimilar(seriesId: Long): TVShowResponse
     suspend fun getTVReviews(id: Long): ReviewResponse
     suspend fun getEpisodeSeasonSeries(seriesId: Long, seasonNumber: Int): EpisodesSeasonDto
 
-    suspend fun getMovieGenres(language: String): GenreResponse
-    suspend fun getSeriesGenres(language: String): GenreResponse
-    suspend fun getPopularMovies(language: String) : MovieResponse
-    suspend fun getPopularTVShows(language: String) : TVShowResponse
+    suspend fun getMovieGenres(): GenreResponse
+    suspend fun getSeriesGenres(): GenreResponse
+    suspend fun getPopularMovies(): MovieResponse
+    suspend fun getPopularTVShows(): TVShowResponse
 
     suspend fun getMoviesByMoodIds(
         moodIds: List<Int>

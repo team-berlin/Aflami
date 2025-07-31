@@ -27,7 +27,7 @@ val networkModule = module {
     single {
         OkHttpClient.Builder()
             .addInterceptor(ApiKeyInterceptor())
-            .addInterceptor ( LanguageInterceptor())
+            .addInterceptor(LanguageInterceptor())
             .addInterceptor(get<HttpLoggingInterceptor>()).build()
     }
 
@@ -40,8 +40,8 @@ val networkModule = module {
 
     single {
         Retrofit.Builder().baseUrl(BuildConfig.BASE_URL).client(get()).addConverterFactory(
-                get<Json>().asConverterFactory("application/json".toMediaType())
-            ).build()
+            get<Json>().asConverterFactory("application/json".toMediaType())
+        ).build()
     }
 
     single { get<Retrofit>().create(ApiService::class.java) }
