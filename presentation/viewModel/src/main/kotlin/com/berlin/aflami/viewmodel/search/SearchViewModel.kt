@@ -55,6 +55,7 @@ class SearchViewModel(
     init {
         observeSearchKeywordChanges()
         loadFilterOptions()
+        loadRecentSearch()
     }
 
     private fun loadRecentSearches() {
@@ -129,7 +130,8 @@ class SearchViewModel(
                                 state.value.filterItemUiState.filterTvShowSelected.selectedRating
                             val selectedGenreId =
                                 state.value.filterItemUiState.filterTvShowSelected.selectedGenres
-                            val matchesRating = tvUiState.rating.toFloatOrNull()
+                            val matchesRating = convertArabicToEnglish(tvUiState.rating.replace('٫', '.'))
+                                .toFloatOrNull()
                                 ?.let { it > selectedRating } == true
                             val matchesGenre =
                                 selectedGenreId == -1 || tvUiState.genre.any { it == selectedGenreId }
@@ -170,7 +172,8 @@ class SearchViewModel(
                                 state.value.filterItemUiState.filterMovieSelected.selectedRating
                             val selectedGenreId =
                                 state.value.filterItemUiState.filterMovieSelected.selectedGenres
-                            val matchesRating = movieUiState.rating.toFloatOrNull()
+                            val matchesRating = convertArabicToEnglish(movieUiState.rating.replace('٫', '.'))
+                                .toFloatOrNull()
                                 ?.let { it > selectedRating } == true
                             val matchesGenre =
                                 selectedGenreId == -1 || movieUiState.genre.any { it == selectedGenreId }
@@ -186,6 +189,16 @@ class SearchViewModel(
             }
         )
     }
+    private fun convertArabicToEnglish(input: String): String {
+        val arabicDigits = "٠١٢٣٤٥٦٧٨٩".toCharArray()
+        val englishDigits = "0123456789"
+
+        return input.map { char ->
+            val index = arabicDigits.indexOf(char)
+            if (index != -1) englishDigits[index] else char
+        }.joinToString("")
+    }
+
 
     private fun onFetchTvShowsSuccess(tvShowsFlow: Flow<PagingData<TVShowUiState>>) {
         updateState { it.copy(tvShows = tvShowsFlow, errorMessage = null, isLoading = false) }
@@ -199,7 +212,9 @@ class SearchViewModel(
         onSearchQueryChanged(state.value.searchQuery)
         tryToCall(
             call = { saveRecentHistoryUseCase },
-            onSuccess = { updateState { it.copy(isLoading = false) } },
+            onSuccess = {
+                updateState { it.copy(isLoading = false) }
+            },
             onError = { error ->
                 updateState {
                     it.copy(
@@ -212,7 +227,10 @@ class SearchViewModel(
     }
 
     override fun onSearchQueryChanged(query: TextFieldValue) {
-        updateState { it.copy(searchQuery = query, isLoading = false) }
+        updateState {
+            it.copy(searchQuery = query, isLoading = false)
+        }
+        loadRecentSearch()
     }
 
     override fun onBackClicked() {
@@ -414,7 +432,8 @@ class SearchViewModel(
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterMovieSelected = FilterMediaSelected(
-                                selectedRating = 1f,
+                                selectedRating = 0f,
+                                selectedGenres = -1,
                                 genreUiStates = updatedGenres,
 
                                 )
@@ -433,7 +452,7 @@ class SearchViewModel(
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterTvShowSelected = FilterMediaSelected(
-                                selectedRating = 1f,
+                                selectedRating = 0f,
                                 selectedGenres = -1,
                                 genreUiStates = updatedGenres
                             )
@@ -467,19 +486,17 @@ class SearchViewModel(
     }
 
 
-    private fun loadFilterOptions(language: String = "en") {
-        val selectedTab = state.value.selectedTabOption
+    private var movieGenres = FilterItemUiState.defaultGenres
+    private var tvShowGenres = FilterItemUiState.defaultGenres
 
-        tryToCall(
-            call = { buildGenreList(selectedTab) },
-            onSuccess = { filterGenres -> updateGenres(selectedTab, filterGenres) },
-            onError = { error -> setErrorState(error.message) }
-        )
+    private fun getCachedGenres(selectedTab: TabOption): List<GenreUiState> {
+        return when (selectedTab) {
+            TabOption.MOVIES -> movieGenres
+            TabOption.TV_SHOWS -> tvShowGenres
+        }
     }
 
-    private suspend fun buildGenreList(
-        selectedTab: TabOption
-    ): List<GenreUiState> {
+    private suspend fun fetchGenres(language: String, selectedTab: TabOption): List<GenreUiState> {
         val genres = when (selectedTab) {
             TabOption.MOVIES -> getMovieGenresUseCase()
             TabOption.TV_SHOWS -> getSeriesGenresUseCase()
@@ -493,29 +510,33 @@ class SearchViewModel(
                 isSelected = false
             )
         }
-
         return listOf(all) + realGenre
     }
 
-    private fun updateGenres(selectedTab: TabOption, filterGenres: List<GenreUiState>) {
-        updateState {
-            when (selectedTab) {
-                TabOption.MOVIES -> {
+    private fun updateFilterState(selectedTab: TabOption, filterGenres: List<GenreUiState>, error: Throwable? = null) {
+        when (selectedTab) {
+            TabOption.MOVIES -> {
+                movieGenres = filterGenres
+                updateState {
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterMovieSelected = it.filterItemUiState.filterMovieSelected.copy(
                                 genreUiStates = filterGenres
-                            )
+                            ),
+                            isLoading = error == null,
                         )
                     )
                 }
-
-                TabOption.TV_SHOWS -> {
+            }
+            TabOption.TV_SHOWS -> {
+                tvShowGenres = filterGenres
+                updateState {
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterTvShowSelected = it.filterItemUiState.filterTvShowSelected.copy(
                                 genreUiStates = filterGenres
-                            )
+                            ),
+                            isLoading = error == null,
                         )
                     )
                 }
@@ -523,17 +544,30 @@ class SearchViewModel(
         }
     }
 
-    private fun setErrorState(message: String?) {
-        updateState {
-            it.copy(
-                errorMessage = message,
-                isLoading = false
+    private fun loadFilterOptions(language: String = "en") {
+        val selectedTab = state.value.selectedTabOption
+        val cachedGenres = getCachedGenres(selectedTab)
+
+        if (cachedGenres != FilterItemUiState.defaultGenres) {
+            updateState {
+                it.copy(
+                    filterItemUiState = it.filterItemUiState.copy(
+                        isLoading = false
+                    )
+                )
+            }
+        } else {
+            tryToCall(
+                call = { fetchGenres(language, selectedTab) },
+                onSuccess = { filterGenres -> updateFilterState(selectedTab, filterGenres) },
+                onError = { error -> updateFilterState(selectedTab, cachedGenres) }
             )
         }
     }
 
+
+
     fun onItemClicked(query: TextFieldValue) {
-        val updatedQuery = query.copy(selection = TextRange(query.text.length))
-        updateState { it.copy(searchQuery = updatedQuery, isLoading = true) }
+        updateState { it.copy(searchQuery = query, isLoading = true) }
     }
 }

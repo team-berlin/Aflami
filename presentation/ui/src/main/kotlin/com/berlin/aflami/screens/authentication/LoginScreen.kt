@@ -100,8 +100,7 @@ fun LoginScreen(
                 }
 
                 LoginEffect.NavigateToForgotPassword -> {
-                    val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
-                    navController.navigate(WebViewScreen(encodedUrl))
+                    navController.navigate(WebViewScreen(RESET_PASSWORD_URL))
                 }
             }
         }
@@ -153,6 +152,7 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
             )
         }
         AnimatedSnackBar(
+            message  = uiState.errorMessage.toString(),
             modifier = Modifier
                 .fillMaxWidth()
                 .align(alignment = Alignment.TopCenter),
@@ -321,8 +321,9 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
 
 @Composable
 private fun AnimatedSnackBar(
-    modifier: Modifier = Modifier,
-    isSnackBarVisible: Boolean
+    message:String,
+    isSnackBarVisible: Boolean,
+    modifier: Modifier = Modifier
 ) {
     AnimatedVisibility(
         visible = isSnackBarVisible, enter = slideInVertically(
@@ -340,7 +341,7 @@ private fun AnimatedSnackBar(
         SnackBar(
             modifier = modifier,
             status = SnackBarStatus.ERROR,
-            text = stringResource(id = R.string.login_error_message),
+            text = message,
             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error)
         )
     }
