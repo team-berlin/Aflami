@@ -55,6 +55,7 @@ class SearchViewModel(
         observeSearchKeywordChanges()
         loadMovieFilterGenre()
         loadTvShowFilterGenre()
+        loadRecentSearch()
     }
 
     private fun loadRecentSearches() {
@@ -211,7 +212,9 @@ class SearchViewModel(
         onSearchQueryChanged(state.value.searchQuery)
         tryToCall(
             call = { saveRecentHistoryUseCase },
-            onSuccess = { updateState { it.copy(isLoading = false) } },
+            onSuccess = {
+                updateState { it.copy(isLoading = false) }
+            },
             onError = { error ->
                 updateState {
                     it.copy(
@@ -224,7 +227,10 @@ class SearchViewModel(
     }
 
     override fun onSearchQueryChanged(query: TextFieldValue) {
-        updateState { it.copy(searchQuery = query, isLoading = false) }
+        updateState {
+            it.copy(searchQuery = query, isLoading = false)
+        }
+        loadRecentSearch()
     }
 
     override fun onBackClicked() {
@@ -550,6 +556,8 @@ class SearchViewModel(
             }
         )
     }
+
+
 
     fun onItemClicked(query: TextFieldValue) {
         updateState { it.copy(searchQuery = query, isLoading = true) }

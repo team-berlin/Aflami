@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Aflami" parent="android:Theme.Material.Light.NoActionBar">
-<!--        <item name="android:windowIsTranslucent">true</item>  to avoid the base splash screen-->
+    <style name="Theme.Aflami" parent="android:Theme.Material.NoActionBar">
     </style>
 
     <style name="Theme.Aflami.Splash" parent="Theme.SplashScreen">
@@ -9,4 +8,5 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
         <item name="postSplashScreenTheme">@style/Theme.Aflami</item>
     </style>
+
 </resources>
