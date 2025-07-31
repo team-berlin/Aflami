@@ -32,7 +32,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetails
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
@@ -77,7 +77,7 @@ private fun onReceiveSearchByActorEffect(
 
         is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {
             navController.navigate(
-                MediaDetails(
+                MediaDetailsDestination(
                     searchByActorEffect.movieId,
                     MediaType.valueOf("MOVIE"),
                 )
@@ -92,7 +92,11 @@ private fun SearchByActorNameContent(
     state: SearchByActorScreenUiState,
     listener: SearchByActorInteractionListener,
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.color.surface)
+    ) {
         TopBar(modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp), title = {
             Text(
                 text = stringResource(R.string.find_by_actor),

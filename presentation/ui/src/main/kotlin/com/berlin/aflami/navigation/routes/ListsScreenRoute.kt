@@ -1,11 +1,11 @@
 package com.berlin.aflami.navigation.routes
 
-
+import android.util.Log
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.berlin.aflami.navigation.NavigationBarDestinations
-import com.berlin.aflami.screens.home.HomeScreen
+import com.berlin.aflami.screens.lists.ListsScreen
 
-fun NavGraphBuilder.homeScreenRoute() = composable<NavigationBarDestinations.HomeScreen> {
-    HomeScreen()
+fun NavGraphBuilder.listsRoute() = composable<NavigationBarDestinations.ListScreen> {
+    ListsScreen()
 }

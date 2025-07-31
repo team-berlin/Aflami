@@ -46,9 +46,9 @@ import com.berlin.aflami.component.TabBar
 import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetails
-import com.berlin.aflami.navigation.SearchByActorScreen
-import com.berlin.aflami.navigation.SearchByCountryScreen
+import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.SearchByActorDestination
+import com.berlin.aflami.navigation.SearchByCountryDestination
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
@@ -69,7 +69,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
-    viewModel: SearchViewModel = koinViewModel()
+    viewModel: SearchViewModel = koinViewModel(),
 ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -77,7 +77,6 @@ fun SearchScreen(
 
 
     SearchScreenContent(
-        navController = navController,
         state = state,
         listenerSearch = viewModel,
         filterSearch = viewModel,
@@ -86,7 +85,6 @@ fun SearchScreen(
         onClearAll = viewModel::clearSearchHistory,
         onItemClick = viewModel::onItemClicked
     )
-
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             onReceiveSearchEffect(effect = effect, navController = navController)
@@ -96,7 +94,7 @@ fun SearchScreen(
 
 private fun onReceiveSearchEffect(
     navController: NavController,
-    effect: SearchUiEffect
+    effect: SearchUiEffect,
 ) {
     when (effect) {
         is SearchUiEffect.NavigatedBack -> navController.popBackStack()
@@ -104,7 +102,7 @@ private fun onReceiveSearchEffect(
         is SearchUiEffect.NavigatedToMovieDetailsScreen -> {
 
             navController.navigate(
-                MediaDetails(
+                MediaDetailsDestination(
                     mediaId = effect.id,
                     mediaType = MediaType.valueOf("MOVIE"),
                 )
@@ -113,13 +111,13 @@ private fun onReceiveSearchEffect(
 
         is SearchUiEffect.NavigateToActorSearch -> {
             navController.navigate(
-                SearchByActorScreen
+                SearchByActorDestination
             )
         }
 
         is SearchUiEffect.NavigateToWorldSearch -> {
             navController.navigate(
-                SearchByCountryScreen
+                SearchByCountryDestination
             )
         }
     }
@@ -135,7 +133,6 @@ private fun SearchScreenContent(
     onItemClick: (TextFieldValue) -> Unit,
     onDeleteItem: (String) -> Unit,
     onClearAll: () -> Unit,
-    navController: NavController,
 ) {
     val focusManager = LocalFocusManager.current
     Box(
