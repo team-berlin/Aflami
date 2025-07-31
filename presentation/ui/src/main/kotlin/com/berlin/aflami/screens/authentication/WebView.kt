@@ -1,6 +1,7 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -31,12 +32,20 @@ fun WebView(url: String) {
     var isLoading by remember { mutableStateOf(true) }
     Box {
         AndroidView(
+
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
+                Log.d("WOW", "AndroidView: ")
                 WebView(context).apply {
+                    Log.d("WOW", " WebView(context).apply: ")
                     webViewClient = CustomWebViewClient(
-                        onPageStarted = { isLoading = true },
-                        onPageFinished = { isLoading = false },
+                        onPageStarted = {
+                            isLoading = true
+                                        Log.d("WOW", "Page started loading: $url")
+                                        },
+                        onPageFinished = { isLoading = false
+                            Log.d("WOW", "onPageFinished: $url")
+                                         },
                         onError = { onErrorReceived(navController) }
                     )
                     settings.javaScriptEnabled = true
@@ -44,6 +53,7 @@ fun WebView(url: String) {
                 }
             },
             update = { webView ->
+                Log.d("WOW", " update = { webView ->: ")
                 webView.loadUrl(url)
             }
         )
@@ -62,6 +72,7 @@ fun WebView(url: String) {
         }
     }
 }
+
 private fun onErrorReceived(navController: NavController) {
     navController.popBackStack()
 }
