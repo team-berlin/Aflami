@@ -92,7 +92,11 @@ private fun SearchByActorNameContent(
     state: SearchByActorScreenUiState,
     listener: SearchByActorInteractionListener,
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.color.surface)
+    ) {
         TopBar(modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp), title = {
             Text(
                 text = stringResource(R.string.find_by_actor),
