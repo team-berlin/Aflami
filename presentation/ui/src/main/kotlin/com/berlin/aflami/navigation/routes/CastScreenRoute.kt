@@ -8,5 +8,5 @@ import com.berlin.aflami.screens.mediadetails.screen.CastDetailsScreen
 
 fun NavGraphBuilder.castDetailsScreen() = composable<CastScreen> { backStackEntry ->
     val castScreenParameters = backStackEntry.toRoute<CastScreen>()
-    CastDetailsScreen(id = castScreenParameters.mediaId, mediaType = castScreenParameters.mediaType)
+    CastDetailsScreen(castScreenParameters.mediaId,castScreenParameters.mediaType)
 }

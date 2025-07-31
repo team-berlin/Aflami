@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,10 +32,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MediaDetails
+import com.berlin.aflami.navigation.SearchByActorScreen
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.search.SearchUiEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListener
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenUiState
@@ -57,16 +60,29 @@ fun SearchByCountryScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
-            when (effect) {
-                SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
-                is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
-                    navController.navigate(
-                        "mediaDetailsScreen/${effect.movieId}/${"MOVIE"}"
-                    )
-                }
-            }
+            onReceiveSearchByCountryEffect(effect= effect, navController = navController)
         }
     }
+}
+
+private fun onReceiveSearchByCountryEffect(
+    navController: NavController,
+    effect: SearchByCountryEffect
+) {
+    when (effect) {
+        SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
+
+        is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
+
+            navController.navigate(
+                MediaDetails(
+                    mediaId =effect.movieId ,
+                    mediaType = MediaType.valueOf("MOVIE"),
+                )
+            )
+        }
+    }
+
 }
 
 @Composable
@@ -77,7 +93,7 @@ private fun SearchByCountryContent(
 ) {
     Column {
         TopBar(
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp),
             title = {
                 Text(
                     text = stringResource(R.string.country_tour),

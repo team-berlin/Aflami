@@ -13,6 +13,7 @@ import com.berlin.aflami.navigation.routes.mediaDetailsRoute
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchByCountryRoute
 import com.berlin.aflami.navigation.routes.searchScreenRoute
+import com.berlin.aflami.navigation.routes.topRatingMedia
 import com.berlin.aflami.navigation.routes.watchedMedia
 import com.berlin.aflami.navigation.routes.webView
 import com.berlin.aflami.ui.theme.Theme
@@ -57,6 +58,7 @@ fun AflamiNavGraph(
         loginRoute()
         webView()
         watchedMedia()
+        topRatingMedia()
         homeScreenRoute()
     }
 }
