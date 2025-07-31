@@ -182,7 +182,7 @@ private fun HomeContent(
             visible = state.isLoading.not()
         ) {
             LazyColumn(
-
+                modifier = Modifier.padding(bottom = 64.dp ),
                 state = listState
             ) {
                 item {
@@ -197,7 +197,6 @@ private fun HomeContent(
                                 imageUrl = currentMedia?.poster ?: "",
                                 modifier = Modifier
                                     .fillMaxWidth()
-
                                     .height(390.dp)
                             )
                             Column(
@@ -242,7 +241,7 @@ private fun HomeContent(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .align(Alignment.CenterHorizontally),
-                                        contentPadding = PaddingValues(end = 8.dp),
+
                                         horizontalArrangement = Arrangement.Center,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
@@ -252,7 +251,7 @@ private fun HomeContent(
                                             Box(
                                                 modifier = Modifier.padding(horizontal = 8.dp)
                                             ) {
-                                                GenersChip(label = genreName)
+                                                GenersChip(label = stringResource(genreName))
                                             }
                                         }
                                     }

@@ -84,5 +84,13 @@
     <string name="filter_result">Filter Result</string>
     <string name="search_discribtion">\"Start exploring! Search for your favorite movies, series and shows\"</string>
     <string name="character_image">Character Image</string>
+    <string name="action_adventure"><![CDATA[Action & Adventure]]></string>
+    <string name="kids">Kids</string>
+    <string name="news">News</string>
+    <string name="reality">Reailty</string>
+    <string name="sci_fi_fantasy"><![CDATA[Sci-Fi & Fantasy]]></string>
+    <string name="soap">Soap</string>
+    <string name="talk">Talk Shows</string>
+    <string name="war_politics"><![CDATA[War & Politics]]></string>
 
 </resources>
