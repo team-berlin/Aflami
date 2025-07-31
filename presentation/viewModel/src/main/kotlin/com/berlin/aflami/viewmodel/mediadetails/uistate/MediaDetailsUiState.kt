@@ -31,7 +31,7 @@ data class MediaDetailsUiState(
     val originalCountry: String? = null,
     val duration: String? = null,
     val hasVideo: Boolean = false,
-    val error: String? = "",
+    val error: String? = null,
     val rowSection: RowSectionUiState = RowSectionUiState.Loading
 ) {
     fun toMovie(): Movie {

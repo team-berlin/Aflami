@@ -46,13 +46,13 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun MediaDetailsScreen(
     mediaId: Long,
     mediaType: MediaType,
-    viewModel: MediaDetailsViewModel = koinViewModel(),
-) {
+    viewModel: MediaDetailsViewModel = koinViewModel(parameters = { parametersOf(mediaId, mediaType) })) {
     val navController = Theme.navController
     val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
@@ -78,7 +78,7 @@ fun MediaDetailsScreen(
         )
     }
     AnimatedVisibility(
-        uiState.error != null
+        visible = uiState.error != null
     ) {
         NoInternetConnectionPlaceholder()
     }
@@ -96,11 +96,11 @@ fun MediaDetailsScreen(
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
                     tab = tab,
-                    mediaId = viewModel.id,
-                    mediaType = viewModel.type,
+                    mediaId = viewModel.mediaId,
+                    mediaType = viewModel.mediaType,
                 )
             },
-            mediaType = viewModel.type
+            mediaType = viewModel.mediaType
         )
     }
     AnimatedVisibility(
