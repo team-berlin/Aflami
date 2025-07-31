@@ -112,7 +112,6 @@ private fun TopRatingContent(
         modifier = Modifier
             .fillMaxSize()
             .background(BackgroundGradient)
-            .padding(top = 20.dp),
     ) {
         Image(
             modifier = Modifier
@@ -136,7 +135,8 @@ private fun TopRatingContent(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 106.dp),
+                .statusBarsPadding()
+                .padding(top = 56.dp),
             columns = GridCells.Adaptive(minSize = 160.dp),
             contentPadding = PaddingValues(
                 start = 16.dp, end = 16.dp
@@ -163,15 +163,16 @@ private fun TopRatingContent(
                 }
             }
         }
+        DefaultBar(
+            modifier = Modifier
+                .background(appBarBgColor)
+                .statusBarsPadding(),
+            onNavigateBackClicked = { viewModel.onBackClicked() },
+            optionContainerColor = Theme.color.surfaceHigh,
+            containerColor = appBarBgColor,
+            title = stringResource(R.string.top_rating)
+        )
     }
-    DefaultBar(
-        modifier = Modifier
-            .background(appBarBgColor)
-            .statusBarsPadding(),
-        onNavigateBackClicked = { viewModel.onBackClicked() },
-        optionContainerColor = Theme.color.surfaceHigh,
-        containerColor = appBarBgColor,
-        title = stringResource(R.string.top_rating)
-    )
+
 
 }

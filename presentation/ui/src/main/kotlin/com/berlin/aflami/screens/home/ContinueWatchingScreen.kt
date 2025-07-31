@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -61,6 +62,7 @@ fun ContinueWatchingScreen(
             text = stringResource(R.string.loading)
         )
     }
+
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
@@ -92,7 +94,7 @@ fun WatchedMediaContent(
 ) {
 
     Column(modifier = Modifier.fillMaxSize().background(Theme.color.surface)) {
-        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+        TopBar(modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp), title = {
             Text(
                 text = stringResource(R.string.continue_watching),
                 style = Theme.textStyle.title.large,

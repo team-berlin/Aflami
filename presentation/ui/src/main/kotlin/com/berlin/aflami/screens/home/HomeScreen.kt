@@ -46,6 +46,8 @@ import com.berlin.aflami.navigation.ContinueWatchingScreen
 import com.berlin.aflami.navigation.MediaDetails
 import com.berlin.aflami.navigation.SearchScreen
 import com.berlin.aflami.navigation.TopRatingMediaScreen
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholderPreview
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
 import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
@@ -75,9 +77,35 @@ fun HomeScreen(
             onReceiveHomeScreenEffect(navController,it)
         }
     }
-    HomeContent(
-        state = state, listener = viewModel
-    )
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.isLoading
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.error!=null
+    ) {
+        NoInternetConnectionPlaceholder()
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !state.isLoading
+    ) {
+
+        HomeContent(
+            state = state, listener = viewModel
+        )
+    }
 
 }
 

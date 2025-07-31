@@ -10,16 +10,13 @@ import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetSeriesCastUseCase
 
 class CastViewModel(
-    savedStateHandle: SavedStateHandle,
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getSeriesCastUseCase: GetSeriesCastUseCase,
+    val id:Long,
+    val type: MediaType
 ): BaseViewModel<MediaDetailsUiState, CastDetailsEffect>(
     MediaDetailsUiState()
 ) , CastDetailsListener {
-
-    val id: Long = savedStateHandle.get<String>("id")?.toLongOrNull() ?: 0L
-    val type: MediaType = savedStateHandle.get<String>("media_type")
-        ?.let { MediaType.valueOf(it) } ?: MediaType.MOVIE
 
     init {
 
