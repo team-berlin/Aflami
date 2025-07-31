@@ -16,7 +16,7 @@ val properties = Properties().apply {
 
 android {
     namespace = "com.berlin.aflami"
-    compileSdk = 35
+    compileSdk = 36
 
     buildTypes {
         release {
@@ -32,12 +32,12 @@ android {
     defaultConfig {
         applicationId = "com.berlin.aflami"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = if (project.hasProperty("versionName")) {
             project.property("versionName") as String
         } else {
-            "1.0.0"
+            "4.0.0"
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
