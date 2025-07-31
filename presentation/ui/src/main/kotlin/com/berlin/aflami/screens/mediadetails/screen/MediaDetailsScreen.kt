@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -194,6 +195,7 @@ fun MediaDetailsContent(
             item {
                 HorizontalDivider(
                     modifier = Modifier
+                        .padding(bottom=12.dp)
                         .fillMaxWidth(),
                     color = Theme.color.stroke,
                     thickness = 1.dp

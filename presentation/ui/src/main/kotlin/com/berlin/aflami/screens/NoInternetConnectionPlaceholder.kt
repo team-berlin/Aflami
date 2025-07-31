@@ -28,9 +28,9 @@ fun NoInternetConnectionPlaceholder(
 
     Column {
         CountryTourExploring(
-            image = painterResource(R.drawable.no_internet_placeholder),
-            titleId = R.string.offline_title,
-            messageId = R.string.check_connection_title
+            image = painterResource(com.berlin.ui.R.drawable.no_internet_placeholder),
+            titleId = com.berlin.ui.R.string.offline_title,
+            messageId = com.berlin.ui.R.string.check_connection_title
         )
 
         Button(

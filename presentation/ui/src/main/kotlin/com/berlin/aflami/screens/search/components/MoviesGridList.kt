@@ -20,7 +20,7 @@ import com.berlin.ui.R
 fun MoviesList(
     modifier: Modifier = Modifier,
     movies: LazyPagingItems<MovieUIState>,
-    onMovieClick: (Long,String) -> Unit
+    onMovieClick: (Long) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -44,7 +44,7 @@ fun MoviesList(
                         typeOfMedia = stringResource(R.string.movie),
                         date = movie.releaseYear,
                         rating = movie.rating,
-                        onClick = { onMovieClick(movie.id,movie.mediaType) }
+                        onClick = { onMovieClick(movie.id) }
                     )
                 }
             }

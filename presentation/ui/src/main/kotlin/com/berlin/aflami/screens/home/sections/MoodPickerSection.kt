@@ -40,7 +40,9 @@ fun MoodPickerSection(
 
 
     MoodPicker(
-        modifier = Modifier.background(Theme.color.surface).padding(horizontal = 16.dp),
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            .background(Theme.color.surface),
         moodIcons = moodIcons,
         headerText = stringResource(R.string.mood_picker_title),
         promptText = stringResource(R.string.mood_picker_prompt),

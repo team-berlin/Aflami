@@ -85,7 +85,6 @@ fun SearchScreen(
         onClearAll = viewModel::clearSearchHistory,
         onItemClick = viewModel::onItemClicked
     )
-
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             onReceiveSearchEffect(effect = effect, navController = navController)

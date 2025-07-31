@@ -52,152 +52,68 @@ fun SafeImageViewer(
     placeholder: Painter? = null,
     blurCheck: Boolean = true,
     alignment: Alignment = Alignment.Center
-
 ) {
     val context = LocalContext.current
     val modelManager by currentKoinScope().inject<FireBaseModelManager>()
     val isModelDownloaded by remember { modelManager.isModelDownloaded }
+
     if (!isModelDownloaded) return
 
-    if (blurCheck) {
-        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-        var isSafe by remember { mutableStateOf<Boolean?>(null) }
-        var genderResult by remember { mutableStateOf<Boolean??>(null) }
-        LaunchedEffect(imageUri) {
-            val nsfwModel = modelManager.getModel(NSFW_MODEL)
-            val genderModel = modelManager.getModel(GENDER_MODEL)
+    var result by remember { mutableStateOf<ImageClassificationResult?>(null) }
+    var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
-            val nsfwInterpreter =
-                Interpreter(nsfwModel, Interpreter.Options().addDelegate(NnApiDelegate()))
-            val genderInterpreter =
-                Interpreter(genderModel, Interpreter.Options().addDelegate(NnApiDelegate()))
-
-            val result = context.imageLoader.execute(
-                ImageRequest.Builder(context).data(imageUri).allowHardware(false)
-                    .bitmapConfig(Bitmap.Config.ARGB_8888).build()
-            )
-
-            val drawable = (result as? SuccessResult)?.image
-            val bmp = drawable?.toBitmap()
-
-            if (bmp != null) {
-                withContext(Dispatchers.Default) {
-                    bitmap = bmp
-
-                    val nsfwBuffer = bitmapToByteBuffer(bmp, 224)
-                    val nsfwInput =
-                        TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
-                    nsfwInput.loadBuffer(nsfwBuffer)
-
-                    val nsfwOutput =
-                        TensorBuffer.createFixedSize(intArrayOf(1, 5), DataType.FLOAT32)
-                    nsfwInterpreter.run(nsfwInput.buffer, nsfwOutput.buffer.rewind())
-
-                    val nsfwFloat = nsfwOutput.floatArray
-                    val highest = nsfwFloat.indices.maxByOrNull { nsfwFloat[it] } ?: -1
-                    val safe = highest == 2
-
-
-                    val genderBuffer = bitmapToByteBuffer(bmp, 128)
-                    val genderInput =
-                        TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
-                    genderInput.loadBuffer(genderBuffer)
-
-                    val genderOutput =
-                        TensorBuffer.createFixedSize(intArrayOf(1, 2), DataType.FLOAT32)
-                    genderInterpreter.run(genderInput.buffer, genderOutput.buffer.rewind())
-
-                    val genderClass =
-                        when (genderOutput.floatArray.indices.maxByOrNull { genderOutput.floatArray[it] }) {
-                            0 -> Genders.MALE
-                            1 -> Genders.FEMALE
-                            else -> "Unknown"
-                        }
-
-                    withContext(Dispatchers.Main) {
-                        isSafe = safe
-                        genderResult = genderClass == Genders.FEMALE
-                    }
-
-                    nsfwInterpreter.close()
-                    genderInterpreter.close()
-                }
-            }
-        }
-
-        isSafe?.let { safe ->
-            bitmap?.let { image ->
-                val shouldBlur = (!safe || genderResult == true)
-                val displayBitmap: Bitmap = remember(image, safe, genderResult) {
-                    if (shouldBlur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                        blurBitmapRenderScript(context, image, 25f)
-                    } else {
-                        image
-                    }
-                }
-                AsyncImage(
-                    model = displayBitmap,
-                    contentDescription = contentDescription,
-                    error = error,
-                    fallback = fallback,
-                    placeholder = placeholder,
-                    alignment = alignment,
-                    modifier = modifier
-                        .then(
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && shouldBlur) {
-                                Modifier.blur(
-                                    radius = 16.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded
-                                )
-                            } else Modifier
-                        )
-                        .shadow(elevation = if (shouldBlur) 1.dp else 0.dp),
-                    contentScale = contentScale ?: ContentScale.Crop
+    LaunchedEffect(imageUri, blurCheck) {
+        if (blurCheck) {
+            result = classifyImage(context, imageUri, modelManager)
+            displayBitmap = result?.bitmap
+        } else {
+            withContext(Dispatchers.IO) {
+                val res = context.imageLoader.execute(
+                    ImageRequest.Builder(context)
+                        .data(imageUri)
+                        .allowHardware(false)
+                        .bitmapConfig(Bitmap.Config.ARGB_8888)
+                        .build()
                 )
+
+                val bmp = (res as? SuccessResult)?.image?.toBitmap()
+                displayBitmap = bmp
             }
-        }
-    } else {
-        var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
-
-        LaunchedEffect(imageUri) {
-            val result = context.imageLoader.execute(
-                ImageRequest.Builder(context).data(imageUri).allowHardware(false)
-                    .bitmapConfig(Bitmap.Config.ARGB_8888).build()
-            )
-            val drawable = (result as? SuccessResult)?.image
-            val bmp = drawable?.toBitmap()
-
-            bmp?.let {
-                displayBitmap = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                    blurBitmapRenderScript(context, it, 25f)
-                } else {
-                    it
-                }
-            }
-        }
-
-        displayBitmap?.let { bmp ->
-            AsyncImage(
-                model = bmp,
-                contentDescription = contentDescription,
-                error = error,
-                fallback = fallback,
-                placeholder = placeholder,
-                alignment = alignment,
-                modifier = modifier
-                    .then(
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            Modifier.blur(
-                                radius = 16.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded
-                            )
-                        } else Modifier
-                    )
-                    .shadow(elevation = 1.dp),
-                contentScale = contentScale ?: ContentScale.Crop
-            )
         }
     }
-}
 
+    displayBitmap?.let { bitmap ->
+        val shouldBlur = if (blurCheck) {
+            result?.let { !it.isSafe || it.isFemale } == true
+        } else true
+
+        val blurredBitmap = remember(bitmap, shouldBlur) {
+            if (shouldBlur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                blurBitmapRenderScript(context, bitmap, 25f)
+            } else bitmap
+        }
+
+        AsyncImage(
+            model = blurredBitmap,
+            contentDescription = contentDescription,
+            error = error,
+            fallback = fallback,
+            placeholder = placeholder,
+            alignment = alignment,
+            modifier = modifier
+                .then(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && shouldBlur) {
+                        Modifier.blur(
+                            radius = 16.dp,
+                            edgeTreatment = BlurredEdgeTreatment.Unbounded
+                        )
+                    } else Modifier
+                )
+                .shadow(elevation = if (shouldBlur) 1.dp else 0.dp),
+            contentScale = contentScale ?: ContentScale.Crop
+        )
+    }
+}
 
 @Suppress("DEPRECATION")
 fun blurBitmapRenderScript(context: Context, bitmap: Bitmap, radius: Float): Bitmap {
@@ -219,7 +135,54 @@ fun blurBitmapRenderScript(context: Context, bitmap: Bitmap, radius: Float): Bit
 
     return outputBitmap
 }
+suspend fun classifyImage(
+    context: Context,
+    imageUri: String,
+    modelManager: FireBaseModelManager
+): ImageClassificationResult? = withContext(Dispatchers.IO) {
+    val result = context.imageLoader.execute(
+        ImageRequest.Builder(context)
+            .data(imageUri)
+            .allowHardware(false)
+            .bitmapConfig(Bitmap.Config.ARGB_8888)
+            .build()
+    )
 
+    val drawable = (result as? SuccessResult)?.image?: return@withContext null
+    val bitmap = drawable.toBitmap()
+
+    val nsfwInterpreter = Interpreter(
+        modelManager.getModel(NSFW_MODEL),
+        Interpreter.Options().addDelegate(NnApiDelegate())
+    )
+    val genderInterpreter = Interpreter(
+        modelManager.getModel(GENDER_MODEL),
+        Interpreter.Options().addDelegate(NnApiDelegate())
+    )
+
+    // --- NSFW Detection
+    val nsfwBuffer = bitmapToByteBuffer(bitmap, 224)
+    val nsfwInput = TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
+    nsfwInput.loadBuffer(nsfwBuffer)
+
+    val nsfwOutput = TensorBuffer.createFixedSize(intArrayOf(1, 5), DataType.FLOAT32)
+    nsfwInterpreter.run(nsfwInput.buffer, nsfwOutput.buffer.rewind())
+    val isSafe = nsfwOutput.floatArray.indices.maxByOrNull { nsfwOutput.floatArray[it] } == 2
+
+    // gender model Detection
+    val genderBuffer = bitmapToByteBuffer(bitmap, 128)
+    val genderInput = TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
+    genderInput.loadBuffer(genderBuffer)
+
+    val genderOutput = TensorBuffer.createFixedSize(intArrayOf(1, 2), DataType.FLOAT32)
+    genderInterpreter.run(genderInput.buffer, genderOutput.buffer.rewind())
+    val isFemale = genderOutput.floatArray.indices.maxByOrNull { genderOutput.floatArray[it] } == 1
+
+    nsfwInterpreter.close()
+    genderInterpreter.close()
+
+    return@withContext ImageClassificationResult(bitmap, isSafe, isFemale)
+}
 fun bitmapToByteBuffer(bitmap: Bitmap, size: Int): ByteBuffer {
     val inputImage = bitmap.scale(size, size)
     val byteBuffer = ByteBuffer.allocateDirect(4 * size * size * 3)
@@ -239,10 +202,12 @@ fun bitmapToByteBuffer(bitmap: Bitmap, size: Int): ByteBuffer {
     return byteBuffer
 }
 
-enum class Genders {
-    MALE, FEMALE
-}
 
+data class ImageClassificationResult(
+    val bitmap: Bitmap,
+    val isSafe: Boolean,
+    val isFemale: Boolean
+)
 @Composable
 @Preview(showBackground = true)
 fun SafeImagePrev() {
