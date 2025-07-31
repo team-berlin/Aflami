@@ -65,7 +65,7 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.buttons.ButtonState
 import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
-import com.berlin.aflami.navigation.HomeScreen
+import com.berlin.aflami.navigation.NavBar
 import com.berlin.aflami.navigation.WebViewScreen
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -90,7 +90,7 @@ fun LoginScreen(
             when (it) {
                 LoginEffect.NavigateToHome -> {
                     navController.navigate(
-                        HomeScreen
+                       NavBar.HomeScreen
                     )
                 }
 
