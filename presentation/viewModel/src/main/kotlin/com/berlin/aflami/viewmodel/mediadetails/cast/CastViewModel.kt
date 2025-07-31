@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.mediadetails.cast
 
-import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
@@ -12,15 +11,15 @@ import usecase.mediadetails.GetSeriesCastUseCase
 class CastViewModel(
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getSeriesCastUseCase: GetSeriesCastUseCase,
-    val id:Long,
+    val id: Long,
     val type: MediaType
-): BaseViewModel<MediaDetailsUiState, CastDetailsEffect>(
+) : BaseViewModel<MediaDetailsUiState, CastDetailsEffect>(
     MediaDetailsUiState()
-) , CastDetailsListener {
+), CastDetailsListener {
 
     init {
 
-        getMediaCast(id,type)
+        getMediaCast(id, type)
     }
 
     fun getMediaCast(mediaId: Long, mediaType: MediaType) {
@@ -53,7 +52,7 @@ class CastViewModel(
         )
     }
 
-    override fun onCastBackClicked(){
+    override fun onCastBackClicked() {
         sendNewEffect(CastDetailsEffect.CastNavigationBack)
 
     }
