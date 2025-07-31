@@ -1,5 +1,8 @@
 package com.berlin.aflami.screens.search.search
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -49,6 +52,7 @@ import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.navigation.SearchByActorDestination
 import com.berlin.aflami.navigation.SearchByCountryDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
@@ -75,20 +79,44 @@ fun SearchScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val recentSearchState = viewModel.recentSearchState.collectAsState()
 
-
-    SearchScreenContent(
-        state = state,
-        listenerSearch = viewModel,
-        filterSearch = viewModel,
-        recentSearchState = recentSearchState.value,
-        onDeleteItem = viewModel::deleteQueryFromHistory,
-        onClearAll = viewModel::clearSearchHistory,
-        onItemClick = viewModel::onItemClicked
-    )
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             onReceiveSearchEffect(effect = effect, navController = navController)
         }
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.isLoading
+    ) {
+        com.berlin.aflami.component.CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(com.berlin.ui.R.string.loading)
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.errorMessage!=null&&state.searchQuery.text.isNotEmpty()
+    ) {
+        NoInternetConnectionPlaceholder()
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !state.isLoading
+    ) {
+        SearchScreenContent(
+            state = state,
+            listenerSearch = viewModel,
+            filterSearch = viewModel,
+            recentSearchState = recentSearchState.value,
+            onDeleteItem = viewModel::deleteQueryFromHistory,
+            onClearAll = viewModel::clearSearchHistory,
+            onItemClick = viewModel::onItemClicked
+        )
     }
 }
 
@@ -254,16 +282,15 @@ private fun SearchScreenContent(
                     )
 
                     when {
-                        state.searchQuery.text.isBlank() -> {
-                            NoDataSearch()
-                        }
-
                         state.isLoading -> {
-                            Loading(Modifier)
+                            com.berlin.aflami.component.CircularProgressIndicator(
+                                modifier = Modifier.fillMaxSize(),
+                                text = stringResource(com.berlin.ui.R.string.loading)
+                            )
                         }
 
                         state.errorMessage != null -> {
-                            ErrorMessage(Modifier, state.errorMessage.toString())
+                            NoInternetConnectionPlaceholder()
                         }
 
                         else -> {
@@ -287,7 +314,10 @@ private fun SearchScreenContent(
                                             com.berlin.ui.R.string.please_try_with_another_keyword
                                         )
                                     } else if (LoadState.Loading == moviesLoadState.refresh) {
-                                        Loading()
+                                        com.berlin.aflami.component.CircularProgressIndicator(
+                                            modifier = Modifier.fillMaxSize(),
+                                            text = stringResource(com.berlin.ui.R.string.loading)
+                                        )
                                     } else {
                                         Box(modifier = Modifier.fillMaxSize()) {
 
@@ -399,4 +429,15 @@ private fun SearchScreenContent(
             }
         }
     }
+}
+
+
+@Composable
+private fun ErrorContent() {
+    CountryTourExploring(
+        modifier = Modifier.fillMaxSize(),
+        image = painterResource(com.berlin.ui.R.drawable.no_search_result),
+        titleId = com.berlin.ui.R.string.no_search_result,
+        messageId = com.berlin.ui.R.string.please_try_with_another_keyword
+    )
 }

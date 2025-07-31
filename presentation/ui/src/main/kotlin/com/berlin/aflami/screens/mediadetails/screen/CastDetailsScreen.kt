@@ -92,7 +92,11 @@ fun CastContent(
     listener: CastDetailsListener,
     castState: List<MediaCastUiState>,
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.color.surface)
+    ) {
         TopBar(
             modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp),
             title = {

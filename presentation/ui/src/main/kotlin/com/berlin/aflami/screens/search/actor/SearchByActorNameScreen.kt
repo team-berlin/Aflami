@@ -1,6 +1,9 @@
 package com.berlin.aflami.screens.search.actor
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -33,6 +36,7 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
@@ -60,10 +64,36 @@ fun SearchByActorNameScreen(
             )
         }
     }
-    SearchByActorNameContent(
-        state = uiState,
-        listener = viewModel,
-    )
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.isLoading
+    ) {
+        com.berlin.aflami.component.CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.error!=null&&uiState.query.text.isNotEmpty()
+    ) {
+        NoInternetConnectionPlaceholder()
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !uiState.isLoading
+    ) {
+
+        SearchByActorNameContent(
+            state = uiState,
+            listener = viewModel,
+        )
+    }
+
 }
 
 private fun onReceiveSearchByActorEffect(
@@ -148,19 +178,15 @@ private fun SearchByActorNameContent(
                         InitContent()
                     } else {
                         CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)
                         )
                     }
                 }
-
-
                 is LoadState.NotLoading -> {
                     if (state.query.text.isBlank()) {
                         InitContent()
                     } else if (pagedMovies.itemCount == 0 && state.query.text.isNotBlank()) {
                         CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)
                         )
                     } else {

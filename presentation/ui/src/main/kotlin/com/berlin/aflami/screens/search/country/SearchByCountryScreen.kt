@@ -1,5 +1,8 @@
 package com.berlin.aflami.screens.search.country
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -32,8 +35,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
-import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
@@ -51,17 +54,43 @@ fun SearchByCountryScreen(
 ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsState()
-    SearchByCountryContent(
-        state = state,
-        listener = viewModel
-    )
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             onReceiveSearchByCountryEffect(effect = effect, navController = navController)
         }
     }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.isLoading
+    ) {
+        com.berlin.aflami.component.CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.error!=null&&state.query.text.isNotEmpty()
+    ) {
+        NoInternetConnectionPlaceholder()
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !state.isLoading
+    ) {
+
+        SearchByCountryContent(
+            state = state,
+            listener = viewModel
+        )
+    }
 }
+
 
 private fun onReceiveSearchByCountryEffect(
     navController: NavController,
@@ -144,7 +173,8 @@ private fun SearchByCountryContent(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
             val movies = state.movies.collectAsLazyPagingItems()
 
@@ -155,7 +185,6 @@ private fun SearchByCountryContent(
                         InitContent()
                     } else {
                         com.berlin.aflami.component.CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)
                         )
                     }
@@ -166,7 +195,6 @@ private fun SearchByCountryContent(
                         InitContent()
                     } else if (movies.itemCount == 0 && state.query.text.isNotBlank()) {
                         com.berlin.aflami.component.CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)
                         )
                     } else {
