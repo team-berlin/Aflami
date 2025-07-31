@@ -49,22 +49,24 @@ class LoginViewmodel(
                 state.value.formUiState.password.text
             )
         if (!isValidated) {
-            handleErrorState()
+            handleErrorState("Invalid username or password")
             return
         }
         updateState { it.copy(isLoading = true) }
-        viewModelScope.launch {
-            try {
+        tryToCall(
+            call = {
                 loginUseCase(
                     state.value.formUiState.username.text,
                     state.value.formUiState.password.text
                 )
+            },
+            onSuccess = {
                 updateState { it.copy(isLoading = false) }
                 sendNewEffect(newEffect = LoginEffect.NavigateToHome)
-            } catch (e: Exception) {
-                handleErrorState()
-            }
-        }
+            },
+            onError = { handleErrorState(it.message) },
+        )
+
     }
 
     override fun onContinueAsGuestClicked() {
@@ -75,8 +77,13 @@ class LoginViewmodel(
         sendNewEffect(LoginEffect.NavigateToCreateAccount)
     }
 
-    private fun handleErrorState() {
-        updateState { it.copy(isError = true) }
+    private fun handleErrorState(message: String) {
+        updateState {
+            it.copy(
+                isError = true,
+                errorMessage = message
+            )
+        }
         viewModelScope.launch {
             delay(SNACK_BAR_DURATION)
             updateState {

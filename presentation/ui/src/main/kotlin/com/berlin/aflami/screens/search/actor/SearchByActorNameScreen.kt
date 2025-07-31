@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
@@ -51,27 +53,37 @@ fun SearchByActorNameScreen(
     val uiState by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect {
-            when (it) {
-                is SearchByActorEffect.NavigatedBack -> {
-                    navController.popBackStack()
-                }
-
-                is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {
-                    navController.navigate(
-                        MediaDetailsDestination(
-                            it.movieId,
-                            MediaType.valueOf("MOVIE"),
-                        )
-                    )
-                }
-            }
+        viewModel.effect.collect {effect->
+            onReceiveSearchByActorEffect(
+                navController = navController,
+                searchByActorEffect = effect
+            )
         }
     }
     SearchByActorNameContent(
         state = uiState,
         listener = viewModel,
     )
+}
+
+private fun onReceiveSearchByActorEffect(
+    navController: NavController,
+    searchByActorEffect:SearchByActorEffect
+){
+    when (searchByActorEffect) {
+        is SearchByActorEffect.NavigatedBack -> {
+            navController.popBackStack()
+        }
+
+        is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {
+            navController.navigate(
+                MediaDetailsDestination(
+                    searchByActorEffect.movieId,
+                    MediaType.valueOf("MOVIE"),
+                )
+            )
+        }
+    }
 }
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -81,7 +93,7 @@ private fun SearchByActorNameContent(
     listener: SearchByActorInteractionListener,
 ) {
     Column {
-        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+        TopBar(modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp), title = {
             Text(
                 text = stringResource(R.string.find_by_actor),
                 style = Theme.textStyle.title.large,

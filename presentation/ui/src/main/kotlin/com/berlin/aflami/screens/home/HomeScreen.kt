@@ -46,6 +46,8 @@ import com.berlin.aflami.navigation.ContinueWatchingDestination
 import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.navigation.SearchDestination
 import com.berlin.aflami.navigation.TopRatingMediaDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholderPreview
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
 import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
@@ -75,9 +77,35 @@ fun HomeScreen(
             onReceiveHomeScreenEffect(navController,it)
         }
     }
-    HomeContent(
-        state = state, listener = viewModel
-    )
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.isLoading
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.error!=null
+    ) {
+        NoInternetConnectionPlaceholder()
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !state.isLoading
+    ) {
+
+        HomeContent(
+            state = state, listener = viewModel
+        )
+    }
 
 }
 
@@ -96,7 +124,9 @@ private fun onReceiveHomeScreenEffect(navController: NavController,homeScreenEff
         }
 
         is HomeScreenEffect.NavigateToTopRating -> {
-            TopRatingMediaDestination
+            navController.navigate(
+                TopRatingMediaDestination
+            )
         }
 
         is HomeScreenEffect.NavigateToDetails -> {
@@ -204,7 +234,7 @@ private fun HomeContent(
                                         media.title,
                                         modifier = Modifier
                                             .align(Alignment.CenterHorizontally)
-                                            .padding(bottom = 8.dp),
+                                            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp),
                                         style = Theme.textStyle.title.small,
                                         color = Theme.color.textColors.title,
                                         maxLines = 1,

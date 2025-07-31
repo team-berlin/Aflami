@@ -89,11 +89,12 @@ class SearchByCountryViewModel(
         _state.update { it.copy(dropDownExpanded = false) }
     }
 
-    override fun onMovieClicked(movieId: Int) {
+    override fun onMovieClicked(movieId: Long) {
         sendNewEffect(SearchByCountryEffect.NavigatedToMovieDetailsScreen(movieId,"MOVIE"))
     }
 
     override fun onBackClicked() {
         sendNewEffect(SearchByCountryEffect.NavigatedBack)
     }
+
 }

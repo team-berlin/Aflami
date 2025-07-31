@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -27,6 +28,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.ContinueWatchingDestination
+import com.berlin.aflami.navigation.ContinueWatchingScreen
+import com.berlin.aflami.navigation.MediaDetails
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
@@ -60,6 +63,7 @@ fun ContinueWatchingScreen(
             text = stringResource(R.string.loading)
         )
     }
+
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
@@ -75,7 +79,7 @@ private fun onReceiveEffect(navController: NavController, effect: ContinueWatchi
     when (effect) {
         is ContinueWatchingMediaEffect.NavigateToDetails -> {
             navController.navigate(
-                ContinueWatchingDestination
+               MediaDetails(effect.id, effect.type)
             )
         }
 
@@ -91,7 +95,7 @@ fun WatchedMediaContent(
 ) {
 
     Column(modifier = Modifier.fillMaxSize().background(Theme.color.surface)) {
-        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+        TopBar(modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp), title = {
             Text(
                 text = stringResource(R.string.continue_watching),
                 style = Theme.textStyle.title.large,
