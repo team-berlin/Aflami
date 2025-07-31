@@ -110,7 +110,7 @@ class MediaDetailsViewModel(
                             overview = details.overview,
                             posterUrl = details.posterUrl,
                             backdropUrl = details.backdropUrl,
-                            releaseYear = details.releaseYear,
+                            releaseDate = details.releaseDate,
                             numberOfSeasons = details.numberOfSeasons,
                             rating = details.rating,
                             runtime = details.runtime,
