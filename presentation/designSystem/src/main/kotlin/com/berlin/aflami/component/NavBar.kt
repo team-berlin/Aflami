@@ -34,8 +34,8 @@ import com.berlin.designsystem.R
 
 data class BottomNavItem(
     val icon: Painter,
-    val route: String,
-    val labelText: String
+    val labelText: String,
+    val route:String
 )
 
 @Composable
