@@ -47,7 +47,6 @@ import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.navigation.SearchDestination
 import com.berlin.aflami.navigation.TopRatingMediaDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
-import com.berlin.aflami.screens.NoInternetConnectionPlaceholderPreview
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
 import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections

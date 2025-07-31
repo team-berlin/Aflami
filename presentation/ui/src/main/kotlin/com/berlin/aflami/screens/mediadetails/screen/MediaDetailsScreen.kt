@@ -24,8 +24,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.component.CircularProgressIndicator
 import androidx.navigation.NavController
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder

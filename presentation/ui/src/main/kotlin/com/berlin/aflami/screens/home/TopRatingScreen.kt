@@ -48,7 +48,6 @@ import org.koin.androidx.compose.koinViewModel
 fun TopRatingScreen(
     topRatingViewModel: TopRatingViewModel = koinViewModel(),
 ) {
-    val navController=Theme.navController
     val screenState by topRatingViewModel.state.collectAsState()
     val navController=Theme.navController
 
