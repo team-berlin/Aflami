@@ -20,3 +20,6 @@ class InvalidUsernameOrPasswordException(message: String): AuthenticationsExcept
 class InvalidLoginTokenException(message: String): AuthenticationsExceptions(message)
 class InvalidLoginApiKeyException(message: String): AuthenticationsExceptions(message)
 class SessionDeniedException(message: String): AuthenticationsExceptions(message)
+
+
+class AuthorizationException(message: String): AflamiException(message)
