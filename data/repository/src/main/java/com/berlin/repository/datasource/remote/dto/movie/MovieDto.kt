@@ -1,4 +1,4 @@
-package com.berlin.repository.datasource.remote.dto
+package com.berlin.repository.datasource.remote.dto.movie
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -12,7 +12,7 @@ data class MovieDto(
     val title: String? = null,
 
     @SerialName("genre_ids")
-    val genreIds: List<Int?>? = null,
+    val genreIds: List<Int>? = null,
 
     @SerialName("poster_path")
     val posterPath: String? = null,

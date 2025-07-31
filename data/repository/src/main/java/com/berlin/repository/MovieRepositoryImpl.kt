@@ -31,7 +31,9 @@ class MovieRepositoryImpl(
     }
 
     override suspend fun getTopRatedMovies(page: Int): List<Movie> {
-        return remoteDataSource.getTopRatedMovies(page).topRatedMovies.map { movieDto -> movieDto.toDomain() }
+        return remoteDataSource.getTopRatedMovies(page).results?.map {
+             it!!.toDomain()
+        }
 
     }
 

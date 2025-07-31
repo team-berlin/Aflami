@@ -11,7 +11,7 @@ data class TVShowDetailsDto(
     @SerialName("backdrop_path")
     val backdropPath: String?,
     @SerialName("created_by")
-    val createdBy: List<CreatedBy>?,
+    val createdByDto: List<CreatedByDto>?,
     @SerialName("episode_run_time")
     val episodeRunTime: List<Int>?,
     @SerialName("first_air_date")
@@ -29,11 +29,11 @@ data class TVShowDetailsDto(
     @SerialName("last_air_date")
     val lastAirDate: String?,
     @SerialName("last_episode_to_air")
-    val lastEpisodeToAir: LastEpisodeToAir?,
+    val lastEpisodeToAirDto: LastEpisodeToAirDto?,
     @SerialName("name")
     val name: String?,
     @SerialName("networks")
-    val networks: List<Network>?,
+    val networks: List<NetworkDto>?,
     @SerialName("next_episode_to_air")
     val nextEpisodeToAir: String?,
     @SerialName("number_of_episodes")
@@ -53,13 +53,13 @@ data class TVShowDetailsDto(
     @SerialName("poster_path")
     val posterPath: String?,
     @SerialName("production_companies")
-    val productionCompanies: List<ProductionCompany>?,
+    val productionCompanies: List<ProductionCompanyDto>?,
     @SerialName("production_countries")
-    val productionCountries: List<ProductionCountry>?,
+    val productionCountries: List<ProductionCountryDto>?,
     @SerialName("seasons")
-    val seasons: List<Season>?,
+    val seasonDtos: List<SeasonDto>?,
     @SerialName("spoken_languages")
-    val spokenLanguages: List<SpokenLanguage>?,
+    val spokenLanguageDtos: List<SpokenLanguageDto>?,
     @SerialName("status")
     val status: String?,
     @SerialName("tagline")

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 
-data class Season(
+data class SeasonDto(
     @SerialName("air_date")
     val airDate: String? = null,
     @SerialName("episode_count")

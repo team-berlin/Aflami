@@ -18,21 +18,6 @@ data class ReviewDto(
     val createdAt: String? = null,
 
     @SerialName("author_details")
-    val authorDetails: AuthorDetails? = null
+    val authorDetailsDto: AuthorDetailsDto? = null
 )
 
-@Serializable
-data class AuthorDetails(
-
-    @SerialName("name")
-    val name: String? = null,
-
-    @SerialName("username")
-    val userName: String? = null,
-
-    @SerialName("avatar_path")
-    val avatarPath: String? = null,
-
-    @SerialName("rating")
-    val rating: Double? = null
-)

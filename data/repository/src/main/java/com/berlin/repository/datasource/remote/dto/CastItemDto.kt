@@ -1,18 +1,8 @@
 package com.berlin.repository.datasource.remote.dto
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@Serializable
-data class MediaCastResponse(
-
-    @SerialName("cast")
-    val cast: List<CastItemDto?>? = null,
-
-    @SerialName("id")
-    val id: Int? = null
-
-)
 @Serializable
 data class CastItemDto(
 

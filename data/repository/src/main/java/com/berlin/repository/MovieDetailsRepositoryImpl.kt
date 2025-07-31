@@ -4,28 +4,29 @@ import com.berlin.entity.Genre
 import com.berlin.entity.Actor
 import com.berlin.entity.Movie
 import com.berlin.entity.Review
+import com.berlin.exception.AflamiException
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
-import exceptions.AflamiExceptions
 import repository.MovieDetailsRepository
 
 class MovieDetailsRepositoryImpl(
     private val remoteDataSource: RemoteDataSource
 ) : MovieDetailsRepository {
+   // POSTER_PREFIX
     override suspend fun getMovieGallery(movieId: Long): List<String> {
-        return try {
-            remoteDataSource.getMovieImages(movieId).backdrops?.map { POSTER_PREFIX + it.filePath }
-                ?: throw Exception()
-        } catch (e: Exception) {
-            throw e
-        }
+       return try {
+           remoteDataSource.getMovieImages(movieId).backdrops?.map { POSTER_PREFIX + it.filePath }
+               ?: throw Exception()
+       } catch (e: Exception) {
+           throw e
+       }
     }
 
-    override suspend fun getMovieDetails(movieId: Long): Movie? {
+    override suspend fun getMovieDetails(id: Long): Movie? {
         return try {
             remoteDataSource.getMovieDetails(id).toDomain()
-        } catch (exception: AflamiExceptions) {
+        } catch (exception: AflamiException) {
             throw exception
         }
     }
@@ -34,23 +35,26 @@ class MovieDetailsRepositoryImpl(
         return remoteDataSource.getMovieCastDetails(
             movieId
         ).cast?.mapNotNull { castItemDto ->
-            castItemDto?.toDomain()
+            castItemDto.toDomain()
         } ?: emptyList()
     }
 
     override suspend fun getSimilarMovies(movieId: Long): List<Movie> {
         return remoteDataSource.getMovieSimilar(movieId).results?.mapNotNull { movieDto ->
-            movieDto?.toDomain()
+            movieDto.toDomain()
         } ?: emptyList()
     }
 
-    override suspend fun getMovieReviews(id: Long): List<Review> {
-        return remoteDataSource.getMovieReviews(id).results?.filterNotNull()
+    override suspend fun getMovieReviews(movieId: Long): List<Review> {
+        return remoteDataSource.getMovieReviews(movieId).results?.filterNotNull()
             ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
     }
+
+
 
     override suspend fun getMovieGenres(): List<Genre> {
         return remoteDataSource.getMovieGenres().genres.map { it.toDomain() }
     }
+
 
 }

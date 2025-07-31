@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LastEpisodeToAir(
+data class LastEpisodeToAirDto(
     @SerialName("air_date")
     val airDate: String?,
     @SerialName("episode_number")

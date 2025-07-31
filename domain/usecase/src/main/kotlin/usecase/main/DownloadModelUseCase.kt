@@ -1,7 +1,5 @@
 package usecase.main
 
-import repository.ModelRepository
-
 class DownloadModelsUseCase(
     private val repository: ModelRepository
 ) {

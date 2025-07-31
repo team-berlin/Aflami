@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Collection(
+data class CollectionDto(
     val id: Int,
     val name: String,
     @SerialName("poster_path") val posterPath: String? = null,

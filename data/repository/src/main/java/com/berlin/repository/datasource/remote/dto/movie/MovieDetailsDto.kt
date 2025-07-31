@@ -1,5 +1,9 @@
-package com.berlin.repository.datasource.remote.dto
+package com.berlin.repository.datasource.remote.dto.movie
 
+import com.berlin.repository.datasource.remote.dto.CollectionDto
+import com.berlin.repository.datasource.remote.dto.GenreDto
+import com.berlin.repository.datasource.remote.dto.ProductionCompanyDto
+import com.berlin.repository.datasource.remote.dto.SpokenLanguageDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,7 +14,7 @@ data class MovieDetailsDto(
     @SerialName("backdrop_path")
     val backdropPath: String?,
     @SerialName("belongs_to_collection")
-    val belongsToCollection: Collection?,
+    val belongsToCollectionDto: CollectionDto?,
     @SerialName("budget")
     val budget: Int?,
     @SerialName("genres")
@@ -34,7 +38,7 @@ data class MovieDetailsDto(
     @SerialName("poster_path")
     val posterPath: String?,
     @SerialName("production_companies")
-    val productionCompanies: List<ProductionCompany>?,
+    val productionCompanies: List<ProductionCompanyDto>?,
     @SerialName("release_date")
     val releaseDate: String?,
     @SerialName("revenue")
@@ -42,7 +46,7 @@ data class MovieDetailsDto(
     @SerialName("runtime")
     val runtime: Int?,
     @SerialName("spoken_languages")
-    val spokenLanguages: List<SpokenLanguage>?,
+    val spokenLanguageDtos: List<SpokenLanguageDto>?,
     @SerialName("status")
     val status: String?,
     @SerialName("tagline")

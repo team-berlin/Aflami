@@ -9,13 +9,13 @@ data class EpisodeDto(
     @SerialName("air_date")
     val airDate: String? = null,
     @SerialName("crew")
-    val crew: List<CrewDto?>? = null,
+    val crew: List<CrewDto>? = null,
     @SerialName("episode_number")
     val episodeNumber: Int? = null,
     @SerialName("episode_type")
     val episodeType: String? = null,
     @SerialName("guest_stars")
-    val guestStars: List<GuestStarDto?>? = null,
+    val guestStars: List<GuestStarDto>? = null,
     @SerialName("id")
     val id: Int? = null,
     @SerialName("name")

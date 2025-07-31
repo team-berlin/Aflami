@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreatedBy(
+data class CreatedByDto(
     @SerialName("credit_id")
     val creditId: String?,
     @SerialName("gender")

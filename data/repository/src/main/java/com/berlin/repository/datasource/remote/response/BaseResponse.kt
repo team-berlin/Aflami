@@ -1,10 +1,13 @@
-package com.berlin.repository.datasource.remote.dto
+package com.berlin.repository.datasource.remote.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class BaseResponse<T>(
+
+    @SerialName("id")
+    val id: Int? = null,
 
     @SerialName("page")
     val page: Int? = null,
@@ -13,7 +16,7 @@ data class BaseResponse<T>(
     val totalPages: Int? = null,
 
     @SerialName("results")
-    val results: List<T?>? = null,
+    val results: List<T>? = null,
 
     @SerialName("total_results")
     val totalResults: Int? = null

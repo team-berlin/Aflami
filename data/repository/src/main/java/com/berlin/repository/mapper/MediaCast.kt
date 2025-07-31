@@ -7,7 +7,7 @@ fun CastItemDto.toDomain(): Actor {
     return Actor(
         id = this.id?.toLong() ?: 0L,
         name = this.name.orEmpty(),
-        poster ="${POSTER_PREFIX}${this.profilePath.orEmpty()}"
+        posterURL = "${POSTER_PREFIX}${this.profilePath.orEmpty()}",
     )
 
 }
