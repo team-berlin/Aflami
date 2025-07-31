@@ -3,7 +3,7 @@ package repository
 import com.berlin.entity.Movie
 
 interface MovieRepository {
-    suspend fun getContinueWatchingMovies(): List<Movie>
+    suspend fun getContinueWatchingMovies(page: Int): List<Movie>
     suspend fun addContinueWatchingMovie(movie: Movie)
     suspend fun getTopRatedMovies(page: Int): List<Movie>
     suspend fun getUpComingMovies(): List<Movie>

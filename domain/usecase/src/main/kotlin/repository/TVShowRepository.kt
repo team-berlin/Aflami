@@ -4,7 +4,7 @@ import com.berlin.entity.TVShow
 import javax.print.attribute.standard.Media
 
 interface TVShowRepository {
-    suspend fun getContinueWatchingTVShows(): List<TVShow>
+    suspend fun getContinueWatchingTVShows(page: Int): List<TVShow>
     suspend fun addContinueWatchingTVShow(tvShow: TVShow)
     suspend fun getTopRatedSeries(page: Int): List<TVShow>
     suspend fun getPopularTVShows(): List<TVShow>
