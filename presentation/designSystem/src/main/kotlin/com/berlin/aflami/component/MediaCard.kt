@@ -107,7 +107,7 @@ fun MediaCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (typeOfMedia == "TVSHOW") stringResource(R.string.tv_shows) else stringResource(R.string.movies),
+                    text = if (typeOfMedia == "TVSHOW") stringResource(R.string.tv_show) else stringResource(R.string.movie),
                     style = Theme.textStyle.label.small,
                     color = Theme.color.textColors.onPrimaryBody,
                     maxLines = 1,
@@ -124,7 +124,10 @@ fun MediaCard(
                 Text(
                     text = date,
                     style = Theme.textStyle.label.small,
-                    color = Theme.color.textColors.onPrimaryBody
+                    color = Theme.color.textColors.onPrimaryBody,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+
                 )
             }
         }
