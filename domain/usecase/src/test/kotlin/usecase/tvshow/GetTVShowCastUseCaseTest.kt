@@ -14,11 +14,11 @@ import repository.TVShowDetailsRepository
 class GetTVShowCastUseCaseTest {
 
     private val tvShowDetailsRepository: TVShowDetailsRepository = mockk()
-    private lateinit var getTVShowCastUseCase: GetTVShowCastUseCase
+    private lateinit var getTVShowCastUseCase: GetTVShowActorsUseCase
 
     @Before
     fun setUp() {
-        getTVShowCastUseCase = GetTVShowCastUseCase(tvShowDetailsRepository)
+        getTVShowCastUseCase = GetTVShowActorsUseCase(tvShowDetailsRepository)
     }
 
     @Test

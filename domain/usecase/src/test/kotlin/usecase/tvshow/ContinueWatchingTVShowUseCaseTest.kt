@@ -14,11 +14,11 @@ import repository.TVShowRepository
 class ContinueWatchingTVShowUseCaseTest {
 
     private val tvShowRepository: TVShowRepository = mockk()
-    private lateinit var continueWatchingTVShowUseCase: ContinueWatchingTVShowUseCase
+    private lateinit var continueWatchingTVShowUseCase: GetContinueWatchingTVShowUseCase
 
     @Before
     fun setUp() {
-        continueWatchingTVShowUseCase = ContinueWatchingTVShowUseCase(tvShowRepository)
+        continueWatchingTVShowUseCase = GetContinueWatchingTVShowUseCase(tvShowRepository)
     }
 
     @Test

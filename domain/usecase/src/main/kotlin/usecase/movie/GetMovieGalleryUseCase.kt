@@ -6,5 +6,5 @@ class GetMovieGalleryUseCase(
     private val repository: MovieDetailsRepository
 ) {
     suspend operator fun invoke(id: Long): List<String> =
-        repository.getMovieGallery(movieId = id)
+        repository.getMovieGallery(movieId = id).take(10)
 }

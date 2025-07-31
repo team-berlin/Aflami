@@ -13,11 +13,11 @@ import repository.MovieRepository
 class ContinueWatchingMovieUseCaseTest {
 
     private val repository: MovieRepository = mockk(relaxed = true)
-    private lateinit var continueWatchingMovieUseCase: ContinueWatchingMovieUseCase
+    private lateinit var continueWatchingMovieUseCase: GetContinueWatchingMovieUseCase
 
     @Before
     fun setup() {
-        continueWatchingMovieUseCase = ContinueWatchingMovieUseCase(repository)
+        continueWatchingMovieUseCase = GetContinueWatchingMovieUseCase(repository)
     }
 
     @Test
