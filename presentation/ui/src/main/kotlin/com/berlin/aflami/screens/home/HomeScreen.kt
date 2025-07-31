@@ -234,7 +234,7 @@ private fun HomeContent(
                                         media.title,
                                         modifier = Modifier
                                             .align(Alignment.CenterHorizontally)
-                                            .padding(bottom = 8.dp),
+                                            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp),
                                         style = Theme.textStyle.title.small,
                                         color = Theme.color.textColors.title,
                                         maxLines = 1,
