@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
     val mainViewModel: MainViewModel = getKoin().get()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
+
         super.onCreate(savedInstanceState)
 
         val splashScreen = installSplashScreen()
@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         splashScreen.setKeepOnScreenCondition {
             mainViewModel.isLoading
         }
-
+        enableEdgeToEdge()
         setContent {
             AflamiTheme {
                 AflamiNavGraph(
