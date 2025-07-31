@@ -18,10 +18,11 @@ import repository.HomeRepository
 
 val repositoryModule = module {
     single<SearchRepository> { SearchRepositoryImpl(get(), get(),get(),get()) }
-    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get()) }
-    single<TvShowDetailsRepository> { TvShowDetailsRepositoryImpl(get()) }
+    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get(),get()) }
+    single<TvShowDetailsRepository> { TvShowDetailsRepositoryImpl(get(),get()) }
     single <ContinueWatchingRepository>{ WatchedMediaRepositoryImpl(get()) }
     single<MovieRepository> { MovieRepositoryImpl(get()) }
     single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(),get()) }
     single<HomeRepository> { HomeRepositoryImpl(get()) }
+
 }
