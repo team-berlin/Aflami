@@ -16,7 +16,7 @@ fun Media.toUIState(): MediaUiState {
 }
 fun mediaTypeMapper(mediatype:String):String{
     return when(mediatype){
-        "TV" -> MediaType.TVSHOW.name
+        "TVSHOW" -> MediaType.TVSHOW.name
         "MOVIE" -> MediaType.MOVIE.name
         else -> MediaType.MOVIE.name
     }

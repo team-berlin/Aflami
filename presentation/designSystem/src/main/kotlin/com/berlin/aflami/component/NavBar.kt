@@ -1,6 +1,7 @@
 package com.berlin.aflami.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -24,9 +25,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -54,8 +55,8 @@ fun NavBar(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         HorizontalDivider(
-            color = Theme.color.stroke,
-            thickness = 1.dp
+            thickness = 0.5.dp,
+            color = Theme.color.stroke
         )
         Row(
             modifier = Modifier
@@ -101,17 +102,18 @@ fun NavBar(
                         )
                     }
 
-
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 4.dp),
                         text = item.labelText,
-                        fontSize = 12.sp,
                         color = labelColor,
                         textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         style = Theme.textStyle.label.small
                     )
+
                 }
             }
         }

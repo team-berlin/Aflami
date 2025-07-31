@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.times
 import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun GallerySection(
@@ -36,9 +37,17 @@ fun GallerySection(
     sidePadding: Dp = 16.dp
 ) {
 
-    BoxWithConstraints(modifier = modifier.fillMaxWidth().padding(bottom = 12.dp), contentAlignment = Alignment.Center) {
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp),
+        contentAlignment = Alignment.Center
+    ) {
         val maxGridWidth = this.maxWidth - 2 * sidePadding
         val columns = (maxGridWidth / (cellWidth + horizontalSpacing)).toInt().coerceAtLeast(2)
+
+        val adjustedSpacing = horizontalSpacing * (columns - 1)
+        val adjustedCellWidth = (maxGridWidth - adjustedSpacing) / columns
 
         val rows = (mediaImages.size + columns - 1) / columns
 
@@ -50,18 +59,18 @@ fun GallerySection(
         ) {
             for (row in 0 until rows) {
                 Row(
-                    Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(horizontalSpacing)
                 ) {
                     for (col in 0 until columns) {
                         val index = row * columns + col
                         if (index < mediaImages.size) {
-                            AsyncImage(
-                                model = mediaImages[index],
+                            SafeImageViewer(
+                                imageUri = mediaImages[index],
                                 contentDescription = stringResource(com.berlin.ui.R.string.cast),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
-                                    .width(cellWidth)
+                                    .width(adjustedCellWidth)
                                     .height(cellHeight)
                                     .clip(RoundedCornerShape(12.dp))
                                     .border(1.dp, Theme.color.stroke),
@@ -69,11 +78,9 @@ fun GallerySection(
                                 error = painterResource(R.drawable.place_holder),
                                 fallback = painterResource(R.drawable.place_holder),
                             )
-                        }
-                        else {
-                            Spacer(
-                                Modifier.weight(1f)
-                            )
+                        } else {
+                            // Add a spacer to balance the row visually
+                            Spacer(modifier = Modifier.width(adjustedCellWidth))
                         }
                     }
                 }

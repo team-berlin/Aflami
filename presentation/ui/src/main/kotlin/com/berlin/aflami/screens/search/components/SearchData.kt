@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -20,7 +21,7 @@ import com.berlin.designsystem.R
 fun SearchData(
     modifier: Modifier = Modifier,
     recentSearch: List<String>,
-    onItemClick: (String) -> Unit,
+    onItemClick: (TextFieldValue) -> Unit,
     onDeleteItem: (String) -> Unit,
     onClearAll: () -> Unit
 ) {
@@ -51,7 +52,7 @@ fun SearchData(
         items(recentSearch) { currentQuery ->
             SearchItem(
                 text = currentQuery,
-                onTextClick = { onItemClick(currentQuery) },
+                onTextClick = { onItemClick(TextFieldValue(currentQuery)) },
                 onDeleteClick = { onDeleteItem(currentQuery) }
             )
         }

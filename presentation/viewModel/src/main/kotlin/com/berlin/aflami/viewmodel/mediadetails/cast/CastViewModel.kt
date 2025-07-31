@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import kotlinx.coroutines.flow.update
 import usecase.mediadetails.GetMovieCastUseCase
@@ -24,18 +23,18 @@ class CastViewModel(
 
     init {
 
-        getMediaCast(id,type,"ar-EG")
+        getMediaCast(id,type)
     }
 
-    fun getMediaCast(mediaId: Long, mediaType: MediaType, language: String="US-EG") {
+    fun getMediaCast(mediaId: Long, mediaType: MediaType) {
         _state.update {
             it.copy(error = null, isLoading = true)
         }
         tryToCall(
             call = {
                 when (mediaType) {
-                    MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
-                    MediaType.TVSHOW -> getSeriesCastUseCase(mediaId, language).map { it.toUiState() }
+                    MediaType.MOVIE -> getMovieCastUseCase(mediaId).map { it.toUiState() }
+                    MediaType.TVSHOW -> getSeriesCastUseCase(mediaId).map { it.toUiState() }
                 }
             },
             onSuccess = { cast ->
@@ -47,10 +46,10 @@ class CastViewModel(
                     )
                 }
             },
-            onError = { throwable ->
+            onError = { errorUiState ->
                 _state.update {
                     it.copy(
-                        error = UiText.Dynamic(throwable.message).toString(),
+                        error = errorUiState.message
                     )
                 }
             },

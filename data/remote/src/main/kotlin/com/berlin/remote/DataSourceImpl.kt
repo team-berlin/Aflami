@@ -31,16 +31,14 @@ class DataSourceImpl(
     }
 
 
-    override suspend fun getMovieDetails(movieId: Long, language: String): MovieDetailsDto {
+    override suspend fun getMovieDetails(movieId: Long): MovieDetailsDto {
         require(movieId > 0) { "Invalid movieId: $movieId" }
-        require(language.isNotBlank()) { "Language cannot be blank" }
-        return wrapApiResponse { apiService.getMovieDetails(movieId, language) }
+        return wrapApiResponse { apiService.getMovieDetails(movieId) }
     }
 
-    override suspend fun getMovieCastDetails(movieId: Long, language: String): MediaCastResponse {
+    override suspend fun getMovieCastDetails(movieId: Long): MediaCastResponse {
         require(movieId > 0) { "Invalid movieId: $movieId" }
-        require(language.isNotBlank()) { "Language cannot be blank" }
-        return wrapApiResponse { apiService.getMovieCastDetails(movieId, language) }
+        return wrapApiResponse { apiService.getMovieCastDetails(movieId) }
     }
 
     override suspend fun getMovieReviews(movieId: Long): ReviewResponse {
@@ -59,16 +57,14 @@ class DataSourceImpl(
         return wrapApiResponse { apiService.getSeriesImages(seriesId) }
     }
 
-    override suspend fun getTvShowDetails(seriesId: Long, language: String): TVShowDetailsDto {
+    override suspend fun getTvShowDetails(seriesId: Long): TVShowDetailsDto {
         require(seriesId > 0) { "Invalid seriesId: $seriesId" }
-        require(language.isNotBlank()) { "Language cannot be blank" }
-        return wrapApiResponse { apiService.getTvShowDetails(seriesId, language) }
+        return wrapApiResponse { apiService.getTvShowDetails(seriesId) }
     }
 
-    override suspend fun getSeriesCastDetails(seriesId: Long, language: String): MediaCastResponse {
+    override suspend fun getSeriesCastDetails(seriesId: Long): MediaCastResponse {
         require(seriesId > 0) { "Invalid seriesId: $seriesId" }
-        require(language.isNotBlank()) { "Language cannot be blank" }
-        return wrapApiResponse { apiService.getSeriesCastDetails(seriesId, language) }
+        return wrapApiResponse { apiService.getSeriesCastDetails(seriesId) }
     }
 
     override suspend fun getSeriesSimilar(seriesId: Long): TVShowResponse {
@@ -89,62 +85,61 @@ class DataSourceImpl(
         return wrapApiResponse { apiService.getEpisodeSeasonSeries(seriesId, seasonNumber) }
     }
 
-    override suspend fun getMovieGenres(language: String): GenreResponse {
-        require(language.isNotBlank())
-        return wrapApiResponse { apiService.getMovieGenres(language) }
+    override suspend fun getMovieGenres(): GenreResponse {
+        return wrapApiResponse { apiService.getMovieGenres() }
     }
 
-    override suspend fun getSeriesGenres(language: String): GenreResponse {
-        require(language.isNotBlank())
-        return wrapApiResponse { apiService.getSeriesGenres(language) }
+    override suspend fun getSeriesGenres(): GenreResponse {
+        return wrapApiResponse { apiService.getSeriesGenres() }
     }
 
     override suspend fun searchMoviesByCountry(
-        countryName: String, language: String, page: Int
+        countryName: String, page: Int
     ): BaseResponse<MovieDto> {
         require(countryName.isNotBlank()) { "Country name cannot be blank" }
-        require(language.isNotBlank()) { "Language cannot be blank" }
         require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse {
             apiService.searchMoviesByCountry(
-                countryName, language, page
+                countryName, page
             )
         }
     }
 
     override suspend fun searchMoviesByActor(
-        actorName: String, language: String, page: Int
+        actorName: String, page: Int
     ): BaseResponse<PersonDto> {
         require(actorName.isNotBlank()) { "Actor name cannot be blank" }
-        require(language.isNotBlank()) { "Language cannot be blank" }
         require(page > 0) { "Page must be greater than 0" }
-        return wrapApiResponse { apiService.searchMoviesByActor(actorName, language, page) }
+        return wrapApiResponse { apiService.searchMoviesByActor(actorName, page) }
     }
 
     override suspend fun searchMovies(
-        query: String, language: String, page: Int
+        query: String, page: Int
     ): BaseResponse<MovieDto> {
         require(query.isNotBlank()) { "Query cannot be blank" }
-        require(language.isNotBlank()) { "Language cannot be blank" }
         require(page > 0) { "Page must be greater than 0" }
-        return wrapApiResponse { apiService.searchMovies(query, language, page) }
+        return wrapApiResponse { apiService.searchMovies(query, page) }
     }
 
     override suspend fun searchTvShows(
-        query: String, language: String, page: Int
+        query: String, page: Int
     ): BaseResponse<TVShowDto> {
         require(query.isNotBlank()) { "Query cannot be blank" }
-        require(language.isNotBlank()) { "Language cannot be blank" }
         require(page > 0) { "Page must be greater than 0" }
-        return wrapApiResponse { apiService.searchTvShows(query, language, page) }
+        return wrapApiResponse { apiService.searchTvShows(query, page) }
     }
 
-    override suspend fun getPopularMovies(language: String): MovieResponse {
-        return apiService.popularMovies(language)
+    override suspend fun getPopularMovies(): MovieResponse {
+        return apiService.popularMovies()
     }
 
-    override suspend fun getPopularTVShows(language: String): TVShowResponse {
-        return apiService.popularTVShows(language)
+    override suspend fun getPopularTVShows(): TVShowResponse {
+        return apiService.popularTVShows()
+    }
+
+    override suspend fun getMoviesByMoodIds(moodIds: List<Int>): MovieResponse {
+        require(moodIds.isNotEmpty()) { "Mood IDs list cannot be empty" }
+        return wrapApiResponse { apiService.getMoviesByMoods(moodIds) }
     }
 
 }

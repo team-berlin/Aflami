@@ -2,7 +2,6 @@ package com.berlin.aflami.viewmodel.mediadetails.uistate
 
 import androidx.compose.ui.graphics.painter.Painter
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import kotlinx.datetime.LocalDate
@@ -27,41 +26,50 @@ data class MediaDetailsUiState(
     val country: String = "",
     val options: List<MediaOptions> = emptyList(),
     val isDescriptionExpanded: Boolean = false,
-    val expandedReviewIds: Set<Long> = emptySet(),
+    val expandedReviewIds: Set<String> = emptySet(),
     val isLoading: Boolean = true,
     val originalCountry: String? = null,
     val duration: String? = null,
     val hasVideo: Boolean = false,
-    val error: String? = "",
+    val error: String? = null,
     val rowSection: RowSectionUiState = RowSectionUiState.Loading
-){
-    fun toMovie():Movie{
+) {
+    fun toMovie(): Movie {
         return Movie(
             id = id,
             title = title,
             description = overview,
-            releaseDate = LocalDate.parse(releaseYear),
+            releaseDate = releaseDate.toLocalDate1(),
             rating = rating,
             duration = 0,
             genres = emptyList(),
             poster = posterUrl,
             screenShot = backdropUrl,
-            releaseDate =releaseYear,
+            releaseDate = releaseYear,
         )
     }
-    fun toTVShow():TVShow{
+
+    fun toTVShow(): TVShow {
         return TVShow(
             id = id,
             title = title,
             overview = overview,
-            releaseYear = LocalDate.parse(releaseYear),
+            releaseYear = releaseYear.toLocalDate1(),
             rating = rating,
             runtime = 0,
-            genre = emptyList() ,
+            genre = emptyList(),
             poster = posterUrl,
             backdropPath = backdropUrl,
             releaseDate = releaseYear,
         )
+    }
+}
+
+fun String.toLocalDate1(): LocalDate? {
+    return try {
+        LocalDate.parse(this)
+    } catch (e: Exception) {
+        null
     }
 }
 

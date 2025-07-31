@@ -83,6 +83,6 @@ fun TVShow.toLocalEntity(): ContinueWatchingTVShowEntity {
         rating = this.rating,
         releaseYear = this.releaseYear.toString(),
         posterUrl = this.poster,
-        typeOfMedia = MediaType.TV_SHOW
+        typeOfMedia = MediaType.TVSHOW
     )
 }

@@ -1,5 +1,7 @@
 package com.berlin.aflami.viewmodel.search
 
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -11,9 +13,9 @@ import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
-import com.berlin.aflami.viewmodel.util.MediaType
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,7 +86,9 @@ class SearchViewModel(
     private fun observeSearchKeywordChanges() {
         viewModelScope.launch {
             combine(
-                _state.map { it.searchQuery.trim() }.debounce(800).filter { it.isNotEmpty() }
+                _state.map { it.searchQuery.text.trim() }
+                    .debounce(800)
+                    .filter { it.isNotEmpty() }
                     .distinctUntilChanged(),
                 _state.map { it.filterTrigger }.distinctUntilChanged()
             ) { query, _ -> query }
@@ -207,8 +211,8 @@ class SearchViewModel(
         )
     }
 
-    override fun onSearchQueryChanged(query: CharSequence) {
-        updateState { it.copy(searchQuery = query.toString(), isLoading = false) }
+    override fun onSearchQueryChanged(query: TextFieldValue) {
+        updateState { it.copy(searchQuery = query, isLoading = false) }
     }
 
     override fun onBackClicked() {
@@ -242,17 +246,20 @@ class SearchViewModel(
         onSearchQueryChanged(state.value.searchQuery)
     }
 
-    override fun onCardClicked(id: Int) {
+    override fun onCardClicked(id: Long) {
         val mediaType = when (state.value.selectedTabOption) {
             TabOption.MOVIES -> MediaType.MOVIE.name
-            TabOption.TV_SHOWS -> MediaType.TV_SHOW.name
+            TabOption.TV_SHOWS -> MediaType.TVSHOW.name
         }
         sendNewEffect(SearchUiEffect.NavigatedToMovieDetailsScreen(id = id, mediaType))
     }
 
     override fun onRecentSearchClicked(query: String) {
-        onSearchQueryChanged(query)
-        observeSearchKeywordChanges()
+        onSearchQueryChanged(
+            TextFieldValue(
+                text = query,
+            )
+        )
     }
 
     override fun onRecentSearchCleared(query: String) {
@@ -298,7 +305,7 @@ class SearchViewModel(
     override fun onSearchCleared() {
         updateState {
             it.copy(
-                searchQuery = "",
+                searchQuery = TextFieldValue(""),
                 isLoading = false,
                 isDialogVisible = false,
                 filterTrigger = !it.filterTrigger
@@ -464,19 +471,18 @@ class SearchViewModel(
         val selectedTab = state.value.selectedTabOption
 
         tryToCall(
-            call = { buildGenreList(selectedTab, language) },
+            call = { buildGenreList(selectedTab) },
             onSuccess = { filterGenres -> updateGenres(selectedTab, filterGenres) },
             onError = { error -> setErrorState(error.message) }
         )
     }
 
     private suspend fun buildGenreList(
-        selectedTab: TabOption,
-        language: String
+        selectedTab: TabOption
     ): List<GenreUiState> {
         val genres = when (selectedTab) {
-            TabOption.MOVIES -> getMovieGenresUseCase(language)
-            TabOption.TV_SHOWS -> getSeriesGenresUseCase(language)
+            TabOption.MOVIES -> getMovieGenresUseCase()
+            TabOption.TV_SHOWS -> getSeriesGenresUseCase()
         }
 
         val all = FilterItemUiState.defaultGenres.first()
@@ -526,7 +532,8 @@ class SearchViewModel(
         }
     }
 
-    fun onItemClicked(query: String) {
-        updateState { it.copy(searchQuery = query, isLoading = true) }
+    fun onItemClicked(query: TextFieldValue) {
+        val updatedQuery = query.copy(selection = TextRange(query.text.length))
+        updateState { it.copy(searchQuery = updatedQuery, isLoading = true) }
     }
 }

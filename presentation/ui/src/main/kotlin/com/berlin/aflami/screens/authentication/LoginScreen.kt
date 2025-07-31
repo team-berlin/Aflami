@@ -1,20 +1,29 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
-import android.net.Uri
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,10 +31,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,48 +53,35 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.berlin.aflami.component.IconButton
-import com.berlin.aflami.component.buttons.PrimaryButton
-import com.berlin.aflami.component.TextField
-import com.berlin.aflami.ui.theme.AflamiTheme
-import com.berlin.aflami.ui.theme.Theme
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.berlin.ui.R
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.berlin.aflami.component.IconButton
 import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
+import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.buttons.ButtonState
+import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.navigation.HomeScreen
+import com.berlin.aflami.navigation.WebViewScreen
+import com.berlin.aflami.ui.theme.AflamiTheme
+import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.login.FormUiState
 import com.berlin.aflami.viewmodel.login.LoginEffect
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
-import com.example.navigation.Destination
-import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
+import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
-
 
 @Composable
 fun LoginScreen(
     viewmodel: LoginViewmodel = koinViewModel(),
-    navController: NavController
 ) {
+    val navController = Theme.navController
     val uiState by viewmodel.state.collectAsState()
     LoginContent(uiState, viewmodel)
 
@@ -87,17 +90,18 @@ fun LoginScreen(
             when (it) {
                 LoginEffect.NavigateToHome -> {
                     navController.navigate(
-                        Destination.HomeScreen.route
+                        HomeScreen
                     )
                 }
+
                 LoginEffect.NavigateToCreateAccount -> {
                     val encodedUrl = Uri.encode(REGISTER_URL)
-                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                    navController.navigate(WebViewScreen(encodedUrl))
                 }
 
                 LoginEffect.NavigateToForgotPassword -> {
                     val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
-                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                    navController.navigate(WebViewScreen(encodedUrl))
                 }
             }
         }
@@ -110,17 +114,20 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Theme.color.surface)
             .background(
                 brush = Brush.verticalGradient(
                     colors = Theme.color.gradientColors.streakGradient
                 )
             )
-            .padding(start = 12.dp, end = 12.dp, top = 24.dp, bottom = 16.dp)
+            .statusBarsPadding()
+            .padding(start = 12.dp, end = 12.dp, bottom = 16.dp),
     ) {
         CirclesBackground()
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             LoginLogo()
@@ -166,9 +173,7 @@ private fun LoginLogo() {
                 color = Theme.color.primaryVariant,
             )
             .border(
-                width = 1.dp,
-                color = Theme.color.stroke,
-                shape = RoundedCornerShape(12.dp)
+                width = 1.dp, color = Theme.color.stroke, shape = RoundedCornerShape(12.dp)
             ),
         paddingValues = PaddingValues(8.dp),
         withBorder = true,
@@ -198,8 +203,8 @@ private fun WelcomeText() {
 private fun FormLogin(
     modifier: Modifier = Modifier,
     uiState: FormUiState,
-    onUsernameChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
+    onUsernameChanged: (TextFieldValue) -> Unit,
+    onPasswordChanged: (TextFieldValue) -> Unit,
     onTrailingIconClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
 ) {
@@ -209,7 +214,8 @@ private fun FormLogin(
             leadingIcon = R.drawable.user_square,
             hintText = stringResource(R.string.username),
             onValueChange = { onUsernameChanged(it) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            maxCharacters = 32
         )
         var passwordError by remember { mutableStateOf(false) }
         Spacer(modifier = Modifier.height(12.dp))
@@ -224,7 +230,9 @@ private fun FormLogin(
             onValueChange = { onPasswordChanged(it) },
             trailingIcon = R.drawable.eye,
             onTrailingIconClicked = onTrailingIconClicked,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            maxCharacters = 32
+
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -234,9 +242,11 @@ private fun FormLogin(
             color = Theme.color.primary,
             modifier = Modifier
                 .align(Alignment.End)
-                .clickable { onForgotPasswordClicked() }
-                .padding(top = 4.dp)
-        )
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { onForgotPasswordClicked() })
+                .padding(top = 4.dp))
     }
 }
 
@@ -252,11 +262,7 @@ fun LoginButtons(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         PrimaryButton(
-            onClick = onLoginClicked,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            state = when {
+            onClick = onLoginClicked, modifier = Modifier.fillMaxWidth(), state = when {
                 isError || !isLoginButtonEnabled -> ButtonState.DISABLED
                 isLoading -> ButtonState.LOADING
                 else -> ButtonState.IDLE
@@ -264,21 +270,23 @@ fun LoginButtons(
         ) {
             Text(
                 stringResource(R.string.login),
-                style = Theme.textStyle.label.large,
+                modifier = Modifier.fillMaxWidth(),
+                style = Theme.textStyle.label.large.copy(
+                    textAlign = TextAlign.Center
+                ),
                 color = Theme.color.textColors.onPrimary
             )
         }
 
         SecondaryButton(
-            onClick = onContinueAsGuestClicked,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            border = null
+            onClick = onContinueAsGuestClicked, modifier = Modifier.fillMaxWidth(), border = null
         ) {
             Text(
                 stringResource(R.string.continue_as_guest),
-                style = Theme.textStyle.label.large,
+                modifier = Modifier.fillMaxWidth(),
+                style = Theme.textStyle.label.large.copy(
+                    textAlign = TextAlign.Center
+                ),
                 color = Theme.color.primary
             )
         }
@@ -287,13 +295,17 @@ fun LoginButtons(
 
 @Composable
 private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked: () -> Unit) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
+    FlowRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentSize(Alignment.Center),
         horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(R.string.dont_have_account),
+            modifier = modifier.wrapContentWidth(),
+            color = Theme.color.textColors.hint,
             style = Theme.textStyle.body.small,
         )
         Text(
@@ -301,9 +313,9 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
             style = Theme.textStyle.body.small,
             color = Theme.color.primary,
             modifier = Modifier
+                .wrapContentWidth()
                 .clickable { onCreateAccountClicked() }
-                .padding(start = 4.dp)
-        )
+                .padding(start = 4.dp))
     }
 }
 
@@ -360,9 +372,7 @@ fun CirclesBackground() {
     circles.forEach { circle ->
         val infiniteTransition = rememberInfiniteTransition()
         val animatedScale by infiniteTransition.animateFloat(
-            initialValue = 0.9f,
-            targetValue = 1.1f,
-            animationSpec = infiniteRepeatable(
+            initialValue = 0.9f, targetValue = 1.1f, animationSpec = infiniteRepeatable(
                 animation = tween(durationMillis = 3000, easing = FastOutSlowInEasing),
                 repeatMode = RepeatMode.Reverse
             )
@@ -387,7 +397,7 @@ fun CirclesBackground() {
 @Composable
 private fun LoginScreenPreview() {
     AflamiTheme(isDarkTheme = false) {
-        LoginScreen(navController = rememberNavController())
+        LoginScreen()
     }
 }
 

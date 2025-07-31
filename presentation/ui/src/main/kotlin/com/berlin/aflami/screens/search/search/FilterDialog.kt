@@ -16,9 +16,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
@@ -50,19 +54,30 @@ fun FilterDialog(
     state: FilterMediaSelected,
     getIcon: (Int) -> Int
 ) {
-    Dialog(onDismissRequest = filterListener::onCancelButtonClicked) {
+    Dialog(
+        onDismissRequest = filterListener::onCancelButtonClicked,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
         Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
             color = Theme.color.surface
         ) {
             Column(
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(vertical = 12.dp)
+                    .verticalScroll(rememberScrollState())
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -145,7 +160,7 @@ fun FilterDialog(
                         gradientColor = Theme.color.primaryButton
                     ) {
                         Text(
-                            "Apply",
+                            stringResource(com.berlin.ui.R.string.apply),
                             style = Theme.textStyle.label.large,
                             color = Theme.color.textColors.onPrimary
                         )
@@ -158,7 +173,7 @@ fun FilterDialog(
                         containerColor = Theme.color.primaryVariant
                     ) {
                         Text(
-                            "Clear",
+                            stringResource(com.berlin.ui.R.string.clear),
                             style = Theme.textStyle.label.large,
                             color = Theme.color.primary
                         )
@@ -186,6 +201,8 @@ fun Chips(
         targetValue = if (isSelected) Theme.color.textColors.onPrimary else Theme.color.textColors.hint
     )
 
+    val isSingleWord = remember(title) { title.trim().split("\\s+".toRegex()).size == 1 }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -212,11 +229,16 @@ fun Chips(
         }
 
         Text(
+            modifier = Modifier
+                .height(32.dp)
+                .let {
+                    if (!isSingleWord) it.width(56.dp) else it
+                },
             text = title,
             color = Theme.color.textColors.body,
             style = Theme.textStyle.label.small,
             textAlign = TextAlign.Center,
-            modifier = Modifier.height(32.dp)
+            maxLines = if (isSingleWord) 1 else 2
         )
     }
 }
@@ -226,7 +248,10 @@ fun RatingBar(
     onValueChange: (Float) -> Unit, modifier: Modifier = Modifier, currentRating: Float = 0f
 ) {
     Row(
-        modifier = modifier, horizontalArrangement = Arrangement.spacedBy(6.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         for (i in 1..10) {
             Icon(

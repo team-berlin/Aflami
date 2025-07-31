@@ -1,38 +1,44 @@
 package com.berlin.repository
 
-import com.berlin.exception.UnauthorizedException
+import com.berlin.entity.NotFoundException
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
-import com.berlin.repository.mapper.auth.toDomain
-import com.berlin.repository.util.toException
 import repository.AuthenticationRepository
 
 class AuthenticationRepositoryImpl(
     private val remoteDataSource: AuthenticationRemoteDataSource,
-    private val localDataSource: AuthenticationLocalDataSource
+    private val localDataSource: AuthenticationLocalDataSource,
 ) : AuthenticationRepository {
+
+    private suspend fun requestToken(): String {
+        return remoteDataSource.requestToken().requestToken
+            ?: throw NotFoundException("Token not found")
+    }
+
+    private suspend fun createSession(requestToken: String): String {
+        return remoteDataSource.createSession(requestToken).sessionId
+            ?: throw NotFoundException("Session not found")
+    }
 
     override suspend fun login(
         userName: String,
-        password: String
+        password: String,
     ) {
-        return try {
-            val result =
-                remoteDataSource.login(userName, password, requestToken().requestToken).also {
-                    localDataSource.saveUserToken(it.requestToken.toString())
-                    createSession(it.requestToken.toString())
-                }
-            result.toDomain()
-        } catch (e: UnauthorizedException) {
-            throw e.message.toException()
-        } catch (e: Exception) {
-            throw e
+        val requestToken = requestToken()
+        remoteDataSource.login(userName, password, requestToken).also {
+            val session =
+                createSession(it.requestToken ?: throw NotFoundException("Token not found"))
+            localDataSource.saveUserSessionId(session)
         }
     }
 
+    override suspend fun isLoggedIn(): Boolean {
+        val result = localDataSource.getUserSessionId()
+        return result != null
+    }
 
     override suspend fun logout() {
-        TODO("Not yet implemented")
+
     }
 
 }

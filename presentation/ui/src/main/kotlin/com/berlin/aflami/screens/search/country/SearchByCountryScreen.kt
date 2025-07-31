@@ -30,6 +30,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.navigation.MediaDetails
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
@@ -38,15 +39,15 @@ import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListener
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenUiState
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchByCountryScreen(
-    navController: NavController,
-    viewModel: SearchByCountryViewModel = koinViewModel()
+    viewModel: SearchByCountryViewModel = koinViewModel(),
 ) {
+    val navController = Theme.navController
     val state by viewModel.state.collectAsState()
     SearchByCountryContent(
         navController = navController,
@@ -133,7 +134,7 @@ private fun SearchByCountryContent(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                state.query.isBlank() && movies.itemCount == 0 -> {
+                state.query.text.isBlank() && movies.itemCount == 0 -> {
                     CountryTourExploring(
                         modifier = Modifier.fillMaxSize(),
                         image = painterResource(R.drawable.world_tour),
@@ -155,11 +156,11 @@ private fun SearchByCountryContent(
                 else -> {
                     MoviesList(
                         movies = movies,
-                        onMovieClick = { movieId,mediaType ->
+                        onMovieClick = { movieId, mediaType ->
                             navController.navigate(
-                                Destination.MediaDetailsScreen.route(
+                                MediaDetails(
                                     movieId,
-                                    "MOVIE"
+                                    MediaType.valueOf("MOVIE"),
                                 )
                             )
                         }

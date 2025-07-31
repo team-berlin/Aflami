@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,10 +25,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.navigation.MediaDetails
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
@@ -37,26 +38,30 @@ import com.berlin.aflami.viewmodel.searchactor.SearchByActorEffect
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorInteractionListener
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenUiState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SearchByActorNameScreen(
-    navController: NavController, viewModel: SearchByActorViewModel = koinViewModel()
+    viewModel: SearchByActorViewModel = koinViewModel()
 ) {
+    val navController = Theme.navController
     val uiState by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect {
-            when (it){
-                is SearchByActorEffect.NavigatedBack -> {navController.popBackStack()}
+            when (it) {
+                is SearchByActorEffect.NavigatedBack -> {
+                    navController.popBackStack()
+                }
+
                 is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {
                     navController.navigate(
-                        Destination.MediaDetailsScreen.route(
+                        MediaDetails(
                             it.movieId,
-                            "MOVIE"
+                            MediaType.valueOf("MOVIE"),
                         )
                     )
                 }
@@ -101,11 +106,11 @@ private fun SearchByActorNameContent(
         val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
             text = state.query,
-            hintText = stringResource(R.string.find_by_actor),
+            hintText = stringResource(R.string.actor_name),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 4.dp),
-            onValueChange = listener::onActorNameChanged,
+            onValueChange = { listener.onActorNameChanged(it) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Search
             ),
@@ -117,37 +122,64 @@ private fun SearchByActorNameContent(
         )
 
         Box(
-            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
         ) {
             val pagedMovies = state.movies.collectAsLazyPagingItems()
-            when {
-               state.isLoading ->{
-                   CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-               }
-                pagedMovies.itemCount == 0 && state.query.isBlank() -> {
-                        CountryTourExploring(
-                            modifier = Modifier.fillMaxSize(),
-                            image = painterResource(R.drawable.find_by_actor),
-                            titleId = R.string.find_by_actor,
-                            messageId = R.string.find_by_actor_quotation
+
+            when (pagedMovies.loadState.refresh) {
+                is LoadState.Loading -> {
+                    if (state.query.text.isBlank()) {
+                        InitContent()
+                    } else {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = stringResource(R.string.loading)
                         )
+                    }
                 }
-                pagedMovies.itemCount == 0 && state.query.isNotBlank() -> {
-                    CountryTourExploring(
-                        modifier = Modifier.fillMaxSize(),
-                        image = painterResource(R.drawable.no_search_result),
-                        titleId = R.string.no_search_result,
-                        messageId = R.string.please_try_with_another_keyword
-                    )
+
+
+                is LoadState.NotLoading -> {
+                    if (state.query.text.isBlank()) {
+                        InitContent()
+                    } else if (pagedMovies.itemCount == 0 && state.query.text.isNotBlank()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = stringResource(R.string.loading)
+                        )
+                    } else {
+                        MediaGridList(
+                            media = pagedMovies,
+                            onMovieClick = listener::onMovieClicked,
+                        )
+                    }
                 }
-                else -> {
-                    MediaGridList(
-                        media = pagedMovies,
-                        onMovieClick = listener::onMovieClicked,
-                    )
+
+                is LoadState.Error -> {
+                    ErrorContent()
                 }
             }
         }
     }
+}
+
+@Composable
+private fun ErrorContent() {
+    CountryTourExploring(
+        modifier = Modifier.fillMaxSize(),
+        image = painterResource(R.drawable.no_search_result),
+        titleId = R.string.no_search_result,
+        messageId = R.string.please_try_with_another_keyword
+    )
+}
+
+@Composable
+private fun InitContent() {
+    CountryTourExploring(
+        modifier = Modifier.fillMaxSize(),
+        image = painterResource(R.drawable.find_by_actor),
+        titleId = R.string.find_by_actor,
+        messageId = R.string.find_by_actor_quotation
+    )
 }
 

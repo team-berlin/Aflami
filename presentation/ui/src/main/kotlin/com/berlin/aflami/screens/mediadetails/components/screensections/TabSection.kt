@@ -2,6 +2,7 @@ package com.berlin.aflami.screens.mediadetails.components.screensections
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,8 +38,8 @@ fun TabSection(
     tabState: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
     rowState: RowSectionUiState,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
+    isReviewExpanded: (String) -> Boolean,
+    onToggleReviewExpand: (String) -> Unit,
     mediaType: MediaType
 ) {
     val visibleTabs = MovieDetailsTabs.entries.filter {
@@ -47,9 +48,9 @@ fun TabSection(
 
     LazyRow(
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 12.dp)
             .height(96.dp)
             .fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(visibleTabs, key = { it.name }) { tab ->
@@ -83,7 +84,9 @@ fun TabSection(
 
         is RowSectionUiState.Success -> when (val tab = content.content) {
             is TabContent.MoreLikeThis -> MoreLikeThisSection(mediaList = tab.items, mediaType = mediaType)
-            is TabContent.Reviews -> ReviewsSection(reviews = tab.items, isExpanded = isExpanded, onToggleExpand = onToggleExpand)
+            is TabContent.Reviews -> ReviewsSection(reviews = tab.items,
+                isExpanded = { id -> isReviewExpanded(id) },
+                onToggleExpand = { id -> onToggleReviewExpand(id) })
             is TabContent.Gallery -> GallerySection(mediaImages = tab.items)
             is TabContent.CompanyProduction -> CompanyProductionSection(companyProductions = tab.items)
             is TabContent.Season -> SeasonsSection(seasonsMap = tab.items)
