@@ -23,8 +23,6 @@
     <string name="season">Season</string>
     <string name="company_production_image_cd">Company Production</string>
     <string name="description">Description</string>
-    <string name="read_less">Read less</string>
-    <string name="read_more">Read more</string>
 
     //login
     <string name="welcome_back">Welcome back!</string>
@@ -49,8 +47,16 @@
     <string name="company_production">company\nproduction</string>
     <string name="continue_watching">Continue watching</string>
     <string name="upcoming">Upcoming</string>
+    <string name="movie_that_matches_your_mood_is">Movie that matches your mood is:</string>
+    <string name="mood_picker">Mood Picker</string>
+    <string name="view_details">View details</string>
+    <string name="get_another_movie">Get another movie</string>
     <string name="offline_title">Oops! It looks like you’re offline.</string>
     <string name="check_connection_title">Check your connection and try again, we’ll be waiting with your movies and popcorn</string>
+
+    <string name="top_rating">Top rating</string>
+    <string name="read_less">Read less</string>
+    <string name="read_more">Read more</string>
     <string name="retry">Retry</string>
     <string name="apply">Apply</string>
     <string name="clear">Clear</string>

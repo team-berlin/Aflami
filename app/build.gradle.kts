@@ -14,17 +14,25 @@ val properties = Properties().apply {
     load(rootProject.file("local.properties").inputStream())
 }
 
-
-
 android {
     namespace = "com.berlin.aflami"
     compileSdk = 35
+
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
 
     defaultConfig {
         applicationId = "com.berlin.aflami"
         minSdk = 26
         targetSdk = 35
-
         versionCode = 1
         versionName = if (project.hasProperty("versionName")) {
             project.property("versionName") as String
@@ -39,17 +47,6 @@ android {
     }
 
 
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -62,7 +59,9 @@ android {
         buildConfig = true
     }
 
-    configurations { implementation.get().exclude(mapOf("group" to "org.jetbrains", "module" to "annotations"))}
+    configurations {
+        implementation.get().exclude(mapOf("group" to "org.jetbrains", "module" to "annotations"))
+    }
 }
 
 dependencies {
@@ -73,12 +72,13 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.bundles.retrofit)
     implementation(libs.kotlinx.serialization.json)
-
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+    implementation(libs.firebase.crashlytics.ktx)
     implementation(libs.bundles.room)
     ksp(libs.roomCompiler)
+    implementation(libs.firebase.ml.modeldownloader)
 
 
 

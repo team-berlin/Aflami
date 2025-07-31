@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -127,6 +128,8 @@ private fun SearchScreenContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Theme.color.surface)
+            .statusBarsPadding()
             .clickable(
                 indication = null, interactionSource = remember { MutableInteractionSource() }) {
                 focusManager.clearFocus()
@@ -340,7 +343,6 @@ private fun SearchScreenContent(
                                             ) { index ->
                                                 val tvShows = tvShows[index]
                                                 if (tvShows != null) {
-
 
                                                     MediaCard(
                                                         modifier = Modifier.height(222.dp),

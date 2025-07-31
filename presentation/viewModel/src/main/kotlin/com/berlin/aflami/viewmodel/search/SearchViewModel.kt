@@ -13,9 +13,9 @@ import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
-import com.berlin.aflami.viewmodel.util.MediaType
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -86,7 +86,9 @@ class SearchViewModel(
     private fun observeSearchKeywordChanges() {
         viewModelScope.launch {
             combine(
-                _state.map { it.searchQuery.text.trim() }.debounce(800).filter { it.isNotEmpty() }
+                _state.map { it.searchQuery.text.trim() }
+                    .debounce(800)
+                    .filter { it.isNotEmpty() }
                     .distinctUntilChanged(),
                 _state.map { it.filterTrigger }.distinctUntilChanged()
             ) { query, _ -> query }
@@ -493,11 +495,8 @@ class SearchViewModel(
             TabOption.MOVIES -> getMovieGenresUseCase(language)
             TabOption.TV_SHOWS -> getSeriesGenresUseCase(language)
         }
-        val selectedGenreId = when (selectedTab) {
-            TabOption.MOVIES -> state.value.filterItemUiState.filterMovieSelected.selectedGenres
-            TabOption.TV_SHOWS -> state.value.filterItemUiState.filterTvShowSelected.selectedGenres
-        }
-        val all = GenreUiState(-1, "All", isSelected = selectedGenreId == -1)
+
+        val all = FilterItemUiState.defaultGenres.first()
         val realGenre = genres.map { genre ->
             GenreUiState(
                 id = genre.id ?: -1,

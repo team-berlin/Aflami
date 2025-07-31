@@ -7,9 +7,8 @@ import com.berlin.repository.datasource.remote.dto.auth.LoginDto
 import com.berlin.repository.datasource.remote.dto.auth.RequestTokenDTO
 import com.berlin.repository.datasource.remote.dto.auth.SessionDto
 
-
 class AuthenticationRemoteDataSourceImpl(
-    private val authenticationApiService: AuthenticationApiService
+    private val authenticationApiService: AuthenticationApiService,
 ) : AuthenticationRemoteDataSource {
     override suspend fun login(userName: String, password: String, requestToken: String): LoginDto {
         return wrapApiResponse {
@@ -36,13 +35,5 @@ class AuthenticationRemoteDataSourceImpl(
 
     override suspend fun logout() {
         authenticationApiService.logout()
-    }
-
-    override suspend fun register(
-        email: String,
-        userName: String,
-        password: String
-    ) {
-        authenticationApiService.register(email, userName, password)
     }
 }

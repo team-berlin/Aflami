@@ -27,9 +27,17 @@ fun CompanyProductionSection(
     verticalSpacing: Dp = 8.dp,
     sidePadding: Dp = 16.dp
 ) {
-    BoxWithConstraints(modifier = modifier.fillMaxWidth().padding(bottom = 12.dp), contentAlignment = Alignment.Center) {
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp),
+        contentAlignment = Alignment.Center
+    ) {
         val maxGridWidth = this.maxWidth - 2 * sidePadding
         val columns = (maxGridWidth / (cellWidth + horizontalSpacing)).toInt().coerceAtLeast(2)
+
+        val adjustedSpacing = horizontalSpacing * (columns - 1)
+        val adjustedCellWidth = (maxGridWidth - adjustedSpacing) / columns
 
         val rows = (companyProductions.size + columns - 1) / columns
 
@@ -41,7 +49,7 @@ fun CompanyProductionSection(
         ) {
             for (row in 0 until rows) {
                 Row(
-                    Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(horizontalSpacing)
                 ) {
                     for (col in 0 until columns) {
@@ -49,15 +57,12 @@ fun CompanyProductionSection(
                         if (index < companyProductions.size) {
                             CompanyProductionItem(
                                 modifier = Modifier
-                                    .width(cellWidth)
-                                    .height(cellHeight)
-                                ,
+                                    .width(adjustedCellWidth)
+                                    .height(cellHeight),
                                 item = companyProductions[index]
                             )
                         } else {
-                            Spacer(
-                                Modifier.weight(1f)
-                            )
+                            Spacer(modifier = Modifier.width(adjustedCellWidth))
                         }
                     }
                 }
