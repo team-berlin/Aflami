@@ -175,7 +175,6 @@ private fun HomeContent(
             .background(Theme.color.surface)
 
 
-
     ) {
         AnimatedVisibility(
             enter = fadeIn(),
@@ -251,7 +250,7 @@ private fun HomeContent(
                                             val genreName =
                                                 getGenreNameById(genreId, media.mediaType)
                                             Box(
-                                                modifier = Modifier.padding(end = 4.dp)
+                                                modifier = Modifier.padding(horizontal = 8.dp)
                                             ) {
                                                 GenersChip(label = genreName)
                                             }
@@ -325,9 +324,7 @@ private fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appBarBgColor)
-                .statusBarsPadding()
-
-            , onSearchClicked = {
+                .statusBarsPadding(), onSearchClicked = {
                 listener.onSearchClicked()
             }, containerColor = appBarBgColor
         )

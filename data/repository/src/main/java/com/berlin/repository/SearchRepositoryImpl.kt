@@ -14,6 +14,8 @@ import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
 import com.berlin.repository.mapper.toMedia
 import com.berlin.repository.mapper.toTVShow
+import com.berlin.repository.util.Constants
+import com.berlin.repository.util.Constants.ACTING_DEPARTMENT
 import repository.SearchRepository
 import java.time.Instant
 
@@ -131,12 +133,8 @@ class SearchRepositoryImpl(
         recentHistoryLocalDataSource.clearSearchHistory()
     }
 
-    companion object {
-        const val CACHE_TIMEOUT = 3600000L
-        const val ACTING_DEPARTMENT = "Acting"
-    }
 
     private fun isExpiredOrEmpty(list: List<SearchingEntity>): Boolean {
-        return list.isEmpty() || list.any { Instant.now().epochSecond - it.time > CACHE_TIMEOUT }
+        return list.isEmpty() || list.any { Instant.now().epochSecond - it.time >Constants.CACHE_TIMEOUT }
     }
 }
