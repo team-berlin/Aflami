@@ -31,13 +31,11 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetails
-import com.berlin.aflami.navigation.SearchByActorScreen
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.search.SearchUiEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListener
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenUiState
@@ -60,14 +58,14 @@ fun SearchByCountryScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
-            onReceiveSearchByCountryEffect(effect= effect, navController = navController)
+            onReceiveSearchByCountryEffect(effect = effect, navController = navController)
         }
     }
 }
 
 private fun onReceiveSearchByCountryEffect(
     navController: NavController,
-    effect: SearchByCountryEffect
+    effect: SearchByCountryEffect,
 ) {
     when (effect) {
         SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
@@ -75,8 +73,8 @@ private fun onReceiveSearchByCountryEffect(
         is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
 
             navController.navigate(
-                MediaDetails(
-                    mediaId =effect.movieId ,
+                MediaDetailsDestination(
+                    mediaId = effect.movieId,
                     mediaType = MediaType.valueOf("MOVIE"),
                 )
             )
@@ -93,7 +91,9 @@ private fun SearchByCountryContent(
 ) {
     Column {
         TopBar(
-            modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp),
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(vertical = 8.dp),
             title = {
                 Text(
                     text = stringResource(R.string.country_tour),
@@ -174,7 +174,7 @@ private fun SearchByCountryContent(
                         movies = movies,
                         onMovieClick = { movieId, mediaType ->
                             navController.navigate(
-                                MediaDetails(
+                                MediaDetailsDestination(
                                     movieId,
                                     MediaType.valueOf("MOVIE"),
                                 )

@@ -1,17 +1,18 @@
 package com.berlin.aflami.screens.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import com.berlin.aflami.ui.theme.Theme
 
 
 @Composable
-fun ProfileScreen(navController: NavController){
+fun ProfileScreen(){
     ProfileContent()
 
 }
@@ -19,6 +20,8 @@ fun ProfileScreen(navController: NavController){
 @Composable
 fun ProfileContent(){
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
