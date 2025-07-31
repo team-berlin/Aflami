@@ -96,7 +96,9 @@ private fun onReceiveHomeScreenEffect(navController: NavController,homeScreenEff
         }
 
         is HomeScreenEffect.NavigateToTopRating -> {
-            TopRatingMediaScreen
+            navController.navigate(
+                TopRatingMediaScreen
+            )
         }
 
         is HomeScreenEffect.NavigateToDetails -> {

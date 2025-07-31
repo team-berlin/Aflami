@@ -47,10 +47,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TopRatingScreen(
-    navController: NavController,
     topRatingViewModel: TopRatingViewModel = koinViewModel(),
 ) {
     val screenState by topRatingViewModel.state.collectAsState()
+    val navController=Theme.navController
 
     LaunchedEffect(Unit) {
         topRatingViewModel.effect.collect { effect ->
