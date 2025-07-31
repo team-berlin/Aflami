@@ -492,8 +492,8 @@ class SearchViewModel(
 
     private suspend fun fetchGenres(language: String, selectedTab: TabOption): List<GenreUiState> {
         val genres = when (selectedTab) {
-            TabOption.MOVIES -> getMovieGenresUseCase(language)
-            TabOption.TV_SHOWS -> getSeriesGenresUseCase(language)
+            TabOption.MOVIES -> getMovieGenresUseCase()
+            TabOption.TV_SHOWS -> getSeriesGenresUseCase()
         }
 
         val all = FilterItemUiState.defaultGenres.first()
@@ -501,7 +501,7 @@ class SearchViewModel(
             GenreUiState(
                 id = genre.id ?: -1,
                 name = genre.name ?: "Unknown",
-                isSelected = genre.id == selectedGenreId
+                isSelected = false
             )
         }
         return listOf(all) + realGenre
