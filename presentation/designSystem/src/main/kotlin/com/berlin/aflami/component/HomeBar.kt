@@ -1,14 +1,27 @@
 package com.berlin.aflami.component
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.StartOffsetType
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,13 +32,14 @@ import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
-
+import androidx.compose.runtime.getValue
 @Composable
 fun HomeBar(
     modifier: Modifier = Modifier,
     containerColor: Color = Color.Unspecified,
     onSearchClicked: () -> Unit = {}
 ) {
+
     TopBar(modifier = modifier, title = {
         Text(
             text = stringResource(R.string.aflami_title),
@@ -43,6 +57,7 @@ fun HomeBar(
             style = Theme.textStyle.label.small
         )
     }, leadingIcon = {
+       // AnimatedPlay()
         IconButton(
             painter = painterResource(R.drawable.home_logo),
             contentDescription = null,

@@ -43,6 +43,9 @@
     <string name="tv_shows">TV Shows</string>
     <string name="movies">Movies</string>
 
+    <string name="tv_show">TV Show</string>
+    <string name="movie">Movie</string>
+
     <!--    content description-->
     <string name="icon_cd">icon</string>
     <string name="label">Label</string>

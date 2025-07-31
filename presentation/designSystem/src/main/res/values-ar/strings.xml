@@ -42,8 +42,10 @@
     <string name="popular">شائع</string>
 
     <string name="tv_shows">البرامج التلفزيونية</string>
-
     <string name="movies">الأفلام</string>
+
+    <string name="tv_show">برنامج تليفزيوني</string>
+    <string name="movie">فيلم</string>
     <!--    content description-->
     <string name="icon_cd">أيقونة</string>
     <string name="category_img_content">category img</string>

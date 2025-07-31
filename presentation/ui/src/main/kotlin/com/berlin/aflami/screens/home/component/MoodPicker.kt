@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berlin.aflami.ui.theme.Theme
@@ -169,8 +170,8 @@ private fun MoodIcon(
         contentDescription = stringResource(R.string.mood_picker_mood_icon_content_description),
         tint = if (isSelected) Theme.color.primary else Theme.color.textColors.body,
         modifier = modifier
-            .padding(4.dp)
             .clip(CircleShape)
+            .padding(4.dp)
             .size(24.dp)
             .clickable(onClick = onClick)
     )
@@ -215,4 +216,14 @@ private fun moodFromIcon(iconRes: Int, moodIcons: List<Int>): UserMood? {
         moodIcons[5] -> UserMood.SAD_DIZZY
         else -> null
     }
+}
+@Preview
+@Composable
+fun iconPrevio(){
+    MoodIcon(
+        modifier = Modifier,
+        iconRes = R.drawable.romance,
+        isSelected = true,
+        onClick = {}
+    )
 }
