@@ -71,6 +71,7 @@ private fun ShowNavigationBar(
     navController: NavHostController,
 ) {
     NavBar(
+
         navDestinations = bottomNavList,
         currentRoute = selectedRoute,
         onNavDestinationClicked = { route ->
