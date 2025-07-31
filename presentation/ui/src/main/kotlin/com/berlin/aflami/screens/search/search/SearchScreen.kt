@@ -47,6 +47,8 @@ import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MediaDetails
+import com.berlin.aflami.navigation.SearchByActorScreen
+import com.berlin.aflami.navigation.SearchByCountryScreen
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.ErrorMessage
 import com.berlin.aflami.screens.search.components.Loading
@@ -87,30 +89,41 @@ fun SearchScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
-            when (effect) {
-                is SearchUiEffect.NavigatedBack -> navController.popBackStack()
-
-                is SearchUiEffect.NavigatedToMovieDetailsScreen -> {
-
-                    navController.navigate(
-                        MediaDetails(
-                            mediaId = effect.id,
-                            mediaType = MediaType.valueOf("MOVIE"),
-                        )
-                    )
-                }
-
-                is SearchUiEffect.NavigateToActorSearch -> {
-                    navController.navigate("searchByActorNameScreen")
-                }
-
-                is SearchUiEffect.NavigateToWorldSearch -> {
-                    navController.navigate("searchByCountryScreen")
-                }
-            }
-
+            onReceiveSearchEffect(effect = effect, navController = navController)
         }
     }
+}
+
+private fun onReceiveSearchEffect(
+    navController: NavController,
+    effect: SearchUiEffect
+) {
+    when (effect) {
+        is SearchUiEffect.NavigatedBack -> navController.popBackStack()
+
+        is SearchUiEffect.NavigatedToMovieDetailsScreen -> {
+
+            navController.navigate(
+                MediaDetails(
+                    mediaId = effect.id,
+                    mediaType = MediaType.valueOf("MOVIE"),
+                )
+            )
+        }
+
+        is SearchUiEffect.NavigateToActorSearch -> {
+            navController.navigate(
+                SearchByActorScreen
+            )
+        }
+
+        is SearchUiEffect.NavigateToWorldSearch -> {
+            navController.navigate(
+                SearchByCountryScreen
+            )
+        }
+    }
+
 }
 
 @Composable
