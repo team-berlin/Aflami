@@ -185,6 +185,7 @@ private fun SearchByCountryContent(
                         InitContent()
                     } else {
                         com.berlin.aflami.component.CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)
                         )
                     }
@@ -195,6 +196,7 @@ private fun SearchByCountryContent(
                         InitContent()
                     } else if (movies.itemCount == 0 && state.query.text.isNotBlank()) {
                         com.berlin.aflami.component.CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)
                         )
                     } else {
