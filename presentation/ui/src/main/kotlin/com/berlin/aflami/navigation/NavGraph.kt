@@ -1,17 +1,16 @@
 package com.berlin.aflami.navigation
 
-import android.util.Log
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigation
 import com.berlin.aflami.navigation.routes.castDetailsScreen
 import com.berlin.aflami.navigation.routes.categoriesRoute
 import com.berlin.aflami.navigation.routes.gamesRoute
@@ -58,16 +57,10 @@ fun AflamiNavGraph(
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None }
         ) {
-            bottomNavigationBarNavGraph()
-            searchScreenRoute()
-            searchByCountryRoute()
-            searchByActorNameRoute()
-            mediaDetailsRoute()
-            castDetailsScreen()
-            loginRoute()
-            webView()
-            watchedMedia()
-            topRatingMedia()
+            loginNavigationGraph()
+            bottomNavigationBarGraph()
+            homeNavigationGraph()
+            detailsNavigationGraph()
         }
     }
 }
@@ -83,8 +76,7 @@ private fun ShowNavigationBar(
         onNavDestinationClicked = { route ->
             if (route != selectedRoute) {
                 navController.navigate(route) {
-                    Log.d("Nadeen", "Navigating to ${route.toString()}")
-                    popUpTo(navController.graph.startDestinationId) {
+                    popUpTo(navController.graph.findStartDestination().id) {
                         saveState = true
                     }
                     launchSingleTop = true
@@ -104,11 +96,32 @@ private fun getCurrentNavBarScreen(navController: NavHostController): Navigation
     return currentNavigationBarDestinationsDestination
 }
 
-fun NavGraphBuilder.bottomNavigationBarNavGraph() =
-    navigation<BottomNavigationGraph>(startDestination = NavigationBarDestinations.HomeScreen) {
-        homeScreenRoute()
-        listsRoute()
-        profileRoute()
-        categoriesRoute()
-        gamesRoute()
-    }
+fun NavGraphBuilder.bottomNavigationBarGraph() {
+    homeScreenRoute()
+    listsRoute()
+    profileRoute()
+    categoriesRoute()
+    gamesRoute()
+}
+
+fun NavGraphBuilder.searchNavigationGraph() {
+    searchScreenRoute()
+    searchByCountryRoute()
+    searchByActorNameRoute()
+}
+
+fun NavGraphBuilder.loginNavigationGraph() {
+    loginRoute()
+    webView()
+}
+
+fun NavGraphBuilder.homeNavigationGraph() {
+    searchNavigationGraph()
+    watchedMedia()
+    topRatingMedia()
+}
+
+fun NavGraphBuilder.detailsNavigationGraph() {
+    mediaDetailsRoute()
+    castDetailsScreen()
+}

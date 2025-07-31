@@ -3,10 +3,6 @@ package com.berlin.aflami.navigation
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import kotlinx.serialization.Serializable
 
-
-@Serializable
-object BottomNavigationGraph
-
 @Serializable
 sealed interface NavigationBarDestinations {
 

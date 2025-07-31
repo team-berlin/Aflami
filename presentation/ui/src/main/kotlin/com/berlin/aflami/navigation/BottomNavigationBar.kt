@@ -94,7 +94,6 @@ fun NavBar(
 
             navDestinations.forEach { item ->
                 val isSelected = currentRoute == item.route
-                Log.d("Nadeen", "current route , $currentRoute , bottom nav item route = ${item.route}")
 
                 val backgroundColor = if (isSelected) indicatorColor else Color.Unspecified
                 val iconTint = if (isSelected) selectedContentColor else inactiveContentColor
