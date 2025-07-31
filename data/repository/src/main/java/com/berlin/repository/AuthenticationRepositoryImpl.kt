@@ -1,6 +1,6 @@
 package com.berlin.repository
 
-import com.berlin.entity.NotFoundException
+import com.berlin.exception.NotFoundException
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
 import repository.AuthenticationRepository

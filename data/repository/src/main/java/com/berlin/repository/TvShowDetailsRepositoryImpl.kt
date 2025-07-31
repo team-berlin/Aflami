@@ -5,62 +5,61 @@ import com.berlin.entity.Genre
 import com.berlin.entity.Actor
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
-import com.berlin.entity.TvShowDetails
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toTVShow
 import exceptions.AflamiExceptions
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 
 class TvShowDetailsRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
-) : TvShowDetailsRepository {
-    override suspend fun getTvShowDetails(id: Long, language: String): TvShowDetails? {
+) : TVShowDetailsRepository {
+    override suspend fun getTVShowDetails(tvShowId: Long): TVShow? {
         return try {
-            remoteDataSource.getTvShowDetails(id, language).toDomain()
+            remoteDataSource.getTvShowDetails(id).toDomain()
         } catch (exception: AflamiExceptions) {
             throw exception
         }
     }
 
-    override suspend fun getSeriesImages(id: Long): List<String> {
+    override suspend fun getTVShowGallery(tvShowId: Long): List<String> {
         return try {
-            remoteDataSource.getSeriesImages(seriesId = id).posters?.map { POSTER_PREFIX + it.filePath }
+            remoteDataSource.getSeriesImages(seriesId = tvShowId).posters?.map { POSTER_PREFIX + it.filePath }
                 ?: throw Exception()
         } catch (e: Exception) {
             throw e
         }
     }
 
-    override suspend fun getSeriesCastDetails(seriesId: Long, language: String): List<Actor> {
+    override suspend fun getTVShowActors(tvShowId: Long): List<Actor> {
         return remoteDataSource.getSeriesCastDetails(
-            seriesId, language
+            seriesId
         ).cast?.mapNotNull { castItemDto ->
             castItemDto?.toDomain()
         } ?: emptyList()
     }
 
-    override suspend fun getSeriesSimilar(seriesId: Long): List<TVShow> {
-        return remoteDataSource.getSeriesSimilar(seriesId).results?.mapNotNull { tvShowDto ->
+    override suspend fun getSimilarTVShows(tvShowId: Long): List<TVShow> {
+        return remoteDataSource.getSeriesSimilar(tvShowId).results?.mapNotNull { tvShowDto ->
             tvShowDto?.toTVShow()
         } ?: emptyList()
     }
 
-    override suspend fun getReviews(id: Long): List<Review> {
-        return remoteDataSource.getMovieReviews(id).results?.filterNotNull()
+    override suspend fun getTVShowReviews(tvShowId: Long): List<Review> {
+        return remoteDataSource.getMovieReviews(tvShowId).results?.filterNotNull()
             ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
     }
 
     override suspend fun getSeasonEpisodes(
-        seriesId: Long,
+        tvShowId: Long,
         seasonNumber: Int,
     ): List<Episode?> {
-        return remoteDataSource.getEpisodeSeasonSeries(seriesId, seasonNumber).toDomain().episodes
+        return remoteDataSource.getEpisodeSeasonSeries(tvShowId, seasonNumber).toDomain().episodes
             ?: emptyList()
     }
 
-    override suspend fun getSeriesGenres(language: String): List<Genre> {
-        return remoteDataSource.getSeriesGenres(language).genres.map { it.toDomain() }
+    override suspend fun getTVShowGenres(): List<Genre> {
+        return remoteDataSource.getSeriesGenres().genres.map { it.toDomain() }
     }
 }

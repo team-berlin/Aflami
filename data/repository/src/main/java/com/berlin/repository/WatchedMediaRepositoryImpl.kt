@@ -1,3 +1,4 @@
+
 package com.berlin.repository
 
 import com.berlin.entity.Movie
@@ -23,7 +24,6 @@ class WatchedMediaRepositoryImpl(
     override suspend fun addContinueWatchingMovie(movie: Movie) {
         localDataSource.addContinueWatchedMovie(movie.toLocalEntity())
     }
-
     override suspend fun getContinueWatchingTVShows(page: Int): List<TVShow> {
         return localDataSource.getContinueWatchedTVShow(
             pageSize = 20,

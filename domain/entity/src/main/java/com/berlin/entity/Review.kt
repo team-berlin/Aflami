@@ -1,6 +1,5 @@
 package com.berlin.entity
 
-import kotlinx.datetime.LocalDate
 
 data class Review(
     val id: String,
@@ -9,5 +8,5 @@ data class Review(
     val avatarImage: String,
     val rating: Double,
     val content: String,
-    val date: LocalDate,
+    val date: String,
 )
