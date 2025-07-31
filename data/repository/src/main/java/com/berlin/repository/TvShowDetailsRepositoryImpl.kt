@@ -6,7 +6,6 @@ import com.berlin.entity.MediaCast
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
-import com.berlin.repository.SearchRepositoryImpl.Companion
 import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.dto.GenreEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
@@ -15,6 +14,8 @@ import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toGenreEntity
 import com.berlin.repository.mapper.toTVShow
+import com.berlin.repository.util.Constants
+import com.berlin.repository.util.Constants.GENRE_TYPE_TV
 import exceptions.AflamiExceptions
 import repository.TvShowDetailsRepository
 import java.time.Instant
@@ -24,10 +25,7 @@ class TvShowDetailsRepositoryImpl(
     private val genreLocalDataSource: GenreLocalDataSource
 ) : TvShowDetailsRepository {
 
-    companion object {
-        const val CACHE_TIMEOUT = 3600000L
-        const val GENRE_TYPE_TV = "TV"
-    }
+
     override suspend fun getTvShowDetails(id: Long): TvShowDetails? {
         return try {
             remoteDataSource.getTvShowDetails(id).toDomain()
@@ -83,7 +81,7 @@ class TvShowDetailsRepositoryImpl(
         return genres.map { it.toDomain() }
     }
     private fun isExpiredOrEmpty(list: List<GenreEntity>): Boolean {
-        return list.isEmpty() || list.any { Instant.now().toEpochMilli() - it.time > CACHE_TIMEOUT }
+        return list.isEmpty() || list.any { Instant.now().toEpochMilli() - it.time > Constants.CACHE_TIMEOUT }
     }
 
 }
