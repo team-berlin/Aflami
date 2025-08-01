@@ -1,11 +1,12 @@
 package com.berlin.aflami.screens.mediadetails.components.screensections
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -32,7 +33,6 @@ import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 
 @Composable
 fun TabSection(
@@ -65,35 +65,62 @@ fun TabSection(
         }
     }
 
-    when (val content = rowState) {
-        is RowSectionUiState.Error,
-        is RowSectionUiState.NoDataFound -> {
-            Box(
-                Modifier.padding(top = 32.dp, bottom = 82.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    modifier = Modifier.fillMaxSize(),
-                    text = content.getDisplayMessage(),
-                    style = Theme.textStyle.label.large,
-                    color = Theme.color.textColors.body,
-                    textAlign = TextAlign.Center
-                )
+    Crossfade(targetState = rowState) { state ->
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize()
+        ) {
+            when (state) {
+                is RowSectionUiState.Error,
+                is RowSectionUiState.NoDataFound -> {
+                    Box(
+                        Modifier.padding(top = 32.dp, bottom = 82.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxSize(),
+                            text = state.getDisplayMessage(),
+                            style = Theme.textStyle.label.large,
+                            color = Theme.color.textColors.body,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                is RowSectionUiState.Loading -> Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Loading()
+                }
+
+                is RowSectionUiState.Success -> {
+                    when (val tab = state.content) {
+                        is TabContent.MoreLikeThis -> MoreLikeThisSection(
+                            mediaList = tab.items,
+                            mediaType = mediaType,
+                            onMediaClick = onMediaClick
+                        )
+
+                        is TabContent.Reviews -> ReviewsSection(
+                            reviews = tab.items,
+                            isExpanded = isReviewExpanded,
+                            onToggleExpand = onToggleReviewExpand
+                        )
+
+                        is TabContent.Gallery -> GallerySection(mediaImages = tab.items)
+
+                        is TabContent.CompanyProduction -> CompanyProductionSection(
+                            companyProductions = tab.items
+                        )
+
+                        is TabContent.Season -> SeasonsSection(seasonsMap = tab.items)
+                    }
+                }
             }
-        }
-
-        is RowSectionUiState.Loading -> Loading()
-
-        is RowSectionUiState.Success -> when (val tab = content.content) {
-            is TabContent.MoreLikeThis -> MoreLikeThisSection(mediaList = tab.items,
-                mediaType = mediaType,
-                onMediaClick = onMediaClick)
-            is TabContent.Reviews -> ReviewsSection(reviews = tab.items,
-                isExpanded = { id -> isReviewExpanded(id) },
-                onToggleExpand = { id -> onToggleReviewExpand(id) })
-            is TabContent.Gallery -> GallerySection(mediaImages = tab.items)
-            is TabContent.CompanyProduction -> CompanyProductionSection(companyProductions = tab.items)
-            is TabContent.Season -> SeasonsSection(seasonsMap = tab.items)
         }
     }
 }
