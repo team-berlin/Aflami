@@ -82,7 +82,6 @@ class MediaDetailsViewModel(
         getMediaCast(mediaId = mediaId, mediaType = mediaType)
         getMediaDetails(mediaId = mediaId, mediaType = mediaType)
         onShowMoreMediaLikeThisClicked(mediaId = mediaId, mediaType = mediaType)
-
     }
 
 
@@ -158,34 +157,12 @@ class MediaDetailsViewModel(
         sendNewEffect(MediaDetailsScreenEffect.NavigateBack)
     }
 
-    override fun onPlayClicked(id: Long,type: MediaType) {
-        tryToCall(
-            call = {
-                when (type) {
-                    MediaType.MOVIE -> getMovieVideos(id).videoUrl
-                    MediaType.TVSHOW -> getTvShowVideos(id).videoUrl
-                }
-            },
-            onSuccess = {videoUrl->
-                Log.e("videos",videoUrl)
-                _state.update {
-                    it.copy(
-                        hasVideo = true,
-                        videoUrl = videoUrl
-                    )
-                }
-                sendNewEffect(MediaDetailsScreenEffect.PlayMedia(videoUrl =videoUrl))
+    override fun onPlayClicked(id: Long, mediaType: MediaType) {
+        val videoUrl = _state.value.videoUrl
 
-            },
-            onError = {
-                _state.update {
-                    it.copy(
-                        hasVideo = false
-                    )
-                }
-            },
-        )
-
+        if (_state.value.hasVideo && !videoUrl.isNullOrEmpty()) {
+            sendNewEffect(MediaDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
+        }
     }
 
     private fun playButtonEnable(id: Long,type: MediaType){
@@ -196,25 +173,20 @@ class MediaDetailsViewModel(
                     MediaType.TVSHOW -> getTvShowVideos(id).videoUrl
                 }
             },
-            onSuccess = {videoUrl->
-                Log.e("videos",videoUrl)
+            onSuccess = { videoUrl ->
                 _state.update {
                     it.copy(
                         hasVideo = true,
                         videoUrl = videoUrl
                     )
                 }
-
             },
             onError = {
                 _state.update {
-                    it.copy(
-                        hasVideo = false
-                    )
+                    it.copy(hasVideo = false, videoUrl = null)
                 }
-            },
+            }
         )
-
     }
 
     override fun onReadMoreDescriptionClicked() {
