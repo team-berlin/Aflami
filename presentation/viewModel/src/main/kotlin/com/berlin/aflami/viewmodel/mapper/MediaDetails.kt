@@ -34,7 +34,7 @@ fun MovieDetails.toUiState(
     mediaType = MediaType.MOVIE,
     hasVideo = hasVideo ?: false,
     originalCountry = originCountry,
-    duration = duration
+    duration = duration,
 )
 
 fun TvShowDetails.toUiState(

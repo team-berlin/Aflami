@@ -1,5 +1,6 @@
 package com.berlin.repository
 
+import android.util.Log
 import com.berlin.entity.Genre
 import com.berlin.entity.MediaCast
 import com.berlin.entity.MediaImage
@@ -36,16 +37,16 @@ class MovieDetailsRepositoryImpl(
         return try {
             val imagesResponse = remoteDataSource.getMovieImages(movieId)
 
+            Log.d("Repository", "Backdrops: ${imagesResponse.backdrops}")
+            Log.d("Repository", "Posters: ${imagesResponse.posters}")
+
             val backdrops = imagesResponse.backdrops
-                ?.map { POSTER_PREFIX + it.filePath }
-                ?: throw Exception()
+                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
 
             val posters = imagesResponse.posters
-                ?.map { POSTER_PREFIX + it.filePath }
-                ?: throw Exception()
-            MediaImage(
-                backdrops = backdrops,
-                posters = posters)
+                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+
+            MediaImage(backdrops = backdrops.orEmpty(), posters = posters.orEmpty())
         } catch (e: Exception) {
             throw e
         }

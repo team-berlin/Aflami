@@ -14,6 +14,7 @@ data class MediaDetailsUiState(
     val backdropUrl: String? = "",
     val genres: List<String> = emptyList(),
     val posterImages: List<String> = emptyList(),
+    val backdropImages: List<String> = emptyList(),
     val releaseDate: String = "",
     val rating: Double = 0.0,
     val runtime: String? = "",

@@ -35,7 +35,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
-    val posterList = state.posterImages
+    val posterList = state.posterImages.take(4)
     val pagerState = rememberPagerState(pageCount = { posterList.size })
 
     LaunchedEffect(pagerState) {

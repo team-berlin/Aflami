@@ -90,20 +90,22 @@ class MediaDetailsViewModel(
                 when (mediaType) {
                     MediaType.MOVIE -> {
                         val movie = getMovieDetailsUseCase(mediaId)
-                        val gallery = getMovieGalleryUseCase(mediaId)
+                        val pagerImages = getMovieGalleryUseCase(mediaId)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
-                        Pair(movie?.toUiState(), gallery)
+                        Log.d("MediaDetailsViewModel", "getMediaDetails: $pagerImages")
+                        Pair(movie?.toUiState(), pagerImages)
                     }
 
                     MediaType.TVSHOW -> {
                         val tvShow = getTvShowDetailsUseCase(mediaId)
-                        val gallery = getSeriesGalleryUseCase(mediaId)
+                        val pagerImages = getSeriesGalleryUseCase(mediaId)
                         companyProductionCache = tvShow?.productionCompanies?.map { it.toUiState() }
-                        Pair(tvShow?.toUiState(), gallery)
+                        Log.d("MediaDetailsViewModel", "getMediaDetails: $pagerImages")
+                        Pair(tvShow?.toUiState(), pagerImages)
                     }
                 }
             },
-            onSuccess = { (details, gallery) ->
+            onSuccess = { (details, pagerImages) ->
                 details?.let {
                     updateState {
                         it.copy(
@@ -112,7 +114,6 @@ class MediaDetailsViewModel(
                             overview = details.overview,
                             posterUrl = details.posterUrl,
                             backdropUrl = details.backdropUrl,
-                            posterImages = gallery.backdrops,
                             releaseDate = details.releaseDate,
                             numberOfSeasons = details.numberOfSeasons,
                             rating = details.rating,
@@ -121,9 +122,11 @@ class MediaDetailsViewModel(
                             isLoading = false,
                             mediaType = mediaType,
                             originalCountry = details.originalCountry,
+                            posterImages = pagerImages.posters,
                         )
                     }
                     saveWatchedMedia(mediaType = mediaType)
+
                 }
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
@@ -329,6 +332,8 @@ class MediaDetailsViewModel(
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
+
+
 
     override fun onShowMediaGalleryClicked(id: Long, mediaType: MediaType) {
         updateState {

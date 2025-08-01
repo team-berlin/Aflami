@@ -29,8 +29,7 @@ import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
-import com.berlin.aflami.navigation.CastScreen
-import com.berlin.aflami.navigation.MediaDetails
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
@@ -143,7 +142,7 @@ private fun onReceiveMediaDetailsEffect(
         is MediaDetailsScreenEffect.ShowRatingDialog -> TODO()
         is MediaDetailsScreenEffect.NavigateToMediaDetails -> {
             navController.navigate(
-                MediaDetails(
+                MediaDetailsDestination(
                     mediaDetailsScreenEffect.mediaId,
                     mediaDetailsScreenEffect.mediaType
                 )
