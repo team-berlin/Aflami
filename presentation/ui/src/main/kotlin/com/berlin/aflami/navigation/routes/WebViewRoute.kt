@@ -8,11 +8,9 @@ import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.authentication.WebView
 
 fun NavGraphBuilder.webView() {
-    composable<WebViewDestination> {
-        backStackEntry ->
-        Log.d("WOW", "AndroidView: backStackEntry -> ")
+    composable<WebViewDestination> { backStackEntry ->
         val webViewParameters = backStackEntry.toRoute<WebViewDestination>()
-          WebView(
+        WebView(
             url = webViewParameters.url,
         )
     }

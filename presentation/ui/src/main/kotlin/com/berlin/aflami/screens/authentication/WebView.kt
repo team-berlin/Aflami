@@ -35,17 +35,14 @@ fun WebView(url: String) {
 
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
-                Log.d("WOW", "AndroidView: ")
                 WebView(context).apply {
-                    Log.d("WOW", " WebView(context).apply: ")
                     webViewClient = CustomWebViewClient(
                         onPageStarted = {
                             isLoading = true
-                                        Log.d("WOW", "Page started loading: $url")
-                                        },
-                        onPageFinished = { isLoading = false
-                            Log.d("WOW", "onPageFinished: $url")
-                                         },
+                        },
+                        onPageFinished = {
+                            isLoading = false
+                        },
                         onError = { onErrorReceived(navController) }
                     )
                     settings.javaScriptEnabled = true
@@ -53,7 +50,6 @@ fun WebView(url: String) {
                 }
             },
             update = { webView ->
-                Log.d("WOW", " update = { webView ->: ")
                 webView.loadUrl(url)
             }
         )
