@@ -241,7 +241,6 @@ private fun HomeContent(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .align(Alignment.CenterHorizontally),
-
                                         horizontalArrangement = Arrangement.Center,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
@@ -249,7 +248,7 @@ private fun HomeContent(
                                             val genreName =
                                                 getGenreNameById(genreId, media.mediaType)
                                             Box(
-                                                modifier = Modifier.padding(horizontal = 8.dp)
+                                                modifier = Modifier.padding(horizontal = 4.dp)
                                             ) {
                                                 GenersChip(label = stringResource(genreName))
                                             }

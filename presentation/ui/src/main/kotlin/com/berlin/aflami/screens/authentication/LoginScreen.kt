@@ -1,7 +1,6 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -90,13 +89,13 @@ fun LoginScreen(
             when (it) {
                 LoginEffect.NavigateToHome -> {
                     navController.navigate(
-                       NavigationBarDestinations.HomeScreen
+                        NavigationBarDestinations.HomeScreen
                     )
                 }
 
                 LoginEffect.NavigateToCreateAccount -> {
-                    val encodedUrl = Uri.encode(REGISTER_URL)
-                    navController.navigate(WebViewDestination(encodedUrl))
+
+                    navController.navigate(WebViewDestination(REGISTER_URL))
                 }
 
                 LoginEffect.NavigateToForgotPassword -> {
@@ -152,7 +151,7 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
             )
         }
         AnimatedSnackBar(
-            message  = uiState.errorMessage.toString(),
+            message = stringResource(id = R.string.login_error_message),
             modifier = Modifier
                 .fillMaxWidth()
                 .align(alignment = Alignment.TopCenter),
@@ -246,7 +245,8 @@ private fun FormLogin(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = { onForgotPasswordClicked() })
-                .padding(top = 4.dp))
+                .padding(top = 4.dp)
+        )
     }
 }
 
@@ -321,7 +321,7 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
 
 @Composable
 private fun AnimatedSnackBar(
-    message:String,
+    message: String,
     isSnackBarVisible: Boolean,
     modifier: Modifier = Modifier
 ) {

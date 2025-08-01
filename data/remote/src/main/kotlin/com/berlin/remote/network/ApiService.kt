@@ -114,7 +114,7 @@ interface ApiService {
 
     @GET(ApiConstants.DISCOVER_MOVIE)
     suspend fun getMoviesByMoods(
-        genresIds: List<Int>,
+        @Query(ApiConstants.WITH_GENRES) genresIds: List<Int>,
     ): Response<MovieResponse>
 
 }
