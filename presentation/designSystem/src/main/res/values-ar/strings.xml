@@ -18,7 +18,7 @@
     <string name="label_lets_play">هيا نلعب</string>
     <string name="label_profile">الملف الشخصي</string>
 
-    <string name="app_name">Aflami</string>
+    <string name="app_name">أفلامي</string>
     <string name="trending">رائج</string>
     <string name="all">الجميع</string>
 
@@ -42,8 +42,10 @@
     <string name="popular">شائع</string>
 
     <string name="tv_shows">البرامج التلفزيونية</string>
-
     <string name="movies">الأفلام</string>
+
+    <string name="tv_show">برنامج تليفزيوني</string>
+    <string name="movie">فيلم</string>
     <!--    content description-->
     <string name="icon_cd">أيقونة</string>
     <string name="category_img_content">category img</string>
@@ -81,5 +83,13 @@
     <string name="filter_result">فرز النتائج</string>
     <string name="search_discribtion">"ابدا بالتصفح! ابحث عن ممثلك , مسلسلاتك , وبرامجك المفضلة"</string>
     <string name="character_image">صورة الشخصية</string>
+    <string name="action_adventure"><![CDATA[أكشن و مغامرة]]></string>
+    <string name="news">News</string>
+    <string name="reality">Reailty</string>
+    <string name="sci_fi_fantasy"><![CDATA[خيال علمي و فانتازيا]]></string>
+    <string name="soap">Soap</string>
+    <string name="talk">برامج حوارية</string>
+    <string name="war_politics"><![CDATA[حرب و سياسة]]></string>
+    <string name="kids">أطفال</string>
 
 </resources>

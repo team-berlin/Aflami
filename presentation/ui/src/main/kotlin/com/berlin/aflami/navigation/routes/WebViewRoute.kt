@@ -1,30 +1,17 @@
 package com.berlin.aflami.navigation.routes
 
-import android.net.Uri
-import androidx.navigation.NavController
+import android.util.Log
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.berlin.aflami.navigation.Destination
+import androidx.navigation.toRoute
+import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.authentication.WebView
 
-fun NavGraphBuilder.webView(
-    navController: NavController
-) {
-    composable(
-        route = Destination.WebViewScreen.route,
-        arguments = listOf(navArgument(WebViewArgs.URL) { NavType.StringType })
-    ) { backStackEntry ->
-        val url = backStackEntry.arguments?.getString(WebViewArgs.URL) ?: ""
-        val decodedUrl = Uri.decode(url)
+fun NavGraphBuilder.webView() {
+    composable<WebViewDestination> { backStackEntry ->
+        val webViewParameters = backStackEntry.toRoute<WebViewDestination>()
         WebView(
-            url = decodedUrl,
-            onError = { navController.popBackStack() }
+            url = webViewParameters.url,
         )
     }
-}
-
-object WebViewArgs {
-    const val URL = "url"
 }

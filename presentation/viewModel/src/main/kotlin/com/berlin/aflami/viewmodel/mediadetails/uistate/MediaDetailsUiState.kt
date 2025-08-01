@@ -2,12 +2,9 @@ package com.berlin.aflami.viewmodel.mediadetails.uistate
 
 import androidx.compose.ui.graphics.painter.Painter
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-
-import com.berlin.entity.Media
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.toLocalDate
 
 data class MediaDetailsUiState(
     val id: Long = 0L,
@@ -34,10 +31,10 @@ data class MediaDetailsUiState(
     val originalCountry: String? = null,
     val duration: String? = null,
     val hasVideo: Boolean = false,
-    val error: String? = "",
+    val error: String? = null,
     val rowSection: RowSectionUiState = RowSectionUiState.Loading
-){
-    fun toMovie():Movie{
+) {
+    fun toMovie(): Movie {
         return Movie(
             id = id,
             title = title,
@@ -48,10 +45,11 @@ data class MediaDetailsUiState(
             genre = emptyList(),
             poster = posterUrl,
             backdropPath = backdropUrl,
-            releaseDate =releaseYear,
+            releaseDate = releaseYear,
         )
     }
-    fun toTVShow():TVShow{
+
+    fun toTVShow(): TVShow {
         return TVShow(
             id = id,
             title = title,
@@ -59,20 +57,22 @@ data class MediaDetailsUiState(
             releaseYear = releaseYear.toLocalDate1(),
             rating = rating,
             runtime = 0,
-            genre = emptyList() ,
+            genre = emptyList(),
             poster = posterUrl,
             backdropPath = backdropUrl,
             releaseDate = releaseYear,
         )
     }
 }
-fun String.toLocalDate1(): LocalDate {
+
+fun String.toLocalDate1(): LocalDate? {
     return try {
         LocalDate.parse(this)
-    } catch (e: Exception){
-        LocalDate(1970, 1, 1)
+    } catch (e: Exception) {
+        null
     }
 }
+
 data class EpisodesUiState(
     val stillPath: String,
     val airDate: String,

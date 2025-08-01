@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -26,6 +27,7 @@ import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
@@ -34,34 +36,20 @@ import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaInteraction
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaUiState
 import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
 import com.berlin.ui.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ContinueWatchingScreen(
     viewModel: ContinueWatchingMediaViewModel = koinViewModel(),
-    navController: NavController
 ) {
-
+    val navController = Theme.navController
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect {effect->
-                when (effect) {
-                    is ContinueWatchingMediaEffect.NavigateToDetails -> {
-                        navController.navigate(
-                            Destination.MediaDetailsScreen.route(
-                                effect.id, effect.type.name
-                            )
-                        )
-                    }
-
-                    is ContinueWatchingMediaEffect.OnBackClicked -> {
-                        navController.popBackStack()
-                    }
-                }
-            }
+        viewModel.effect.collect { newEffect ->
+            onReceiveEffect(navController = navController, effect = newEffect)
         }
+    }
 
     AnimatedVisibility(
         enter = fadeIn(),
@@ -73,6 +61,7 @@ fun ContinueWatchingScreen(
             text = stringResource(R.string.loading)
         )
     }
+
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
@@ -82,17 +71,29 @@ fun ContinueWatchingScreen(
             state = state, listener = viewModel
         )
     }
-
 }
 
+private fun onReceiveEffect(navController: NavController, effect: ContinueWatchingMediaEffect) {
+    when (effect) {
+        is ContinueWatchingMediaEffect.NavigateToDetails -> {
+            navController.navigate(
+                MediaDetailsDestination(effect.id, effect.type)
+            )
+        }
+
+        is ContinueWatchingMediaEffect.OnBackClicked -> {
+            navController.popBackStack()
+        }
+    }
+}
 
 @Composable
 fun WatchedMediaContent(
-    state: ContinueWatchingMediaUiState, listener: ContinueWatchingMediaInteractionListener
+    state: ContinueWatchingMediaUiState, listener: ContinueWatchingMediaInteractionListener,
 ) {
 
     Column(modifier = Modifier.fillMaxSize().background(Theme.color.surface)) {
-        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+        TopBar(modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp), title = {
             Text(
                 text = stringResource(R.string.continue_watching),
                 style = Theme.textStyle.title.large,

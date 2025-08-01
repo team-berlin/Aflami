@@ -31,7 +31,7 @@ fun TVShowDto.toLocal(query: String, type: String, page: Int, mediaType: String)
         id = this.id?.toLong() ?: 0L,
         title = this.name ?: "",
         rating = this.voteAverage ?: 0.0,
-        releaseYear = (this.firstAirDate ?: "").toLocalDate().toString(),
+        releaseYear = this.firstAirDate?.takeIf { it.isNotBlank() }?.toLocalDate()?.toString() ?: "2000-01-01",
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
         poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
         mediaType = mediaType,

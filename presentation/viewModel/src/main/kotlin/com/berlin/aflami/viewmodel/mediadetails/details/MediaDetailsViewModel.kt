@@ -1,7 +1,6 @@
 package com.berlin.aflami.viewmodel.mediadetails.details
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -38,7 +37,6 @@ import usecase.mediadetails.GetSimilarSeriesUseCase
 import usecase.mediadetails.GetTvShowDetailsUseCase
 
 class MediaDetailsViewModel(
-    savedStateHandle: SavedStateHandle,
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
@@ -51,23 +49,21 @@ class MediaDetailsViewModel(
     private val seriesReviewUseCase: GetSeriesReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
-    private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase
+    private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
+    val mediaId: Long,
+    val mediaType: MediaType
 ) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
     MediaDetailsUiState()
 ), MediaInteractionListener {
 
     private companion object {
-        const val ID_KEY = "id"
-        const val MEDIA_TYPE_KEY = "media_type"
         val NO_REVIEWS = R.string.there_is_no_reviews
         val NO_GALLERY = R.string.there_is_no_gallery
         val NO_MORE_MEDIA = R.string.there_is_no_more_media
         val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
     }
 
-    val id: Long = savedStateHandle.get<String>(ID_KEY)?.toLongOrNull() ?: 0L
-    val type: MediaType = savedStateHandle.get<String>(MEDIA_TYPE_KEY)
-        ?.let { MediaType.valueOf(it) } ?: MediaType.MOVIE
+//    val mediaType = MediaType.valueOf(mediaType)
 
     private val _tabSelectedUiState = MutableStateFlow(MovieDetailsTabsUiState())
     val tabSelectedUiState = _tabSelectedUiState.asStateFlow()
@@ -78,15 +74,13 @@ class MediaDetailsViewModel(
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
     init {
-        if (_state.value.id == 0L && id != 0L) {
-            getMediaCast(id, type)
-            getMediaDetails(id, type, "en-US")
-            onShowMoreMediaLikeThisClicked(id, type)
-        }
+        getMediaCast(mediaId = mediaId, mediaType = mediaType)
+        getMediaDetails(mediaId = mediaId, mediaType = mediaType)
+        onShowMoreMediaLikeThisClicked(mediaId = mediaId, mediaType = mediaType)
     }
 
 
-    fun getMediaDetails(mediaId: Long, mediaType: MediaType, language: String) {
+    fun getMediaDetails(mediaId: Long, mediaType: MediaType) {
 
         updateState {
             it.copy(isLoading = true, error = null)
@@ -95,13 +89,13 @@ class MediaDetailsViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> {
-                        val movie = getMovieDetailsUseCase(mediaId, language)
+                        val movie = getMovieDetailsUseCase(mediaId)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
                         movie?.toUiState()
                     }
 
                     MediaType.TVSHOW -> {
-                        val movie = getTvShowDetailsUseCase(mediaId, language)
+                        val movie = getTvShowDetailsUseCase(mediaId)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
                         movie?.toUiState()
                     }
@@ -186,8 +180,8 @@ class MediaDetailsViewModel(
     override fun onShowCastClicked() {
         sendNewEffect(
             MediaDetailsScreenEffect.NavigateToShowAllCastScreen(
-                mediaId = id,
-                mediaType = type
+                mediaId = mediaId,
+                mediaType = mediaType
             )
         )
     }
@@ -434,17 +428,16 @@ class MediaDetailsViewModel(
         )
     }
 
-    fun getMediaCast(mediaId: Long, mediaType: MediaType, language: String = "US-EG") {
+    fun getMediaCast(mediaId: Long, mediaType: MediaType) {
         updateState {
             it.copy(error = null, isLoading = true)
         }
         tryToCall(
             call = {
                 when (mediaType) {
-                    MediaType.MOVIE -> getMovieCastUseCase(mediaId, language).map { it.toUiState() }
+                    MediaType.MOVIE -> getMovieCastUseCase(mediaId).map { it.toUiState() }
                     MediaType.TVSHOW -> getSeriesCastUseCase(
-                        mediaId,
-                        language
+                        mediaId
                     ).map { it.toUiState() }
                 }
             },

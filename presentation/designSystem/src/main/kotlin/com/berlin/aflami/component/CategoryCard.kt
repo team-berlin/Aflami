@@ -54,8 +54,7 @@ fun CategoryCard(
                 .padding(start = 42.dp)
                 .offset(y = (-8).dp),
             painter = image,
-            contentDescription = stringResource(R.string.category_img_content),
-        )
+            contentDescription = stringResource(R.string.category_img_content))
 
 
     }

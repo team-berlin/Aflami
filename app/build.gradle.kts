@@ -16,32 +16,9 @@ val properties = Properties().apply {
 
 android {
     namespace = "com.berlin.aflami"
-    compileSdk = 35
-//    splits {
-//        abi {
-//            isEnable = true
-//            isUniversalApk = false
-//            reset()
-//            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-//        }
-//    }
-    bundle {
-        abi {
-            enableSplit = true
-        }
-        density {
-            enableSplit = true
-        }
-        language {
-            enableSplit = true
-        }
-    }
+    compileSdk = 36
+
     buildTypes {
-//        getByName("release") {
-//            ndk {
-//                abiFilters += listOf("armeabi-v7a", "arm64-v8a","x86", "x86_64")
-//            }
-//        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -51,15 +28,16 @@ android {
             )
         }
     }
+
     defaultConfig {
         applicationId = "com.berlin.aflami"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = if (project.hasProperty("versionName")) {
             project.property("versionName") as String
         } else {
-            "1.0.0"
+            "4.0.0"
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

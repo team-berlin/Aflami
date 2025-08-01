@@ -35,7 +35,7 @@ fun PosterSlider(
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val itemWidth = remember { 244.dp }
-    val contentPadding = (screenWidth - itemWidth) / 2
+    val contentPadding =remember { (screenWidth - itemWidth) / 2 }
 
     LaunchedEffect(pagerState) {
         while (true) {

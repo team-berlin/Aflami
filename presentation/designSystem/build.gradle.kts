@@ -15,5 +15,8 @@ dependencies {
     implementation(libs.bundles.androidxUi)
     debugImplementation(libs.bundles.composeUiDebug)
     implementation(libs.bundles.coil)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.core.splashscreen)
+
     implementation(project(":presentation:safeImageViewer"))
 }

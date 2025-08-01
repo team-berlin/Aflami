@@ -1,7 +1,10 @@
 package com.berlin.aflami.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -26,11 +29,17 @@ fun NoInternetConnectionPlaceholder(
     onClick:() -> Unit={}
 ){
 
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.color.surface),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         CountryTourExploring(
-            image = painterResource(R.drawable.no_internet_placeholder),
-            titleId = R.string.offline_title,
-            messageId = R.string.check_connection_title
+            image = painterResource(com.berlin.ui.R.drawable.no_internet_placeholder),
+            titleId = com.berlin.ui.R.string.offline_title,
+            messageId = com.berlin.ui.R.string.check_connection_title
         )
 
         Button(

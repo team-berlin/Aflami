@@ -9,7 +9,7 @@ data class GenreUiState(
 )
 
 data class FilterMediaSelected(
-    val selectedRating: Float = 1f,
+    val selectedRating: Float = 0f,
     val selectedGenres: Int = -1,
     val genreUiStates: List<GenreUiState> = defaultGenres,
 

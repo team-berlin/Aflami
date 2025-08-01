@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.search
 
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -54,7 +53,9 @@ class SearchViewModel(
 
     init {
         observeSearchKeywordChanges()
-        loadFilterOptions()
+        loadMovieFilterGenre()
+        loadTvShowFilterGenre()
+        loadRecentSearch()
     }
 
     private fun loadRecentSearches() {
@@ -129,7 +130,8 @@ class SearchViewModel(
                                 state.value.filterItemUiState.filterTvShowSelected.selectedRating
                             val selectedGenreId =
                                 state.value.filterItemUiState.filterTvShowSelected.selectedGenres
-                            val matchesRating = tvUiState.rating.toFloatOrNull()
+                            val matchesRating = convertArabicToEnglish(tvUiState.rating.replace('٫', '.'))
+                                .toFloatOrNull()
                                 ?.let { it > selectedRating } == true
                             val matchesGenre =
                                 selectedGenreId == -1 || tvUiState.genre.any { it == selectedGenreId }
@@ -170,7 +172,8 @@ class SearchViewModel(
                                 state.value.filterItemUiState.filterMovieSelected.selectedRating
                             val selectedGenreId =
                                 state.value.filterItemUiState.filterMovieSelected.selectedGenres
-                            val matchesRating = movieUiState.rating.toFloatOrNull()
+                            val matchesRating = convertArabicToEnglish(movieUiState.rating.replace('٫', '.'))
+                                .toFloatOrNull()
                                 ?.let { it > selectedRating } == true
                             val matchesGenre =
                                 selectedGenreId == -1 || movieUiState.genre.any { it == selectedGenreId }
@@ -186,6 +189,16 @@ class SearchViewModel(
             }
         )
     }
+    private fun convertArabicToEnglish(input: String): String {
+        val arabicDigits = "٠١٢٣٤٥٦٧٨٩".toCharArray()
+        val englishDigits = "0123456789"
+
+        return input.map { char ->
+            val index = arabicDigits.indexOf(char)
+            if (index != -1) englishDigits[index] else char
+        }.joinToString("")
+    }
+
 
     private fun onFetchTvShowsSuccess(tvShowsFlow: Flow<PagingData<TVShowUiState>>) {
         updateState { it.copy(tvShows = tvShowsFlow, errorMessage = null, isLoading = false) }
@@ -199,7 +212,9 @@ class SearchViewModel(
         onSearchQueryChanged(state.value.searchQuery)
         tryToCall(
             call = { saveRecentHistoryUseCase },
-            onSuccess = { updateState { it.copy(isLoading = false) } },
+            onSuccess = {
+                updateState { it.copy(isLoading = false) }
+            },
             onError = { error ->
                 updateState {
                     it.copy(
@@ -212,7 +227,10 @@ class SearchViewModel(
     }
 
     override fun onSearchQueryChanged(query: TextFieldValue) {
-        updateState { it.copy(searchQuery = query, isLoading = false) }
+        updateState {
+            it.copy(searchQuery = query, isLoading = false)
+        }
+        loadRecentSearch()
     }
 
     override fun onBackClicked() {
@@ -246,7 +264,7 @@ class SearchViewModel(
         onSearchQueryChanged(state.value.searchQuery)
     }
 
-    override fun onCardClicked(id: Int) {
+    override fun onCardClicked(id: Long) {
         val mediaType = when (state.value.selectedTabOption) {
             TabOption.MOVIES -> MediaType.MOVIE.name
             TabOption.TV_SHOWS -> MediaType.TVSHOW.name
@@ -297,7 +315,6 @@ class SearchViewModel(
     }
 
     override fun onFilterButtonClicked() {
-        loadFilterOptions()
         updateState { it.copy(isDialogVisible = true, isLoading = false) }
 
     }
@@ -414,7 +431,8 @@ class SearchViewModel(
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterMovieSelected = FilterMediaSelected(
-                                selectedRating = 1f,
+                                selectedRating = 0f,
+                                selectedGenres = -1,
                                 genreUiStates = updatedGenres,
 
                                 )
@@ -433,7 +451,7 @@ class SearchViewModel(
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterTvShowSelected = FilterMediaSelected(
-                                selectedRating = 1f,
+                                selectedRating = 0f,
                                 selectedGenres = -1,
                                 genreUiStates = updatedGenres
                             )
@@ -467,41 +485,22 @@ class SearchViewModel(
     }
 
 
-    private fun loadFilterOptions(language: String = "en") {
-        val selectedTab = state.value.selectedTabOption
-
+    private fun loadMovieFilterGenre() {
         tryToCall(
-            call = { buildGenreList(selectedTab, language) },
-            onSuccess = { filterGenres -> updateGenres(selectedTab, filterGenres) },
-            onError = { error -> setErrorState(error.message) }
-        )
-    }
-
-    private suspend fun buildGenreList(
-        selectedTab: TabOption,
-        language: String
-    ): List<GenreUiState> {
-        val genres = when (selectedTab) {
-            TabOption.MOVIES -> getMovieGenresUseCase(language)
-            TabOption.TV_SHOWS -> getSeriesGenresUseCase(language)
-        }
-
-        val all = FilterItemUiState.defaultGenres.first()
-        val realGenre = genres.map { genre ->
-            GenreUiState(
-                id = genre.id ?: -1,
-                name = genre.name ?: "Unknown",
-                isSelected = false
-            )
-        }
-
-        return listOf(all) + realGenre
-    }
-
-    private fun updateGenres(selectedTab: TabOption, filterGenres: List<GenreUiState>) {
-        updateState {
-            when (selectedTab) {
-                TabOption.MOVIES -> {
+            call = {
+                val genres = getMovieGenresUseCase()
+                val all = GenreUiState(-1, "All", isSelected = true)
+                val realGenre = genres.map { genre ->
+                    GenreUiState(
+                        id = genre.id ?: -1,
+                        name = genre.name ?: "Unknown",
+                        isSelected = false
+                    )
+                }
+                listOf(all) + realGenre
+            },
+            onSuccess = { filterGenres ->
+                updateState {
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterMovieSelected = it.filterItemUiState.filterMovieSelected.copy(
@@ -510,8 +509,34 @@ class SearchViewModel(
                         )
                     )
                 }
+            },
+            onError = { error ->
+                updateState {
+                    it.copy(
+                        errorMessage = error.message,
+                        isLoading = false
+                    )
+                }
+            }
+        )
+    }
 
-                TabOption.TV_SHOWS -> {
+    private fun loadTvShowFilterGenre() {
+        tryToCall(
+            call = {
+                val genres = getSeriesGenresUseCase()
+                val all = GenreUiState(-1, "All", isSelected = true)
+                val realGenre = genres.map { genre ->
+                    GenreUiState(
+                        id = genre.id ?: -1,
+                        name = genre.name ?: "Unknown",
+                        isSelected = false
+                    )
+                }
+                listOf(all) + realGenre
+            },
+            onSuccess = { filterGenres ->
+                updateState {
                     it.copy(
                         filterItemUiState = it.filterItemUiState.copy(
                             filterTvShowSelected = it.filterItemUiState.filterTvShowSelected.copy(
@@ -520,21 +545,21 @@ class SearchViewModel(
                         )
                     )
                 }
+            },
+            onError = { error ->
+                updateState {
+                    it.copy(
+                        errorMessage = error.message,
+                        isLoading = false
+                    )
+                }
             }
-        }
+        )
     }
 
-    private fun setErrorState(message: String?) {
-        updateState {
-            it.copy(
-                errorMessage = message,
-                isLoading = false
-            )
-        }
-    }
+
 
     fun onItemClicked(query: TextFieldValue) {
-        val updatedQuery = query.copy(selection = TextRange(query.text.length))
-        updateState { it.copy(searchQuery = updatedQuery, isLoading = true) }
+        updateState { it.copy(searchQuery = query, isLoading = true) }
     }
 }

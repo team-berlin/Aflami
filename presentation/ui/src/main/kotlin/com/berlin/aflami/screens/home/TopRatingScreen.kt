@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -24,40 +25,39 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.MediaCard
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.ui.color.ExtraColors.BackgroundGradient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingScreenEffect
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
-import com.example.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TopRatingScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController,
     topRatingViewModel: TopRatingViewModel = koinViewModel(),
 ) {
     val screenState by topRatingViewModel.state.collectAsState()
+    val navController=Theme.navController
 
     LaunchedEffect(Unit) {
         topRatingViewModel.effect.collect { effect ->
             when (effect) {
                 is TopRatingScreenEffect.NavigateToMediaDetailsScreen -> {
                     navController.navigate(
-                        Destination.MediaDetailsScreen.route(
-                            effect.id, effect.type.name
+                        MediaDetailsDestination(
+                            effect.id, effect.type
                         )
                     )
                 }
@@ -80,7 +80,7 @@ fun TopRatingScreen(
     AnimatedVisibility(
         enter = fadeIn(), exit = fadeOut(), visible = !screenState.isLoading
     ) {
-        TopWatchingContent(
+        TopRatingContent(
             topRatedMediaItems = topRatedItems, viewModel = topRatingViewModel
         )
     }
@@ -89,7 +89,7 @@ fun TopRatingScreen(
 }
 
 @Composable
-private fun TopWatchingContent(
+private fun TopRatingContent(
     topRatedMediaItems: LazyPagingItems<MediaUiState>,
     viewModel: TopRatingViewModel,
 ) {
@@ -106,49 +106,59 @@ private fun TopWatchingContent(
 
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .background(BackgroundGradient)
-        ) {
-            Image(
-                modifier = Modifier.align(Alignment.TopEnd),
-                painter = painterResource(R.drawable.top_rate_icons),
-                contentDescription = null,
-            )
 
-            LazyVerticalGrid(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 106.dp),
-                columns = GridCells.Adaptive(minSize = 160.dp),
-                contentPadding = PaddingValues(
-                    start = 16.dp, end = 16.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(count = topRatedMediaItems.itemCount) { index ->
-                    val topRatedMedia = topRatedMediaItems[index]
-                    if (topRatedMedia != null) {
-                        MediaCard(
-                            modifier = Modifier.height(222.dp),
-                            mediaImg = topRatedMedia.poster,
-                            title = topRatedMedia.title,
-                            onClick = {
-                                viewModel.onMediaCardClicked(
-                                    id = topRatedMedia.id, mediaType = topRatedMedia.mediaType
-                                )
-                            },
-                            typeOfMedia = topRatedMedia.mediaType.name,
-                            date = topRatedMedia.releaseYear,
-                            rating = topRatedMedia.rating
-                        )
-                    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundGradient)
+    ) {
+        Image(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .blur(2.dp),
+            painter = painterResource(R.drawable.fires),
+            contentDescription = null,
+        )
+
+        Image(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 160.dp)
+                .size(200.dp)
+                .blur(3.dp),
+            painter = painterResource(R.drawable.fire),
+            contentDescription = null,
+        )
+
+        LazyVerticalGrid(
+            state = listState,
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .padding(top = 56.dp),
+            columns = GridCells.Adaptive(minSize = 160.dp),
+            contentPadding = PaddingValues(
+                start = 16.dp, end = 16.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(count = topRatedMediaItems.itemCount) { index ->
+                val topRatedMedia = topRatedMediaItems[index]
+                if (topRatedMedia != null) {
+                    MediaCard(
+                        modifier = Modifier.height(222.dp),
+                        mediaImg = topRatedMedia.poster,
+                        title = topRatedMedia.title,
+                        onClick = {
+                            viewModel.onMediaCardClicked(
+                                id = topRatedMedia.id, mediaType = topRatedMedia.mediaType
+                            )
+                        },
+                        typeOfMedia = topRatedMedia.mediaType.name,
+                        date = topRatedMedia.releaseYear,
+                        rating = topRatedMedia.rating
+                    )
                 }
             }
         }
@@ -162,4 +172,6 @@ private fun TopWatchingContent(
             title = stringResource(R.string.top_rating)
         )
     }
+
+
 }

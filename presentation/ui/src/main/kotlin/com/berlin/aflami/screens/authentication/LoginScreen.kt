@@ -1,7 +1,6 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -58,8 +57,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.berlin.aflami.component.IconButton
 import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
@@ -67,6 +64,8 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.buttons.ButtonState
 import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.navigation.NavigationBarDestinations
+import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.login.FormUiState
@@ -75,14 +74,13 @@ import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.ui.R
-import com.example.navigation.Destination
-import com.example.navigation.NavigationConstants.Routes.WEB_VIEW_ROUTE
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
-    viewmodel: LoginViewmodel = koinViewModel(), navController: NavController
+    viewmodel: LoginViewmodel = koinViewModel(),
 ) {
+    val navController = Theme.navController
     val uiState by viewmodel.state.collectAsState()
     LoginContent(uiState, viewmodel)
 
@@ -91,18 +89,17 @@ fun LoginScreen(
             when (it) {
                 LoginEffect.NavigateToHome -> {
                     navController.navigate(
-                        Destination.HomeScreen.route
+                        NavigationBarDestinations.HomeScreen
                     )
                 }
 
                 LoginEffect.NavigateToCreateAccount -> {
-                    val encodedUrl = Uri.encode(REGISTER_URL)
-                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+
+                    navController.navigate(WebViewDestination(REGISTER_URL))
                 }
 
                 LoginEffect.NavigateToForgotPassword -> {
-                    val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
-                    navController.navigate("$WEB_VIEW_ROUTE/$encodedUrl")
+                    navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
                 }
             }
         }
@@ -122,7 +119,7 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                 )
             )
             .statusBarsPadding()
-            .padding(start = 12.dp, end = 12.dp, bottom = 16.dp),
+            .padding(start = 12.dp, end = 12.dp, bottom = 16.dp, top = 24.dp),
     ) {
         CirclesBackground()
         Column(
@@ -154,6 +151,7 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
             )
         }
         AnimatedSnackBar(
+            message = stringResource(id = R.string.login_error_message),
             modifier = Modifier
                 .fillMaxWidth()
                 .align(alignment = Alignment.TopCenter),
@@ -247,7 +245,8 @@ private fun FormLogin(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = { onForgotPasswordClicked() })
-                .padding(top = 4.dp))
+                .padding(top = 4.dp)
+        )
     }
 }
 
@@ -322,7 +321,9 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
 
 @Composable
 private fun AnimatedSnackBar(
-    modifier: Modifier = Modifier, isSnackBarVisible: Boolean
+    message: String,
+    isSnackBarVisible: Boolean,
+    modifier: Modifier = Modifier
 ) {
     AnimatedVisibility(
         visible = isSnackBarVisible, enter = slideInVertically(
@@ -340,7 +341,7 @@ private fun AnimatedSnackBar(
         SnackBar(
             modifier = modifier,
             status = SnackBarStatus.ERROR,
-            text = stringResource(id = R.string.login_error_message),
+            text = message,
             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error)
         )
     }
@@ -397,7 +398,7 @@ fun CirclesBackground() {
 @Composable
 private fun LoginScreenPreview() {
     AflamiTheme(isDarkTheme = false) {
-        LoginScreen(navController = rememberNavController())
+        LoginScreen()
     }
 }
 
