@@ -151,7 +151,7 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
             )
         }
         AnimatedSnackBar(
-            message = uiState.errorMessage.toString(),
+            message = stringResource(id = R.string.login_error_message),
             modifier = Modifier
                 .fillMaxWidth()
                 .align(alignment = Alignment.TopCenter),
