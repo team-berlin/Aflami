@@ -13,6 +13,7 @@ import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.datasource.remote.dto.TVShowResponse
 import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
+import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 
 interface RemoteDataSource {
     suspend fun getMovieSimilar(movieId: Long): MovieResponse
@@ -53,5 +54,10 @@ interface RemoteDataSource {
     suspend fun getMoviesByMoodIds(
         moodIds: List<Int>
     ): MovieResponse
+
+    suspend fun getMovieVideos(movieId: Long): VideosResponse
+    suspend fun getTVShowVideos(movieId: Long): VideosResponse
+
+
 
 }

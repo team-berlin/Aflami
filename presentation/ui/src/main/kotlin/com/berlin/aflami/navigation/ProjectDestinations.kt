@@ -50,6 +50,9 @@ data class MediaDetailsDestination(val mediaId: Long, val mediaType: MediaType)
 data class CastDestination(val mediaId: Long, val mediaType: MediaType)
 
 @Serializable
+data class VideoWebViewDestination(val url: String)
+
+@Serializable
 object SearchDestination
 
 @Serializable

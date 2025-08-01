@@ -56,8 +56,8 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                     else -> ContentScale.Inside
                 }
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    SafeImageViewer(
-                        imageUri = model?:"",
+                    AsyncImage(
+                        model= model?:"",
                         contentDescription = null,
                         contentScale = contentScale,
                         modifier = Modifier.fillMaxSize(),
@@ -87,7 +87,7 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                 borderWidth = 2,
                 size = 64,
                 enabled = state.hasVideo,
-                tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable
+                tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable,
             )
         }
     }

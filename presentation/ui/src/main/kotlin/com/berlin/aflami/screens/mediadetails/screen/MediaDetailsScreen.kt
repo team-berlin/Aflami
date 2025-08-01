@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -24,11 +25,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType.Companion.Uri
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
+import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
@@ -61,10 +64,10 @@ fun MediaDetailsScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
-            onReceiveMediaDetailsEffect(
-                navController = navController,
-                mediaDetailsScreenEffect = newEffect
-            )
+                onReceiveMediaDetailsEffect(
+                    navController = navController,
+                    mediaDetailsScreenEffect = newEffect,
+                )
         }
     }
 
@@ -135,10 +138,13 @@ private fun onReceiveMediaDetailsEffect(
         is MediaDetailsScreenEffect.NavigateBack -> {
             navController.popBackStack()
         }
-
-        is MediaDetailsScreenEffect.PlayMedia -> {}
-        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> TODO()
-        is MediaDetailsScreenEffect.ShowRatingDialog -> TODO()
+        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {}
+        is MediaDetailsScreenEffect.ShowRatingDialog -> {}
+        is MediaDetailsScreenEffect.PlayMedia-> {
+            navController.navigate(
+                VideoWebViewDestination(mediaDetailsScreenEffect.videoUrl)
+            )
+        }
     }
 }
 
@@ -174,7 +180,7 @@ fun MediaDetailsContent(
             item {
                 BackdropPager(
                     state = state,
-                    onPlayClick = { listener.onPlayClicked(state.id) })
+                    onPlayClick = { listener.onPlayClicked(state.id,state.mediaType) })
             }
 
             item {

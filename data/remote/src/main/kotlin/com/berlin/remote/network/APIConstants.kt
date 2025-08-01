@@ -27,6 +27,8 @@ object ApiConstants {
     const val MOVIE_UPCOMING = "movie/upcoming"
     const val POPULAR_MOVIES = "movie/popular"
     const val DISCOVER_MOVIE = "discover/movie"
+    const val TV_VIDEO_DETAILS = "tv/{series_id}/videos"
+    const val MOVIE_VIDEO_DETAILS = "movie/{movie_id}/videos"
     //endregion
 
     //region tv shows

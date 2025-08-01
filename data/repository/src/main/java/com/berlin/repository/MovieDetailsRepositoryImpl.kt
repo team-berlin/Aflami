@@ -4,6 +4,7 @@ import com.berlin.entity.Genre
 import com.berlin.entity.MediaCast
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
+import com.berlin.entity.Video
 import com.berlin.entity.Review
 import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.dto.GenreEntity
@@ -69,6 +70,14 @@ class MovieDetailsRepositoryImpl(
         genreLocalDataSource.cacheGenres(genres)
         return genres.map { it.toDomain() }
     }
+
+    override suspend fun getMovieVideos(id: Long): List<Video> {
+        return remoteDataSource.getMovieVideos(id).results?.mapNotNull {
+            it?.toDomain()
+        } ?: emptyList()
+
+    }
+
     private fun isExpiredOrEmpty(list: List<GenreEntity>): Boolean {
         return list.isEmpty() || list.any { Instant.now().toEpochMilli() - it.time >Constants.CACHE_TIMEOUT }
     }
