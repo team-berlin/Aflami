@@ -206,9 +206,15 @@ private fun SearchByCountryContent(
                         )
                     }
                 }
-
                 is LoadState.Error -> {
-                    ErrorContent()
+                   ErrorContent()
+                    if ((movies.loadState.refresh as LoadState.Error).error.message.equals("No internet connection")) {
+                        NoInternetConnectionPlaceholder(
+                            onClick = { movies.retry() }
+                        )
+                    } else {
+                       ErrorContent()
+                    }
                 }
             }
             AnimatedCountriesList(

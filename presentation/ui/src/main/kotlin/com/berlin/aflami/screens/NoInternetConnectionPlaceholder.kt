@@ -1,6 +1,7 @@
 package com.berlin.aflami.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,7 +32,9 @@ fun NoInternetConnectionPlaceholder(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Theme.color.surface)
+            .background(Theme.color.surface),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         CountryTourExploring(
             image = painterResource(com.berlin.ui.R.drawable.no_internet_placeholder),

@@ -288,11 +288,6 @@ private fun SearchScreenContent(
                                 text = stringResource(com.berlin.ui.R.string.loading)
                             )
                         }
-
-                        state.errorMessage != null -> {
-                            NoInternetConnectionPlaceholder()
-                        }
-
                         else -> {
                             val movies = state.movies.collectAsLazyPagingItems()
                             val moviesLoadState = movies.loadState
@@ -318,7 +313,27 @@ private fun SearchScreenContent(
                                             modifier = Modifier.fillMaxSize(),
                                             text = stringResource(com.berlin.ui.R.string.loading)
                                         )
-                                    } else {
+                                    }
+                                    else {
+                                        when (val error = moviesLoadState.refresh) {
+                                            is LoadState.Error -> {
+                                                val isNoInternet = error.error.message?.contains(
+                                                    "No internet connection",
+                                                    ignoreCase = true
+                                                ) == true
+                                                if (isNoInternet) {
+                                                    NoInternetConnectionPlaceholder(
+                                                        onClick = { movies.retry() }
+                                                    )
+                                                } else {
+                                                    ErrorContent()
+                                                }
+                                            }
+
+                                            LoadState.Loading -> {}
+                                            is LoadState.NotLoading -> {}
+                                        }
+
                                         Box(modifier = Modifier.fillMaxSize()) {
 
                                             LazyVerticalGrid(
@@ -356,7 +371,6 @@ private fun SearchScreenContent(
                                 }
 
                                 TabOption.TV_SHOWS -> {
-
                                     val isEmpty =
                                         tvShows.itemCount == 0 && tvShowsLoadState.refresh is LoadState.NotLoading && tvShowsLoadState.append is LoadState.NotLoading
                                     if (isEmpty) {
@@ -369,6 +383,24 @@ private fun SearchScreenContent(
                                             com.berlin.ui.R.string.please_try_with_another_keyword
                                         )
                                     } else {
+                                        when (val error = moviesLoadState.refresh) {
+                                            is LoadState.Error -> {
+                                                val isNoInternet = error.error.message?.contains(
+                                                    "No internet connection",
+                                                    ignoreCase = true
+                                                ) == true
+                                                if (isNoInternet) {
+                                                    NoInternetConnectionPlaceholder(
+                                                        onClick = { movies.retry() }
+                                                    )
+                                                } else {
+                                                    ErrorContent()
+                                                }
+                                            }
+
+                                            LoadState.Loading -> {}
+                                            is LoadState.NotLoading -> {}
+                                        }
                                         LazyVerticalGrid(
                                             modifier = Modifier.fillMaxSize(),
                                             columns = GridCells.Adaptive(minSize = 160.dp),

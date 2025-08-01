@@ -199,6 +199,13 @@ private fun SearchByActorNameContent(
 
                 is LoadState.Error -> {
                     ErrorContent()
+                    if ((pagedMovies.loadState.refresh as LoadState.Error).error.message.equals("No internet connection")) {
+                        NoInternetConnectionPlaceholder(
+                            onClick = { pagedMovies.retry()}
+                        )
+                    } else {
+                        ErrorContent()
+                    }
                 }
             }
         }
