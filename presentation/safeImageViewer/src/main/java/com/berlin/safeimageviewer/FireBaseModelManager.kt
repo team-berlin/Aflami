@@ -11,8 +11,10 @@ import java.io.FileInputStream
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import androidx.core.content.edit
+import javax.inject.Inject
 
-class FireBaseModelManager(
+
+class FireBaseModelManager @Inject constructor(
     val prefs : SharedPreferences
 ) {
          val models = mutableMapOf<String, MappedByteBuffer>()

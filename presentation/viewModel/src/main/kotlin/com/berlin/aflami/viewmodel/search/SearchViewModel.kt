@@ -34,8 +34,10 @@ import usecase.GetSearchMoviesUseCase
 import usecase.GetSearchTvShowsUseCase
 import usecase.GetSeriesGenresUseCase
 import usecase.SaveRecentHistoryUseCase
-
-class SearchViewModel(
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+@HiltViewModel
+class SearchViewModel @Inject constructor(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
     private val searchTvShowsUseCase: GetSearchTvShowsUseCase,
     private val getRecentHistoryUseCase: GetRecentHistoryUseCase,

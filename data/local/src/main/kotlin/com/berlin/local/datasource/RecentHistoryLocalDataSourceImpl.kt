@@ -3,8 +3,9 @@ package com.berlin.local.datasource
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import javax.inject.Inject
 
-class RecentHistoryLocalDataSourceImpl
+class RecentHistoryLocalDataSourceImpl @Inject constructor
     (private val recentHistoryDao: RecentHistoryDao)
     : RecentHistoryLocalDataSource {
     override suspend fun getRecentSearchQueries(): List<String> {

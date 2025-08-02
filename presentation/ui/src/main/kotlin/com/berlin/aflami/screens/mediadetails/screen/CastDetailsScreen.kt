@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TopBar
@@ -33,17 +34,11 @@ import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsEffect
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsListener
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastViewModel
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
-import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun CastDetailsScreen(
-    mediaId: Long,
-    mediaType: MediaType,
-    viewmodel: CastViewModel = koinViewModel(parameters = { parametersOf(mediaId, mediaType) }),
-
+    viewmodel: CastViewModel = hiltViewModel()
 ) {
     val navController = Theme.navController
     val castState by viewmodel.state.collectAsState()
@@ -98,7 +93,9 @@ fun CastContent(
             .background(Theme.color.surface)
     ) {
         TopBar(
-            modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp),
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(vertical = 8.dp),
             title = {
                 Text(
                     text = stringResource(R.string.cast),

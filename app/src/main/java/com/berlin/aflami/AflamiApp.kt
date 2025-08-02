@@ -1,41 +1,23 @@
 package com.berlin.aflami
 
 import android.app.Application
-import com.berlin.aflami.di.appModule
-import com.berlin.aflami.di.daoModule
-import com.berlin.aflami.di.dataSourceModule
-import com.berlin.aflami.di.mlModule
-import com.berlin.aflami.di.networkModule
-import com.berlin.aflami.di.repositoryModule
-import com.berlin.aflami.di.useCaseModule
-import com.berlin.aflami.di.viewModelModule
+import com.berlin.safeimageviewer.FireBaseModelManager
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
-import com.berlin.safeimageviewer.FireBaseModelManager
-import org.koin.android.ext.android.get
+import javax.inject.Inject
 
+@HiltAndroidApp
 class AflamiApp: Application() {
+    @Inject
+    lateinit var modelManager: FireBaseModelManager
     override fun onCreate() {
         super.onCreate()
-        startKoin {
-            androidContext(this@AflamiApp)
-            modules(
-                mlModule,
-                appModule,
-                networkModule,
-                dataSourceModule,
-                daoModule,
-                repositoryModule,
-                useCaseModule,
-                viewModelModule
-            )
+
+
             CoroutineScope(Dispatchers.IO).launch {
-                get<FireBaseModelManager>().downloadModelsOnce()
+                modelManager.downloadModelsOnce()
             }
         }
-
     }
-}

@@ -5,6 +5,8 @@ import androidx.navigation.compose.composable
 import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.categories.CategoriesScreen
 
-fun NavGraphBuilder.categoriesRoute()= composable<NavigationBarDestinations.CategoriesScreen> {
+fun NavGraphBuilder.categoriesRoute()=
+    composable<NavigationBarDestinations.CategoriesScreen>
+    {
         CategoriesScreen()
     }

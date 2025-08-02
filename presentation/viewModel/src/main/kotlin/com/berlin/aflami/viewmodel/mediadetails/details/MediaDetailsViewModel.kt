@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.mediadetails.details
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.MediaDetailsArgs
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
@@ -38,8 +39,10 @@ import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
 import usecase.mediadetails.GetTVShowVideos
 import usecase.mediadetails.GetTvShowDetailsUseCase
-
-class MediaDetailsViewModel(
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+@HiltViewModel
+class MediaDetailsViewModel @Inject constructor(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
@@ -56,8 +59,7 @@ class MediaDetailsViewModel(
     private val getMovieVideos: GetMovieVideos,
     private val getTvShowVideos: GetTVShowVideos,
     private val isLoggedInUseCase: IsLoggedInUseCase,
-    val mediaId: Long,
-    val mediaType: MediaType
+    mediaDetailsArgs: MediaDetailsArgs
 ) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
     MediaDetailsUiState()
 ), MediaInteractionListener {
@@ -76,6 +78,9 @@ class MediaDetailsViewModel(
 
     private val _showLoginRequiredDialog = MutableStateFlow(false)
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
+
+    val mediaId: Long = mediaDetailsArgs.mediaId?:0
+    val mediaType: MediaType = mediaDetailsArgs.mediaType?: MediaType.MOVIE
 
     init {
         playButtonEnable( mediaId,  mediaType)
@@ -477,7 +482,6 @@ class MediaDetailsViewModel(
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
-
 
     override fun onSeasonsClicked(seriesId: Long, numberOfSeasons: Int) {
         updateState {

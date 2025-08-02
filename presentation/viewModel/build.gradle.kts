@@ -38,9 +38,10 @@ dependencies {
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.test)
     implementation(libs.kotlin.datex)
-    implementation("io.arrow-kt:arrow-optics:2.1.2")
-    implementation("io.arrow-kt:arrow-core:2.1.2")
-    ksp("io.arrow-kt:arrow-optics-ksp-plugin:2.1.2")
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
 
     val paging_version = "3.3.6"
     implementation("androidx.paging:paging-runtime:$paging_version")

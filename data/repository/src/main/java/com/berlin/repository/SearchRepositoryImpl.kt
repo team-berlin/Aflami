@@ -18,8 +18,9 @@ import com.berlin.repository.util.Constants
 import com.berlin.repository.util.Constants.ACTING_DEPARTMENT
 import repository.SearchRepository
 import java.time.Instant
+import javax.inject.Inject
 
-class SearchRepositoryImpl(
+class SearchRepositoryImpl  @Inject constructor(
     private val localDataSource: SearchLocalDataSource,
     private val remoteDataSource: RemoteDataSource,
     private val recentHistoryLocalDataSource: RecentHistoryLocalDataSource,

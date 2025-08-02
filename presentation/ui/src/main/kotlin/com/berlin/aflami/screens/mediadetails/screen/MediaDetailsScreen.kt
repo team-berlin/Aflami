@@ -27,14 +27,15 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
 import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
-import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.RateDialog
@@ -52,14 +53,12 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
-import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun MediaDetailsScreen(
     mediaId: Long,
     mediaType: MediaType,
-    viewModel: MediaDetailsViewModel = koinViewModel(parameters = { parametersOf(mediaId, mediaType) })) {
+    viewModel: MediaDetailsViewModel = hiltViewModel(),
     val navController = Theme.navController
     val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
@@ -149,7 +148,7 @@ private fun onReceiveMediaDetailsEffect(
                     mediaDetailsScreenEffect.mediaId,
                     mediaDetailsScreenEffect.mediaType
                 )
-            ){
+            ) {
                 launchSingleTop = true
             }
         }

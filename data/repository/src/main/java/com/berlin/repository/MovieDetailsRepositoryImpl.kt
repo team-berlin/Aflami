@@ -19,8 +19,9 @@ import com.berlin.repository.util.Constants.GENRE_TYPE_MOVIE
 import exceptions.AflamiExceptions
 import repository.MovieDetailsRepository
 import java.time.Instant
+import javax.inject.Inject
 
-class MovieDetailsRepositoryImpl(
+class MovieDetailsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val genreLocalDataSource: GenreLocalDataSource
 ) : MovieDetailsRepository {
