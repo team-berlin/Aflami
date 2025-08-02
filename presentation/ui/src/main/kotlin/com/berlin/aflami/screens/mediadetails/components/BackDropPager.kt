@@ -35,24 +35,35 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
-    val pagerState = rememberPagerState(pageCount = { 4 })
+    val posterList = state.posterImages.take(4)
+    val pagerState = rememberPagerState(pageCount = { posterList.size })
 
     LaunchedEffect(pagerState) {
-        while (true) {
+        while (posterList.size > 1) {
             delay(4000)
-            val nextPage = (pagerState.currentPage + 1) % 4
+            val nextPage = (pagerState.currentPage + 1) % posterList.size
             pagerState.animateScrollToPage(nextPage)
         }
     }
 
-    Box(modifier = Modifier.fillMaxWidth().height(293.dp)) {
-        Box(modifier = Modifier.fillMaxWidth().height(263.dp)) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(293.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(263.dp)
+        ) {
             HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
-                val model = state.backdropUrl
+                val model = posterList[page]
                 val painter = rememberAsyncImagePainter(model)
                 val imageState by painter.state.collectAsState()
+
                 val contentScale = when (imageState) {
-                    is AsyncImagePainter.State.Success, is AsyncImagePainter.State.Loading -> ContentScale.Crop
+                    is AsyncImagePainter.State.Success,
+                    is AsyncImagePainter.State.Loading -> ContentScale.Crop
                     else -> ContentScale.Inside
                 }
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -69,13 +80,26 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                     }
                 }
             }
-            Indicator(pagerState = pagerState,modifier = Modifier.align(Alignment.BottomEnd))
-            Box(modifier = Modifier.align(Alignment.BottomStart).padding(4.dp)) {
+
+            Indicator(
+                pagerState = pagerState,
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(4.dp)
+            ) {
                 Rating(rating = state.rating.formatRatingForUi())
             }
         }
+
         Box(
-            Modifier.align(Alignment.BottomCenter).size(72.dp).background(Theme.color.surface, CircleShape),
+            Modifier
+                .align(Alignment.BottomCenter)
+                .size(72.dp)
+                .background(Theme.color.surface, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             CircularIconButton(
@@ -87,7 +111,7 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                 borderWidth = 2,
                 size = 64,
                 enabled = state.hasVideo,
-                tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable,
+                tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable
             )
         }
     }

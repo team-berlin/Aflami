@@ -25,7 +25,7 @@ fun MovieDetails.toUiState(
     posterUrl = posterUrl,
     backdropUrl = backdropUrl,
     genres = genres.map { it.name },
-    releaseYear = releaseDate ?: "",
+    releaseDate = releaseDate ?: "",
     rating = rating,
     runtime = runtime?.let { "${it / 60}h ${it % 60}m" } ?: "",
     numberOfSeasons = null,
@@ -34,7 +34,7 @@ fun MovieDetails.toUiState(
     mediaType = MediaType.MOVIE,
     hasVideo = hasVideo ?: false,
     originalCountry = originCountry,
-    duration = duration
+    duration = duration,
 )
 
 fun TvShowDetails.toUiState(
@@ -47,7 +47,7 @@ fun TvShowDetails.toUiState(
     posterUrl = posterUrl,
     backdropUrl = backdropUrl,
     genres = genres.map { it.name },
-    releaseYear = releaseDate ?: "",
+    releaseDate = releaseDate ?: "",
     rating = rating,
     runtime = "",
     numberOfSeasons = numberOfSeasons,

@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,19 +20,21 @@ import com.berlin.ui.R
 @Composable
 fun MoreLikeThisSection(
     mediaList: List<MediaUiState>,
-    mediaType: MediaType
+    mediaType: MediaType,
+    onMediaClick: (Long, MediaType) -> Unit
 ) {
     Column(
           modifier = Modifier
               .fillMaxWidth()
-              .padding(horizontal = 16.dp),
+              .padding(horizontal = 16.dp, vertical = 12.dp),
           verticalArrangement = Arrangement.spacedBy(8.dp)
       ) {
         mediaList.forEach { media ->
             MediaCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(196.dp),
+                    .height(196.dp)
+                    .clickable { onMediaClick(media.id,mediaType) },
                 mediaImg = media.poster,
                 title = media.title,
                 typeOfMedia = if (mediaType == MediaType.MOVIE) stringResource( R.string.movie) else stringResource( R.string.Tv_Show),

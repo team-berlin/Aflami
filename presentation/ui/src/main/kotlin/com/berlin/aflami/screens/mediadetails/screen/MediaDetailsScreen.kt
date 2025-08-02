@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
-import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -33,6 +32,7 @@ import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
@@ -64,10 +64,10 @@ fun MediaDetailsScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
-                onReceiveMediaDetailsEffect(
-                    navController = navController,
-                    mediaDetailsScreenEffect = newEffect,
-                )
+            onReceiveMediaDetailsEffect(
+                navController = navController,
+                mediaDetailsScreenEffect = newEffect
+            )
         }
     }
 
@@ -138,12 +138,23 @@ private fun onReceiveMediaDetailsEffect(
         is MediaDetailsScreenEffect.NavigateBack -> {
             navController.popBackStack()
         }
-        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {}
-        is MediaDetailsScreenEffect.ShowRatingDialog -> {}
-        is MediaDetailsScreenEffect.PlayMedia-> {
+
+        is MediaDetailsScreenEffect.PlayMedia -> {
             navController.navigate(
                 VideoWebViewDestination(mediaDetailsScreenEffect.videoUrl)
             )
+        }
+        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog ->{}
+        is MediaDetailsScreenEffect.ShowRatingDialog -> {}
+        is MediaDetailsScreenEffect.NavigateToMediaDetails -> {
+            navController.navigate(
+                MediaDetailsDestination(
+                    mediaDetailsScreenEffect.mediaId,
+                    mediaDetailsScreenEffect.mediaType
+                )
+            ){
+                launchSingleTop = true
+            }
         }
     }
 }
@@ -201,8 +212,8 @@ fun MediaDetailsContent(
             item {
                 HorizontalDivider(
                     modifier = Modifier
-                        .padding(bottom=12.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
                     color = Theme.color.stroke,
                     thickness = 1.dp
                 )
@@ -214,6 +225,7 @@ fun MediaDetailsContent(
                     onChipClick = onChipClick,
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
+                    onMediaClick = { mediaId, type -> listener.onMediaClicked(mediaId, type) },
                     mediaType = mediaType,
                 )
             }

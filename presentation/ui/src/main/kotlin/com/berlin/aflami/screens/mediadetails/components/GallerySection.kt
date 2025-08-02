@@ -43,13 +43,14 @@ fun GallerySection(
             .padding(bottom = 12.dp),
         contentAlignment = Alignment.Center
     ) {
+        val backDropsList= mediaImages.take(10)
         val maxGridWidth = this.maxWidth - 2 * sidePadding
         val columns = (maxGridWidth / (cellWidth + horizontalSpacing)).toInt().coerceAtLeast(2)
 
         val adjustedSpacing = horizontalSpacing * (columns - 1)
         val adjustedCellWidth = (maxGridWidth - adjustedSpacing) / columns
 
-        val rows = (mediaImages.size + columns - 1) / columns
+        val rows = (backDropsList.size + columns - 1) / columns
 
         Column(
             modifier = Modifier
@@ -64,9 +65,9 @@ fun GallerySection(
                 ) {
                     for (col in 0 until columns) {
                         val index = row * columns + col
-                        if (index < mediaImages.size) {
+                        if (index < backDropsList.size) {
                             SafeImageViewer(
-                                imageUri = mediaImages[index],
+                                imageUri = backDropsList[index],
                                 contentDescription = stringResource(com.berlin.ui.R.string.cast),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier

@@ -31,6 +31,10 @@ class DataSourceImpl(
         return wrapApiResponse { apiService.getMovieImages(movieId) }
     }
 
+    override suspend fun getSeriesImages(seriesId: Long): MediaImagesResponse {
+        require(seriesId > 0) { "Invalid seriesId: $seriesId" }
+        return wrapApiResponse { apiService.getSeriesImages(seriesId) }
+    }
 
     override suspend fun getMovieDetails(movieId: Long): MovieDetailsDto {
         require(movieId > 0) { "Invalid movieId: $movieId" }
@@ -51,11 +55,6 @@ class DataSourceImpl(
         return wrapApiResponse {
             apiService.getUpcomingMovies()
         }
-    }
-
-    override suspend fun getSeriesImages(seriesId: Long): MediaImagesResponse {
-        require(seriesId > 0) { "Invalid seriesId: $seriesId" }
-        return wrapApiResponse { apiService.getSeriesImages(seriesId) }
     }
 
     override suspend fun getTvShowDetails(seriesId: Long): TVShowDetailsDto {

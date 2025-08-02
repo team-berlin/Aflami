@@ -1,7 +1,9 @@
 package com.berlin.repository
 
+import android.util.Log
 import com.berlin.entity.Genre
 import com.berlin.entity.MediaCast
+import com.berlin.entity.MediaImage
 import com.berlin.entity.Movie
 import com.berlin.entity.MovieDetails
 import com.berlin.entity.Video
@@ -32,10 +34,20 @@ class MovieDetailsRepositoryImpl(
         } ?: emptyList()
     }
 
-    override suspend fun getMovieImages(movieId: Long): List<String> {
+    override suspend fun getMovieImages(movieId: Long): MediaImage {
         return try {
-            remoteDataSource.getMovieImages(movieId).backdrops?.map { POSTER_PREFIX + it.filePath }
-                ?: throw Exception()
+            val imagesResponse = remoteDataSource.getMovieImages(movieId)
+
+            Log.d("Repository", "Backdrops: ${imagesResponse.backdrops}")
+            Log.d("Repository", "Posters: ${imagesResponse.posters}")
+
+            val backdrops = imagesResponse.backdrops
+                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+
+            val posters = imagesResponse.posters
+                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+
+            MediaImage(backdrops = backdrops.orEmpty(), posters = posters.orEmpty())
         } catch (e: Exception) {
             throw e
         }

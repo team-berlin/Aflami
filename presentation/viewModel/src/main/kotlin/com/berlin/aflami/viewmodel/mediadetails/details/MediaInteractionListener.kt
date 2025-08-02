@@ -16,6 +16,8 @@ interface MediaInteractionListener :
     fun onReadMoreDescriptionClicked()
     fun onReadMoreReviewClicked(id: String)
     fun onShowCastClicked()
+    fun onMediaClicked(mediaId: Long, mediaType: MediaType)
+
 }
 
 interface ExtraMediaContentInteractionListener : TVShowSeasonsInteractionListener {

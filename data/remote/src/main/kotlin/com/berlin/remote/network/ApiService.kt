@@ -24,6 +24,9 @@ interface ApiService {
     @GET(ApiConstants.MOVIE_IMAGES)
     suspend fun getMovieImages(@Path(ApiConstants.MOVIE_ID) movieId: Long): Response<MediaImagesResponse>
 
+    @GET(ApiConstants.SERIES_IMAGES)
+    suspend fun getSeriesImages(@Path(ApiConstants.SERIES_ID) seriesId: Long): Response<MediaImagesResponse>
+
     @GET(ApiConstants.MOVIE_DETAILS)
     suspend fun getMovieDetails(
         @Path(ApiConstants.MOVIE_ID) id: Long
@@ -67,9 +70,6 @@ interface ApiService {
         @Query(ApiConstants.QUERY) query: String,
         @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<TVShowDto>>
-
-    @GET(ApiConstants.SERIES_IMAGES)
-    suspend fun getSeriesImages(@Path(ApiConstants.SERIES_ID) seriesId: Long): Response<MediaImagesResponse>
 
     @GET(ApiConstants.SERIES_DETAILS)
     suspend fun getTvShowDetails(
