@@ -7,44 +7,77 @@ import com.berlin.remote.network.ApiService
 import com.berlin.remote.network.AuthenticationApiService
 import com.berlin.remote.network.HomeApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.dsl.module
 import retrofit2.Retrofit
+import javax.inject.Singleton
 
 @OptIn(ExperimentalSerializationApi::class)
-val networkModule = module {
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
 
-    single {
-        HttpLoggingInterceptor().apply {
+    @Provides
+    @Singleton
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
 
-    single {
-        OkHttpClient.Builder()
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
             .addInterceptor(ApiKeyInterceptor())
             .addInterceptor(LanguageInterceptor())
-            .addInterceptor(get<HttpLoggingInterceptor>()).build()
+            .addInterceptor(loggingInterceptor)
+            .build()
     }
 
-    single {
-        Json {
+    @Provides
+    @Singleton
+    fun provideJson(): Json {
+        return Json {
             ignoreUnknownKeys = true
             classDiscriminator = "media_type"
         }
     }
 
-    single {
-        Retrofit.Builder().baseUrl(BuildConfig.BASE_URL).client(get()).addConverterFactory(
-            get<Json>().asConverterFactory("application/json".toMediaType())
-        ).build()
+    @Provides
+    @Singleton
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        json: Json
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
     }
 
-    single { get<Retrofit>().create(ApiService::class.java) }
-    single { get<Retrofit>().create(AuthenticationApiService::class.java) }
-    single { get<Retrofit>().create(HomeApiService::class.java) }
+    @Provides
+    @Singleton
+    fun provideApiService(retrofit: Retrofit): ApiService =
+        retrofit.create(ApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAuthenticationApiService(retrofit: Retrofit): AuthenticationApiService =
+        retrofit.create(AuthenticationApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideHomeApiService(retrofit: Retrofit): HomeApiService =
+        retrofit.create(HomeApiService::class.java)
 }

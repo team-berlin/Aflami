@@ -32,9 +32,8 @@ kover {
     }
 }
 dependencies {
-    implementation(libs.koin.core)
     testImplementation(libs.bundles.test)
     implementation(libs.kotlin.datex)
-
+    implementation(libs.javax.inject)
     api(project(":domain:entity"))
 }

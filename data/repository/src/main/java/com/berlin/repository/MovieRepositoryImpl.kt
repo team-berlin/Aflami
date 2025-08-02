@@ -7,8 +7,9 @@ import com.berlin.repository.MediaType.TVSHOW
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import repository.MovieRepository
+import javax.inject.Inject
 
-class MovieRepositoryImpl(
+class MovieRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource
 ) : MovieRepository {
 

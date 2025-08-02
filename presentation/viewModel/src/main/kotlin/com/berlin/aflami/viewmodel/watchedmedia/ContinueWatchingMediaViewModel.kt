@@ -15,7 +15,10 @@ import kotlinx.coroutines.launch
 import usecase.home.GetContinueWatchingMovieUseCase
 import usecase.home.GetContinueWatchingTVShowUseCase
 
-class ContinueWatchingMediaViewModel(
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+@HiltViewModel
+class ContinueWatchingMediaViewModel @Inject constructor(
     private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
     private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase
 ) : BaseViewModel<ContinueWatchingMediaUiState, ContinueWatchingMediaEffect>(

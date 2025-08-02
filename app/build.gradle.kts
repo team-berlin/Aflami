@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.performance)
     alias(libs.plugins.ksp)
+
+    alias(libs.plugins.hilt)
 }
 
 val properties = Properties().apply {
@@ -80,6 +82,8 @@ dependencies {
     ksp(libs.roomCompiler)
     implementation(libs.firebase.ml.modeldownloader)
 
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.hilt.android)
 
 
     api(project(":presentation:ui"))
@@ -88,7 +92,6 @@ dependencies {
     implementation(project(":presentation:viewModel"))
     implementation(project(":domain:usecase"))
     implementation(project(":data:repository"))
-    implementation(project(":presentation:safeImageViewer"))
     implementation(project(":data:local"))
     implementation(project(":data:remote"))
 }

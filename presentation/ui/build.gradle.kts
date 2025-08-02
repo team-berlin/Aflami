@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.aflami.custom.plugin)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+
 }
 
 android {
@@ -26,6 +28,13 @@ dependencies {
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:viewModel"))
+
+
+    ksp(libs.hilt.android.compiler)
+
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+
 
     val paging_version = "3.3.6"
     implementation("androidx.paging:paging-runtime:$paging_version")

@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -46,12 +47,11 @@ import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenUiState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
-import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SearchByActorNameScreen(
-    viewModel: SearchByActorViewModel = koinViewModel()
+    viewModel: SearchByActorViewModel = hiltViewModel(),
 ) {
     val navController = Theme.navController
     val uiState by viewModel.state.collectAsState()

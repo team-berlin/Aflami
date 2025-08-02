@@ -24,15 +24,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType.Companion.Uri
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
-import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
@@ -49,14 +49,12 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
-import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun MediaDetailsScreen(
-    mediaId: Long,
-    mediaType: MediaType,
-    viewModel: MediaDetailsViewModel = koinViewModel(parameters = { parametersOf(mediaId, mediaType) })) {
+
+    viewModel: MediaDetailsViewModel = hiltViewModel(),
+) {
     val navController = Theme.navController
     val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
@@ -131,7 +129,10 @@ private fun onReceiveMediaDetailsEffect(
     when (mediaDetailsScreenEffect) {
         is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
             navController.navigate(
-                CastDestination(mediaDetailsScreenEffect.mediaId, mediaDetailsScreenEffect.mediaType)
+                CastDestination(
+                    mediaDetailsScreenEffect.mediaId,
+                    mediaDetailsScreenEffect.mediaType
+                )
             )
         }
 
@@ -144,7 +145,8 @@ private fun onReceiveMediaDetailsEffect(
                 VideoWebViewDestination(mediaDetailsScreenEffect.videoUrl)
             )
         }
-        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog ->{}
+
+        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {}
         is MediaDetailsScreenEffect.ShowRatingDialog -> {}
         is MediaDetailsScreenEffect.NavigateToMediaDetails -> {
             navController.navigate(
@@ -152,7 +154,7 @@ private fun onReceiveMediaDetailsEffect(
                     mediaDetailsScreenEffect.mediaId,
                     mediaDetailsScreenEffect.mediaType
                 )
-            ){
+            ) {
                 launchSingleTop = true
             }
         }
@@ -191,7 +193,7 @@ fun MediaDetailsContent(
             item {
                 BackdropPager(
                     state = state,
-                    onPlayClick = { listener.onPlayClicked(state.id,state.mediaType) })
+                    onPlayClick = { listener.onPlayClicked(state.id, state.mediaType) })
             }
 
             item {

@@ -1,28 +1,23 @@
 package com.berlin.aflami.di
 
-import com.berlin.aflami.viewmodel.home.HomeViewModel
-import com.berlin.aflami.viewmodel.home.toprating.TopRatingViewModel
-import com.berlin.aflami.viewmodel.login.LoginViewmodel
-import com.berlin.aflami.viewmodel.main.MainViewModel
-import com.berlin.aflami.viewmodel.mediadetails.cast.CastViewModel
-import com.berlin.aflami.viewmodel.search.SearchViewModel
-import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
-import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
-import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
+import androidx.lifecycle.SavedStateHandle
+import com.berlin.aflami.viewmodel.CastDetailsArgs
+import com.berlin.aflami.viewmodel.MediaDetailsArgs
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 
-val viewModelModule = module {
+@Module
+@InstallIn(ViewModelComponent::class)
+object ViewModel {
+    @Provides
+    fun mediaDetailsArgs(savedStateHandle: SavedStateHandle): MediaDetailsArgs {
+        return MediaDetailsArgs(savedStateHandle)
+    }
 
-    viewModelOf(::LoginViewmodel)
-    viewModelOf(::MainViewModel)
-    viewModelOf(::SearchByActorViewModel)
-    viewModelOf(::SearchViewModel)
-    viewModelOf(::MediaDetailsViewModel)
-    viewModelOf(::SearchByCountryViewModel)
-    viewModelOf(::CastViewModel)
-    viewModelOf(::HomeViewModel)
-    viewModelOf(::ContinueWatchingMediaViewModel)
-    viewModelOf(::TopRatingViewModel)
+    @Provides
+    fun castDetailsArgs(savedStateHandle: SavedStateHandle): CastDetailsArgs {
+        return CastDetailsArgs(savedStateHandle)
+    }
 }

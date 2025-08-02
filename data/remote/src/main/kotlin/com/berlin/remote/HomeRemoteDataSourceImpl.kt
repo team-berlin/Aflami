@@ -4,8 +4,9 @@ import com.berlin.remote.network.HomeApiService
 import com.berlin.repository.datasource.remote.HomeRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.TopRatedMoviesResponse
 import com.berlin.repository.datasource.remote.dto.TopRatedSeriesResponse
+import javax.inject.Inject
 
-class HomeRemoteDataSourceImpl(
+class HomeRemoteDataSourceImpl  @Inject constructor (
     private val homeApiService: HomeApiService
 ): HomeRemoteDataSource {
     override suspend fun getTopRatedMovies(page: Int): TopRatedMoviesResponse {

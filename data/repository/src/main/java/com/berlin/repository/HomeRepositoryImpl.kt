@@ -6,8 +6,9 @@ import com.berlin.repository.datasource.remote.HomeRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toTVShow
 import repository.HomeRepository
+import javax.inject.Inject
 
-class HomeRepositoryImpl(
+class HomeRepositoryImpl  @Inject constructor(
     private val homeRemoteDataSource: HomeRemoteDataSource,
 ) : HomeRepository {
     override suspend fun getTopRatedMovies(page: Int): List<Movie> =

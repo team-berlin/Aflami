@@ -3,8 +3,9 @@ package com.berlin.local.datasource
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
+import javax.inject.Inject
 
-class CategoriesPreferencesDataSourceImpl (
+class CategoriesPreferencesDataSourceImpl @Inject constructor (
     private val categoriesPreferencesDao: CategoriesPreferencesDao
 ): CategoriesPreferencesDataSource
 

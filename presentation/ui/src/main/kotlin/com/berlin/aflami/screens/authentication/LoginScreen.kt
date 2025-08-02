@@ -57,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.berlin.aflami.component.IconButton
 import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
@@ -74,11 +75,10 @@ import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginUiState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.ui.R
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
-    viewmodel: LoginViewmodel = koinViewModel(),
+    viewmodel: LoginViewmodel = hiltViewModel(),
 ) {
     val navController = Theme.navController
     val uiState by viewmodel.state.collectAsState()

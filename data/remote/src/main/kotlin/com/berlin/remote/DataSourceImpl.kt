@@ -16,8 +16,9 @@ import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.datasource.remote.dto.TVShowResponse
 import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
+import javax.inject.Inject
 
-class DataSourceImpl(
+class DataSourceImpl @Inject constructor (
     private val apiService: ApiService
 ) : RemoteDataSource {
 

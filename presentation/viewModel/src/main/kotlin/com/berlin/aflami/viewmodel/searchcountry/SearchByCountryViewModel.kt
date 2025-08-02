@@ -19,8 +19,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import usecase.SearchByCountryUseCase
-
-class SearchByCountryViewModel(
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+@HiltViewModel
+class SearchByCountryViewModel @Inject constructor(
     private val searchByCountry: SearchByCountryUseCase
 ) : BaseViewModel<SearchByCountryScreenUiState, SearchByCountryEffect>(
     SearchByCountryScreenUiState()

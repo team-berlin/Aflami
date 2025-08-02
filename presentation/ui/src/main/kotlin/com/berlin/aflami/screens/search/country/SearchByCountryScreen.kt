@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -46,11 +46,10 @@ import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenUiState
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchByCountryScreen(
-    viewModel: SearchByCountryViewModel = koinViewModel(),
+    viewModel: SearchByCountryViewModel = hiltViewModel(),
 ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsState()
@@ -73,7 +72,7 @@ fun SearchByCountryScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = state.error!=null&&state.query.text.isNotEmpty()
+        visible = state.error != null && state.query.text.isNotEmpty()
     ) {
         NoInternetConnectionPlaceholder()
     }
@@ -206,14 +205,15 @@ private fun SearchByCountryContent(
                         )
                     }
                 }
+
                 is LoadState.Error -> {
-                   ErrorContent()
+                    ErrorContent()
                     if ((movies.loadState.refresh as LoadState.Error).error.message.equals("No internet connection")) {
                         NoInternetConnectionPlaceholder(
                             onClick = { movies.retry() }
                         )
                     } else {
-                       ErrorContent()
+                        ErrorContent()
                     }
                 }
             }

@@ -15,6 +15,7 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.entity.Movie
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -31,8 +32,9 @@ import usecase.GetTopRatedSeriesUseCase
 import usecase.GetUpComingMoviesUseCase
 import usecase.home.GetContinueWatchingMovieUseCase
 import usecase.home.GetContinueWatchingTVShowUseCase
-
-class HomeViewModel(
+import javax.inject.Inject
+@HiltViewModel
+class HomeViewModel @Inject constructor (
     private val popularMoviesUseCase: GetPopularMoviesUseCase,
     private val popularTVShowsUseCase: GetPopularTVShowsUseCase,
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,

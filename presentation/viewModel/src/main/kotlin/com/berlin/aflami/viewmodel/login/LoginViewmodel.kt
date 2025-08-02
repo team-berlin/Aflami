@@ -4,13 +4,16 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.util.SNACK_BAR_DURATION
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import usecase.ValidatePasswordUseCase
 import usecase.ValidateUsernameUseCase
 import usecase.auth.LoginUseCase
+import javax.inject.Inject
 
-class LoginViewmodel(
+@HiltViewModel
+class LoginViewmodel @Inject constructor (
     val usernameValidationUseCase: ValidateUsernameUseCase,
     val passwordValidationUseCase: ValidatePasswordUseCase,
     val loginUseCase: LoginUseCase,

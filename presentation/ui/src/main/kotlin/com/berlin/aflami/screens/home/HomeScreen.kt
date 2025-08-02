@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -61,11 +61,10 @@ import com.berlin.aflami.viewmodel.home.HomeUiState
 import com.berlin.aflami.viewmodel.home.HomeViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
@@ -73,7 +72,7 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.getContinueWatchingMedia()
         viewModel.effect.collect {
-            onReceiveHomeScreenEffect(navController,it)
+            onReceiveHomeScreenEffect(navController, it)
         }
     }
 
@@ -90,7 +89,7 @@ fun HomeScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = state.error!=null
+        visible = state.error != null
     ) {
         NoInternetConnectionPlaceholder()
     }
@@ -108,7 +107,10 @@ fun HomeScreen(
 
 }
 
-private fun onReceiveHomeScreenEffect(navController: NavController,homeScreenEffect: HomeScreenEffect){
+private fun onReceiveHomeScreenEffect(
+    navController: NavController,
+    homeScreenEffect: HomeScreenEffect
+) {
     when (homeScreenEffect) {
         is HomeScreenEffect.NavigateToContinueWatching -> {
             navController.navigate(
@@ -130,7 +132,10 @@ private fun onReceiveHomeScreenEffect(navController: NavController,homeScreenEff
 
         is HomeScreenEffect.NavigateToDetails -> {
             navController.navigate(
-                MediaDetailsDestination(homeScreenEffect.id, MediaType.valueOf(homeScreenEffect.mediaType))
+                MediaDetailsDestination(
+                    homeScreenEffect.id,
+                    MediaType.valueOf(homeScreenEffect.mediaType)
+                )
             )
         }
 
@@ -182,7 +187,7 @@ private fun HomeContent(
             visible = state.isLoading.not()
         ) {
             LazyColumn(
-                modifier = Modifier.padding(bottom = 64.dp ),
+                modifier = Modifier.padding(bottom = 64.dp),
                 state = listState
             ) {
                 item {
