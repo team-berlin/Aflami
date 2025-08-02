@@ -30,22 +30,22 @@ import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.MediaCastGrid
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsEffect
-import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsListener
-import com.berlin.aflami.viewmodel.mediadetails.cast.CastViewModel
+import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsScreenEffect
+import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsScreenListener
+import com.berlin.aflami.viewmodel.mediadetails.cast.CastViewModelScreen
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
 import com.berlin.ui.R
 
 @Composable
 fun CastDetailsScreen(
-    viewmodel: CastViewModel = hiltViewModel()
+    viewmodel: CastViewModelScreen = hiltViewModel()
 ) {
     val navController = Theme.navController
     val castState by viewmodel.state.collectAsState()
 
     LaunchedEffect(Unit) {
         viewmodel.effect.collect { effect ->
-            onReceiveEffect(navController = navController, castDetailsEffect = effect)
+            onReceiveEffect(navController = navController, castDetailsScreenEffect = effect)
         }
     }
     AnimatedVisibility(
@@ -71,20 +71,20 @@ fun CastDetailsScreen(
     ) {
         CastContent(
             listener = viewmodel,
-            castState = castState.actorUiStates
+            castState = castState.actors
         )
     }
 }
 
-private fun onReceiveEffect(navController: NavController, castDetailsEffect: CastDetailsEffect) {
-    when (castDetailsEffect) {
-        is CastDetailsEffect.CastNavigationBack -> navController.popBackStack()
+private fun onReceiveEffect(navController: NavController, castDetailsScreenEffect: CastDetailsScreenEffect) {
+    when (castDetailsScreenEffect) {
+        is CastDetailsScreenEffect.NavigationBack -> navController.popBackStack()
     }
 }
 
 @Composable
 fun CastContent(
-    listener: CastDetailsListener,
+    listener: CastDetailsScreenListener,
     castState: List<MediaCastUiState>,
 ) {
     Column(
@@ -109,7 +109,7 @@ fun CastContent(
                         .clip(RoundedCornerShape(10.dp))
                         .background(Theme.color.surfaceHigh)
                         .clickable {
-                            listener.onCastBackClicked()
+                            listener.onBackClicked()
                         }
                         .padding(10.dp),
                     contentAlignment = Alignment.Center

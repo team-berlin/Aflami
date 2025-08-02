@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.mediadetails
 import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.mapper.toReviewUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
@@ -272,7 +273,7 @@ class MediaDetailsViewModelTest {
         val successState = state.rowSection as RowSectionUiState.Success
         assertThat(successState.content).isInstanceOf(TabContent.Reviews::class.java)
         val reviewsContent = successState.content as TabContent.Reviews
-        assertThat(reviewsContent.items).containsExactly(review.toUiState())
+        assertThat(reviewsContent.items).containsExactly(review.toReviewUiState())
     }
 
     @Test

@@ -9,17 +9,16 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.ReviewUiState
 import com.berlin.entity.Movie
-import com.berlin.entity.TVShow
 import kotlinx.datetime.LocalDate
 
-data class MediaDetailsUiState(
+data class MediaDetailsScreenState(
     val mediaId: Long = 0L,
     val rating: Double = 0.0,
     val title: String = "",
     val overview: String = "",
     val posterUrl: String = "",
     val videoUrl:String?="",
-    val backdropUrl: String? = "",
+//    val backdropUrl: String? = "",
     val genres: List<String> = emptyList(),
     val posterImages: List<String> = emptyList(),
     val backdropImages: List<String> = emptyList(),
@@ -27,7 +26,7 @@ data class MediaDetailsUiState(
     val runtime: String? = "",
     val country: String = "",
     val description: String = "",
-    val actorUiStates: List<ActorUiState> = emptyList(),
+    val actors: List<ActorUiState> = emptyList(),
     val seasons: List<EpisodesSeasonUiState>? = emptyList(),
     val rowSection: RowSectionUiState = RowSectionUiState.Loading,
     val numberOfSeasons: Int? = null,
@@ -62,21 +61,22 @@ data class MediaDetailsUiState(
             reviews = TODO(),
         )
     }
+}
 
-    fun toTVShow(): TVShow {
-        return TVShow(
-            id = mediaId,
-            title = title,
-            overview = description,
-            releaseYear = releaseDate.toLocalDate1(),
-            rating = rating,
-            runtime = 0,
-            genre = emptyList(),
-            poster = posterUrl,
-            backdropPath = backdropUrl,
-            releaseDate = releaseDate,
-        )
-    }
+//    fun toTVShow(): TVShow {
+//        return TVShow(
+//            id = mediaId,
+//            title = title,
+//            overview = description,
+//            releaseYear = releaseDate.toLocalDate1(),
+//            rating = rating,
+//            runtime = 0,
+//            genre = emptyList(),
+//            poster = posterUrl,
+//            backdropPath = backdropUrl,
+//            releaseDate = releaseDate,
+//        )
+//    }
 }
 
 fun String.toLocalDate1(): LocalDate? {
@@ -92,7 +92,7 @@ data class EpisodesUiState(
     val airDate: String,
     val episodeNumber: Int,
     val episodeType: String,
-    val id: Int,
+    val id: Long,
     val name: String,
     val overview: String,
     val runtime: String?,
@@ -100,7 +100,7 @@ data class EpisodesUiState(
 )
 
 data class EpisodesSeasonUiState(
-    val idSeason: Int,
+    val idSeason: Long,
     val name: String,
     val episodes: List<EpisodeUiState?>,
     val seasonNumber: Int,

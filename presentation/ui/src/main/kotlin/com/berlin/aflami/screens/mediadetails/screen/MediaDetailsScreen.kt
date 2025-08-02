@@ -44,7 +44,7 @@ import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaInteractionListener
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsScreenState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -163,7 +163,7 @@ private fun onReceiveMediaDetailsEffect(
 
 @Composable
 fun MediaDetailsContent(
-    state: MediaDetailsUiState,
+    state: MediaDetailsScreenState,
     listener: MediaInteractionListener,
     isDescriptionExpanded: Boolean,
     onToggleDescriptionExpand: () -> Unit,
@@ -207,7 +207,7 @@ fun MediaDetailsContent(
             }
             item {
                 CastSection(
-                    cast = state.actorUiStates,
+                    cast = state.actors,
                     onShowAllClicked = { listener.onShowCastClicked() }
                 )
             }

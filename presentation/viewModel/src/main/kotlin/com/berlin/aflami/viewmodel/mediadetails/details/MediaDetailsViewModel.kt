@@ -4,12 +4,15 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.mapper.toActorUiState
+import com.berlin.aflami.viewmodel.mapper.toCompanyProductionUiState
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
+import com.berlin.aflami.viewmodel.mapper.toReviewUiState
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsScreenState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsTabs
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsTabsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
@@ -54,8 +57,8 @@ class MediaDetailsViewModel(
     private val getMovieVideos: GetMovieVideos,
     private val getTvShowVideos: GetTVShowVideos,
     mediaDetailsArgs: MediaDetailsArgs,
-) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
-    MediaDetailsUiState()
+) : BaseViewModel<MediaDetailsScreenState, MediaDetailsScreenEffect>(
+    MediaDetailsScreenState()
 ), MediaInteractionListener {
 
     private val _tabSelectedUiState = MutableStateFlow(MovieDetailsTabsUiState())
@@ -78,7 +81,6 @@ class MediaDetailsViewModel(
 
 
     fun getMediaDetails(mediaId: Long, mediaType: MediaType) {
-
         updateState {
             it.copy(isLoading = true, error = null)
         }
@@ -88,7 +90,8 @@ class MediaDetailsViewModel(
                     MediaType.MOVIE -> {
                         val movie = getMovieDetailsUseCase(mediaId)
                         val pagerImages = getMovieGalleryUseCase(mediaId)
-                        companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
+                        companyProductionCache =
+                            movie?.productionCompanies?.map { it.toCompanyProductionUiState() }
                         Log.d("MediaDetailsViewModel", "getMediaDetails: $pagerImages")
                         Pair(movie?.toUiState(), pagerImages)
                     }
@@ -110,7 +113,6 @@ class MediaDetailsViewModel(
                             title = details.title,
                             description = details.overview,
                             posterUrl = details.posterUrl,
-                            backdropUrl = details.backdropUrl,
                             releaseDate = details.releaseDate,
                             numberOfSeasons = details.numberOfSeasons,
                             rating = details.rating,
@@ -151,9 +153,8 @@ class MediaDetailsViewModel(
         _showLoginRequiredDialog.value = show
     }
 
-    override fun onBackClicked() {
+    override fun onBackClicked() =
         sendNewEffect(MediaDetailsScreenEffect.NavigateBack)
-    }
 
     override fun onPlayClicked(id: Long, mediaType: MediaType) {
         val videoUrl = _state.value.videoUrl
@@ -187,33 +188,24 @@ class MediaDetailsViewModel(
         )
     }
 
-    override fun onReadMoreDescriptionClicked() {
-        updateState { state ->
-            state.copy(
-                isDescriptionExpanded = !state.isDescriptionExpanded
-            )
-        }
-    }
-
-    override fun onReadMoreReviewClicked(reviewId: String) {
-        updateState { state ->
-            state.copy(
-                expandedReviewIds = state.expandedReviewIds.toggle(reviewId)
-            )
-        }
-    }
-
-    private fun <T> Set<T>.toggle(item: T): Set<T> =
-        if (contains(item)) this - item else this + item
-
-    override fun onShowCastClicked() {
-        sendNewEffect(
-            MediaDetailsScreenEffect.NavigateToShowAllCastScreen(
-                mediaId = mediaId,
-                mediaType = mediaType
-            )
+    override fun onReadMoreDescriptionClicked() = updateState { screenState ->
+        screenState.copy(
+            isDescriptionExpanded = !screenState.isDescriptionExpanded
         )
     }
+
+    override fun onReadMoreReviewClicked(reviewId: String) = updateState { screenState ->
+        screenState.copy(
+            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId)
+        )
+    }
+
+    override fun onShowCastClicked() = sendNewEffect(
+        MediaDetailsScreenEffect.NavigateToShowAllCastScreen(
+            mediaId = mediaId,
+            mediaType = mediaType
+        )
+    )
 
     override fun onMediaClicked(mediaId: Long, mediaType: MediaType) {
         sendNewEffect(MediaDetailsScreenEffect.NavigateToMediaDetails(mediaId, mediaType))
@@ -328,8 +320,8 @@ class MediaDetailsViewModel(
         tryToCall(
             call = {
                 when (mediaType) {
-                    MediaType.MOVIE -> movieReviewUseCase(mediaId).map { it.toUiState() }
-                    MediaType.TV_SHOW -> seriesReviewUseCase(mediaId).map { it.toUiState() }
+                    MediaType.MOVIE -> movieReviewUseCase(mediaId).map { it.toReviewUiState() }
+                    MediaType.TV_SHOW -> seriesReviewUseCase(mediaId).map { it.toReviewUiState() }
                 }
             },
             onSuccess = { reviewResult ->
@@ -357,8 +349,8 @@ class MediaDetailsViewModel(
     }
 
     override fun onShowMediaGalleryClicked(mediaId: Long, mediaType: MediaType) {
-        updateState {
-            it.copy(
+        updateState { screenState ->
+            screenState.copy(
                 rowSection = RowSectionUiState.Loading
             )
         }
@@ -377,8 +369,8 @@ class MediaDetailsViewModel(
                         )
                     }
                 } else {
-                    updateState {
-                        it.copy(
+                    updateState { screenState ->
+                        screenState.copy(
                             rowSection = RowSectionUiState.Success(
                                 content = TabContent.Gallery(
                                     items = gallery.backdrops
@@ -428,8 +420,8 @@ class MediaDetailsViewModel(
     }
 
     override fun onSeasonsClicked(seriesId: Long, numberOfSeasons: Int) {
-        updateState {
-            it.copy(
+        updateState { screenState ->
+            screenState.copy(
                 rowSection = RowSectionUiState.Loading
             )
         }
@@ -442,8 +434,8 @@ class MediaDetailsViewModel(
                 }
             },
             onSuccess = { seasons ->
-                updateState {
-                    it.copy(
+                updateState { screenState ->
+                    screenState.copy(
                         rowSection = RowSectionUiState.Success(
                             content = TabContent.Season(
                                 items = result.mapValues { entry ->
@@ -462,22 +454,22 @@ class MediaDetailsViewModel(
     }
 
     fun getMediaCast(mediaId: Long, mediaType: MediaType) {
-        updateState {
-            it.copy(error = null, isLoading = true)
+        updateState { screenState ->
+            screenState.copy(error = null, isLoading = true)
         }
         tryToCall(
             call = {
                 when (mediaType) {
-                    MediaType.MOVIE -> getMovieCastUseCase(mediaId).map { it.toUiState() }
+                    MediaType.MOVIE -> getMovieCastUseCase(mediaId).map { it.toActorUiState() }
                     MediaType.TV_SHOW -> getSeriesCastUseCase(
                         mediaId
-                    ).map { it.toUiState() }
+                    ).map { it.toActorUiState() }
                 }
             },
             onSuccess = { cast ->
                 updateState {
                     it.copy(
-                        actorUiStates = cast,
+                        actors = cast,
                         mediaType = mediaType,
                         isLoading = false
                     )
@@ -523,6 +515,9 @@ class MediaDetailsViewModel(
             )
         }
     }
+
+    private fun <T> Set<T>.toggle(item: T): Set<T> =
+        if (contains(item)) this - item else this + item
 
     private fun handleErrorState(errorUiState: ErrorUiState, updateRowSection: Boolean = false) {
         updateState {

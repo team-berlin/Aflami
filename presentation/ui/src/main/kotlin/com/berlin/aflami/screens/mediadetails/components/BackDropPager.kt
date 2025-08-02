@@ -26,15 +26,13 @@ import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.utils.formatRating
 import com.berlin.aflami.utils.formatRatingForUi
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsScreenState
 import com.berlin.designsystem.R
-import com.berlin.safeimageviewer.SafeImageViewer
 import kotlinx.coroutines.delay
 
 @Composable
-fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
+fun BackdropPager(state: MediaDetailsScreenState, onPlayClick: () -> Unit) {
     val posterList = state.posterImages.take(4)
     val pagerState = rememberPagerState(pageCount = { posterList.size })
 

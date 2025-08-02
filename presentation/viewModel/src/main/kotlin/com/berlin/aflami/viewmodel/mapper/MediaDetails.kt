@@ -1,16 +1,16 @@
 package com.berlin.aflami.viewmodel.mapper
 
-import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesSeasonUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
+import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
+import com.berlin.aflami.viewmodel.shareduistate.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.shareduistate.ReviewUiState
 import com.berlin.entity.Actor
 import com.berlin.entity.Episode
 import com.berlin.entity.ProductionCompany
 import com.berlin.entity.Review
 
-fun ProductionCompany.toUiState() = CompanyProductionUiState(
+fun ProductionCompany.toCompanyProductionUiState() = CompanyProductionUiState(
     id = id.toString(),
     image = posterURL,
     name = name,
@@ -41,7 +41,7 @@ fun EpisodesSeason.toUiState(): EpisodesSeasonUiState {
     )
 }
 
-fun Review.toUiState(): ReviewUiState {
+fun Review.toReviewUiState(): ReviewUiState {
     return ReviewUiState(
         id = id,
         name = name,
@@ -53,8 +53,8 @@ fun Review.toUiState(): ReviewUiState {
     )
 }
 
-fun Actor.toUiState(): MediaCastUiState {
-    return MediaCastUiState(
+fun Actor.toActorUiState(): ActorUiState {
+    return ActorUiState(
         name = name,
         poster = posterURL
     )
