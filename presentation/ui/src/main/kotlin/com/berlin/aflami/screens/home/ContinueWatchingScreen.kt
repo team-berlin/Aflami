@@ -33,7 +33,7 @@ import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenEffect
 import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingMediaInteractionListener
-import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingMediaUiState
+import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenState
 import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingMediaViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
@@ -89,7 +89,7 @@ private fun onReceiveEffect(navController: NavController, effect: ContinueWatchi
 
 @Composable
 fun WatchedMediaContent(
-    state: ContinueWatchingMediaUiState, listener: ContinueWatchingMediaInteractionListener,
+    state: ContinueWatchingScreenState, listener: ContinueWatchingMediaInteractionListener,
 ) {
 
     Column(modifier = Modifier.fillMaxSize().background(Theme.color.surface)) {

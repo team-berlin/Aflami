@@ -14,7 +14,7 @@ import usecase.tvshow.GetTopRatedTVShowUseCase
 class TopRatingViewModel(
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     private val getTopRatedTvShowsUseCase: GetTopRatedTVShowUseCase,
-) : BaseViewModel<TopRatingUiState, TopRatingScreenEffect>(TopRatingUiState()),
+) : BaseViewModel<TopRatingScreenState, TopRatingScreenEffect>(TopRatingScreenState()),
     TopRatingInteractionListener {
 
     init {

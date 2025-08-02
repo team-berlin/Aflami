@@ -13,8 +13,8 @@ import usecase.tvshow.ContinueWatchingTVShowUseCase
 class ContinueWatchingMediaViewModel(
     private val getContinueWatchingMoviesUseCase: ContinueWatchingMovieUseCase,
     private val getContinueWatchingTVShowsUseCase: ContinueWatchingTVShowUseCase,
-) : BaseViewModel<ContinueWatchingMediaUiState, ContinueWatchingScreenEffect>(
-    ContinueWatchingMediaUiState()
+) : BaseViewModel<ContinueWatchingScreenState, ContinueWatchingScreenEffect>(
+    ContinueWatchingScreenState()
 ), ContinueWatchingMediaInteractionListener {
 
     init {

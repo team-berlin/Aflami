@@ -1,12 +1,14 @@
-package com.berlin.aflami.viewmodel.home.continueWatching
+package com.berlin.aflami.viewmodel.home.toprating
 
+import androidx.compose.runtime.Immutable
 import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-data class ContinueWatchingMediaUiState(
-    val continueWatchingMediaFlow: Flow<PagingData<MediaUiState>> = emptyFlow(),
+@Immutable
+data class TopRatingScreenState(
+    val topRatedMediaFlow: Flow<PagingData<MediaUiState>> = emptyFlow(),
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
 )
