@@ -51,7 +51,7 @@ class SearchViewModel(
     private val clearTvShowSearchHistoryUseCase: ClearTVShowSearchHistoryUseCase,
     private val getMovieGenresUseCase: GetMovieGenresUseCase,
     private val getSeriesGenresUseCase: GetTVShowGenresUseCase,
-) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()), SearchInteractionListener,
+) : BaseViewModel<SearchUiState, SearchScreenEffect>(SearchUiState()), SearchScreenInteractionListener,
     FilterInteractionListener {
 
     private val _recentSearchState = MutableStateFlow<List<String>>(emptyList())
@@ -244,15 +244,15 @@ class SearchViewModel(
     }
 
     override fun onBackClicked() {
-        sendNewEffect(SearchUiEffect.NavigatedBack)
+        sendNewEffect(SearchScreenEffect.NavigatedBack)
     }
 
     override fun onWorldSearchCardClicked() {
-        sendNewEffect(SearchUiEffect.NavigateToWorldSearch)
+        sendNewEffect(SearchScreenEffect.NavigateToWorldSearchScreen)
     }
 
     override fun onActorSearchCardClicked() {
-        sendNewEffect(SearchUiEffect.NavigateToActorSearch)
+        sendNewEffect(SearchScreenEffect.NavigateToActorSearchScreen)
     }
 
     private fun startLoading() {
@@ -274,12 +274,12 @@ class SearchViewModel(
         onSearchQueryChanged(state.value.searchQuery)
     }
 
-    override fun onCardClicked(id: Long) {
+    override fun onMediaCardClicked(mediaId: Long) {
         val mediaType = when (state.value.selectedTabOption) {
             TabOption.MOVIES -> MediaType.MOVIE.name
             TabOption.TV_SHOWS -> MediaType.TV_SHOW.name
         }
-        sendNewEffect(SearchUiEffect.NavigatedToMovieDetailsScreen(id = id, mediaType))
+        sendNewEffect(SearchScreenEffect.NavigatedToMovieDetailsScreen(id = mediaId, mediaType))
     }
 
     override fun onRecentSearchClicked(query: String) {
@@ -340,7 +340,7 @@ class SearchViewModel(
         }
     }
 
-    override fun onCancelButtonClicked() {
+    override fun onCancelClicked() {
         updateState {
             it.copy(
                 isDialogVisible = false,

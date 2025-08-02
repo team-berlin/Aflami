@@ -61,8 +61,8 @@ import com.berlin.aflami.screens.search.getMovieGenreIcon
 import com.berlin.aflami.screens.search.getTvShowGenreIcon
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
-import com.berlin.aflami.viewmodel.search.SearchInteractionListener
-import com.berlin.aflami.viewmodel.search.SearchUiEffect
+import com.berlin.aflami.viewmodel.search.SearchScreenInteractionListener
+import com.berlin.aflami.viewmodel.search.SearchScreenEffect
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
@@ -120,12 +120,12 @@ fun SearchScreen(
 
 private fun onReceiveSearchEffect(
     navController: NavController,
-    effect: SearchUiEffect,
+    effect: SearchScreenEffect,
 ) {
     when (effect) {
-        is SearchUiEffect.NavigatedBack -> navController.popBackStack()
+        is SearchScreenEffect.NavigatedBack -> navController.popBackStack()
 
-        is SearchUiEffect.NavigatedToMovieDetailsScreen -> {
+        is SearchScreenEffect.NavigatedToMovieDetailsScreen -> {
 
             navController.navigate(
                 MediaDetailsDestination(
@@ -135,13 +135,13 @@ private fun onReceiveSearchEffect(
             )
         }
 
-        is SearchUiEffect.NavigateToActorSearch -> {
+        is SearchScreenEffect.NavigateToActorSearchScreen -> {
             navController.navigate(
                 SearchByActorDestination
             )
         }
 
-        is SearchUiEffect.NavigateToWorldSearch -> {
+        is SearchScreenEffect.NavigateToWorldSearchScreen -> {
             navController.navigate(
                 SearchByCountryDestination
             )
@@ -153,7 +153,7 @@ private fun onReceiveSearchEffect(
 @Composable
 private fun SearchScreenContent(
     state: SearchUiState,
-    listenerSearch: SearchInteractionListener,
+    listenerSearch: SearchScreenInteractionListener,
     filterSearch: FilterInteractionListener,
     recentSearchState: List<String>,
     onItemClick: (TextFieldValue) -> Unit,
@@ -351,8 +351,8 @@ private fun SearchScreenContent(
                                                         MediaCard(
                                                             modifier = Modifier.height(222.dp),
                                                             onClick = {
-                                                                listenerSearch.onCardClicked(
-                                                                    id = movie.id
+                                                                listenerSearch.onMediaCardClicked(
+                                                                    mediaId = movie.id
                                                                 )
                                                             },
                                                             mediaImg = movie.posterUrl,
@@ -419,7 +419,7 @@ private fun SearchScreenContent(
                                                         mediaImg = tvShows.posterUrl,
                                                         title = tvShows.title,
                                                         onClick = {
-                                                            listenerSearch.onCardClicked(
+                                                            listenerSearch.onMediaCardClicked(
                                                                 tvShows.id
                                                             )
                                                         },
