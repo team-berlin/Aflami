@@ -10,7 +10,7 @@ import androidx.paging.filter
 import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
-import com.berlin.aflami.viewmodel.mapper.toUIState
+import com.berlin.aflami.viewmodel.mapper.toMovieUIState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
@@ -173,7 +173,7 @@ class SearchViewModel(
                         )
                     }
                 ).flow
-                    .map { pagingData -> pagingData.map { it.toUIState() } }
+                    .map { pagingData -> pagingData.map { it.toMovieUIState() } }
                     .map { pagingData ->
                         pagingData.filter { movieUiState ->
                             val selectedRating =
@@ -277,7 +277,7 @@ class SearchViewModel(
     override fun onCardClicked(id: Long) {
         val mediaType = when (state.value.selectedTabOption) {
             TabOption.MOVIES -> MediaType.MOVIE.name
-            TabOption.TV_SHOWS -> MediaType.TVSHOW.name
+            TabOption.TV_SHOWS -> MediaType.TV_SHOW.name
         }
         sendNewEffect(SearchUiEffect.NavigatedToMovieDetailsScreen(id = id, mediaType))
     }

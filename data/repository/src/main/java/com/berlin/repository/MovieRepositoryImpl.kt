@@ -5,7 +5,6 @@ import com.berlin.repository.MediaType.MOVIE
 import com.berlin.repository.datasource.local.ContinueWatchingLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
-import com.berlin.repository.MediaType.TVSHOW
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
@@ -13,15 +12,20 @@ import com.berlin.repository.mapper.toLocalEntity
 import com.berlin.repository.mapper.toMedia
 import com.berlin.repository.mapper.toMovie
 import repository.MovieRepository
+import kotlin.Int
+import kotlin.String
+import kotlin.also
 import kotlin.collections.map
+import kotlin.let
+import kotlin.takeIf
 
 class MovieRepositoryImpl(
     private val localDataSource: ContinueWatchingLocalDataSource,
-    private val remoteDataSource: RemoteDataSource
+    private val remoteDataSource: RemoteDataSource,
 ) : MovieRepository {
 
-    override suspend fun getContinueWatchingMovies(): List<Movie> {
-        return localDataSource.getContinueWatchingMovie().map {
+    override suspend fun getContinueWatchingMovies(page: Int): List<Movie> {
+        return localDataSource.getContinueWatchingMovie(page = page).map {
             it.toMovie()
         }
     }
@@ -32,7 +36,7 @@ class MovieRepositoryImpl(
 
     override suspend fun getTopRatedMovies(page: Int): List<Movie> {
         return remoteDataSource.getTopRatedMovies(page).results?.map {
-             it!!.toDomain()
+            it!!.toDomain()
         }
 
     }
@@ -50,7 +54,7 @@ class MovieRepositoryImpl(
 
     override suspend fun getMoviesByCountry(
         query: String,
-        page: Int
+        page: Int,
     ): List<Movie> {
         val movies = localDataSource.getCachedSearch(query, QueryType.COUNTRY, page = page)
         if (!isExpiredOrEmpty(movies)) return movies.map { it.toDomain() }
@@ -81,7 +85,7 @@ class MovieRepositoryImpl(
 
     override suspend fun searchMovie(
         query: String,
-        page: Int
+        page: Int,
     ): List<Movie> {
         return (localDataSource.getCachedSearch(query, QueryType.MOVIE, pageSize = 20, page = page)
             .takeIf { !isExpiredOrEmpty(it) }?.map { it.toDomain() }

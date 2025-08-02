@@ -8,7 +8,7 @@ import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.UserMood
-import com.berlin.aflami.viewmodel.mapper.toUIState
+import com.berlin.aflami.viewmodel.mapper.toMovieUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
 import com.berlin.aflami.viewmodel.mapper.tvShowToUiState
 import com.berlin.aflami.viewmodel.search.GenreUiState
@@ -65,7 +65,7 @@ class HomeViewModel(
                 coroutineScope {
                     val movie = async { popularMoviesUseCase() }
                     val tvShow = async { popularTVShowsUseCase() }
-                    val movieList = movie.await().map { it.toUIState()}
+                    val movieList = movie.await().map { it.toMovieUIState()}
                     val tvShowList = tvShow.await().map { it.tvShowToUiState() }
                     _movies.value = movieList
                     _tvShows.value = tvShowList
@@ -204,7 +204,7 @@ class HomeViewModel(
     }
 
     private fun onGetMoviesByMoodSuccess(movies: List<Movie>) {
-        val moviesUiStates = movies.map { it.toUIState() }
+        val moviesUiStates = movies.map { it.toMovieUIState() }
         updateState {
             it.copy(
                 moodPickerUiState = it.moodPickerUiState.copy(
@@ -299,7 +299,7 @@ class HomeViewModel(
             updateState { state ->
                 state.copy(
                     upcomingMoviesSectionUiState = state.upcomingMoviesSectionUiState.copy(
-                        isLoading = false, upcomingMovies = filteredMovies.map { it.toUIState() }),
+                        isLoading = false, upcomingMovies = filteredMovies.map { it.toMovieUIState() }),
                 )
             }
         }, onError = { error ->

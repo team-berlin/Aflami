@@ -30,7 +30,7 @@ class CastViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> getMovieCastUseCase(mediaId).map { it.toUiState() }
-                    MediaType.TVSHOW -> getSeriesCastUseCase(mediaId).map { it.toUiState() }
+                    MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId).map { it.toUiState() }
                 }
             },
             onSuccess = { cast ->

@@ -111,7 +111,7 @@ private fun MoviesColumn(
             MediaCard(
                 modifier = modifier
                     .height(222.dp),
-                mediaImg = movie.poster,
+                mediaImg = movie.posterUrl,
                 title = movie.title,
                 date = movie.releaseYear,
                 rating = movie.rating,

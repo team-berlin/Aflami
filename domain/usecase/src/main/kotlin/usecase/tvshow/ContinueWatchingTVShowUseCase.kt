@@ -6,5 +6,5 @@ import repository.TVShowRepository
 class ContinueWatchingTVShowUseCase(
     private val repository: TVShowRepository
 ) {
-    suspend operator fun invoke(): List<TVShow> = repository.getContinueWatchingTVShows()
+    suspend operator fun invoke(page:Int): List<TVShow> = repository.getContinueWatchingTVShows(page)
 }

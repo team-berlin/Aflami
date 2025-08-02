@@ -11,7 +11,7 @@ import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
-import com.berlin.aflami.viewmodel.mapper.toUIState
+import com.berlin.aflami.viewmodel.mapper.toMovieUIState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.util.getCountriesNames
 import com.berlin.aflami.viewmodel.util.getCountryIsoCode
@@ -68,7 +68,7 @@ class SearchByCountryViewModel(
                         )
                     },
                 ).flow
-                    .map { it.map { it.toUIState() } }
+                    .map { it.map { it.toMovieUIState() } }
                     .cachedIn(viewModelScope)
             },
             onSuccess = ::onSearchSuccess,

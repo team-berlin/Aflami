@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.home.toprating
+package com.berlin.aflami.viewmodel.home.continueWatching
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -8,20 +8,29 @@ import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import kotlinx.coroutines.flow.update
-import usecase.movie.GetTopRatedMoviesUseCase
-import usecase.tvshow.GetTopRatedTVShowUseCase
+import kotlinx.coroutines.launch
+import usecase.movie.ContinueWatchingMovieUseCase
+import usecase.tvshow.ContinueWatchingTVShowUseCase
 
-class TopRatingViewModel(
-    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
-    private val getTopRatedTvShowsUseCase: GetTopRatedTVShowUseCase,
-) : BaseViewModel<TopRatingUiState, TopRatingScreenEffect>(TopRatingUiState()),
-    TopRatingInteractionListener {
+class ContinueWatchingMediaViewModel(
+    private val getContinueWatchingMoviesUseCase: ContinueWatchingMovieUseCase,
+    private val getContinueWatchingTVShowsUseCase: ContinueWatchingTVShowUseCase,
+) : BaseViewModel<ContinueWatchingMediaUiState, ContinueWatchingScreenEffect>(
+    ContinueWatchingMediaUiState()
+), ContinueWatchingMediaInteractionListener {
 
     init {
-        getTopRatingMedia()
+        viewModelScope.launch {
+            getContinueWatchingMedia()
+        }
     }
 
-    private fun getTopRatingMedia() {
+    override fun onBackClicked() = sendNewEffect(ContinueWatchingScreenEffect.NavigateBack)
+
+    override fun onMediaCardClicked(mediaId: Long, mediaType: MediaType) =
+        sendNewEffect(ContinueWatchingScreenEffect.NavigateToDetails(mediaId, mediaType))
+
+    private fun getContinueWatchingMedia() {
         _state.update {
             it.copy(isLoading = true, errorMessage = null)
         }
@@ -33,20 +42,21 @@ class TopRatingViewModel(
                         initialLoadSize = BasePagingSource.PAGE_SIZE
                     ),
                     pagingSourceFactory = {
-                        TopRatingMoviesPagingSource(
-                            getTopRatedMoviesUseCase,
-                            getTopRatedTvShowsUseCase
+                        ContinueWatchingMediaPagingSource(
+                            getContinueWatchingMoviesUseCase,
+                            getContinueWatchingTVShowsUseCase
                         )
                     }
                 ).flow.cachedIn(viewModelScope)
             },
-            onSuccess = { topRatingMediaFlow ->
+            onSuccess = { continueWatchingMedia ->
                 _state.update {
                     it.copy(
-                        topRatedMediaFlow = topRatingMediaFlow,
+                        continueWatchingMediaFlow = continueWatchingMedia,
                         isLoading = false,
                     )
                 }
+
             },
             onError =
                 { errorUiState ->
@@ -58,9 +68,4 @@ class TopRatingViewModel(
                 },
         )
     }
-
-    override fun onBackClicked() = sendNewEffect(TopRatingScreenEffect.NavigateBack)
-
-    override fun onMediaCardClicked(mediaId: Long, mediaType: MediaType) =
-        sendNewEffect(TopRatingScreenEffect.NavigateToMediaDetailsScreen(mediaId, mediaType))
 }

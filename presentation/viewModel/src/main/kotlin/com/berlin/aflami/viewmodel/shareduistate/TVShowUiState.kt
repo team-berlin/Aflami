@@ -1,10 +1,12 @@
 package com.berlin.aflami.viewmodel.shareduistate
 
+import com.berlin.entity.Genre
+
 data class TVShowUiState(
     val id: Long = 0L,
     val title: String = "",
     val rating: String = "",
     val releaseYear: String = "",
-    val genre: List<Int> = emptyList(),
+    val genre: List<Genre> = emptyList(),
     val poster: String = ""
 )

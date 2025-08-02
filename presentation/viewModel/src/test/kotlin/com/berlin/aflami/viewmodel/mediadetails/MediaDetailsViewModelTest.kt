@@ -171,7 +171,7 @@ class MediaDetailsViewModelTest {
         )
         coEvery { getTvShowDetailsUseCase(2, any()) } returns tvShow
         every { savedStateHandle.get<String>("id") } returns "2"
-        every { savedStateHandle.get<String>("media_type") } returns MediaType.TVSHOW.name
+        every { savedStateHandle.get<String>("media_type") } returns MediaType.TV_SHOW.name
         viewModel = MediaDetailsViewModel(
             savedStateHandle,
             getMovieDetailsUseCase,
@@ -188,7 +188,7 @@ class MediaDetailsViewModelTest {
         )
 
         // When
-        viewModel.getMediaDetails(2, MediaType.TVSHOW, "en")
+        viewModel.getMediaDetails(2, MediaType.TV_SHOW, "en")
         advanceUntilIdle()
 
         // Then
@@ -569,7 +569,7 @@ class MediaDetailsViewModelTest {
         )
         coEvery { getTvShowDetailsUseCase(1, any()) } returns tvShow
         every { savedStateHandle.get<String>("id") } returns "1"
-        every { savedStateHandle.get<String>("media_type") } returns MediaType.TVSHOW.name
+        every { savedStateHandle.get<String>("media_type") } returns MediaType.TV_SHOW.name
         viewModel = MediaDetailsViewModel(
             savedStateHandle,
             getMovieDetailsUseCase,
@@ -585,11 +585,11 @@ class MediaDetailsViewModelTest {
             getSeasonEpisodesUseCase
         )
 
-        viewModel.getMediaDetails(1, MediaType.TVSHOW, "en")
+        viewModel.getMediaDetails(1, MediaType.TV_SHOW, "en")
         advanceUntilIdle()
 
         // WHEN
-        viewModel.toggleMovieDetailsTab(MovieDetailsTabs.SEASON, 1, MediaType.TVSHOW)
+        viewModel.toggleMovieDetailsTab(MovieDetailsTabs.SEASON, 1, MediaType.TV_SHOW)
         advanceUntilIdle()
 
         // THEN

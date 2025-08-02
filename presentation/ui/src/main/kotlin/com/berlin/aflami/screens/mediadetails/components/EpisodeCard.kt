@@ -21,7 +21,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.Theme
@@ -48,7 +47,7 @@ fun EpisodeCard(
             ImageWithRatingBadge(
                 modifier = Modifier,
                 imageUrl = "https://image.tmdb.org/t/p/w342".plus(episode.stillPath),
-                rating = episode.voteAverage.toString()
+                rating = episode.rating.toString()
             )
 
             EpisodeDetails(
@@ -57,7 +56,7 @@ fun EpisodeCard(
                     .weight(1f),
                 episodeNumber = episode.episodeNumber,
                 title = episode.name,
-                time = episode.runtime.toString(),
+                time = episode.duration.toString(),
                 date = episode.airDate
             )
 

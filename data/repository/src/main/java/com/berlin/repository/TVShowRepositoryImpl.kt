@@ -14,11 +14,11 @@ import repository.TVShowRepository
 
 class TVShowRepositoryImpl(
     private val localDataSource: ContinueWatchingLocalDataSource,
-    private val remoteDataSource: RemoteDataSource
+    private val remoteDataSource: RemoteDataSource,
 ) : TVShowRepository {
 
-    override suspend fun getContinueWatchingTVShows(): List<TVShow> {
-        return localDataSource.getContinueWatchedTVShow().map {
+    override suspend fun getContinueWatchingTVShows(page: Int): List<TVShow> {
+        return localDataSource.getContinueWatchedTVShow(page = page).map {
             it.toTVShow()
         }
     }
@@ -33,11 +33,12 @@ class TVShowRepositoryImpl(
 
     override suspend fun getPopularTVShows(language: String): List<javax.print.attribute.standard.Media> {
         return remoteDataSource.getPopularTVShows(language).results?.filterNotNull()
-            ?.map { tVShowDto -> tVShowDto.toDomain(TV_SHOW) } ?: emptyList()    }
+            ?.map { tVShowDto -> tVShowDto.toDomain(TV_SHOW) } ?: emptyList()
+    }
 
     override suspend fun searchTVShow(
         query: String,
-        page: Int
+        page: Int,
     ): List<TVShow> {
         return (localDataSource.getCachedSearch(query, QueryType.TV, pageSize = 20, page = page)
             .takeIf { !isExpiredOrEmpty(it) }?.map { it.toTVShow() }

@@ -1,8 +1,8 @@
-package com.berlin.aflami.viewmodel.watchedmedia
+package com.berlin.aflami.viewmodel.home.continueWatching
 
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 
 interface ContinueWatchingMediaInteractionListener {
     fun onBackClicked()
-    fun onMediaCardClicked(id: Long, type: MediaType)
+    fun onMediaCardClicked(mediaId: Long, mediaType: MediaType)
 }

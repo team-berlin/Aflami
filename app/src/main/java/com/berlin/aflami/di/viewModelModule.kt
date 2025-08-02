@@ -10,7 +10,7 @@ import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
+import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingMediaViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module

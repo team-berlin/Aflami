@@ -152,7 +152,7 @@ private fun TopRatingContent(
                         title = topRatedMedia.title,
                         onClick = {
                             viewModel.onMediaCardClicked(
-                                id = topRatedMedia.id, mediaType = topRatedMedia.mediaType
+                                mediaId = topRatedMedia.id, mediaType = topRatedMedia.mediaType
                             )
                         },
                         typeOfMedia = topRatedMedia.mediaType.name,

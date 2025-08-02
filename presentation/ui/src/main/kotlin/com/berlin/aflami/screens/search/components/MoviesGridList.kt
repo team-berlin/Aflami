@@ -39,7 +39,7 @@ fun MoviesList(
                     MediaCard(
                         modifier = Modifier
                             .height(222.dp),
-                        mediaImg = movie.poster,
+                        mediaImg = movie.posterUrl,
                         title = movie.title,
                         typeOfMedia = stringResource(R.string.movie),
                         date = movie.releaseYear,

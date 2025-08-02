@@ -10,7 +10,7 @@ import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
-import com.berlin.aflami.viewmodel.mapper.toUIState
+import com.berlin.aflami.viewmodel.mapper.toMovieUIState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -71,7 +71,7 @@ class SearchByActorViewModel(
                         }
                     },
                 ).flow.map {
-                    it.map { it.toUIState() }
+                    it.map { it.toMovieUIState() }
                 }.cachedIn(viewModelScope)
             }, onSuccess = ::onSearchSuccess, onError = ::onSearchError
         )

@@ -54,8 +54,6 @@ import com.berlin.aflami.navigation.SearchByActorDestination
 import com.berlin.aflami.navigation.SearchByCountryDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
-import com.berlin.aflami.screens.search.components.ErrorMessage
-import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.SearchData
 import com.berlin.aflami.screens.search.getMovieGenreIcon
@@ -357,7 +355,7 @@ private fun SearchScreenContent(
                                                                     id = movie.id
                                                                 )
                                                             },
-                                                            mediaImg = movie.poster,
+                                                            mediaImg = movie.posterUrl,
                                                             title = movie.title,
                                                             typeOfMedia = stringResource(R.string.movies),
                                                             date = movie.releaseYear,
