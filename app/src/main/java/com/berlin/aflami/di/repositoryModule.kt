@@ -7,22 +7,62 @@ import com.berlin.repository.MovieRepositoryImpl
 import com.berlin.repository.SearchRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
 import com.berlin.repository.WatchedMediaRepositoryImpl
-import org.koin.dsl.module
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import repository.AuthenticationRepository
+import repository.ContinueWatchingRepository
+import repository.HomeRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.SearchRepository
 import repository.TvShowDetailsRepository
-import repository.ContinueWatchingRepository
-import repository.HomeRepository
+import javax.inject.Singleton
 
-val repositoryModule = module {
-    single<SearchRepository> { SearchRepositoryImpl(get(), get(),get(),get()) }
-    single<MovieDetailsRepository> { MovieDetailsRepositoryImpl(get(),get()) }
-    single<TvShowDetailsRepository> { TvShowDetailsRepositoryImpl(get(),get()) }
-    single <ContinueWatchingRepository>{ WatchedMediaRepositoryImpl(get()) }
-    single<MovieRepository> { MovieRepositoryImpl(get()) }
-    single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(),get()) }
-    single<HomeRepository> { HomeRepositoryImpl(get()) }
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
 
+    @Binds
+    @Singleton
+    abstract fun bindSearchRepository(
+        impl: SearchRepositoryImpl
+    ): SearchRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMovieDetailsRepository(
+        impl: MovieDetailsRepositoryImpl
+    ): MovieDetailsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTvShowDetailsRepository(
+        impl: TvShowDetailsRepositoryImpl
+    ): TvShowDetailsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindContinueWatchingRepository(
+        impl: WatchedMediaRepositoryImpl
+    ): ContinueWatchingRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMovieRepository(
+        impl: MovieRepositoryImpl
+    ): MovieRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthenticationRepository(
+        impl: AuthenticationRepositoryImpl
+    ): AuthenticationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindHomeRepository(
+        impl: HomeRepositoryImpl
+    ): HomeRepository
 }

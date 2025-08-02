@@ -1,7 +1,7 @@
 package com.berlin.aflami.di
 
 import android.content.Context
-import com.berlin.safeimageviewer.FireBaseModelManager
+import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,15 +11,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object MlModule {
-
+object SharedPrefsModule {
     @Provides
     @Singleton
-    fun provideFireBaseModelManager(
-        @ApplicationContext context: Context
-    ): FireBaseModelManager {
-        val sharedPreferences = context.getSharedPreferences("ml_prefs", Context.MODE_PRIVATE)
-        return FireBaseModelManager(prefs = sharedPreferences)
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     }
-
 }

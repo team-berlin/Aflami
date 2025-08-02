@@ -1,8 +1,5 @@
 package com.berlin.aflami.di
 
-import com.berlin.local.dao.CategoriesPreferencesDao
-import com.berlin.local.dao.RecentHistoryDao
-import com.berlin.local.dao.SearchDao
 import com.berlin.local.datasource.AuthenticationLocalDataSourceImp
 import com.berlin.local.datasource.CategoriesPreferencesDataSourceImpl
 import com.berlin.local.datasource.ContinueWatchingLocalDataSourceImpl
@@ -14,24 +11,74 @@ import com.berlin.remote.DataSourceImpl
 import com.berlin.remote.HomeRemoteDataSourceImpl
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
+import com.berlin.repository.datasource.local.ContinueWatchingLocalDataSource
+import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
-import com.berlin.repository.datasource.local.ContinueWatchingLocalDataSource
-import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.remote.HomeRemoteDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-import org.koin.dsl.module
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DataSourceModule {
 
-val dataSourceModule = module {
-    single<SearchLocalDataSource> { SearchLocalDataSourceImpl(get<SearchDao>()) }
-    single<RecentHistoryLocalDataSource> { RecentHistoryLocalDataSourceImpl(get<RecentHistoryDao>()) }
-    single<CategoriesPreferencesDataSource> { CategoriesPreferencesDataSourceImpl(get<CategoriesPreferencesDao>()) }
-    single<RemoteDataSource> { DataSourceImpl(get()) }
-    single<AuthenticationRemoteDataSource> { AuthenticationRemoteDataSourceImpl(get()) }
-    single<AuthenticationLocalDataSource> { AuthenticationLocalDataSourceImp(get()) }
-    single<ContinueWatchingLocalDataSource>{ ContinueWatchingLocalDataSourceImpl(get()) }
-    single<HomeRemoteDataSource>{ HomeRemoteDataSourceImpl(get()) }
-    single<GenreLocalDataSource> { GenreLocalDataSourceImpl(get()) }
+    @Binds
+    @Singleton
+    abstract fun bindSearchLocalDataSource(
+        impl: SearchLocalDataSourceImpl
+    ): SearchLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindRecentHistoryLocalDataSource(
+        impl: RecentHistoryLocalDataSourceImpl
+    ): RecentHistoryLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoriesPreferencesDataSource(
+        impl: CategoriesPreferencesDataSourceImpl
+    ): CategoriesPreferencesDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindRemoteDataSource(
+        impl: DataSourceImpl
+    ): RemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthenticationRemoteDataSource(
+        impl: AuthenticationRemoteDataSourceImpl
+    ): AuthenticationRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthenticationLocalDataSource(
+        impl: AuthenticationLocalDataSourceImp
+    ): AuthenticationLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindContinueWatchingLocalDataSource(
+        impl: ContinueWatchingLocalDataSourceImpl
+    ): ContinueWatchingLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindHomeRemoteDataSource(
+        impl: HomeRemoteDataSourceImpl
+    ): HomeRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindGenreLocalDataSource(
+        impl: GenreLocalDataSourceImpl
+    ): GenreLocalDataSource
 }
