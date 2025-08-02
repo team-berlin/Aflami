@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -222,7 +221,6 @@ fun MediaDetailsContent(
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
                     onMediaClick = { mediaId, type ->
                         listener.onMediaClicked(mediaId, type)
-                        Log.d("MoreLikeThisInScreen", "ID= $mediaId , Type= $type")
                     },
 
                     mediaType = mediaType,
@@ -252,19 +250,6 @@ fun MediaDetailsContent(
                 onRate = { rating -> listener.onSubmitRateClicked(rating) }
             )
         }
-
-//        if (state.showAddToListDialog && state.selectedAddToListMediaId != null) {
-//            AddToListDialog(
-//                mediaId = uiState.selectedAddToListMediaId,
-//                favouriteListId = uiState.selectedFavouriteListId,
-//                onConfirm = { listId ->
-//                    viewModel.onSelectFavouriteList(listId)
-//                },
-//                onDismiss = {
-//                    viewModel.onCancelAddingToFavouriteClicked()
-//                }
-//            )
-//        }
     }
 
 }

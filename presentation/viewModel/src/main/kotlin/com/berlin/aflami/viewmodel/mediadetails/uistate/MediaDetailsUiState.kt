@@ -11,7 +11,7 @@ data class MediaDetailsUiState(
     val title: String = "",
     val overview: String = "",
     val posterUrl: String = "",
-    val videoUrl:String?="",
+    val videoUrl: String? = "",
     val backdropUrl: String? = "",
     val genres: List<String> = emptyList(),
     val posterImages: List<String> = emptyList(),

@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.mediadetails.components
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,8 +32,7 @@ fun MoreLikeThisSection(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(196.dp)
-                    .clickable { onMediaClick(media.id,mediaType)
-                               Log.d("MoreLikeThisComposable", "ID= ${media.id} , Type= $mediaType")},
+                    .clickable { onMediaClick(media.id,mediaType) },
                 mediaImg = media.poster,
                 title = media.title,
                 typeOfMedia = if (mediaType == MediaType.MOVIE) stringResource( R.string.movie) else stringResource( R.string.Tv_Show),

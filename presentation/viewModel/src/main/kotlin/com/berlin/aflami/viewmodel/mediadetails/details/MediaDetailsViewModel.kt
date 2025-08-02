@@ -19,6 +19,7 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.util.toggle
 import com.berlin.entity.Episodes
 import com.berlin.viewModel.R
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -39,7 +40,6 @@ import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
 import usecase.mediadetails.GetTVShowVideos
 import usecase.mediadetails.GetTvShowDetailsUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 
@@ -81,11 +81,11 @@ class MediaDetailsViewModel @Inject constructor(
     private val _showLoginRequiredDialog = MutableStateFlow(false)
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
-    val mediaId: Long = mediaDetailsArgs.mediaId?:0
-    val mediaType: MediaType = mediaDetailsArgs.mediaType?: MediaType.MOVIE
+    val mediaId: Long = mediaDetailsArgs.mediaId ?: 0
+    val mediaType: MediaType = mediaDetailsArgs.mediaType ?: MediaType.MOVIE
 
     init {
-        playButtonEnable( mediaId,  mediaType)
+        playButtonEnable(mediaId, mediaType)
         getMediaCast(mediaId = mediaId, mediaType = mediaType)
         getMediaDetails(mediaId = mediaId, mediaType = mediaType)
         onShowMoreMediaLikeThisClicked(mediaId = mediaId, mediaType = mediaType)
@@ -177,7 +177,7 @@ class MediaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun playButtonEnable(id: Long,type: MediaType){
+    private fun playButtonEnable(id: Long, type: MediaType) {
         tryToCall(
             call = {
                 when (type) {
@@ -267,8 +267,7 @@ class MediaDetailsViewModel @Inject constructor(
 
     override fun onSubmitRateClicked(rate: Int) {
         val mediaId = _state.value.selectedRatingMediaId ?: return
-        // Handle the actual rating submission here,
-        // e.g., call usecase.submitRating(mediaId, rating)
+        //TODO: Handle the actual rating submission here, e.g., call usecase.submitRating(mediaId, rating)
         _state.update {
             it.copy(
                 showRatingDialog = false,
@@ -323,11 +322,18 @@ class MediaDetailsViewModel @Inject constructor(
             if (current.tab == tab) return@update current
 
             when (tab) {
-                MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(mediaId, mediaType)
+                MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(
+                    mediaId,
+                    mediaType
+                )
+
                 MovieDetailsTabs.REVIEWS -> onShowReviewsClicked(mediaId, mediaType)
                 MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(mediaId, mediaType)
                 MovieDetailsTabs.COMPANY_PRODUCTION -> onShowCompanyProductionClicked()
-                MovieDetailsTabs.SEASON -> onSeasonsClicked(_state.value.id, _state.value.numberOfSeasons ?: 0)
+                MovieDetailsTabs.SEASON -> onSeasonsClicked(
+                    _state.value.id,
+                    _state.value.numberOfSeasons ?: 0
+                )
             }
 
             current.copy(tab = tab, isSelected = true)
