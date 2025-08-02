@@ -4,8 +4,9 @@ import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.repository.datasource.local.ContinueWatchingLocalDataSource
 import com.berlin.repository.datasource.local.dto.ContinueWatchingMovieEntity
 import com.berlin.repository.datasource.local.dto.ContinueWatchingTVShowEntity
+import javax.inject.Inject
 
-class ContinueWatchingLocalDataSourceImpl(
+class ContinueWatchingLocalDataSourceImpl  @Inject constructor (
     private val continueWatchingDao: ContinueWatchingDao
 ) : ContinueWatchingLocalDataSource {
     override suspend fun getContinueWatchingMovie( pageSize: Int, page: Int): List<ContinueWatchingMovieEntity> {

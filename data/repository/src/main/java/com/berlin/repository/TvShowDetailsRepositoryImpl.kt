@@ -21,8 +21,9 @@ import com.berlin.repository.util.Constants.GENRE_TYPE_TV
 import exceptions.AflamiExceptions
 import repository.TvShowDetailsRepository
 import java.time.Instant
+import javax.inject.Inject
 
-class TvShowDetailsRepositoryImpl(
+class TvShowDetailsRepositoryImpl  @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val genreLocalDataSource: GenreLocalDataSource
 ) : TvShowDetailsRepository {

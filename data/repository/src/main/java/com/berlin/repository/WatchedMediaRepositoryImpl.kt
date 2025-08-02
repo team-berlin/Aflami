@@ -7,8 +7,9 @@ import com.berlin.repository.mapper.toLocalEntity
 import com.berlin.repository.mapper.toMovie
 import com.berlin.repository.mapper.toTVShow
 import repository.ContinueWatchingRepository
+import javax.inject.Inject
 
-class WatchedMediaRepositoryImpl(
+class WatchedMediaRepositoryImpl  @Inject constructor (
     private val localDataSource: ContinueWatchingLocalDataSource
 ) : ContinueWatchingRepository {
     override suspend fun getContinueWatchingMovies(page: Int): List<Movie> {
