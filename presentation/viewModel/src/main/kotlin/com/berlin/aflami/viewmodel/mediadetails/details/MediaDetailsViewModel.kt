@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import usecase.auth.IsLoggedInUseCase
 import usecase.mediadetails.AddContinueWatchingMovieUseCase
 import usecase.mediadetails.AddContinueWatchingTVShowUseCase
 import usecase.mediadetails.GetMovieCastUseCase
@@ -54,6 +55,7 @@ class MediaDetailsViewModel(
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
     private val getMovieVideos: GetMovieVideos,
     private val getTvShowVideos: GetTVShowVideos,
+    private val isLoggedInUseCase: IsLoggedInUseCase,
     val mediaId: Long,
     val mediaType: MediaType
 ) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
@@ -66,8 +68,6 @@ class MediaDetailsViewModel(
         val NO_MORE_MEDIA = R.string.there_is_no_more_media
         val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
     }
-
-//    val mediaType = MediaType.valueOf(mediaType)
 
     private val _tabSelectedUiState = MutableStateFlow(MovieDetailsTabsUiState())
     val tabSelectedUiState = _tabSelectedUiState.asStateFlow()
@@ -225,25 +225,26 @@ class MediaDetailsViewModel(
     }
 
     override fun onRateIconClicked(id: Long) {
-        if (true) {
-            _showLoginRequiredDialog.value = true
-        } else {
-            sendNewEffect(MediaDetailsScreenEffect.ShowRatingDialog(id))
+        checkLoginThen {
+            updateState {
+                it.copy(
+                    showRatingDialog = true,
+                    selectedRatingMediaId = id
+                )
+            }
         }
     }
 
-    override fun onAddMediaToFavouriteListClicked(favouriteListId: Int, mediaId: Int) {
-        if (true) {
-            _showLoginRequiredDialog.value = true
-        } else {
-            sendNewEffect(
-                MediaDetailsScreenEffect.ShowAddToFavoriteListDialog(
-                    favouriteListId = favouriteListId,
-                    mediaId = mediaId
+    override fun onAddMediaToFavouriteListClicked(favouriteListId: Int, mediaId: Long) {
+        checkLoginThen {
+            updateState {
+                it.copy(
+                    showAddToListDialog = true,
+                    selectedFavouriteListId = favouriteListId,
+                    selectedAddToListMediaId = mediaId
                 )
-            )
+            }
         }
-
     }
 
     //Dialog Buttons Interactions
@@ -255,18 +256,38 @@ class MediaDetailsViewModel(
 
     override fun onSelectRateClicked(rate: Float) {
 
+
     }
 
-    override fun onSubmitRateClicked(rate: Float) {
-
+    override fun onSubmitRateClicked(rate: Int) {
+        val mediaId = _state.value.selectedRatingMediaId ?: return
+        // Handle the actual rating submission here,
+        // e.g., call usecase.submitRating(mediaId, rating)
+        _state.update {
+            it.copy(
+                showRatingDialog = false,
+                selectedRatingMediaId = null
+            )
+        }
     }
 
     override fun onCancelRatingClicked() {
-
+        updateState {
+            it.copy(
+                showRatingDialog = false,
+                selectedRatingMediaId = null
+            )
+        }
     }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {
-
+        updateState {
+            it.copy(
+                showAddToListDialog = false,
+                selectedAddToListMediaId = null,
+                selectedFavouriteListId = null
+            )
+        }
     }
 
     override fun onCreateNewFavouriteListClicked() {
@@ -290,6 +311,22 @@ class MediaDetailsViewModel(
     }
 
     //Tab Section Interactions
+
+    override fun onTabSelected(tab: MovieDetailsTabs) {
+        _tabSelectedUiState.update { current ->
+            if (current.tab == tab) return@update current
+
+            when (tab) {
+                MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(mediaId, mediaType)
+                MovieDetailsTabs.REVIEWS -> onShowReviewsClicked(mediaId, mediaType)
+                MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(mediaId, mediaType)
+                MovieDetailsTabs.COMPANY_PRODUCTION -> onShowCompanyProductionClicked()
+                MovieDetailsTabs.SEASON -> onSeasonsClicked(_state.value.id, _state.value.numberOfSeasons ?: 0)
+            }
+
+            current.copy(tab = tab, isSelected = true)
+        }
+    }
 
     override fun onShowMoreMediaLikeThisClicked(mediaId: Long, mediaType: MediaType) {
         updateState {
@@ -441,6 +478,7 @@ class MediaDetailsViewModel(
         )
     }
 
+
     override fun onSeasonsClicked(seriesId: Long, numberOfSeasons: Int) {
         updateState {
             it.copy(
@@ -501,43 +539,6 @@ class MediaDetailsViewModel(
         )
     }
 
-    fun toggleMovieDetailsTab(
-        tab: MovieDetailsTabs,
-        mediaId: Long,
-        mediaType: MediaType,
-    ) {
-        _tabSelectedUiState.update { current ->
-            if (current.tab == tab) return@update current
-
-            when (tab) {
-                MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(
-                    mediaId = mediaId,
-                    mediaType = mediaType
-                )
-
-                MovieDetailsTabs.REVIEWS -> onShowReviewsClicked(
-                    mediaId = mediaId,
-                    mediaType = mediaType
-                )
-
-                MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(
-                    id = mediaId,
-                    mediaType = mediaType
-                )
-
-                MovieDetailsTabs.COMPANY_PRODUCTION -> onShowCompanyProductionClicked()
-                MovieDetailsTabs.SEASON -> onSeasonsClicked(
-                    _state.value.id,
-                    _state.value.numberOfSeasons ?: 0
-                )
-            }
-            current.copy(
-                tab = tab,
-                isSelected = true
-            )
-        }
-    }
-
     private fun handleErrorState(errorUiState: ErrorUiState, updateRowSection: Boolean = false) {
         updateState {
             val rowSection = if (updateRowSection) {
@@ -549,6 +550,16 @@ class MediaDetailsViewModel(
                 rowSection = rowSection,
                 isLoading = false
             )
+        }
+    }
+
+    private fun checkLoginThen(actionIfLoggedIn: () -> Unit) {
+        viewModelScope.launch {
+            if (isLoggedInUseCase()) {
+                actionIfLoggedIn()
+            } else {
+                _showLoginRequiredDialog.value = true
+            }
         }
     }
 }

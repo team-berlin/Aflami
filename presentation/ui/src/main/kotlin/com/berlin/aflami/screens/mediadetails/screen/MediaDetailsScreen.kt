@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -18,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +37,7 @@ import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
+import com.berlin.aflami.screens.mediadetails.components.RateDialog
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.DescriptionSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
@@ -95,16 +98,8 @@ fun MediaDetailsScreen(
             state = uiState,
             listener = viewModel,
             isDescriptionExpanded = viewModel.isDescriptionExpanded(),
-            onToggleDescriptionExpand = { viewModel.onReadMoreDescriptionClicked() },
             mediaChips = tabSelected.tab,
-            onChipClick = { tab ->
-                viewModel.toggleMovieDetailsTab(
-                    tab = tab,
-                    mediaId = viewModel.mediaId,
-                    mediaType = viewModel.mediaType,
-                )
-            },
-            mediaType = viewModel.mediaType
+            mediaType = viewModel.mediaType,
         )
     }
     AnimatedVisibility(
@@ -121,6 +116,8 @@ fun MediaDetailsScreen(
             description = stringResource(com.berlin.ui.R.string.login_required_warning)
         )
     }
+
+
 }
 
 
@@ -131,7 +128,8 @@ private fun onReceiveMediaDetailsEffect(
     when (mediaDetailsScreenEffect) {
         is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
             navController.navigate(
-                CastDestination(mediaDetailsScreenEffect.mediaId, mediaDetailsScreenEffect.mediaType)
+                CastDestination(mediaDetailsScreenEffect.mediaId,
+                    mediaDetailsScreenEffect.mediaType)
             )
         }
 
@@ -144,8 +142,7 @@ private fun onReceiveMediaDetailsEffect(
                 VideoWebViewDestination(mediaDetailsScreenEffect.videoUrl)
             )
         }
-        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog ->{}
-        is MediaDetailsScreenEffect.ShowRatingDialog -> {}
+
         is MediaDetailsScreenEffect.NavigateToMediaDetails -> {
             navController.navigate(
                 MediaDetailsDestination(
@@ -168,9 +165,7 @@ fun MediaDetailsContent(
     state: MediaDetailsUiState,
     listener: MediaInteractionListener,
     isDescriptionExpanded: Boolean,
-    onToggleDescriptionExpand: () -> Unit,
     mediaChips: MovieDetailsTabs,
-    onChipClick: (MovieDetailsTabs) -> Unit,
     mediaType: MediaType,
 ) {
     val listState = rememberLazyListState()
@@ -204,7 +199,7 @@ fun MediaDetailsContent(
             item {
                 DescriptionSection(
                     state.overview, isExpanded = isDescriptionExpanded,
-                    onToggleExpand = onToggleDescriptionExpand
+                    onToggleExpand = { listener.onReadMoreDescriptionClicked() }
                 )
             }
             item {
@@ -226,10 +221,12 @@ fun MediaDetailsContent(
                 TabSection(
                     tabState = mediaChips,
                     rowState = state.rowSection,
-                    onChipClick = onChipClick,
+                    onChipClick = { tab-> listener.onTabSelected(tab)},
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
-                    onMediaClick = { mediaId, type -> listener.onMediaClicked(mediaId, type) },
+                    onMediaClick = { mediaId, type -> listener.onMediaClicked(mediaId, type)
+                        Log.d("MoreLikeThisInScreen", "ID= $mediaId , Type= $type")},
+
                     mediaType = mediaType,
                 )
             }
@@ -244,12 +241,32 @@ fun MediaDetailsContent(
             lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
             onLastOptionClicked = {
-                listener.onAddMediaToFavouriteListClicked(0, state.id.toInt())
+                listener.onAddMediaToFavouriteListClicked(0, state.id)
             },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
             containerColor = Color.Unspecified,
         )
+
+        if (state.showRatingDialog && state.selectedRatingMediaId != null) {
+                RateDialog(
+                    onDismiss = {listener.onCancelRatingClicked()},
+                    onRate = {rating -> listener.onSubmitRateClicked(rating)}
+                )
+        }
+
+//        if (state.showAddToListDialog && state.selectedAddToListMediaId != null) {
+//            AddToListDialog(
+//                mediaId = uiState.selectedAddToListMediaId,
+//                favouriteListId = uiState.selectedFavouriteListId,
+//                onConfirm = { listId ->
+//                    viewModel.onSelectFavouriteList(listId)
+//                },
+//                onDismiss = {
+//                    viewModel.onCancelAddingToFavouriteClicked()
+//                }
+//            )
+//        }
     }
 
 }

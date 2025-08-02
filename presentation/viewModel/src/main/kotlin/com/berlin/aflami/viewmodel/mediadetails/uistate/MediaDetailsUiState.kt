@@ -35,7 +35,13 @@ data class MediaDetailsUiState(
     val duration: String? = null,
     val hasVideo: Boolean = false,
     val error: String? = null,
-    val rowSection: RowSectionUiState = RowSectionUiState.Loading
+    val rowSection: RowSectionUiState = RowSectionUiState.Loading,
+
+    val showRatingDialog: Boolean = false,
+    val showAddToListDialog: Boolean = false,
+    val selectedRatingMediaId: Long? = null,
+    val selectedAddToListMediaId: Long? = null,
+    val selectedFavouriteListId: Int? = null
 ) {
     fun toMovie(): Movie {
         return Movie(
