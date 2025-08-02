@@ -416,7 +416,7 @@ private fun SearchScreenContent(
 
                                                     MediaCard(
                                                         modifier = Modifier.height(222.dp),
-                                                        mediaImg = tvShows.poster,
+                                                        mediaImg = tvShows.posterUrl,
                                                         title = tvShows.title,
                                                         onClick = {
                                                             listenerSearch.onCardClicked(

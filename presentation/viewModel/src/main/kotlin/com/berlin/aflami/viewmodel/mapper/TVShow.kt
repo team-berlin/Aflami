@@ -11,7 +11,7 @@ fun TVShow.tvShowToUiState(): TVShowUiState {
         rating = DecimalFormat("#.#").format(rating).toString(),
         releaseYear = releaseDate.take(4),
         genre = genres,
-        poster = posterURL
+        posterUrl = posterURL
     )
 }
 //fun TVShow.toUIStateMedia(): MediaUiState {

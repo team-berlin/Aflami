@@ -9,5 +9,4 @@ data class MovieUIState(
     val releaseYear: String = "",
     val genre: List<Genre> = emptyList(),
     val posterUrl: String = "",
-//    val mediaType: String = "",
 )

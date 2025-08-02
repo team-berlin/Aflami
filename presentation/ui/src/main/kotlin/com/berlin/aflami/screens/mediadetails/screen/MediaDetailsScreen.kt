@@ -174,7 +174,7 @@ fun MediaDetailsContent(
             item {
                 BackdropPager(
                     state = state,
-                    onPlayClick = { listener.onPlayClicked(state.id) })
+                    onPlayClick = { listener.onPlayClicked(state.mediaId) })
             }
 
             item {
@@ -182,7 +182,7 @@ fun MediaDetailsContent(
             }
             item {
                 DescriptionSection(
-                    state.overview, isExpanded = isDescriptionExpanded,
+                    state.description, isExpanded = isDescriptionExpanded,
                     onToggleExpand = onToggleDescriptionExpand
                 )
             }
@@ -220,9 +220,9 @@ fun MediaDetailsContent(
 
             firstOption = painterResource(R.drawable.ic_rounded_star),
             lastOption = painterResource(R.drawable.ic_rounded_add_heart),
-            onFirstOptionClicked = { listener.onRateIconClicked(state.id) },
+            onFirstOptionClicked = { listener.onRateIconClicked(state.mediaId) },
             onLastOptionClicked = {
-                listener.onAddMediaToFavouriteListClicked(0, state.id.toInt())
+                listener.onAddMediaToFavouriteListClicked(0, state.mediaId.toInt())
             },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,

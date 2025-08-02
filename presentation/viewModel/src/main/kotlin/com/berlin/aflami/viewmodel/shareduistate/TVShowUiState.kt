@@ -8,5 +8,5 @@ data class TVShowUiState(
     val rating: String = "",
     val releaseYear: String = "",
     val genre: List<Genre> = emptyList(),
-    val poster: String = ""
+    val posterUrl: String = ""
 )

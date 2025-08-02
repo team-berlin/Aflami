@@ -94,12 +94,12 @@ class MediaDetailsViewModel(
                 details?.let {
                     updateState {
                         it.copy(
-                            id = details.id,
+                            mediaId = details.id,
                             title = details.title,
-                            overview = details.overview,
+                            description = details.overview,
                             posterUrl = details.posterUrl,
                             backdropUrl = details.backdropUrl,
-                            releaseYear = details.releaseYear,
+                            releaseDate = details.releaseYear,
                             numberOfSeasons = details.numberOfSeasons,
                             rating = details.rating,
                             runtime = details.runtime,
@@ -469,7 +469,7 @@ class MediaDetailsViewModel(
 
                 MovieDetailsTabs.COMPANY_PRODUCTION -> onShowCompanyProductionClicked()
                 MovieDetailsTabs.SEASON -> onSeasonsClicked(
-                    _state.value.id,
+                    _state.value.mediaId,
                     _state.value.numberOfSeasons ?: 0
                 )
             }

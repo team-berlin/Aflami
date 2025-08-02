@@ -135,18 +135,18 @@ class MediaDetailsViewModelTest {
         // Then
         val state = viewModel.state.value
         assertThat(state.isLoading).isFalse()
-        assertThat(state.id).isEqualTo(1)
+        assertThat(state.mediaId).isEqualTo(1)
         assertThat(state.title).isEqualTo("Test Movie")
-        assertThat(state.overview).isEqualTo("A test movie")
+        assertThat(state.description).isEqualTo("A test movie")
         assertThat(state.posterUrl).isEqualTo("poster.jpg")
         assertThat(state.backdropUrl).isEqualTo("backdrop.jpg")
-        assertThat(state.releaseYear).isEqualTo("2023-01-01")
+        assertThat(state.releaseDate).isEqualTo("2023-01-01")
         assertThat(state.rating).isEqualTo(20.0)
         assertThat(state.runtime).isEqualTo("2h 0m")
         assertThat(state.genres).containsExactly("Action")
         assertThat(state.hasVideo).isFalse()
         assertThat(state.originalCountry).isEqualTo("US")
-        assertThat(state.duration).isNull()
+        assertThat(state.runtime).isNull()
         assertThat(viewModel.companyProductionCache).isNotNull()
         assertThat(viewModel.companyProductionCache!!.first().id).isEqualTo("1")
         assertThat(viewModel.companyProductionCache!!.first().name).isEqualTo("Test Studio")
@@ -195,12 +195,12 @@ class MediaDetailsViewModelTest {
         // Then
         val state = viewModel.state.value
         assertThat(state.isLoading).isFalse()
-        assertThat(state.id).isEqualTo(2)
+        assertThat(state.mediaId).isEqualTo(2)
         assertThat(state.title).isEqualTo("Test Show")
-        assertThat(state.overview).isEqualTo("A test TV show")
+        assertThat(state.description).isEqualTo("A test TV show")
         assertThat(state.posterUrl).isEqualTo("poster.jpg")
         assertThat(state.backdropUrl).isEqualTo("backdrop.jpg")
-        assertThat(state.releaseYear).isEqualTo("2022-01-01") // just the year, not full date!
+        assertThat(state.releaseDate).isEqualTo("2022-01-01") // just the year, not full date!
         assertThat(state.rating).isEqualTo(7.5)
         assertThat(state.runtime).isEmpty() // always "" for TV shows
         assertThat(state.genres).containsExactly("Drama")

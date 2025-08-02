@@ -45,11 +45,11 @@ fun MediaOverviewSection(state: MediaDetailsUiState) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            state.releaseYear,
+            state.releaseDate,
             style = Theme.textStyle.label.small,
             color = Theme.color.textColors.hint
         )
-        state.duration?.takeIf { it.isNotEmpty() }?.let {
+        state.runtime?.takeIf { it.isNotEmpty() }?.let {
             CircularDot()
             Text(it, style = Theme.textStyle.label.small, color = Theme.color.textColors.hint)
         }
