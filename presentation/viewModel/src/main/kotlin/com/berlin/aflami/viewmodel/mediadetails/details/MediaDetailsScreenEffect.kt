@@ -16,4 +16,6 @@ sealed class MediaDetailsScreenEffect {
         val favouriteListId: Int,
         val mediaId: Int
     ) : MediaDetailsScreenEffect()
+
+    data object NavigateToLogin : MediaDetailsScreenEffect()
 }

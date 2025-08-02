@@ -232,18 +232,6 @@ class MediaDetailsViewModel(
         }
     }
 
-    override fun onSelectRateClicked(rate: Float) {
-
-    }
-
-    override fun onSubmitRateClicked(rate: Float) {
-
-    }
-
-    override fun onCancelRatingClicked() {
-
-    }
-
     override fun onAddMediaToFavouriteListClicked(favouriteListId: Int, mediaId: Int) {
         if (true) {
             _showLoginRequiredDialog.value = true
@@ -255,6 +243,25 @@ class MediaDetailsViewModel(
                 )
             )
         }
+
+    }
+
+    //Dialog Buttons Interactions
+
+    override fun onLoginButtonClicked() {
+        _showLoginRequiredDialog.value = false
+        sendNewEffect(MediaDetailsScreenEffect.NavigateToLogin)
+    }
+
+    override fun onSelectRateClicked(rate: Float) {
+
+    }
+
+    override fun onSubmitRateClicked(rate: Float) {
+
+    }
+
+    override fun onCancelRatingClicked() {
 
     }
 
@@ -281,6 +288,8 @@ class MediaDetailsViewModel(
     override fun onCancelCreatingNewListClicked() {
 
     }
+
+    //Tab Section Interactions
 
     override fun onShowMoreMediaLikeThisClicked(mediaId: Long, mediaType: MediaType) {
         updateState {
@@ -360,8 +369,6 @@ class MediaDetailsViewModel(
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
         )
     }
-
-
 
     override fun onShowMediaGalleryClicked(id: Long, mediaType: MediaType) {
         updateState {

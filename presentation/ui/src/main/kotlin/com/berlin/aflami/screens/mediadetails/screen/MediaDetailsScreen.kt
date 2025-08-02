@@ -24,12 +24,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType.Companion.Uri
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
+import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.navigation.MediaDetailsDestination
@@ -114,7 +114,7 @@ fun MediaDetailsScreen(
     ) {
         LoginRequiredDialog(
             onLoginClick = {
-                viewModel.showLoginDialog(false)
+                viewModel.onLoginButtonClicked()
             },
             onDismiss = { viewModel.showLoginDialog(false) },
             title = stringResource(com.berlin.ui.R.string.login_required),
@@ -155,6 +155,10 @@ private fun onReceiveMediaDetailsEffect(
             ){
                 launchSingleTop = true
             }
+        }
+
+        MediaDetailsScreenEffect.NavigateToLogin -> {
+            navController.navigate(LoginDestination)
         }
     }
 }
@@ -244,7 +248,7 @@ fun MediaDetailsContent(
             },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
-            containerColor = Color.Unspecified, // transparent so Modifier.background takes effect
+            containerColor = Color.Unspecified,
         )
     }
 
