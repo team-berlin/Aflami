@@ -2,7 +2,7 @@ package com.berlin.aflami.di
 
 import com.berlin.local.datasource.AuthenticationLocalDataSourceImp
 import com.berlin.local.datasource.CategoriesPreferencesDataSourceImpl
-import com.berlin.local.datasource.ContinueWatchingLocalDataSourceImpl
+import com.berlin.local.datasource.RecentlyWatchedLocalDataSourceImpl
 import com.berlin.local.datasource.GenreLocalDataSourceImpl
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
 import com.berlin.local.datasource.SearchLocalDataSourceImpl
@@ -11,7 +11,7 @@ import com.berlin.remote.DataSourceImpl
 import com.berlin.remote.HomeRemoteDataSourceImpl
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
-import com.berlin.repository.datasource.local.ContinueWatchingLocalDataSource
+import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
@@ -67,8 +67,8 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindContinueWatchingLocalDataSource(
-        impl: ContinueWatchingLocalDataSourceImpl
-    ): ContinueWatchingLocalDataSource
+        impl: RecentlyWatchedLocalDataSourceImpl
+    ): RecentlyWatchedLocalDataSource
 
     @Binds
     @Singleton

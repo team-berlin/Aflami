@@ -9,5 +9,4 @@ fun CastItemDto.toDomain(): Actor {
         name = this.name.orEmpty(),
         posterURL = "${POSTER_PREFIX}${this.profilePath.orEmpty()}",
     )
-
 }

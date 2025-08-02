@@ -2,33 +2,32 @@ package com.berlin.repository
 
 import com.berlin.entity.TVShow
 import com.berlin.repository.MediaType.TV_SHOW
-import com.berlin.repository.datasource.local.ContinueWatchingLocalDataSource
+import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocal
 import com.berlin.repository.mapper.toLocalEntity
-import com.berlin.repository.mapper.toTVShow
 import repository.TVShowRepository
 
 class TVShowRepositoryImpl(
-    private val localDataSource: ContinueWatchingLocalDataSource,
+    private val localDataSource: RecentlyWatchedLocalDataSource,
     private val remoteDataSource: RemoteDataSource,
 ) : TVShowRepository {
 
     override suspend fun getContinueWatchingTVShows(page: Int): List<TVShow> {
-        return localDataSource.getContinueWatchedTVShow(page = page).map {
-            it.toTVShow()
+        return localDataSource.getRecentlyWatchedTvShow(page = page).map {
+            it.toDomain()
         }
     }
 
     override suspend fun addContinueWatchingTVShow(tvShow: TVShow) {
-        localDataSource.addContinueWatchedTVShow(tvShow.toLocalEntity())
+        localDataSource.addRecentlyWatchedTvShow(tvShow.toLocalEntity())
     }
 
     override suspend fun getTopRatedSeries(page: Int): List<TVShow> {
-        return remoteDataSource.getTopRatedSeries(page).topRatedSeries.map { seriesDto -> seriesDto.toTVShow() }
+        return remoteDataSource.getTopRatedSeries(page).topRatedSeries.map { seriesDto -> seriesDto.toDomain() }
     }
 
     override suspend fun getPopularTVShows(language: String): List<javax.print.attribute.standard.Media> {
@@ -41,12 +40,12 @@ class TVShowRepositoryImpl(
         page: Int,
     ): List<TVShow> {
         return (localDataSource.getCachedSearch(query, QueryType.TV, pageSize = 20, page = page)
-            .takeIf { !isExpiredOrEmpty(it) }?.map { it.toTVShow() }
-            ?: remoteDataSource.searchTvShows(query, language, page).results?.filterNotNull()?.map {
+            .takeIf { !isExpiredOrEmpty(it) }?.map { it.toDomain() }
+            ?: remoteDataSource.getTvShowsByKeyword(query, language, page).results?.filterNotNull()?.map {
                 it.toLocal(
                     query, QueryType.TV.name, page, "TVShow"
                 )
-            }?.also { localDataSource.cacheSearch(it) }?.map { it.toTVShow() } ?: emptyList())
+            }?.also { localDataSource.cacheSearch(it) }?.map { it.toDomain() } ?: emptyList())
     }
 
     override suspend fun getRecentTVShowsSearchQueries(): List<String> {

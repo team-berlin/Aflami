@@ -5,11 +5,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EpisodesSeasonDto(
+data class SeasonEpisodesDto(
     @SerialName("air_date")
     val airDate: String? = null,
     @SerialName("episodes")
-    val episodes: List<EpisodeDto?>? = null,
+    val episodes: List<EpisodeDto>? = null,
     @SerialName("_id")
     val id: String? = null,
     @SerialName("id")

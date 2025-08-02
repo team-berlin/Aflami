@@ -1,120 +1,147 @@
 package com.berlin.repository.mapper
 
-import com.berlin.entity.Season
 import com.berlin.entity.Episode
+import com.berlin.entity.Review
+import com.berlin.entity.Season
 import com.berlin.entity.TVShow
-import com.berlin.entity.TvShowDetails
-import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
+import com.berlin.repository.datasource.local.dto.TVShowEntity
+import com.berlin.repository.datasource.remote.dto.SeasonDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
-import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.datasource.remote.dto.details.EpisodeDto
-import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
-import kotlinx.datetime.toLocalDate
-import java.time.Instant
+import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 
-fun SearchingEntity.toTVShow(): TVShow {
+
+fun TVShowDetailsDto.toDomain(
+    reviews: List<Review>,
+    galleryImages: List<String> = emptyList(),
+    episodes: List<Episode>,
+    hasVideo: Boolean,
+): TVShow {
+    return TVShow(
+        id = this.id?.toLong() ?: 0L,
+        title = this.name ?: "",
+        rating = this.voteAverage ?: 0.0,
+        posterURL = this.posterPath ?: "",
+        releaseDate = this.firstAirDate ?: "",
+        genres = this.genres?.map { it.toDomain() } ?: emptyList(),
+        screenShot = this.posterPath ?: "",
+        description = this.overview ?: "Description not available",
+        duration = this.episodeRunTime?.firstOrNull() ?: 0,
+        hasVideo = hasVideo,
+        productionCompanies = this.productionCompanies?.map {
+            it.toDomain()
+        } ?: emptyList(),
+        originCountry = this.originCountry?.firstOrNull() ?: "",
+        seasons = this.seasonDtos?.map { it.toDomain(episodes) } ?: emptyList(),
+        galleryUrl = galleryImages,
+        reviews = reviews)
+}
+
+fun TVShow.toLocal(): TVShowEntity {
+    return TVShowEntity(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseDate = this.releaseDate,
+        genres = emptyList(),
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        productionCompanies = emptyList(),
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        reviews = emptyList(),
+        seasons = emptyList()
+    )
+}
+fun TVShowEntity.toDomain(): TVShow{
     return TVShow(
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseYear = this.releaseYear.toLocalDate(),
-        genre = this.genre,
-        poster = this.poster,
+        releaseDate = this.releaseDate,
+        genres = this.genres,
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        productionCompanies = this.productionCompanies,
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        seasons = emptyList(),
+        reviews = emptyList()
     )
+
 }
 
-fun TVShowDto.toLocal(query: String, type: String, page: Int, mediaType: String): SearchingEntity {
-    return SearchingEntity(
-        query = query,
-        type = type,
-        time = Instant.now().epochSecond,
-        id = this.id?.toLong() ?: 0L,
-        title = this.name ?: "",
-        rating = this.voteAverage ?: 0.0,
-        releaseYear = this.firstAirDate?.takeIf { it.isNotBlank() }?.toLocalDate()?.toString() ?: "2000-01-01",
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
-        mediaType = mediaType,
-        page = page,
-    )
-}
 
-fun TVShowDto.toTVShow(): TVShow {
+fun RecentlyWatchedTvShowEntity.toDomain(): TVShow {
     return TVShow(
-        id = this.id?.toLong() ?: 0L,
-        title = this.name ?: "",
-        rating = this.voteAverage ?: 0.0,
-        releaseYear = stringToLocalDate(
-            dateString = this.firstAirDate.toString()
-        ),
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseDate = this.releaseDate,
+        genres = this.genres,
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        productionCompanies = this.productionCompanies,
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        seasons = this.seasons,
+        reviews = this.reviews,
+    )
+}
+fun TVShow.toLocalEntity(): RecentlyWatchedTvShowEntity {
+    return RecentlyWatchedTvShowEntity(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseDate = this.releaseDate,
+        genres = this.genres,
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        productionCompanies = this.productionCompanies,
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        seasons = this.seasons,
+        reviews = this.reviews,
     )
 }
 
-fun TVShowDetailsDto.toDomain(): TvShowDetails {
-    return TvShowDetails(
-        id = this.id?.toLong() ?: 0L,
-        title = this.name.orEmpty(),
-        overview = this.overview.orEmpty(),
-        posterUrl = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
-        backdropUrl = "$BACKDROP_PREFIX${this.backdropPath.orEmpty()}",
-        releaseDate = this.firstAirDate.orEmpty(),
-        rating = this.voteAverage ?: 0.0,
-        runtime = this.episodeRunTime?.firstOrNull() ?: 0,
-        genres = this.genres?.map { it.toEntity() } ?: emptyList(),
-        seasons = this.seasonDtos?.map { it.toEntity() } ?: emptyList(),
-        originCountry = this.originCountry?.get(0),
-        numberOfSeasons = this.numberOfSeasons,
-        productionCompanies = this.productionCompanies?.map { company ->
-            company.toEntity()
-        } ?: emptyList()
-    )
-}
 
-fun TVShowDto.toDomain(mediaType: String): Media {
-    return Media(
-        id = this.id?.toLong() ?: 0L,
-        title = this.name.orEmpty(),
-        rating = this.voteAverage ?: 0.0,
-        releaseYear = stringToLocalDate(firstAirDate ?: ""),
-        mediaType = mediaType,
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
-    )
-}
 
-fun Season.toEntity() = com.berlin.entity.Season(
-    airDate = airDate,
-    episodeCount = episodeCount,
-    id = id,
-    name = name,
-    overview = overview,
-    posterUrl = posterPath,
-    seasonNumber = seasonNumber,
-    voteAverage = voteAverage
+fun SeasonDto.toDomain(
+    episodes: List<Episode>
+) = Season(
+    id = this.id?.toLong() ?: 0L,
+    episodeCount = this.episodeCount ?: 0,
+    episodes = episodes,
+    name = this.name ?: "",
+    description = this.overview ?: "",
+    posterURL = this.posterPath ?: "",
+    seasonNumber = this.seasonNumber ?: 0
 )
-
-fun EpisodesSeasonDto.toDomain(): EpisodesSeason {
-    return EpisodesSeason(
-        idSeason = this.id_Season,
-        name = this.name,
-        episodes = this.episodes?.filterNotNull()?.map { it.toEpisode() },
-        seasonNumber = this.seasonNumber,
-        posterPath = this.posterPath?.let { POSTER_PREFIX + it }
-    )
-}
-fun EpisodeDto.toEpisode(): Episode {
+val t= SeasonEpisodesDto
+fun EpisodeDto.toDomain(): Episode {
     return Episode(
-        stillPath = this.stillPath,
-        airDate = this.airDate,
-        episodeNumber = this.episodeNumber,
-        episodeType = this.episodeType,
-        episodeId = this.id,
-        name = this.name,
-        description = this.overview,
-        duration = this.runtime.formatRuntime(),
-        tvShowId = this.showId,
-        rating = this.voteAverage
+        id = this.id?.toLong() ?: 0L,
+        name = this.name ?: "",
+        overview = this.overview ?: "",
+        airDate = this.airDate ?: "",
+        episodeNumber = this.episodeNumber ?: 0,
+        seasonNumber = this.seasonNumber ?: 0,
+        stillPath = this.stillPath ?: "",
+        voteAverage = this.voteAverage ?: 0.0
     )
 }
+

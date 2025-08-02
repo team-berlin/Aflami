@@ -12,8 +12,8 @@ import com.berlin.local.dao.GenreDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
-import com.berlin.repository.datasource.local.dto.ContinueWatchingMovieEntity
-import com.berlin.repository.datasource.local.dto.ContinueWatchingTVShowEntity
+import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
+import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
 import com.berlin.repository.datasource.local.dto.GenreEntity
 import com.berlin.repository.datasource.local.dto.RecentHistoryEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
@@ -24,8 +24,8 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
         SearchingEntity::class,
         RecentHistoryEntity::class,
         CategoriesPreferencesEntity::class,
-        ContinueWatchingMovieEntity::class,
-        ContinueWatchingTVShowEntity::class,
+        RecentlyWatchedMovieEntity::class,
+        RecentlyWatchedTvShowEntity::class,
         GenreEntity::class
     ], version = 1, exportSchema = false
 )

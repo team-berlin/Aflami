@@ -8,32 +8,36 @@ import com.berlin.entity.TVShow
 import com.berlin.entity.MediaImage
 import com.berlin.entity.Video
 import android.util.Log
+import com.berlin.exception.AflamiException
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
-import com.berlin.repository.mapper.toTVShow
-import exceptions.AflamiExceptions
-import repository.TVShowDetailsRepository
+import repository.TvShowDetailsRepository
 import java.time.Instant
 import javax.inject.Inject
 
 class TvShowDetailsRepositoryImpl  @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-) : TVShowDetailsRepository {
-    override suspend fun getTVShowDetails(tvShowId: Long): TVShow? {
-        return try {
-            remoteDataSource.getTvShowDetails(id).toDomain()
-        } catch (exception: AflamiExceptions) {
-            throw exception
-        }
+) : TvShowDetailsRepository {
+    override suspend fun getTvShowDetails(tvShowId: Long): TVShow {
+        val reviews= getTVShowReviews(tvShowId)
+        val galleryImages = getSeriesImages(tvShowId).backdrops.take(10)
+        val hasVideo = getTVShowVideos(tvShowId).isNotEmpty()
+        val episodes = remoteDataSource.getEpisodeSeasonSeries(tvShowId, 1).episodes?.map { it.toDomain() } ?: emptyList()
+        return remoteDataSource.getTvShowDetailsById(tvShowId)
+        .toDomain(
+            reviews =reviews ,
+            galleryImages = galleryImages,
+            episodes = episodes,
+            hasVideo =hasVideo ,
+        )
     }
+
+
 
     override suspend fun getSeriesImages(id: Long): MediaImage {
         return try {
-            val imagesResponse = remoteDataSource.getSeriesImages(id)
-
-            Log.d("SeriesRepository", "Backdrops: ${imagesResponse.backdrops}")
-            Log.d("SeriesRepository", "Posters: ${imagesResponse.posters}")
+            val imagesResponse = remoteDataSource.getSeriesImagesById(id)
 
             val backdrops = imagesResponse.backdrops
                 ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
@@ -47,8 +51,20 @@ class TvShowDetailsRepositoryImpl  @Inject constructor(
         }
     }
 
+    override suspend fun getSeriesCastDetails(seriesId: Long): List<Actor> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getSeriesSimilar(seriesId: Long): List<TVShow> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getReviews(id: Long): List<Review> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getTVShowActors(tvShowId: Long): List<Actor> {
-        return remoteDataSource.getSeriesCastDetails(
+        return remoteDataSource.getSeriesCastDetailsById(
             seriesId
         ).cast?.mapNotNull { castItemDto ->
             castItemDto?.toDomain()
@@ -56,8 +72,8 @@ class TvShowDetailsRepositoryImpl  @Inject constructor(
     }
 
     override suspend fun getSimilarTVShows(tvShowId: Long): List<TVShow> {
-        return remoteDataSource.getSeriesSimilar(tvShowId).results?.mapNotNull { tvShowDto ->
-            tvShowDto?.toTVShow()
+        return remoteDataSource.getSimilarSeriesById(tvShowId).results?.mapNotNull { tvShowDto ->
+            tvShowDto?.toDomain()
         } ?: emptyList()
     }
 
@@ -72,6 +88,10 @@ class TvShowDetailsRepositoryImpl  @Inject constructor(
     ): List<Episode?> {
         return remoteDataSource.getEpisodeSeasonSeries(tvShowId, seasonNumber).toDomain().episodes
             ?: emptyList()
+    }
+
+    override suspend fun getSeriesGenres(): List<Genre> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getTVShowGenres(): List<Genre> {

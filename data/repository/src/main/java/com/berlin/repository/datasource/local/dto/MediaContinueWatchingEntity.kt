@@ -8,7 +8,7 @@ import com.berlin.entity.Review
 import com.berlin.entity.Season
 
 @Entity(tableName = "Movie_Continue_Watching")
-data class ContinueWatchingMovieEntity(
+data class RecentlyWatchedMovieEntity(
     @PrimaryKey
     val id: Long,
     val title: String,
@@ -27,7 +27,7 @@ data class ContinueWatchingMovieEntity(
 )
 
 @Entity(tableName = "TVShow_Continue_Watching")
-data class ContinueWatchingTVShowEntity(
+data class RecentlyWatchedTvShowEntity(
     @PrimaryKey
     val id :Long,
     val title:String,

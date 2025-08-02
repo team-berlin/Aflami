@@ -1,6 +1,5 @@
 package com.berlin.repository
 
-import android.util.Log
 import com.berlin.entity.Genre
 import com.berlin.entity.Actor
 import com.berlin.entity.MediaImage
@@ -8,12 +7,14 @@ import com.berlin.entity.Movie
 import com.berlin.entity.Review
 import com.berlin.entity.Video
 import com.berlin.exception.AflamiException
+import com.berlin.repository.datasource.local.GenreLocalDataSource
+import com.berlin.repository.datasource.local.dto.GenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
+import com.berlin.repository.util.Constants
 import repository.MovieDetailsRepository
 import java.time.Instant
-import javax.inject.Inject
 
 class MovieDetailsRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
@@ -21,20 +22,9 @@ class MovieDetailsRepositoryImpl(
 ) : MovieDetailsRepository {
 
 
-    override suspend fun getMovieCastDetails(movieId: Long): List<MediaCast> {
-        return remoteDataSource.getMovieCastDetails(
-            movieId
-        ).cast?.mapNotNull { castItemDto ->
-            castItemDto?.toDomain()
-        } ?: emptyList()
-    }
-
     override suspend fun getMovieImages(movieId: Long): MediaImage {
         return try {
             val imagesResponse = remoteDataSource.getMovieImages(movieId)
-
-            Log.d("Repository", "Backdrops: ${imagesResponse.backdrops}")
-            Log.d("Repository", "Posters: ${imagesResponse.posters}")
 
             val backdrops = imagesResponse.backdrops
                 ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
@@ -48,9 +38,11 @@ class MovieDetailsRepositoryImpl(
         }
     }
 
-    override suspend fun getMovieDetails(id: Long): Movie? {
+    override suspend fun getMovieDetails(id: Long): Movie{
+
+        val review=remoteDataSource.getMovieReviews(id).results?.map { it.toDomain() }?:emptyList()
         return try {
-            remoteDataSource.getMovieDetails(id).toDomain()
+            remoteDataSource.getMovieDetails(id).toDomain(review)
         } catch (exception: AflamiException) {
             throw exception
         }
@@ -65,8 +57,9 @@ class MovieDetailsRepositoryImpl(
     }
 
     override suspend fun getSimilarMovies(movieId: Long): List<Movie> {
-        return remoteDataSource.getMovieSimilar(movieId).results?.mapNotNull { movieDto ->
-            movieDto.toDomain()
+        val review=remoteDataSource.getMovieReviews(movieId).results?.map { it.toDomain() }?:emptyList()
+        return remoteDataSource.getSimilarMovies(movieId).results?.mapNotNull { movieDto ->
+            movieDto.toDomain(review)
         } ?: emptyList()
     }
 

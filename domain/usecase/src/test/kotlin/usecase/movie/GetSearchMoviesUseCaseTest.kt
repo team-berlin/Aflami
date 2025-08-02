@@ -8,7 +8,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
 
@@ -23,37 +22,37 @@ class GetSearchMoviesUseCaseTest {
 
     @Test
     fun `should return movies when repository returns result`() = runTest {
-        coEvery { searchRepository.searchMovie(QUERY, PAGE) } returns movies
+        coEvery { searchRepository.getMovieByKeyWord(QUERY, PAGE) } returns movies
 
         // When
         val result = getSearchMoviesUseCase(QUERY, PAGE)
 
         // Then
         assertThat(result).isEqualTo(movies)
-        coVerify(exactly = 1) { searchRepository.searchMovie(QUERY, PAGE) }
+        coVerify(exactly = 1) { searchRepository.getMovieByKeyWord(QUERY, PAGE) }
     }
 
     @Test
     fun `should return empty list when repository returns nothing`() = runTest {
-        coEvery { searchRepository.searchMovie(QUERY, PAGE) } returns emptyList()
+        coEvery { searchRepository.getMovieByKeyWord(QUERY, PAGE) } returns emptyList()
 
         val result = getSearchMoviesUseCase(QUERY, PAGE)
 
         assertThat(result).isEmpty()
-        coVerify(exactly = 1) { searchRepository.searchMovie(QUERY, PAGE) }
+        coVerify(exactly = 1) { searchRepository.getMovieByKeyWord(QUERY, PAGE) }
     }
 
     @Test
     fun `should throw exception when repository throws`() = runTest {
 
-        coEvery { searchRepository.searchMovie(QUERY, PAGE) } throws Exception(EXCEPTION)
+        coEvery { searchRepository.getMovieByKeyWord(QUERY, PAGE) } throws Exception(EXCEPTION)
 
         val thrown = assertThrows<Exception> {
             getSearchMoviesUseCase(QUERY, PAGE)
         }
 
         assertThat(thrown).hasMessageThat().isEqualTo(EXCEPTION)
-        coVerify(exactly = 1) { searchRepository.searchMovie(QUERY, PAGE) }
+        coVerify(exactly = 1) { searchRepository.getMovieByKeyWord(QUERY, PAGE) }
     }
 
     companion object {

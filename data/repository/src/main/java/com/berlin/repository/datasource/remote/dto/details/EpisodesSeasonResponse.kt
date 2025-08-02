@@ -6,5 +6,5 @@ import kotlinx.serialization.SerialName
 @kotlinx.serialization.Serializable
 data class EpisodesSeasonResponse(
     @SerialName("results")
-    val results: List<EpisodesSeasonDto?>? = null,
+    val results: List<SeasonEpisodesDto?>? = null,
 )

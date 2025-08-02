@@ -21,7 +21,7 @@ class SearchByActorNameUseCaseTest {
 
     @Test
     fun `When search by valid actor name and no media found, then return empty list`() = runTest {
-        coEvery { movieRepository.getMediaByActorName(ACTOR_NAME, PAGE) } returns emptyList()
+        coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns emptyList()
 
         val result = searchByActorNameUseCase.invoke(ACTOR_NAME, PAGE)
 
@@ -31,7 +31,7 @@ class SearchByActorNameUseCaseTest {
     @Test
     fun `When search by valid actor name, then return list of media related to actor`() = runTest {
 
-        coEvery { movieRepository.getMediaByActorName(ACTOR_NAME, PAGE) } returns MOVIES
+        coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns MOVIES
 
         val result = searchByActorNameUseCase.invoke(ACTOR_NAME, PAGE)
 
@@ -40,7 +40,7 @@ class SearchByActorNameUseCaseTest {
 
     @Test
     fun `When search by invalid actor name, then return empty list`() = runTest {
-        coEvery { movieRepository.getMediaByActorName(ACTOR_NAME, PAGE) } returns emptyList()
+        coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns emptyList()
         val result = searchByActorNameUseCase.invoke(ACTOR_NAME, PAGE)
 
         assertThat(result).isEmpty()

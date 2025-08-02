@@ -8,19 +8,19 @@ import kotlinx.serialization.Serializable
 
 data class SeasonDto(
     @SerialName("air_date")
-    val airDate: String? = null,
+    val airDate: String? ,
     @SerialName("episode_count")
-    val episodeCount: Int? = null,
+    val episodeCount: Int?  ,
     @SerialName("id")
-    val id: Int? = null,
+    val id: Int? ,
     @SerialName("name")
-    val name: String? = null,
+    val name: String? ,
     @SerialName("overview")
-    val overview: String? = null,
+    val overview: String? ,
     @SerialName("poster_path")
-    val posterPath: String? = null,
+    val posterPath: String? ,
     @SerialName("season_number")
-    val seasonNumber: Int? = null,
+    val seasonNumber: Int? ,
     @SerialName("vote_average")
-    val voteAverage: Double? = null
+    val voteAverage: Double? 
 )

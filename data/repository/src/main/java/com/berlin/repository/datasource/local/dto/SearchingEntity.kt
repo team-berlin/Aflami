@@ -10,7 +10,10 @@ import com.berlin.entity.Season
 
 @Entity(tableName = "search_cache")
 data class SearchingEntity(
-    @PrimaryKey val query: String, val type: String, val timeStamp: Long, val queryType: QueryType
+    @PrimaryKey val query: String,
+    val type: String,
+    val timeStamp: Long = System.currentTimeMillis(),
+    val queryType: QueryType
 
 )
 

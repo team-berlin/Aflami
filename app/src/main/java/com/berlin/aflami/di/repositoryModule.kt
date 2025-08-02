@@ -1,10 +1,8 @@
 package com.berlin.aflami.di
 
 import com.berlin.repository.AuthenticationRepositoryImpl
-import com.berlin.repository.HomeRepositoryImpl
 import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
-import com.berlin.repository.SearchRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
 import com.berlin.repository.WatchedMediaRepositoryImpl
 import dagger.Binds
