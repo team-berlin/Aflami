@@ -66,13 +66,9 @@ fun BackdropPager(state: MediaDetailsUiState, onPlayClick: () -> Unit) {
                     is AsyncImagePainter.State.Loading -> ContentScale.Crop
                     else -> ContentScale.Inside
                 }
-
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    SafeImageViewer(
-                        imageUri = model,
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    AsyncImage(
+                        model= model?:"",
                         contentDescription = null,
                         contentScale = contentScale,
                         modifier = Modifier.fillMaxSize(),

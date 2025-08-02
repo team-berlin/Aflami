@@ -13,6 +13,7 @@ import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.datasource.remote.dto.TVShowResponse
 import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
+import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -117,4 +118,13 @@ interface ApiService {
         @Query(ApiConstants.WITH_GENRES) genresIds: List<Int>,
     ): Response<MovieResponse>
 
+    @GET(ApiConstants.TV_VIDEO_DETAILS)
+    suspend fun getTvShowVideos(
+        @Path(ApiConstants.SERIES_ID) seriesId: Long
+    ):Response<VideosResponse>
+
+    @GET(ApiConstants.MOVIE_VIDEO_DETAILS)
+    suspend fun getMovieVideos(
+        @Path(ApiConstants.MOVIE_ID) movieId: Long
+    ):Response<VideosResponse>
 }

@@ -15,6 +15,7 @@ import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.datasource.remote.dto.TVShowResponse
 import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
+import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 
 class DataSourceImpl(
     private val apiService: ApiService
@@ -139,6 +140,14 @@ class DataSourceImpl(
     override suspend fun getMoviesByMoodIds(moodIds: List<Int>): MovieResponse {
         require(moodIds.isNotEmpty()) { "Mood IDs list cannot be empty" }
         return wrapApiResponse { apiService.getMoviesByMoods(moodIds) }
+    }
+
+    override suspend fun getMovieVideos(movieId: Long): VideosResponse {
+        return wrapApiResponse { apiService.getMovieVideos(movieId) }
+    }
+
+    override suspend fun getTVShowVideos(tvShowId: Long): VideosResponse {
+        return wrapApiResponse { apiService.getTvShowVideos(tvShowId) }
     }
 
 }

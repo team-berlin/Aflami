@@ -8,9 +8,9 @@ import com.berlin.entity.MediaImage
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
+import com.berlin.entity.Video
 import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.dto.GenreEntity
-import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
@@ -92,6 +92,13 @@ class TvShowDetailsRepositoryImpl(
         genreLocalDataSource.cacheGenres(genres)
         return genres.map { it.toDomain() }
     }
+
+    override suspend fun getTVShowVideos(seriesId: Long): List<Video> {
+        return remoteDataSource.getTVShowVideos(seriesId).results?.mapNotNull {
+            it?.toDomain()
+        } ?: emptyList()
+    }
+
     private fun isExpiredOrEmpty(list: List<GenreEntity>): Boolean {
         return list.isEmpty() || list.any { Instant.now().toEpochMilli() - it.time > Constants.CACHE_TIMEOUT }
     }

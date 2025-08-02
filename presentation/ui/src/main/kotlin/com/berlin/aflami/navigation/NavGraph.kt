@@ -23,6 +23,7 @@ import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchByCountryRoute
 import com.berlin.aflami.navigation.routes.searchScreenRoute
 import com.berlin.aflami.navigation.routes.topRatingMedia
+import com.berlin.aflami.navigation.routes.videoWebView
 import com.berlin.aflami.navigation.routes.watchedMedia
 import com.berlin.aflami.navigation.routes.webView
 
@@ -125,4 +126,5 @@ fun NavGraphBuilder.homeNavigationGraph() {
 fun NavGraphBuilder.detailsNavigationGraph() {
     mediaDetailsRoute()
     castDetailsScreen()
+    videoWebView()
 }

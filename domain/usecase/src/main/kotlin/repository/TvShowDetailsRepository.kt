@@ -8,6 +8,7 @@ import com.berlin.entity.MediaImage
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
+import com.berlin.entity.Video
 
 interface TvShowDetailsRepository {
     suspend fun getTvShowDetails(id: Long): TvShowDetails?
@@ -17,4 +18,6 @@ interface TvShowDetailsRepository {
     suspend fun getReviews(id: Long): List<Review>
     suspend fun getSeasonEpisodes(seriesId: Long, seasonNumber: Int): List<Episodes?>
     suspend fun getSeriesGenres(): List<Genre>
+    suspend fun getTVShowVideos(seriesId: Long): List<Video>
+
 }

@@ -24,13 +24,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType.Companion.Uri
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
@@ -137,9 +139,13 @@ private fun onReceiveMediaDetailsEffect(
             navController.popBackStack()
         }
 
-        is MediaDetailsScreenEffect.PlayMedia -> {}
-        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> TODO()
-        is MediaDetailsScreenEffect.ShowRatingDialog -> TODO()
+        is MediaDetailsScreenEffect.PlayMedia -> {
+            navController.navigate(
+                VideoWebViewDestination(mediaDetailsScreenEffect.videoUrl)
+            )
+        }
+        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog ->{}
+        is MediaDetailsScreenEffect.ShowRatingDialog -> {}
         is MediaDetailsScreenEffect.NavigateToMediaDetails -> {
             navController.navigate(
                 MediaDetailsDestination(
@@ -185,7 +191,7 @@ fun MediaDetailsContent(
             item {
                 BackdropPager(
                     state = state,
-                    onPlayClick = { listener.onPlayClicked(state.id) })
+                    onPlayClick = { listener.onPlayClicked(state.id,state.mediaType) })
             }
 
             item {

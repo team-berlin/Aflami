@@ -28,12 +28,14 @@ import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
 import usecase.mediadetails.GetMovieGalleryUseCase
 import usecase.mediadetails.GetMovieReviewUseCase
+import usecase.mediadetails.GetMovieVideos
 import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSeriesCastUseCase
 import usecase.mediadetails.GetSeriesGalleryUseCase
 import usecase.mediadetails.GetSeriesReviewUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
+import usecase.mediadetails.GetTVShowVideos
 import usecase.mediadetails.GetTvShowDetailsUseCase
 
 class MediaDetailsViewModel(
@@ -50,6 +52,8 @@ class MediaDetailsViewModel(
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
+    private val getMovieVideos: GetMovieVideos,
+    private val getTvShowVideos: GetTVShowVideos,
     val mediaId: Long,
     val mediaType: MediaType
 ) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
@@ -74,6 +78,7 @@ class MediaDetailsViewModel(
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
     init {
+        playButtonEnable( mediaId,  mediaType)
         getMediaCast(mediaId = mediaId, mediaType = mediaType)
         getMediaDetails(mediaId = mediaId, mediaType = mediaType)
         onShowMoreMediaLikeThisClicked(mediaId = mediaId, mediaType = mediaType)
@@ -158,13 +163,36 @@ class MediaDetailsViewModel(
         sendNewEffect(MediaDetailsScreenEffect.NavigateBack)
     }
 
-    override fun onPlayClicked(id: Long) {
-        updateState {
-            it.copy(
-                isPlaying = true
-            )
+    override fun onPlayClicked(id: Long, mediaType: MediaType) {
+        val videoUrl = _state.value.videoUrl
+
+        if (_state.value.hasVideo && !videoUrl.isNullOrEmpty()) {
+            sendNewEffect(MediaDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
         }
-        sendNewEffect(MediaDetailsScreenEffect.PlayMedia(id = id))
+    }
+
+    private fun playButtonEnable(id: Long,type: MediaType){
+        tryToCall(
+            call = {
+                when (type) {
+                    MediaType.MOVIE -> getMovieVideos(id).videoUrl
+                    MediaType.TVSHOW -> getTvShowVideos(id).videoUrl
+                }
+            },
+            onSuccess = { videoUrl ->
+                _state.update {
+                    it.copy(
+                        hasVideo = true,
+                        videoUrl = videoUrl
+                    )
+                }
+            },
+            onError = {
+                _state.update {
+                    it.copy(hasVideo = false, videoUrl = null)
+                }
+            }
+        )
     }
 
     override fun onReadMoreDescriptionClicked() {
