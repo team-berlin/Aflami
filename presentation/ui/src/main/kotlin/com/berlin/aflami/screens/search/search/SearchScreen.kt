@@ -70,7 +70,7 @@ import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 import org.koin.androidx.compose.koinViewModel
-import com.berlin.aflami.navigation.Destination
+
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = koinViewModel(),
