@@ -79,10 +79,8 @@ class LoginViewmodel @Inject constructor(
     override fun onContinueAsGuestClicked() =
         sendNewEffect(LoginScreenEffect.NavigateToHomeScreen)
 
-
     override fun onCreateAccountClicked() =
         sendNewEffect(LoginScreenEffect.NavigateToCreateAccountScreen)
-
 
     private fun handleErrorState(message: String) {
         updateState { screenState ->

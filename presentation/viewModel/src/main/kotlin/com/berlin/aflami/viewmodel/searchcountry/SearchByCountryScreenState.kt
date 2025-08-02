@@ -6,12 +6,13 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-data class SearchByCountryScreenUiState(
+//@Immutable
+data class SearchByCountryScreenState(
     val isLoading: Boolean = false,
-    val query: TextFieldValue = TextFieldValue(""),
+    val countryName: TextFieldValue = TextFieldValue(""),
     val isCountrySelected: Boolean = false,
     val filteredCountries: List<String> = emptyList(),
-    val movies: Flow<PagingData<MovieUIState>> = emptyFlow(),
+    val moviesOfCountryFlow: Flow<PagingData<MovieUIState>> = emptyFlow(),
     val dropDownExpanded: Boolean = false,
-    val error: String? = null,
+    val errorMessage: String? = null,
 )

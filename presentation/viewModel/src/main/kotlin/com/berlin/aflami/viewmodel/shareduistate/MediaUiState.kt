@@ -6,10 +6,10 @@ import com.berlin.entity.Genre
 @Immutable
 data class MediaUiState(
     val id: Long = 0L,
+    val mediaType:MediaType?,
     val title: String = "",
     val rating: String = "",
     val releaseYear: String = "",
     val genre: List<Genre> = emptyList(),
     val poster: String = "",
-    val mediaType:MediaType?,
 )

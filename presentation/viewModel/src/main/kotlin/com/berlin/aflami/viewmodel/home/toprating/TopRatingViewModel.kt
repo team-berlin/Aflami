@@ -21,17 +21,19 @@ class TopRatingViewModel(
         getTopRatingMedia()
     }
 
+    //region TopRatingInteractionListener implementation
     override fun onBackClicked() = sendNewEffect(TopRatingScreenEffect.NavigateBack)
 
     override fun onMediaCardClicked(mediaId: Long, mediaType: MediaType) =
         sendNewEffect(TopRatingScreenEffect.NavigateToMediaDetailsScreen(mediaId, mediaType))
+    //endregion
 
     private fun getTopRatingMedia() {
         updateScreenStateToLoading()
         tryToCall(
             call = { getTopRatedMediaAsFlow(getTopRatedMoviesUseCase, getTopRatedTvShowsUseCase) },
             onSuccess = ::updateScreenStateWithNewTopRatedMedia,
-            onError = ::updateScreenStateToError
+            onError = ::updateScreenStateWithError
         )
     }
 
@@ -57,7 +59,7 @@ class TopRatingViewModel(
         }
     }
 
-    private fun updateScreenStateToError(errorUiState: ErrorUiState) =
+    private fun updateScreenStateWithError(errorUiState: ErrorUiState) =
         updateState { it.copy(errorMessage = errorUiState.message) }
 
     private fun updateScreenStateToLoading() = updateState { it.copy(isLoading = true) }

@@ -46,6 +46,7 @@ data class UpcomingMoviesUiState(
     val upcomingMovies: List<MovieUIState> = emptyList(),
     val movieGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
     val isLoading: Boolean = false,
+    val errorMessage: String? = null,
 )
 
 @Immutable

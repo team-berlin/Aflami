@@ -22,14 +22,14 @@ import usecase.SearchByCountryUseCase
 
 class SearchByCountryViewModelTest {
 
-    private lateinit var viewModel: SearchByCountryViewModel
+    private lateinit var viewModel: SearchByCountryScreenViewModel
     private lateinit var searchByCountryUseCase: SearchByCountryUseCase
 
     @Before
     fun setup() {
         Dispatchers.setMain(StandardTestDispatcher())
         searchByCountryUseCase = mockk()
-        viewModel = SearchByCountryViewModel(searchByCountryUseCase)
+        viewModel = SearchByCountryScreenViewModel(searchByCountryUseCase)
     }
 
     @AfterEach
@@ -46,7 +46,7 @@ class SearchByCountryViewModelTest {
 
         val state = viewModel.state.value
 
-        assertThat(state.query).isEqualTo(input)
+        assertThat(state.countryName).isEqualTo(input)
         assertThat(state.filteredCountries).isNotEmpty()
     }
 
@@ -55,7 +55,7 @@ class SearchByCountryViewModelTest {
         viewModel.onCountryNameChanged("")
 
         val state = viewModel.state.value
-        assertThat(state.query).isEmpty()
+        assertThat(state.countryName).isEmpty()
         assertThat(state.filteredCountries.isEmpty() || state.dropDownExpanded.not()).isTrue()
     }
 
@@ -67,7 +67,7 @@ class SearchByCountryViewModelTest {
 
     @Test
     fun `should emits NavigatedBack effect when onBackClicked called`() = runTest {
-        val effects = mutableListOf<SearchByCountryEffect>()
+        val effects = mutableListOf<SearchByCountryScreenEffect>()
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.effect.collect { effects.add(it) }
         }
@@ -75,13 +75,13 @@ class SearchByCountryViewModelTest {
         viewModel.onBackClicked()
         advanceUntilIdle()
 
-        assertThat(effects.contains(SearchByCountryEffect.NavigatedBack)).isTrue()
+        assertThat(effects.contains(SearchByCountryScreenEffect.NavigatedBack)).isTrue()
         job.cancel()
     }
 
     @Test
     fun `should emits NavigatedToMovieDetailsScreen effect when onMovieClicked called`() = runTest {
-        val effects = mutableListOf<SearchByCountryEffect>()
+        val effects = mutableListOf<SearchByCountryScreenEffect>()
         val movieId = 101
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.effect.collect { effects.add(it) }
@@ -90,7 +90,7 @@ class SearchByCountryViewModelTest {
         viewModel.onMovieClicked(movieId)
         advanceUntilIdle()
 
-        assertThat(effects.contains(SearchByCountryEffect.NavigatedToMovieDetailsScreen(movieId))).isTrue()
+        assertThat(effects.contains(SearchByCountryScreenEffect.NavigatedToMovieDetailsScreen(movieId))).isTrue()
         job.cancel()
     }
 
@@ -110,7 +110,7 @@ class SearchByCountryViewModelTest {
         assertThat(state.isLoading).isTrue()
         assertThat(state.isCountrySelected).isTrue()
         assertThat(state.dropDownExpanded).isFalse()
-        assertThat(state.movies).isNotNull()
+        assertThat(state.moviesOfCountryFlow).isNotNull()
     }
 
     private val movie = Movie(
