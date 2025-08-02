@@ -1,7 +1,6 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -65,8 +64,8 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.buttons.ButtonState
 import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
-import com.berlin.aflami.navigation.HomeScreen
-import com.berlin.aflami.navigation.WebViewScreen
+import com.berlin.aflami.navigation.NavigationBarDestinations
+import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.login.FormUiState
@@ -90,18 +89,17 @@ fun LoginScreen(
             when (it) {
                 LoginEffect.NavigateToHome -> {
                     navController.navigate(
-                        HomeScreen
+                        NavigationBarDestinations.HomeScreen
                     )
                 }
 
                 LoginEffect.NavigateToCreateAccount -> {
-                    val encodedUrl = Uri.encode(REGISTER_URL)
-                    navController.navigate(WebViewScreen(encodedUrl))
+
+                    navController.navigate(WebViewDestination(REGISTER_URL))
                 }
 
                 LoginEffect.NavigateToForgotPassword -> {
-                    val encodedUrl = Uri.encode(RESET_PASSWORD_URL)
-                    navController.navigate(WebViewScreen(encodedUrl))
+                    navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
                 }
             }
         }
@@ -121,7 +119,7 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
                 )
             )
             .statusBarsPadding()
-            .padding(start = 12.dp, end = 12.dp, bottom = 16.dp),
+            .padding(start = 12.dp, end = 12.dp, bottom = 16.dp, top = 24.dp),
     ) {
         CirclesBackground()
         Column(
@@ -153,6 +151,7 @@ fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
             )
         }
         AnimatedSnackBar(
+            message = stringResource(id = R.string.login_error_message),
             modifier = Modifier
                 .fillMaxWidth()
                 .align(alignment = Alignment.TopCenter),
@@ -246,7 +245,8 @@ private fun FormLogin(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = { onForgotPasswordClicked() })
-                .padding(top = 4.dp))
+                .padding(top = 4.dp)
+        )
     }
 }
 
@@ -321,8 +321,9 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
 
 @Composable
 private fun AnimatedSnackBar(
-    modifier: Modifier = Modifier,
-    isSnackBarVisible: Boolean
+    message: String,
+    isSnackBarVisible: Boolean,
+    modifier: Modifier = Modifier
 ) {
     AnimatedVisibility(
         visible = isSnackBarVisible, enter = slideInVertically(
@@ -340,7 +341,7 @@ private fun AnimatedSnackBar(
         SnackBar(
             modifier = modifier,
             status = SnackBarStatus.ERROR,
-            text = stringResource(id = R.string.login_error_message),
+            text = message,
             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error)
         )
     }

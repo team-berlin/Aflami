@@ -30,13 +30,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.navigation.MediaDetails
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.ui.color.ExtraColors.BackgroundGradient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingScreenEffect
@@ -47,17 +46,17 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TopRatingScreen(
-    navController: NavController,
     topRatingViewModel: TopRatingViewModel = koinViewModel(),
 ) {
     val screenState by topRatingViewModel.state.collectAsState()
+    val navController=Theme.navController
 
     LaunchedEffect(Unit) {
         topRatingViewModel.effect.collect { effect ->
             when (effect) {
                 is TopRatingScreenEffect.NavigateToMediaDetailsScreen -> {
                     navController.navigate(
-                        MediaDetails(
+                        MediaDetailsDestination(
                             effect.id, effect.type
                         )
                     )
@@ -112,7 +111,6 @@ private fun TopRatingContent(
         modifier = Modifier
             .fillMaxSize()
             .background(BackgroundGradient)
-            .padding(top = 20.dp),
     ) {
         Image(
             modifier = Modifier
@@ -136,7 +134,8 @@ private fun TopRatingContent(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 106.dp),
+                .statusBarsPadding()
+                .padding(top = 56.dp),
             columns = GridCells.Adaptive(minSize = 160.dp),
             contentPadding = PaddingValues(
                 start = 16.dp, end = 16.dp
@@ -163,15 +162,16 @@ private fun TopRatingContent(
                 }
             }
         }
+        DefaultBar(
+            modifier = Modifier
+                .background(appBarBgColor)
+                .statusBarsPadding(),
+            onNavigateBackClicked = { viewModel.onBackClicked() },
+            optionContainerColor = Theme.color.surfaceHigh,
+            containerColor = appBarBgColor,
+            title = stringResource(R.string.top_rating)
+        )
     }
-    DefaultBar(
-        modifier = Modifier
-            .background(appBarBgColor)
-            .statusBarsPadding(),
-        onNavigateBackClicked = { viewModel.onBackClicked() },
-        optionContainerColor = Theme.color.surfaceHigh,
-        containerColor = appBarBgColor,
-        title = stringResource(R.string.top_rating)
-    )
+
 
 }

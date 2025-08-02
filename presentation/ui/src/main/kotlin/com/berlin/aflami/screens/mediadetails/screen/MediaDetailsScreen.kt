@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -23,12 +24,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType.Companion.Uri
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.component.CircularProgressIndicator
 import androidx.navigation.NavController
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
-import com.berlin.aflami.navigation.CastScreen
+import com.berlin.aflami.navigation.CastDestination
+import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
@@ -127,7 +131,7 @@ private fun onReceiveMediaDetailsEffect(
     when (mediaDetailsScreenEffect) {
         is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
             navController.navigate(
-                CastScreen(mediaDetailsScreenEffect.mediaId, mediaDetailsScreenEffect.mediaType)
+                CastDestination(mediaDetailsScreenEffect.mediaId, mediaDetailsScreenEffect.mediaType)
             )
         }
 
@@ -135,9 +139,23 @@ private fun onReceiveMediaDetailsEffect(
             navController.popBackStack()
         }
 
-        is MediaDetailsScreenEffect.PlayMedia -> {}
-        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> TODO()
-        is MediaDetailsScreenEffect.ShowRatingDialog -> TODO()
+        is MediaDetailsScreenEffect.PlayMedia -> {
+            navController.navigate(
+                VideoWebViewDestination(mediaDetailsScreenEffect.videoUrl)
+            )
+        }
+        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog ->{}
+        is MediaDetailsScreenEffect.ShowRatingDialog -> {}
+        is MediaDetailsScreenEffect.NavigateToMediaDetails -> {
+            navController.navigate(
+                MediaDetailsDestination(
+                    mediaDetailsScreenEffect.mediaId,
+                    mediaDetailsScreenEffect.mediaType
+                )
+            ){
+                launchSingleTop = true
+            }
+        }
     }
 }
 
@@ -173,7 +191,7 @@ fun MediaDetailsContent(
             item {
                 BackdropPager(
                     state = state,
-                    onPlayClick = { listener.onPlayClicked(state.id) })
+                    onPlayClick = { listener.onPlayClicked(state.id,state.mediaType) })
             }
 
             item {
@@ -194,7 +212,8 @@ fun MediaDetailsContent(
             item {
                 HorizontalDivider(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
                     color = Theme.color.stroke,
                     thickness = 1.dp
                 )
@@ -206,6 +225,7 @@ fun MediaDetailsContent(
                     onChipClick = onChipClick,
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
+                    onMediaClick = { mediaId, type -> listener.onMediaClicked(mediaId, type) },
                     mediaType = mediaType,
                 )
             }

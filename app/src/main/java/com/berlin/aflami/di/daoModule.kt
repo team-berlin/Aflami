@@ -12,5 +12,6 @@ val daoModule = module{
     single<RecentHistoryDao> { get<SearchDatabase>().recentHistoryDao() }
     single<CategoriesPreferencesDao> { get<SearchDatabase>().categoriesPreferencesDao() }
     single<ContinueWatchingDao> { get<SearchDatabase>().continueWatchingDao() }
+    single { get<SearchDatabase>().genreDao() }
 
 }

@@ -1,51 +1,52 @@
 package com.berlin.aflami.screens.home.component
 
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.designsystem.R
 
-fun getGenreNameById(id: Int, mediaType: MediaType): String {
+fun getGenreNameById(id: Int, mediaType: MediaType): Int {
     val movieGenres = mapOf(
-        28 to "Action",
-        12 to "Adventure",
-        16 to "Animation",
-        35 to "Comedy",
-        80 to "Crime",
-        99 to "Documentary",
-        18 to "Drama",
-        10751 to "Family",
-        14 to "Fantasy",
-        36 to "History",
-        27 to "Horror",
-        10402 to "Music",
-        9648 to "Mystery",
-        10749 to "Romance",
-        878 to "Science Fiction",
-        10770 to "TV Movie",
-        53 to "Thriller",
-        10752 to "War",
-        37 to "Western"
+        28 to R.string.action,
+        12 to R.string.adventure,
+        16 to R.string.animation,
+        35 to R.string.comedy,
+        80 to R.string.crime,
+        99 to R.string.documentary,
+        18 to R.string.drama,
+        10751 to R.string.family,
+        14 to R.string.fantasy,
+        36 to R.string.history,
+        27 to R.string.horror,
+        10402 to R.string.music,
+        9648 to R.string.mystery,
+        10749 to R.string.romance,
+        878 to R.string.science_fiction,
+        10770 to R.string.tv_movie,
+        53 to R.string.thriller,
+        10752 to R.string.war,
+        37 to R.string.western
     )
 
     val tvGenres = mapOf(
-        10759 to "Action & Adventure",
-        16 to "Animation",
-        35 to "Comedy",
-        80 to "Crime",
-        99 to "Documentary",
-        18 to "Drama",
-        10751 to "Family",
-        10762 to "Kids",
-        9648 to "Mystery",
-        10763 to "News",
-        10764 to "Reality",
-        10765 to "Sci-Fi & Fantasy",
-        10766 to "Soap",
-        10767 to "Talk",
-        10768 to "War & Politics",
-        37 to "Western"
+        10759 to R.string.action_adventure,
+        16 to R.string.animation,
+        35 to R.string.comedy,
+        80 to R.string.crime,
+        99 to R.string.documentary,
+        18 to R.string.drama,
+        10751 to R.string.family,
+        10762 to R.string.kids,
+        9648 to R.string.mystery,
+        10763 to R.string.news,
+        10764 to R.string.reality,
+        10765 to R.string.sci_fi_fantasy,
+        10766 to R.string.soap,
+        10767 to R.string.talk,
+        10768 to R.string.war_politics,
+        37 to R.string.western
     )
 
     return when (mediaType) {
-        MediaType.MOVIE -> movieGenres[id] ?: "All"
-        MediaType.TVSHOW -> tvGenres[id] ?: "All"
+        MediaType.MOVIE -> movieGenres[id] ?: R.string.all
+        MediaType.TVSHOW -> tvGenres[id] ?: R.string.all
     }
 }

@@ -13,6 +13,7 @@ import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.datasource.remote.dto.TVShowResponse
 import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
+import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -22,6 +23,9 @@ interface ApiService {
 
     @GET(ApiConstants.MOVIE_IMAGES)
     suspend fun getMovieImages(@Path(ApiConstants.MOVIE_ID) movieId: Long): Response<MediaImagesResponse>
+
+    @GET(ApiConstants.SERIES_IMAGES)
+    suspend fun getSeriesImages(@Path(ApiConstants.SERIES_ID) seriesId: Long): Response<MediaImagesResponse>
 
     @GET(ApiConstants.MOVIE_DETAILS)
     suspend fun getMovieDetails(
@@ -67,9 +71,6 @@ interface ApiService {
         @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<TVShowDto>>
 
-    @GET(ApiConstants.SERIES_IMAGES)
-    suspend fun getSeriesImages(@Path(ApiConstants.SERIES_ID) seriesId: Long): Response<MediaImagesResponse>
-
     @GET(ApiConstants.SERIES_DETAILS)
     suspend fun getTvShowDetails(
         @Path(ApiConstants.SERIES_ID) seriesId: Long
@@ -114,7 +115,16 @@ interface ApiService {
 
     @GET(ApiConstants.DISCOVER_MOVIE)
     suspend fun getMoviesByMoods(
-        genresIds: List<Int>,
+        @Query(ApiConstants.WITH_GENRES) genresIds: List<Int>,
     ): Response<MovieResponse>
 
+    @GET(ApiConstants.TV_VIDEO_DETAILS)
+    suspend fun getTvShowVideos(
+        @Path(ApiConstants.SERIES_ID) seriesId: Long
+    ):Response<VideosResponse>
+
+    @GET(ApiConstants.MOVIE_VIDEO_DETAILS)
+    suspend fun getMovieVideos(
+        @Path(ApiConstants.MOVIE_ID) movieId: Long
+    ):Response<VideosResponse>
 }

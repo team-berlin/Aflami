@@ -29,12 +29,14 @@ import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
 import usecase.mediadetails.GetMovieGalleryUseCase
 import usecase.mediadetails.GetMovieReviewUseCase
+import usecase.mediadetails.GetMovieVideos
 import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSeriesCastUseCase
 import usecase.mediadetails.GetSeriesGalleryUseCase
 import usecase.mediadetails.GetSeriesReviewUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
+import usecase.mediadetails.GetTVShowVideos
 import usecase.mediadetails.GetTvShowDetailsUseCase
 
 val useCaseModule = module {
@@ -69,6 +71,8 @@ val useCaseModule = module {
     single { GetMovieGenresUseCase(get()) }
     single { GetSeriesGenresUseCase(get()) }
     single { GetMoviesByMoodUseCase(get()) }
+    single { GetMovieVideos(get()) }
+    single { GetTVShowVideos(get()) }
 
     single { LoginUseCase(get()) }
     single { IsLoggedInUseCase(get()) }

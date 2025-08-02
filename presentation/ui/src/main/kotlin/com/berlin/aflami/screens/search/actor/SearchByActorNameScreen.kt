@@ -1,6 +1,9 @@
 package com.berlin.aflami.screens.search.actor
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,12 +29,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetails
+import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
@@ -51,27 +57,63 @@ fun SearchByActorNameScreen(
     val uiState by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect {
-            when (it) {
-                is SearchByActorEffect.NavigatedBack -> {
-                    navController.popBackStack()
-                }
-
-                is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {
-                    navController.navigate(
-                        MediaDetails(
-                            it.movieId,
-                            MediaType.valueOf("MOVIE"),
-                        )
-                    )
-                }
-            }
+        viewModel.effect.collect {effect->
+            onReceiveSearchByActorEffect(
+                navController = navController,
+                searchByActorEffect = effect
+            )
         }
     }
-    SearchByActorNameContent(
-        state = uiState,
-        listener = viewModel,
-    )
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.isLoading
+    ) {
+        com.berlin.aflami.component.CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.error!=null&&uiState.query.text.isNotEmpty()
+    ) {
+        NoInternetConnectionPlaceholder()
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !uiState.isLoading
+    ) {
+
+        SearchByActorNameContent(
+            state = uiState,
+            listener = viewModel,
+        )
+    }
+
+}
+
+private fun onReceiveSearchByActorEffect(
+    navController: NavController,
+    searchByActorEffect:SearchByActorEffect
+){
+    when (searchByActorEffect) {
+        is SearchByActorEffect.NavigatedBack -> {
+            navController.popBackStack()
+        }
+
+        is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {
+            navController.navigate(
+                MediaDetailsDestination(
+                    searchByActorEffect.movieId,
+                    MediaType.valueOf("MOVIE"),
+                )
+            )
+        }
+    }
 }
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -80,8 +122,12 @@ private fun SearchByActorNameContent(
     state: SearchByActorScreenUiState,
     listener: SearchByActorInteractionListener,
 ) {
-    Column {
-        TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.color.surface)
+    ) {
+        TopBar(modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp), title = {
             Text(
                 text = stringResource(R.string.find_by_actor),
                 style = Theme.textStyle.title.large,
@@ -132,19 +178,15 @@ private fun SearchByActorNameContent(
                         InitContent()
                     } else {
                         CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)
                         )
                     }
                 }
-
-
                 is LoadState.NotLoading -> {
                     if (state.query.text.isBlank()) {
                         InitContent()
                     } else if (pagedMovies.itemCount == 0 && state.query.text.isNotBlank()) {
                         CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)
                         )
                     } else {
@@ -157,6 +199,13 @@ private fun SearchByActorNameContent(
 
                 is LoadState.Error -> {
                     ErrorContent()
+                    if ((pagedMovies.loadState.refresh as LoadState.Error).error.message.equals("No internet connection")) {
+                        NoInternetConnectionPlaceholder(
+                            onClick = { pagedMovies.retry()}
+                        )
+                    } else {
+                        ErrorContent()
+                    }
                 }
             }
         }

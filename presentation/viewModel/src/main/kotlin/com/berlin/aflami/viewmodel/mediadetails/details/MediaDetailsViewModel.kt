@@ -28,12 +28,14 @@ import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
 import usecase.mediadetails.GetMovieGalleryUseCase
 import usecase.mediadetails.GetMovieReviewUseCase
+import usecase.mediadetails.GetMovieVideos
 import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSeriesCastUseCase
 import usecase.mediadetails.GetSeriesGalleryUseCase
 import usecase.mediadetails.GetSeriesReviewUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
+import usecase.mediadetails.GetTVShowVideos
 import usecase.mediadetails.GetTvShowDetailsUseCase
 
 class MediaDetailsViewModel(
@@ -50,6 +52,8 @@ class MediaDetailsViewModel(
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
+    private val getMovieVideos: GetMovieVideos,
+    private val getTvShowVideos: GetTVShowVideos,
     val mediaId: Long,
     val mediaType: MediaType
 ) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
@@ -74,6 +78,7 @@ class MediaDetailsViewModel(
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
     init {
+        playButtonEnable( mediaId,  mediaType)
         getMediaCast(mediaId = mediaId, mediaType = mediaType)
         getMediaDetails(mediaId = mediaId, mediaType = mediaType)
         onShowMoreMediaLikeThisClicked(mediaId = mediaId, mediaType = mediaType)
@@ -90,18 +95,22 @@ class MediaDetailsViewModel(
                 when (mediaType) {
                     MediaType.MOVIE -> {
                         val movie = getMovieDetailsUseCase(mediaId)
+                        val pagerImages = getMovieGalleryUseCase(mediaId)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
-                        movie?.toUiState()
+                        Log.d("MediaDetailsViewModel", "getMediaDetails: $pagerImages")
+                        Pair(movie?.toUiState(), pagerImages)
                     }
 
                     MediaType.TVSHOW -> {
-                        val movie = getTvShowDetailsUseCase(mediaId)
-                        companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
-                        movie?.toUiState()
+                        val tvShow = getTvShowDetailsUseCase(mediaId)
+                        val pagerImages = getSeriesGalleryUseCase(mediaId)
+                        companyProductionCache = tvShow?.productionCompanies?.map { it.toUiState() }
+                        Log.d("MediaDetailsViewModel", "getMediaDetails: $pagerImages")
+                        Pair(tvShow?.toUiState(), pagerImages)
                     }
                 }
             },
-            onSuccess = { details ->
+            onSuccess = { (details, pagerImages) ->
                 details?.let {
                     updateState {
                         it.copy(
@@ -110,7 +119,7 @@ class MediaDetailsViewModel(
                             overview = details.overview,
                             posterUrl = details.posterUrl,
                             backdropUrl = details.backdropUrl,
-                            releaseYear = details.releaseYear,
+                            releaseDate = details.releaseDate,
                             numberOfSeasons = details.numberOfSeasons,
                             rating = details.rating,
                             runtime = details.runtime,
@@ -118,9 +127,11 @@ class MediaDetailsViewModel(
                             isLoading = false,
                             mediaType = mediaType,
                             originalCountry = details.originalCountry,
+                            posterImages = pagerImages.posters,
                         )
                     }
                     saveWatchedMedia(mediaType = mediaType)
+
                 }
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
@@ -152,13 +163,36 @@ class MediaDetailsViewModel(
         sendNewEffect(MediaDetailsScreenEffect.NavigateBack)
     }
 
-    override fun onPlayClicked(id: Long) {
-        updateState {
-            it.copy(
-                isPlaying = true
-            )
+    override fun onPlayClicked(id: Long, mediaType: MediaType) {
+        val videoUrl = _state.value.videoUrl
+
+        if (_state.value.hasVideo && !videoUrl.isNullOrEmpty()) {
+            sendNewEffect(MediaDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
         }
-        sendNewEffect(MediaDetailsScreenEffect.PlayMedia(id = id))
+    }
+
+    private fun playButtonEnable(id: Long,type: MediaType){
+        tryToCall(
+            call = {
+                when (type) {
+                    MediaType.MOVIE -> getMovieVideos(id).videoUrl
+                    MediaType.TVSHOW -> getTvShowVideos(id).videoUrl
+                }
+            },
+            onSuccess = { videoUrl ->
+                _state.update {
+                    it.copy(
+                        hasVideo = true,
+                        videoUrl = videoUrl
+                    )
+                }
+            },
+            onError = {
+                _state.update {
+                    it.copy(hasVideo = false, videoUrl = null)
+                }
+            }
+        )
     }
 
     override fun onReadMoreDescriptionClicked() {
@@ -184,6 +218,10 @@ class MediaDetailsViewModel(
                 mediaType = mediaType
             )
         )
+    }
+
+    override fun onMediaClicked(mediaId: Long, mediaType: MediaType) {
+        sendNewEffect(MediaDetailsScreenEffect.NavigateToMediaDetails(mediaId, mediaType))
     }
 
     override fun onRateIconClicked(id: Long) {
@@ -323,6 +361,8 @@ class MediaDetailsViewModel(
         )
     }
 
+
+
     override fun onShowMediaGalleryClicked(id: Long, mediaType: MediaType) {
         updateState {
             it.copy(
@@ -337,7 +377,7 @@ class MediaDetailsViewModel(
                 }
             },
             onSuccess = { gallery ->
-                if (gallery.isEmpty()) {
+                if (gallery.backdrops.isEmpty()) {
                     updateState {
                         it.copy(
                             rowSection = RowSectionUiState.NoDataFound(UiText.Resource(NO_GALLERY))
@@ -348,7 +388,7 @@ class MediaDetailsViewModel(
                         it.copy(
                             rowSection = RowSectionUiState.Success(
                                 content = TabContent.Gallery(
-                                    items = gallery
+                                    items = gallery.backdrops
                                 )
                             )
                         )

@@ -42,10 +42,11 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
-import com.berlin.aflami.navigation.ContinueWatchingScreen
-import com.berlin.aflami.navigation.MediaDetails
-import com.berlin.aflami.navigation.SearchScreen
-import com.berlin.aflami.navigation.TopRatingMediaScreen
+import com.berlin.aflami.navigation.ContinueWatchingDestination
+import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.SearchDestination
+import com.berlin.aflami.navigation.TopRatingMediaDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
 import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
@@ -75,9 +76,35 @@ fun HomeScreen(
             onReceiveHomeScreenEffect(navController,it)
         }
     }
-    HomeContent(
-        state = state, listener = viewModel
-    )
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.isLoading
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.error!=null
+    ) {
+        NoInternetConnectionPlaceholder()
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !state.isLoading
+    ) {
+
+        HomeContent(
+            state = state, listener = viewModel
+        )
+    }
 
 }
 
@@ -85,23 +112,25 @@ private fun onReceiveHomeScreenEffect(navController: NavController,homeScreenEff
     when (homeScreenEffect) {
         is HomeScreenEffect.NavigateToContinueWatching -> {
             navController.navigate(
-                ContinueWatchingScreen
+                ContinueWatchingDestination
             )
         }
 
         is HomeScreenEffect.NavigateToSearch -> {
             navController.navigate(
-                SearchScreen
+                SearchDestination
             )
         }
 
         is HomeScreenEffect.NavigateToTopRating -> {
-            TopRatingMediaScreen
+            navController.navigate(
+                TopRatingMediaDestination
+            )
         }
 
         is HomeScreenEffect.NavigateToDetails -> {
             navController.navigate(
-                MediaDetails(homeScreenEffect.id, MediaType.valueOf(homeScreenEffect.mediaType))
+                MediaDetailsDestination(homeScreenEffect.id, MediaType.valueOf(homeScreenEffect.mediaType))
             )
         }
 
@@ -146,7 +175,6 @@ private fun HomeContent(
             .background(Theme.color.surface)
 
 
-
     ) {
         AnimatedVisibility(
             enter = fadeIn(),
@@ -154,7 +182,7 @@ private fun HomeContent(
             visible = state.isLoading.not()
         ) {
             LazyColumn(
-
+                modifier = Modifier.padding(bottom = 64.dp ),
                 state = listState
             ) {
                 item {
@@ -169,7 +197,6 @@ private fun HomeContent(
                                 imageUrl = currentMedia?.poster ?: "",
                                 modifier = Modifier
                                     .fillMaxWidth()
-
                                     .height(390.dp)
                             )
                             Column(
@@ -204,7 +231,7 @@ private fun HomeContent(
                                         media.title,
                                         modifier = Modifier
                                             .align(Alignment.CenterHorizontally)
-                                            .padding(bottom = 8.dp),
+                                            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp),
                                         style = Theme.textStyle.title.small,
                                         color = Theme.color.textColors.title,
                                         maxLines = 1,
@@ -214,7 +241,6 @@ private fun HomeContent(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .align(Alignment.CenterHorizontally),
-                                        contentPadding = PaddingValues(end = 8.dp),
                                         horizontalArrangement = Arrangement.Center,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
@@ -222,9 +248,9 @@ private fun HomeContent(
                                             val genreName =
                                                 getGenreNameById(genreId, media.mediaType)
                                             Box(
-                                                modifier = Modifier.padding(end = 4.dp)
+                                                modifier = Modifier.padding(horizontal = 4.dp)
                                             ) {
-                                                GenersChip(label = genreName)
+                                                GenersChip(label = stringResource(genreName))
                                             }
                                         }
                                     }
@@ -296,9 +322,7 @@ private fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appBarBgColor)
-                .statusBarsPadding()
-
-            , onSearchClicked = {
+                .statusBarsPadding(), onSearchClicked = {
                 listener.onSearchClicked()
             }, containerColor = appBarBgColor
         )

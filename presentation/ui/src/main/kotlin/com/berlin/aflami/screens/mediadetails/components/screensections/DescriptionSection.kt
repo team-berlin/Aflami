@@ -18,8 +18,7 @@ fun DescriptionSection(
     isExpanded: Boolean,
     onToggleExpand: () -> Unit
 ) {
-    Spacer(Modifier.height(24.dp))
-    Column(Modifier.padding(horizontal = 16.dp)) {
+    Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
         Text(
             text = stringResource(com.berlin.ui.R.string.description),
             color = Theme.color.textColors.title,

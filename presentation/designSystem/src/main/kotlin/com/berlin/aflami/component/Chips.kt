@@ -86,7 +86,7 @@ fun Chips(
             color = Theme.color.textColors.body,
             style = Theme.textStyle.label.small,
             textAlign = TextAlign.Center,
-            modifier = Modifier.height(32.dp)
+            maxLines = 2
         )
     }
 }

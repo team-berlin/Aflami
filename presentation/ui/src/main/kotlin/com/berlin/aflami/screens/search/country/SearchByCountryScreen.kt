@@ -1,5 +1,8 @@
 package com.berlin.aflami.screens.search.country
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -7,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,7 +34,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetails
+import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
@@ -49,35 +54,78 @@ fun SearchByCountryScreen(
 ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsState()
-    SearchByCountryContent(
-        navController = navController,
-        state = state,
-        listener = viewModel
-    )
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
-            when (effect) {
-                SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
-                is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
-                    navController.navigate(
-                        "mediaDetailsScreen/${effect.movieId}/${"MOVIE"}"
-                    )
-                }
-            }
+            onReceiveSearchByCountryEffect(effect = effect, navController = navController)
         }
     }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.isLoading
+    ) {
+        com.berlin.aflami.component.CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.error!=null&&state.query.text.isNotEmpty()
+    ) {
+        NoInternetConnectionPlaceholder()
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !state.isLoading
+    ) {
+
+        SearchByCountryContent(
+            state = state,
+            listener = viewModel
+        )
+    }
+}
+
+
+private fun onReceiveSearchByCountryEffect(
+    navController: NavController,
+    effect: SearchByCountryEffect,
+) {
+    when (effect) {
+        SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
+
+        is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
+
+            navController.navigate(
+                MediaDetailsDestination(
+                    mediaId = effect.movieId,
+                    mediaType = MediaType.valueOf("MOVIE"),
+                )
+            )
+        }
+    }
+
 }
 
 @Composable
 private fun SearchByCountryContent(
     state: SearchByCountryScreenUiState,
     listener: SearchByCountryInteractionListener,
-    navController: NavController,
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.color.surface)
+    ) {
         TopBar(
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(vertical = 8.dp),
             title = {
                 Text(
                     text = stringResource(R.string.country_tour),
@@ -125,49 +173,50 @@ private fun SearchByCountryContent(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
             val movies = state.movies.collectAsLazyPagingItems()
 
-            when {
-                state.isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            when (movies.loadState.refresh) {
+
+                is LoadState.Loading -> {
+                    if (state.query.text.isBlank()) {
+                        InitContent()
+                    } else {
+                        com.berlin.aflami.component.CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = stringResource(R.string.loading)
+                        )
+                    }
                 }
 
-                state.query.text.isBlank() && movies.itemCount == 0 -> {
-                    CountryTourExploring(
-                        modifier = Modifier.fillMaxSize(),
-                        image = painterResource(R.drawable.world_tour),
-                        titleId = R.string.country_tour,
-                        messageId = R.string.country_tour_description
-                    )
+                is LoadState.NotLoading -> {
+                    if (state.query.text.isBlank()) {
+                        InitContent()
+                    } else if (movies.itemCount == 0 && state.query.text.isNotBlank()) {
+                        com.berlin.aflami.component.CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = stringResource(R.string.loading)
+                        )
+                    } else {
+                        MoviesList(
+                            onMovieClick = listener::onMovieClicked,
+                            movies = movies,
+                        )
+                    }
                 }
-
-                state.isCountrySelected && movies.itemCount == 0
-                        && movies.loadState.refresh is LoadState.NotLoading -> {
-                    CountryTourExploring(
-                        modifier = Modifier.fillMaxSize(),
-                        image = painterResource(R.drawable.no_search_result),
-                        titleId = R.string.no_search_result,
-                        messageId = R.string.please_try_with_another_keyword
-                    )
-                }
-
-                else -> {
-                    MoviesList(
-                        movies = movies,
-                        onMovieClick = { movieId, mediaType ->
-                            navController.navigate(
-                                MediaDetails(
-                                    movieId,
-                                    MediaType.valueOf("MOVIE"),
-                                )
-                            )
-                        }
-                    )
+                is LoadState.Error -> {
+                   ErrorContent()
+                    if ((movies.loadState.refresh as LoadState.Error).error.message.equals("No internet connection")) {
+                        NoInternetConnectionPlaceholder(
+                            onClick = { movies.retry() }
+                        )
+                    } else {
+                       ErrorContent()
+                    }
                 }
             }
-
             AnimatedCountriesList(
                 visible = state.dropDownExpanded && state.filteredCountries.isNotEmpty(),
                 filteredCountries = state.filteredCountries,
@@ -176,4 +225,24 @@ private fun SearchByCountryContent(
             )
         }
     }
+}
+
+@Composable
+private fun ErrorContent() {
+    CountryTourExploring(
+        modifier = Modifier.fillMaxSize(),
+        image = painterResource(R.drawable.no_search_result),
+        titleId = R.string.no_search_result,
+        messageId = R.string.please_try_with_another_keyword
+    )
+}
+
+@Composable
+private fun InitContent() {
+    CountryTourExploring(
+        modifier = Modifier.fillMaxSize(),
+        image = painterResource(R.drawable.world_tour),
+        titleId = R.string.country_tour,
+        messageId = R.string.country_tour_description
+    )
 }
