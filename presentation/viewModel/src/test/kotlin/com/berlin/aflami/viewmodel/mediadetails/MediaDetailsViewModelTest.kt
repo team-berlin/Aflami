@@ -141,7 +141,7 @@ class MediaDetailsViewModelTest {
         assertThat(state.overview).isEqualTo("A test movie")
         assertThat(state.posterUrl).isEqualTo("poster.jpg")
         assertThat(state.backdropUrl).isEqualTo("backdrop.jpg")
-        assertThat(state.releaseYear).isEqualTo("2023-01-01")
+        assertThat(state.releaseDate).isEqualTo("2023-01-01")
         assertThat(state.rating).isEqualTo(20.0)
         assertThat(state.runtime).isEqualTo("2h 0m")
         assertThat(state.genres).containsExactly("Action")
@@ -201,7 +201,7 @@ class MediaDetailsViewModelTest {
         assertThat(state.overview).isEqualTo("A test TV show")
         assertThat(state.posterUrl).isEqualTo("poster.jpg")
         assertThat(state.backdropUrl).isEqualTo("backdrop.jpg")
-        assertThat(state.releaseYear).isEqualTo("2022-01-01") // just the year, not full date!
+        assertThat(state.releaseDate).isEqualTo("2022-01-01") // just the year, not full date!
         assertThat(state.rating).isEqualTo(7.5)
         assertThat(state.runtime).isEmpty() // always "" for TV shows
         assertThat(state.genres).containsExactly("Drama")

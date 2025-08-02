@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
+import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
@@ -139,6 +140,16 @@ private fun onReceiveMediaDetailsEffect(
         is MediaDetailsScreenEffect.PlayMedia -> {}
         is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> TODO()
         is MediaDetailsScreenEffect.ShowRatingDialog -> TODO()
+        is MediaDetailsScreenEffect.NavigateToMediaDetails -> {
+            navController.navigate(
+                MediaDetailsDestination(
+                    mediaDetailsScreenEffect.mediaId,
+                    mediaDetailsScreenEffect.mediaType
+                )
+            ){
+                launchSingleTop = true
+            }
+        }
     }
 }
 
@@ -195,8 +206,8 @@ fun MediaDetailsContent(
             item {
                 HorizontalDivider(
                     modifier = Modifier
-                        .padding(bottom=12.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
                     color = Theme.color.stroke,
                     thickness = 1.dp
                 )
@@ -208,6 +219,7 @@ fun MediaDetailsContent(
                     onChipClick = onChipClick,
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
+                    onMediaClick = { mediaId, type -> listener.onMediaClicked(mediaId, type) },
                     mediaType = mediaType,
                 )
             }

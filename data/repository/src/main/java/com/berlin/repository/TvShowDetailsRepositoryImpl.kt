@@ -1,8 +1,10 @@
 package com.berlin.repository
 
+import android.util.Log
 import com.berlin.entity.Episodes
 import com.berlin.entity.Genre
 import com.berlin.entity.MediaCast
+import com.berlin.entity.MediaImage
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.TvShowDetails
@@ -34,10 +36,20 @@ class TvShowDetailsRepositoryImpl(
         }
     }
 
-    override suspend fun getSeriesImages(id: Long): List<String> {
+    override suspend fun getSeriesImages(id: Long): MediaImage {
         return try {
-            remoteDataSource.getSeriesImages(seriesId = id).posters?.map { POSTER_PREFIX + it.filePath }
-                ?: throw Exception()
+            val imagesResponse = remoteDataSource.getSeriesImages(id)
+
+            Log.d("SeriesRepository", "Backdrops: ${imagesResponse.backdrops}")
+            Log.d("SeriesRepository", "Posters: ${imagesResponse.posters}")
+
+            val backdrops = imagesResponse.backdrops
+                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+
+            val posters = imagesResponse.posters
+                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+
+            MediaImage(backdrops = backdrops.orEmpty(), posters = posters.orEmpty())
         } catch (e: Exception) {
             throw e
         }

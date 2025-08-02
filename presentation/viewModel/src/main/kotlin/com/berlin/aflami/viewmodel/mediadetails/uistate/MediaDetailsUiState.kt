@@ -13,7 +13,9 @@ data class MediaDetailsUiState(
     val posterUrl: String = "",
     val backdropUrl: String? = "",
     val genres: List<String> = emptyList(),
-    val releaseYear: String = "",
+    val posterImages: List<String> = emptyList(),
+    val backdropImages: List<String> = emptyList(),
+    val releaseDate: String = "",
     val rating: Double = 0.0,
     val runtime: String? = "",
     val seasons: List<EpisodesSeasonUiState>? = emptyList(),
@@ -39,13 +41,13 @@ data class MediaDetailsUiState(
             id = id,
             title = title,
             overview = overview,
-            releaseYear = releaseYear.toLocalDate1(),
+            releaseYear = releaseDate.toLocalDate1(),
             rating = rating,
             runtime = 0,
             genre = emptyList(),
             poster = posterUrl,
             backdropPath = backdropUrl,
-            releaseDate = releaseYear,
+            releaseDate = releaseDate,
         )
     }
 
@@ -54,13 +56,13 @@ data class MediaDetailsUiState(
             id = id,
             title = title,
             overview = overview,
-            releaseYear = releaseYear.toLocalDate1(),
+            releaseYear = releaseDate.toLocalDate1(),
             rating = rating,
             runtime = 0,
             genre = emptyList(),
             poster = posterUrl,
             backdropPath = backdropUrl,
-            releaseDate = releaseYear,
+            releaseDate = releaseDate,
         )
     }
 }

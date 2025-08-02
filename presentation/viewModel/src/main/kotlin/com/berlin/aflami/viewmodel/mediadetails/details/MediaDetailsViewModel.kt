@@ -90,18 +90,22 @@ class MediaDetailsViewModel(
                 when (mediaType) {
                     MediaType.MOVIE -> {
                         val movie = getMovieDetailsUseCase(mediaId)
+                        val pagerImages = getMovieGalleryUseCase(mediaId)
                         companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
-                        movie?.toUiState()
+                        Log.d("MediaDetailsViewModel", "getMediaDetails: $pagerImages")
+                        Pair(movie?.toUiState(), pagerImages)
                     }
 
                     MediaType.TVSHOW -> {
-                        val movie = getTvShowDetailsUseCase(mediaId)
-                        companyProductionCache = movie?.productionCompanies?.map { it.toUiState() }
-                        movie?.toUiState()
+                        val tvShow = getTvShowDetailsUseCase(mediaId)
+                        val pagerImages = getSeriesGalleryUseCase(mediaId)
+                        companyProductionCache = tvShow?.productionCompanies?.map { it.toUiState() }
+                        Log.d("MediaDetailsViewModel", "getMediaDetails: $pagerImages")
+                        Pair(tvShow?.toUiState(), pagerImages)
                     }
                 }
             },
-            onSuccess = { details ->
+            onSuccess = { (details, pagerImages) ->
                 details?.let {
                     updateState {
                         it.copy(
@@ -110,7 +114,7 @@ class MediaDetailsViewModel(
                             overview = details.overview,
                             posterUrl = details.posterUrl,
                             backdropUrl = details.backdropUrl,
-                            releaseYear = details.releaseYear,
+                            releaseDate = details.releaseDate,
                             numberOfSeasons = details.numberOfSeasons,
                             rating = details.rating,
                             runtime = details.runtime,
@@ -118,9 +122,11 @@ class MediaDetailsViewModel(
                             isLoading = false,
                             mediaType = mediaType,
                             originalCountry = details.originalCountry,
+                            posterImages = pagerImages.posters,
                         )
                     }
                     saveWatchedMedia(mediaType = mediaType)
+
                 }
             },
             onError = { errorState -> handleErrorState(errorState, updateRowSection = true) },
@@ -184,6 +190,10 @@ class MediaDetailsViewModel(
                 mediaType = mediaType
             )
         )
+    }
+
+    override fun onMediaClicked(mediaId: Long, mediaType: MediaType) {
+        sendNewEffect(MediaDetailsScreenEffect.NavigateToMediaDetails(mediaId, mediaType))
     }
 
     override fun onRateIconClicked(id: Long) {
@@ -323,6 +333,8 @@ class MediaDetailsViewModel(
         )
     }
 
+
+
     override fun onShowMediaGalleryClicked(id: Long, mediaType: MediaType) {
         updateState {
             it.copy(
@@ -337,7 +349,7 @@ class MediaDetailsViewModel(
                 }
             },
             onSuccess = { gallery ->
-                if (gallery.isEmpty()) {
+                if (gallery.backdrops.isEmpty()) {
                     updateState {
                         it.copy(
                             rowSection = RowSectionUiState.NoDataFound(UiText.Resource(NO_GALLERY))
@@ -348,7 +360,7 @@ class MediaDetailsViewModel(
                         it.copy(
                             rowSection = RowSectionUiState.Success(
                                 content = TabContent.Gallery(
-                                    items = gallery
+                                    items = gallery.backdrops
                                 )
                             )
                         )

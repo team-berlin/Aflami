@@ -9,6 +9,7 @@ sealed class MediaDetailsScreenEffect {
         val mediaId: Long,
         val mediaType: MediaType
     ) : MediaDetailsScreenEffect()
+    data class NavigateToMediaDetails(val mediaId: Long, val mediaType: MediaType): MediaDetailsScreenEffect()
 
     data class ShowRatingDialog(val id: Long) : MediaDetailsScreenEffect()
     data class ShowAddToFavoriteListDialog(
