@@ -3,6 +3,8 @@ package com.berlin.repository.mapper
 import com.berlin.entity.Genre
 import com.berlin.entity.Movie
 import com.berlin.entity.ProductionCompany
+import com.berlin.repository.datasource.local.dto.MovieEntity
+import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.dto.GenreDto
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
@@ -10,21 +12,22 @@ import com.berlin.repository.datasource.remote.dto.movie.MovieDto
 import kotlinx.datetime.LocalDate
 import java.time.Instant
 
-fun SearchingEntity.toDomain(): Movie {
+fun MovieEntity.toDomain(): Movie {
     return Movie(
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseDate = stringToLocalDate(releaseYear),
-        genres = this.genre,
-        posterURL = this.poster,
-        screenShot = TODO(),
-        description = TODO(),
-        duration = TODO(),
-        hasVideo = TODO(),
-        productionCompanies = TODO(),
-        originCountry = TODO(),
-        galleryUrl = TODO()
+        releaseDate = this.releaseDate,
+        genres = this.genres,
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        productionCompanies = this.productionCompanies,
+        originCountry = this.originCountry,
+        galleryUrl =this.galleryUrl,
+        reviews = this.reviews,
     )
 }
 
@@ -32,15 +35,8 @@ fun MovieDto.toLocal(query: String, type: String, page: Int, mediaType: String):
     return SearchingEntity(
         query = query,
         type = type,
-        time = Instant.now().epochSecond,
-        id = this.id?.toLong() ?: 0L,
-        title = this.title ?: "",
-        rating = this.voteAverage ?: 0.0,
-        releaseYear = (releaseDate ?: ""),
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
-        page = page,
-        mediaType = mediaType
+        timeStamp = Instant.now().toEpochMilli(),
+        queryType = QueryType.MOVIE,
     )
 }
 
@@ -49,7 +45,7 @@ fun MovieDto.toDomain(): Movie {
         id = this.id?.toLong() ?: 0L,
         title = this.title.orEmpty(),
         rating = (this.voteAverage ?: 0.0),
-        releaseDate = stringToLocalDate(releaseDate ?: ""),
+        releaseDate = this.releaseDate,
         genres = this.genreIds?.filterNotNull() ?: emptyList(),
         posterURL = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
         screenShot = TODO(),
@@ -82,16 +78,7 @@ fun MovieDetailsDto.toDomain(): Movie {
         )
 }
 
-fun MovieDto.toDomain(mediaType: String): Media {
-    return Media(
-        id = this.id?.toLong() ?: 0L,
-        title = this.title.orEmpty(),
-        rating = this.voteAverage ?: 0.0,
-        releaseYear = stringToLocalDate(releaseDate ?: ""),
-        mediaType = mediaType,
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
-    )
+
 }
 
 fun stringToLocalDate(dateString: String): LocalDate {

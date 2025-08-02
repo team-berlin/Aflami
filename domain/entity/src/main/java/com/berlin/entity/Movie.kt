@@ -14,5 +14,6 @@ data class Movie(
     val hasVideo: Boolean,
     val productionCompanies: List<ProductionCompany>,
     val originCountry: String,
-    val galleryUrl:List<String>
+    val galleryUrl:List<String>,
+    val reviews: List<Review>,
 )

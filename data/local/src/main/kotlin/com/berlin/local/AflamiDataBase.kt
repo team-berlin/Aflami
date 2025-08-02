@@ -3,7 +3,7 @@ package com.berlin.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.berlin.local.converters.Converters
+import com.berlin.repository.datasource.Converters
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.RecentHistoryDao

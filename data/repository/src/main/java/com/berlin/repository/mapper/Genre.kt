@@ -19,3 +19,4 @@ fun GenreEntity.toDomain(): Genre {
         name = name
     )
 }
+

@@ -5,7 +5,6 @@ import com.berlin.aflami.util.ApiKeyInterceptor
 import com.berlin.aflami.util.LanguageInterceptor
 import com.berlin.remote.network.ApiService
 import com.berlin.remote.network.AuthenticationApiService
-import com.berlin.remote.network.HomeApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -45,5 +44,4 @@ val networkModule = module {
 
     single { get<Retrofit>().create(ApiService::class.java) }
     single { get<Retrofit>().create(AuthenticationApiService::class.java) }
-    single { get<Retrofit>().create(HomeApiService::class.java) }
 }

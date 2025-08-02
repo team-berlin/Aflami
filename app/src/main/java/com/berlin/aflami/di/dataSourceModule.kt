@@ -27,5 +27,4 @@ val dataSourceModule = module {
     singleOf(::AuthenticationRemoteDataSourceImpl) bind AuthenticationRemoteDataSource::class
     singleOf(::AuthenticationLocalDataSourceImp) bind AuthenticationLocalDataSource::class
     singleOf(::ContinueWatchingLocalDataSourceImpl) bind ContinueWatchingLocalDataSource::class
-    singleOf(::HomeRemoteDataSourceImpl) bind HomeRemoteDataSource::class
 }

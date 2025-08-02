@@ -1,36 +1,27 @@
 package com.berlin.repository.mapper
 
-import com.berlin.entity.Genre
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
-import com.berlin.repository.MediaType
 import com.berlin.repository.datasource.local.dto.ContinueWatchingMovieEntity
 import com.berlin.repository.datasource.local.dto.ContinueWatchingTVShowEntity
-import com.berlin.repository.datasource.local.dto.SearchingEntity
-import com.berlin.repository.datasource.remote.dto.GenreDto
-import java.time.Instant
 
-
-
-fun GenreDto.toDomain(): Genre {
-    return Genre(id = this.id?:-1, name = this.name?:"All")
-}
 
 fun ContinueWatchingMovieEntity.toMovie(): Movie {
     return Movie(
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseDate = this.releaseYear,
-        genres = emptyList(),
-        posterURL = this.posterUrl,
-        screenShot = "",
-        description = TODO(),
-        duration = TODO(),
-        hasVideo = TODO(),
-        productionCompanies = TODO(),
-        originCountry = TODO(),
-        galleryUrl = TODO(),
+        releaseDate = this.releaseDate,
+        genres = this.genres,
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        productionCompanies = this.productionCompanies,
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        reviews = this.reviews
     )
 }
 
@@ -39,18 +30,18 @@ fun ContinueWatchingTVShowEntity.toTVShow(): TVShow {
         id = this.id,
         title = this.title,
         rating = this.rating,
-        posterURL = TODO(),
-        releaseDate = TODO(),
-        screenShot = TODO(),
-        description = TODO(),
-        genres = TODO(),
-        duration = TODO(),
-        hasVideo = TODO(),
-        productionCompanies = TODO(),
-        originCountry = TODO(),
-        seasons = TODO(),
-        galleryUrl = TODO(),
-        reviews = TODO(),
+        releaseDate = this.releaseDate,
+        genres = this.genres,
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        productionCompanies = this.productionCompanies,
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        seasons = this.seasons,
+        reviews = this.reviews,
     )
 }
 
@@ -59,9 +50,17 @@ fun Movie.toLocalEntity(): ContinueWatchingMovieEntity {
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseYear = this.releaseDate.toString(),
-        posterUrl = this.posterURL,
-        typeOfMedia = MediaType.MOVIE
+        releaseDate = this.releaseDate,
+        genres = this.genres,
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        productionCompanies = this.productionCompanies,
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        reviews = this.reviews,
     )
 }
 
@@ -70,8 +69,17 @@ fun TVShow.toLocalEntity(): ContinueWatchingTVShowEntity {
         id = this.id,
         title = this.title,
         rating = this.rating,
-        releaseYear = this.releaseDate.toString(),
-        posterUrl = this.posterURL,
-        typeOfMedia = MediaType.TVSHOW
+        releaseDate = this.releaseDate,
+        genres = this.genres,
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        productionCompanies = this.productionCompanies,
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        seasons = this.seasons,
+        reviews = this.reviews,
     )
 }
