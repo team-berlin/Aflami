@@ -1,6 +1,6 @@
 package com.berlin.aflami.di
 
-import com.berlin.local.SearchDatabase
+import com.berlin.local.AflamiDatabase
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
@@ -18,31 +18,31 @@ object DaoModule {
 
     @Provides
     @Singleton
-    fun provideSearchDao(db: SearchDatabase): SearchDao {
+    fun provideSearchDao(db: AflamiDatabase): SearchDao {
         return db.searchDao()
     }
 
     @Provides
     @Singleton
-    fun provideRecentHistoryDao(db: SearchDatabase): RecentHistoryDao {
+    fun provideRecentHistoryDao(db: AflamiDatabase): RecentHistoryDao {
         return db.recentHistoryDao()
     }
 
     @Provides
     @Singleton
-    fun provideCategoriesPreferencesDao(db: SearchDatabase): CategoriesPreferencesDao {
+    fun provideCategoriesPreferencesDao(db: AflamiDatabase): CategoriesPreferencesDao {
         return db.categoriesPreferencesDao()
     }
 
     @Provides
     @Singleton
-    fun provideContinueWatchingDao(db: SearchDatabase): ContinueWatchingDao {
+    fun provideContinueWatchingDao(db: AflamiDatabase): ContinueWatchingDao {
         return db.continueWatchingDao()
     }
 
     @Provides
     @Singleton
-    fun provideGenreDao(db: SearchDatabase): GenreDao {
+    fun provideGenreDao(db: AflamiDatabase): GenreDao {
         return db.genreDao()
     }
 }

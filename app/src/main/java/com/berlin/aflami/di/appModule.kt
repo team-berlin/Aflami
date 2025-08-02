@@ -1,9 +1,9 @@
 package com.berlin.aflami.di
 
-
+import android.app.Application
 import android.content.Context
-import androidx.room.Room
-import com.berlin.local.SearchDatabase
+import android.content.SharedPreferences
+import com.berlin.local.AflamiDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,13 +17,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): SearchDatabase {
-        return Room.databaseBuilder(
-            context,
-            SearchDatabase::class.java,
-            "Aflami_Database"
-        )
-            .fallbackToDestructiveMigration(false)
-            .build()
+    fun provideDatabase(app: Application): AflamiDatabase {
+        return AflamiDatabase.getInstance(app)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     }
 }
