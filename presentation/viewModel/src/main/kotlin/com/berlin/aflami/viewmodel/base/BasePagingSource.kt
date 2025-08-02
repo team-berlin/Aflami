@@ -34,5 +34,9 @@ abstract class BasePagingSource<T : Any>(
 
     companion object {
         const val PAGE_SIZE = 20
+        const val INITIAL_LOAD_SIZE = PAGE_SIZE
+        const val PREFETCH_DISTANCE = 5
+        const val ENABLE_PLACEHOLDERS = false
+
     }
 }

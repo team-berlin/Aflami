@@ -54,17 +54,17 @@ import com.berlin.aflami.screens.home.sections.PosterSlider
 import com.berlin.aflami.screens.home.sections.TopRatingHomeSections
 import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.home.HomeInteractionListener
+import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
-import com.berlin.aflami.viewmodel.home.HomeUiState
-import com.berlin.aflami.viewmodel.home.HomeViewModel
+import com.berlin.aflami.viewmodel.home.HomeScreenState
+import com.berlin.aflami.viewmodel.home.HomeScreenViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: HomeScreenViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
@@ -109,25 +109,25 @@ fun HomeScreen(
 
 private fun onReceiveHomeScreenEffect(navController: NavController,homeScreenEffect: HomeScreenEffect){
     when (homeScreenEffect) {
-        is HomeScreenEffect.NavigateToContinueWatching -> {
+        is HomeScreenEffect.NavigateToContinueWatchingScreen -> {
             navController.navigate(
                 ContinueWatchingDestination
             )
         }
 
-        is HomeScreenEffect.NavigateToSearch -> {
+        is HomeScreenEffect.NavigateToSearchScreen -> {
             navController.navigate(
                 SearchDestination
             )
         }
 
-        is HomeScreenEffect.NavigateToTopRating -> {
+        is HomeScreenEffect.NavigateToTopRatingScreen -> {
             navController.navigate(
                 TopRatingMediaDestination
             )
         }
 
-        is HomeScreenEffect.NavigateToDetails -> {
+        is HomeScreenEffect.NavigateToMediaDetailsScreen -> {
             navController.navigate(
                 MediaDetailsDestination(homeScreenEffect.id, MediaType.valueOf(homeScreenEffect.mediaType))
             )
@@ -139,7 +139,7 @@ private fun onReceiveHomeScreenEffect(navController: NavController,homeScreenEff
 
 @Composable
 private fun HomeContent(
-    state: HomeUiState, listener: HomeInteractionListener,
+    state: HomeScreenState, listener: HomeScreenInteractionListener,
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
@@ -155,7 +155,7 @@ private fun HomeContent(
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
     val pagerState = rememberPagerState(
-        initialPage = 1, pageCount = { state.popularMedia.popularMedia.size })
+        initialPage = 1, pageCount = { state.popularMediaUiState.popularMedia.size })
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
@@ -166,8 +166,8 @@ private fun HomeContent(
             text = stringResource(R.string.loading)
         )
     }
-    val pagedMovies = state.mediaContinueWatching.collectAsLazyPagingItems()
-    val currentMedia = state.popularMedia.popularMedia.getOrNull(pagerState.currentPage)
+    val pagedMovies = state.continueWatchingUiState.collectAsLazyPagingItems()
+    val currentMedia = state.popularMediaUiState.popularMedia.getOrNull(pagerState.currentPage)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -221,9 +221,9 @@ private fun HomeContent(
 
                                 PosterSlider(
                                     modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
-                                    mediaList = state.popularMedia.popularMedia,
+                                    mediaList = state.popularMediaUiState.popularMedia,
                                     pagerState = pagerState,
-                                    onClick = { listener.onClickCard(it.id, it.mediaType) })
+                                    onClick = { listener.onMediaCardClicked(it.id, it.mediaType) })
 
                                 currentMedia?.let { media ->
                                     Text(
@@ -268,7 +268,7 @@ private fun HomeContent(
                             state = pagedMovies,
                             sectionTitleId = R.string.continue_watching,
                             cardClick = { id, type ->
-                                listener.onClickCard(id, type)
+                                listener.onMediaCardClicked(id, type)
                             },
                         )
                     }
@@ -279,11 +279,11 @@ private fun HomeContent(
                             .background(Theme.color.surface)
                             .padding(top = 24.dp, bottom = 24.dp)
                             .background(Theme.color.surface),
-                        seeAllOnClick = { listener.onAllTopRatingClicked() },
+                        seeAllOnClick = { listener.onShowAllTopRatingClicked() },
                         state = state.topRatedMediaUiState.topRatedMedia,
                         sectionTitleId = R.string.top_rating,
                         cardClick = { id, type ->
-                            listener.onClickCard(id, type)
+                            listener.onMediaCardClicked(id, type)
                         })
                 }
                 item {
@@ -293,9 +293,9 @@ private fun HomeContent(
                 }
                 item {
                     UpcomingMoviesSection(
-                        movies = state.upcomingMoviesSectionUiState.upcomingMovies,
-                        genres = state.upcomingMoviesSectionUiState.movieGenres,
-                        onMovieClick = { listener.onClickUpcomingMovieCard(it) },
+                        movies = state.upcomingMoviesUiState.upcomingMovies,
+                        genres = state.upcomingMoviesUiState.movieGenres,
+                        onMovieClick = { listener.onUpcomingMoviesCardClicked(it) },
                         onGenreClick = { listener.onChangeUpcomingMovieGenre(it) },
                         modifier = Modifier.background(Theme.color.surface)
                     )

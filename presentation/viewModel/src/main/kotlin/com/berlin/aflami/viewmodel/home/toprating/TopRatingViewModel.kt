@@ -1,12 +1,12 @@
 package com.berlin.aflami.viewmodel.home.toprating
 
-import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
-import com.berlin.aflami.viewmodel.base.BasePagingSource
+import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.update
 import usecase.movie.GetTopRatedMoviesUseCase
 import usecase.tvshow.GetTopRatedTVShowUseCase
@@ -21,46 +21,45 @@ class TopRatingViewModel(
         getTopRatingMedia()
     }
 
-    private fun getTopRatingMedia() {
-        _state.update {
-            it.copy(isLoading = true, errorMessage = null)
-        }
-        tryToCall(
-            call = {
-                Pager(
-                    config = PagingConfig(
-                        pageSize = BasePagingSource.PAGE_SIZE,
-                        initialLoadSize = BasePagingSource.PAGE_SIZE
-                    ),
-                    pagingSourceFactory = {
-                        TopRatingMoviesPagingSource(
-                            getTopRatedMoviesUseCase,
-                            getTopRatedTvShowsUseCase
-                        )
-                    }
-                ).flow.cachedIn(viewModelScope)
-            },
-            onSuccess = { topRatingMediaFlow ->
-                _state.update {
-                    it.copy(
-                        topRatedMediaFlow = topRatingMediaFlow,
-                        isLoading = false,
-                    )
-                }
-            },
-            onError =
-                { errorUiState ->
-                    _state.update {
-                        it.copy(
-                            errorMessage = errorUiState.message
-                        )
-                    }
-                },
-        )
-    }
-
     override fun onBackClicked() = sendNewEffect(TopRatingScreenEffect.NavigateBack)
 
     override fun onMediaCardClicked(mediaId: Long, mediaType: MediaType) =
         sendNewEffect(TopRatingScreenEffect.NavigateToMediaDetailsScreen(mediaId, mediaType))
+
+    private fun getTopRatingMedia() {
+        updateScreenStateToLoading()
+        tryToCall(
+            call = { getTopRatedMediaAsFlow(getTopRatedMoviesUseCase, getTopRatedTvShowsUseCase) },
+            onSuccess = ::updateScreenStateWithNewTopRatedMedia,
+            onError = ::updateScreenStateToError
+        )
+    }
+
+    private fun getTopRatedMediaAsFlow(
+        getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+        getTopRatedTvShowsUseCase: GetTopRatedTVShowUseCase,
+    ): Flow<PagingData<MediaUiState>> = Pager(
+        config = defaultPageConfigurations(),
+        pagingSourceFactory = {
+            TopRatingMoviesPagingSource(
+                getTopRatedMoviesUseCase,
+                getTopRatedTvShowsUseCase
+            )
+        }
+    ).flow
+
+    private fun updateScreenStateWithNewTopRatedMedia(topRatingMediaFlow: Flow<PagingData<MediaUiState>>) {
+        _state.update {
+            it.copy(
+                topRatedMediaFlow = topRatingMediaFlow,
+                isLoading = false,
+            )
+        }
+    }
+
+    private fun updateScreenStateToError(errorUiState: ErrorUiState) =
+        updateState { it.copy(errorMessage = errorUiState.message) }
+
+    private fun updateScreenStateToLoading() = updateState { it.copy(isLoading = true) }
+
 }

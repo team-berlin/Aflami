@@ -31,10 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.home.HomeInteractionListener
-import com.berlin.aflami.viewmodel.home.HomeScreenEffect
-import com.berlin.aflami.viewmodel.home.HomeUiState
-import com.berlin.aflami.viewmodel.home.HomeViewModel
+import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
+import com.berlin.aflami.viewmodel.home.HomeScreenState
+import com.berlin.aflami.viewmodel.home.HomeScreenViewModel
 import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.designsystem.R
 
@@ -47,7 +46,7 @@ fun MoodPicker(
     actionText: String,
     imagePainter: Painter,
     selectedMood: Int? = null,
-    viewModel: HomeViewModel,
+    viewModel: HomeScreenViewModel,
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     Box(
@@ -109,8 +108,8 @@ private fun MoodPickerContent(
     promptText: String,
     getNowText: String,
     selectedMood: Int? = null,
-    listener: HomeInteractionListener,
-    state: State<HomeUiState>,
+    listener: HomeScreenInteractionListener,
+    state: State<HomeScreenState>,
 ) {
     Column(
         modifier = Modifier
@@ -136,7 +135,7 @@ private fun MoodPickerContent(
                     iconRes = iconRes,
                     isSelected = selectedMood == iconRes,
                     onClick = {
-                        listener.onSelectedMood(
+                        listener.onMoodSelected(
                             moodFromIcon(iconRes, moodIcons) ?: UserMood.NEUTRAL
                         )
                     }

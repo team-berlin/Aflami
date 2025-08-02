@@ -2,6 +2,11 @@ package com.berlin.aflami.viewmodel.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingConfig
+import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.ENABLE_PLACEHOLDERS
+import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.INITIAL_LOAD_SIZE
+import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PAGE_SIZE
+import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PREFETCH_DISTANCE
 import com.berlin.exception.NetworkException
 import com.berlin.exception.NotFoundException
 import com.berlin.exception.ServerException
@@ -15,13 +20,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<S, E>(
-    initialState: S
+abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
+    initialState: SCREEN_STATE,
 ) : ViewModel() {
     protected val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
 
-    protected val _effect = MutableSharedFlow<E>()
+    protected val _effect = MutableSharedFlow<SCREEN_EFFECT>()
     val effect = _effect.asSharedFlow()
 
     protected fun <T> tryToCall(
@@ -36,9 +41,9 @@ abstract class BaseViewModel<S, E>(
                 onSuccess(result)
             } catch (e: UnauthorizedException) {
                 onError(InvalidationErrorState(e.message.toString()))
-            }  catch (e: NetworkException) {
+            } catch (e: NetworkException) {
                 onError(NetworkErrorState(e.message.toString()))
-            }  catch (e: NotFoundException) {
+            } catch (e: NotFoundException) {
                 onError(ErrorUiState(e.message.toString()))
             } catch (e: ServerException) {
                 onError(ErrorUiState(e.message.toString()))
@@ -48,13 +53,21 @@ abstract class BaseViewModel<S, E>(
         }
     }
 
-    protected fun updateState(updater: (S) -> S) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _state.update(updater)
-        }
-    }
+    protected fun defaultPageConfigurations(
+        pageSize: Int = PAGE_SIZE,
+        initialLoadSize: Int = INITIAL_LOAD_SIZE,
+        prefetchDistance: Int = PREFETCH_DISTANCE,
+        enablePlaceholders: Boolean = ENABLE_PLACEHOLDERS,
+    ) = PagingConfig(
+        pageSize = pageSize,
+        initialLoadSize = initialLoadSize,
+        prefetchDistance = prefetchDistance,
+        enablePlaceholders = enablePlaceholders
+    )
 
-    protected fun sendNewEffect(newEffect: E) {
+    protected fun updateState(updater: (SCREEN_STATE) -> SCREEN_STATE) = _state.update(updater)
+
+    protected fun sendNewEffect(newEffect: SCREEN_EFFECT) {
         viewModelScope.launch() {
             _effect.emit(newEffect)
         }

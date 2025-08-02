@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
-import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabsUiState
@@ -253,8 +253,8 @@ class MediaDetailsViewModel(
         tryToCall(
             call = {
                 when (mediaType) {
-                    MediaType.MOVIE -> getSimilarMoviesUseCase(mediaId).map { it.toUIStateMedia() }
-                    MediaType.TV_SHOW -> getSimilarTVShowsUseCase(mediaId).map { it.toUIStateMedia() }
+                    MediaType.MOVIE -> getSimilarMoviesUseCase(mediaId).map { it.toMediaUiState() }
+                    MediaType.TV_SHOW -> getSimilarTVShowsUseCase(mediaId).map { it.toMediaUiState() }
                 }
             },
             onSuccess = { moreLikeMedia ->

@@ -1,14 +1,12 @@
 package com.berlin.aflami.viewmodel.home.continueWatching
 
-import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
-import com.berlin.aflami.viewmodel.base.BasePagingSource
+import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import kotlinx.coroutines.flow.Flow
 import usecase.movie.ContinueWatchingMovieUseCase
 import usecase.tvshow.ContinueWatchingTVShowUseCase
 
@@ -20,9 +18,7 @@ class ContinueWatchingMediaViewModel(
 ), ContinueWatchingMediaInteractionListener {
 
     init {
-        viewModelScope.launch {
-            getContinueWatchingMedia()
-        }
+        getContinueWatchingMedia()
     }
 
     override fun onBackClicked() = sendNewEffect(ContinueWatchingScreenEffect.NavigateBack)
@@ -31,41 +27,32 @@ class ContinueWatchingMediaViewModel(
         sendNewEffect(ContinueWatchingScreenEffect.NavigateToDetails(mediaId, mediaType))
 
     private fun getContinueWatchingMedia() {
-        _state.update {
-            it.copy(isLoading = true, errorMessage = null)
-        }
+        updateScreenStateToLoading()
         tryToCall(
-            call = {
-                Pager(
-                    config = PagingConfig(
-                        pageSize = BasePagingSource.PAGE_SIZE,
-                        initialLoadSize = BasePagingSource.PAGE_SIZE
-                    ),
-                    pagingSourceFactory = {
-                        ContinueWatchingMediaPagingSource(
-                            getContinueWatchingMoviesUseCase,
-                            getContinueWatchingTVShowsUseCase
-                        )
-                    }
-                ).flow.cachedIn(viewModelScope)
-            },
-            onSuccess = { continueWatchingMedia ->
-                _state.update {
-                    it.copy(
-                        continueWatchingMediaFlow = continueWatchingMedia,
-                        isLoading = false,
-                    )
-                }
-
-            },
-            onError =
-                { errorUiState ->
-                    _state.update {
-                        it.copy(
-                            errorMessage = errorUiState.message
-                        )
-                    }
-                },
+            call = { getContinueWatchingMediaAsFlow() },
+            onSuccess = ::updateScreenStateWithNewMedia,
+            onError = ::updateScreenStateToError
         )
     }
+
+    private fun updateScreenStateWithNewMedia(continueWatchingMedia: Flow<PagingData<MediaUiState>>) =
+        updateState {
+            it.copy(continueWatchingMediaFlow = continueWatchingMedia, isLoading = false)
+        }
+
+    private fun getContinueWatchingMediaAsFlow(): Flow<PagingData<MediaUiState>> = Pager(
+        config = defaultPageConfigurations(),
+        pagingSourceFactory = {
+            ContinueWatchingMediaPagingSource(
+                getContinueWatchingMoviesUseCase,
+                getContinueWatchingTVShowsUseCase
+            )
+        }
+    ).flow
+
+    private fun updateScreenStateToError(errorUiState: ErrorUiState) =
+        updateState { it.copy(errorMessage = errorUiState.message) }
+
+    private fun updateScreenStateToLoading() = updateState { it.copy(isLoading = true) }
+
 }

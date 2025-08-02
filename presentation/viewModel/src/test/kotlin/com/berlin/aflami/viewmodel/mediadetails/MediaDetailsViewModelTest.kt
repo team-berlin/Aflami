@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.SavedStateHandle
-import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
@@ -407,7 +407,7 @@ class MediaDetailsViewModelTest {
                 releaseDate = LocalDate.parse("1999-03-31"),
                 poster = "poster.png"
             )
-            val mappedUiState = movie.toUIStateMedia()
+            val mappedUiState = movie.toMediaUiState()
             coEvery { getSimilarMoviesUseCase(1) } returns listOf(movie)
 
             // When
