@@ -12,17 +12,16 @@ interface MediaInteractionListener :
     ExtraMediaContentInteractionListener {
 
     fun onBackClicked()
-    fun onPlayClicked(id: Long)
+    fun onPlayClicked(mediaId: Long)
     fun onReadMoreDescriptionClicked()
-    fun onReadMoreReviewClicked(id: String)
+    fun onReadMoreReviewClicked(reviewId: String)
     fun onShowCastClicked()
-
 }
 
 interface ExtraMediaContentInteractionListener : TVShowSeasonsInteractionListener {
     fun onShowMoreMediaLikeThisClicked(mediaId: Long, mediaType: MediaType)
     fun onShowReviewsClicked(mediaId: Long, mediaType: MediaType)
-    fun onShowMediaGalleryClicked(id:Long,mediaType: MediaType)
+    fun onShowMediaGalleryClicked(mediaId:Long, mediaType: MediaType)
     fun onShowCompanyProductionClicked()
 }
 

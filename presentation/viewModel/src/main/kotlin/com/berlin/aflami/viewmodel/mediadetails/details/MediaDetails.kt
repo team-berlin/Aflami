@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.mediadetails
+package com.berlin.aflami.viewmodel.mediadetails.details
 
 
 data class MovieDetailsTabsUiState(

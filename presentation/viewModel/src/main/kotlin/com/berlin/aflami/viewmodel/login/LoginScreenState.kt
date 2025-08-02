@@ -1,8 +1,9 @@
 package com.berlin.aflami.viewmodel.login
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.input.TextFieldValue
 
-data class LoginUiState(
+data class LoginScreenState(
     val formUiState: FormUiState = FormUiState(),
     val isLoginButtonEnabled: Boolean = false,
     val isLoading: Boolean = false,

@@ -1,6 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.components
 
-import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
+import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
 import com.berlin.ui.R
 
 fun movieDetailsTabsMapper(tab: MovieDetailsTabs): Int {

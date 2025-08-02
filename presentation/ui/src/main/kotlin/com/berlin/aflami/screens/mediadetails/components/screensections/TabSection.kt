@@ -28,7 +28,7 @@ import com.berlin.aflami.screens.mediadetails.components.movieDetailsTabsMapper
 import com.berlin.aflami.screens.mediadetails.screen.getDisplayMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
+import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.shareduistate.MediaType

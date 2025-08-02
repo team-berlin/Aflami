@@ -6,14 +6,12 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabsUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
+import com.berlin.aflami.viewmodel.shareduistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.util.toggle
 import com.berlin.entity.Episode
@@ -51,19 +49,10 @@ class MediaDetailsViewModel(
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
     val mediaId: Long,
-    val mediaType: MediaType
+    val mediaType: MediaType,
 ) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
     MediaDetailsUiState()
 ), MediaInteractionListener {
-
-    private companion object {
-        val NO_REVIEWS = R.string.there_is_no_reviews
-        val NO_GALLERY = R.string.there_is_no_gallery
-        val NO_MORE_MEDIA = R.string.there_is_no_more_media
-        val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
-    }
-
-//    val mediaType = MediaType.valueOf(mediaType)
 
     private val _tabSelectedUiState = MutableStateFlow(MovieDetailsTabsUiState())
     val tabSelectedUiState = _tabSelectedUiState.asStateFlow()
@@ -152,13 +141,13 @@ class MediaDetailsViewModel(
         sendNewEffect(MediaDetailsScreenEffect.NavigateBack)
     }
 
-    override fun onPlayClicked(id: Long) {
+    override fun onPlayClicked(mediaId: Long) {
         updateState {
             it.copy(
                 isPlaying = true
             )
         }
-        sendNewEffect(MediaDetailsScreenEffect.PlayMedia(id = id))
+        sendNewEffect(MediaDetailsScreenEffect.PlayMedia(mediaId = mediaId))
     }
 
     override fun onReadMoreDescriptionClicked() {
@@ -169,10 +158,10 @@ class MediaDetailsViewModel(
         }
     }
 
-    override fun onReadMoreReviewClicked(id: String) {
+    override fun onReadMoreReviewClicked(reviewId: String) {
         updateState { state ->
             state.copy(
-                expandedReviewIds = state.expandedReviewIds.toggle(id)
+                expandedReviewIds = state.expandedReviewIds.toggle(reviewId)
             )
         }
     }
@@ -323,7 +312,7 @@ class MediaDetailsViewModel(
         )
     }
 
-    override fun onShowMediaGalleryClicked(id: Long, mediaType: MediaType) {
+    override fun onShowMediaGalleryClicked(mediaId: Long, mediaType: MediaType) {
         updateState {
             it.copy(
                 rowSection = RowSectionUiState.Loading
@@ -332,8 +321,8 @@ class MediaDetailsViewModel(
         tryToCall(
             call = {
                 when (mediaType) {
-                    MediaType.MOVIE -> getMovieGalleryUseCase(id)
-                    MediaType.TV_SHOW -> getSeriesGalleryUseCase(id)
+                    MediaType.MOVIE -> getMovieGalleryUseCase(mediaId)
+                    MediaType.TV_SHOW -> getSeriesGalleryUseCase(mediaId)
                 }
             },
             onSuccess = { gallery ->
@@ -474,7 +463,7 @@ class MediaDetailsViewModel(
                 )
 
                 MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(
-                    id = mediaId,
+                    mediaId = mediaId,
                     mediaType = mediaType
                 )
 
@@ -503,5 +492,12 @@ class MediaDetailsViewModel(
                 isLoading = false
             )
         }
+    }
+
+    private companion object {
+        val NO_REVIEWS = R.string.there_is_no_reviews
+        val NO_GALLERY = R.string.there_is_no_gallery
+        val NO_MORE_MEDIA = R.string.there_is_no_more_media
+        val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
     }
 }

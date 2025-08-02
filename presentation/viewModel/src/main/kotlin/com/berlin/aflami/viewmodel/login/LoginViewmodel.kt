@@ -14,34 +14,39 @@ class LoginViewmodel(
     val usernameValidationUseCase: GetValidateUsernameUseCase,
     val passwordValidationUseCase: GetValidatePasswordUseCase,
     val loginUseCase: GetLoginUseCase,
-
-    ) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
+) : BaseViewModel<LoginScreenState, LoginScreenEffect>(LoginScreenState()),
     LoginInteractionListener {
+
     override fun onUsernameChanged(username: TextFieldValue) {
-        updateState {
-            it.copy(
-                formUiState = it.formUiState.copy(username = username),
-                isLoginButtonEnabled = username.text.isNotBlank() && it.formUiState.password.text.isNotBlank()
+        updateState { screenState ->
+            screenState.copy(
+                formUiState = screenState.formUiState.copy(username = username),
+                isLoginButtonEnabled = username.text.isNotBlank() && screenState.formUiState.password.text.isNotBlank()
             )
         }
     }
 
     override fun onPasswordChanged(password: TextFieldValue) {
-        updateState {
-            it.copy(
-                formUiState = it.formUiState.copy(password = password),
-                isLoginButtonEnabled = password.text.isNotBlank() && it.formUiState.username.text.isNotBlank()
+        updateState { screenState ->
+            screenState.copy(
+                formUiState = screenState.formUiState.copy(password = password),
+                isLoginButtonEnabled = password.text.isNotBlank() && screenState.formUiState.username.text.isNotBlank()
             )
         }
     }
 
     override fun onTrailingIconClicked() {
-        updateState { it.copy(formUiState = it.formUiState.copy(isPasswordObscured = !it.formUiState.isPasswordObscured)) }
+        updateState { screenState ->
+            screenState.copy(
+                formUiState = screenState.formUiState.copy(
+                    isPasswordObscured = !screenState.formUiState.isPasswordObscured
+                )
+            )
+        }
     }
 
-    override fun onForgotPasswordClicked() {
-        sendNewEffect(LoginEffect.NavigateToForgotPassword)
-    }
+    override fun onForgotPasswordClicked() =
+        sendNewEffect(LoginScreenEffect.NavigateToForgotPassword)
 
     override fun onLoginClicked() {
         val isValidated =
@@ -52,7 +57,7 @@ class LoginViewmodel(
             handleErrorState("Invalid username or password")
             return
         }
-        updateState { it.copy(isLoading = true) }
+        updateState { screenState -> screenState.copy(isLoading = true) }
         tryToCall(
             call = {
                 loginUseCase(
@@ -62,32 +67,32 @@ class LoginViewmodel(
             },
             onSuccess = {
                 updateState { it.copy(isLoading = false) }
-                sendNewEffect(newEffect = LoginEffect.NavigateToHome)
+                sendNewEffect(newEffect = LoginScreenEffect.NavigateToHomeScreen)
             },
             onError = { handleErrorState(it.message) },
         )
 
     }
 
-    override fun onContinueAsGuestClicked() {
-        sendNewEffect(LoginEffect.NavigateToHome)
-    }
+    override fun onContinueAsGuestClicked() =
+        sendNewEffect(LoginScreenEffect.NavigateToHomeScreen)
 
-    override fun onCreateAccountClicked() {
-        sendNewEffect(LoginEffect.NavigateToCreateAccount)
-    }
+
+    override fun onCreateAccountClicked() =
+        sendNewEffect(LoginScreenEffect.NavigateToCreateAccountScreen)
+
 
     private fun handleErrorState(message: String) {
-        updateState {
-            it.copy(
+        updateState { screenState ->
+            screenState.copy(
                 isError = true,
                 errorMessage = message
             )
         }
         viewModelScope.launch {
             delay(SNACK_BAR_DURATION)
-            updateState {
-                it.copy(
+            updateState { screenState ->
+                screenState.copy(
                     isError = false,
                     isLoginButtonEnabled = false,
                     isLoading = false

@@ -5,6 +5,7 @@ import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
@@ -243,7 +244,7 @@ class MediaDetailsViewModelTest {
 
         // Then
         assertThat(viewModel.state.value.isPlaying).isTrue()
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.PlayMedia(id = 1))
+        assertThat(effects).containsExactly(MediaDetailsScreenEffect.PlayMedia(mediaId = 1))
         job.cancel()
     }
 
