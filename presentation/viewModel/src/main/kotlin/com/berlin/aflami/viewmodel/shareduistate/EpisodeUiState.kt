@@ -1,5 +1,8 @@
 package com.berlin.aflami.viewmodel.shareduistate
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class EpisodeUiState(
     val id: Long,
     val stillPath: String,

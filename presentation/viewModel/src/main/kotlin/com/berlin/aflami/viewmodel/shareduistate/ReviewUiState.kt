@@ -1,5 +1,8 @@
 package com.berlin.aflami.viewmodel.shareduistate
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class ReviewUiState(
     val id: String = "",
     val name: String = "",

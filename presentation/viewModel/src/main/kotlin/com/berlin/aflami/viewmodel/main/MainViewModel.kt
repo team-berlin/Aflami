@@ -7,12 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import usecase.auth.IsLoggedInUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val isLoggedInUseCase: IsLoggedInUseCase,
+//    private val isLoggedInUseCase: LoggedInUseIsLoggedInUseCase,
 ) : ViewModel() {
 
     var loginState by mutableStateOf(false)
@@ -23,7 +22,7 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            loginState = isLoggedInUseCase()
+//            loginState = isLoggedInUseCase()
             isLoading = false
         }
     }

@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.mediadetails.cast
 
-import com.berlin.aflami.viewmodel.CastDetailsArgs
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
@@ -41,7 +40,7 @@ class CastViewModel @Inject constructor(
             onSuccess = { cast ->
                 _state.update {
                     it.copy(
-                        mediaCast = cast,
+                        actorUiStates = cast,
                         mediaType = mediaType,
                         isLoading = false
                     )

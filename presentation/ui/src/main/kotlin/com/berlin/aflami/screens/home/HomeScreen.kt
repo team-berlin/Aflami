@@ -58,7 +58,6 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
 import com.berlin.aflami.viewmodel.home.HomeScreenState
-import com.berlin.aflami.viewmodel.home.HomeScreenViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
 
@@ -133,7 +132,7 @@ private fun onReceiveHomeScreenEffect(
         is HomeScreenEffect.NavigateToMediaDetailsScreen -> {
             navController.navigate(
                 MediaDetailsDestination(
-                    homeScreenEffect.id,
+                    homeScreenEffect.mediaId,
                     MediaType.valueOf(homeScreenEffect.mediaType)
                 )
             )

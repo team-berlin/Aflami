@@ -22,8 +22,9 @@ import usecase.movie.GetUpComingMoviesUseCase
 import usecase.tvshow.ContinueWatchingTVShowUseCase
 import usecase.tvshow.GetPopularTVShowsUseCase
 import usecase.tvshow.GetTopRatedTVShowUseCase
+import javax.inject.Inject
 
-class HomeScreenViewModel(
+class HomeScreenViewModel @Inject constructor(
     private val popularMoviesUseCase: GetPopularMoviesUseCase,
     private val popularTVShowsUseCase: GetPopularTVShowsUseCase,
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,
@@ -205,7 +206,7 @@ class HomeScreenViewModel(
         onDismissMoodPickerDialog()
         sendNewEffect(
             HomeScreenEffect.NavigateToMediaDetailsScreen(
-                state.value.moodPickerUiState.selectedMovie.id, MediaType.MOVIE.name
+                state.value.moodPickerUiState.selectedMovie.id, MediaType.MOVIE
             )
         )
     }
@@ -257,10 +258,10 @@ class HomeScreenViewModel(
     }
 
     override fun onUpcomingMoviesCardClicked(id: Long) =
-        sendNewEffect(HomeScreenEffect.NavigateToMediaDetailsScreen(id, MediaType.MOVIE.name))
+        sendNewEffect(HomeScreenEffect.NavigateToMediaDetailsScreen(id, MediaType.MOVIE))
 
     override fun onMediaCardClicked(mediaId: Long, mediaType: MediaType) =
-        sendNewEffect(HomeScreenEffect.NavigateToMediaDetailsScreen(mediaId, mediaType.name))
+        sendNewEffect(HomeScreenEffect.NavigateToMediaDetailsScreen(mediaId, mediaType))
 
 
     override fun onChangeUpcomingMovieGenre(newGenreId: Int) {

@@ -36,8 +36,8 @@ class ContinueWatchingMediaViewModel(
     }
 
     private fun updateScreenStateWithNewMedia(continueWatchingMedia: Flow<PagingData<MediaUiState>>) =
-        updateState {
-            it.copy(continueWatchingMediaFlow = continueWatchingMedia, isLoading = false)
+        updateState { screenState ->
+            screenState.copy(continueWatchingMediaFlow = continueWatchingMedia, isLoading = false)
         }
 
     private fun getContinueWatchingMediaAsFlow(): Flow<PagingData<MediaUiState>> = Pager(
@@ -51,8 +51,14 @@ class ContinueWatchingMediaViewModel(
     ).flow
 
     private fun updateScreenStateToError(errorUiState: ErrorUiState) =
-        updateState { it.copy(errorMessage = errorUiState.message) }
+        updateState { screenState ->
+            screenState.copy(
+                errorMessage = errorUiState.message,
+                isLoading = false
+            )
+        }
 
-    private fun updateScreenStateToLoading() = updateState { it.copy(isLoading = true) }
+    private fun updateScreenStateToLoading() =
+        updateState { screenState -> screenState.copy(isLoading = true) }
 
 }

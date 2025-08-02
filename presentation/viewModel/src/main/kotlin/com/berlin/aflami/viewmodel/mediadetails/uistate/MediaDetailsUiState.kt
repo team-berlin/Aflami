@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.mediadetails.uistate
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.painter.Painter
+import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.shareduistate.EpisodeUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -23,11 +24,10 @@ data class MediaDetailsUiState(
     val posterImages: List<String> = emptyList(),
     val backdropImages: List<String> = emptyList(),
     val releaseDate: String = "",
-    val rating: Double = 0.0,
     val runtime: String? = "",
     val country: String = "",
     val description: String = "",
-    val mediaCast: List<MediaCastUiState> = emptyList(),
+    val actorUiStates: List<ActorUiState> = emptyList(),
     val seasons: List<EpisodesSeasonUiState>? = emptyList(),
     val rowSection: RowSectionUiState = RowSectionUiState.Loading,
     val numberOfSeasons: Int? = null,
@@ -35,8 +35,6 @@ data class MediaDetailsUiState(
     val isOverviewExpanded: Boolean = false,
     val mediaType: MediaType = MediaType.MOVIE,
     val isPlaying: Boolean = false,
-    val mediaCast: List<MediaCastUiState> = emptyList(),
-    val country: String = "",
     val options: List<MediaOptions> = emptyList(),
     val isDescriptionExpanded: Boolean = false,
     val expandedReviewIds: Set<String> = emptySet(),
@@ -45,20 +43,23 @@ data class MediaDetailsUiState(
     val duration: String? = null,
     val hasVideo: Boolean = false,
     val error: String? = null,
-    val rowSection: RowSectionUiState = RowSectionUiState.Loading
 ) {
     fun toMovie(): Movie {
         return Movie(
             id = mediaId,
             title = title,
-            overview = description,
-            releaseYear = releaseDate.toLocalDate1(),
+            description = description,
+            releaseDate = releaseDate.toLocalDate1(),
             rating = rating,
-            runtime = 0,
-            genre = emptyList(),
-            poster = posterUrl,
-            backdropPath = backdropUrl,
-            releaseDate = releaseDate,
+            duration = 0,
+            genres = emptyList(),
+            posterURL = posterUrl,
+            screenShot = backdropUrl,
+            hasVideo = hasVideo,
+            productionCompanies = emptyList(),
+            originCountry = originalCountry,
+            galleryUrl = ,
+            reviews = TODO(),
         )
     }
 

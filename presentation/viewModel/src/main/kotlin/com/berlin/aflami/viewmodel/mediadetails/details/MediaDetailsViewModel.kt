@@ -2,14 +2,12 @@ package com.berlin.aflami.viewmodel.mediadetails.details
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.berlin.aflami.viewmodel.MediaDetailsArgs
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.MovieDetailsTabsUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
@@ -17,13 +15,14 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.util.toggle
 import com.berlin.entity.Episode
 import com.berlin.viewModel.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import usecase.mediadetails.GetMovieVideos
+import usecase.mediadetails.GetTVShowVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.GetMovieCastUseCase
 import usecase.movie.GetMovieDetailsUseCase
@@ -37,10 +36,6 @@ import usecase.tvshow.GetTVShowCastUseCase
 import usecase.tvshow.GetTVShowDetailsUseCase
 import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
-import usecase.mediadetails.GetTVShowVideos
-import usecase.mediadetails.GetMovieVideos
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 
 class MediaDetailsViewModel(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
@@ -58,7 +53,7 @@ class MediaDetailsViewModel(
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
     private val getMovieVideos: GetMovieVideos,
     private val getTvShowVideos: GetTVShowVideos,
-    mediaDetailsArgs: MediaDetailsArgs
+    mediaDetailsArgs: MediaDetailsArgs,
 ) : BaseViewModel<MediaDetailsUiState, MediaDetailsScreenEffect>(
     MediaDetailsUiState()
 ), MediaInteractionListener {
@@ -71,11 +66,11 @@ class MediaDetailsViewModel(
     private val _showLoginRequiredDialog = MutableStateFlow(false)
     val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
-    val mediaId: Long = mediaDetailsArgs.mediaId?:0
-    val mediaType: MediaType = mediaDetailsArgs.mediaType?: MediaType.MOVIE
+    val mediaId: Long = mediaDetailsArgs.mediaId ?: 0
+    val mediaType: MediaType = mediaDetailsArgs.mediaType ?: MediaType.MOVIE
 
     init {
-        playButtonEnable( mediaId,  mediaType)
+        playButtonEnable(mediaId, mediaType)
         getMediaCast(mediaId = mediaId, mediaType = mediaType)
         getMediaDetails(mediaId = mediaId, mediaType = mediaType)
         onShowMoreMediaLikeThisClicked(mediaId = mediaId, mediaType = mediaType)
@@ -168,7 +163,7 @@ class MediaDetailsViewModel(
         }
     }
 
-    private fun playButtonEnable(id: Long,type: MediaType){
+    private fun playButtonEnable(id: Long, type: MediaType) {
         tryToCall(
             call = {
                 when (type) {
@@ -207,6 +202,9 @@ class MediaDetailsViewModel(
             )
         }
     }
+
+    private fun <T> Set<T>.toggle(item: T): Set<T> =
+        if (contains(item)) this - item else this + item
 
     override fun onShowCastClicked() {
         sendNewEffect(
@@ -479,7 +477,7 @@ class MediaDetailsViewModel(
             onSuccess = { cast ->
                 updateState {
                     it.copy(
-                        mediaCast = cast,
+                        actorUiStates = cast,
                         mediaType = mediaType,
                         isLoading = false
                     )

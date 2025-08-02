@@ -23,8 +23,8 @@ data class HomeScreenState(
 
 @Immutable
 data class PopularMediaUiState(
-    val isLoading: Boolean = true,
     val popularMedia: List<MediaUiState> = emptyList(),
+    val isLoading: Boolean = true,
     val errorMessage: String? = null,
 )
 

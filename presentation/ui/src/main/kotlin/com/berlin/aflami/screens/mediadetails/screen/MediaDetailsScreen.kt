@@ -207,7 +207,7 @@ fun MediaDetailsContent(
             }
             item {
                 CastSection(
-                    cast = state.mediaCast,
+                    cast = state.actorUiStates,
                     onShowAllClicked = { listener.onShowCastClicked() }
                 )
             }

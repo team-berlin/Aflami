@@ -71,7 +71,7 @@ fun CastDetailsScreen(
     ) {
         CastContent(
             listener = viewmodel,
-            castState = castState.mediaCast
+            castState = castState.actorUiStates
         )
     }
 }
