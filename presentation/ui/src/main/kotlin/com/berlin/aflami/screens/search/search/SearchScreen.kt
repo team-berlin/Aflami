@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -67,11 +68,10 @@ import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
-    viewModel: SearchViewModel = koinViewModel(),
+    viewModel: SearchViewModel = hiltViewModel(),
 ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -96,7 +96,7 @@ fun SearchScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = state.errorMessage!=null&&state.searchQuery.text.isNotEmpty()
+        visible = state.errorMessage != null && state.searchQuery.text.isNotEmpty()
     ) {
         NoInternetConnectionPlaceholder()
     }
@@ -286,6 +286,7 @@ private fun SearchScreenContent(
                                 text = stringResource(com.berlin.ui.R.string.loading)
                             )
                         }
+
                         else -> {
                             val movies = state.movies.collectAsLazyPagingItems()
                             val moviesLoadState = movies.loadState
@@ -311,8 +312,7 @@ private fun SearchScreenContent(
                                             modifier = Modifier.fillMaxSize(),
                                             text = stringResource(com.berlin.ui.R.string.loading)
                                         )
-                                    }
-                                    else {
+                                    } else {
                                         when (val error = moviesLoadState.refresh) {
                                             is LoadState.Error -> {
                                                 val isNoInternet = error.error.message?.contains(

@@ -31,9 +31,9 @@ import coil3.request.SuccessResult
 import coil3.request.allowHardware
 import coil3.request.bitmapConfig
 import coil3.toBitmap
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.compose.currentKoinScope
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.nnapi.NnApiDelegate
@@ -51,10 +51,15 @@ fun SafeImageViewer(
     fallback: Painter? = null,
     placeholder: Painter? = null,
     blurCheck: Boolean = true,
-    alignment: Alignment = Alignment.Center
+    alignment: Alignment = Alignment.Center,
 ) {
     val context = LocalContext.current
-    val modelManager by currentKoinScope().inject<FireBaseModelManager>()
+    val modelManager = remember {
+        EntryPointAccessors.fromApplication(
+            context,
+            FireBaseModelManagerEntryPoint::class.java
+        ).modelManager()
+    }
     val isModelDownloaded by remember { modelManager.isModelDownloaded }
 
     if (!isModelDownloaded) return

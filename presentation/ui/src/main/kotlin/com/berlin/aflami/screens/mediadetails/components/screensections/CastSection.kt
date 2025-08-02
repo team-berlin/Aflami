@@ -25,7 +25,7 @@ fun CastSection(
     onShowAllClicked: () -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(vertical = 24.dp),
+        modifier = Modifier.padding(vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Row(

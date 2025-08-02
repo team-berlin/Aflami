@@ -11,6 +11,7 @@ import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
 import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
+import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -23,6 +24,9 @@ interface ApiService {
     suspend fun getMovieImages(
         @Path(ApiConstants.MOVIE_ID) movieId: Long
     ): Response<MediaImagesResponse>
+
+    @GET(ApiConstants.SERIES_IMAGES)
+    suspend fun getSeriesImages(@Path(ApiConstants.SERIES_ID) seriesId: Long): Response<MediaImagesResponse>
 
     @GET(ApiConstants.MOVIE_DETAILS)
     suspend fun getMovieDetails(
@@ -134,4 +138,13 @@ interface ApiService {
         @Query("page") page: Int,
     ): Response<BaseResponse<TVShowDto>>
 
+    @GET(ApiConstants.TV_VIDEO_DETAILS)
+    suspend fun getTvShowVideos(
+        @Path(ApiConstants.SERIES_ID) seriesId: Long
+    ):Response<VideosResponse>
+
+    @GET(ApiConstants.MOVIE_VIDEO_DETAILS)
+    suspend fun getMovieVideos(
+        @Path(ApiConstants.MOVIE_ID) movieId: Long
+    ):Response<VideosResponse>
 }

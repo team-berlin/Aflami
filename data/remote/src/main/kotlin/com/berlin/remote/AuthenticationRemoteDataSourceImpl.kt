@@ -6,8 +6,9 @@ import com.berlin.repository.datasource.remote.dto.auth.LoginRequestDTO
 import com.berlin.repository.datasource.remote.dto.auth.LoginDto
 import com.berlin.repository.datasource.remote.dto.auth.RequestTokenDTO
 import com.berlin.repository.datasource.remote.dto.auth.SessionDto
+import javax.inject.Inject
 
-class AuthenticationRemoteDataSourceImpl(
+class AuthenticationRemoteDataSourceImpl  @Inject constructor (
     private val authenticationApiService: AuthenticationApiService,
 ) : AuthenticationRemoteDataSource {
     override suspend fun login(userName: String, password: String, requestToken: String): LoginDto {

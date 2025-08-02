@@ -5,14 +5,19 @@ import com.berlin.entity.Genre
 import com.berlin.entity.Actor
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
+import com.berlin.entity.MediaImage
+import com.berlin.entity.Video
+import android.util.Log
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toTVShow
 import exceptions.AflamiExceptions
 import repository.TVShowDetailsRepository
+import java.time.Instant
+import javax.inject.Inject
 
-class TvShowDetailsRepositoryImpl(
+class TvShowDetailsRepositoryImpl  @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
 ) : TVShowDetailsRepository {
     override suspend fun getTVShowDetails(tvShowId: Long): TVShow? {
@@ -23,10 +28,20 @@ class TvShowDetailsRepositoryImpl(
         }
     }
 
-    override suspend fun getTVShowGallery(tvShowId: Long): List<String> {
+    override suspend fun getSeriesImages(id: Long): MediaImage {
         return try {
-            remoteDataSource.getSeriesImages(seriesId = tvShowId).posters?.map { POSTER_PREFIX + it.filePath }
-                ?: throw Exception()
+            val imagesResponse = remoteDataSource.getSeriesImages(id)
+
+            Log.d("SeriesRepository", "Backdrops: ${imagesResponse.backdrops}")
+            Log.d("SeriesRepository", "Posters: ${imagesResponse.posters}")
+
+            val backdrops = imagesResponse.backdrops
+                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+
+            val posters = imagesResponse.posters
+                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+
+            MediaImage(backdrops = backdrops.orEmpty(), posters = posters.orEmpty())
         } catch (e: Exception) {
             throw e
         }
@@ -62,4 +77,15 @@ class TvShowDetailsRepositoryImpl(
     override suspend fun getTVShowGenres(): List<Genre> {
         return remoteDataSource.getSeriesGenres().genres.map { it.toDomain() }
     }
+
+    override suspend fun getTVShowVideos(seriesId: Long): List<Video> {
+        return remoteDataSource.getTVShowVideos(seriesId).results?.mapNotNull {
+            it?.toDomain()
+        } ?: emptyList()
+    }
+
+    private fun isExpiredOrEmpty(list: List<GenreEntity>): Boolean {
+        return list.isEmpty() || list.any { Instant.now().toEpochMilli() - it.time > Constants.CACHE_TIMEOUT }
+    }
+
 }

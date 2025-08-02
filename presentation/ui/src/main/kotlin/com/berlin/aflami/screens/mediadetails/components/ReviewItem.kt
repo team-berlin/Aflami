@@ -77,9 +77,7 @@ fun ReviewItem(
             }
             Spacer(modifier = Modifier.weight(1f))
             Rating(
-                modifier = Modifier
-                    .offset(y = -(4).dp, x = 4.dp),
-                review.rating.toString()
+                rating = review.rating.toString()
             )
         }
 

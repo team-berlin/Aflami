@@ -18,8 +18,9 @@ import kotlin.also
 import kotlin.collections.map
 import kotlin.let
 import kotlin.takeIf
+import javax.inject.Inject
 
-class MovieRepositoryImpl(
+class MovieRepositoryImpl @Inject constructor(
     private val localDataSource: ContinueWatchingLocalDataSource,
     private val remoteDataSource: RemoteDataSource,
 ) : MovieRepository {

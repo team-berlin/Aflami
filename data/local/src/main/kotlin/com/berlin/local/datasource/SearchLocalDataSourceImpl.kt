@@ -4,8 +4,9 @@ import com.berlin.local.dao.SearchDao
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import javax.inject.Inject
 
-class SearchLocalDataSourceImpl(
+class SearchLocalDataSourceImpl  @Inject constructor (
     private val searchDao: SearchDao
 ) : SearchLocalDataSource {
     override suspend fun getCachedSearch(

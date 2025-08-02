@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.performance)
     alias(libs.plugins.ksp)
+
+    alias(libs.plugins.hilt)
 }
 
 val properties = Properties().apply {
@@ -81,7 +83,11 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.firebase.ml.modeldownloader)
 
-    implementation(project(":presentation:ui"))
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.hilt.android)
+
+
+    api(project(":presentation:ui"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:viewModel"))

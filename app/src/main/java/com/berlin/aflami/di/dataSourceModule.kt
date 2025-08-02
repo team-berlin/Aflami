@@ -3,28 +3,82 @@ package com.berlin.aflami.di
 import com.berlin.local.datasource.AuthenticationLocalDataSourceImp
 import com.berlin.local.datasource.CategoriesPreferencesDataSourceImpl
 import com.berlin.local.datasource.ContinueWatchingLocalDataSourceImpl
+import com.berlin.local.datasource.GenreLocalDataSourceImpl
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
 import com.berlin.local.datasource.SearchLocalDataSourceImpl
 import com.berlin.remote.AuthenticationRemoteDataSourceImpl
-import com.berlin.remote.RetrofitRemoteDataSource
+import com.berlin.remote.DataSourceImpl
+import com.berlin.remote.HomeRemoteDataSourceImpl
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
+import com.berlin.repository.datasource.local.ContinueWatchingLocalDataSource
+import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
-import com.berlin.repository.datasource.local.ContinueWatchingLocalDataSource
+import com.berlin.repository.datasource.remote.HomeRemoteDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-import org.koin.dsl.module
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DataSourceModule {
 
-val dataSourceModule = module {
-    singleOf (::SearchLocalDataSourceImpl) bind SearchLocalDataSource::class
-    singleOf(::RecentHistoryLocalDataSourceImpl) bind RecentHistoryLocalDataSource::class
-    singleOf(::CategoriesPreferencesDataSourceImpl) bind CategoriesPreferencesDataSource::class
-    singleOf(::RetrofitRemoteDataSource) bind RemoteDataSource::class
-    singleOf(::AuthenticationRemoteDataSourceImpl) bind AuthenticationRemoteDataSource::class
-    singleOf(::AuthenticationLocalDataSourceImp) bind AuthenticationLocalDataSource::class
-    singleOf(::ContinueWatchingLocalDataSourceImpl) bind ContinueWatchingLocalDataSource::class
+    @Binds
+    @Singleton
+    abstract fun bindSearchLocalDataSource(
+        impl: SearchLocalDataSourceImpl
+    ): SearchLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindRecentHistoryLocalDataSource(
+        impl: RecentHistoryLocalDataSourceImpl
+    ): RecentHistoryLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoriesPreferencesDataSource(
+        impl: CategoriesPreferencesDataSourceImpl
+    ): CategoriesPreferencesDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindRemoteDataSource(
+        impl: DataSourceImpl
+    ): RemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthenticationRemoteDataSource(
+        impl: AuthenticationRemoteDataSourceImpl
+    ): AuthenticationRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthenticationLocalDataSource(
+        impl: AuthenticationLocalDataSourceImp
+    ): AuthenticationLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindContinueWatchingLocalDataSource(
+        impl: ContinueWatchingLocalDataSourceImpl
+    ): ContinueWatchingLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindHomeRemoteDataSource(
+        impl: HomeRemoteDataSourceImpl
+    ): HomeRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindGenreLocalDataSource(
+        impl: GenreLocalDataSourceImpl
+    ): GenreLocalDataSource
 }

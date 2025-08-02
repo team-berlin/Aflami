@@ -38,6 +38,14 @@ dependencies {
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.test)
     implementation(libs.kotlin.datex)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
+
+    val paging_version = "3.3.6"
+    implementation("androidx.paging:paging-runtime:$paging_version")
+
     implementation(libs.androidx.paging.runtime)
     implementation(project(":domain:usecase"))
 }

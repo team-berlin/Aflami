@@ -3,6 +3,11 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.aflami.custom.plugin)
+
+    alias(libs.plugins.hilt)
+
+    alias(libs.plugins.ksp)
+
 }
 
 android {
@@ -24,6 +29,9 @@ dependencies {
     testImplementation(libs.bundles.test)
     implementation(libs.firebase.ml.modeldownloader)
     implementation (libs.tensorflow.lite.gpu)
-    implementation(libs.bundles.koin)
+
+    ksp(libs.hilt.android.compiler)
+
+    implementation(libs.hilt.android)
 
 }

@@ -7,9 +7,10 @@ import com.berlin.local.utils.SharedPrefConstants.USER_TOKEN_SHARED_PREFERENCES_
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @SuppressLint("UseKtx")
-class AuthenticationLocalDataSourceImp(
+class AuthenticationLocalDataSourceImp @Inject constructor(
     private var prefs: SharedPreferences
 ) : AuthenticationLocalDataSource {
 

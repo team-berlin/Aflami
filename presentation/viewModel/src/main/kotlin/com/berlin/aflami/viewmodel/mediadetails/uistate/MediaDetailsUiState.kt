@@ -15,8 +15,15 @@ data class MediaDetailsUiState(
     val mediaId: Long = 0L,
     val rating: Double = 0.0,
     val title: String = "",
+    val overview: String = "",
+    val posterUrl: String = "",
+    val videoUrl:String?="",
+    val backdropUrl: String? = "",
     val genres: List<String> = emptyList(),
+    val posterImages: List<String> = emptyList(),
+    val backdropImages: List<String> = emptyList(),
     val releaseDate: String = "",
+    val rating: Double = 0.0,
     val runtime: String? = "",
     val country: String = "",
     val description: String = "",
@@ -28,13 +35,17 @@ data class MediaDetailsUiState(
     val isOverviewExpanded: Boolean = false,
     val mediaType: MediaType = MediaType.MOVIE,
     val isPlaying: Boolean = false,
+    val mediaCast: List<MediaCastUiState> = emptyList(),
+    val country: String = "",
     val options: List<MediaOptions> = emptyList(),
     val isDescriptionExpanded: Boolean = false,
     val expandedReviewIds: Set<String> = emptySet(),
     val isLoading: Boolean = true,
     val originalCountry: String? = null,
+    val duration: String? = null,
     val hasVideo: Boolean = false,
     val error: String? = null,
+    val rowSection: RowSectionUiState = RowSectionUiState.Loading
 ) {
     fun toMovie(): Movie {
         return Movie(
@@ -74,6 +85,18 @@ fun String.toLocalDate1(): LocalDate? {
         null
     }
 }
+
+data class EpisodesUiState(
+    val stillPath: String,
+    val airDate: String,
+    val episodeNumber: Int,
+    val episodeType: String,
+    val id: Int,
+    val name: String,
+    val overview: String,
+    val runtime: String?,
+    val voteAverage: Double,
+)
 
 data class EpisodesSeasonUiState(
     val idSeason: Int,

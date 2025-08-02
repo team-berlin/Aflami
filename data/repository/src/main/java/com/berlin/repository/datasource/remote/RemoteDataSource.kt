@@ -9,7 +9,9 @@ import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.TVShowDto
+import com.berlin.repository.datasource.remote.dto.TVShowResponse
 import com.berlin.repository.datasource.remote.dto.details.EpisodesSeasonDto
+import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 
 interface RemoteDataSource {
@@ -49,11 +51,16 @@ interface RemoteDataSource {
     suspend fun getPopularTVShows() : BaseResponse<TVShowDto>
 
      suspend fun getTopRatedMovies(page: Int): BaseResponse<MovieDto>
-     
+
      suspend fun getTopRatedSeries(page: Int):BaseResponse<TVShowDto>
 
     suspend fun getMoviesByMoodIds(
         moodIds: List<Int>
     ): BaseResponse<MovieDto>
+
+    suspend fun getMovieVideos(movieId: Long): VideosResponse
+    suspend fun getTVShowVideos(movieId: Long): VideosResponse
+
+
 
 }

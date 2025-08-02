@@ -4,8 +4,9 @@ import com.berlin.exception.NotFoundException
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
 import repository.AuthenticationRepository
+import javax.inject.Inject
 
-class AuthenticationRepositoryImpl(
+class AuthenticationRepositoryImpl  @Inject constructor(
     private val remoteDataSource: AuthenticationRemoteDataSource,
     private val localDataSource: AuthenticationLocalDataSource,
 ) : AuthenticationRepository {

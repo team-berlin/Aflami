@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.aflami.custom.plugin)
 
+
 }
 
 android {
@@ -16,4 +17,6 @@ dependencies {
     implementation(libs.bundles.retrofit)
     implementation(project(":domain:entity"))
     implementation(project(":data:repository"))
+    implementation(libs.javax.inject)
+
 }

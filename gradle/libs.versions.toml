@@ -34,6 +34,14 @@ jupiter = "5.10.2"
 koinAnnotations = "2.1.0"
 koinKsp = "2.1.0"
 firebaseMlModeldownloader = "25.0.1"
+hilt = "2.51"
+hilt-compiler = "2.51"
+
+
+hiltAndroid = "2.56.2"
+hiltAndroidCompiler = "2.56.2"
+hiltNavigationCompose = "1.2.0"
+javaxInject = "1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -61,7 +69,16 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koinAnnotations" }
 koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koinKsp" }
+#//dagger-hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+#//dagger-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-compiler" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
@@ -84,7 +101,6 @@ jupiter = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref
 jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "jupiter" }
 firebase-ml-modeldownloader = { module = "com.google.firebase:firebase-ml-modeldownloader", version.ref = "firebaseMlModeldownloader" }
 
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -98,6 +114,8 @@ firebase-gms-service = { id = "com.google.gms.google-services", version.ref = "f
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 aflami-custom-plugin = { id = "com.berlin.plugin" }
+#//dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+hilt = { id = "com.google.dagger.hilt.android", version = "2.56.2" }
 
 [bundles]
 androidxUi = [
@@ -122,6 +140,10 @@ koin = [
     "koin-ksp-compiler"
 ]
 
+#hilt = [
+#    "hilt-android",
+#    "androidx-hilt-viewmodel"
+#]
 composeUiDebug = [
     "androidx-ui-tooling",
     "androidx-ui-test-manifest"

@@ -22,8 +22,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.movie.SearchByActorNameUseCase
 
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+@HiltViewModel
 @OptIn(FlowPreview::class)
-class SearchByActorViewModel(
+class SearchByActorViewModel @Inject constructor(
     private val searchByActorName: SearchByActorNameUseCase
 ) : BaseViewModel<SearchByActorScreenUiState, SearchByActorEffect>(SearchByActorScreenUiState()),
     SearchByActorInteractionListener {

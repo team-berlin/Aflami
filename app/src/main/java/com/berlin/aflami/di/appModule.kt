@@ -1,25 +1,29 @@
 package com.berlin.aflami.di
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.room.Room
-import com.berlin.local.SearchDatabase
-import org.koin.android.ext.koin.androidContext
-import org.koin.dsl.module
+import com.berlin.local.AflamiDatabase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-val appModule = module {
-    single {
-        Room.databaseBuilder(
-            androidContext(),
-            SearchDatabase::class.java,
-            "Aflami_Database"
-        ).fallbackToDestructiveMigration(false).build()
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideDatabase(app: Application): AflamiDatabase {
+        return AflamiDatabase.getInstance(app)
     }
-    single { provideSharedPref(androidContext()) }
-}
-fun provideSharedPref(context: Context): SharedPreferences {
-    return context.getSharedPreferences(
-        "sharedPreferences",
-        Context.MODE_PRIVATE
-    )
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    }
 }
