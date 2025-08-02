@@ -19,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,9 +55,8 @@ import com.berlin.designsystem.R
 
 @Composable
 fun MediaDetailsScreen(
-    mediaId: Long,
-    mediaType: MediaType,
     viewModel: MediaDetailsViewModel = hiltViewModel(),
+) {
     val navController = Theme.navController
     val uiState by viewModel.state.collectAsState()
     val tabSelected by viewModel.tabSelectedUiState.collectAsState()
@@ -115,10 +113,7 @@ fun MediaDetailsScreen(
             description = stringResource(com.berlin.ui.R.string.login_required_warning)
         )
     }
-
-
 }
-
 
 private fun onReceiveMediaDetailsEffect(
     navController: NavController,
@@ -127,8 +122,10 @@ private fun onReceiveMediaDetailsEffect(
     when (mediaDetailsScreenEffect) {
         is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
             navController.navigate(
-                CastDestination(mediaDetailsScreenEffect.mediaId,
-                    mediaDetailsScreenEffect.mediaType)
+                CastDestination(
+                    mediaDetailsScreenEffect.mediaId,
+                    mediaDetailsScreenEffect.mediaType
+                )
             )
         }
 
@@ -189,7 +186,7 @@ fun MediaDetailsContent(
             item {
                 BackdropPager(
                     state = state,
-                    onPlayClick = { listener.onPlayClicked(state.id,state.mediaType) })
+                    onPlayClick = { listener.onPlayClicked(state.id, state.mediaType) })
             }
 
             item {
@@ -220,11 +217,13 @@ fun MediaDetailsContent(
                 TabSection(
                     tabState = mediaChips,
                     rowState = state.rowSection,
-                    onChipClick = { tab-> listener.onTabSelected(tab)},
+                    onChipClick = { tab -> listener.onTabSelected(tab) },
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
-                    onMediaClick = { mediaId, type -> listener.onMediaClicked(mediaId, type)
-                        Log.d("MoreLikeThisInScreen", "ID= $mediaId , Type= $type")},
+                    onMediaClick = { mediaId, type ->
+                        listener.onMediaClicked(mediaId, type)
+                        Log.d("MoreLikeThisInScreen", "ID= $mediaId , Type= $type")
+                    },
 
                     mediaType = mediaType,
                 )
@@ -248,10 +247,10 @@ fun MediaDetailsContent(
         )
 
         if (state.showRatingDialog && state.selectedRatingMediaId != null) {
-                RateDialog(
-                    onDismiss = {listener.onCancelRatingClicked()},
-                    onRate = {rating -> listener.onSubmitRateClicked(rating)}
-                )
+            RateDialog(
+                onDismiss = { listener.onCancelRatingClicked() },
+                onRate = { rating -> listener.onSubmitRateClicked(rating) }
+            )
         }
 
 //        if (state.showAddToListDialog && state.selectedAddToListMediaId != null) {

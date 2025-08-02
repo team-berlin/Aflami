@@ -41,6 +41,8 @@ import usecase.mediadetails.GetTVShowVideos
 import usecase.mediadetails.GetTvShowDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+
+
 @HiltViewModel
 class MediaDetailsViewModel @Inject constructor(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
@@ -88,7 +90,6 @@ class MediaDetailsViewModel @Inject constructor(
         getMediaDetails(mediaId = mediaId, mediaType = mediaType)
         onShowMoreMediaLikeThisClicked(mediaId = mediaId, mediaType = mediaType)
     }
-
 
     fun getMediaDetails(mediaId: Long, mediaType: MediaType) {
 
