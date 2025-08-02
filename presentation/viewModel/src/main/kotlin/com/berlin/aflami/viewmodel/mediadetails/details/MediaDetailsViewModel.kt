@@ -22,31 +22,31 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import usecase.mediadetails.AddContinueWatchingMovieUseCase
-import usecase.mediadetails.AddContinueWatchingTVShowUseCase
-import usecase.mediadetails.GetMovieCastUseCase
-import usecase.mediadetails.GetMovieDetailsUseCase
-import usecase.mediadetails.GetMovieGalleryUseCase
-import usecase.mediadetails.GetMovieReviewUseCase
-import usecase.mediadetails.GetSeasonEpisodesUseCase
-import usecase.mediadetails.GetSeriesCastUseCase
-import usecase.mediadetails.GetSeriesGalleryUseCase
-import usecase.mediadetails.GetSeriesReviewUseCase
-import usecase.mediadetails.GetSimilarMoviesUseCase
-import usecase.mediadetails.GetSimilarSeriesUseCase
-import usecase.mediadetails.GetTvShowDetailsUseCase
+import usecase.movie.AddContinueWatchingMovieUseCase
+import usecase.movie.GetMovieCastUseCase
+import usecase.movie.GetMovieDetailsUseCase
+import usecase.movie.GetMovieGalleryUseCase
+import usecase.movie.GetMovieReviewUseCase
+import usecase.movie.GetSimilarMoviesUseCase
+import usecase.tvshow.AddContinueWatchingTVShowUseCase
+import usecase.tvshow.GetSeasonEpisodesUseCase
+import usecase.tvshow.GetSimilarTVShowsUseCase
+import usecase.tvshow.GetTVShowCastUseCase
+import usecase.tvshow.GetTVShowDetailsUseCase
+import usecase.tvshow.GetTVShowGalleryUseCase
+import usecase.tvshow.GetTVShowReviewUseCase
 
 class MediaDetailsViewModel(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
-    private val getTvShowDetailsUseCase: GetTvShowDetailsUseCase,
+    private val getTvShowDetailsUseCase: GetTVShowDetailsUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
-    private val getSeriesCastUseCase: GetSeriesCastUseCase,
+    private val getSeriesCastUseCase: GetTVShowCastUseCase,
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
-    private val getSeriesGalleryUseCase: GetSeriesGalleryUseCase,
+    private val getSeriesGalleryUseCase: GetTVShowGalleryUseCase,
     private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
-    private val getSimilarTVShowsUseCase: GetSimilarSeriesUseCase,
+    private val getSimilarTVShowsUseCase: GetSimilarTVShowsUseCase,
     private val movieReviewUseCase: GetMovieReviewUseCase,
-    private val seriesReviewUseCase: GetSeriesReviewUseCase,
+    private val seriesReviewUseCase: GetTVShowReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,

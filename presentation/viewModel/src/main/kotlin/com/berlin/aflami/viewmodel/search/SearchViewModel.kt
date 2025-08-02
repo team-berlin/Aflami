@@ -26,24 +26,31 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import usecase.ClearSearchHistoryUseCase
-import usecase.DeleteQueryFromHistoryUseCase
-import usecase.GetMovieGenresUseCase
-import usecase.GetRecentHistoryUseCase
-import usecase.GetSearchMoviesUseCase
-import usecase.GetSearchTvShowsUseCase
-import usecase.GetSeriesGenresUseCase
-import usecase.SaveRecentHistoryUseCase
+import usecase.movie.ClearMoviesSearchHistoryUseCase
+import usecase.movie.DeleteQueryFromMoviesHistoryUseCase
+import usecase.movie.GetMovieGenresUseCase
+import usecase.movie.GetRecentMoviesHistoryUseCase
+import usecase.movie.GetSearchMoviesUseCase
+import usecase.movie.SaveRecentMoviesHistoryUseCase
+import usecase.tvshow.ClearTVShowSearchHistoryUseCase
+import usecase.tvshow.DeleteQueryFromTVShowsHistoryUseCase
+import usecase.tvshow.GetRecentTVShowHistoryUseCase
+import usecase.tvshow.GetSearchTVShowsUseCase
+import usecase.tvshow.GetTVShowGenresUseCase
 
 class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
-    private val searchTvShowsUseCase: GetSearchTvShowsUseCase,
-    private val getRecentHistoryUseCase: GetRecentHistoryUseCase,
-    private val saveRecentHistoryUseCase: SaveRecentHistoryUseCase,
-    private val deleteQueryFromHistoryUseCase: DeleteQueryFromHistoryUseCase,
-    private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase,
+    private val searchTvShowsUseCase: GetSearchTVShowsUseCase,
+    private val getRecentMoviesHistoryUseCase: GetRecentMoviesHistoryUseCase,
+    private val getRecentTvShowHistoryUseCase: GetRecentTVShowHistoryUseCase,
+    private val saveRecentMoviesHistoryUseCase: SaveRecentMoviesHistoryUseCase,
+    private val saveRecentTVShowHistoryUseCase: GetRecentTVShowHistoryUseCase,
+    private val deleteQueryFromMoviesHistoryUseCase: DeleteQueryFromMoviesHistoryUseCase,
+    private val deleteQueryFromTVShowHistoryUseCase: DeleteQueryFromTVShowsHistoryUseCase,
+    private val clearMoviesSearchHistoryUseCase: ClearMoviesSearchHistoryUseCase,
+    private val clearTvShowSearchHistoryUseCase: ClearTVShowSearchHistoryUseCase,
     private val getMovieGenresUseCase: GetMovieGenresUseCase,
-    private val getSeriesGenresUseCase: GetSeriesGenresUseCase
+    private val getSeriesGenresUseCase: GetTVShowGenresUseCase,
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()), SearchInteractionListener,
     FilterInteractionListener {
 
@@ -130,9 +137,10 @@ class SearchViewModel(
                                 state.value.filterItemUiState.filterTvShowSelected.selectedRating
                             val selectedGenreId =
                                 state.value.filterItemUiState.filterTvShowSelected.selectedGenres
-                            val matchesRating = convertArabicToEnglish(tvUiState.rating.replace('٫', '.'))
-                                .toFloatOrNull()
-                                ?.let { it > selectedRating } == true
+                            val matchesRating =
+                                convertArabicToEnglish(tvUiState.rating.replace('٫', '.'))
+                                    .toFloatOrNull()
+                                    ?.let { it > selectedRating } == true
                             val matchesGenre =
                                 selectedGenreId == -1 || tvUiState.genre.any { it == selectedGenreId }
                             matchesGenre && matchesRating
@@ -172,9 +180,10 @@ class SearchViewModel(
                                 state.value.filterItemUiState.filterMovieSelected.selectedRating
                             val selectedGenreId =
                                 state.value.filterItemUiState.filterMovieSelected.selectedGenres
-                            val matchesRating = convertArabicToEnglish(movieUiState.rating.replace('٫', '.'))
-                                .toFloatOrNull()
-                                ?.let { it > selectedRating } == true
+                            val matchesRating =
+                                convertArabicToEnglish(movieUiState.rating.replace('٫', '.'))
+                                    .toFloatOrNull()
+                                    ?.let { it > selectedRating } == true
                             val matchesGenre =
                                 selectedGenreId == -1 || movieUiState.genre.any { it == selectedGenreId }
                             matchesGenre && matchesRating
@@ -189,6 +198,7 @@ class SearchViewModel(
             }
         )
     }
+
     private fun convertArabicToEnglish(input: String): String {
         val arabicDigits = "٠١٢٣٤٥٦٧٨٩".toCharArray()
         val englishDigits = "0123456789"
@@ -556,7 +566,6 @@ class SearchViewModel(
             }
         )
     }
-
 
 
     fun onItemClicked(query: TextFieldValue) {

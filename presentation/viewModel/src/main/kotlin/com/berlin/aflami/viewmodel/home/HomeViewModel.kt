@@ -10,6 +10,7 @@ import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.aflami.viewmodel.mapper.toUIState
 import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import com.berlin.aflami.viewmodel.mapper.tvShowToUiState
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
@@ -22,24 +23,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import usecase.GetMovieGenresUseCase
 import usecase.GetMoviesByMoodUseCase
-import usecase.GetPopularMoviesUseCase
-import usecase.GetPopularTVShowsUseCase
-import usecase.GetTopRatedMoviesUseCase
-import usecase.GetTopRatedSeriesUseCase
-import usecase.GetUpComingMoviesUseCase
-import usecase.home.GetContinueWatchingMovieUseCase
-import usecase.home.GetContinueWatchingTVShowUseCase
+import usecase.movie.ContinueWatchingMovieUseCase
+import usecase.movie.GetMovieGenresUseCase
+import usecase.movie.GetPopularMoviesUseCase
+import usecase.movie.GetTopRatedMoviesUseCase
+import usecase.movie.GetUpComingMoviesUseCase
+import usecase.tvshow.ContinueWatchingTVShowUseCase
+import usecase.tvshow.GetPopularTVShowsUseCase
+import usecase.tvshow.GetTopRatedTVShowUseCase
 
 class HomeViewModel(
     private val popularMoviesUseCase: GetPopularMoviesUseCase,
     private val popularTVShowsUseCase: GetPopularTVShowsUseCase,
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,
     private val getMoviesByGenreUseCase: GetMovieGenresUseCase,
-    private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
-    private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase,
-    private val getTopRatedSeriesUseCase: GetTopRatedSeriesUseCase,
+    private val getWatchedMovieUseCase: ContinueWatchingMovieUseCase,
+    private val getWatchedTVShowUseCase: ContinueWatchingTVShowUseCase,
+    private val getTopRatedSeriesUseCase: GetTopRatedTVShowUseCase,
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
 ) : BaseViewModel<HomeUiState, HomeScreenEffect>(HomeUiState()), HomeInteractionListener {
@@ -64,8 +65,8 @@ class HomeViewModel(
                 coroutineScope {
                     val movie = async { popularMoviesUseCase() }
                     val tvShow = async { popularTVShowsUseCase() }
-                    val movieList = movie.await().map { it.toUIState() }
-                    val tvShowList = tvShow.await().map { it.toUIState() }
+                    val movieList = movie.await().map { it.toUIState()}
+                    val tvShowList = tvShow.await().map { it.tvShowToUiState() }
                     _movies.value = movieList
                     _tvShows.value = tvShowList
                     combineMediaAndUpdateUi()

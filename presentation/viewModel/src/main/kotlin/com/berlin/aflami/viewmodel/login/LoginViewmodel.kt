@@ -6,14 +6,14 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.util.SNACK_BAR_DURATION
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import usecase.ValidatePasswordUseCase
-import usecase.ValidateUsernameUseCase
-import usecase.auth.LoginUseCase
+import usecase.auth.GetLoginUseCase
+import usecase.auth.GetValidatePasswordUseCase
+import usecase.auth.GetValidateUsernameUseCase
 
 class LoginViewmodel(
-    val usernameValidationUseCase: ValidateUsernameUseCase,
-    val passwordValidationUseCase: ValidatePasswordUseCase,
-    val loginUseCase: LoginUseCase,
+    val usernameValidationUseCase: GetValidateUsernameUseCase,
+    val passwordValidationUseCase: GetValidatePasswordUseCase,
+    val loginUseCase: GetLoginUseCase,
 
     ) : BaseViewModel<LoginUiState, LoginEffect>(LoginUiState()),
     LoginInteractionListener {

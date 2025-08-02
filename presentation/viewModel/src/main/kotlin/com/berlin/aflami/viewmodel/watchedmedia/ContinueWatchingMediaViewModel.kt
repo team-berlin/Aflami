@@ -12,12 +12,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import usecase.home.GetContinueWatchingMovieUseCase
-import usecase.home.GetContinueWatchingTVShowUseCase
+import usecase.movie.ContinueWatchingMovieUseCase
+import usecase.tvshow.ContinueWatchingTVShowUseCase
 
 class ContinueWatchingMediaViewModel(
-    private val getWatchedMovieUseCase: GetContinueWatchingMovieUseCase,
-    private val getWatchedTVShowUseCase: GetContinueWatchingTVShowUseCase
+    private val getWatchedMovieUseCase: ContinueWatchingMovieUseCase,
+    private val getWatchedTVShowUseCase: ContinueWatchingTVShowUseCase
 ) : BaseViewModel<ContinueWatchingMediaUiState, ContinueWatchingMediaEffect>(
     ContinueWatchingMediaUiState()
 ), ContinueWatchingMediaInteractionListener {

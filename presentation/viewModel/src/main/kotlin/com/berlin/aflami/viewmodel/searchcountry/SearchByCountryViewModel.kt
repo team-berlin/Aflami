@@ -18,7 +18,7 @@ import com.berlin.aflami.viewmodel.util.getCountryIsoCode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import usecase.SearchByCountryUseCase
+import usecase.movie.SearchByCountryUseCase
 
 class SearchByCountryViewModel(
     private val searchByCountry: SearchByCountryUseCase

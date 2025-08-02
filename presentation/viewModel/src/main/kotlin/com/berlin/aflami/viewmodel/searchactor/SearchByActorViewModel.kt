@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import usecase.SearchByActorNameUseCase
+import usecase.movie.SearchByActorNameUseCase
 
 @OptIn(FlowPreview::class)
 class SearchByActorViewModel(

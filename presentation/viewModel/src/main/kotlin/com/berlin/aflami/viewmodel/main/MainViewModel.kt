@@ -6,11 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import usecase.auth.IsLoggedInUseCase
 
-class MainViewModel(
-    private val isLoggedInUseCase: IsLoggedInUseCase,
-) : ViewModel() {
+class MainViewModel() : ViewModel() {
 
     var loginState by mutableStateOf(false)
         private set
