@@ -3,7 +3,7 @@ package com.berlin.aflami.viewmodel.mediadetails.cast
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsScreenState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsScreenState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,8 +16,8 @@ class CastViewModelScreen @Inject constructor(
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getSeriesCastUseCase: GetTVShowCastUseCase,
     castDetailsArgs: CastDetailsArgs,
-) : BaseViewModel<MediaDetailsScreenState, CastDetailsScreenEffect>(
-    MediaDetailsScreenState()
+) : BaseViewModel<MovieDetailsScreenState, CastDetailsScreenEffect>(
+    MovieDetailsScreenState()
 ), CastDetailsScreenListener {
 
     val mediaId: Long = castDetailsArgs.mediaId ?: 0

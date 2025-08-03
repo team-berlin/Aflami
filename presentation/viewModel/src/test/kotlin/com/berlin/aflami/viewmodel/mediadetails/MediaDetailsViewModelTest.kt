@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toEpisodeUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsScreenEffect
+import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
@@ -47,7 +47,7 @@ import usecase.mediadetails.GetTvShowDetailsUseCase
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MediaDetailsViewModelTest {
-    private lateinit var viewModel: MediaDetailsViewModel
+    private lateinit var viewModel: MovieDetailsViewModel
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var getMovieDetailsUseCase: GetMovieDetailsUseCase
     private lateinit var getTvShowDetailsUseCase: GetTvShowDetailsUseCase
@@ -92,7 +92,7 @@ class MediaDetailsViewModelTest {
 
         mockkStatic(Dispatchers::class)
         every { Dispatchers.IO } returns testDispatcher
-        viewModel = MediaDetailsViewModel(
+        viewModel = MovieDetailsViewModel(
             savedStateHandle,
             getMovieDetailsUseCase,
             getTvShowDetailsUseCase,
@@ -174,7 +174,7 @@ class MediaDetailsViewModelTest {
         coEvery { getTvShowDetailsUseCase(2, any()) } returns tvShow
         every { savedStateHandle.get<String>("id") } returns "2"
         every { savedStateHandle.get<String>("media_type") } returns MediaType.TV_SHOW.name
-        viewModel = MediaDetailsViewModel(
+        viewModel = MovieDetailsViewModel(
             savedStateHandle,
             getMovieDetailsUseCase,
             getTvShowDetailsUseCase,
@@ -236,7 +236,7 @@ class MediaDetailsViewModelTest {
     @Test
     fun `onPlayClicked should update isPlaying and send PlayMedia effect`() = runTest {
         // Given
-        val effects = mutableListOf<MediaDetailsScreenEffect>()
+        val effects = mutableListOf<MovieDetailsScreenEffect>()
         val job = launch { viewModel.effect.collect { effects.add(it) } }
 
         // When
@@ -245,7 +245,7 @@ class MediaDetailsViewModelTest {
 
         // Then
         assertThat(viewModel.state.value.isPlaying).isTrue()
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.PlayMedia(mediaId = 1))
+        assertThat(effects).containsExactly(MovieDetailsScreenEffect.PlayMedia(mediaId = 1))
         job.cancel()
     }
 
@@ -290,7 +290,7 @@ class MediaDetailsViewModelTest {
         assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
 
         val noDataState = state.rowSection as RowSectionUiState.NoDataFound
-        assertThat(noDataState.message).isEqualTo(UiText.Resource(MediaDetailsViewModel.NO_REVIEWS))
+        assertThat(noDataState.message).isEqualTo(UiText.Resource(MovieDetailsViewModel.NO_REVIEWS))
     }
 
     @Test
@@ -327,7 +327,7 @@ class MediaDetailsViewModelTest {
             assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
 
             val noDataState = state.rowSection as RowSectionUiState.NoDataFound
-            assertThat(noDataState.message).isEqualTo(UiText.Resource(MediaDetailsViewModel.NO_GALLERY))
+            assertThat(noDataState.message).isEqualTo(UiText.Resource(MovieDetailsViewModel.NO_GALLERY))
         }
 
     @Test
@@ -428,7 +428,7 @@ class MediaDetailsViewModelTest {
     @Test
     fun `onBackClicked should send NavigateBack effect`() = runTest {
         // Given
-        val effects = mutableListOf<MediaDetailsScreenEffect>()
+        val effects = mutableListOf<MovieDetailsScreenEffect>()
         val job = launch { viewModel.effect.collect { effects.add(it) } }
 
         // When
@@ -436,7 +436,7 @@ class MediaDetailsViewModelTest {
         advanceUntilIdle()
 
         // Then
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.NavigateBack)
+        assertThat(effects).containsExactly(MovieDetailsScreenEffect.NavigateBack)
         job.cancel()
     }
 
@@ -572,7 +572,7 @@ class MediaDetailsViewModelTest {
         coEvery { getTvShowDetailsUseCase(1, any()) } returns tvShow
         every { savedStateHandle.get<String>("id") } returns "1"
         every { savedStateHandle.get<String>("media_type") } returns MediaType.TV_SHOW.name
-        viewModel = MediaDetailsViewModel(
+        viewModel = MovieDetailsViewModel(
             savedStateHandle,
             getMovieDetailsUseCase,
             getTvShowDetailsUseCase,
@@ -670,11 +670,11 @@ class MediaDetailsViewModelTest {
     }
 
     @Test fun `onShowCastClicked triggers navigation effect`() = runTest {
-        val effects = mutableListOf<MediaDetailsScreenEffect>()
+        val effects = mutableListOf<MovieDetailsScreenEffect>()
         val job = launch { viewModel.effect.collect { effects.add(it) } }
         viewModel.onShowCastClicked()
         advanceUntilIdle()
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.NavigateToShowAllCastScreen(1, MediaType.MOVIE))
+        assertThat(effects).containsExactly(MovieDetailsScreenEffect.NavigateToShowAllCastScreen(1, MediaType.MOVIE))
         job.cancel()
     }
 }

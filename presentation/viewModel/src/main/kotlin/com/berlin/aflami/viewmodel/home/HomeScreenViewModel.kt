@@ -5,11 +5,11 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
-import com.berlin.aflami.viewmodel.mapper.toMovieUIState
+import com.berlin.aflami.viewmodel.mapper.toMovieUiState
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
-import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import usecase.GetMoviesByMoodUseCase
@@ -214,7 +214,7 @@ class HomeScreenViewModel @Inject constructor(
         val currentMovieIndex = state.value.moodPickerUiState.movies.indexOf(
             state.value.moodPickerUiState.selectedMovie
         )
-        val nextMovie: MovieUIState
+        val nextMovie: MovieUiState
         if (currentMovieIndex == state.value.moodPickerUiState.movies.size - 1) {
             if (!state.value.moodPickerUiState.movies.isEmpty())
                 nextMovie = state.value.moodPickerUiState.movies[0]
@@ -249,20 +249,20 @@ class HomeScreenViewModel @Inject constructor(
         tryToCall(
             call = {
                 getMoviesByMoodUseCase(userMood.moodGenres.toGenreIds())
-                    .map { movie -> movie.toMovieUIState() }
+                    .map { movie -> movie.toMovieUiState() }
             },
             onSuccess = ::updateDialogWithNewMovies,
             onError = ::updateScreenWithError,
         )
     }
 
-    private fun updateDialogWithNewMovies(moviesUiState: List<MovieUIState>) {
+    private fun updateDialogWithNewMovies(moviesUiState: List<MovieUiState>) {
         updateState { screenState ->
             screenState.copy(
                 moodPickerUiState = screenState.moodPickerUiState.copy(
                     movies = moviesUiState,
                     isLoading = false,
-                    selectedMovie = moviesUiState.firstOrNull() ?: MovieUIState()
+                    selectedMovie = moviesUiState.firstOrNull() ?: MovieUiState()
                 )
             )
         }
@@ -305,7 +305,7 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun getUpComingMoviesByGenre() {
         tryToCall(
-            call = { getUpComingMoviesUseCase().map { movie -> movie.toMovieUIState() } },
+            call = { getUpComingMoviesUseCase().map { movie -> movie.toMovieUiState() } },
             onSuccess = ::updateScreenWithNewUpComingMovies,
             onError = ::updateUpComingSectionWithError
         )
@@ -322,7 +322,7 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun updateScreenWithNewUpComingMovies(movies: List<MovieUIState>) {
+    private fun updateScreenWithNewUpComingMovies(movies: List<MovieUiState>) {
         val genreId = state.value.selectedGenres
         val filteredMovies = if (genreId == -1) {
             movies

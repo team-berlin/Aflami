@@ -1,6 +1,6 @@
 package com.berlin.aflami.viewmodel.searchcountry
 
-import com.berlin.aflami.viewmodel.mapper.toMovieUIState
+import com.berlin.aflami.viewmodel.mapper.toMovieUiState
 import com.berlin.aflami.viewmodel.util.getCountryIsoCode
 import com.berlin.entity.Movie
 import com.google.common.truth.Truth.assertThat
@@ -122,5 +122,5 @@ class SearchByCountryViewModelTest {
         genres = emptyList(),
     )
 
-    private val movieUIState = movie.toMovieUIState()
+    private val movieUIState = movie.toMovieUiState()
 }

@@ -27,12 +27,12 @@ import com.berlin.aflami.component.Rating
 import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.utils.formatRatingForUi
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsScreenState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsScreenState
 import com.berlin.designsystem.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun BackdropPager(state: MediaDetailsScreenState, onPlayClick: () -> Unit) {
+fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
     val posterList = state.posterImages.take(4)
     val pagerState = rememberPagerState(pageCount = { posterList.size })
 

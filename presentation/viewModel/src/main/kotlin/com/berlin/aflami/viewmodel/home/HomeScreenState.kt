@@ -5,7 +5,7 @@ import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
-import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 
 
 @Immutable
@@ -43,7 +43,7 @@ data class TopRatedMediaUiState(
 
 @Immutable
 data class UpcomingMoviesUiState(
-    val upcomingMovies: List<MovieUIState> = emptyList(),
+    val upcomingMovies: List<MovieUiState> = emptyList(),
     val movieGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
@@ -52,8 +52,8 @@ data class UpcomingMoviesUiState(
 @Immutable
 data class MoodPickerUiState(
     val selectedMood: UserMoodUiState? = null,
-    val selectedMovie: MovieUIState = MovieUIState(),
-    val movies: List<MovieUIState> = emptyList(),
+    val selectedMovie: MovieUiState = MovieUiState(),
+    val movies: List<MovieUiState> = emptyList(),
     val openMovieDialog: Boolean = false,
     val isLoading: Boolean = false,
     val error: ErrorUiState? = null,

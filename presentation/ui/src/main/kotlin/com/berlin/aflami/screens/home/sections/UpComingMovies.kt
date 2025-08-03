@@ -22,12 +22,12 @@ import com.berlin.aflami.screens.search.search.Chips
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.ui.R
 
 @Composable
 fun UpcomingMoviesSection(
-    movies: List<MovieUIState>,
+    movies: List<MovieUiState>,
     genres: List<GenreUiState>,
     onMovieClick: (Long) -> Unit,
     onGenreClick: (Int) -> Unit,
@@ -100,7 +100,7 @@ private fun GenreChipsRow(
 
 @Composable
 private fun MoviesColumn(
-    movies: List<MovieUIState>,
+    movies: List<MovieUiState>,
     onMovieClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -113,7 +113,7 @@ private fun MoviesColumn(
                     .height(222.dp),
                 mediaImg = movie.posterUrl,
                 title = movie.title,
-                date = movie.releaseYear,
+                date = movie.releaseDate,
                 rating = movie.rating,
                 typeOfMedia = MediaType.MOVIE.name,
                 onClick = {

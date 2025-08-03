@@ -40,11 +40,11 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.Descript
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.TabSection
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsScreenEffect
+import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsScreenState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsScreenState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -53,7 +53,7 @@ import com.berlin.designsystem.R
 @Composable
 fun MediaDetailsScreen(
 
-    viewModel: MediaDetailsViewModel = hiltViewModel(),
+    viewModel: MovieDetailsViewModel = hiltViewModel(),
 ) {
     val navController = Theme.navController
     val uiState by viewModel.state.collectAsState()
@@ -124,10 +124,10 @@ fun MediaDetailsScreen(
 
 private fun onReceiveMediaDetailsEffect(
     navController: NavController,
-    mediaDetailsScreenEffect: MediaDetailsScreenEffect,
+    mediaDetailsScreenEffect: MovieDetailsScreenEffect,
 ) {
     when (mediaDetailsScreenEffect) {
-        is MediaDetailsScreenEffect.NavigateToShowAllCastScreen -> {
+        is MovieDetailsScreenEffect.NavigateToShowAllCastScreen -> {
             navController.navigate(
                 CastDestination(
                     mediaDetailsScreenEffect.mediaId,
@@ -136,19 +136,19 @@ private fun onReceiveMediaDetailsEffect(
             )
         }
 
-        is MediaDetailsScreenEffect.NavigateBack -> {
+        is MovieDetailsScreenEffect.NavigateBack -> {
             navController.popBackStack()
         }
 
-        is MediaDetailsScreenEffect.PlayMedia -> {
+        is MovieDetailsScreenEffect.PlayMedia -> {
             navController.navigate(
                 VideoWebViewDestination(mediaDetailsScreenEffect.videoUrl)
             )
         }
 
-        is MediaDetailsScreenEffect.ShowAddToFavoriteListDialog -> {}
-        is MediaDetailsScreenEffect.ShowRatingDialog -> {}
-        is MediaDetailsScreenEffect.NavigateToMediaDetails -> {
+        is MovieDetailsScreenEffect.ShowAddToFavoriteListDialog -> {}
+        is MovieDetailsScreenEffect.ShowRatingDialog -> {}
+        is MovieDetailsScreenEffect.NavigateToMovieDetailsScreen -> {
             navController.navigate(
                 MediaDetailsDestination(
                     mediaDetailsScreenEffect.mediaId,
@@ -163,7 +163,7 @@ private fun onReceiveMediaDetailsEffect(
 
 @Composable
 fun MediaDetailsContent(
-    state: MediaDetailsScreenState,
+    state: MovieDetailsScreenState,
     listener: MediaInteractionListener,
     isDescriptionExpanded: Boolean,
     onToggleDescriptionExpand: () -> Unit,

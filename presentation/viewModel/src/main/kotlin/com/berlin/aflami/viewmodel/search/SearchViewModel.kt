@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.entity.Genre
 import kotlinx.coroutines.async
@@ -209,7 +209,7 @@ class SearchViewModel(
         )
     }
 
-    private fun getFilterMovieAsFlow(query: String): Flow<PagingData<MovieUIState>> {
+    private fun getFilterMovieAsFlow(query: String): Flow<PagingData<MovieUiState>> {
         val selectedRating =
             state.value.filterItemUiState.filterMovieSelected.selectedRating
         val selectedGenreId =
@@ -228,7 +228,7 @@ class SearchViewModel(
         ).flow.cachedIn(viewModelScope)
     }
 
-    private fun onFetchMoviesSuccess(moviesFlow: Flow<PagingData<MovieUIState>>) {
+    private fun onFetchMoviesSuccess(moviesFlow: Flow<PagingData<MovieUiState>>) {
         updateState { it.copy(movies = moviesFlow, errorMessage = null, isLoading = false) }
     }
 

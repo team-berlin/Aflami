@@ -9,7 +9,7 @@ import com.berlin.entity.Video
 
 interface MovieDetailsRepository {
     suspend fun getMovieImages(movieId: Long): MediaImage
-    suspend fun getMovieDetails(movieId: Long): Movie?
+    suspend fun getMovieDetails(movieId: Long): Movie
     suspend fun getMovieActors(movieId: Long): List<Actor>
     suspend fun getSimilarMovies(movieId: Long): List<Movie>
     suspend fun getMovieReviews(movieId: Long): List<Review>

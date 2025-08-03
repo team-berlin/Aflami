@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.mediadetails.details.common
 
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
-import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 
 sealed interface MoviesRowSectionUiState {
     object Loading : MoviesRowSectionUiState
@@ -11,8 +11,8 @@ sealed interface MoviesRowSectionUiState {
 }
 
 sealed interface MoviesTabContent {
-    data class MoreLikeThis(val items: List<MovieUIState>) : MoviesTabContent
-    data class Reviews(val items: List<ReviewUiState>) : MoviesTabContent
-    data class Gallery(val items: List<String>) : MoviesTabContent
-    data class CompanyProduction(val items: List<CompanyProductionUiState>) : MoviesTabContent
+    data class MoreLikeThis(val moreMoviesLikeThis: List<MovieUiState>) : MoviesTabContent
+    data class Reviews(val movieReviews: List<ReviewUiState>) : MoviesTabContent
+    data class Gallery(val images: List<String>) : MoviesTabContent
+    data class CompanyProduction(val companyProductionsList: List<CompanyProductionUiState>) : MoviesTabContent
 }

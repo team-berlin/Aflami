@@ -315,7 +315,7 @@ private fun HomeContent(
                     mediaImg = posterUrl,
                     title = title,
                     typeOfMedia = MediaType.MOVIE.name,
-                    date = releaseYear,
+                    date = releaseDate,
                     rate = rating,
                     onDismiss = { listener.onDismissMoodPickerDialog() },
                     onClickViewDetails = { listener.onClickViewDetails() },

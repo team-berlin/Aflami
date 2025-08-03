@@ -358,7 +358,7 @@ private fun SearchScreenContent(
                                                             mediaImg = movie.posterUrl,
                                                             title = movie.title,
                                                             typeOfMedia = stringResource(R.string.movies),
-                                                            date = movie.releaseYear,
+                                                            date = movie.releaseDate,
                                                             rating = movie.rating
                                                         )
                                                     }

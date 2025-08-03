@@ -9,8 +9,8 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
-import com.berlin.aflami.viewmodel.mapper.toMovieUIState
-import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.aflami.viewmodel.mapper.toMovieUiState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.util.getCountriesNames
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -60,13 +60,13 @@ class SearchByCountryScreenViewModel @Inject constructor(
         }
     }
 
-    private fun getCountryMoviesAsFlow(countryName: String): Flow<PagingData<MovieUIState>> = Pager(
+    private fun getCountryMoviesAsFlow(countryName: String): Flow<PagingData<MovieUiState>> = Pager(
         config = defaultPageConfigurations(), pagingSourceFactory = {
             SearchMoviesByCountryNamePagingSource(
                 countryName = countryName,
                 searchMoviesByCountryUseCase = searchMoviesByCountryUseCase
             )
-        }).flow.map { pagingData -> pagingData.map { movie -> movie.toMovieUIState() } }
+        }).flow.map { pagingData -> pagingData.map { movie -> movie.toMovieUiState() } }
         .cachedIn(viewModelScope)
 
     private fun updateScreenStateToLoading() {
@@ -80,7 +80,7 @@ class SearchByCountryScreenViewModel @Inject constructor(
         }
     }
 
-    private fun updateScreenWithCountryMovies(flowOfMoviesUiState: Flow<PagingData<MovieUIState>>) {
+    private fun updateScreenWithCountryMovies(flowOfMoviesUiState: Flow<PagingData<MovieUiState>>) {
         updateState { screenState ->
             screenState.copy(
                 isLoading = false, moviesOfCountryFlow = flowOfMoviesUiState
