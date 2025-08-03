@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.home.continueWatching
 
 import com.berlin.aflami.viewmodel.base.BasePagingSource
+import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -14,10 +15,10 @@ class ContinueWatchingMediaPagingSource(
 
     override suspend fun fetchData(page: Int): List<MediaUiState> = coroutineScope {
         val moviesDeferred = async {
-            movieUseCase(page).map { MediaUiState() }
+            movieUseCase(page).map { movie -> movie.toMediaUiState() }
         }
         val tvShowsDeferred = async {
-            tvShowUseCase(page).map { MediaUiState() }
+            tvShowUseCase(page).map { tVShow -> tVShow.toMediaUiState() }
         }
 
         val movies = moviesDeferred.await()

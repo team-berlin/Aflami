@@ -48,7 +48,7 @@ fun SearchData(
                 .clickable { onClearAll() }
         )
     }
-    LazyColumn() {
+    LazyColumn {
         items(recentSearch) { currentQuery ->
             SearchItem(
                 text = currentQuery,

@@ -1,12 +1,10 @@
 package usecase.movie
 
+import com.berlin.entity.MediaImage
 import repository.MovieDetailsRepository
 
-class GetMovieGalleryUseCase(
-    private val movieDetailsRepository: MovieDetailsRepository
-) {
-    suspend operator fun invoke(id: Long): List<String> {
-        //movieDetailsRepository.getMovieImages(id)
-        return emptyList()
+class GetMovieGalleryUseCase(private val movieDetailsRepository: MovieDetailsRepository) {
+    suspend operator fun invoke(movieId: Long): MediaImage {
+        return movieDetailsRepository.getMovieImages(movieId)
     }
 }

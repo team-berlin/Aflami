@@ -41,9 +41,9 @@ import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.searchactor.SearchByActorEffect
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorInteractionListener
-import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenUiState
+import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenEffect
+import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
@@ -60,7 +60,7 @@ fun SearchByActorNameScreen(
         viewModel.effect.collect {effect->
             onReceiveSearchByActorEffect(
                 navController = navController,
-                searchByActorEffect = effect
+                searchByActorScreenEffect = effect
             )
         }
     }
@@ -69,7 +69,7 @@ fun SearchByActorNameScreen(
         exit = fadeOut(),
         visible = uiState.isLoading
     ) {
-        com.berlin.aflami.component.CircularProgressIndicator(
+        CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
             text = stringResource(R.string.loading)
         )
@@ -77,7 +77,7 @@ fun SearchByActorNameScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = uiState.error!=null&&uiState.query.text.isNotEmpty()
+        visible = uiState.errorMessage!=null&&uiState.actorName.text.isNotEmpty()
     ) {
         NoInternetConnectionPlaceholder()
     }
@@ -98,17 +98,17 @@ fun SearchByActorNameScreen(
 
 private fun onReceiveSearchByActorEffect(
     navController: NavController,
-    searchByActorEffect:SearchByActorEffect
+    searchByActorScreenEffect:SearchByActorScreenEffect
 ){
-    when (searchByActorEffect) {
-        is SearchByActorEffect.NavigatedBack -> {
+    when (searchByActorScreenEffect) {
+        is SearchByActorScreenEffect.NavigatedBack -> {
             navController.popBackStack()
         }
 
-        is SearchByActorEffect.NavigatedToMediaDetailsScreen -> {
+        is SearchByActorScreenEffect.NavigatedToMediaDetailsScreen -> {
             navController.navigate(
                 MediaDetailsDestination(
-                    searchByActorEffect.movieId,
+                    searchByActorScreenEffect.movieId,
                     MediaType.valueOf("MOVIE"),
                 )
             )
@@ -119,7 +119,7 @@ private fun onReceiveSearchByActorEffect(
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 private fun SearchByActorNameContent(
-    state: SearchByActorScreenUiState,
+    state: SearchByActorScreenState,
     listener: SearchByActorInteractionListener,
 ) {
     Column(
@@ -151,7 +151,7 @@ private fun SearchByActorNameContent(
         })
         val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
-            text = state.query,
+            text = state.actorName,
             hintText = stringResource(R.string.actor_name),
             modifier = Modifier
                 .fillMaxWidth()
@@ -170,11 +170,11 @@ private fun SearchByActorNameContent(
         Box(
             modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
         ) {
-            val pagedMovies = state.movies.collectAsLazyPagingItems()
+            val pagedMovies = state.mediaPagingDataFlow.collectAsLazyPagingItems()
 
             when (pagedMovies.loadState.refresh) {
                 is LoadState.Loading -> {
-                    if (state.query.text.isBlank()) {
+                    if (state.actorName.text.isBlank()) {
                         InitContent()
                     } else {
                         CircularProgressIndicator(
@@ -183,16 +183,16 @@ private fun SearchByActorNameContent(
                     }
                 }
                 is LoadState.NotLoading -> {
-                    if (state.query.text.isBlank()) {
+                    if (state.actorName.text.isBlank()) {
                         InitContent()
-                    } else if (pagedMovies.itemCount == 0 && state.query.text.isNotBlank()) {
+                    } else if (pagedMovies.itemCount == 0 && state.actorName.text.isNotBlank()) {
                         CircularProgressIndicator(
                             text = stringResource(R.string.loading)
                         )
                     } else {
                         MediaGridList(
                             media = pagedMovies,
-                            onMovieClick = listener::onMovieClicked,
+                            onMovieClick = listener::onMediaCardClicked,
                         )
                     }
                 }

@@ -13,13 +13,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.ui.R
 
 @Composable
 fun MoviesList(
     modifier: Modifier = Modifier,
-    movies: LazyPagingItems<MovieUIState>,
+    movies: LazyPagingItems<MovieUiState>,
     onMovieClick: (Long) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -42,7 +42,7 @@ fun MoviesList(
                         mediaImg = movie.posterUrl,
                         title = movie.title,
                         typeOfMedia = stringResource(R.string.movie),
-                        date = movie.releaseYear,
+                        date = movie.releaseDate,
                         rating = movie.rating,
                         onClick = { onMovieClick(movie.id) }
                     )

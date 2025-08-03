@@ -55,7 +55,7 @@ fun FilterDialog(
     getIcon: (Int) -> Int
 ) {
     Dialog(
-        onDismissRequest = filterListener::onCancelButtonClicked,
+        onDismissRequest = filterListener::onCancelClicked,
         properties = DialogProperties(
             usePlatformDefaultWidth = false
         )
@@ -91,7 +91,7 @@ fun FilterDialog(
                             .size(40.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(Theme.color.surfaceHigh)
-                            .clickable { filterListener.onCancelButtonClicked() },
+                            .clickable { filterListener.onCancelClicked() },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(

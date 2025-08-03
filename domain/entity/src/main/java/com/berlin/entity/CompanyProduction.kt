@@ -1,6 +1,6 @@
 package com.berlin.entity
 
-data class ProductionCompany(
+data class CompanyProduction(
     val id: Int,
     val name: String,
     val posterURL: String,

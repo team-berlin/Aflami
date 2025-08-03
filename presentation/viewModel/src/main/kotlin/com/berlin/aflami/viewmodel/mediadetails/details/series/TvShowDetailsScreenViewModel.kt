@@ -1,0 +1,429 @@
+package com.berlin.aflami.viewmodel.mediadetails.details.series
+
+import androidx.lifecycle.viewModelScope
+import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.mapper.toActorUiState
+import com.berlin.aflami.viewmodel.mapper.toEpisodeUiState
+import com.berlin.aflami.viewmodel.mapper.toReviewUiState
+import com.berlin.aflami.viewmodel.mapper.tvShowToUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsArgs
+import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_COMPANY_PRODUCTION
+import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_GALLERY
+import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_MORE_MEDIA
+import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_REVIEWS
+import com.berlin.aflami.viewmodel.mediadetails.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.common.toggle
+import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
+import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
+import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
+import com.berlin.entity.ContinueWatchingMoviesModel
+import kotlinx.coroutines.launch
+import usecase.mediadetails.GetTVShowVideos
+import usecase.tvshow.AddContinueWatchingTVShowUseCase
+import usecase.tvshow.GetSeasonEpisodesUseCase
+import usecase.tvshow.GetSimilarTVShowsUseCase
+import usecase.tvshow.GetTVShowCastUseCase
+import usecase.tvshow.GetTVShowDetailsUseCase
+import usecase.tvshow.GetTVShowGalleryUseCase
+import usecase.tvshow.GetTVShowReviewUseCase
+
+class TvShowDetailsScreenViewModel(
+    private val getTVShowDetailsUseCase: GetTVShowDetailsUseCase,
+    private val getTVShowCastUseCase: GetTVShowCastUseCase,
+    private val getTVShowGalleryUseCase: GetTVShowGalleryUseCase,
+    private val getSimilarTVShowsUseCase: GetSimilarTVShowsUseCase,
+    private val tvShowReviewUseCase: GetTVShowReviewUseCase,
+    private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
+    private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
+    private val getTVShowVideos: GetTVShowVideos,
+    tvShowArgs: MediaDetailsArgs,
+) : BaseViewModel<TVShowDetailsUiState, TvShowDetailsScreenEffect>(TVShowDetailsUiState()),
+    TvShowDetailsScreenInteractionListener {
+
+    private val tvShowId = tvShowArgs.mediaId
+        ?: throw IllegalArgumentException("mediaId is null")
+
+    init {
+        tvShowId
+        isTVShowHasVideo(tvShowId = tvShowId)
+        getTVShowActors(tvShowId = tvShowId)
+        getTVShowDetails(tvShowId = tvShowId)
+        onShowMoreMediaLikeThisClicked(tvShowId = tvShowId)
+    }
+
+    private fun isTVShowHasVideo(tvShowId: Long) {
+        tryToCall(
+            call = {
+                getTVShowVideos(tvShowId).videoUrl
+            },
+            onSuccess = { videoUrl ->
+                updateState { screenState ->
+                    screenState.copy(isTVShowHasVideo = true, videoUrl = videoUrl)
+                }
+            },
+            onError = ::updateScreenStateToError
+        )
+    }
+
+    private fun getTVShowDetails(tvShowId: Long) {
+        updateState { screenState ->
+            screenState.copy(isScreenLoading = true)
+        }
+        tryToCall(
+            call = {
+                val tvShow =
+                    getTVShowDetailsUseCase(tvShowId).tvShowToUiState()
+                val tvShowPosters: List<String> = getTVShowGalleryUseCase(tvShowId).posters
+                Pair(tvShow, tvShowPosters)
+            },
+            onSuccess = { (tvShowUiState, tvShowPosters) ->
+                updateState { screenState ->
+                    screenState.copy(
+                        posters = tvShowPosters,
+                        tvShowUiState = tvShowUiState,
+                        isScreenLoading = false
+                    )
+                }
+                saveTVShowToContinueWatching(
+                    ContinueWatchingMoviesModel(
+                        id = tvShowId,
+                        rating = tvShowUiState.rating,
+                        title = tvShowUiState.title,
+                        releaseDate = tvShowUiState.releaseDate,
+                        posterUrl = tvShowUiState.posterUrl,
+                    )
+                )
+            },
+            onError = ::updateScreenStateToError
+        )
+    }
+
+    private fun getTVShowActors(tvShowId: Long) {
+        updateState { screenState ->
+            screenState.copy(isScreenLoading = true)
+        }
+        tryToCall(
+            call = {
+                getTVShowCastUseCase(tvShowId).map { it.toActorUiState() }
+            },
+            onSuccess = ::updateScreenWithNewActors,
+            onError = ::updateScreenStateToError,
+        )
+    }
+
+    private fun updateScreenWithNewActors(castUiStateList: List<ActorUiState>) {
+        updateState { screenState ->
+            screenState.copy(
+                castList = castUiStateList,
+                isScreenLoading = false
+            )
+        }
+    }
+
+    private fun saveTVShowToContinueWatching(modelToBeSaved: ContinueWatchingMoviesModel) {
+        viewModelScope.launch {
+            addContinueWatchingTVShowUseCase(modelToBeSaved)
+        }
+    }
+
+    override fun onSeasonsClicked(tvShowId: Long, numberOfSeasons: Int) {
+        updateRowSectionToLoading()
+        tryToCall(
+            call = {
+                fetchSeasonToEpisodesMap(tvShowId, numberOfSeasons)
+            },
+            onSuccess = ::updateRowSectionWithNewSeasonToEpisodesMap,
+            onError = ::updateRowSectionStateToError,
+        )
+    }
+
+    private suspend fun fetchSeasonToEpisodesMap(
+        tvShowId: Long,
+        numberOfSeasons: Int,
+    ): MutableMap<Int, List<EpisodeUiState>> {
+        val seasonToEpisodesMap: MutableMap<Int, List<EpisodeUiState>> = mutableMapOf()
+        repeat(numberOfSeasons) { seasonNumber ->
+            val episodes: List<EpisodeUiState> = getSeasonEpisodesUseCase(
+                tvShowId, seasonNumber
+            ).map { episode -> episode.toEpisodeUiState() }
+            seasonToEpisodesMap.put(seasonNumber, episodes)
+        }
+        return seasonToEpisodesMap
+    }
+
+    private fun updateRowSectionWithNewSeasonToEpisodesMap(seasons: MutableMap<Int, List<EpisodeUiState>>) {
+        updateState { screenState ->
+            screenState.copy(
+                rowSection = TVShowRowSectionUiState.Success(
+                    content = TVShowTabContent.Season(
+                        seasonToEpisodesMap = seasons
+                    )
+                ),
+            )
+        }
+    }
+
+    override fun onShowMoreMediaLikeThisClicked(
+        tvShowId: Long,
+    ) {
+        updateRowSectionToLoading()
+        tryToCall(
+            call = {
+                getSimilarTVShowsUseCase(tvShowId = tvShowId).map { tVShow -> tVShow.tvShowToUiState() }
+            },
+            onSuccess = ::updateMoreLikeThisSectionWithNewData,
+            onError = ::updateRowSectionStateToError
+        )
+    }
+
+
+    private fun updateMoreLikeThisSectionWithNewData(moreLikeThisTVShowList: List<TVShowUiState>) {
+        if (moreLikeThisTVShowList.isEmpty()) {
+            updateState { screenState ->
+                screenState.copy(
+                    rowSection = TVShowRowSectionUiState.NoDataFound(
+                        UiText.Resource(NO_MORE_MEDIA)
+                    ),
+                )
+            }
+        } else {
+            updateState {
+                it.copy(
+                    rowSection = TVShowRowSectionUiState.Success(
+                        content = TVShowTabContent.MoreLikeThis(
+                            items = moreLikeThisTVShowList
+                        )
+                    ),
+                )
+            }
+        }
+    }
+
+    override fun onShowReviewsClicked(
+        tvShowId: Long,
+    ) {
+        updateRowSectionToLoading()
+        tryToCall(
+            call = {
+                tvShowReviewUseCase(tvShowId).map { review -> review.toReviewUiState() }
+            },
+            onSuccess = ::updateReviewRowSectionWithNewData,
+            onError = ::updateRowSectionStateToError,
+        )
+    }
+
+    private fun updateReviewRowSectionWithNewData(reviewResult: List<ReviewUiState>) {
+        if (reviewResult.isEmpty()) {
+            updateState { showDetailsUiState ->
+                showDetailsUiState.copy(
+                    rowSection = TVShowRowSectionUiState.NoDataFound(
+                        UiText.Resource(NO_REVIEWS)
+                    ),
+                )
+            }
+        } else {
+            updateState { screenState ->
+                screenState.copy(
+                    rowSection = TVShowRowSectionUiState.Success(
+                        content = TVShowTabContent.Reviews(
+                            reviews = reviewResult
+                        )
+                    ),
+                    isScreenLoading = false,
+                )
+            }
+        }
+    }
+
+    override fun onShowMediaGalleryClicked(
+        tvShowId: Long,
+    ) {
+        updateRowSectionToLoading()
+        tryToCall(
+            call = {
+                getTVShowGalleryUseCase(tvShowId).backdrops
+            },
+            onSuccess = ::updateMediaGellarySectionWithNewImages,
+            onError = ::updateRowSectionStateToError
+        )
+    }
+
+    private fun updateMediaGellarySectionWithNewImages(backdrops: List<String>) {
+        if (backdrops.isEmpty()) {
+            updateState {
+                it.copy(
+                    rowSection = TVShowRowSectionUiState.NoDataFound(
+                        UiText.Resource(
+                            NO_GALLERY
+                        )
+                    ),
+                )
+            }
+        } else {
+            updateState { screenState ->
+                screenState.copy(
+                    rowSection = TVShowRowSectionUiState.Success(
+                        content = TVShowTabContent.Gallery(
+                            images = backdrops
+                        )
+                    ),
+                )
+            }
+        }
+    }
+
+    override fun onShowCompanyProductionClicked() {
+        updateRowSectionToLoading()
+        val companyProductionUiState = state.value.tvShowUiState.companyProductionUiState
+        if (companyProductionUiState.isEmpty()) {
+            updateCompanyProductionWithNoDataFound()
+        } else {
+            updateCompanyProductionSectionWithNewData(companyProductionUiState)
+        }
+    }
+
+    private fun updateCompanyProductionSectionWithNewData(companyProductionUiState: List<CompanyProductionUiState>) {
+        updateState { companyProduction ->
+            companyProduction.copy(
+                rowSection = TVShowRowSectionUiState.Success(
+                    content = TVShowTabContent.CompanyProduction(
+                        companyProductionStates = companyProductionUiState
+                    )
+                ),
+            )
+        }
+    }
+
+    private fun updateCompanyProductionWithNoDataFound() {
+        updateState { screenState ->
+            screenState.copy(
+                rowSection = TVShowRowSectionUiState.NoDataFound(
+                    UiText.Resource(NO_COMPANY_PRODUCTION)
+                ),
+            )
+        }
+    }
+
+    override fun onBackClicked() = sendNewEffect(TvShowDetailsScreenEffect.NavigateBack)
+
+    override fun onPlayClicked(videoUrl: String) =
+        sendNewEffect(TvShowDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
+
+    override fun onReadMoreDescriptionClicked() = updateState { screenState ->
+        screenState.copy(
+            isDescriptionExpanded = !screenState.isDescriptionExpanded,
+        )
+    }
+
+    override fun onReadMoreReviewClicked(reviewId: String) = updateState { screenState ->
+        screenState.copy(
+            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId),
+        )
+    }
+
+    override fun onShowCastClicked(tvShowId: Long) = sendNewEffect(
+        TvShowDetailsScreenEffect.NavigateToShowAllCastScreen(tvShowId)
+    )
+
+    override fun onMediaCardClicked(tvShowId: Long) =
+        sendNewEffect(TvShowDetailsScreenEffect.NavigateToMediaDetailsScreen(tvShowId))
+
+
+    override fun onRateIconClicked(tvShowId: Long) =
+        sendNewEffect(TvShowDetailsScreenEffect.ShowRatingDialog(tvShowId))
+
+
+    override fun onSelectRateClicked(rate: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSubmitRateClicked(rate: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCancelRatingClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAddMediaToFavouriteListClicked(
+        favouriteListId: Int,
+        mediaId: Int,
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSelectFavouriteList(favouriteListId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCreateNewFavouriteListClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCancelAddingToFavouriteClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUpdateNewListTitle(newListTitle: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCreateNewListClicked(listTitle: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCancelCreatingNewListClicked() {
+        TODO("Not yet implemented")
+    }
+
+    fun toggleTvShowDetailsTab(
+        tvShowDetailsTabs: TVShowDetailsTabs,
+        tvShowId: Long,
+    ) {
+        updateState { screenState ->
+            if (screenState.tvShowDetailsTabsUiState.tab == tvShowDetailsTabs) return@updateState screenState
+
+            when (tvShowDetailsTabs) {
+                TVShowDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(tvShowId = tvShowId)
+                TVShowDetailsTabs.REVIEWS -> onShowReviewsClicked(tvShowId = tvShowId)
+                TVShowDetailsTabs.GALLERY -> onShowMediaGalleryClicked(tvShowId = tvShowId)
+                TVShowDetailsTabs.COMPANY_PRODUCTION -> onShowCompanyProductionClicked()
+                TVShowDetailsTabs.SEASONS -> onSeasonsClicked(
+                    tvShowId = tvShowId,
+                    numberOfSeasons = _state.value.tvShowUiState.numberOfSeasons
+                )
+            }
+            screenState.copy(
+                tvShowDetailsTabsUiState = screenState.tvShowDetailsTabsUiState.copy(
+                    tab = tvShowDetailsTabs, isSelected = true
+                ),
+            )
+        }
+    }
+
+    private fun updateRowSectionToLoading() {
+        updateState { screenState ->
+            screenState.copy()
+        }
+    }
+
+    private fun updateRowSectionStateToError(errorState: ErrorUiState) {
+        updateState { screenState ->
+            screenState.copy(
+                rowSection = TVShowRowSectionUiState.Error(
+                    errorState.message
+                ),
+            )
+        }
+    }
+
+    private fun updateScreenStateToError(errorState: ErrorUiState) {
+        updateState { screenState ->
+            screenState.copy(
+                errorMessage = errorState.message,
+            )
+        }
+    }
+}

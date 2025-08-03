@@ -25,9 +25,9 @@ import com.berlin.ui.R
 @Composable
 fun NoInternetConnectionPlaceholder(
     modifier: Modifier = Modifier,
-    enable:Boolean=true,
-    onClick:() -> Unit={}
-){
+    enable: Boolean = true,
+    onClick: () -> Unit = {},
+) {
 
     Column(
         modifier = Modifier
@@ -37,23 +37,23 @@ fun NoInternetConnectionPlaceholder(
         verticalArrangement = Arrangement.Center
     ) {
         CountryTourExploring(
-            image = painterResource(com.berlin.ui.R.drawable.no_internet_placeholder),
-            titleId = com.berlin.ui.R.string.offline_title,
-            messageId = com.berlin.ui.R.string.check_connection_title
+            image = painterResource(R.drawable.no_internet_placeholder),
+            titleId = R.string.offline_title,
+            messageId = R.string.check_connection_title
         )
 
         Button(
-            onClick = {onClick()},
+            onClick = { onClick() },
             modifier = modifier
                 .padding(top = 16.dp, start = 111.dp, end = 111.dp)
                 .align(Alignment.CenterHorizontally),
             enabled = enable,
             shape = RoundedCornerShape(16.dp),
-            colors =  ButtonDefaults.buttonColors(
-               Theme.color.primaryVariant
+            colors = ButtonDefaults.buttonColors(
+                Theme.color.primaryVariant
             ),
-            contentPadding = PaddingValues(vertical =16.dp , horizontal = 24.dp),
-        ){
+            contentPadding = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
+        ) {
             Text(
                 text = stringResource(R.string.retry),
                 style = Theme.textStyle.label.large,
@@ -66,6 +66,6 @@ fun NoInternetConnectionPlaceholder(
 
 @Composable
 @Preview(showBackground = true)
-fun NoInternetConnectionPlaceholderPreview(){
+fun NoInternetConnectionPlaceholderPreview() {
     NoInternetConnectionPlaceholder()
 }

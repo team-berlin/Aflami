@@ -20,12 +20,12 @@ class ContinueWatchingMediaViewModel(
     init {
         getContinueWatchingMedia()
     }
-
+    //region continueWatchingInteractionListener implementation
     override fun onBackClicked() = sendNewEffect(ContinueWatchingScreenEffect.NavigateBack)
 
     override fun onMediaCardClicked(mediaId: Long, mediaType: MediaType) =
-        sendNewEffect(ContinueWatchingScreenEffect.NavigateToDetails(mediaId, mediaType))
-
+        sendNewEffect(ContinueWatchingScreenEffect.NavigateToDetailsScreen(mediaId, mediaType))
+    //endregion
     private fun getContinueWatchingMedia() {
         updateScreenStateToLoading()
         tryToCall(

@@ -29,7 +29,7 @@ fun AnimatedCountriesList(
     visible: Boolean,
     filteredCountries: List<String>,
     onCountryNameChanged: (TextFieldValue) -> Unit,
-    onCountryClick: () -> Unit,
+    onCountryClick: (countryName:String) -> Unit,
 ) {
     Column(modifier = modifier) {
         AnimatedVisibility(
@@ -59,7 +59,7 @@ fun AnimatedCountriesList(
                         countryName = countryName,
                         onCountryClick = {
                             onCountryNameChanged(it)
-                            onCountryClick()
+                            onCountryClick(it.text)
                         }
                     )
 

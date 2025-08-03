@@ -12,18 +12,18 @@ import repository.MovieRepository
 
 class SearchByCountryUseCaseTest {
     private val movieRepository: MovieRepository = mockk()
-    private lateinit var searchByCountryUseCase: SearchByCountryUseCase
+    private lateinit var searchMoviesByCountryUseCase: SearchMoviesByCountryUseCase
 
     @Before
     fun setUp() {
-        searchByCountryUseCase = SearchByCountryUseCase(movieRepository)
+        searchMoviesByCountryUseCase = SearchMoviesByCountryUseCase(movieRepository)
     }
 
     @Test
     fun `should call getMoviesByCountry in repository when invoke is called`() = runTest {
         coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
 
-        searchByCountryUseCase(QUERY, PAGE)
+        searchMoviesByCountryUseCase(QUERY, PAGE)
 
         coVerify { movieRepository.getMoviesByCountry(QUERY, PAGE) }
     }
@@ -33,7 +33,7 @@ class SearchByCountryUseCaseTest {
         runTest {
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
 
-            val result = searchByCountryUseCase(QUERY, PAGE)
+            val result = searchMoviesByCountryUseCase(QUERY, PAGE)
 
             assertThat(result).isEmpty()
         }
@@ -43,7 +43,7 @@ class SearchByCountryUseCaseTest {
         runTest {
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns MOVIES
 
-            val result = searchByCountryUseCase.invoke(QUERY, PAGE)
+            val result = searchMoviesByCountryUseCase.invoke(QUERY, PAGE)
 
             assertThat(result).containsExactlyElementsIn(MOVIES)
         }
@@ -53,7 +53,7 @@ class SearchByCountryUseCaseTest {
         runTest {
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
 
-            val result = searchByCountryUseCase.invoke(QUERY, PAGE)
+            val result = searchMoviesByCountryUseCase.invoke(QUERY, PAGE)
 
             assertThat(result).isEmpty()
         }
@@ -71,7 +71,7 @@ class SearchByCountryUseCaseTest {
                 genres = emptyList(),
                 duration = 3,
                 hasVideo = false,
-                productionCompanies = emptyList(),
+                companyProductions = emptyList(),
                 originCountry = "PS",
                 galleryUrl = emptyList()
             ),
@@ -86,7 +86,7 @@ class SearchByCountryUseCaseTest {
                 genres = emptyList(),
                 duration = 3,
                 hasVideo = false,
-                productionCompanies = emptyList(),
+                companyProductions = emptyList(),
                 originCountry = "PS",
                 galleryUrl = emptyList()
             )

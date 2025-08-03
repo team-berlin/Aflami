@@ -75,7 +75,7 @@ fun ContinueWatchingScreen(
 
 private fun onReceiveEffect(navController: NavController, effect: ContinueWatchingScreenEffect) {
     when (effect) {
-        is ContinueWatchingScreenEffect.NavigateToDetails -> {
+        is ContinueWatchingScreenEffect.NavigateToDetailsScreen -> {
             navController.navigate(
                 MediaDetailsDestination(effect.mediaId, effect.mediaType)
             )

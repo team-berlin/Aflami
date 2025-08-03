@@ -55,7 +55,7 @@ class GetPopularMoviesUseCaseTest {
                 genres = emptyList(),
                 duration = 3,
                 hasVideo = false,
-                productionCompanies = emptyList(),
+                companyProductions = emptyList(),
                 originCountry = "PS",
                 galleryUrl = emptyList()
             ),
@@ -70,7 +70,7 @@ class GetPopularMoviesUseCaseTest {
                 genres = emptyList(),
                 duration = 3,
                 hasVideo = false,
-                productionCompanies = emptyList(),
+                companyProductions = emptyList(),
                 originCountry = "PS",
                 galleryUrl = emptyList()
             )

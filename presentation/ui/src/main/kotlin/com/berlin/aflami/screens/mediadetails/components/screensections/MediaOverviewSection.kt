@@ -16,11 +16,11 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.screens.mediadetails.components.CircularDot
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsScreenState
 import com.berlin.ui.R
 
 @Composable
-fun MediaOverviewSection(state: MediaDetailsUiState) {
+fun MediaOverviewSection(state: MovieDetailsScreenState) {
     Column(Modifier.padding(vertical = 12.dp)) {
         Column(Modifier.padding(horizontal = 16.dp)) {
             Text(

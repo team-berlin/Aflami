@@ -1,47 +1,48 @@
 package com.berlin.aflami.viewmodel.mapper
 
-import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesSeasonUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.series.EpisodeUiState
+import com.berlin.aflami.viewmodel.mediadetails.uistate.SeasonUiState
+import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
+import com.berlin.aflami.viewmodel.shareduistate.ReviewUiState
 import com.berlin.entity.Actor
+import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Episode
-import com.berlin.entity.ProductionCompany
 import com.berlin.entity.Review
 
-fun ProductionCompany.toUiState() = CompanyProductionUiState(
+fun CompanyProduction.toCompanyProductionUiState() = CompanyProductionUiState(
     id = id.toString(),
     image = posterURL,
     name = name,
     country = originCountry
 )
 
-fun Episode.toUiState(): EpisodesUiState {
-    return EpisodesUiState(
+fun Episode.toEpisodeUiState(): EpisodeUiState {
+    return EpisodeUiState(
         id = this.episodeId,
         airDate = this.airDate,
         episodeNumber = this.episodeNumber,
         episodeType = this.episodeType,
         name = this.name,
         overview = this.description,
-        duration = this.duration.toString(),
-        rating = this.rating,
+        runtime = this.duration.toString(),
+        voteAverage = this.rating,
         stillPath = this.stillPath
     )
 }
 
-fun EpisodesSeason.toUiState(): EpisodesSeasonUiState {
-    return EpisodesSeasonUiState(
-        idSeason = this.idSeason,
+fun EpisodesSeason.toUiState(): SeasonUiState {
+    return SeasonUiState(
+        seasonId = this.idSeason,
         name = this.name,
-        episodes = this.episodes?.map { episode -> episode?.toUiState() } ?: emptyList(),
+        episodes = this.episodes?.map { episode -> episode?.toEpisodeUiState() } ?: emptyList(),
         seasonNumber = this.seasonNumber,
         posterPath = this.posterPath
     )
 }
 
-fun Review.toUiState(): ReviewUiState {
+fun Review.toReviewUiState(): ReviewUiState {
     return ReviewUiState(
         id = id,
         name = name,
@@ -53,8 +54,8 @@ fun Review.toUiState(): ReviewUiState {
     )
 }
 
-fun Actor.toUiState(): MediaCastUiState {
-    return MediaCastUiState(
+fun Actor.toActorUiState(): ActorUiState {
+    return ActorUiState(
         name = name,
         poster = posterURL
     )

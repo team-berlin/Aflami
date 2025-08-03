@@ -10,9 +10,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class MainActivityViewModel @Inject constructor(
 //    private val isLoggedInUseCase: LoggedInUseIsLoggedInUseCase,
 ) : ViewModel() {
+    init {
+        viewModelScope.launch {
+//            loginState = isLoggedInUseCase()
+            isLoading = false
+        }
+    }
 
     var loginState by mutableStateOf(false)
         private set
@@ -20,10 +26,4 @@ class MainViewModel @Inject constructor(
     var isLoading by mutableStateOf(true)
         private set
 
-    init {
-        viewModelScope.launch {
-//            loginState = isLoggedInUseCase()
-            isLoading = false
-        }
-    }
 }

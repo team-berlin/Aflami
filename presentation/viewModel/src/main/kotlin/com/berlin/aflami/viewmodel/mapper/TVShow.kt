@@ -7,21 +7,15 @@ import com.berlin.entity.TVShow
 fun TVShow.tvShowToUiState(): TVShowUiState {
     return TVShowUiState(
         id = id,
-        title = title,
         rating = DecimalFormat("#.#").format(rating).toString(),
-        releaseYear = releaseDate.take(4),
+        title = title,
         genre = genres,
-        posterUrl = posterURL
+        releaseDate = releaseDate,
+        numberOfSeasons = numberOfSeasons,
+        description = description,
+        duration = duration,
+        companyProductionUiState = companyProductions.map { it -> it.toCompanyProductionUiState() },
+        originCountry = originCountry,
+        posterUrl = posterURL,
     )
 }
-//fun TVShow.toUIStateMedia(): MediaUiState {
-//    return MediaUiState(
-//        id = id,
-//        title = title,
-//        rating = DecimalFormat("#.#").format(rating).toString(),
-//        releaseYear = releaseDate.take(4),
-//        genre = genres,
-//        poster = posterURL,
-//        mediaType = MediaType.TVSHOW
-//    )
-//}

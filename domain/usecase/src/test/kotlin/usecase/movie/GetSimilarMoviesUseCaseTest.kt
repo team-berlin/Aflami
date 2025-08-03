@@ -8,7 +8,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
 
@@ -81,7 +80,7 @@ class GetSimilarMoviesUseCaseTest {
                     genres = emptyList(),
                     duration = 3,
                     hasVideo = false,
-                    productionCompanies = emptyList(),
+                    companyProductions = emptyList(),
                     originCountry = "PS",
                     galleryUrl = emptyList()
                 )
