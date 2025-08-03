@@ -17,13 +17,13 @@ data class RecentlyWatchedMovieEntity(
     val posterURL: String,
     val screenShot: String,
     val description: String,
-    val genres: List<Genre>,
+    val genres: List<String>,
     val duration: Int,
     val hasVideo: Boolean,
-    val productionCompanies: List<ProductionCompany>,
+    val productionCompanies: List<String>,
     val originCountry: String,
     val galleryUrl:List<String>,
-    val reviews: List<Review>,
+    val reviews: List<String>,
 )
 
 @Entity(tableName = "TVShow_Continue_Watching")
@@ -36,14 +36,14 @@ data class RecentlyWatchedTvShowEntity(
     val releaseDate: String,
     val screenShot: String,
     val description: String,
-    val genres: List<Genre>,
+    val genres: List<String>,
     val duration: Int,
     val hasVideo: Boolean,
-    val productionCompanies: List<ProductionCompany>,
+    val productionCompanies: List<String>,
     val originCountry: String,
-    val seasons: List<Season>,
+    val seasons: List<String>,
     val galleryUrl:List<String>,
-    val reviews: List<Review>,
+    val reviews: List<String>,
 )
 
 

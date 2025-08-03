@@ -60,16 +60,16 @@ fun Movie.toRecentMovieEntity(): RecentlyWatchedMovieEntity {
         title = this.title,
         rating = this.rating,
         releaseDate = this.releaseDate,
-        genres = this.genres,
+        genres = emptyList(),
         posterURL = this.posterURL,
         screenShot = this.screenShot,
         description = this.description,
         duration = this.duration,
         hasVideo = this.hasVideo,
-        productionCompanies = this.productionCompanies,
+        productionCompanies = emptyList(),
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
-        reviews = this.reviews,
+        reviews = emptyList(),
     )
 }
 
@@ -79,16 +79,16 @@ fun RecentlyWatchedMovieEntity.toDomain(): Movie {
         title = this.title,
         rating = this.rating,
         releaseDate = this.releaseDate,
-        genres = this.genres,
+        genres = emptyList(),
         posterURL = this.posterURL,
         screenShot = this.screenShot,
         description = this.description,
         duration = this.duration,
         hasVideo = this.hasVideo,
-        productionCompanies = this.productionCompanies,
+        productionCompanies = emptyList(),
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
-        reviews = this.reviews
+        reviews = emptyList(),
     )
 }
 

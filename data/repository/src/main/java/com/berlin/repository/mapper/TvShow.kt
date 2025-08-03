@@ -85,17 +85,17 @@ fun RecentlyWatchedTvShowEntity.toDomain(): TVShow {
         title = this.title,
         rating = this.rating,
         releaseDate = this.releaseDate,
-        genres = this.genres,
+        genres = emptyList(),
         posterURL = this.posterURL,
         screenShot = this.screenShot,
         description = this.description,
         duration = this.duration,
         hasVideo = this.hasVideo,
-        productionCompanies = this.productionCompanies,
+        productionCompanies = emptyList(),
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
-        seasons = this.seasons,
-        reviews = this.reviews,
+        seasons = emptyList(),
+        reviews = emptyList(),
     )
 }
 fun TVShow.toLocalEntity(): RecentlyWatchedTvShowEntity {
@@ -104,17 +104,17 @@ fun TVShow.toLocalEntity(): RecentlyWatchedTvShowEntity {
         title = this.title,
         rating = this.rating,
         releaseDate = this.releaseDate,
-        genres = this.genres,
+        genres = emptyList(),
         posterURL = this.posterURL,
         screenShot = this.screenShot,
         description = this.description,
         duration = this.duration,
         hasVideo = this.hasVideo,
-        productionCompanies = this.productionCompanies,
+        productionCompanies = emptyList(),
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
-        seasons = this.seasons,
-        reviews = this.reviews,
+        seasons = emptyList(),
+        reviews = emptyList(),
     )
 }
 

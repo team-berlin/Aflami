@@ -6,14 +6,15 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.update
-import usecase.mediadetails.GetMovieCastUseCase
-import usecase.mediadetails.GetSeriesCastUseCase
+
+import usecase.movie.GetMovieCastUseCase
+import usecase.tvshow.GetTVShowCastUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class CastViewModel @Inject constructor(
     private val getMovieCastUseCase: GetMovieCastUseCase,
-    private val getSeriesCastUseCase: GetSeriesCastUseCase,
+    private val getSeriesCastUseCase: GetTVShowCastUseCase,
     castDetailsArgs: CastDetailsArgs,
 ) : BaseViewModel<MediaDetailsUiState, CastDetailsEffect>(
     MediaDetailsUiState()
@@ -30,30 +31,30 @@ class CastViewModel @Inject constructor(
         _state.update {
             it.copy(error = null, isLoading = true)
         }
-        tryToCall(
-            call = {
-                when (mediaType) {
-                    MediaType.MOVIE -> getMovieCastUseCase(mediaId).map { it.toUiState() }
-                    MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId).map { it.toUiState() }
-                }
-            },
-            onSuccess = { cast ->
-                _state.update {
-                    it.copy(
-                        actorUiStates = cast,
-                        mediaType = mediaType,
-                        isLoading = false
-                    )
-                }
-            },
-            onError = { errorUiState ->
-                _state.update {
-                    it.copy(
-                        error = errorUiState.message
-                    )
-                }
-            },
-        )
+//        tryToCall(
+//            call = {
+//                when (mediaType) {
+//                    MediaType.MOVIE -> getMovieCastUseCase(mediaId).map { it.toUiState() }
+//                    MediaType.TV_SHOW -> getSeriesCastUseCase(mediaId).map { it.toUiState() }
+//                }
+//            },
+//            onSuccess = { cast ->
+//                _state.update {
+//                    it.copy(
+//                        actorUiStates = cast,
+//                        mediaType = mediaType,
+//                        isLoading = false
+//                    )
+//                }
+//            },
+//            onError = { errorUiState ->
+//                _state.update {
+//                    it.copy(
+//                        error = errorUiState.message
+//                    )
+//                }
+//            },
+//        )
     }
 
     override fun onCastBackClicked() {

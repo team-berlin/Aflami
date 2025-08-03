@@ -15,4 +15,14 @@ class Converters {
         else data.split(",").map { it.toInt() }
     }
 
+    @TypeConverter
+    fun fromStringList(list: List<String>?): String {
+        return list?.joinToString("|||") ?: ""
+    }
+
+    @TypeConverter
+    fun toStringList(data: String): List<String> {
+        return if (data.isEmpty()) emptyList()
+        else data.split("|||")
+    }
 }

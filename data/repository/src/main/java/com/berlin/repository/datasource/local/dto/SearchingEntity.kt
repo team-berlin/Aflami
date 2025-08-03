@@ -14,7 +14,6 @@ data class SearchingEntity(
     val type: String,
     val timeStamp: Long = System.currentTimeMillis(),
     val queryType: QueryType
-
 )
 
 @Entity(
