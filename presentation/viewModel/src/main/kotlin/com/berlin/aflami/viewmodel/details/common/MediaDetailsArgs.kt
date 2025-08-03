@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.mediadetails.details
+package com.berlin.aflami.viewmodel.details.common
 
 import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.util.MEDIA_ID

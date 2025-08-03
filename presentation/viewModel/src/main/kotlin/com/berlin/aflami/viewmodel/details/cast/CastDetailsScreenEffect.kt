@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.mediadetails.cast
+package com.berlin.aflami.viewmodel.details.cast
 
 sealed class CastDetailsScreenEffect {
     object NavigationBack : CastDetailsScreenEffect()

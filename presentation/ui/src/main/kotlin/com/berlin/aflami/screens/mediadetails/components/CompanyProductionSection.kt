@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
-import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
 
 @Composable
 fun CompanyProductionSection(

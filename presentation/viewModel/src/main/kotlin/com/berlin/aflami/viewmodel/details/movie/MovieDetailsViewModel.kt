@@ -1,24 +1,23 @@
-package com.berlin.aflami.viewmodel.mediadetails.details
+package com.berlin.aflami.viewmodel.details.movie
 
 
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.details.common.MediaDetailsArgs
+import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
+import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
+import com.berlin.aflami.viewmodel.details.common.MoviesTabContent
+import com.berlin.aflami.viewmodel.details.common.NO_COMPANY_PRODUCTION
+import com.berlin.aflami.viewmodel.details.common.NO_GALLERY
+import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
+import com.berlin.aflami.viewmodel.details.common.NO_REVIEWS
+import com.berlin.aflami.viewmodel.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.details.common.toggle
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
 import com.berlin.aflami.viewmodel.mapper.toMovieUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.common.MoviesRowSectionUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.common.MoviesTabContent
-import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_COMPANY_PRODUCTION
-import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_GALLERY
-import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_MORE_MEDIA
-import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_REVIEWS
-import com.berlin.aflami.viewmodel.mediadetails.details.common.ReviewUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.common.toggle
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsScreenState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.entity.ContinueWatchingMoviesModel
@@ -52,7 +51,7 @@ class MovieDetailsViewModel @Inject constructor(
         ?: throw IllegalArgumentException("mediaId is null")
 
     init {
-        movieId
+        updateState { it.copy(movieUiState = it.movieUiState.copy(id = movieId)) }
         isMovieHasVideo(movieId = movieId)
         getMovieActors(movieId = movieId)
         getMovieDetails(movieId = movieId)
@@ -89,7 +88,6 @@ class MovieDetailsViewModel @Inject constructor(
                     screenState.copy(
                         posters = moviePosters,
                         movieUiState = movieUiState,
-                        isScreenLoading = false
                     )
                 }
                 saveMovieToContinueWatching(
@@ -132,7 +130,6 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 castList = castUiStateList,
-                isScreenLoading = false
             )
         }
     }
@@ -163,7 +160,7 @@ class MovieDetailsViewModel @Inject constructor(
                 screenState.copy(
                     rowSection = MoviesRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_MORE_MEDIA)
-                    ),
+                    ), ,
                 )
             }
         } else {
@@ -173,7 +170,7 @@ class MovieDetailsViewModel @Inject constructor(
                         content = MoviesTabContent.MoreLikeThis(
                             moreMoviesLikeThis = moreLikeThisMovieList
                         )
-                    ),
+                    ), ,
                 )
             }
         }
@@ -198,7 +195,7 @@ class MovieDetailsViewModel @Inject constructor(
                 showDetailsUiState.copy(
                     rowSection = MoviesRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_REVIEWS)
-                    ),
+                    ), ,
                 )
             }
         } else {
@@ -208,8 +205,7 @@ class MovieDetailsViewModel @Inject constructor(
                         content = MoviesTabContent.Reviews(
                             movieReviews = reviewResult
                         )
-                    ),
-                    isScreenLoading = false,
+                    ), ,
                 )
             }
         }
@@ -236,7 +232,7 @@ class MovieDetailsViewModel @Inject constructor(
                         UiText.Resource(
                             NO_GALLERY
                         )
-                    ),
+                    ), ,
                 )
             }
         } else {
@@ -246,7 +242,7 @@ class MovieDetailsViewModel @Inject constructor(
                         content = MoviesTabContent.Gallery(
                             images = backdrops
                         )
-                    ),
+                    ), ,
                 )
             }
         }
@@ -269,7 +265,7 @@ class MovieDetailsViewModel @Inject constructor(
                     content = MoviesTabContent.CompanyProduction(
                         companyProductionsList = companyProductionUiState
                     )
-                ),
+                ), ,
             )
         }
     }
@@ -279,7 +275,7 @@ class MovieDetailsViewModel @Inject constructor(
             screenState.copy(
                 rowSection = MoviesRowSectionUiState.NoDataFound(
                     UiText.Resource(NO_COMPANY_PRODUCTION)
-                ),
+                ), ,
             )
         }
     }
@@ -291,13 +287,13 @@ class MovieDetailsViewModel @Inject constructor(
 
     override fun onReadMoreDescriptionClicked() = updateState { screenState ->
         screenState.copy(
-            isDescriptionExpanded = !screenState.isDescriptionExpanded,
+            isDescriptionExpanded = !screenState.isDescriptionExpanded, ,
         )
     }
 
     override fun onReadMoreReviewClicked(reviewId: String) = updateState { screenState ->
         screenState.copy(
-            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId),
+            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId), ,
         )
     }
 
@@ -371,7 +367,7 @@ class MovieDetailsViewModel @Inject constructor(
             screenState.copy(
                 movieDetailsTabsUiState = screenState.movieDetailsTabsUiState.copy(
                     tab = movieDetailsTabs, isSelected = true
-                ),
+                ), ,
             )
         }
     }
@@ -387,7 +383,7 @@ class MovieDetailsViewModel @Inject constructor(
             screenState.copy(
                 rowSection = MoviesRowSectionUiState.Error(
                     errorState.message
-                ),
+                ), ,
             )
         }
     }
@@ -395,7 +391,7 @@ class MovieDetailsViewModel @Inject constructor(
     private fun updateScreenStateToError(errorState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message,
+                errorMessage = errorState.message, ,
             )
         }
     }

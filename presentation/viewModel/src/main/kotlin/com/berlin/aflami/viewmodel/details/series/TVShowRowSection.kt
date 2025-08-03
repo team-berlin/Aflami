@@ -1,9 +1,9 @@
-package com.berlin.aflami.viewmodel.mediadetails.details.series
+package com.berlin.aflami.viewmodel.details.series
 
 import androidx.compose.runtime.Immutable
-import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.common.ReviewUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
+import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 
 sealed interface TVShowRowSectionUiState {
@@ -20,7 +20,6 @@ sealed interface TVShowTabContent {
     data class Season(val seasonToEpisodesMap: MutableMap<Int, List<EpisodeUiState>>) : TVShowTabContent
     data class CompanyProduction(val companyProductionStates: List<CompanyProductionUiState>) : TVShowTabContent
 }
-
 
 @Immutable
 data class SeasonUiState(

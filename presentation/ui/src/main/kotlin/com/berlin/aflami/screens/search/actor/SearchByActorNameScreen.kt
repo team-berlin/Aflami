@@ -36,7 +36,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MediaGridList
@@ -107,7 +107,7 @@ private fun onReceiveSearchByActorEffect(
 
         is SearchByActorScreenEffect.NavigatedToMediaDetailsScreen -> {
             navController.navigate(
-                MediaDetailsDestination(
+                MovieDetailsDestination(
                     searchByActorScreenEffect.movieId,
                     MediaType.valueOf("MOVIE"),
                 )

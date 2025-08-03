@@ -27,7 +27,7 @@ import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
@@ -77,7 +77,7 @@ private fun onReceiveEffect(navController: NavController, effect: ContinueWatchi
     when (effect) {
         is ContinueWatchingScreenEffect.NavigateToDetailsScreen -> {
             navController.navigate(
-                MediaDetailsDestination(effect.mediaId, effect.mediaType)
+                MovieDetailsDestination(effect.mediaId, effect.mediaType)
             )
         }
 

@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.mediadetails.details
+package com.berlin.aflami.viewmodel.details.movie
 
 sealed interface MovieDetailsScreenEffect {
     object NavigateBack : MovieDetailsScreenEffect
@@ -9,6 +9,7 @@ sealed interface MovieDetailsScreenEffect {
         MovieDetailsScreenEffect
 
     data class ShowRatingDialog(val movieId: Long) : MovieDetailsScreenEffect
+    data class ShowLoginDialog(val movieId: Long) : MovieDetailsScreenEffect
     data class ShowAddToFavoriteListDialog(
         val favouriteListId: Int,
         val movieId: Int,

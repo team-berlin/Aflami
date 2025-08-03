@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.mediadetails.cast
+package com.berlin.aflami.viewmodel.details.cast
 
 import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.shareduistate.MediaType

@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.shareduistate
 
 import androidx.compose.runtime.Immutable
-import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
 
 @Immutable
 data class MediaUiState(

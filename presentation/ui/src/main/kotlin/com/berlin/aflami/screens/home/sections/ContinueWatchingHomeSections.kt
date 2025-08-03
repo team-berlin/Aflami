@@ -31,7 +31,8 @@ import com.berlin.ui.R
 fun ContinueWatchingHomeSections(
     modifier: Modifier = Modifier,
     seeAllOnClick: () -> Unit,
-    cardClick: (id: Long, type: MediaType) -> Unit,
+    onMovieItemClicked: (movieId: Long) -> Unit = {},
+    onTVShowItemClicked: (tvShowId: Long) -> Unit = {},
     state: List<MediaUiState>,
     sectionTitleId: Int,
 ) {
@@ -87,7 +88,11 @@ fun ContinueWatchingHomeSections(
                             date = it.releaseYear,
                             rating = it.rating,
                         ) {
-                            cardClick(it.id, it.mediaType ?: MediaType.MOVIE)
+                            when(it.mediaType){
+                                MediaType.MOVIE -> onMovieItemClicked(it.id)
+                                MediaType.TV_SHOW -> onTVShowItemClicked(it.id)
+                                else -> throw IllegalArgumentException("Unknown media type")
+                            }
                         }
                     }
                 }

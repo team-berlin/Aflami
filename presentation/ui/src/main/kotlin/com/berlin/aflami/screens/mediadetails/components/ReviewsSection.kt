@@ -2,7 +2,7 @@ package com.berlin.aflami.screens.mediadetails.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import com.berlin.aflami.viewmodel.mediadetails.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.details.common.ReviewUiState
 
 @Composable
 fun ReviewsSection(

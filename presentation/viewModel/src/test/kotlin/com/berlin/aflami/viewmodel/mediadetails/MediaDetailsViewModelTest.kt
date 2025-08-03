@@ -4,13 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toEpisodeUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsScreenEffect
-import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.details.movie.MovieDetailsScreenEffect
+import com.berlin.aflami.viewmodel.mediadetails.details.movie.MovieDetailsViewModel
 import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
-import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
+import com.berlin.aflami.viewmodel.mediadetails.details.movie.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.entity.Episode
 import com.berlin.entity.Movie

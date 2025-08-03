@@ -34,7 +34,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
@@ -101,8 +101,8 @@ private fun onReceiveSearchByCountryEffect(
         is SearchByCountryScreenEffect.NavigatedToMovieDetailsScreen -> {
 
             navController.navigate(
-                MediaDetailsDestination(
-                    mediaId = effect.movieId,
+                MovieDetailsDestination(
+                    movieId = effect.movieId,
                     mediaType = MediaType.valueOf("MOVIE"),
                 )
             )

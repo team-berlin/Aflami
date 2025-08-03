@@ -1,8 +1,7 @@
 package com.berlin.aflami.viewmodel.shareduistate
 
 import androidx.compose.runtime.Immutable
-import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
-import com.berlin.entity.Genre
+import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
 
 @Immutable
 data class TVShowUiState(
@@ -10,11 +9,12 @@ data class TVShowUiState(
     val title: String = "",
     val rating: String = "",
     val releaseDate: String = "",
-    val genre: List<Genre> = emptyList(),
+    val genre: List<GenreUiState> = emptyList(),
     val companyProductionUiState: List<CompanyProductionUiState> = emptyList(),
     val posterUrl: String = "",
     val description: String = "",
-    val duration: Int = -1,
+    val duration: String = "",
     val originCountry: String = "",
-    val numberOfSeasons: Int = 0
+    val numberOfSeasons: Int = 0,
+    val hasVideo:Boolean = false
 )

@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.mediadetails.details
+package com.berlin.aflami.viewmodel.details.common
 
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.addtofavourite.AddToFavouriteInteractionListener
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.createnewlist.CreateNewListInteractionListener

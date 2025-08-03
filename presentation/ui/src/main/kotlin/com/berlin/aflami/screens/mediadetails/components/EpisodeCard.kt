@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.mediadetails
+package com.berlin.aflami.screens.mediadetails.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,10 +24,9 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.details.series.EpisodeUiState
+import com.berlin.aflami.viewmodel.details.series.EpisodeUiState
 import com.berlin.designsystem.R
 import com.berlin.safeimageviewer.SafeImageViewer
-
 
 @Composable
 fun EpisodeCard(

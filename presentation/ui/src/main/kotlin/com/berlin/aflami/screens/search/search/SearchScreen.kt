@@ -50,7 +50,7 @@ import com.berlin.aflami.component.TabBar
 import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.SearchByActorDestination
 import com.berlin.aflami.navigation.SearchByCountryDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
@@ -66,7 +66,6 @@ import com.berlin.aflami.viewmodel.search.SearchScreenInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 
 @Composable
@@ -128,9 +127,8 @@ private fun onReceiveSearchEffect(
         is SearchScreenEffect.NavigatedToMovieDetailsScreen -> {
 
             navController.navigate(
-                MediaDetailsDestination(
-                    mediaId = effect.id,
-                    mediaType = MediaType.valueOf("MOVIE"),
+                MovieDetailsDestination(
+                    movieId = effect.id,
                 )
             )
         }

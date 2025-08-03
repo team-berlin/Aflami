@@ -1,8 +1,8 @@
-package com.berlin.aflami.viewmodel.mediadetails.uistate
+package com.berlin.aflami.viewmodel.details.movie
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.painter.Painter
-import com.berlin.aflami.viewmodel.mediadetails.details.common.MoviesRowSectionUiState
+import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import kotlinx.datetime.LocalDate
@@ -20,6 +20,7 @@ data class MovieDetailsScreenState(
     val isScreenLoading: Boolean = false,
     val errorMessage: String? = null,
     val movieDetailsTabsUiState: MovieDetailsTabsUiState = MovieDetailsTabsUiState(),
+    val showLoginDialog:Boolean = false,
 )
 
 

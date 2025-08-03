@@ -31,7 +31,8 @@ import com.berlin.ui.R
 fun TopRatingHomeSections(
     modifier: Modifier = Modifier,
     seeAllOnClick: () -> Unit,
-    cardClick: (id: Long, type: MediaType) -> Unit,
+    onMovieItemClicked: (movieId: Long) -> Unit = {},
+    onTVShowItemClicked: (tvShowId: Long) -> Unit = {},
     state: List<MediaUiState>,
     sectionTitleId: Int,
 ) {
@@ -85,8 +86,11 @@ fun TopRatingHomeSections(
                         date = item.releaseYear,
                         rating = item.rating,
                     ) {
-                        cardClick(item.id, item.mediaType ?: MediaType.MOVIE)
-                    }
+                        when(item.mediaType){
+                            MediaType.MOVIE -> onMovieItemClicked(item.id)
+                            MediaType.TV_SHOW -> onTVShowItemClicked(item.id)
+                            else -> throw IllegalArgumentException("Unknown media type")
+                        }                    }
                 }
 
             }

@@ -44,7 +44,9 @@ object ContinueWatchingDestination
 object TopRatingMediaDestination
 
 @Serializable
-data class MediaDetailsDestination(val mediaId: Long, val mediaType: MediaType)
+data class MovieDetailsDestination(val movieId: Long)
+@Serializable
+data class TVShowDetailsDestination(val tvShowId: Long)
 
 @Serializable
 data class CastDestination(val mediaId: Long, val mediaType: MediaType)

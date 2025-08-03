@@ -1,8 +1,8 @@
 package com.berlin.aflami.di
 
 import androidx.lifecycle.SavedStateHandle
-import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsArgs
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsArgs
+import com.berlin.aflami.viewmodel.mediadetails.details.cast.CastDetailsArgs
+import com.berlin.aflami.viewmodel.mediadetails.details.common.MediaDetailsArgs
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
