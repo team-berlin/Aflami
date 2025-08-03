@@ -5,10 +5,10 @@ import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
-import com.berlin.repository.datasource.remote.dto.TVShowDto
+import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
-import com.berlin.repository.datasource.remote.dto.movie.MovieDto
+import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
@@ -20,7 +20,7 @@ class RetrofitRemoteDataSource @Inject constructor (
     private val apiService: ApiService
 ) : RemoteDataSource {
 
-    override suspend fun getSimilarMovies(movieId: Long): BaseResponse<MovieDto> {
+    override suspend fun getSimilarMovies(movieId: Long): BaseResponse<MovieDetailsDto> {
         return wrapApiResponse { apiService.getMovieSimilar(movieId) }
     }
 
@@ -45,7 +45,7 @@ class RetrofitRemoteDataSource @Inject constructor (
         return wrapApiResponse { apiService.getMovieReviews(movieId) }
     }
 
-    override suspend fun getUpComingMovies(): BaseResponse<MovieDto> {
+    override suspend fun getUpComingMovies(): BaseResponse<MovieDetailsDto> {
         return wrapApiResponse {
             apiService.getUpcomingMovies()
         }
@@ -59,7 +59,7 @@ class RetrofitRemoteDataSource @Inject constructor (
         return wrapApiResponse { apiService.getSeriesCastDetails(seriesId) }
     }
 
-    override suspend fun getSimilarSeriesById(seriesId: Long): BaseResponse<TVShowDto> {
+    override suspend fun getSimilarSeriesById(seriesId: Long): BaseResponse<TVShowDetailsDto> {
         return wrapApiResponse { apiService.getSeriesSimilar(seriesId) }
     }
 
@@ -83,7 +83,7 @@ class RetrofitRemoteDataSource @Inject constructor (
 
     override suspend fun getMoviesByCountryName(
         countryName: String, page: Int
-    ): BaseResponse<MovieDto> {
+    ): BaseResponse<MovieDetailsDto> {
         return wrapApiResponse {
             apiService.searchMoviesByCountry(
                 countryName, page
@@ -99,33 +99,33 @@ class RetrofitRemoteDataSource @Inject constructor (
 
     override suspend fun getMoviesByKeyword(
         query: String, page: Int
-    ): BaseResponse<MovieDto> {
+    ): BaseResponse<MovieDetailsDto> {
         return wrapApiResponse { apiService.searchMovies(query, page) }
     }
 
     override suspend fun getTvShowsByKeyword(
         query: String, page: Int
-    ): BaseResponse<TVShowDto> {
+    ): BaseResponse<TVShowDetailsDto> {
         return wrapApiResponse { apiService.searchTvShows(query, page) }
     }
 
-    override suspend fun getPopularMovies(): BaseResponse<MovieDto> {
+    override suspend fun getPopularMovies(): BaseResponse<MovieDetailsDto> {
         return wrapApiResponse { apiService.popularMovies() }
     }
 
-    override suspend fun getPopularTVShows(): BaseResponse<TVShowDto> {
+    override suspend fun getPopularTVShows(): BaseResponse<TVShowDetailsDto> {
         return wrapApiResponse { apiService.popularTVShows() }
     }
 
-    override suspend fun getTopRatedMovies(page: Int): BaseResponse<MovieDto> {
+    override suspend fun getTopRatedMovies(page: Int): BaseResponse<MovieDetailsDto> {
         return wrapApiResponse { apiService.getTopRatedMovies(page) }
     }
 
-    override suspend fun getTopRatedSeries(page: Int): BaseResponse<TVShowDto> {
+    override suspend fun getTopRatedSeries(page: Int): BaseResponse<TVShowDetailsDto> {
         return wrapApiResponse { apiService.getTopRatedSeries(page) }
     }
 
-    override suspend fun getMoviesByMoodIds(moodIds: List<Int>): BaseResponse<MovieDto> {
+    override suspend fun getMoviesByMoodIds(moodIds: List<Int>): BaseResponse<MovieDetailsDto> {
         return wrapApiResponse { apiService.getMoviesByMoods(moodIds) }
     }
 

@@ -1,81 +1,73 @@
 package com.berlin.repository
 
 import com.berlin.entity.TVShow
-import com.berlin.repository.MediaType.TV_SHOW
+import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
-import com.berlin.repository.mapper.toLocal
 import com.berlin.repository.mapper.toLocalEntity
 import repository.TVShowRepository
 
 class TVShowRepositoryImpl(
-    private val localDataSource: RecentlyWatchedLocalDataSource,
+    private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource,
+    private val recentHistoryLocalDataSource: RecentHistoryLocalDataSource,
     private val remoteDataSource: RemoteDataSource,
 ) : TVShowRepository {
 
     override suspend fun getContinueWatchingTVShows(page: Int): List<TVShow> {
-        return localDataSource.getRecentlyWatchedTvShow(page = page).map {
+        return recentlyWatchedLocalDataSource.getRecentlyWatchedTvShow(page = page).map {
             it.toDomain()
         }
     }
 
     override suspend fun addContinueWatchingTVShow(tvShow: TVShow) {
-        localDataSource.addRecentlyWatchedTvShow(tvShow.toLocalEntity())
+        recentlyWatchedLocalDataSource.addRecentlyWatchedTvShow(tvShow.toLocalEntity())
     }
 
     override suspend fun getTopRatedSeries(page: Int): List<TVShow> {
-        return remoteDataSource.getTopRatedSeries(page).topRatedSeries.map { seriesDto -> seriesDto.toDomain() }
+        // Fetch top-rated series from the remote data source and map to domain model
+        return remoteDataSource.getTopRatedSeries(page).results?.map { seriesDto ->
+            seriesDto.toDomain(
+            )
+        } ?: emptyList()
     }
 
-    override suspend fun getPopularTVShows(language: String): List<javax.print.attribute.standard.Media> {
-        return remoteDataSource.getPopularTVShows(language).results?.filterNotNull()
-            ?.map { tVShowDto -> tVShowDto.toDomain(TV_SHOW) } ?: emptyList()
+    override suspend fun getPopularTVShows(): List<TVShow> {
+        return remoteDataSource.getPopularTVShows().results?.filterNotNull()
+            ?.map { tVShowDto -> tVShowDto.toDomain() } ?: emptyList()
     }
 
     override suspend fun searchTVShow(
         query: String,
         page: Int,
     ): List<TVShow> {
-        return (localDataSource.getCachedSearch(query, QueryType.TV, pageSize = 20, page = page)
-            .takeIf { !isExpiredOrEmpty(it) }?.map { it.toDomain() }
-            ?: remoteDataSource.getTvShowsByKeyword(query, language, page).results?.filterNotNull()?.map {
-                it.toLocal(
-                    query, QueryType.TV.name, page, "TVShow"
-                )
-            }?.also { localDataSource.cacheSearch(it) }?.map { it.toDomain() } ?: emptyList())
+        return remoteDataSource.getTvShowsByKeyword(query, page).results?.filterNotNull()?.map {
+            it.toDomain()
+        } ?: emptyList()
     }
 
     override suspend fun getRecentTVShowsSearchQueries(): List<String> {
-        return localDataSource.getRecentSearchQueries()
+        return recentHistoryLocalDataSource.getRecentSearchQueries()
     }
 
     override suspend fun saveRecentTVShowsHistory(query: String) {
         val entity = SearchingEntity(
-            id = query.hashCode().toLong(),
             query = query,
             type = QueryType.HISTORY.name,
-            time = System.currentTimeMillis(),
-            title = "",
-            rating = 0.0,
-            releaseYear = "",
-            genre = emptyList(),
-            poster = "",
-            page = 1,
-            mediaType = ""
+            queryType = QueryType.TV,
 
-        )
-        localDataSource.insertQueryOnly(entity)
+            )
+        recentHistoryLocalDataSource.insertQueryOnly(entity)
     }
 
     override suspend fun deleteTVShowQueryFromHistory(query: String) {
-        localDataSource.deleteQueryFromHistory(query)
+        recentHistoryLocalDataSource.deleteQueryFromHistory(query)
     }
 
     override suspend fun clearTVShowSearchHistory() {
-        localDataSource.clearSearchHistory()
+        recentHistoryLocalDataSource.clearSearchHistory()
     }
 
 }

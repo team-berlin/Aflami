@@ -13,10 +13,10 @@ import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 
 
 fun TVShowDetailsDto.toDomain(
-    reviews: List<Review>,
+    reviews: List<Review> = emptyList(),
     galleryImages: List<String> = emptyList(),
-    episodes: List<Episode>,
-    hasVideo: Boolean,
+    episodes: List<Episode> = emptyList(),
+    hasVideo: Boolean =false,
 ): TVShow {
     return TVShow(
         id = this.id?.toLong() ?: 0L,
@@ -134,14 +134,15 @@ fun SeasonDto.toDomain(
 val t= SeasonEpisodesDto
 fun EpisodeDto.toDomain(): Episode {
     return Episode(
-        id = this.id?.toLong() ?: 0L,
-        name = this.name ?: "",
-        overview = this.overview ?: "",
-        airDate = this.airDate ?: "",
-        episodeNumber = this.episodeNumber ?: 0,
-        seasonNumber = this.seasonNumber ?: 0,
-        stillPath = this.stillPath ?: "",
-        voteAverage = this.voteAverage ?: 0.0
+        airDate = this.airDate?:"",
+        episodeNumber = this.episodeNumber?: 0,
+        episodeType = this.episodeType?:"",
+        episodeId = this.id?.toLong() ?: 0L,
+        name = this.name?:"",
+        description = this.overview?:"",
+        duration = this.runtime?:0,
+        tvShowId = this.showId?:0,
+        rating = this.voteAverage?:0.0
     )
 }
 

@@ -18,9 +18,7 @@ import java.time.Instant
 
 class MovieDetailsRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
-    private val genreLocalDataSource: GenreLocalDataSource
 ) : MovieDetailsRepository {
-
 
     override suspend fun getMovieImages(movieId: Long): MediaImage {
         return try {

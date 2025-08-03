@@ -46,6 +46,15 @@ class MovieRepositoryImpl @Inject constructor(
             ?.map { movieDto -> movieDto.toDomain() } ?: emptyList()
     }
 
+    override suspend fun getMoviesByMoods(moods: List<Int>): List<Movie> {
+            if (moods.isEmpty()) return emptyList()
+            return remoteDataSource.getMoviesByMoodIds(moods).results?.mapNotNull {
+                it.toDomain()
+            } ?: emptyList()
+        }
+
+
+
     override suspend fun getMoviesByCountry(
         query: String,
         page: Int,
@@ -79,7 +88,7 @@ class MovieRepositoryImpl @Inject constructor(
         val entity = SearchingEntity(
             query = query,
             type = QueryType.HISTORY.name,
-            queryType = QueryType.HISTORY,
+            queryType = QueryType.MOVIE,
         )
         recentHistoryLocalDataSource.insertQueryOnly(entity)
     }

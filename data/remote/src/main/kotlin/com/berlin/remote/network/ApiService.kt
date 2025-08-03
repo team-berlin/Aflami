@@ -4,11 +4,10 @@ import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
-import com.berlin.repository.datasource.remote.dto.movie.MovieDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
-import com.berlin.repository.datasource.remote.dto.TVShowDto
+import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
@@ -40,7 +39,7 @@ interface ApiService {
     @GET(ApiConstants.MOVIE_MORE_LIKE_THIS)
     suspend fun getMovieSimilar(
         @Path(ApiConstants.MOVIE_ID) movieId: Long
-    ): Response<BaseResponse<MovieDto>>
+    ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.MOVIE_REVIEW)
     suspend fun getMovieReviews(
@@ -51,7 +50,7 @@ interface ApiService {
     suspend fun searchMoviesByCountry(
         @Query(ApiConstants.WITH_ORIGIN_COUNTRY) countryName: String,
         @Query(ApiConstants.PAGE) page: Int
-    ): Response<BaseResponse<MovieDto>>
+    ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.SEARCH_BY_ACTOR)
     suspend fun searchMoviesByActor(
@@ -63,18 +62,14 @@ interface ApiService {
     suspend fun searchMovies(
         @Query(ApiConstants.QUERY) query: String,
         @Query(ApiConstants.PAGE) page: Int
-    ): Response<BaseResponse<MovieDto>>
+    ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.SEARCH_TV)
     suspend fun searchTvShows(
         @Query(ApiConstants.QUERY) query: String,
         @Query(ApiConstants.PAGE) page: Int
-    ): Response<BaseResponse<TVShowDto>>
+    ): Response<BaseResponse<TVShowDetailsDto>>
 
-    @GET(ApiConstants.SERIES_IMAGES)
-    suspend fun getSeriesImages(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long
-    ): Response<MediaImagesResponse>
 
     @GET(ApiConstants.SERIES_DETAILS)
     suspend fun getTvShowDetails(
@@ -89,7 +84,7 @@ interface ApiService {
     @GET(ApiConstants.SERIES_MORE_LIKE_THIS)
     suspend fun getSeriesSimilar(
         @Path(ApiConstants.SERIES_ID) seriesId: Long
-    ): Response<BaseResponse<TVShowDto>>
+    ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.SERIES_REVIEW)
     suspend fun getSeriesReviews(
@@ -112,30 +107,30 @@ interface ApiService {
 
     @GET(ApiConstants.MOVIE_UPCOMING)
     suspend fun getUpcomingMovies():
-            Response<BaseResponse<MovieDto>>
+            Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.POPULAR_MOVIES)
     suspend fun popularMovies(
-    ): Response<BaseResponse<MovieDto>>
+    ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.POPULAR_TV_SHOWS)
     suspend fun popularTVShows(
-    ): Response<BaseResponse<TVShowDto>>
+    ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.DISCOVER_MOVIE)
     suspend fun getMoviesByMoods(
         @Query(ApiConstants.WITH_GENRES) genresIds: List<Int>,
-    ): Response<BaseResponse<MovieDto>>
+    ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.TOP_RATED_MOVIES)
     suspend fun getTopRatedMovies(
         @Query("page") page: Int,
-    ): Response<BaseResponse<MovieDto>>
+    ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.TOP_RATED_SERIES)
     suspend fun getTopRatedSeries(
         @Query("page") page: Int,
-    ): Response<BaseResponse<TVShowDto>>
+    ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.TV_VIDEO_DETAILS)
     suspend fun getTvShowVideos(
