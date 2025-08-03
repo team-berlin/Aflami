@@ -1,9 +1,8 @@
-package com.berlin.aflami.viewmodel.mediadetails.cast
+package com.berlin.aflami.viewmodel.details.cast
 
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsScreenState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,21 +15,22 @@ class CastViewModelScreen @Inject constructor(
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getSeriesCastUseCase: GetTVShowCastUseCase,
     castDetailsArgs: CastDetailsArgs,
-) : BaseViewModel<MovieDetailsScreenState, CastDetailsScreenEffect>(
-    MovieDetailsScreenState()
+) : BaseViewModel<CastScreenState, CastDetailsScreenEffect>(
+    CastScreenState()
 ), CastDetailsScreenListener {
 
-    val mediaId: Long = castDetailsArgs.mediaId ?: 0
-    val mediaType: MediaType = castDetailsArgs.mediaType ?: MediaType.MOVIE
+    val mediaId: Long =
+        castDetailsArgs.mediaId ?: throw IllegalArgumentException("Media id is null")
+    val mediaType: MediaType =
+        castDetailsArgs.mediaType ?: throw IllegalArgumentException("Media type is null")
 
     init {
+        mediaId
         getMediaCast(mediaId, mediaType)
     }
 
-    //region CastDetailsScreenListener implementation
     override fun onBackClicked() =
         sendNewEffect(CastDetailsScreenEffect.NavigationBack)
-//endregion
 
     fun getMediaCast(mediaId: Long, mediaType: MediaType) {
         updateScreenStateToLoading()
@@ -51,24 +51,24 @@ class CastViewModelScreen @Inject constructor(
     ) {
         updateState { screenState ->
             screenState.copy(
-                actors = mediaActors,
-                mediaType = mediaType,
-                isLoading = false
+                castList = mediaActors,
+                isScreenLoading = false,
+                errorMessage = null
             )
         }
     }
 
     private fun updateScreenStateToLoading() {
         updateState { screenState ->
-            screenState.copy(error = null, isLoading = true)
+            screenState.copy(errorMessage = null, isScreenLoading = true)
         }
     }
 
     private fun updateScreenStateToError(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                isLoading = false,
-                error = errorUiState.message
+                isScreenLoading = false,
+                errorMessage = errorUiState.message
             )
         }
     }

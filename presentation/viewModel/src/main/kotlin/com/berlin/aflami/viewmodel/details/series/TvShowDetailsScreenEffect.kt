@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.mediadetails.details.series
+package com.berlin.aflami.viewmodel.details.series
 
 sealed interface TvShowDetailsScreenEffect {
     object NavigateBack : TvShowDetailsScreenEffect

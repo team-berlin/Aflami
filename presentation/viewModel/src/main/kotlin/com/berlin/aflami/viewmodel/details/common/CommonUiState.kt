@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.mediadetails.details.common
+package com.berlin.aflami.viewmodel.details.common
 
 import androidx.compose.runtime.Immutable
 import com.berlin.viewModel.R

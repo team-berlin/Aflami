@@ -1,24 +1,23 @@
-package com.berlin.aflami.viewmodel.mediadetails.details
+package com.berlin.aflami.viewmodel.details.movie
 
 
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.details.common.MediaDetailsArgs
+import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
+import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
+import com.berlin.aflami.viewmodel.details.common.MoviesTabContent
+import com.berlin.aflami.viewmodel.details.common.NO_COMPANY_PRODUCTION
+import com.berlin.aflami.viewmodel.details.common.NO_GALLERY
+import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
+import com.berlin.aflami.viewmodel.details.common.NO_REVIEWS
+import com.berlin.aflami.viewmodel.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.details.common.toggle
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
 import com.berlin.aflami.viewmodel.mapper.toMovieUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.common.MoviesRowSectionUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.common.MoviesTabContent
-import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_COMPANY_PRODUCTION
-import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_GALLERY
-import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_MORE_MEDIA
-import com.berlin.aflami.viewmodel.mediadetails.details.common.NO_REVIEWS
-import com.berlin.aflami.viewmodel.mediadetails.details.common.ReviewUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.common.toggle
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsScreenState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.entity.ContinueWatchingMoviesModel

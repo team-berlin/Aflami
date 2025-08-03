@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.mediadetails.details.series
+package com.berlin.aflami.viewmodel.details.series
 
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState

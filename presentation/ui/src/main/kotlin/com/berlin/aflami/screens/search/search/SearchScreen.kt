@@ -54,6 +54,7 @@ import com.berlin.aflami.navigation.MediaDetailsDestination
 import com.berlin.aflami.navigation.SearchByActorDestination
 import com.berlin.aflami.navigation.SearchByCountryDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
+import com.berlin.aflami.screens.mediadetails.screen.CastDetailsScreen
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.SearchData

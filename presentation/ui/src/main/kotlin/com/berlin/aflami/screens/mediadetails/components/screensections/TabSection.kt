@@ -25,29 +25,28 @@ import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
 import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.mediadetails.components.getMovieDetailsTabsIcon
+import com.berlin.aflami.screens.mediadetails.components.getTVShowDetailsTabsIcon
 import com.berlin.aflami.screens.mediadetails.components.movieDetailsTabsMapper
+import com.berlin.aflami.screens.mediadetails.components.tvShowDetailsTabsMapper
 import com.berlin.aflami.screens.mediadetails.screen.getDisplayMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
+import com.berlin.aflami.viewmodel.details.common.MoviesTabContent
+import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
+import com.berlin.aflami.viewmodel.details.series.TVShowDetailsTabs
+import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
+import com.berlin.aflami.viewmodel.details.series.TVShowTabContent
 
 @Composable
-fun TabSection(
-    tabState: MovieDetailsTabs,
+fun MovieTabSection(
+    movieDetailsTabs: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
-    rowState: RowSectionUiState,
+    rowState: MoviesRowSectionUiState,
     isReviewExpanded: (String) -> Boolean,
     onToggleReviewExpand: (String) -> Unit,
-    mediaType: MediaType,
-    onMediaClick: (Long, MediaType) -> Unit
+    onMovieCardClicked: (Long) -> Unit,
 ) {
-    val visibleTabs = MovieDetailsTabs.entries.filter {
-        !(mediaType == MediaType.MOVIE && it == MovieDetailsTabs.SEASON)
-    }
-
     LazyRow(
         modifier = Modifier
             .padding(bottom = 12.dp)
@@ -55,32 +54,33 @@ fun TabSection(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        items(visibleTabs, key = { it.name }) { tab ->
+        items(MovieDetailsTabs.entries, key = { it.name }) { tab ->
             Chips(
                 title = stringResource(movieDetailsTabsMapper(tab)),
                 icon = painterResource(getMovieDetailsTabsIcon(tab)),
-                isSelected = tab == tabState,
+                isSelected = tab == movieDetailsTabs,
                 onClick = { onChipClick(tab) }
             )
         }
     }
 
-    Crossfade(targetState = rowState) { state ->
+    Crossfade(targetState = rowState) { moviesRowSectionUiState ->
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .animateContentSize()
         ) {
-            when (state) {
-                is RowSectionUiState.Error,
-                is RowSectionUiState.NoDataFound -> {
+            when (moviesRowSectionUiState) {
+                is MoviesRowSectionUiState.Error,
+                is MoviesRowSectionUiState.NoDataFound,
+                    -> {
                     Box(
                         Modifier.padding(top = 32.dp, bottom = 82.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             modifier = Modifier.fillMaxSize(),
-                            text = state.getDisplayMessage(),
+                            text = moviesRowSectionUiState.getDisplayMessage(),
                             style = Theme.textStyle.label.large,
                             color = Theme.color.textColors.body,
                             textAlign = TextAlign.Center
@@ -88,7 +88,7 @@ fun TabSection(
                     }
                 }
 
-                is RowSectionUiState.Loading -> Box(
+                is MoviesRowSectionUiState.Loading -> Box(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 32.dp),
@@ -97,27 +97,111 @@ fun TabSection(
                     Loading()
                 }
 
-                is RowSectionUiState.Success -> {
-                    when (val tab = state.content) {
-                        is TabContent.MoreLikeThis -> MoreLikeThisSection(
-                            mediaList = tab.items,
-                            mediaType = mediaType,
-                            onMediaClick = onMediaClick
+                is MoviesRowSectionUiState.Success -> {
+                    when (val tab = moviesRowSectionUiState.content) {
+                        is MoviesTabContent.MoreLikeThis -> MoreLikeThisSection(
+                            mediaList = tab.moreMoviesLikeThis,
+                            onMediaClick = onMovieCardClicked
                         )
 
-                        is TabContent.Reviews -> ReviewsSection(
-                            reviews = tab.items,
+                        is MoviesTabContent.Reviews -> ReviewsSection(
+                            reviews = tab.movieReviews,
                             isExpanded = isReviewExpanded,
                             onToggleExpand = onToggleReviewExpand
                         )
 
-                        is TabContent.Gallery -> GallerySection(mediaImages = tab.items)
+                        is MoviesTabContent.Gallery -> GallerySection(mediaImages = tab.images)
 
-                        is TabContent.CompanyProduction -> CompanyProductionSection(
-                            companyProductions = tab.items
+                        is MoviesTabContent.CompanyProduction -> CompanyProductionSection(
+                            companyProductions = tab.companyProductionsList
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TVShowTabSection(
+    tvShowDetailsTabs: TVShowDetailsTabs,
+    onChipClick: (TVShowDetailsTabs) -> Unit,
+    rowState: TVShowRowSectionUiState,
+    isReviewExpanded: (String) -> Boolean,
+    onToggleReviewExpand: (String) -> Unit,
+    onTVShowCardClicked: (Long) -> Unit,
+) {
+    LazyRow(
+        modifier = Modifier
+            .padding(bottom = 12.dp)
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+        items(TVShowDetailsTabs.entries, key = { it.name }) { tab ->
+            Chips(
+                title = stringResource(tvShowDetailsTabsMapper(tab)),
+                icon = painterResource(getTVShowDetailsTabsIcon(tab)),
+                isSelected = tab == tvShowDetailsTabs,
+                onClick = { onChipClick(tab) }
+            )
+        }
+    }
+
+    Crossfade(targetState = rowState) { tvShowRowSectionUiState ->
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize()
+        ) {
+            when (tvShowRowSectionUiState) {
+                is TVShowRowSectionUiState.Error,
+                is TVShowRowSectionUiState.NoDataFound,
+                    -> {
+                    Box(
+                        Modifier.padding(top = 32.dp, bottom = 82.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxSize(),
+                            text = tvShowRowSectionUiState.getDisplayMessage(),
+                            style = Theme.textStyle.label.large,
+                            color = Theme.color.textColors.body,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                is TVShowRowSectionUiState.Loading -> Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Loading()
+                }
+
+                is TVShowRowSectionUiState.Success -> {
+                    when (val tab = tvShowRowSectionUiState.content) {
+                        is TVShowTabContent.MoreLikeThis -> MoreLikeThisSection(
+                            mediaList = tab.items,
+                            onMediaClick = onTVShowCardClicked
                         )
 
-                        is TabContent.Season -> SeasonsSection(seasonsMap = tab.items)
+                        is TVShowTabContent.Reviews -> ReviewsSection(
+                            reviews = tab.reviews,
+                            isExpanded = isReviewExpanded,
+                            onToggleExpand = onToggleReviewExpand
+                        )
+
+                        is TVShowTabContent.Gallery -> GallerySection(mediaImages = tab.images)
+
+                        is TVShowTabContent.CompanyProduction -> CompanyProductionSection(
+                            companyProductions = tab.companyProductionStates
+                        )
+
+                        is TVShowTabContent.Season -> SeasonsSection(seasonsMap = tab.seasonToEpisodesMap)
+
                     }
                 }
             }

@@ -38,15 +38,15 @@ import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.DescriptionSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
-import com.berlin.aflami.screens.mediadetails.components.screensections.TabSection
+import com.berlin.aflami.screens.mediadetails.components.screensections.TVShowTabSection
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsScreenEffect
-import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsViewModel
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaInteractionListener
+import com.berlin.aflami.viewmodel.mediadetails.details.movie.MovieDetailsScreenEffect
+import com.berlin.aflami.viewmodel.mediadetails.details.movie.MovieDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.details.common.MediaInteractionListener
 import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsScreenState
+import com.berlin.aflami.viewmodel.mediadetails.details.movie.MovieDetailsScreenState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
+import com.berlin.aflami.viewmodel.mediadetails.details.movie.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 
@@ -221,13 +221,13 @@ fun MediaDetailsContent(
                 )
             }
             item {
-                TabSection(
-                    tabState = mediaChips,
+                TVShowTabSection(
+                    movieDetailsTabs = mediaChips,
                     rowState = state.rowSection,
                     onChipClick = onChipClick,
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
-                    onMediaClick = { mediaId, type -> listener.onMediaCardClicked(mediaId, type) },
+                    onTVShowCardClicked = { mediaId, type -> listener.onMediaCardClicked(mediaId, type) },
                     mediaType = mediaType,
                 )
             }

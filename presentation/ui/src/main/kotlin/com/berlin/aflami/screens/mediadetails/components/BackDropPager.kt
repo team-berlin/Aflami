@@ -26,14 +26,13 @@ import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.utils.formatRatingForUi
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsScreenState
+import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenState
 import com.berlin.designsystem.R
 import kotlinx.coroutines.delay
 
 @Composable
 fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
-    val posterList = state.posterImages.take(4)
+    val posterList = state.posters.take(4)
     val pagerState = rememberPagerState(pageCount = { posterList.size })
 
     LaunchedEffect(pagerState) {
@@ -89,7 +88,9 @@ fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
                     .align(Alignment.BottomStart)
                     .padding(4.dp)
             ) {
-                Rating(rating = state.rating.formatRatingForUi())
+                Rating(rating = state.movieUiState.rating
+//                    .formatRatingForUi()
+                )
             }
         }
 
@@ -108,8 +109,8 @@ fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
                 dropShadowAlpha = 0.09f,
                 borderWidth = 2,
                 size = 64,
-                enabled = state.hasVideo,
-                tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable
+                enabled = state.movieUiState.hasVideo,
+                tint = if (state.movieUiState.hasVideo) Theme.color.primary else Theme.color.disable
             )
         }
     }

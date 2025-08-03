@@ -21,15 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.screens.search.mediadetails.EpisodeCard
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
+import com.berlin.aflami.viewmodel.details.series.EpisodeUiState
 import com.berlin.designsystem.R
 
 
 @Composable
 fun SeasonsSection(
-    seasonsMap: MutableMap<Int, List<EpisodesUiState>>,
+    seasonsMap: MutableMap<Int, List<EpisodeUiState>>,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -55,7 +54,7 @@ fun SeasonsSection(
 @Composable
 fun EpisodeScreen(
     seasonNumber: String,
-    episodes: List<EpisodesUiState>,
+    episodes: List<EpisodeUiState>,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 

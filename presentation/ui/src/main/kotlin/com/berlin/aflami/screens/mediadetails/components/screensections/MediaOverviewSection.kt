@@ -16,23 +16,30 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.screens.mediadetails.components.CircularDot
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsScreenState
+import com.berlin.aflami.viewmodel.shareduistate.GenreUiState
 import com.berlin.ui.R
 
 @Composable
-fun MediaOverviewSection(state: MovieDetailsScreenState) {
+fun MediaOverviewSection(
+    title: String,
+    generes: List<GenreUiState>,
+    releaseDate: String,
+    duration: String,
+    originalCountry: String?,
+    numberOfSeasons: Int? = null,
+) {
     Column(Modifier.padding(vertical = 12.dp)) {
         Column(Modifier.padding(horizontal = 16.dp)) {
             Text(
-                text = state.title,
+                text = title,
                 style = Theme.textStyle.title.large,
                 color = Theme.color.textColors.title,
             )
             Spacer(Modifier.height(12.dp))
             Row {
-                state.genres.forEach { genre ->
+                generes.forEach { genree ->
                     Box(modifier = Modifier.padding(end = 4.dp)) {
-                        GenersChip(label = genre)
+                        GenersChip(label = genree.name ?: "No Genre Name Found")
                     }
                 }
             }
@@ -45,15 +52,15 @@ fun MediaOverviewSection(state: MovieDetailsScreenState) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                state.releaseDate,
+                releaseDate,
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.hint
             )
-            state.runtime?.takeIf { it.isNotEmpty() }?.let {
+            duration.takeIf { it.isNotEmpty() }?.let {
                 CircularDot()
                 Text(it, style = Theme.textStyle.label.small, color = Theme.color.textColors.hint)
             }
-            state.numberOfSeasons?.toString()?.let {
+            numberOfSeasons?.toString()?.let {
                 CircularDot()
                 Text(
                     "$it ${stringResource(R.string.season)}",
@@ -61,7 +68,7 @@ fun MediaOverviewSection(state: MovieDetailsScreenState) {
                     color = Theme.color.textColors.hint
                 )
             }
-            state.originalCountry?.takeIf { it.isNotEmpty() }?.let {
+            originalCountry?.takeIf { it.isNotEmpty() }?.let {
                 CircularDot()
                 Text(it, style = Theme.textStyle.label.small, color = Theme.color.textColors.hint)
             }

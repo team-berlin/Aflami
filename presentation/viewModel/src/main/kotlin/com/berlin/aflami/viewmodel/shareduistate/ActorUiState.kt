@@ -7,4 +7,5 @@ data class ActorUiState(
     val mediaId: Long = 0L,
     val name: String = "",
     val poster: String = "",
+    val isLoading
 )
