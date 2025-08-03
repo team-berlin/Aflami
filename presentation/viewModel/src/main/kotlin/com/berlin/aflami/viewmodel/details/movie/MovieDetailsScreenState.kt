@@ -20,6 +20,7 @@ data class MovieDetailsScreenState(
     val isScreenLoading: Boolean = false,
     val errorMessage: String? = null,
     val movieDetailsTabsUiState: MovieDetailsTabsUiState = MovieDetailsTabsUiState(),
+    val showLoginDialog:Boolean = false,
 )
 
 

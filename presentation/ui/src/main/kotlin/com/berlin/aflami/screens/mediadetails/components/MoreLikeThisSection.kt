@@ -11,32 +11,58 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
+import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.ui.R
 
 @Composable
-fun MoreLikeThisSection(
+fun MovieDetailsMoreLikeThisSection(
     mediaList: List<MovieUiState>,
-    onMediaClick: (Long) -> Unit
+    onMediaClick: (Long) -> Unit,
 ) {
     Column(
-          modifier = Modifier
-              .fillMaxWidth()
-              .padding(horizontal = 16.dp, vertical = 12.dp),
-          verticalArrangement = Arrangement.spacedBy(8.dp)
-      ) {
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         mediaList.forEach { media ->
             MediaCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(196.dp)
-                    .clickable { onMediaClick(media.id,mediaType) },
-                mediaImg = media.poster,
+                    .clickable { onMediaClick(media.id) },
+                mediaImg = media.posterUrl,
                 title = media.title,
-                typeOfMedia = if (mediaType == MediaType.MOVIE) stringResource( R.string.movie) else stringResource( R.string.Tv_Show),
-                date = media.releaseYear.substringBefore("-"),
+                typeOfMedia = stringResource(R.string.movie),
+                date = media.releaseDate.substringBefore("-"),
+                rating = media.rating
+            )
+        }
+    }
+}
+
+@Composable
+fun TvShowMoreLikeThisSection(
+    mediaList: List<TVShowUiState>,
+    onMediaClick: (Long) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        mediaList.forEach { media ->
+            MediaCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(196.dp)
+                    .clickable { onMediaClick(media.id) },
+                mediaImg = media.posterUrl,
+                title = media.title,
+                typeOfMedia = stringResource(R.string.Tv_Show),
+                date = media.releaseDate.substringBefore("-"),
                 rating = media.rating
             )
         }

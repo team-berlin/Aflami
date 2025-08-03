@@ -30,35 +30,31 @@ import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.BackdropPager
-import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.DescriptionSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
-import com.berlin.aflami.screens.mediadetails.components.screensections.TVShowTabSection
+import com.berlin.aflami.screens.mediadetails.components.screensections.MovieTabSection
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.details.movie.MovieDetailsScreenEffect
-import com.berlin.aflami.viewmodel.mediadetails.details.movie.MovieDetailsViewModel
-import com.berlin.aflami.viewmodel.mediadetails.details.common.MediaInteractionListener
-import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.details.movie.MovieDetailsScreenState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.movie.UiText
+import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
+import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
+import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
+import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenState
+import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
+import com.berlin.aflami.viewmodel.details.movie.MovieDetailsViewModel
+import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 
 @Composable
-fun MediaDetailsScreen(
-
+fun MovieDetailsScreen(
     viewModel: MovieDetailsViewModel = hiltViewModel(),
 ) {
     val navController = Theme.navController
     val uiState by viewModel.state.collectAsState()
-    val tabSelected by viewModel.tabSelectedUiState.collectAsState()
-    val showLoginRequiredDialog by viewModel.showLoginRequiredDialog.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
@@ -72,7 +68,7 @@ fun MediaDetailsScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = uiState.isLoading
+        visible = uiState.isScreenLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
@@ -80,44 +76,42 @@ fun MediaDetailsScreen(
         )
     }
     AnimatedVisibility(
-        visible = uiState.error != null
+        visible = uiState.errorMessage != null
     ) {
         NoInternetConnectionPlaceholder()
     }
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = !uiState.isLoading
+        visible = !uiState.isScreenLoading
     ) {
         MediaDetailsContent(
             state = uiState,
             listener = viewModel,
-            isDescriptionExpanded = viewModel.isDescriptionExpanded(),
+            isDescriptionExpanded = uiState.isDescriptionExpanded,
             onToggleDescriptionExpand = { viewModel.onReadMoreDescriptionClicked() },
-            mediaChips = tabSelected.tab,
+            movieDetailsTabs = uiState.movieDetailsTabsUiState.tab,
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
-                    tab = tab,
-                    tvShowId = viewModel.mediaId,
-                    mediaType = viewModel.mediaType,
+                    movieDetailsTabs = uiState.movieDetailsTabsUiState.tab,
+                    movieId = uiState.movieUiState.id,
                 )
             },
-            mediaType = viewModel.mediaType
         )
     }
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = showLoginRequiredDialog
+        visible = uiState.showLoginDialog
     ) {
-        LoginRequiredDialog(
-            onLoginClick = {
-                viewModel.showLoginDialog(false)
-            },
-            onDismiss = { viewModel.showLoginDialog(false) },
-            title = stringResource(com.berlin.ui.R.string.login_required),
-            description = stringResource(com.berlin.ui.R.string.login_required_warning)
-        )
+//        LoginRequiredDialog(
+//            onLoginClick = {
+////                viewModel.showLoginDialog(false)
+//            },
+////            onDismiss = { viewModel.showLoginDialog(false) },
+//            title = stringResource(com.berlin.ui.R.string.login_required),
+//            description = stringResource(com.berlin.ui.R.string.login_required_warning)
+//        )
     }
 }
 
@@ -130,8 +124,8 @@ private fun onReceiveMediaDetailsEffect(
         is MovieDetailsScreenEffect.NavigateToShowAllCastScreen -> {
             navController.navigate(
                 CastDestination(
-                    mediaDetailsScreenEffect.mediaId,
-                    mediaDetailsScreenEffect.mediaType
+                    mediaDetailsScreenEffect.movieId,
+                    MediaType.MOVIE
                 )
             )
         }
@@ -150,14 +144,15 @@ private fun onReceiveMediaDetailsEffect(
         is MovieDetailsScreenEffect.ShowRatingDialog -> {}
         is MovieDetailsScreenEffect.NavigateToMovieDetailsScreen -> {
             navController.navigate(
-                MediaDetailsDestination(
-                    mediaDetailsScreenEffect.mediaId,
-                    mediaDetailsScreenEffect.mediaType
+                MovieDetailsDestination(
+                    mediaDetailsScreenEffect.movieId
                 )
             ) {
                 launchSingleTop = true
             }
         }
+
+        is MovieDetailsScreenEffect.ShowLoginDialog -> TODO()
     }
 }
 
@@ -167,9 +162,9 @@ fun MediaDetailsContent(
     listener: MediaInteractionListener,
     isDescriptionExpanded: Boolean,
     onToggleDescriptionExpand: () -> Unit,
-    mediaChips: MovieDetailsTabs,
+    movieDetailsTabs: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
-    mediaType: MediaType,
+//    mediaType: MediaType,
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
@@ -193,22 +188,31 @@ fun MediaDetailsContent(
             item {
                 BackdropPager(
                     state = state,
-                    onPlayClick = { listener.onPlayClicked(state.id, state.mediaType) })
+                    onPlayClick = { listener.onPlayClicked(state.videoUrl) })
             }
 
             item {
-                MediaOverviewSection(state = state)
+                with(state.movieUiState) {
+                    MediaOverviewSection(
+                        title = title,
+                        generes = genre,
+                        releaseDate = releaseDate,
+                        duration = duration,
+                        originalCountry = originCountry,
+                        numberOfSeasons = null
+                    )
+                }
             }
             item {
                 DescriptionSection(
-                    state.description, isExpanded = isDescriptionExpanded,
+                    state.movieUiState.description, isExpanded = isDescriptionExpanded,
                     onToggleExpand = onToggleDescriptionExpand
                 )
             }
             item {
                 CastSection(
-                    cast = state.actors,
-                    onShowAllClicked = { listener.onShowCastClicked() }
+                    cast = state.castList,
+                    onShowAllClicked = { listener.onShowCastClicked(state.movieUiState.id) }
                 )
             }
             item {
@@ -221,14 +225,15 @@ fun MediaDetailsContent(
                 )
             }
             item {
-                TVShowTabSection(
-                    movieDetailsTabs = mediaChips,
+                MovieTabSection(
+                    movieDetailsTabs = movieDetailsTabs,
                     rowState = state.rowSection,
                     onChipClick = onChipClick,
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
-                    onTVShowCardClicked = { mediaId, type -> listener.onMediaCardClicked(mediaId, type) },
-                    mediaType = mediaType,
+                    onMovieCardClicked = { mediaId ->
+                        listener.onMediaCardClicked(mediaId)
+                    },
                 )
             }
         }
@@ -240,9 +245,9 @@ fun MediaDetailsContent(
 
             firstOption = painterResource(R.drawable.ic_rounded_star),
             lastOption = painterResource(R.drawable.ic_rounded_add_heart),
-            onFirstOptionClicked = { listener.onRateIconClicked(state.mediaId) },
+            onFirstOptionClicked = { listener.onRateIconClicked(state.movieUiState.id) },
             onLastOptionClicked = {
-                listener.onAddMediaToFavouriteListClicked(0, state.mediaId.toInt())
+                listener.onAddMediaToFavouriteListClicked(0, state.movieUiState.id.toInt())
             },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
@@ -253,10 +258,10 @@ fun MediaDetailsContent(
 }
 
 @Composable
-fun RowSectionUiState.getDisplayMessage(): String {
+fun MoviesRowSectionUiState.getDisplayMessage(): String {
     return when (this) {
-        is RowSectionUiState.Error -> this.message.orEmpty()
-        is RowSectionUiState.NoDataFound -> this.message.asString()
+        is MoviesRowSectionUiState.Error -> this.message.orEmpty()
+        is MoviesRowSectionUiState.NoDataFound -> this.message.asString()
         else -> "Unknown error!"
     }
 }

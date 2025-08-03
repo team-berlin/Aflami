@@ -35,7 +35,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.ui.color.ExtraColors.BackgroundGradient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingScreenEffect
@@ -57,7 +57,7 @@ fun TopRatingScreen(
             when (effect) {
                 is TopRatingScreenEffect.NavigateToMediaDetailsScreen -> {
                     navController.navigate(
-                        MediaDetailsDestination(
+                        MovieDetailsDestination(
                             effect.mediaId, effect.mediaType
                         )
                     )

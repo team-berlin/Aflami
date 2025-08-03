@@ -47,7 +47,7 @@ class MovieDetailsViewModel(
         ?: throw IllegalArgumentException("mediaId is null")
 
     init {
-        movieId
+        updateState { it.copy(movieUiState = it.movieUiState.copy(id = movieId)) }
         isMovieHasVideo(movieId = movieId)
         getMovieActors(movieId = movieId)
         getMovieDetails(movieId = movieId)
@@ -84,7 +84,6 @@ class MovieDetailsViewModel(
                     screenState.copy(
                         posters = moviePosters,
                         movieUiState = movieUiState,
-                        isScreenLoading = false
                     )
                 }
                 saveMovieToContinueWatching(
@@ -118,7 +117,6 @@ class MovieDetailsViewModel(
         updateState { screenState ->
             screenState.copy(
                 castList = castUiStateList,
-                isScreenLoading = false
             )
         }
     }
@@ -149,7 +147,7 @@ class MovieDetailsViewModel(
                 screenState.copy(
                     rowSection = MoviesRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_MORE_MEDIA)
-                    ),
+                    ), ,
                 )
             }
         } else {
@@ -159,7 +157,7 @@ class MovieDetailsViewModel(
                         content = MoviesTabContent.MoreLikeThis(
                             moreMoviesLikeThis = moreLikeThisMovieList
                         )
-                    ),
+                    ), ,
                 )
             }
         }
@@ -184,7 +182,7 @@ class MovieDetailsViewModel(
                 showDetailsUiState.copy(
                     rowSection = MoviesRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_REVIEWS)
-                    ),
+                    ), ,
                 )
             }
         } else {
@@ -194,8 +192,7 @@ class MovieDetailsViewModel(
                         content = MoviesTabContent.Reviews(
                             movieReviews = reviewResult
                         )
-                    ),
-                    isScreenLoading = false,
+                    ), ,
                 )
             }
         }
@@ -222,7 +219,7 @@ class MovieDetailsViewModel(
                         UiText.Resource(
                             NO_GALLERY
                         )
-                    ),
+                    ), ,
                 )
             }
         } else {
@@ -232,7 +229,7 @@ class MovieDetailsViewModel(
                         content = MoviesTabContent.Gallery(
                             images = backdrops
                         )
-                    ),
+                    ), ,
                 )
             }
         }
@@ -255,7 +252,7 @@ class MovieDetailsViewModel(
                     content = MoviesTabContent.CompanyProduction(
                         companyProductionsList = companyProductionUiState
                     )
-                ),
+                ), ,
             )
         }
     }
@@ -265,7 +262,7 @@ class MovieDetailsViewModel(
             screenState.copy(
                 rowSection = MoviesRowSectionUiState.NoDataFound(
                     UiText.Resource(NO_COMPANY_PRODUCTION)
-                ),
+                ), ,
             )
         }
     }
@@ -277,13 +274,13 @@ class MovieDetailsViewModel(
 
     override fun onReadMoreDescriptionClicked() = updateState { screenState ->
         screenState.copy(
-            isDescriptionExpanded = !screenState.isDescriptionExpanded,
+            isDescriptionExpanded = !screenState.isDescriptionExpanded, ,
         )
     }
 
     override fun onReadMoreReviewClicked(reviewId: String) = updateState { screenState ->
         screenState.copy(
-            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId),
+            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId), ,
         )
     }
 
@@ -357,7 +354,7 @@ class MovieDetailsViewModel(
             screenState.copy(
                 movieDetailsTabsUiState = screenState.movieDetailsTabsUiState.copy(
                     tab = movieDetailsTabs, isSelected = true
-                ),
+                ), ,
             )
         }
     }
@@ -373,7 +370,7 @@ class MovieDetailsViewModel(
             screenState.copy(
                 rowSection = MoviesRowSectionUiState.Error(
                     errorState.message
-                ),
+                ), ,
             )
         }
     }
@@ -381,7 +378,7 @@ class MovieDetailsViewModel(
     private fun updateScreenStateToError(errorState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message,
+                errorMessage = errorState.message, ,
             )
         }
     }

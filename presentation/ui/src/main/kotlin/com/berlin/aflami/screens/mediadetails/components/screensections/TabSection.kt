@@ -21,9 +21,10 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.Chips
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
-import com.berlin.aflami.screens.mediadetails.components.MoreLikeThisSection
+import com.berlin.aflami.screens.mediadetails.components.MovieDetailsMoreLikeThisSection
 import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
+import com.berlin.aflami.screens.mediadetails.components.TvShowMoreLikeThisSection
 import com.berlin.aflami.screens.mediadetails.components.getMovieDetailsTabsIcon
 import com.berlin.aflami.screens.mediadetails.components.getTVShowDetailsTabsIcon
 import com.berlin.aflami.screens.mediadetails.components.movieDetailsTabsMapper
@@ -99,7 +100,7 @@ fun MovieTabSection(
 
                 is MoviesRowSectionUiState.Success -> {
                     when (val tab = moviesRowSectionUiState.content) {
-                        is MoviesTabContent.MoreLikeThis -> MoreLikeThisSection(
+                        is MoviesTabContent.MoreLikeThis -> MovieDetailsMoreLikeThisSection(
                             mediaList = tab.moreMoviesLikeThis,
                             onMediaClick = onMovieCardClicked
                         )
@@ -124,7 +125,7 @@ fun MovieTabSection(
 
 @Composable
 fun TVShowTabSection(
-    tvShowDetailsTabs: TVShowDetailsTabs,
+    tvShowDetailsTabs: TVShowDetailsTabs ,
     onChipClick: (TVShowDetailsTabs) -> Unit,
     rowState: TVShowRowSectionUiState,
     isReviewExpanded: (String) -> Boolean,
@@ -183,7 +184,7 @@ fun TVShowTabSection(
 
                 is TVShowRowSectionUiState.Success -> {
                     when (val tab = tvShowRowSectionUiState.content) {
-                        is TVShowTabContent.MoreLikeThis -> MoreLikeThisSection(
+                        is TVShowTabContent.MoreLikeThis -> TvShowMoreLikeThisSection(
                             mediaList = tab.items,
                             onMediaClick = onTVShowCardClicked
                         )

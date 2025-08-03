@@ -281,11 +281,14 @@ class HomeScreenViewModel @Inject constructor(
     //endregion
 
     override fun onUpcomingMoviesCardClicked(id: Long) =
-        sendNewEffect(HomeScreenEffect.NavigateToMediaDetailsScreen(id, MediaType.MOVIE))
+        sendNewEffect(HomeScreenEffect.NavigateToMovieDetailsScreen(id))
 
-    override fun onMediaCardClicked(mediaId: Long, mediaType: MediaType) =
-        sendNewEffect(HomeScreenEffect.NavigateToMediaDetailsScreen(mediaId, mediaType))
 
+    override fun onMovieCardClicked(mediaId: Long) =
+        sendNewEffect(HomeScreenEffect.NavigateToMovieDetailsScreen(mediaId))
+
+    override fun onTVShowCardClicked(mediaId: Long) =
+        sendNewEffect(HomeScreenEffect.NavigateToTVShowDetailsScreen(mediaId))
     //region onChangeUpComingMovieGenre
     override fun onChangeUpcomingMovieGenre(newGenreId: Int) {
         updateState { screenState ->
