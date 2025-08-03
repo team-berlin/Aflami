@@ -66,7 +66,6 @@ import com.berlin.aflami.viewmodel.search.SearchScreenInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 
 @Composable
@@ -130,7 +129,6 @@ private fun onReceiveSearchEffect(
             navController.navigate(
                 MovieDetailsDestination(
                     movieId = effect.id,
-                    mediaType = MediaType.valueOf("MOVIE"),
                 )
             )
         }
