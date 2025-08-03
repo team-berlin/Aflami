@@ -148,9 +148,9 @@ class HomeScreenViewModel @Inject constructor(
             call = {
                 coroutineScope {
                     val moviesDeferred =
-                        async { getTopRatedMoviesUseCase(1).map { movie -> movie.toMediaUiState() } }
+                        async { getTopRatedMoviesUseCase(ONE_PAGE).map { movie -> movie.toMediaUiState() } }
                     val seriesDeferred =
-                        async { getTopRatedSeriesUseCase(1).map { tVShow -> tVShow.toMediaUiState() } }
+                        async { getTopRatedSeriesUseCase(ONE_PAGE).map { tVShow -> tVShow.toMediaUiState() } }
                     val topRatedMovies = moviesDeferred.await()
                     val topRatedSeries = seriesDeferred.await()
                     (topRatedMovies + topRatedSeries).sortedByDescending { mediaUiState -> mediaUiState.rating }
