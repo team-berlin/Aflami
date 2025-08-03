@@ -30,7 +30,7 @@ import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
 import usecase.mediadetails.GetTvShowDetailsUseCase
-import usecase.mediadetails.GetSeriesGalleryUseCase
+import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.mediadetails.GetSeriesCastUseCase
 import usecase.mediadetails.GetSeriesReviewUseCase
 import usecase.SearchByCountryUseCase
@@ -40,12 +40,11 @@ import usecase.mediadetails.AddContinueWatchingMovieUseCase
 import usecase.mediadetails.AddContinueWatchingTVShowUseCase
 import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
-import usecase.mediadetails.GetMovieGalleryUseCase
+import usecase.movie.GetMovieGalleryUseCase
 import usecase.mediadetails.GetMovieReviewUseCase
 import usecase.mediadetails.GetMovieVideos
 import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSeriesCastUseCase
-import usecase.mediadetails.GetSeriesGalleryUseCase
 import usecase.mediadetails.GetSeriesReviewUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
@@ -123,8 +122,8 @@ object UseCaseModule {
         GetMovieGalleryUseCase(repository)
 
     @Provides
-    fun provideGetSeriesGalleryUseCase(repository: TvShowDetailsRepository): GetSeriesGalleryUseCase =
-        GetSeriesGalleryUseCase(repository)
+    fun provideGetSeriesGalleryUseCase(repository: TvShowDetailsRepository): GetTVShowGalleryUseCase =
+        GetTVShowGalleryUseCase(repository)
 
     @Provides
     fun provideGetMovieCastUseCase(repository: MovieDetailsRepository): GetMovieCastUseCase =

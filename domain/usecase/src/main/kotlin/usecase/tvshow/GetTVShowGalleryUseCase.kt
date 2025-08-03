@@ -1,10 +1,9 @@
 package usecase.tvshow
 
-import repository.TVShowDetailsRepository
+import com.berlin.entity.MediaImage
+import repository.TvShowDetailsRepository
 
-class GetTVShowGalleryUseCase(
-    private val repository: TVShowDetailsRepository
-) {
-    suspend operator fun invoke(id: Long): List<String> =
-        repository.getTVShowGallery(id)
+class GetTVShowGalleryUseCase(private val tvShowDetailsRepository: TvShowDetailsRepository) {
+    suspend operator fun invoke(movieId: Long): MediaImage =
+        tvShowDetailsRepository.getSeriesImages(id = movieId)
 }

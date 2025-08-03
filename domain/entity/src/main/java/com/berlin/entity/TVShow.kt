@@ -10,11 +10,12 @@ data class TVShow(
     val description: String,
     val genres: List<Genre>,
     val duration: Int,
-    val hasVideo: Boolean,
     val companyProductions: List<CompanyProduction>,
     val originCountry: String,
-    val galleryUrl:List<String>,
     val numberOfSeasons:Int,
+
+    val hasVideo: Boolean,
+    val galleryUrl:List<String>,
     val seasons: List<Season>,
     val reviews: List<Review>,
 )

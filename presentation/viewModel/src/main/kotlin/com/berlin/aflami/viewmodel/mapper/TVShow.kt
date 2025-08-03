@@ -7,7 +7,6 @@ import com.berlin.entity.TVShow
 fun TVShow.tvShowToUiState(): TVShowUiState {
     return TVShowUiState(
         id = id,
-        galleryUrls = galleryUrl,
         hasVideo = hasVideo,
         rating = DecimalFormat("#.#").format(rating).toString(),
         title = title,

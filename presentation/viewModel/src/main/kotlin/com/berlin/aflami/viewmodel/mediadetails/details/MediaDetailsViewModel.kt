@@ -8,7 +8,7 @@ import com.berlin.aflami.viewmodel.mapper.toActorUiState
 import com.berlin.aflami.viewmodel.mapper.toCompanyProductionUiState
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
-import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.mapper.toEpisodeUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.series.TVShowDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsScreenState
@@ -101,9 +101,9 @@ class MediaDetailsViewModel(
                     MediaType.TV_SHOW -> {
                         val tvShow = getTvShowDetailsUseCase(mediaId)
                         val pagerImages = getSeriesGalleryUseCase(mediaId)
-                        companyProductionCache = tvShow?.productionCompanies?.map { it.toUiState() }
+                        companyProductionCache = tvShow?.productionCompanies?.map { it.toEpisodeUiState() }
                         Log.d("MediaDetailsViewModel", "getMediaDetails: $pagerImages")
-                        Pair(tvShow?.toUiState(), pagerImages)
+                        Pair(tvShow?.toEpisodeUiState(), pagerImages)
                     }
                 }
             },
@@ -442,7 +442,7 @@ class MediaDetailsViewModel(
                             content = TabContent.Season(
                                 items = result.mapValues { entry ->
                                     entry.value.mapNotNull { episode ->
-                                        episode?.toUiState()
+                                        episode?.toEpisodeUiState()
                                     }
                                 } as MutableMap<Int, List<EpisodesUiState>>
 
@@ -514,7 +514,7 @@ class MediaDetailsViewModel(
         }
     }
 
-    private fun <T> Set<T>.toggle(item: T): Set<T> =
+    fun <T> Set<T>.toggle(item: T): Set<T> =
         if (contains(item)) this - item else this + item
 
     private fun handleErrorState(errorUiState: ErrorUiState, updateRowSection: Boolean = false) {

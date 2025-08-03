@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.common.ReviewUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
-import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 
 sealed interface TVShowRowSectionUiState {
     object Loading : TVShowRowSectionUiState
@@ -14,11 +14,11 @@ sealed interface TVShowRowSectionUiState {
 }
 
 sealed interface TVShowTabContent {
-    data class MoreLikeThis(val items: List<MediaUiState>) : TVShowTabContent
-    data class Reviews(val items: List<ReviewUiState>) : TVShowTabContent
-    data class Gallery(val items: List<String>) : TVShowTabContent
-    data class Season(val items: MutableMap<Int, List<EpisodeUiState>>) : TVShowTabContent
-    data class CompanyProduction(val items: List<CompanyProductionUiState>) : TVShowTabContent
+    data class MoreLikeThis(val items: List<TVShowUiState>) : TVShowTabContent
+    data class Reviews(val reviews: List<ReviewUiState>) : TVShowTabContent
+    data class Gallery(val images: List<String>) : TVShowTabContent
+    data class Season(val seasonToEpisodesMap: MutableMap<Int, List<EpisodeUiState>>) : TVShowTabContent
+    data class CompanyProduction(val companyProductionStates: List<CompanyProductionUiState>) : TVShowTabContent
 }
 
 

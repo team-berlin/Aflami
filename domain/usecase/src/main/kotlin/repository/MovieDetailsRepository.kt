@@ -1,11 +1,11 @@
 package repository
 
-import com.berlin.entity.Genre
 import com.berlin.entity.Actor
+import com.berlin.entity.Genre
+import com.berlin.entity.MediaImage
 import com.berlin.entity.Movie
-import com.berlin.entity.Video
-
 import com.berlin.entity.Review
+import com.berlin.entity.Video
 
 interface MovieDetailsRepository {
     suspend fun getMovieImages(movieId: Long): MediaImage

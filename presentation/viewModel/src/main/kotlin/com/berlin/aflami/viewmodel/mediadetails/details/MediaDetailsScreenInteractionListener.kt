@@ -11,11 +11,11 @@ interface MediaInteractionListener :
     ExtraMediaContentInteractionListener {
 
     fun onBackClicked()
-    fun onPlayClicked(mediaId: Long)
+    fun onPlayClicked(videoUrl: String)
     fun onReadMoreDescriptionClicked()
     fun onReadMoreReviewClicked(reviewId: String)
-    fun onShowCastClicked()
-    fun onMediaClicked(mediaId: Long)
+    fun onShowCastClicked(mediaId: Long)
+    fun onMediaCardClicked(mediaId: Long)
 
 }
 

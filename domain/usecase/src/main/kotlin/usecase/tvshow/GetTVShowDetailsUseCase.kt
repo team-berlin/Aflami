@@ -1,9 +1,10 @@
 package usecase.tvshow
 
-import repository.TVShowRepository
+import com.berlin.entity.TVShow
+import repository.TvShowDetailsRepository
 
 class GetTVShowDetailsUseCase(
-    private val repository: TVShowRepository
+    private val repository: TvShowDetailsRepository,
 ) {
-    suspend operator fun invoke(id: Long) = repository.getTVShowDetails(id)
+    suspend operator fun invoke(id: Long): TVShow = repository.getTvShowDetails(id)
 }

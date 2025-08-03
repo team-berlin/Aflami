@@ -2,7 +2,7 @@ package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
-import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.mapper.toEpisodeUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
@@ -35,11 +35,11 @@ import org.junit.Before
 import org.junit.Test
 import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
-import usecase.mediadetails.GetMovieGalleryUseCase
+import usecase.movie.GetMovieGalleryUseCase
 import usecase.mediadetails.GetMovieReviewUseCase
 import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSeriesCastUseCase
-import usecase.mediadetails.GetSeriesGalleryUseCase
+import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.mediadetails.GetSeriesReviewUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
@@ -54,7 +54,7 @@ class MediaDetailsViewModelTest {
     private lateinit var getMovieCastUseCase: GetMovieCastUseCase
     private lateinit var getSeriesCastUseCase: GetSeriesCastUseCase
     private lateinit var getMovieGalleryUseCase: GetMovieGalleryUseCase
-    private lateinit var getSeriesGalleryUseCase: GetSeriesGalleryUseCase
+    private lateinit var getTVShowGalleryUseCase: GetTVShowGalleryUseCase
     private lateinit var getSimilarMoviesUseCase: GetSimilarMoviesUseCase
     private lateinit var getSimilarSeriesUseCase: GetSimilarSeriesUseCase
     private lateinit var getMovieReviewUseCase: GetMovieReviewUseCase
@@ -80,7 +80,7 @@ class MediaDetailsViewModelTest {
         getMovieCastUseCase = mockk(relaxed = true)
         getSeriesCastUseCase = mockk(relaxed = true)
         getMovieGalleryUseCase = mockk(relaxed = true)
-        getSeriesGalleryUseCase = mockk(relaxed = true)
+        getTVShowGalleryUseCase = mockk(relaxed = true)
         getSimilarMoviesUseCase = mockk(relaxed = true)
         getSimilarSeriesUseCase = mockk(relaxed = true)
         getMovieReviewUseCase = mockk(relaxed = true)
@@ -99,7 +99,7 @@ class MediaDetailsViewModelTest {
             getMovieCastUseCase,
             getSeriesCastUseCase,
             getMovieGalleryUseCase,
-            getSeriesGalleryUseCase,
+            getTVShowGalleryUseCase,
             getSimilarMoviesUseCase,
             getSimilarSeriesUseCase,
             getMovieReviewUseCase,
@@ -181,7 +181,7 @@ class MediaDetailsViewModelTest {
             getMovieCastUseCase,
             getSeriesCastUseCase,
             getMovieGalleryUseCase,
-            getSeriesGalleryUseCase,
+            getTVShowGalleryUseCase,
             getSimilarMoviesUseCase,
             getSimilarSeriesUseCase,
             getMovieReviewUseCase,
@@ -378,7 +378,7 @@ class MediaDetailsViewModelTest {
         val successState = state.rowSection as RowSectionUiState.Success
         assertThat(successState.content).isInstanceOf(TabContent.Season::class.java)
         val seasonContent = successState.content as TabContent.Season
-        assertThat(seasonContent.items[0]).isEqualTo(listOf(episode.toUiState()))
+        assertThat(seasonContent.items[0]).isEqualTo(listOf(episode.toEpisodeUiState()))
     }
 
     @Test
@@ -579,7 +579,7 @@ class MediaDetailsViewModelTest {
             getMovieCastUseCase,
             getSeriesCastUseCase,
             getMovieGalleryUseCase,
-            getSeriesGalleryUseCase,
+            getTVShowGalleryUseCase,
             getSimilarMoviesUseCase,
             getSimilarSeriesUseCase,
             getMovieReviewUseCase,
@@ -597,7 +597,7 @@ class MediaDetailsViewModelTest {
         // THEN
         val rowSection = viewModel.state.value.rowSection as RowSectionUiState.Success
         val seasonContent = rowSection.content as TabContent.Season
-        assertThat(seasonContent.items[0]).isEqualTo(listOf(episode.toUiState()))
+        assertThat(seasonContent.items[0]).isEqualTo(listOf(episode.toEpisodeUiState()))
     }
 
     @Test
@@ -638,8 +638,8 @@ class MediaDetailsViewModelTest {
         viewModel.onSeasonsClicked(1, 2)
         advanceUntilIdle()
         val content = (viewModel.state.value.rowSection as RowSectionUiState.Success).content as TabContent.Season
-        assertThat(content.items[0]).isEqualTo(listOf(episode1.toUiState()))
-        assertThat(content.items[1]).isEqualTo(listOf(episode2.toUiState()))
+        assertThat(content.items[0]).isEqualTo(listOf(episode1.toEpisodeUiState()))
+        assertThat(content.items[1]).isEqualTo(listOf(episode2.toEpisodeUiState()))
     }
 
     @Test

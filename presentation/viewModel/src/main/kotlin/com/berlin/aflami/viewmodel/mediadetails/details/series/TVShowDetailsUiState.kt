@@ -5,14 +5,16 @@ import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 
 data class TVShowDetailsUiState(
     val isFavorite: Boolean = false,
-    val isPlaying: Boolean = false,
+    val posters: List<String> = emptyList(),
+    val isTVShowHasVideo: Boolean = false,
+    val videoUrl: String = "",
     val tvShowUiState: TVShowUiState = TVShowUiState(),
     val isDescriptionExpanded: Boolean = false,
     val castList: List<ActorUiState> = emptyList(),
     val rowSection: TVShowRowSectionUiState = TVShowRowSectionUiState.Loading,
     val expandedReviewIds: Set<String> = emptySet(),
     val isScreenLoading: Boolean = false,
-    val errorMessage: String = "",
+    val errorMessage: String? = null,
     val tvShowDetailsTabsUiState: TVShowDetailsTabsUiState = TVShowDetailsTabsUiState(),
 )
 
