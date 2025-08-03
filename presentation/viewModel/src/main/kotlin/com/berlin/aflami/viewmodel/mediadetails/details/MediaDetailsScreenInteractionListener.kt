@@ -26,7 +26,6 @@ interface ExtraMediaContentInteractionListener : TVShowSeasonsInteractionListene
     fun onShowMediaGalleryClicked(mediaId:Long, mediaType: MediaType)
     fun onShowCompanyProductionClicked()
 }
-
 interface TVShowSeasonsInteractionListener {
-    fun onSeasonsClicked(seriesId: Long, numberOfSeasons:Int)
+    fun onSeasonsClicked(seriesId: Long, numberOfSeasons: Int)
 }
