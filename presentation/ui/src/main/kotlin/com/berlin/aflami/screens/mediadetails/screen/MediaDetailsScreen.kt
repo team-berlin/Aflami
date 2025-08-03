@@ -98,7 +98,7 @@ fun MediaDetailsScreen(
             onChipClick = { tab ->
                 viewModel.toggleMovieDetailsTab(
                     tab = tab,
-                    mediaId = viewModel.mediaId,
+                    tvShowId = viewModel.mediaId,
                     mediaType = viewModel.mediaType,
                 )
             },

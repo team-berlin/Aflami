@@ -221,7 +221,9 @@ private fun SearchByCountryContent(
                 visible = state.dropDownExpanded && state.filteredCountries.isNotEmpty(),
                 filteredCountries = state.filteredCountries,
                 onCountryNameChanged = listener::onCountryNameChanged,
-                onCountryClick = listener::onCountryClicked
+                onCountryClick = {
+                    listener.onCountryClicked(countryName = state.countryName.text)
+                }
             )
         }
     }

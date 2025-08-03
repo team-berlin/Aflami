@@ -42,7 +42,7 @@ fun MediaGridList(
                             .height(222.dp),
                         onClick = {
                             onMovieClick(
-                                movie.id, movie.mediaType
+                                movie.id, movie.mediaType ?: MediaType.MOVIE
                             )
                         },
                         mediaImg = movie.poster,

@@ -35,7 +35,6 @@ import usecase.tvshow.GetRecentTVShowHistoryUseCase
 import usecase.tvshow.GetSearchTVShowsUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
 import usecase.tvshow.SaveRecentTVShowsHistoryUseCase
-import kotlin.collections.map
 
 class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
@@ -50,13 +49,12 @@ class SearchViewModel(
     private val clearTvShowSearchHistoryUseCase: ClearTVShowSearchHistoryUseCase,
     private val getMovieGenresUseCase: GetMovieGenresUseCase,
     private val getTVShowGenresUseCase: GetTVShowGenresUseCase,
-    ) : BaseViewModel<SearchUiState, SearchScreenEffect>(SearchUiState()),
+) : BaseViewModel<SearchUiState, SearchScreenEffect>(SearchUiState()),
     SearchScreenInteractionListener,
     FilterInteractionListener {
 
     private val _recentSearchState = MutableStateFlow<List<String>>(emptyList())
     val recentSearchState = _recentSearchState.asStateFlow()
-
 
     init {
         observeSearchKeywordChanges()
@@ -143,8 +141,6 @@ class SearchViewModel(
 
     // endregion
 
-
-    //    @OptIn(FlowPreview::class)
     private fun observeSearchKeywordChanges() {
         viewModelScope.launch {
             combine(
@@ -153,11 +149,12 @@ class SearchViewModel(
                     .filter { it.isNotEmpty() }
                     .distinctUntilChanged(),
                 _state.map { it.filterTrigger }.distinctUntilChanged()
-            ) { query, _ -> query }
-                .collectLatest {
-                    onSearchKeywordChanged(it)
-                    loadRecentSearch()
-                }
+            ) { query, _ ->
+                query
+            }.collectLatest {
+                onSearchKeywordChanged(it)
+                loadRecentSearch()
+            }
         }
     }
 
@@ -189,7 +186,7 @@ class SearchViewModel(
             pagingSourceFactory = {
                 TVShowSearchPagingSource(
                     searchTVShowsUseCase = searchTVShowsUseCase,
-                    query = query,
+                    tvShowNameQuery = query,
                     selectedRating = selectedRating,
                     selectedGenreId = selectedGenreId
                 )
@@ -234,6 +231,7 @@ class SearchViewModel(
     private fun onFetchMoviesSuccess(moviesFlow: Flow<PagingData<MovieUIState>>) {
         updateState { it.copy(movies = moviesFlow, errorMessage = null, isLoading = false) }
     }
+
     // endregion
     private fun updateScreenStateToError(errorUiState: ErrorUiState) =
         updateState { screenState ->
@@ -245,7 +243,6 @@ class SearchViewModel(
 
     private fun updateScreenStateToLoading() =
         updateState { screenState -> screenState.copy(isLoading = true) }
-
 
     override fun onSearchActionClicked() {
         onSearchQueryChanged(state.value.searchQuery)

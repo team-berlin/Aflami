@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.BlurredPosterBackground
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.GenersChip
@@ -55,21 +54,23 @@ import com.berlin.aflami.screens.home.sections.PosterSlider
 import com.berlin.aflami.screens.home.sections.TopRatingHomeSections
 import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
+import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenState
+import com.berlin.aflami.viewmodel.home.HomeScreenViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
+
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
 
     LaunchedEffect(Unit) {
-        viewModel.getContinueWatchingMedia()
         viewModel.effect.collect {
             onReceiveHomeScreenEffect(navController, it)
         }
@@ -108,7 +109,7 @@ fun HomeScreen(
 
 private fun onReceiveHomeScreenEffect(
     navController: NavController,
-    homeScreenEffect: HomeScreenEffect
+    homeScreenEffect: HomeScreenEffect,
 ) {
     when (homeScreenEffect) {
         is HomeScreenEffect.NavigateToContinueWatchingScreen -> {
@@ -133,7 +134,7 @@ private fun onReceiveHomeScreenEffect(
             navController.navigate(
                 MediaDetailsDestination(
                     homeScreenEffect.mediaId,
-                    MediaType.valueOf(homeScreenEffect.mediaType)
+                    homeScreenEffect.mediaType
                 )
             )
         }
@@ -171,7 +172,8 @@ private fun HomeContent(
             text = stringResource(R.string.loading)
         )
     }
-    val pagedMovies = state.continueWatchingUiState.collectAsLazyPagingItems()
+    val mediaList: List<MediaUiState> =
+        state.continueWatchingUiState.continueWatchingMediaList
     val currentMedia = state.popularMediaUiState.popularMedia.getOrNull(pagerState.currentPage)
     Box(
         modifier = Modifier
@@ -228,7 +230,7 @@ private fun HomeContent(
                                     modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
                                     mediaList = state.popularMediaUiState.popularMedia,
                                     pagerState = pagerState,
-                                    onClick = { listener.onMediaCardClicked(it.id, it.mediaType) })
+                                    onClick = { listener.onMediaCardClicked(it.id, it.mediaType!!) })
 
                                 currentMedia?.let { media ->
                                     Text(
@@ -250,7 +252,7 @@ private fun HomeContent(
                                     ) {
                                         items(items = media.genre) { genreId ->
                                             val genreName =
-                                                getGenreNameById(genreId, media.mediaType)
+                                                getGenreNameById(genreId, media.mediaType!!)
                                             Box(
                                                 modifier = Modifier.padding(horizontal = 4.dp)
                                             ) {
@@ -263,14 +265,14 @@ private fun HomeContent(
                         }
                     }
                 }
-                if (pagedMovies.itemCount > 0) {
+                if (mediaList.isNotEmpty()) {
                     item {
                         ContinueWatchingHomeSections(
                             modifier = Modifier.background(Theme.color.surface),
                             seeAllOnClick = {
                                 listener.onShowAllContinueWatchingClicked()
                             },
-                            state = pagedMovies,
+                            state = mediaList,
                             sectionTitleId = R.string.continue_watching,
                             cardClick = { id, type ->
                                 listener.onMediaCardClicked(id, type)
@@ -312,7 +314,7 @@ private fun HomeContent(
                 MoodPickerDialog(
                     mediaImg = posterUrl,
                     title = title,
-                    typeOfMedia = mediaType,
+                    typeOfMedia = MediaType.MOVIE.name,
                     date = releaseYear,
                     rate = rating,
                     onDismiss = { listener.onDismissMoodPickerDialog() },

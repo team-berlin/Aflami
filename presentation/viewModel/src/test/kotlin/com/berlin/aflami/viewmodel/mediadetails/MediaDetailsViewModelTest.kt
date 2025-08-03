@@ -14,7 +14,7 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.entity.Episode
 import com.berlin.entity.Movie
-import com.berlin.entity.ProductionCompany
+import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Review
 import com.berlin.entity.TvShowDetails
 import com.google.common.truth.Truth.assertThat
@@ -121,7 +121,7 @@ class MediaDetailsViewModelTest {
             releaseDate = "2023-01-01",
             rating = 20.0,
             runtime = 120,
-            productionCompanies = listOf(ProductionCompany(1, "Test Studio", null, null)),
+            productionCompanies = listOf(CompanyProduction(1, "Test Studio", null, null)),
             hasVideo = false,
             originCountry = "US",
             duration = null
@@ -166,7 +166,7 @@ class MediaDetailsViewModelTest {
             releaseDate = "2022-01-01",
             rating = 7.5,
             runtime = 45,
-            productionCompanies = listOf(ProductionCompany(2, "Test Network", null, null)),
+            productionCompanies = listOf(CompanyProduction(2, "Test Network", null, null)),
             seasons = emptyList(),
             numberOfSeasons = 3,
             originCountry = "US",

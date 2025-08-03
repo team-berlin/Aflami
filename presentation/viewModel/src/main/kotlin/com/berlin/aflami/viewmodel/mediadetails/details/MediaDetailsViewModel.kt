@@ -9,6 +9,7 @@ import com.berlin.aflami.viewmodel.mapper.toCompanyProductionUiState
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
 import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.series.TVShowDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaDetailsScreenState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsTabs
@@ -19,6 +20,7 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.entity.Episode
+import com.berlin.entity.Movie
 import com.berlin.viewModel.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -88,12 +90,12 @@ class MediaDetailsViewModel(
             call = {
                 when (mediaType) {
                     MediaType.MOVIE -> {
-                        val movie = getMovieDetailsUseCase(mediaId)
+                        val movie: Movie? = getMovieDetailsUseCase(mediaId)
                         val pagerImages = getMovieGalleryUseCase(mediaId)
                         companyProductionCache =
-                            movie?.productionCompanies?.map { it.toCompanyProductionUiState() }
+                            movie?.companyProductions?.map { it.toCompanyProductionUiState() }
                         Log.d("MediaDetailsViewModel", "getMediaDetails: $pagerImages")
-                        Pair(movie?.toUiState(), pagerImages)
+                        Pair(movie?.toMediaUiState(), pagerImages)
                     }
 
                     MediaType.TV_SHOW -> {
@@ -105,22 +107,22 @@ class MediaDetailsViewModel(
                     }
                 }
             },
-            onSuccess = { (details, pagerImages) ->
-                details?.let {
+            onSuccess = { (mediaUiState, pagerImages) ->
+                mediaUiState?.let {
                     updateState {
                         it.copy(
-                            mediaId = details.id,
-                            title = details.title,
-                            description = details.overview,
-                            posterUrl = details.posterUrl,
-                            releaseDate = details.releaseDate,
-                            numberOfSeasons = details.numberOfSeasons,
-                            rating = details.rating,
-                            runtime = details.runtime,
-                            genres = details.genres,
+                            mediaId = mediaUiState.id,
+                            title = mediaUiState.title,
+                            description = mediaUiState.overview,
+                            posterUrl = mediaUiState.posterUrl,
+                            releaseDate = mediaUiState.releaseDate,
+                            numberOfSeasons = mediaUiState.numberOfSeasons,
+                            rating = mediaUiState.rating,
+                            runtime = mediaUiState.runtime,
+                            genres = mediaUiState.genres,
                             isLoading = false,
                             mediaType = mediaType,
-                            originalCountry = details.originalCountry,
+                            originalCountry = mediaUiState.originalCountry,
                             posterImages = pagerImages.posters,
                         )
                     }
@@ -479,27 +481,23 @@ class MediaDetailsViewModel(
         )
     }
 
-    fun toggleMovieDetailsTab(
-        tab: MovieDetailsTabs,
-        mediaId: Long,
-        mediaType: MediaType,
-    ) {
+    fun toggleMovieDetailsTab(tab: TVShowDetailsTabs, tvShowId: Long) {
         _tabSelectedUiState.update { current ->
             if (current.tab == tab) return@update current
 
             when (tab) {
                 MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(
-                    mediaId = mediaId,
+                    mediaId = tvShowId,
                     mediaType = mediaType
                 )
 
                 MovieDetailsTabs.REVIEWS -> onShowReviewsClicked(
-                    mediaId = mediaId,
+                    mediaId = tvShowId,
                     mediaType = mediaType
                 )
 
                 MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(
-                    mediaId = mediaId,
+                    mediaId = tvShowId,
                     mediaType = mediaType
                 )
 

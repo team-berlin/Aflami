@@ -33,7 +33,7 @@ fun TopRatingHomeSections(
     seeAllOnClick: () -> Unit,
     cardClick: (id: Long, type: MediaType) -> Unit,
     state: List<MediaUiState>,
-    sectionTitleId: Int
+    sectionTitleId: Int,
 ) {
     Column(
         modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -81,11 +81,11 @@ fun TopRatingHomeSections(
                             .width(cardWidth),
                         mediaImg = item.poster,
                         title = item.title,
-                        typeOfMedia = item.mediaType.name,
+                        typeOfMedia = item.mediaType?.name ?: MediaType.MOVIE.name,
                         date = item.releaseYear,
                         rating = item.rating,
                     ) {
-                        cardClick(item.id, item.mediaType)
+                        cardClick(item.id, item.mediaType ?: MediaType.MOVIE)
                     }
                 }
 

@@ -54,7 +54,7 @@ class GetTopRatedMoviesUseCaseTest {
                 genres = emptyList(),
                 duration = 3,
                 hasVideo = false,
-                productionCompanies = emptyList(),
+                companyProductions = emptyList(),
                 originCountry = "PS",
                 galleryUrl = emptyList()
             ),
@@ -69,7 +69,7 @@ class GetTopRatedMoviesUseCaseTest {
                 genres = emptyList(),
                 duration = 3,
                 hasVideo = false,
-                productionCompanies = emptyList(),
+                companyProductions = emptyList(),
                 originCountry = "PS",
                 galleryUrl = emptyList()
             )

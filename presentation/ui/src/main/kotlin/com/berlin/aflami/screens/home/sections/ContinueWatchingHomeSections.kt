@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -32,9 +31,9 @@ import com.berlin.ui.R
 fun ContinueWatchingHomeSections(
     modifier: Modifier = Modifier,
     seeAllOnClick: () -> Unit,
-    cardClick: (id:Long,type:MediaType) -> Unit,
-    state: LazyPagingItems<MediaUiState>,
-    sectionTitleId: Int
+    cardClick: (id: Long, type: MediaType) -> Unit,
+    state: List<MediaUiState>,
+    sectionTitleId: Int,
 ) {
     Column(
         modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -56,11 +55,11 @@ fun ContinueWatchingHomeSections(
                 style = Theme.textStyle.label.medium,
                 color = Theme.color.primary,
                 modifier = Modifier.clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) {
-                        seeAllOnClick()
-                    })
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    seeAllOnClick()
+                })
         }
         BoxWithConstraints {
             val screenWidth = maxWidth
@@ -75,20 +74,20 @@ fun ContinueWatchingHomeSections(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.itemCount) { index ->
+                items(state.size) { index ->
                     val item = state[index]
-                    item?.let {
+                    item.let {
                         MediaCard(
                             Modifier
                                 .height(222.dp)
                                 .width(cardWidth),
                             mediaImg = it.poster,
                             title = it.title,
-                            typeOfMedia = it.mediaType.name,
+                            typeOfMedia = it.mediaType?.name ?: MediaType.MOVIE.name,
                             date = it.releaseYear,
                             rating = it.rating,
-                        ){
-                            cardClick(it.id,it.mediaType)
+                        ) {
+                            cardClick(it.id, it.mediaType ?: MediaType.MOVIE)
                         }
                     }
                 }

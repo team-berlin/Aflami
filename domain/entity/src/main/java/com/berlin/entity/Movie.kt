@@ -12,7 +12,7 @@ data class Movie(
     val genres: List<Genre>,
     val duration: Int,
     val hasVideo: Boolean,
-    val productionCompanies: List<ProductionCompany>,
+    val companyProductions: List<CompanyProduction>,
     val originCountry: String,
     val galleryUrl:List<String>,
     val reviews: List<Review>,

@@ -61,8 +61,8 @@ import com.berlin.aflami.screens.search.getMovieGenreIcon
 import com.berlin.aflami.screens.search.getTvShowGenreIcon
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
-import com.berlin.aflami.viewmodel.search.SearchScreenInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchScreenEffect
+import com.berlin.aflami.viewmodel.search.SearchScreenInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
@@ -424,7 +424,7 @@ private fun SearchScreenContent(
                                                             )
                                                         },
                                                         typeOfMedia = stringResource(R.string.tv_shows),
-                                                        date = tvShows.releaseYear,
+                                                        date = tvShows.releaseDate,
                                                         rating = tvShows.rating
                                                     )
 

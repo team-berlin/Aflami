@@ -48,7 +48,9 @@ fun TVShowDto.toTVShow(): TVShow {
             dateString = this.firstAirDate.toString()
         ),
         genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        numberOfSeasons = this.numberOfSeasons ?: 0,
+
     )
 }
 

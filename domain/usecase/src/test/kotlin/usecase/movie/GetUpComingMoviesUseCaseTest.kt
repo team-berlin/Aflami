@@ -53,7 +53,7 @@ class GetUpComingMoviesUseCaseTest {
                 genres = emptyList(),
                 duration = 3,
                 hasVideo = false,
-                productionCompanies = emptyList(),
+                companyProductions = emptyList(),
                 originCountry = "PS",
                 galleryUrl = emptyList()
             ),
@@ -68,7 +68,7 @@ class GetUpComingMoviesUseCaseTest {
                 genres = emptyList(),
                 duration = 3,
                 hasVideo = false,
-                productionCompanies = emptyList(),
+                companyProductions = emptyList(),
                 originCountry = "PS",
                 galleryUrl = emptyList()
             )

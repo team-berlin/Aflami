@@ -41,8 +41,8 @@ import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenEffect
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorInteractionListener
+import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenEffect
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -69,7 +69,7 @@ fun SearchByActorNameScreen(
         exit = fadeOut(),
         visible = uiState.isLoading
     ) {
-        com.berlin.aflami.component.CircularProgressIndicator(
+        CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
             text = stringResource(R.string.loading)
         )

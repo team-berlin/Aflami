@@ -2,12 +2,11 @@ package com.berlin.aflami.viewmodel.mediadetails.uistate
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.painter.Painter
+import com.berlin.aflami.viewmodel.mediadetails.details.common.MoviesRowSectionUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.series.SeasonUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.shareduistate.EpisodeUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
-import com.berlin.aflami.viewmodel.shareduistate.ReviewUiState
 import com.berlin.entity.Movie
 import kotlinx.datetime.LocalDate
 
@@ -26,12 +25,12 @@ data class MediaDetailsScreenState(
     val runtime: String? = "",
     val country: String = "",
     val description: String = "",
+    val companyProductions: List<CompanyProductionUiState> = emptyList(),
     val actors: List<ActorUiState> = emptyList(),
-    val seasons: List<EpisodesSeasonUiState>? = emptyList(),
-    val rowSection: RowSectionUiState = RowSectionUiState.Loading,
+    val seasons: List<SeasonUiState>? = emptyList(),
+    val rowSection: MoviesRowSectionUiState = MoviesRowSectionUiState.Loading,
     val numberOfSeasons: Int? = null,
     val isFavorite: Boolean = false,
-    val isOverviewExpanded: Boolean = false,
     val mediaType: MediaType = MediaType.MOVIE,
     val isPlaying: Boolean = false,
     val options: List<MediaOptions> = emptyList(),
@@ -55,7 +54,7 @@ data class MediaDetailsScreenState(
             posterURL = posterUrl,
             screenShot = backdropUrl,
             hasVideo = hasVideo,
-            productionCompanies = emptyList(),
+            companyProductions = emptyList(),
             originCountry = originalCountry,
             galleryUrl = ,
             reviews = TODO(),
@@ -87,26 +86,6 @@ fun String.toLocalDate1(): LocalDate? {
     }
 }
 
-data class EpisodesUiState(
-    val stillPath: String,
-    val airDate: String,
-    val episodeNumber: Int,
-    val episodeType: String,
-    val id: Long,
-    val name: String,
-    val overview: String,
-    val runtime: String?,
-    val voteAverage: Double,
-)
-
-data class EpisodesSeasonUiState(
-    val idSeason: Long,
-    val name: String,
-    val episodes: List<EpisodeUiState?>,
-    val seasonNumber: Int,
-    val posterPath: String,
-)
-
 data class MediaOptions(
     val isSelected: Boolean,
     val title: String,
@@ -123,23 +102,8 @@ enum class MovieDetailsTabs {
     REVIEWS,
     GALLERY,
     COMPANY_PRODUCTION,
-    SEASON
 }
 
-sealed class RowSectionUiState {
-    object Loading : RowSectionUiState()
-    data class Success(val content: TabContent) : RowSectionUiState()
-    data class Error(val message: String? = null) : RowSectionUiState()
-    data class NoDataFound(val message: UiText) : RowSectionUiState()
-}
-
-sealed class TabContent {
-    data class MoreLikeThis(val items: List<MediaUiState>) : TabContent()
-    data class Reviews(val items: List<ReviewUiState>) : TabContent()
-    data class Gallery(val items: List<String>) : TabContent()
-    data class Season(val items: MutableMap<Int, List<EpisodeUiState>>) : TabContent()
-    data class CompanyProduction(val items: List<CompanyProductionUiState>) : TabContent()
-}
 
 sealed class UiText {
     data class Dynamic(val value: String) : UiText()

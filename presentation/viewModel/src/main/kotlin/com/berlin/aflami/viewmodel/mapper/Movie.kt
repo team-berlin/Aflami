@@ -17,25 +17,29 @@ fun Movie.toMovieUIState(): MovieUIState {
         posterUrl = posterURL
     )
 }
+
 fun Movie.toMediaUiState(): MediaUiState {
     return MediaUiState(
         id = id,
         title = title,
         rating = DecimalFormat("#.#").format(rating).toString(),
         releaseYear = releaseDate.take(4),
-        genre = genres,
+        genre = genres.map { it.id },
         poster = posterURL,
+        companyProductionUiState = companyProductions.map { it.toCompanyProductionUiState() },
         mediaType = MediaType.MOVIE
     )
 }
+
 fun TVShow.toMediaUiState(): MediaUiState {
     return MediaUiState(
         id = id,
         title = title,
         rating = DecimalFormat("#.#").format(rating).toString(),
         releaseYear = releaseDate.take(4),
-        genre = genres,
+        genre = genres.map { it.id },
         poster = posterURL,
+        companyProductionUiState = companyProductions.map { it.toCompanyProductionUiState() },
         mediaType = MediaType.TV_SHOW
     )
 }

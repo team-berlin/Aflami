@@ -218,7 +218,7 @@ private fun moodFromIcon(iconRes: Int, moodIcons: List<Int>): UserMood? {
 }
 @Preview
 @Composable
-fun iconPrevio(){
+fun iconPreview(){
     MoodIcon(
         modifier = Modifier,
         iconRes = R.drawable.romance,

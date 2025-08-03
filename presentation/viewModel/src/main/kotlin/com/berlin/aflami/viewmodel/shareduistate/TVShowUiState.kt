@@ -8,7 +8,14 @@ data class TVShowUiState(
     val id: Long = 0L,
     val title: String = "",
     val rating: String = "",
-    val releaseYear: String = "",
+    val releaseDate: String = "",
     val genre: List<Genre> = emptyList(),
-    val posterUrl: String = ""
+    val companyProductionUiState: List<CompanyProductionUiState> = emptyList(),
+    val posterUrl: String = "",
+    val description: String = "",
+    val duration: Int = -1,
+    val hasVideo: Boolean = false,
+    val originCountry: String = "",
+    val galleryUrls: List<String> = emptyList(),
+    val numberOfSeasons: Int = 0
 )

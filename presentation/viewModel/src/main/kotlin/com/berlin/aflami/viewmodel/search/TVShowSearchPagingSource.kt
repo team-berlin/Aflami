@@ -7,12 +7,12 @@ import usecase.tvshow.GetSearchTVShowsUseCase
 
 class TVShowSearchPagingSource(
     private val searchTVShowsUseCase: GetSearchTVShowsUseCase,
-    private val query: String,
+    private val tvShowNameQuery: String,
     private val selectedRating: Float,
     private val selectedGenreId: Int,
 ) : BasePagingSource<TVShowUiState>() {
     override suspend fun fetchData(page: Int): List<TVShowUiState> {
-        return searchTVShowsUseCase(query, page)
+        return searchTVShowsUseCase(tvShowNameQuery, page)
             .map { it.tvShowToUiState() }
             .filter { tvShowUiState ->
                 val rating = convertArabicToEnglish(tvShowUiState.rating.replace('٫', '.'))
