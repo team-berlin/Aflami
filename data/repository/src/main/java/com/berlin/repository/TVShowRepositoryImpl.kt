@@ -9,8 +9,9 @@ import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocalEntity
 import repository.TVShowRepository
+import javax.inject.Inject
 
-class TVShowRepositoryImpl(
+class TVShowRepositoryImpl @Inject constructor(
     private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource,
     private val recentHistoryLocalDataSource: RecentHistoryLocalDataSource,
     private val remoteDataSource: RemoteDataSource,

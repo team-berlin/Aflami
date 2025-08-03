@@ -16,7 +16,7 @@ fun Movie.toMovieUiState(): MovieUiState {
         genre = genres,
         posterUrl = posterURL,
         description = description,
-        duration = duration,
+        duration = duration.toString(),
         companyProductionUiState = companyProductions.map { it -> it.toCompanyProductionUiState() },
         originCountry = originCountry,
     )

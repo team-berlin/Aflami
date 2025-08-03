@@ -1,8 +1,8 @@
 package com.berlin.repository.mapper
 
+import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Genre
 import com.berlin.entity.Movie
-import com.berlin.entity.ProductionCompany
 import com.berlin.entity.Review
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.local.dto.MovieEntity
@@ -26,7 +26,7 @@ fun MovieDetailsDto.toDomain(
         description = this.overview?:"Description not available",
         duration = this.runtime ?: 0,
         hasVideo = this.video == true,
-        productionCompanies = this.productionCompanies?.map {
+        companyProductions = this.productionCompanies?.map {
             it.toDomain()
         } ?: emptyList(),
         originCountry = this.originCountry?.firstOrNull() ?: "",
@@ -85,7 +85,7 @@ fun RecentlyWatchedMovieEntity.toDomain(): Movie {
         description = this.description,
         duration = this.duration,
         hasVideo = this.hasVideo,
-        productionCompanies = emptyList(),
+        companyProductions = emptyList(),
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
         reviews = emptyList(),
@@ -107,7 +107,7 @@ fun MovieEntity.toDomain(): Movie {
         description = this.description,
         duration = this.duration,
         hasVideo = this.hasVideo,
-        productionCompanies = this.productionCompanies,
+        companyProductions = this.productionCompanies,
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
         reviews = this.reviews,
@@ -115,7 +115,7 @@ fun MovieEntity.toDomain(): Movie {
 }
 
 
- fun ProductionCompanyDto.toDomain() = ProductionCompany(
+ fun ProductionCompanyDto.toDomain() = CompanyProduction(
     id = this.id ?: 0,
     name = this.name.orEmpty(),
     posterURL = this.logoPath?.let { "$POSTER_PREFIX$it" } ?: "",

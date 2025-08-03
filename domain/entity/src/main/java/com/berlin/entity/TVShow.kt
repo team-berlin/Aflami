@@ -16,6 +16,4 @@ data class TVShow(
 
     val hasVideo: Boolean,
     val galleryUrl:List<String>,
-    val seasons: List<Season>,
-    val reviews: List<Review>,
 )

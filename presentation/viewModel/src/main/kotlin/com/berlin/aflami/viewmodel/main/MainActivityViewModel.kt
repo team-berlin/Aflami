@@ -15,13 +15,13 @@ class MainActivityViewModel @Inject constructor(
 ) : ViewModel() {
     init {
         viewModelScope.launch {
-//            loginState = isLoggedInUseCase()
+            //loginState = Logg()
             isLoading = false
         }
     }
 
-    var loginState by mutableStateOf(false)
-        private set
+//    var loginState by mutableStateOf(false)
+//        private set
 
     var isLoading by mutableStateOf(true)
         private set

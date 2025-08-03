@@ -2,10 +2,6 @@ package com.berlin.repository.datasource.local.dto
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.berlin.entity.Genre
-import com.berlin.entity.ProductionCompany
-import com.berlin.entity.Review
-import com.berlin.entity.Season
 
 @Entity(tableName = "Movie_Continue_Watching")
 data class RecentlyWatchedMovieEntity(
@@ -22,17 +18,17 @@ data class RecentlyWatchedMovieEntity(
     val hasVideo: Boolean,
     val productionCompanies: List<String>,
     val originCountry: String,
-    val galleryUrl:List<String>,
+    val galleryUrl: List<String>,
     val reviews: List<String>,
 )
 
 @Entity(tableName = "TVShow_Continue_Watching")
 data class RecentlyWatchedTvShowEntity(
     @PrimaryKey
-    val id :Long,
-    val title:String,
+    val id: Long,
+    val title: String,
     val rating: Double,
-    val posterURL:String,
+    val posterURL: String,
     val releaseDate: String,
     val screenShot: String,
     val description: String,
@@ -42,7 +38,7 @@ data class RecentlyWatchedTvShowEntity(
     val productionCompanies: List<String>,
     val originCountry: String,
     val seasons: List<String>,
-    val galleryUrl:List<String>,
+    val galleryUrl: List<String>,
     val reviews: List<String>,
 )
 

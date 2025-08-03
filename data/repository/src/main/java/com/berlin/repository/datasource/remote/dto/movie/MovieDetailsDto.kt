@@ -10,53 +10,53 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MovieDetailsDto(
     @SerialName("adult")
-    val adult: Boolean?,
+    val adult: Boolean? = null,
     @SerialName("backdrop_path")
-    val backdropPath: String?,
+    val backdropPath: String? = null,
     @SerialName("belongs_to_collection")
-    val belongsToCollectionDto: CollectionDto?,
+    val belongsToCollectionDto: CollectionDto? = null,
     @SerialName("budget")
-    val budget: Int?,
+    val budget: Int? = null,
     @SerialName("genres")
-    val genres: List<GenreDto>?,
+    val genres: List<GenreDto>? = null,
     @SerialName("homepage")
-    val homepage: String?,
+    val homepage: String? = null,
     @SerialName("id")
-    val id: Int?,
+    val id: Int? = null,
     @SerialName("imdb_id")
-    val imdbId: String?,
+    val imdbId: String? = null,
     @SerialName("origin_country")
-    val originCountry: List<String>?,
+    val originCountry: List<String>? = null,
     @SerialName("original_language")
-    val originalLanguage: String?,
+    val originalLanguage: String? = null,
     @SerialName("original_title")
-    val originalTitle: String?,
+    val originalTitle: String? = null,
     @SerialName("overview")
-    val overview: String?,
+    val overview: String? = null,
     @SerialName("popularity")
-    val popularity: Double?,
+    val popularity: Double? = null,
     @SerialName("poster_path")
-    val posterPath: String?,
+    val posterPath: String? = null,
     @SerialName("production_companies")
-    val productionCompanies: List<ProductionCompanyDto>?,
+    val productionCompanies: List<ProductionCompanyDto>? = null,
     @SerialName("release_date")
-    val releaseDate: String?,
+    val releaseDate: String? = null,
     @SerialName("revenue")
-    val revenue: Int?,
+    val revenue: Int? = null,
     @SerialName("runtime")
-    val runtime: Int?,
+    val runtime: Int? = null,
     @SerialName("spoken_languages")
-    val spokenLanguageDtos: List<SpokenLanguageDto>?,
+    val spokenLanguageDtos: List<SpokenLanguageDto>? = null,
     @SerialName("status")
-    val status: String?,
+    val status: String? = null,
     @SerialName("tagline")
-    val tagline: String?,
+    val tagline: String? = null,
     @SerialName("title")
-    val title: String?,
+    val title: String? = null,
     @SerialName("video")
-    val video: Boolean?,
+    val video: Boolean? = null,
     @SerialName("vote_average")
-    val voteAverage: Double?,
+    val voteAverage: Double? = null,
     @SerialName("vote_count")
-    val voteCount: Int?
+    val voteCount: Int? = null
 )

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.common.ReviewUiState
 import com.berlin.designsystem.R
 
 @Composable

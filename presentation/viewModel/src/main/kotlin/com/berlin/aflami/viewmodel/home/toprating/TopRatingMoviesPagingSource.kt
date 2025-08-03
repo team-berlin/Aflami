@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.home.toprating
 
 import com.berlin.aflami.viewmodel.base.BasePagingSource
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -14,10 +15,15 @@ class TopRatingMoviesPagingSource(
 
     override suspend fun fetchData(page: Int): List<MediaUiState> = coroutineScope {
         val moviesDeferred = async {
-            getTopRateMovieUseCase(page).map { MediaUiState() }
+            getTopRateMovieUseCase(page).map { MediaUiState(
+                mediaType = MediaType.MOVIE,
+
+            ) }
         }
         val tvShowsDeferred = async {
-            getTopRatedTvShowUseCase(page).map { MediaUiState() }
+            getTopRatedTvShowUseCase(page).map { MediaUiState(
+                mediaType = MediaType.TV_SHOW,
+            ) }
         }
 
         val movies = moviesDeferred.await()

@@ -19,6 +19,7 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.entity.ContinueWatchingMoviesModel
+import com.berlin.entity.TVShow
 import kotlinx.coroutines.launch
 import usecase.mediadetails.GetTVShowVideos
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
@@ -86,14 +87,22 @@ class TvShowDetailsScreenViewModel(
                         isScreenLoading = false
                     )
                 }
-                saveTVShowToContinueWatching(
-                    ContinueWatchingMoviesModel(
-                        id = tvShowId,
-                        rating = tvShowUiState.rating,
-                        title = tvShowUiState.title,
-                        releaseDate = tvShowUiState.releaseDate,
-                        posterUrl = tvShowUiState.posterUrl,
-                    )
+                saveTVShowToContinueWatching(TVShow(
+                    id = tvShowId,
+                    rating = tvShowUiState.rating.toDouble(),
+                    title = tvShowUiState.title,
+                    releaseDate = tvShowUiState.releaseDate,
+                    posterURL = tvShowUiState.posterUrl,
+                    screenShot = tvShowUiState.posterUrl,
+                    description = tvShowUiState.description,
+                    genres = tvShowUiState.genre,
+                    duration = tvShowUiState.duration,
+                    hasVideo = true,
+                    companyProductions = emptyList(),
+                    originCountry = "",
+                    galleryUrl = emptyList(),
+                    numberOfSeasons = 0,
+                )
                 )
             },
             onError = ::updateScreenStateToError
@@ -122,7 +131,7 @@ class TvShowDetailsScreenViewModel(
         }
     }
 
-    private fun saveTVShowToContinueWatching(modelToBeSaved: ContinueWatchingMoviesModel) {
+    private fun saveTVShowToContinueWatching(modelToBeSaved: TVShow) {
         viewModelScope.launch {
             addContinueWatchingTVShowUseCase(modelToBeSaved)
         }

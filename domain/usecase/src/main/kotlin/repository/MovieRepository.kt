@@ -1,5 +1,6 @@
 package repository
 
+import com.berlin.entity.ContinueWatchingMoviesModel
 import com.berlin.entity.Movie
 
 interface MovieRepository {

@@ -1,11 +1,13 @@
 package usecase.tvshow
 
 import com.berlin.entity.ContinueWatchingMoviesModel
+import com.berlin.entity.Movie
+import com.berlin.entity.TVShow
 import repository.TVShowRepository
 
 class AddContinueWatchingTVShowUseCase(
     private val repository: TVShowRepository
 ) {
-    suspend operator fun invoke(continueWatchingMoviesModel: ContinueWatchingMoviesModel) =
-        repository.addContinueWatchingTVShow(continueWatchingMoviesModel)
+    suspend operator fun invoke(tvShow:  TVShow) =
+        repository.addContinueWatchingTVShow(tvShow)
 }

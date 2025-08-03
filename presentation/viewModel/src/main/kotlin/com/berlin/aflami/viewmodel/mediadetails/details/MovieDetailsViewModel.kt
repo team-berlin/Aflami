@@ -22,6 +22,8 @@ import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.entity.ContinueWatchingMoviesModel
+import com.berlin.entity.Movie
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
@@ -30,8 +32,10 @@ import usecase.movie.GetMovieDetailsUseCase
 import usecase.movie.GetMovieGalleryUseCase
 import usecase.movie.GetMovieReviewUseCase
 import usecase.movie.GetSimilarMoviesUseCase
+import javax.inject.Inject
 
-class MovieDetailsViewModel(
+@HiltViewModel
+class MovieDetailsViewModel @Inject constructor(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
@@ -89,12 +93,21 @@ class MovieDetailsViewModel(
                     )
                 }
                 saveMovieToContinueWatching(
-                    ContinueWatchingMoviesModel(
+                    Movie(
                         id = movieId,
-                        rating = movieUiState.rating,
+                        rating = movieUiState.rating.toDouble(),
                         title = movieUiState.title,
                         releaseDate = movieUiState.releaseDate,
-                        posterUrl = movieUiState.posterUrl,
+                        posterURL = movieUiState.posterUrl,
+                        screenShot = movieUiState.posterUrl,
+                        description =movieUiState.description,
+                        genres = movieUiState.genre,
+                        duration = movieUiState.duration.toInt(),
+                        hasVideo = true,
+                        companyProductions = emptyList(),
+                        originCountry = "",
+                        galleryUrl = emptyList(),
+                        reviews = emptyList(),
                     )
                 )
             },
@@ -124,7 +137,7 @@ class MovieDetailsViewModel(
         }
     }
 
-    private fun saveMovieToContinueWatching(modelToBeSaved: ContinueWatchingMoviesModel) {
+    private fun saveMovieToContinueWatching(modelToBeSaved: Movie) {
         viewModelScope.launch {
             addContinueWatchingMovieUseCase(modelToBeSaved)
         }

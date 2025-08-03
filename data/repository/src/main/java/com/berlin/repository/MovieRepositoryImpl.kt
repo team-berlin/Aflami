@@ -1,5 +1,6 @@
 package com.berlin.repository
 
+import com.berlin.entity.ContinueWatchingMoviesModel
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource

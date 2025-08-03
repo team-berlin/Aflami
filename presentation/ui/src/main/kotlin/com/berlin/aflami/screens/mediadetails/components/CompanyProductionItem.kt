@@ -24,7 +24,7 @@ import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
 import com.berlin.designsystem.R
 import com.berlin.safeimageviewer.SafeImageViewer
 

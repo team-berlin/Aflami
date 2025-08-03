@@ -33,7 +33,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsScreenEffect
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastDetailsScreenListener
 import com.berlin.aflami.viewmodel.mediadetails.cast.CastViewModelScreen
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
+import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.ui.R
 
 @Composable
@@ -51,7 +51,7 @@ fun CastDetailsScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = castState.isLoading
+        visible = castState.isScreenLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
@@ -59,7 +59,7 @@ fun CastDetailsScreen(
         )
     }
     AnimatedVisibility(
-        visible = castState.error != null
+        visible = castState.errorMessage != null
     ) {
         NoInternetConnectionPlaceholder()
     }
@@ -67,11 +67,11 @@ fun CastDetailsScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = !castState.isLoading
+        visible = !castState.isScreenLoading
     ) {
         CastContent(
             listener = viewmodel,
-            castState = castState.actors
+            castState = castState.castList
         )
     }
 }
@@ -85,7 +85,7 @@ private fun onReceiveEffect(navController: NavController, castDetailsScreenEffec
 @Composable
 fun CastContent(
     listener: CastDetailsScreenListener,
-    castState: List<MediaCastUiState>,
+    castState: List<ActorUiState>,
 ) {
     Column(
         modifier = Modifier

@@ -15,8 +15,9 @@ import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.util.Constants
 import repository.MovieDetailsRepository
 import java.time.Instant
+import javax.inject.Inject
 
-class MovieDetailsRepositoryImpl(
+class MovieDetailsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
 ) : MovieDetailsRepository {
 

@@ -12,6 +12,6 @@ data class MovieUiState(
     val companyProductionUiState: List<CompanyProductionUiState> = emptyList(),
     val posterUrl: String = "",
     val description: String = "",
-    val duration: Int = -1,
+    val duration: String = "",
     val originCountry: String = "",
 )

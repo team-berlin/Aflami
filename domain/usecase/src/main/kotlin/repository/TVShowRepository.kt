@@ -1,11 +1,12 @@
 package repository
 
 import com.berlin.entity.ContinueWatchingMoviesModel
+import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 
 interface TVShowRepository {
     suspend fun getContinueWatchingTVShows(page: Int): List<TVShow>
-    suspend fun addContinueWatchingTVShow(continueWatchingMoviesModel: ContinueWatchingMoviesModel)
+    suspend fun addContinueWatchingTVShow(tvShow: TVShow)
     suspend fun getTopRatedSeries(page: Int): List<TVShow>
     suspend fun getPopularTVShows(): List<TVShow>
     suspend fun searchTVShow(query: String, page: Int): List<TVShow>

@@ -33,7 +33,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
-    val posterList = state.posterImages.take(4)
+    val posterList = state.posters.take(4)
     val pagerState = rememberPagerState(pageCount = { posterList.size })
 
     LaunchedEffect(pagerState) {
@@ -66,7 +66,7 @@ fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
                 }
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     AsyncImage(
-                        model= model?:"",
+                        model= model,
                         contentDescription = null,
                         contentScale = contentScale,
                         modifier = Modifier.fillMaxSize(),
@@ -89,7 +89,7 @@ fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
                     .align(Alignment.BottomStart)
                     .padding(4.dp)
             ) {
-                Rating(rating = state.rating.formatRatingForUi())
+                Rating(rating = state.movieUiState.rating)
             }
         }
 
@@ -108,8 +108,8 @@ fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
                 dropShadowAlpha = 0.09f,
                 borderWidth = 2,
                 size = 64,
-                enabled = state.hasVideo,
-                tint = if (state.hasVideo) Theme.color.primary else Theme.color.disable
+                enabled = true,
+                tint = if (true) Theme.color.primary else Theme.color.disable
             )
         }
     }

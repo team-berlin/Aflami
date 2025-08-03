@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.home
 
+import android.util.Log
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PAGE_SIZE
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -10,6 +11,7 @@ import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import usecase.GetMoviesByMoodUseCase
@@ -23,6 +25,7 @@ import usecase.tvshow.GetPopularTVShowsUseCase
 import usecase.tvshow.GetTopRatedTVShowUseCase
 import javax.inject.Inject
 
+@HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     private val popularMoviesUseCase: GetPopularMoviesUseCase,
     private val popularTVShowsUseCase: GetPopularTVShowsUseCase,
@@ -53,6 +56,7 @@ class HomeScreenViewModel @Inject constructor(
                     val tvShow = async { popularTVShowsUseCase() }
                     val movieList = movie.await().map { it.toMediaUiState() }
                     val tvShowList = tvShow.await().map { it.toMediaUiState() }
+                    Log.d("HomeScreenViewModel", "getPopularMedia: $movieList")
                     interleaveMoviesAndTvShowsEqually(movieList, tvShowList)
                 }
             },
@@ -77,6 +81,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenWithNewPopularMedia(newPopularMedia: List<MediaUiState>) {
+        Log.d("HomeScreenViewModel", "updateScreenWithNewPopularMedia: $newPopularMedia")
         updateState { screenState ->
             screenState.copy(
                 screenState.popularMediaUiState.copy(
@@ -89,6 +94,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updatePopularUiStateWithError(errorUiState: ErrorUiState) {
+        Log.e("HomeScreenViewModel", "updatePopularUiStateWithError: ${errorUiState.message}")
         updateState {
             it.copy(
                 popularMediaUiState = it.popularMediaUiState.copy(

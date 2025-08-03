@@ -13,8 +13,6 @@ import usecase.GetMoviesByMoodUseCase
 import usecase.auth.GetLoginUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
-import usecase.mediadetails.GetSeriesGalleryUseCase
-import usecase.mediadetails.GetMovieGalleryUseCase
 import usecase.mediadetails.GetMovieVideos
 import usecase.mediadetails.GetTVShowVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
@@ -23,6 +21,7 @@ import usecase.movie.ContinueWatchingMovieUseCase
 import usecase.movie.DeleteQueryFromMoviesHistoryUseCase
 import usecase.movie.GetMovieCastUseCase
 import usecase.movie.GetMovieDetailsUseCase
+import usecase.movie.GetMovieGalleryUseCase
 import usecase.movie.GetMovieGenresUseCase
 import usecase.movie.GetMovieReviewUseCase
 import usecase.movie.GetPopularMoviesUseCase
@@ -33,7 +32,7 @@ import usecase.movie.GetTopRatedMoviesUseCase
 import usecase.movie.GetUpComingMoviesUseCase
 import usecase.movie.SaveRecentMoviesHistoryUseCase
 import usecase.movie.SearchByActorNameUseCase
-import usecase.movie.SearchByCountryUseCase
+import usecase.movie.SearchMoviesByCountryUseCase
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.ContinueWatchingTVShowUseCase
 import usecase.tvshow.GetPopularTVShowsUseCase
@@ -42,6 +41,7 @@ import usecase.tvshow.GetSeasonEpisodesUseCase
 import usecase.tvshow.GetSimilarTVShowsUseCase
 import usecase.tvshow.GetTVShowCastUseCase
 import usecase.tvshow.GetTVShowDetailsUseCase
+import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
 import usecase.tvshow.GetTopRatedTVShowUseCase
@@ -65,8 +65,8 @@ object UseCaseModule {
         GetPopularTVShowsUseCase(repository)
 
     @Provides
-    fun provideSearchByCountryUseCase(repository: MovieRepository): SearchByCountryUseCase =
-        SearchByCountryUseCase(repository)
+    fun provideSearchByCountryUseCase(repository: MovieRepository): SearchMoviesByCountryUseCase =
+        SearchMoviesByCountryUseCase(repository)
 
     @Provides
     fun provideSearchByActorNameUseCase(repository: MovieRepository): SearchByActorNameUseCase =
@@ -117,8 +117,8 @@ object UseCaseModule {
         GetMovieGalleryUseCase(repository)
 
     @Provides
-    fun provideGetSeriesGalleryUseCase(repository: TvShowDetailsRepository): GetSeriesGalleryUseCase =
-        GetSeriesGalleryUseCase(repository)
+    fun provideGetSeriesGalleryUseCase(repository: TvShowDetailsRepository): GetTVShowGalleryUseCase =
+        GetTVShowGalleryUseCase(repository)
 
     @Provides
     fun provideGetMovieCastUseCase(repository: MovieDetailsRepository): GetMovieCastUseCase =

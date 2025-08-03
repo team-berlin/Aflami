@@ -24,15 +24,15 @@ fun MediaOverviewSection(state: MovieDetailsScreenState) {
     Column(Modifier.padding(vertical = 12.dp)) {
         Column(Modifier.padding(horizontal = 16.dp)) {
             Text(
-                text = state.title,
+                text = state.movieUiState.rating,
                 style = Theme.textStyle.title.large,
                 color = Theme.color.textColors.title,
             )
             Spacer(Modifier.height(12.dp))
             Row {
-                state.genres.forEach { genre ->
+                state.movieUiState.genre.forEach { genre ->
                     Box(modifier = Modifier.padding(end = 4.dp)) {
-                        GenersChip(label = genre)
+                        GenersChip(label = "genre")
                     }
                 }
             }
@@ -45,23 +45,23 @@ fun MediaOverviewSection(state: MovieDetailsScreenState) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                state.releaseDate,
+                state.movieUiState.releaseDate,
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.hint
             )
-            state.runtime?.takeIf { it.isNotEmpty() }?.let {
+            state.movieUiState.duration.takeIf { it.isEmpty() }?.let {
                 CircularDot()
                 Text(it, style = Theme.textStyle.label.small, color = Theme.color.textColors.hint)
             }
-            state.numberOfSeasons?.toString()?.let {
-                CircularDot()
-                Text(
-                    "$it ${stringResource(R.string.season)}",
-                    style = Theme.textStyle.label.small,
-                    color = Theme.color.textColors.hint
-                )
-            }
-            state.originalCountry?.takeIf { it.isNotEmpty() }?.let {
+//            state.numberOfSeasons?.toString()?.let {
+//                CircularDot()
+//                Text(
+//                    "$it ${stringResource(R.string.season)}",
+//                    style = Theme.textStyle.label.small,
+//                    color = Theme.color.textColors.hint
+//                )
+//            }
+            state.movieUiState.originCountry.takeIf { it.isNotEmpty() }?.let {
                 CircularDot()
                 Text(it, style = Theme.textStyle.label.small, color = Theme.color.textColors.hint)
             }

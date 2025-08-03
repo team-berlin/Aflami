@@ -26,101 +26,100 @@ import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
 import com.berlin.aflami.screens.mediadetails.components.getMovieDetailsTabsIcon
 import com.berlin.aflami.screens.mediadetails.components.movieDetailsTabsMapper
-import com.berlin.aflami.screens.mediadetails.screen.getDisplayMessage
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
-import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
+import com.berlin.aflami.viewmodel.mediadetails.details.series.TVShowDetailsTabs
+import com.berlin.aflami.viewmodel.mediadetails.uistate.MovieDetailsTabs
+
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 
-@Composable
-fun TabSection(
-    tabState: MovieDetailsTabs,
-    onChipClick: (MovieDetailsTabs) -> Unit,
-    rowState: RowSectionUiState,
-    isReviewExpanded: (String) -> Boolean,
-    onToggleReviewExpand: (String) -> Unit,
-    mediaType: MediaType,
-    onMediaClick: (Long, MediaType) -> Unit
-) {
-    val visibleTabs = MovieDetailsTabs.entries.filter {
-        !(mediaType == MediaType.MOVIE && it == MovieDetailsTabs.SEASON)
-    }
-
-    LazyRow(
-        modifier = Modifier
-            .padding(bottom = 12.dp)
-            .fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
-        items(visibleTabs, key = { it.name }) { tab ->
-            Chips(
-                title = stringResource(movieDetailsTabsMapper(tab)),
-                icon = painterResource(getMovieDetailsTabsIcon(tab)),
-                isSelected = tab == tabState,
-                onClick = { onChipClick(tab) }
-            )
-        }
-    }
-
-    Crossfade(targetState = rowState) { state ->
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .animateContentSize()
-        ) {
-            when (state) {
-                is RowSectionUiState.Error,
-                is RowSectionUiState.NoDataFound -> {
-                    Box(
-                        Modifier.padding(top = 32.dp, bottom = 82.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxSize(),
-                            text = state.getDisplayMessage(),
-                            style = Theme.textStyle.label.large,
-                            color = Theme.color.textColors.body,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                is RowSectionUiState.Loading -> Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 32.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Loading()
-                }
-
-                is RowSectionUiState.Success -> {
-                    when (val tab = state.content) {
-                        is TabContent.MoreLikeThis -> MoreLikeThisSection(
-                            mediaList = tab.items,
-                            mediaType = mediaType,
-                            onMediaClick = onMediaClick
-                        )
-
-                        is TabContent.Reviews -> ReviewsSection(
-                            reviews = tab.items,
-                            isExpanded = isReviewExpanded,
-                            onToggleExpand = onToggleReviewExpand
-                        )
-
-                        is TabContent.Gallery -> GallerySection(mediaImages = tab.items)
-
-                        is TabContent.CompanyProduction -> CompanyProductionSection(
-                            companyProductions = tab.items
-                        )
-
-                        is TabContent.Season -> SeasonsSection(seasonsMap = tab.items)
-                    }
-                }
-            }
-        }
-    }
-}
+//@Composable
+//fun TabSection(
+//    tabState: TVShowDetailsTabs,
+//    onChipClick: (MovieDetailsTabs) -> Unit,
+//    rowState: RowSectionUiState,
+//    isReviewExpanded: (String) -> Boolean,
+//    onToggleReviewExpand: (String) -> Unit,
+//    mediaType: MediaType,
+//    onMediaClick: (Long, MediaType) -> Unit
+//) {
+//    val visibleTabs = MovieDetailsTabs.entries.filter {
+//        !(mediaType == MediaType.MOVIE && it == MovieDetailsTabs.SEASON)
+//    }
+//
+//    LazyRow(
+//        modifier = Modifier
+//            .padding(bottom = 12.dp)
+//            .fillMaxWidth(),
+//        contentPadding = PaddingValues(horizontal = 16.dp),
+//        horizontalArrangement = Arrangement.spacedBy(15.dp)
+//    ) {
+//        items(visibleTabs, key = { it.name }) { tab ->
+//            Chips(
+//                title = stringResource(movieDetailsTabsMapper(tab)),
+//                icon = painterResource(getMovieDetailsTabsIcon(tab)),
+//                isSelected = tab == tabState,
+//                onClick = { onChipClick(tab) }
+//            )
+//        }
+//    }
+//
+//    Crossfade(targetState = rowState) { state ->
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .animateContentSize()
+//        ) {
+//            when (state) {
+//                is RowSectionUiState.Error,
+//                is RowSectionUiState.NoDataFound -> {
+//                    Box(
+//                        Modifier.padding(top = 32.dp, bottom = 82.dp),
+//                        contentAlignment = Alignment.Center
+//                    ) {
+//                        Text(
+//                            modifier = Modifier.fillMaxSize(),
+//                            text = state.getDisplayMessage(),
+//                            style = Theme.textStyle.label.large,
+//                            color = Theme.color.textColors.body,
+//                            textAlign = TextAlign.Center
+//                        )
+//                    }
+//                }
+//
+//                is RowSectionUiState.Loading -> Box(
+//                    Modifier
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 16.dp, vertical = 32.dp),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    Loading()
+//                }
+//
+//                is RowSectionUiState.Success -> {
+//                    when (val tab = state.content) {
+//                        is TabContent.MoreLikeThis -> MoreLikeThisSection(
+//                            mediaList = tab.items,
+//                            mediaType = mediaType,
+//                            onMediaClick = onMediaClick
+//                        )
+//
+//                        is TabContent.Reviews -> ReviewsSection(
+//                            reviews = tab.items,
+//                            isExpanded = isReviewExpanded,
+//                            onToggleExpand = onToggleReviewExpand
+//                        )
+//
+//                        is TabContent.Gallery -> GallerySection(mediaImages = tab.items)
+//
+//                        is TabContent.CompanyProduction -> CompanyProductionSection(
+//                            companyProductions = tab.items
+//                        )
+//
+//                        is TabContent.Season -> SeasonsSection(seasonsMap = tab.items)
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}

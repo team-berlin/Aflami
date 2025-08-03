@@ -13,9 +13,7 @@ import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 
 
 fun TVShowDetailsDto.toDomain(
-    reviews: List<Review> = emptyList(),
     galleryImages: List<String> = emptyList(),
-    episodes: List<Episode> = emptyList(),
     hasVideo: Boolean =false,
 ): TVShow {
     return TVShow(
@@ -29,13 +27,13 @@ fun TVShowDetailsDto.toDomain(
         description = this.overview ?: "Description not available",
         duration = this.episodeRunTime?.firstOrNull() ?: 0,
         hasVideo = hasVideo,
-        productionCompanies = this.productionCompanies?.map {
+        companyProductions = this.productionCompanies?.map {
             it.toDomain()
         } ?: emptyList(),
         originCountry = this.originCountry?.firstOrNull() ?: "",
-        seasons = this.seasonDtos?.map { it.toDomain(episodes) } ?: emptyList(),
         galleryUrl = galleryImages,
-        reviews = reviews)
+        numberOfSeasons = this.numberOfSeasons?:0,
+    )
 }
 
 fun TVShow.toLocal(): TVShowEntity {
@@ -69,11 +67,10 @@ fun TVShowEntity.toDomain(): TVShow{
         description = this.description,
         duration = this.duration,
         hasVideo = this.hasVideo,
-        productionCompanies = this.productionCompanies,
+        companyProductions = this.productionCompanies,
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
-        seasons = emptyList(),
-        reviews = emptyList()
+        numberOfSeasons = this.seasons.size
     )
 
 }
@@ -91,11 +88,10 @@ fun RecentlyWatchedTvShowEntity.toDomain(): TVShow {
         description = this.description,
         duration = this.duration,
         hasVideo = this.hasVideo,
-        productionCompanies = emptyList(),
+        companyProductions = emptyList(),
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
-        seasons = emptyList(),
-        reviews = emptyList(),
+        numberOfSeasons = seasons.size,
     )
 }
 fun TVShow.toLocalEntity(): RecentlyWatchedTvShowEntity {
@@ -115,6 +111,7 @@ fun TVShow.toLocalEntity(): RecentlyWatchedTvShowEntity {
         galleryUrl = this.galleryUrl,
         seasons = emptyList(),
         reviews = emptyList(),
+
     )
 }
 
@@ -131,18 +128,19 @@ fun SeasonDto.toDomain(
     posterURL = this.posterPath ?: "",
     seasonNumber = this.seasonNumber ?: 0
 )
-val t= SeasonEpisodesDto
+
 fun EpisodeDto.toDomain(): Episode {
     return Episode(
-        airDate = this.airDate?:"",
-        episodeNumber = this.episodeNumber?: 0,
-        episodeType = this.episodeType?:"",
+        airDate = this.airDate ?: "",
+        episodeNumber = this.episodeNumber ?: 0,
+        episodeType = this.episodeType ?: "",
         episodeId = this.id?.toLong() ?: 0L,
-        name = this.name?:"",
-        description = this.overview?:"",
-        duration = this.runtime?:0,
-        tvShowId = this.showId?:0,
-        rating = this.voteAverage?:0.0
+        name = this.name ?: "",
+        description = this.overview ?: "",
+        duration = this.runtime ?: 0,
+        tvShowId = this.showId ?: 0,
+        rating = this.voteAverage ?: 0.0,
+        stillPath = this.stillPath?:""
     )
 }
 

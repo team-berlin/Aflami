@@ -3,9 +3,7 @@ package com.berlin.aflami.viewmodel.mapper
 import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.common.ReviewUiState
 import com.berlin.aflami.viewmodel.mediadetails.details.series.EpisodeUiState
-import com.berlin.aflami.viewmodel.mediadetails.uistate.SeasonUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
-import com.berlin.aflami.viewmodel.shareduistate.ReviewUiState
 import com.berlin.entity.Actor
 import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Episode
@@ -32,15 +30,6 @@ fun Episode.toEpisodeUiState(): EpisodeUiState {
     )
 }
 
-fun EpisodesSeason.toUiState(): SeasonUiState {
-    return SeasonUiState(
-        seasonId = this.idSeason,
-        name = this.name,
-        episodes = this.episodes?.map { episode -> episode?.toEpisodeUiState() } ?: emptyList(),
-        seasonNumber = this.seasonNumber,
-        posterPath = this.posterPath
-    )
-}
 
 fun Review.toReviewUiState(): ReviewUiState {
     return ReviewUiState(

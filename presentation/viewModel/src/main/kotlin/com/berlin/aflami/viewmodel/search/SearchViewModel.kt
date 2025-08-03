@@ -11,6 +11,7 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.entity.Genre
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -35,8 +36,10 @@ import usecase.tvshow.GetRecentTVShowHistoryUseCase
 import usecase.tvshow.GetSearchTVShowsUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
 import usecase.tvshow.SaveRecentTVShowsHistoryUseCase
+import javax.inject.Inject
 
-class SearchViewModel(
+@HiltViewModel
+class SearchViewModel @Inject constructor(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
     private val searchTVShowsUseCase: GetSearchTVShowsUseCase,
     private val recentMoviesHistoryUseCase: GetRecentMoviesHistoryUseCase,
