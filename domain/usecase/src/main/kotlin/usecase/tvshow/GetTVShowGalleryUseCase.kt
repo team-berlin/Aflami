@@ -1,10 +1,11 @@
 package usecase.tvshow
 
-import repository.TVShowDetailsRepository
+import repository.TvShowDetailsRepository
 
 class GetTVShowGalleryUseCase(
-    private val repository: TVShowDetailsRepository
+    private val tvShowDetailsRepository: TvShowDetailsRepository
 ) {
     suspend operator fun invoke(id: Long): List<String> =
-        repository.getTVShowGallery(id)
+        //tvShowDetailsRepository.get(id)
+    emptyList()
 }

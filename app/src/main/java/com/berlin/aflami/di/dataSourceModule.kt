@@ -68,11 +68,6 @@ abstract class DataSourceModule {
         impl: RecentlyWatchedLocalDataSourceImpl
     ): RecentlyWatchedLocalDataSource
 
-    @Binds
-    @Singleton
-    abstract fun bindHomeRemoteDataSource(
-        impl: HomeRemoteDataSourceImpl
-    ): RetrofitRemoteDataSource
 
     @Binds
     @Singleton

@@ -9,11 +9,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import repository.AuthenticationRepository
-import repository.ContinueWatchingRepository
-import repository.HomeRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.SearchRepository
 import repository.TvShowDetailsRepository
 import javax.inject.Singleton
 
@@ -21,11 +18,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
-    @Binds
-    @Singleton
-    abstract fun bindSearchRepository(
-        impl: SearchRepositoryImpl
-    ): SearchRepository
 
     @Binds
     @Singleton
@@ -39,11 +31,6 @@ abstract class RepositoryModule {
         impl: TvShowDetailsRepositoryImpl
     ): TvShowDetailsRepository
 
-    @Binds
-    @Singleton
-    abstract fun bindContinueWatchingRepository(
-        impl: WatchedMediaRepositoryImpl
-    ): ContinueWatchingRepository
 
     @Binds
     @Singleton
@@ -57,9 +44,4 @@ abstract class RepositoryModule {
         impl: AuthenticationRepositoryImpl
     ): AuthenticationRepository
 
-    @Binds
-    @Singleton
-    abstract fun bindHomeRepository(
-        impl: HomeRepositoryImpl
-    ): HomeRepository
 }
