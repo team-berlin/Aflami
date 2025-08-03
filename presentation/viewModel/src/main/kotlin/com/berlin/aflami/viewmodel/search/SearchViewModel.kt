@@ -3,19 +3,16 @@ package com.berlin.aflami.viewmodel.search
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.filter
-import androidx.paging.map
-import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
-import com.berlin.aflami.viewmodel.mapper.toMovieUIState
-import com.berlin.aflami.viewmodel.mapper.toUiState
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUIState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
-import kotlinx.coroutines.FlowPreview
+import com.berlin.entity.Genre
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,21 +34,24 @@ import usecase.tvshow.DeleteQueryFromTVShowsHistoryUseCase
 import usecase.tvshow.GetRecentTVShowHistoryUseCase
 import usecase.tvshow.GetSearchTVShowsUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
+import usecase.tvshow.SaveRecentTVShowsHistoryUseCase
+import kotlin.collections.map
 
 class SearchViewModel(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,
-    private val searchTvShowsUseCase: GetSearchTVShowsUseCase,
-    private val getRecentMoviesHistoryUseCase: GetRecentMoviesHistoryUseCase,
-    private val getRecentTvShowHistoryUseCase: GetRecentTVShowHistoryUseCase,
+    private val searchTVShowsUseCase: GetSearchTVShowsUseCase,
+    private val recentMoviesHistoryUseCase: GetRecentMoviesHistoryUseCase,
+    private val recentTvShowHistoryUseCase: GetRecentTVShowHistoryUseCase,
     private val saveRecentMoviesHistoryUseCase: SaveRecentMoviesHistoryUseCase,
-    private val saveRecentTVShowHistoryUseCase: GetRecentTVShowHistoryUseCase,
+    private val saveRecentTVShowHistoryUseCase: SaveRecentTVShowsHistoryUseCase,
     private val deleteQueryFromMoviesHistoryUseCase: DeleteQueryFromMoviesHistoryUseCase,
     private val deleteQueryFromTVShowHistoryUseCase: DeleteQueryFromTVShowsHistoryUseCase,
     private val clearMoviesSearchHistoryUseCase: ClearMoviesSearchHistoryUseCase,
     private val clearTvShowSearchHistoryUseCase: ClearTVShowSearchHistoryUseCase,
     private val getMovieGenresUseCase: GetMovieGenresUseCase,
-    private val getSeriesGenresUseCase: GetTVShowGenresUseCase,
-) : BaseViewModel<SearchUiState, SearchScreenEffect>(SearchUiState()), SearchScreenInteractionListener,
+    private val getTVShowGenresUseCase: GetTVShowGenresUseCase,
+    ) : BaseViewModel<SearchUiState, SearchScreenEffect>(SearchUiState()),
+    SearchScreenInteractionListener,
     FilterInteractionListener {
 
     private val _recentSearchState = MutableStateFlow<List<String>>(emptyList())
@@ -65,32 +65,86 @@ class SearchViewModel(
         loadRecentSearch()
     }
 
+    // region Recent Searches
     private fun loadRecentSearches() {
-        startLoading()
+        updateUiStateWithLoading()
         tryToCall(
-            call = { getRecentHistoryUseCase() },
-            onSuccess = ::onLoadRecentSearchesSuccess,
-            onError = {
-                updateState {
-                    it.copy(
-                        errorMessage = it.errorMessage ?: "Failed to load recent searches",
-                        isLoading = false
-                    )
+            call = {
+                coroutineScope {
+                    val movies = async { recentMoviesHistoryUseCase() }
+                    val tvShows = async { recentTvShowHistoryUseCase() }
+                    val recentSearches = movies.await() + tvShows.await()
+                    recentSearches.distinct()
                 }
-            }
+            },
+            onSuccess = ::onLoadRecentSearchesSuccess,
+            onError = ::updateRecentSearchesWithError
         )
+    }
+
+    private fun updateRecentSearchesWithError(error: ErrorUiState) {
+        updateState { screenState ->
+            screenState.copy(
+                errorMessage = error.message ?: FAILED_RECENT_SEARCHES,
+                isLoading = false
+            )
+        }
     }
 
     private fun onLoadRecentSearchesSuccess(recentSearches: List<String>) {
         updateState { it.copy(recentSearches = recentSearches, errorMessage = null) }
     }
 
-    private fun onClearAllRecentSearchesSuccess(unit: Unit) {
+    private fun onClearAllRecentSearchesSuccess() {
         updateState { it.copy(recentSearches = emptyList()) }
-        return unit
     }
 
-    @OptIn(FlowPreview::class)
+    override fun onRecentSearchClicked(query: String) {
+        onSearchQueryChanged(
+            TextFieldValue(
+                text = query,
+            )
+        )
+    }
+
+    override fun onRecentSearchCleared(query: String) {
+        updateState { it.copy(isLoading = false) }
+        tryToCall(
+            call = {
+                deleteQueryFromMoviesHistoryUseCase(query)
+                deleteQueryFromTVShowHistoryUseCase(query)
+            },
+            onSuccess = { loadRecentSearches() },
+            onError = ::updateRecentSearchClearedWithError,
+        )
+    }
+
+    override fun onAllRecentSearchesCleared() {
+        updateState { it.copy(isLoading = false) }
+        tryToCall(
+            call = {
+                clearMoviesSearchHistoryUseCase()
+                clearTvShowSearchHistoryUseCase()
+            },
+            onSuccess = { onClearAllRecentSearchesSuccess() },
+            onError = ::updateRecentSearchClearedWithError,
+        )
+    }
+
+    private fun updateRecentSearchClearedWithError(error: ErrorUiState) {
+        updateState { screenState ->
+            screenState.copy(
+                errorMessage = error.message,
+                isLoading = false,
+                isDialogVisible = false
+            )
+        }
+    }
+
+    // endregion
+
+
+    //    @OptIn(FlowPreview::class)
     private fun observeSearchKeywordChanges() {
         viewModelScope.launch {
             combine(
@@ -114,125 +168,96 @@ class SearchViewModel(
         }
     }
 
+    //region TVShow Search
     private fun fetchTvShowsByQuery(query: String) {
+        updateScreenStateToLoading()
         tryToCall(
-            call = {
-                Pager(
-                    config = PagingConfig(pageSize = 20, initialLoadSize = 20),
-                    pagingSourceFactory = {
-                        BasePagingSource(
-                            call = { page ->
-                                searchTvShowsUseCase.invoke(
-                                    query = query,
-                                    page = page
-                                )
-                            }
-                        )
-                    }
-                ).flow
-                    .map { it.map { it.toUiState() } }
-                    .map { pagingData ->
-                        pagingData.filter { tvUiState ->
-                            val selectedRating =
-                                state.value.filterItemUiState.filterTvShowSelected.selectedRating
-                            val selectedGenreId =
-                                state.value.filterItemUiState.filterTvShowSelected.selectedGenres
-                            val matchesRating =
-                                convertArabicToEnglish(tvUiState.rating.replace('٫', '.'))
-                                    .toFloatOrNull()
-                                    ?.let { it > selectedRating } == true
-                            val matchesGenre =
-                                selectedGenreId == -1 || tvUiState.genre.any { it == selectedGenreId }
-                            matchesGenre && matchesRating
-                        }
-                    }.cachedIn(viewModelScope)
-            },
+            call = { getFilterTVShowAsFlow(query) },
             onSuccess = ::onFetchTvShowsSuccess,
-            onError = { error ->
-                updateState {
-                    it.copy(errorMessage = error.message, isLoading = false)
-                }
-            }
+            onError = ::updateScreenStateToError
         )
     }
 
-    private fun fetchMoviesByQuery(query: String) {
-        updateState { it.copy(isLoading = true) }
-        tryToCall(
-            call = {
-                Pager(
-                    config = PagingConfig(pageSize = 10, initialLoadSize = 10),
-                    pagingSourceFactory = {
-                        BasePagingSource(
-                            call = { page ->
-                                searchMoviesUseCase.invoke(
-                                    query = query,
-                                    page = page
-                                )
-                            }
-                        )
-                    }
-                ).flow
-                    .map { pagingData -> pagingData.map { it.toMovieUIState() } }
-                    .map { pagingData ->
-                        pagingData.filter { movieUiState ->
-                            val selectedRating =
-                                state.value.filterItemUiState.filterMovieSelected.selectedRating
-                            val selectedGenreId =
-                                state.value.filterItemUiState.filterMovieSelected.selectedGenres
-                            val matchesRating =
-                                convertArabicToEnglish(movieUiState.rating.replace('٫', '.'))
-                                    .toFloatOrNull()
-                                    ?.let { it > selectedRating } == true
-                            val matchesGenre =
-                                selectedGenreId == -1 || movieUiState.genre.any { it == selectedGenreId }
-                            matchesGenre && matchesRating
-                        }
-                    }.cachedIn(viewModelScope)
-            },
-            onSuccess = ::onFetchMoviesSuccess,
-            onError = { error ->
-                updateState {
-                    it.copy(errorMessage = error.message, isLoading = false)
-                }
+    private fun getFilterTVShowAsFlow(query: String): Flow<PagingData<TVShowUiState>> {
+        val selectedRating =
+            state.value.filterItemUiState.filterMovieSelected.selectedRating
+        val selectedGenreId =
+            state.value.filterItemUiState.filterMovieSelected.selectedGenres
+
+        return Pager(
+            config = defaultPageConfigurations(),
+            pagingSourceFactory = {
+                TVShowSearchPagingSource(
+                    searchTVShowsUseCase = searchTVShowsUseCase,
+                    query = query,
+                    selectedRating = selectedRating,
+                    selectedGenreId = selectedGenreId
+                )
             }
-        )
+        ).flow.cachedIn(viewModelScope)
     }
-
-    private fun convertArabicToEnglish(input: String): String {
-        val arabicDigits = "٠١٢٣٤٥٦٧٨٩".toCharArray()
-        val englishDigits = "0123456789"
-
-        return input.map { char ->
-            val index = arabicDigits.indexOf(char)
-            if (index != -1) englishDigits[index] else char
-        }.joinToString("")
-    }
-
 
     private fun onFetchTvShowsSuccess(tvShowsFlow: Flow<PagingData<TVShowUiState>>) {
         updateState { it.copy(tvShows = tvShowsFlow, errorMessage = null, isLoading = false) }
+    }
+    // endregion
+
+    // region Movie Search
+    private fun fetchMoviesByQuery(query: String) {
+        updateScreenStateToLoading()
+        tryToCall(
+            call = { getFilterMovieAsFlow(query) },
+            onSuccess = ::onFetchMoviesSuccess,
+            onError = ::updateScreenStateToError
+        )
+    }
+
+    private fun getFilterMovieAsFlow(query: String): Flow<PagingData<MovieUIState>> {
+        val selectedRating =
+            state.value.filterItemUiState.filterMovieSelected.selectedRating
+        val selectedGenreId =
+            state.value.filterItemUiState.filterMovieSelected.selectedGenres
+
+        return Pager(
+            config = defaultPageConfigurations(),
+            pagingSourceFactory = {
+                MovieSearchPagingSource(
+                    searchMoviesUseCase = searchMoviesUseCase,
+                    query = query,
+                    selectedRating = selectedRating,
+                    selectedGenreId = selectedGenreId
+                )
+            }
+        ).flow.cachedIn(viewModelScope)
     }
 
     private fun onFetchMoviesSuccess(moviesFlow: Flow<PagingData<MovieUIState>>) {
         updateState { it.copy(movies = moviesFlow, errorMessage = null, isLoading = false) }
     }
+    // endregion
+    private fun updateScreenStateToError(errorUiState: ErrorUiState) =
+        updateState { screenState ->
+            screenState.copy(
+                errorMessage = errorUiState.message,
+                isLoading = false
+            )
+        }
+
+    private fun updateScreenStateToLoading() =
+        updateState { screenState -> screenState.copy(isLoading = true) }
+
 
     override fun onSearchActionClicked() {
         onSearchQueryChanged(state.value.searchQuery)
         tryToCall(
-            call = { saveRecentHistoryUseCase },
+            call = {
+                saveRecentMoviesHistoryUseCase(state.value.searchQuery.text)
+                saveRecentTVShowHistoryUseCase(state.value.searchQuery.text)
+            },
             onSuccess = {
                 updateState { it.copy(isLoading = false) }
             },
-            onError = { error ->
-                updateState {
-                    it.copy(
-                        errorMessage = error.message,
-                        isLoading = false
-                    )
-                }
-            }
+            onError = ::updateScreenStateToError
         )
     }
 
@@ -255,8 +280,8 @@ class SearchViewModel(
         sendNewEffect(SearchScreenEffect.NavigateToActorSearchScreen)
     }
 
-    private fun startLoading() {
-        updateState { it.copy(isLoading = true) }
+    private fun updateUiStateWithLoading() {
+        updateState { it.copy(isLoading = true, errorMessage = null) }
     }
 
     override fun onTabOptionClicked(tabOption: TabOption) {
@@ -280,48 +305,6 @@ class SearchViewModel(
             TabOption.TV_SHOWS -> MediaType.TV_SHOW.name
         }
         sendNewEffect(SearchScreenEffect.NavigatedToMovieDetailsScreen(id = mediaId, mediaType))
-    }
-
-    override fun onRecentSearchClicked(query: String) {
-        onSearchQueryChanged(
-            TextFieldValue(
-                text = query,
-            )
-        )
-    }
-
-    override fun onRecentSearchCleared(query: String) {
-        updateState { it.copy(isLoading = false) }
-        tryToCall(
-            call = { deleteQueryFromHistoryUseCase(query) },
-            onSuccess = { loadRecentSearches() },
-            onError = { error ->
-                updateState {
-                    it.copy(
-                        errorMessage = error.message,
-                        isLoading = false,
-                        isDialogVisible = false
-                    )
-                }
-            }
-        )
-    }
-
-    override fun onAllRecentSearchesCleared() {
-        updateState { it.copy(isLoading = false) }
-        tryToCall(
-            call = { clearSearchHistoryUseCase },
-            onSuccess = ::onClearAllRecentSearchesSuccess,
-            onError = { error ->
-                updateState {
-                    it.copy(
-                        errorMessage = error.message,
-                        isLoading = false,
-                        isDialogVisible = false
-                    )
-                }
-            }
-        )
     }
 
     override fun onFilterButtonClicked() {
@@ -375,7 +358,6 @@ class SearchViewModel(
         }
     }
 
-
     override fun onFilterGenreChanged(genreId: Int) {
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> {
@@ -417,7 +399,6 @@ class SearchViewModel(
             }
         }
     }
-
 
     override fun onApplyButtonClicked() {
         updateState {
@@ -475,100 +456,87 @@ class SearchViewModel(
 
     private fun loadRecentSearch() {
         viewModelScope.launch {
-            val recentHistoryQueries = getRecentHistoryUseCase()
-            _recentSearchState.value = recentHistoryQueries
+            _recentSearchState.value = recentMoviesHistoryUseCase() + recentTvShowHistoryUseCase()
         }
     }
 
     fun deleteQueryFromHistory(query: String) {
         viewModelScope.launch {
-            deleteQueryFromHistoryUseCase(query)
+            deleteQueryFromMoviesHistoryUseCase(query)
+            deleteQueryFromTVShowHistoryUseCase(query)
             loadRecentSearch()
         }
     }
 
     fun clearSearchHistory() {
         viewModelScope.launch {
-            clearSearchHistoryUseCase()
+            clearMoviesSearchHistoryUseCase()
+            clearTvShowSearchHistoryUseCase()
             loadRecentSearch()
         }
     }
 
-
     private fun loadMovieFilterGenre() {
         tryToCall(
             call = {
-                val genres = getMovieGenresUseCase()
-                val all = GenreUiState(-1, "All", isSelected = true)
-                val realGenre = genres.map { genre ->
-                    GenreUiState(
-                        id = genre.id ?: -1,
-                        name = genre.name ?: "Unknown",
-                        isSelected = false
-                    )
-                }
-                listOf(all) + realGenre
+                defaultGenreUiStates(getMovieGenresUseCase())
             },
-            onSuccess = { filterGenres ->
-                updateState {
-                    it.copy(
-                        filterItemUiState = it.filterItemUiState.copy(
-                            filterMovieSelected = it.filterItemUiState.filterMovieSelected.copy(
-                                genreUiStates = filterGenres
-                            )
-                        )
-                    )
-                }
-            },
-            onError = { error ->
-                updateState {
-                    it.copy(
-                        errorMessage = error.message,
-                        isLoading = false
-                    )
-                }
-            }
+            onSuccess = ::onFetchMovieGenresSuccess,
+            onError = ::updateRecentSearchesWithError
         )
+    }
+
+    private fun onFetchMovieGenresSuccess(filterGenres: List<GenreUiState>) {
+        updateState {
+            it.copy(
+                filterItemUiState = it.filterItemUiState.copy(
+                    filterMovieSelected = it.filterItemUiState.filterMovieSelected.copy(
+                        genreUiStates = filterGenres
+                    )
+                )
+            )
+        }
     }
 
     private fun loadTvShowFilterGenre() {
         tryToCall(
             call = {
-                val genres = getSeriesGenresUseCase()
-                val all = GenreUiState(-1, "All", isSelected = true)
-                val realGenre = genres.map { genre ->
-                    GenreUiState(
-                        id = genre.id ?: -1,
-                        name = genre.name ?: "Unknown",
-                        isSelected = false
-                    )
-                }
-                listOf(all) + realGenre
+                defaultGenreUiStates(getTVShowGenresUseCase())
             },
-            onSuccess = { filterGenres ->
-                updateState {
-                    it.copy(
-                        filterItemUiState = it.filterItemUiState.copy(
-                            filterTvShowSelected = it.filterItemUiState.filterTvShowSelected.copy(
-                                genreUiStates = filterGenres
-                            )
-                        )
-                    )
-                }
-            },
-            onError = { error ->
-                updateState {
-                    it.copy(
-                        errorMessage = error.message,
-                        isLoading = false
-                    )
-                }
-            }
+            onSuccess = ::onFetchTVShowGenresSuccess,
+            onError = ::updateScreenStateToError
         )
     }
 
+    private fun defaultGenreUiStates(genres: List<Genre>): List<GenreUiState> {
+        val all = GenreUiState(-1, "All", isSelected = true)
+        val realGenre = genres.map { genre ->
+            GenreUiState(
+                id = genre.id ?: -1,
+                name = genre.name ?: "Unknown",
+                isSelected = false
+            )
+        }
+        return listOf(all) + realGenre
+    }
+
+    private fun onFetchTVShowGenresSuccess(filterGenres: List<GenreUiState>) {
+        updateState {
+            it.copy(
+                filterItemUiState = it.filterItemUiState.copy(
+                    filterTvShowSelected = it.filterItemUiState.filterTvShowSelected.copy(
+                        genreUiStates = filterGenres
+                    )
+                )
+            )
+        }
+    }
 
     fun onItemClicked(query: TextFieldValue) {
         updateState { it.copy(searchQuery = query, isLoading = true) }
+    }
+
+    companion object {
+        const val FAILED_RECENT_SEARCHES = "Failed to load recent searches"
     }
 }
