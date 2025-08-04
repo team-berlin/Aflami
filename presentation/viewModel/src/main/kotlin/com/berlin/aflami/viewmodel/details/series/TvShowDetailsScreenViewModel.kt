@@ -18,7 +18,6 @@ import com.berlin.aflami.viewmodel.mapper.toReviewUiState
 import com.berlin.aflami.viewmodel.mapper.tvShowToUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
-import com.berlin.entity.ContinueWatchingMoviesModel
 import com.berlin.entity.TVShow
 import kotlinx.coroutines.launch
 import usecase.mediadetails.GetTVShowVideos
@@ -95,8 +94,8 @@ class TvShowDetailsScreenViewModel(
                     posterURL = tvShowUiState.posterUrl,
                     screenShot = tvShowUiState.posterUrl,
                     description = tvShowUiState.description,
-                    genres = tvShowUiState.genre,
-                    duration = tvShowUiState.duration,
+                    genres = emptyList(),
+                    duration = tvShowUiState.duration.toInt(),
                     hasVideo = true,
                     companyProductions = emptyList(),
                     originCountry = "",

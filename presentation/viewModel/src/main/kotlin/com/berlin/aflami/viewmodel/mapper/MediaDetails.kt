@@ -1,8 +1,8 @@
 package com.berlin.aflami.viewmodel.mapper
 
-import com.berlin.aflami.viewmodel.mediadetails.details.common.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.common.ReviewUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.series.EpisodeUiState
+import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.details.series.EpisodeUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.entity.Actor
 import com.berlin.entity.CompanyProduction

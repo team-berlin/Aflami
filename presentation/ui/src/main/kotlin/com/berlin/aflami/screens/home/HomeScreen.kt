@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.home
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -130,15 +131,21 @@ private fun onReceiveHomeScreenEffect(
         }
 
         HomeScreenEffect.NavigateToMoodPickerDialog -> TODO()
+
+
         is HomeScreenEffect.NavigateToMovieDetailsScreen -> {
+            Log.d("HomeScreenViewModel", "onReceiveHomeScreenEffect: ${homeScreenEffect.mediaId}")
             navController.navigate(
                 MovieDetailsDestination(homeScreenEffect.mediaId)
             )
         }
 
-        is HomeScreenEffect.NavigateToTVShowDetailsScreen -> navController.navigate(
-            MovieDetailsDestination(homeScreenEffect.mediaId)
-        )
+        is HomeScreenEffect.NavigateToTVShowDetailsScreen ->{
+            Log.d("HomeScreenViewModel", "onReceiveHomeScreenEffect: ${homeScreenEffect.mediaId}")
+            navController.navigate(
+                MovieDetailsDestination(homeScreenEffect.mediaId)
+            )
+        }
 
     }
 }

@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -20,7 +21,6 @@ import com.berlin.aflami.viewmodel.mapper.toMovieUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
-import com.berlin.entity.ContinueWatchingMoviesModel
 import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -47,11 +47,16 @@ class MovieDetailsViewModel @Inject constructor(
     MovieDetailsScreenState()
 ), MediaInteractionListener {
 
-    private val movieId = movieDetailsArgs.mediaId
-        ?: throw IllegalArgumentException("mediaId is null")
+    private val movieId = movieDetailsArgs.mediaId ?: 0
 
     init {
-        updateState { it.copy(movieUiState = it.movieUiState.copy(id = movieId)) }
+        updateState {
+            it.copy(
+                movieUiState = it.movieUiState.copy(id = movieId),
+                isScreenLoading = false
+            )
+        }
+        Log.d("MovieDetailsViewModel", "movieId: ${_state.value.movieUiState.id}")
         isMovieHasVideo(movieId = movieId)
         getMovieActors(movieId = movieId)
         getMovieDetails(movieId = movieId)
@@ -88,6 +93,7 @@ class MovieDetailsViewModel @Inject constructor(
                     screenState.copy(
                         posters = moviePosters,
                         movieUiState = movieUiState,
+                        isScreenLoading = false
                     )
                 }
                 saveMovieToContinueWatching(
@@ -99,7 +105,7 @@ class MovieDetailsViewModel @Inject constructor(
                         posterURL = movieUiState.posterUrl,
                         screenShot = movieUiState.posterUrl,
                         description =movieUiState.description,
-                        genres = movieUiState.genre,
+                        genres = emptyList(),
                         duration = movieUiState.duration.toInt(),
                         hasVideo = true,
                         companyProductions = emptyList(),
@@ -130,6 +136,7 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 castList = castUiStateList,
+                isScreenLoading = false
             )
         }
     }
@@ -160,7 +167,8 @@ class MovieDetailsViewModel @Inject constructor(
                 screenState.copy(
                     rowSection = MoviesRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_MORE_MEDIA)
-                    ), ,
+                    ),
+                    isScreenLoading = false
                 )
             }
         } else {
@@ -170,7 +178,8 @@ class MovieDetailsViewModel @Inject constructor(
                         content = MoviesTabContent.MoreLikeThis(
                             moreMoviesLikeThis = moreLikeThisMovieList
                         )
-                    ), ,
+                    ),
+                    isScreenLoading = false
                 )
             }
         }
@@ -195,7 +204,8 @@ class MovieDetailsViewModel @Inject constructor(
                 showDetailsUiState.copy(
                     rowSection = MoviesRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_REVIEWS)
-                    ), ,
+                    ),
+                    isScreenLoading = false
                 )
             }
         } else {
@@ -205,7 +215,8 @@ class MovieDetailsViewModel @Inject constructor(
                         content = MoviesTabContent.Reviews(
                             movieReviews = reviewResult
                         )
-                    ), ,
+                    ),
+                    isScreenLoading = false
                 )
             }
         }
@@ -232,7 +243,8 @@ class MovieDetailsViewModel @Inject constructor(
                         UiText.Resource(
                             NO_GALLERY
                         )
-                    ), ,
+                    ),
+                    isScreenLoading = false
                 )
             }
         } else {
@@ -242,7 +254,8 @@ class MovieDetailsViewModel @Inject constructor(
                         content = MoviesTabContent.Gallery(
                             images = backdrops
                         )
-                    ), ,
+                    ),
+                    isScreenLoading = false
                 )
             }
         }
@@ -265,7 +278,8 @@ class MovieDetailsViewModel @Inject constructor(
                     content = MoviesTabContent.CompanyProduction(
                         companyProductionsList = companyProductionUiState
                     )
-                ), ,
+                ),
+                isScreenLoading = false
             )
         }
     }
@@ -275,7 +289,8 @@ class MovieDetailsViewModel @Inject constructor(
             screenState.copy(
                 rowSection = MoviesRowSectionUiState.NoDataFound(
                     UiText.Resource(NO_COMPANY_PRODUCTION)
-                ), ,
+                ),
+                isScreenLoading = false
             )
         }
     }
@@ -287,13 +302,15 @@ class MovieDetailsViewModel @Inject constructor(
 
     override fun onReadMoreDescriptionClicked() = updateState { screenState ->
         screenState.copy(
-            isDescriptionExpanded = !screenState.isDescriptionExpanded, ,
+            isDescriptionExpanded = !screenState.isDescriptionExpanded,
+            isScreenLoading = false
         )
     }
 
     override fun onReadMoreReviewClicked(reviewId: String) = updateState { screenState ->
         screenState.copy(
-            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId), ,
+            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId),
+            isScreenLoading = false
         )
     }
 
@@ -367,7 +384,8 @@ class MovieDetailsViewModel @Inject constructor(
             screenState.copy(
                 movieDetailsTabsUiState = screenState.movieDetailsTabsUiState.copy(
                     tab = movieDetailsTabs, isSelected = true
-                ), ,
+                ),
+                isScreenLoading = false
             )
         }
     }
@@ -383,7 +401,8 @@ class MovieDetailsViewModel @Inject constructor(
             screenState.copy(
                 rowSection = MoviesRowSectionUiState.Error(
                     errorState.message
-                ), ,
+                ),
+                isScreenLoading = false
             )
         }
     }
@@ -391,7 +410,8 @@ class MovieDetailsViewModel @Inject constructor(
     private fun updateScreenStateToError(errorState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message, ,
+                errorMessage = errorState.message,
+                isScreenLoading = false
             )
         }
     }

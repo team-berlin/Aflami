@@ -103,7 +103,6 @@ private fun onReceiveSearchByCountryEffect(
             navController.navigate(
                 MovieDetailsDestination(
                     movieId = effect.movieId,
-                    mediaType = MediaType.valueOf("MOVIE"),
                 )
             )
         }

@@ -45,6 +45,7 @@ object TopRatingMediaDestination
 
 @Serializable
 data class MovieDetailsDestination(val movieId: Long)
+
 @Serializable
 data class TVShowDetailsDestination(val tvShowId: Long)
 

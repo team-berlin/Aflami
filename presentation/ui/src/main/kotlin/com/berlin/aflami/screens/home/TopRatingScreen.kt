@@ -58,7 +58,7 @@ fun TopRatingScreen(
                 is TopRatingScreenEffect.NavigateToMediaDetailsScreen -> {
                     navController.navigate(
                         MovieDetailsDestination(
-                            effect.mediaId, effect.mediaType
+                            effect.mediaId
                         )
                     )
                 }

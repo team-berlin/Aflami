@@ -109,7 +109,6 @@ private fun onReceiveSearchByActorEffect(
             navController.navigate(
                 MovieDetailsDestination(
                     searchByActorScreenEffect.movieId,
-                    MediaType.valueOf("MOVIE"),
                 )
             )
         }

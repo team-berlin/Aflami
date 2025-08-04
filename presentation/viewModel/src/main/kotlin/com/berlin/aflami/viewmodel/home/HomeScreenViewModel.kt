@@ -210,8 +210,8 @@ class HomeScreenViewModel @Inject constructor(
     override fun onClickViewDetails() {
         onDismissMoodPickerDialog()
         sendNewEffect(
-            HomeScreenEffect.NavigateToMediaDetailsScreen(
-                state.value.moodPickerUiState.selectedMovie.id, MediaType.MOVIE
+            HomeScreenEffect.NavigateToMovieDetailsScreen(
+                state.value.moodPickerUiState.selectedMovie.id
             )
         )
     }
@@ -290,11 +290,14 @@ class HomeScreenViewModel @Inject constructor(
         sendNewEffect(HomeScreenEffect.NavigateToMovieDetailsScreen(id))
 
 
-    override fun onMovieCardClicked(mediaId: Long) =
+    override fun onMovieCardClicked(mediaId: Long) {
+        Log.d("HomeScreenViewModel", "onMovieCardClicked: $mediaId")
         sendNewEffect(HomeScreenEffect.NavigateToMovieDetailsScreen(mediaId))
+    }
 
     override fun onTVShowCardClicked(mediaId: Long) =
         sendNewEffect(HomeScreenEffect.NavigateToTVShowDetailsScreen(mediaId))
+
     //region onChangeUpComingMovieGenre
     override fun onChangeUpcomingMovieGenre(newGenreId: Int) {
         updateState { screenState ->

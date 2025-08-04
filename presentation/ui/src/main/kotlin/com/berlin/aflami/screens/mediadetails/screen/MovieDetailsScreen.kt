@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
@@ -46,6 +47,7 @@ import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsViewModel
 import com.berlin.aflami.viewmodel.details.movie.UiText
+import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 
@@ -54,7 +56,7 @@ fun MovieDetailsScreen(
     viewModel: MovieDetailsViewModel = hiltViewModel(),
 ) {
     val navController = Theme.navController
-    val uiState by viewModel.state.collectAsState()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
@@ -262,6 +264,15 @@ fun MoviesRowSectionUiState.getDisplayMessage(): String {
     return when (this) {
         is MoviesRowSectionUiState.Error -> this.message.orEmpty()
         is MoviesRowSectionUiState.NoDataFound -> this.message.asString()
+        else -> "Unknown error!"
+    }
+}
+
+@Composable
+fun TVShowRowSectionUiState.getDisplayMessage(): String {
+    return when (this) {
+        is TVShowRowSectionUiState.Error -> this.message.orEmpty()
+        is TVShowRowSectionUiState.NoDataFound -> this.message.asString()
         else -> "Unknown error!"
     }
 }
