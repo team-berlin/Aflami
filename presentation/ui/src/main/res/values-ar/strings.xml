@@ -61,6 +61,14 @@
     <string name="retry">إعادة المحاولة</string>
     <string name="apply">اضافه</string>
     <string name="clear">مسح</string>
+    <string name="movies_that_feel_you">Movies That Feel You</string>
+    <string name="page1_descerption">This isn’t just a movie app — it’s a mood experience. Tap your vibe and let the story begin.</string>
+    <string name="build_your_watchlist_show_love">Build Your Watchlist, show love</string>
+    <string name="page2_description">Save your favorite picks, track your moods, and come back to find something new every day.</string>
+    <string name="your_movie_journal">Your Movie Journal</string>
+    <string name="page3_description">Keep track of what you’ve watched, how you felt, and what you loved. Your film journey, remembered.</string>
+    <string name="guess_play"><![CDATA[Guess & Play!]]></string>
+    <string name="page4_description">Put your film knowledge to the test with exciting quizzes. Every right guess brings you closer to the next movie adventure.</string>
 
 
 </resources>
