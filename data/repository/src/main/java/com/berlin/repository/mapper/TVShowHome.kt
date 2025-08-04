@@ -22,4 +22,3 @@ fun TVShowHomeEntity.toDomain(): TVShow {
         galleryUrl = emptyList()
     )
 }
-
