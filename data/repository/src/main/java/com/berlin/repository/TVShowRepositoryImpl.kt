@@ -4,12 +4,16 @@ import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocalEntity
 import com.berlin.repository.mapper.toPopularTVShowEntity
+import com.berlin.repository.mapper.toTopRateTVShowEntity
+import com.berlin.repository.util.Constants
 import repository.TVShowRepository
 import javax.inject.Inject
 
@@ -31,22 +35,35 @@ class TVShowRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedTVShows(page: Int): List<TVShow> {
-        return remoteDataSource.getTopRatedSeries(page).results?.map { seriesDto ->
-            seriesDto.toDomain(
-            )
+        val localTVShows = homeLocalDataSource.getTVShows()
+        if (!isExpiredOrEmpty(localTVShows)) {
+            return localTVShows.map { it.toDomain() }
+        }
+
+        val remoteTVShows = remoteDataSource.getTopRatedSeries(page).results?.map { seriesDto ->
+            seriesDto.toDomain()
         } ?: emptyList()
+        if (remoteTVShows.isNotEmpty()) {
+            homeLocalDataSource.clearTVShows()
+            homeLocalDataSource.addTVShows(remoteTVShows.map { it.toTopRateTVShowEntity() })
+        }
+
+        return remoteTVShows
     }
 
     override suspend fun getPopularTVShows(): List<TVShow> {
         val localTVShows = homeLocalDataSource.getTVShows()
-        if (localTVShows.isNotEmpty()) {
+        if (!isExpiredOrEmpty(localTVShows)) {
             return localTVShows.map { it.toDomain() }
         }
+
         val remoteTVShows = remoteDataSource.getPopularTVShows().results
             ?.map { it.toDomain() } ?: emptyList()
         if (remoteTVShows.isNotEmpty()) {
+            homeLocalDataSource.clearTVShows()
             homeLocalDataSource.addTVShows(remoteTVShows.map { it.toPopularTVShowEntity() })
         }
+
         return remoteTVShows
     }
 
@@ -81,4 +98,9 @@ class TVShowRepositoryImpl @Inject constructor(
         recentHistoryLocalDataSource.clearSearchHistory()
     }
 
+    private fun isExpiredOrEmpty(list: List<TVShowHomeEntity>): Boolean {
+        return list.isEmpty() || list.any {
+            System.currentTimeMillis() - it.addedAt > Constants.HOME_CACHE_TIMEOUT_MILLIS
+        }
+    }
 }
