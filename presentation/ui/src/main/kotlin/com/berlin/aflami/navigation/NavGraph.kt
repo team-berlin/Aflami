@@ -17,8 +17,8 @@ import com.berlin.aflami.navigation.routes.gamesRoute
 import com.berlin.aflami.navigation.routes.homeScreenRoute
 import com.berlin.aflami.navigation.routes.listsRoute
 import com.berlin.aflami.navigation.routes.loginRoute
-import com.berlin.aflami.navigation.routes.onBoarding
 import com.berlin.aflami.navigation.routes.movieDetailsRoute
+import com.berlin.aflami.navigation.routes.onBoarding
 import com.berlin.aflami.navigation.routes.profileRoute
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchByCountryRoute
@@ -44,6 +44,7 @@ import com.berlin.aflami.navigation.routes.webView
 fun AflamiNavGraph(
     modifier: Modifier = Modifier,
     isLoggedIn: Boolean,
+    isFirsTime: Boolean,
     navController: NavHostController,
 ) {
     Scaffold(
@@ -56,8 +57,11 @@ fun AflamiNavGraph(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = OnBoardingDestination,
-//            startDestination = if (isLoggedIn) NavigationBarDestinations.HomeScreen else OnBoardingDestination,
+            startDestination = when {
+                isLoggedIn -> NavigationBarDestinations.HomeScreen
+                isFirsTime -> OnBoardingDestination
+                else -> LoginDestination
+            },
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None }
         ) {
@@ -67,6 +71,7 @@ fun AflamiNavGraph(
             detailsNavigationGraph()
         }
     }
+
 }
 
 @Composable

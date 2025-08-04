@@ -1,5 +1,6 @@
 package com.berlin.aflami.di
 
+import com.berlin.local.datasource.AppEntryLocalDataSourceImpl
 import com.berlin.local.datasource.AuthenticationLocalDataSourceImp
 import com.berlin.local.datasource.CategoriesPreferencesDataSourceImpl
 import com.berlin.local.datasource.RecentlyWatchedLocalDataSourceImpl
@@ -8,6 +9,7 @@ import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
 import com.berlin.local.datasource.SearchLocalDataSourceImpl
 import com.berlin.remote.AuthenticationRemoteDataSourceImpl
 import com.berlin.remote.RetrofitRemoteDataSource
+import com.berlin.repository.datasource.local.AppEntryLocalDataSource
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
@@ -74,4 +76,10 @@ abstract class DataSourceModule {
     abstract fun bindGenreLocalDataSource(
         impl: GenreLocalDataSourceImpl
     ): GenreLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAppEntryDataSource(
+        impl: AppEntryLocalDataSourceImpl
+    ): AppEntryLocalDataSource
 }

@@ -12,6 +12,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -23,18 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.OnBoardingDestination
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.onboarding.OnBoardingScreenEffect
 import com.berlin.aflami.viewmodel.onboarding.OnBoardingViewModel
 import com.berlin.ui.R
 import kotlinx.coroutines.CoroutineScope
-
-data class OnBoardingModel(
-    val image: Painter,
-    val title: String,
-    val description: String
-)
-
 
 @Composable
 fun OnBoardingScreen(
@@ -64,9 +59,7 @@ fun OnBoardingScreen(
             description = stringResource(R.string.page4_description)
         )
     )
-    val state = viewModel.isFirstEntry.collectAsState()
-    val isFirstEntry = state.value
-
+    val isFirstEntry by viewModel.isFirstEntry.collectAsState()
     val onBoardingPageState = rememberPagerState(initialPage = 0) {
         onBoardingList.size
     }
@@ -74,24 +67,37 @@ fun OnBoardingScreen(
     val coroutineScope = rememberCoroutineScope()
     val navController = Theme.navController
 
+
+    if (!isFirstEntry) {
+        navController.navigate(
+            LoginDestination
+        ) {
+            popUpTo(OnBoardingDestination) { inclusive = true }
+        }
+
+    }
+
     LaunchedEffect(Unit) {
-       viewModel.effect.collect{effect->
-           when(effect){
-               OnBoardingScreenEffect.NavigateToLogin -> {
-                   navController.navigate(
-                       LoginDestination
-                   )
-               }
-           }
-       }
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                OnBoardingScreenEffect.NavigateToLogin -> {
+                    viewModel.saveFirstEntry()
+                    navController.navigate(
+                        LoginDestination
+                    ){
+                        popUpTo(OnBoardingDestination) { inclusive = true }
+
+                    }
+                }
+            }
+        }
     }
 
     OnBoardingContent(
         onBoardingList = onBoardingList,
-        navigateToLogin = {viewModel.onClickSkip()},
+        navigateToLogin = { viewModel.onClickSkip() },
         pagerState = onBoardingPageState,
         coroutineScope = coroutineScope,
-        state = isFirstEntry
     )
 
 
@@ -100,10 +106,9 @@ fun OnBoardingScreen(
 @Composable
 fun OnBoardingContent(
     onBoardingList: List<OnBoardingModel>,
-    navigateToLogin: () -> Unit ,
+    navigateToLogin: () -> Unit,
     pagerState: PagerState,
     coroutineScope: CoroutineScope,
-    state: Boolean
 ) {
     val lastPage = remember { pagerState.pageCount - 1 }
 
