@@ -17,6 +17,7 @@ import com.berlin.aflami.navigation.routes.gamesRoute
 import com.berlin.aflami.navigation.routes.homeScreenRoute
 import com.berlin.aflami.navigation.routes.listsRoute
 import com.berlin.aflami.navigation.routes.loginRoute
+import com.berlin.aflami.navigation.routes.onBoarding
 import com.berlin.aflami.navigation.routes.movieDetailsRoute
 import com.berlin.aflami.navigation.routes.profileRoute
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
@@ -55,7 +56,8 @@ fun AflamiNavGraph(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = if (isLoggedIn) NavigationBarDestinations.HomeScreen else LoginDestination,
+            startDestination = OnBoardingDestination,
+//            startDestination = if (isLoggedIn) NavigationBarDestinations.HomeScreen else OnBoardingDestination,
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None }
         ) {
@@ -114,6 +116,7 @@ fun NavGraphBuilder.searchNavigationGraph() {
 }
 
 fun NavGraphBuilder.loginNavigationGraph() {
+    onBoarding()
     loginRoute()
     webView()
 }
