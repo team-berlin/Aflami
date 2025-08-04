@@ -4,6 +4,7 @@ import com.berlin.local.datasource.AuthenticationLocalDataSourceImp
 import com.berlin.local.datasource.CategoriesPreferencesDataSourceImpl
 import com.berlin.local.datasource.RecentlyWatchedLocalDataSourceImpl
 import com.berlin.local.datasource.GenreLocalDataSourceImpl
+import com.berlin.local.datasource.HomeLocalDataSourceImp
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
 import com.berlin.local.datasource.SearchLocalDataSourceImpl
 import com.berlin.remote.AuthenticationRemoteDataSourceImpl
@@ -12,6 +13,7 @@ import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.GenreLocalDataSource
+import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
@@ -68,10 +70,15 @@ abstract class DataSourceModule {
         impl: RecentlyWatchedLocalDataSourceImpl
     ): RecentlyWatchedLocalDataSource
 
-
     @Binds
     @Singleton
     abstract fun bindGenreLocalDataSource(
         impl: GenreLocalDataSourceImpl
     ): GenreLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindHomeLocalDataSource(
+        impl: HomeLocalDataSourceImp
+    ): HomeLocalDataSource
 }
