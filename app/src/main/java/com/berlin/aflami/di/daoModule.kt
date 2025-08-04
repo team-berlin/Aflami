@@ -4,6 +4,7 @@ import com.berlin.local.AflamiDatabase
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
+import com.berlin.local.dao.MediaHomeDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
 import dagger.Module
@@ -45,4 +46,11 @@ object DaoModule {
     fun provideGenreDao(db: AflamiDatabase): GenreDao {
         return db.genreDao()
     }
+    @Provides
+    @Singleton
+    fun provideMediaHomeDao(db: AflamiDatabase): MediaHomeDao {
+        return db.mediaHomeDao()
+    }
+
+
 }
