@@ -16,4 +16,5 @@ data class Movie(
     val originCountry: String,
     val galleryUrl:List<String>,
     val reviews: List<Review>,
+    val isFavourite:Boolean,
 )

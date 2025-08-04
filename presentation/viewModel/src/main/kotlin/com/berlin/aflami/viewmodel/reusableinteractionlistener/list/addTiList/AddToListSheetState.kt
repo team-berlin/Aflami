@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.reusableinteractionlistener.addTiList
+package com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList
 
 import androidx.compose.runtime.Immutable
 

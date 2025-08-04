@@ -13,4 +13,6 @@ data class MediaUiState(
     val companyProductionUiState: List<CompanyProductionUiState> = emptyList(),
     val genre: List<Int> = emptyList(),
     val poster: String = "",
+    val isFavourite: Boolean = false,
+    val userRate: Double = 0.0,
 )

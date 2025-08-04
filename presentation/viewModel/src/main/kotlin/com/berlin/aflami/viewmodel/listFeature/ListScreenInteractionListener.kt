@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.list
+package com.berlin.aflami.viewmodel.listFeature
 
 interface ListScreenInteractionListener {
     fun onBackClicked()
