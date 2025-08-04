@@ -5,7 +5,7 @@ import repository.TVShowRepository
 import javax.inject.Inject
 
 class ContinueWatchingTVShowUseCase @Inject constructor(
-    private val repository: TVShowRepository
+    private val tvShowRepository: TVShowRepository
 ) {
-    suspend operator fun invoke(page:Int): List<TVShow> = repository.getContinueWatchingTVShows(page)
+    suspend operator fun invoke(page:Int): List<TVShow> = tvShowRepository.getContinueWatchingTVShows(page)
 }

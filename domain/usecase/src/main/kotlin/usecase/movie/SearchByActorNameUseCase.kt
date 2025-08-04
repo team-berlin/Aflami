@@ -4,8 +4,8 @@ import com.berlin.entity.Movie
 import repository.MovieRepository
 
 class SearchByActorNameUseCase(
-    private val repository: MovieRepository
+    private val movieRepository: MovieRepository
 ) {
     suspend operator fun invoke(actorName: String, page: Int): List<Movie> =
-        repository.getMoviesByActorName(actorName, page)
+        movieRepository.getMoviesByActorName(actorName, page)
 }

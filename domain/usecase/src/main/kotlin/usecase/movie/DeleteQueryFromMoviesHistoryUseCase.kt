@@ -3,7 +3,7 @@ package usecase.movie
 import repository.MovieRepository
 
 class DeleteQueryFromMoviesHistoryUseCase(
-    private val repository: MovieRepository
+    private val movieRepository: MovieRepository
 ) {
-    suspend operator fun invoke(query: String) = repository.deleteMovieQueryFromHistory(query)
+    suspend operator fun invoke(query: String) = movieRepository.deleteMovieQueryFromHistory(query)
 }

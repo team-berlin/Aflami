@@ -3,7 +3,7 @@ package usecase.auth
 import repository.AuthenticationRepository
 
 class GetLogoutUseCase(
-    private val repository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository
 ) {
-    suspend operator fun invoke() = repository.logout()
+    suspend operator fun invoke() = authenticationRepository.logout()
 }

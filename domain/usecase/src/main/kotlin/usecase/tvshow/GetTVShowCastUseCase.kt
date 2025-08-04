@@ -1,11 +1,11 @@
 package usecase.tvshow
 
 import com.berlin.entity.Actor
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 
 class GetTVShowCastUseCase(
-    private val tvShowDetailsRepository: TvShowDetailsRepository,
+    private val tvShowDetailsRepository: TVShowDetailsRepository,
 ) {
     suspend operator fun invoke(seriesId: Long): List<Actor> =
-        tvShowDetailsRepository.getSeriesCastDetails(seriesId)
+        tvShowDetailsRepository.getTVShowsCastDetails(seriesId)
 }

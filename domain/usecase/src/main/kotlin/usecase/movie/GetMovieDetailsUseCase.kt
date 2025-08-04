@@ -4,8 +4,8 @@ import com.berlin.entity.Movie
 import repository.MovieDetailsRepository
 
 class GetMovieDetailsUseCase(
-    private val repository: MovieDetailsRepository
+    private val movieDetailsRepository: MovieDetailsRepository
 ) {
     suspend operator fun invoke(id: Long): Movie =
-        repository.getMovieDetails(id)
+        movieDetailsRepository.getMovieDetails(id)
 }

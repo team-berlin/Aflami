@@ -3,8 +3,8 @@ package usecase.auth
 import repository.AuthenticationRepository
 
 class GetLoginUseCase(
-    private val repository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository
 ) {
     suspend operator fun invoke(userName: String, password: String) =
-        repository.login(userName, password)
+        authenticationRepository.login(userName, password)
 }
