@@ -29,7 +29,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             false
         }
-        return remoteDataSource.getTvShowDetailsById(tvShowId)
+        return remoteDataSource.getTVShowDetailsById(tvShowId)
             .toDomain(
                 galleryImages = galleryImages,
                 hasVideo = hasVideo,
@@ -38,7 +38,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
 
     override suspend fun getTVShowsImages(id: Long): MediaImage {
         return try {
-            val imagesResponse = remoteDataSource.getSeriesImagesById(id)
+            val imagesResponse = remoteDataSource.getTVShowsImagesById(id)
 
             val backdrops = imagesResponse.backdrops
                 ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
@@ -53,7 +53,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTVShowsCastDetails(seriesId: Long): List<Actor> {
-        return remoteDataSource.getSeriesCastDetailsById(
+        return remoteDataSource.getTVShowsCastDetailsById(
             seriesId
         ).cast?.mapNotNull { castItemDto ->
             castItemDto.toDomain()
@@ -64,7 +64,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
         val galleryImages = getTVShowsImages(seriesId).backdrops.take(10)
         val hasVideo = getTVShowVideos(seriesId).isNotEmpty()
 
-        return remoteDataSource.getSimilarSeriesById(seriesId).results?.mapNotNull { tvShowDto ->
+        return remoteDataSource.getSimilarTVShowsById(seriesId).results?.mapNotNull { tvShowDto ->
             tvShowDto.toDomain(
                 galleryImages = galleryImages,
                 hasVideo = hasVideo
@@ -73,7 +73,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTVShowReviews(seriesId: Long): List<Review> {
-        return remoteDataSource.getTvShowReviewsById(seriesId).results?.filterNotNull()
+        return remoteDataSource.getTVShowReviewsById(seriesId).results?.filterNotNull()
             ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
     }
 
@@ -90,7 +90,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTVShowsGenres(): List<Genre> {
-        return remoteDataSource.getSeriesGenres().genres.map { it.toDomain() }
+        return remoteDataSource.getTVShowsGenres().genres.map { it.toDomain() }
     }
 
     override suspend fun getTVShowVideos(seriesId: Long): List<Video> {

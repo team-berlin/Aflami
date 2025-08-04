@@ -71,7 +71,7 @@ class TVShowRepositoryImpl @Inject constructor(
         query: String,
         page: Int,
     ): List<TVShow> {
-        return remoteDataSource.getTvShowsByKeyword(query, page).results?.filterNotNull()?.map {
+        return remoteDataSource.getTVShowsByKeyword(query, page).results?.filterNotNull()?.map {
             it.toDomain()
         } ?: emptyList()
     }
