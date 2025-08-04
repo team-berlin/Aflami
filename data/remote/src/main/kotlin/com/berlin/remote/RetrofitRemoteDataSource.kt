@@ -14,15 +14,16 @@ import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import javax.inject.Inject
 
-class RetrofitRemoteDataSource @Inject constructor (
+class RetrofitRemoteDataSource @Inject constructor(
     private val apiService: ApiService
 ) : RemoteDataSource {
-
     override suspend fun getSimilarMovies(movieId: Long): BaseResponse<MovieDetailsDto> {
+        require(movieId > 0) { "Invalid movieId: $movieId" }
         return wrapApiResponse { apiService.getMovieSimilar(movieId) }
     }
 
     override suspend fun getMovieImages(movieId: Long): MediaImagesResponse {
+        require(movieId > 0) { "Invalid movieId: $movieId" }
         return wrapApiResponse { apiService.getMovieImages(movieId) }
     }
 
@@ -32,42 +33,47 @@ class RetrofitRemoteDataSource @Inject constructor (
     }
 
     override suspend fun getMovieDetails(movieId: Long): MovieDetailsDto {
+        require(movieId > 0) { "Invalid movieId: $movieId" }
         return wrapApiResponse { apiService.getMovieDetails(movieId) }
     }
 
     override suspend fun getMovieCastDetails(movieId: Long): MediaCastResponse {
+        require(movieId > 0) { "Invalid movieId: $movieId" }
         return wrapApiResponse { apiService.getMovieCastDetails(movieId) }
     }
 
     override suspend fun getMovieReviews(movieId: Long): BaseResponse<ReviewDto> {
+        require(movieId > 0) { "Invalid movieId: $movieId" }
         return wrapApiResponse { apiService.getMovieReviews(movieId) }
     }
 
     override suspend fun getUpComingMovies(): BaseResponse<MovieDetailsDto> {
-        return wrapApiResponse {
-            apiService.getUpcomingMovies()
-        }
+        return wrapApiResponse { apiService.getUpcomingMovies() }
     }
 
     override suspend fun getTvShowDetailsById(seriesId: Long): TVShowDetailsDto {
+        require(seriesId > 0) { "Invalid seriesId: $seriesId" }
         return wrapApiResponse { apiService.getTvShowDetails(seriesId) }
     }
 
     override suspend fun getSeriesCastDetailsById(seriesId: Long): MediaCastResponse {
+        require(seriesId > 0) { "Invalid seriesId: $seriesId" }
         return wrapApiResponse { apiService.getSeriesCastDetails(seriesId) }
     }
 
     override suspend fun getSimilarSeriesById(seriesId: Long): BaseResponse<TVShowDetailsDto> {
+        require(seriesId > 0) { "Invalid seriesId: $seriesId" }
         return wrapApiResponse { apiService.getSeriesSimilar(seriesId) }
     }
 
-    override suspend fun getTvShowReviewsById(id: Long): BaseResponse<ReviewDto> {
-        return wrapApiResponse { apiService.getSeriesReviews(id) }
+    override suspend fun getTvShowReviewsById(seriesId: Long): BaseResponse<ReviewDto> {
+        require(seriesId > 0) { "Invalid seriesId: $seriesId" }
+        return wrapApiResponse { apiService.getSeriesReviews(seriesId) }
     }
 
-    override suspend fun getEpisodeSeasonSeries(
-        seriesId: Long, seasonNumber: Int
-    ): SeasonEpisodesDto {
+    override suspend fun getEpisodeSeasonSeries(seriesId: Long, seasonNumber: Int): SeasonEpisodesDto {
+        require(seriesId > 0) { "Invalid seriesId: $seriesId" }
+        require(seasonNumber >= 0) { "Invalid seasonNumber: $seasonNumber" }
         return wrapApiResponse { apiService.getEpisodeSeasonSeries(seriesId, seasonNumber) }
     }
 
@@ -79,31 +85,23 @@ class RetrofitRemoteDataSource @Inject constructor (
         return wrapApiResponse { apiService.getSeriesGenres() }
     }
 
-    override suspend fun getMoviesByCountryName(
-        countryName: String, page: Int
-    ): BaseResponse<MovieDetailsDto> {
-        return wrapApiResponse {
-            apiService.searchMoviesByCountry(
-                countryName, page
-            )
-        }
+    override suspend fun getMoviesByCountryName(countryName: String, page: Int): BaseResponse<MovieDetailsDto> {
+        require(page > 0) { "Page must be greater than 0" }
+        return wrapApiResponse { apiService.searchMoviesByCountry(countryName, page) }
     }
 
-    override suspend fun getMoviesByActorName(
-        actorName: String, page: Int
-    ): BaseResponse<PersonDto> {
+    override suspend fun getMoviesByActorName(actorName: String, page: Int): BaseResponse<PersonDto> {
+        require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse { apiService.searchMoviesByActor(actorName, page) }
     }
 
-    override suspend fun getMoviesByKeyword(
-        query: String, page: Int
-    ): BaseResponse<MovieDetailsDto> {
+    override suspend fun getMoviesByKeyword(query: String, page: Int): BaseResponse<MovieDetailsDto> {
+        require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse { apiService.searchMovies(query, page) }
     }
 
-    override suspend fun getTvShowsByKeyword(
-        query: String, page: Int
-    ): BaseResponse<TVShowDetailsDto> {
+    override suspend fun getTvShowsByKeyword(query: String, page: Int): BaseResponse<TVShowDetailsDto> {
+        require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse { apiService.searchTvShows(query, page) }
     }
 
@@ -116,23 +114,27 @@ class RetrofitRemoteDataSource @Inject constructor (
     }
 
     override suspend fun getTopRatedMovies(page: Int): BaseResponse<MovieDetailsDto> {
+        require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse { apiService.getTopRatedMovies(page) }
     }
 
     override suspend fun getTopRatedSeries(page: Int): BaseResponse<TVShowDetailsDto> {
+        require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse { apiService.getTopRatedSeries(page) }
     }
 
     override suspend fun getMoviesByMoodIds(moodIds: List<Int>): BaseResponse<MovieDetailsDto> {
+        require(moodIds.isNotEmpty()) { "Mood IDs cannot be empty" }
         return wrapApiResponse { apiService.getMoviesByMoods(moodIds) }
     }
 
     override suspend fun getMovieVideos(movieId: Long): VideosResponse {
+        require(movieId > 0) { "Invalid movieId: $movieId" }
         return wrapApiResponse { apiService.getMovieVideos(movieId) }
     }
 
-    override suspend fun getTVShowVideos(tvShowId: Long): VideosResponse {
-        return wrapApiResponse { apiService.getTvShowVideos(tvShowId) }
+    override suspend fun getTVShowVideos(seriesId: Long): VideosResponse {
+        require(seriesId > 0) { "Invalid seriesId: $seriesId" }
+        return wrapApiResponse { apiService.getTvShowVideos(seriesId) }
     }
-
 }
