@@ -6,8 +6,8 @@ import com.berlin.entity.TVShow
 import repository.TVShowRepository
 
 class AddContinueWatchingTVShowUseCase(
-    private val repository: TVShowRepository
+    private val tVShowRepository: TVShowRepository
 ) {
     suspend operator fun invoke(tvShow:  TVShow) =
-        repository.addContinueWatchingTVShow(tvShow)
+        tVShowRepository.addContinueWatchingTVShow(tvShow)
 }

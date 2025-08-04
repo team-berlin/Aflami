@@ -7,6 +7,7 @@ class GetTVShowVideos (
     private val repository: TvShowDetailsRepository
 ){
     suspend operator fun invoke(id: Long):Video {
-        return repository.getTVShowVideos(id).first { it.videoType=="" }
+
+        return repository.getTVShowVideos(id)[0]
     }
 }

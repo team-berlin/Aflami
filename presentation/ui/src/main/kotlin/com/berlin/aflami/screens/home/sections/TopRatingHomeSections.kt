@@ -1,6 +1,7 @@
 package com.berlin.aflami.screens.home.sections
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -66,7 +67,6 @@ fun TopRatingHomeSections(
             val screenWidth = maxWidth
             val spaceBetween = 8.dp
             val maxCardsInRow = (screenWidth / (156.dp + spaceBetween)).toInt().coerceAtLeast(2)
-
 
             val totalSpacing = spaceBetween * (maxCardsInRow - 1)
             val cardWidth = (screenWidth - totalSpacing) / maxCardsInRow

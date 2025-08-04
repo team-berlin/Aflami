@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -34,7 +33,7 @@ import com.berlin.aflami.navigation.CastDestination
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
-import com.berlin.aflami.screens.mediadetails.components.BackdropPager
+import com.berlin.aflami.screens.mediadetails.components.MovieBackdropPager
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.DescriptionSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
@@ -60,7 +59,7 @@ fun MovieDetailsScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
-            onReceiveMediaDetailsEffect(
+            onReceiveMovieDetailsEffect(
                 navController = navController,
                 mediaDetailsScreenEffect = newEffect
             )
@@ -87,7 +86,7 @@ fun MovieDetailsScreen(
         exit = fadeOut(),
         visible = !uiState.isScreenLoading
     ) {
-        MediaDetailsContent(
+        MovieDetailsContent(
             state = uiState,
             listener = viewModel,
             isDescriptionExpanded = uiState.isDescriptionExpanded,
@@ -118,7 +117,7 @@ fun MovieDetailsScreen(
 }
 
 
-private fun onReceiveMediaDetailsEffect(
+private fun onReceiveMovieDetailsEffect(
     navController: NavController,
     mediaDetailsScreenEffect: MovieDetailsScreenEffect,
 ) {
@@ -159,7 +158,7 @@ private fun onReceiveMediaDetailsEffect(
 }
 
 @Composable
-fun MediaDetailsContent(
+fun MovieDetailsContent(
     state: MovieDetailsScreenState,
     listener: MediaInteractionListener,
     isDescriptionExpanded: Boolean,
@@ -188,7 +187,7 @@ fun MediaDetailsContent(
     ) {
         LazyColumn(state = listState) {
             item {
-                BackdropPager(
+                MovieBackdropPager(
                     state = state,
                     onPlayClick = { listener.onPlayClicked(state.videoUrl) })
             }

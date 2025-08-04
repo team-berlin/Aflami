@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -39,9 +40,9 @@ fun CompanyProductionItem(
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(12.dp))
 
     ) {
-        SafeImageViewer(
+        AsyncImage(
             modifier = modifier,
-            imageUri = item.image?:"",
+            model = item.image?:"",
             contentDescription = stringResource(com.berlin.ui.R.string.company_production_image_cd),
             contentScale = ContentScale.Crop,
             error = painterResource(R.drawable.place_holder),

@@ -7,7 +7,7 @@ import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.aflami.viewmodel.shareduistate.toGenreUiState
 import com.berlin.entity.TVShow
 
-fun TVShow.tvShowToUiState(): TVShowUiState {
+fun TVShow.toUiState(): TVShowUiState {
     return TVShowUiState(
         id = id,
         rating = DecimalFormat("#.#").format(rating).toString(),

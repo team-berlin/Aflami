@@ -5,9 +5,9 @@ sealed class HomeScreenEffect {
     object NavigateToContinueWatchingScreen : HomeScreenEffect()
     object NavigateToTopRatingScreen : HomeScreenEffect()
     object NavigateToMoodPickerDialog : HomeScreenEffect()
-    data class NavigateToMovieDetailsScreen(val mediaId: Long) :
+    data class NavigateToMovieDetailsScreen(val movieId: Long) :
         HomeScreenEffect()
 
-    data class NavigateToTVShowDetailsScreen(val mediaId: Long) :
+    data class NavigateToTVShowDetailsScreen(val tvShowId: Long) :
         HomeScreenEffect()
 }

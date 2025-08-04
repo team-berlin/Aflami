@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImagePainter.State.Empty.painter
 import com.berlin.aflami.ui.theme.Theme
@@ -125,5 +126,10 @@ fun AnimatedPlay() {
     }
 }
 
+@Preview
+@Composable
+fun AnimatedPlayPrev(){
+    AnimatedPlay()
+}
 
 

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.berlin.aflami.component.PlayButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -107,8 +108,9 @@ fun SliderCard(
         contentAlignment = Alignment.BottomCenter
     ) {
 
-        SafeImageViewer(
-            imageUri = posterImageUrl,
+        AsyncImage(
+            model = posterImageUrl,
+            contentDescription = "Poster Image",
             modifier = Modifier
                 .width(cardWidth)
                 .height(cardHeight)

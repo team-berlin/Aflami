@@ -27,11 +27,12 @@ import com.berlin.aflami.component.Rating
 import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenState
+import com.berlin.aflami.viewmodel.details.series.TVShowDetailsUiState
 import com.berlin.designsystem.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
+fun MovieBackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
     val posterList = state.posters.take(4)
     val pagerState = rememberPagerState(pageCount = { posterList.size })
 
@@ -42,7 +43,6 @@ fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
             pagerState.animateScrollToPage(nextPage)
         }
     }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -111,6 +111,90 @@ fun BackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
                 size = 64,
                 enabled = state.movieUiState.hasVideo,
                 tint = if (state.movieUiState.hasVideo) Theme.color.primary else Theme.color.disable
+            )
+        }
+    }
+}
+@Composable
+fun TVShowBackdropPager(state: TVShowDetailsUiState, onPlayClick: () -> Unit) {
+    val posterList = state.posters.take(4)
+    val pagerState = rememberPagerState(pageCount = { posterList.size })
+
+    LaunchedEffect(pagerState) {
+        while (posterList.size > 1) {
+            delay(4000)
+            val nextPage = (pagerState.currentPage + 1) % posterList.size
+            pagerState.animateScrollToPage(nextPage)
+        }
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(293.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(263.dp)
+        ) {
+            HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+                val model = posterList[page]
+                val painter = rememberAsyncImagePainter(model)
+                val imageState by painter.state.collectAsState()
+
+                val contentScale = when (imageState) {
+                    is AsyncImagePainter.State.Success,
+                    is AsyncImagePainter.State.Loading -> ContentScale.Crop
+                    else -> ContentScale.Inside
+                }
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    AsyncImage(
+                        model= model?:"",
+                        contentDescription = null,
+                        contentScale = contentScale,
+                        modifier = Modifier.fillMaxSize(),
+                        error = painterResource(R.drawable.place_holder),
+                        fallback = painterResource(R.drawable.place_holder),
+                    )
+                    if (imageState is AsyncImagePainter.State.Loading) {
+                        ShimmerBox(modifier = Modifier.fillMaxSize())
+                    }
+                }
+            }
+
+            Indicator(
+                pagerState = pagerState,
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(4.dp)
+            ) {
+                Rating(rating = state.tvShowUiState.rating
+//                    .formatRatingForUi()
+                )
+            }
+        }
+
+        Box(
+            Modifier
+                .align(Alignment.BottomCenter)
+                .size(72.dp)
+                .background(Theme.color.surface, CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularIconButton(
+                modifier = Modifier.align(Alignment.Center),
+                painter = painterResource(R.drawable.play_arrow),
+                onClick = onPlayClick,
+                hasDropShadow = true,
+                dropShadowAlpha = 0.09f,
+                borderWidth = 2,
+                size = 64,
+                enabled = state.tvShowUiState.hasVideo,
+                tint = if (state.tvShowUiState.hasVideo) Theme.color.primary else Theme.color.disable
             )
         }
     }

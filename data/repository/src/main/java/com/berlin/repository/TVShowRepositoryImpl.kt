@@ -1,5 +1,6 @@
 package com.berlin.repository
 
+import android.util.Log
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource

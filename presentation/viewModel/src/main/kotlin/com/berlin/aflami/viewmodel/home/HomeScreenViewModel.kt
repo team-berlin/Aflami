@@ -8,7 +8,6 @@ import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.mapper.toMovieUiState
 import com.berlin.aflami.viewmodel.search.GenreUiState
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -80,7 +79,6 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenWithNewPopularMedia(newPopularMedia: List<MediaUiState>) {
-        Log.d("HomeScreenViewModel", "updateScreenWithNewPopularMedia: $newPopularMedia")
         updateState { screenState ->
             screenState.copy(
                 screenState.popularMediaUiState.copy(
@@ -182,8 +180,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 topRatedMediaUiState = screenState.topRatedMediaUiState.copy(
-                    isLoading = false,
-                    errorMessage = errorUIState.message
+                    isLoading = false, errorMessage = errorUIState.message
                 )
             )
         }
@@ -221,8 +218,8 @@ class HomeScreenViewModel @Inject constructor(
         )
         val nextMovie: MovieUiState
         if (currentMovieIndex == state.value.moodPickerUiState.movies.size - 1) {
-            if (!state.value.moodPickerUiState.movies.isEmpty())
-                nextMovie = state.value.moodPickerUiState.movies[0]
+            if (!state.value.moodPickerUiState.movies.isEmpty()) nextMovie =
+                state.value.moodPickerUiState.movies[0]
             return
         }
         nextMovie = state.value.moodPickerUiState.movies[currentMovieIndex + 1]
@@ -253,8 +250,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(openMovieDialog = true)) }
         tryToCall(
             call = {
-                getMoviesByMoodUseCase(userMood.moodGenres.toGenreIds())
-                    .map { movie -> movie.toMovieUiState() }
+                getMoviesByMoodUseCase(userMood.moodGenres.toGenreIds()).map { movie -> movie.toMovieUiState() }
             },
             onSuccess = ::updateDialogWithNewMovies,
             onError = ::updateScreenWithError,
@@ -277,8 +273,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 moodPickerUiState = screenState.moodPickerUiState.copy(
-                    isLoading = false,
-                    error = ErrorUiState(errorUiState.message)
+                    isLoading = false, error = ErrorUiState(errorUiState.message)
                 )
             )
         }
@@ -291,6 +286,7 @@ class HomeScreenViewModel @Inject constructor(
     override fun onMovieCardClicked(mediaId: Long) {
         sendNewEffect(HomeScreenEffect.NavigateToMovieDetailsScreen(mediaId))
     }
+
     override fun onTVShowCardClicked(mediaId: Long) =
         sendNewEffect(HomeScreenEffect.NavigateToTVShowDetailsScreen(mediaId))
 
@@ -323,8 +319,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 upcomingMoviesUiState = screenState.upcomingMoviesUiState.copy(
-                    errorMessage = errorUiState.message,
-                    isLoading = false
+                    errorMessage = errorUiState.message, isLoading = false
                 ),
             )
         }
@@ -342,8 +337,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState { state ->
             state.copy(
                 upcomingMoviesUiState = state.upcomingMoviesUiState.copy(
-                    isLoading = false,
-                    upcomingMovies = filteredMovies
+                    isLoading = false, upcomingMovies = filteredMovies
                 ),
             )
         }

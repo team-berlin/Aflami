@@ -1,5 +1,6 @@
 package com.berlin.repository
 
+import android.util.Log
 import com.berlin.entity.ContinueWatchingMoviesModel
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
@@ -104,7 +105,3 @@ class MovieRepositoryImpl @Inject constructor(
 
 }
 
-object MediaType {
-    const val MOVIE = "MOVIE"
-    const val TVSHOW = "TVSHOW"
-}

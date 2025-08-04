@@ -137,7 +137,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     private fun saveTVShowToContinueWatching(modelToBeSaved: TVShow) {
         viewModelScope.launch {
-            Log.d("WOWTEST", "saveTVShowToContinueWatching: $modelToBeSaved")
             addContinueWatchingTVShowUseCase(modelToBeSaved)
         }
     }

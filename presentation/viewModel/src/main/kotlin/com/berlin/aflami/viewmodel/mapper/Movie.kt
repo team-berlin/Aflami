@@ -41,3 +41,10 @@ fun Int.formatRuntime(): String {
     val remainingMinutes = this % 60
     return "${hours}h ${remainingMinutes}m"
 }
+
+fun String.parseRuntime(): Int =
+    Regex("(\\d+)([hm])").findAll(this)
+        .sumOf {
+            val (value, unit) = it.destructured
+            if (unit == "h") value.toInt() * 60 else value.toInt()
+        }

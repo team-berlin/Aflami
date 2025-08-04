@@ -21,12 +21,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.series.EpisodeUiState
 import com.berlin.designsystem.R
-import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun EpisodeCard(
@@ -93,9 +93,9 @@ private fun ImageWithRatingBadge(
             ),
         contentAlignment = Alignment.Center
     ) {
-        SafeImageViewer(
+        AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            imageUri = imageUrl,
+            model = imageUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             alignment = Alignment.TopCenter,

@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 import com.berlin.safeimageviewer.SafeImageViewer
@@ -65,8 +66,8 @@ fun GallerySection(
                     for (col in 0 until columns) {
                         val index = row * columns + col
                         if (index < backDropsList.size) {
-                            SafeImageViewer(
-                                imageUri = backDropsList[index],
+                            AsyncImage(
+                                model = backDropsList[index],
                                 contentDescription = stringResource(com.berlin.ui.R.string.cast),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier

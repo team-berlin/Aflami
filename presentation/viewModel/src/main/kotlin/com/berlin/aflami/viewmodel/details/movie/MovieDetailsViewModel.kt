@@ -51,14 +51,12 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieId = movieDetailsArgs.movieId ?: 0
 
     init {
-        Log.d("MOVIEDETAILS","${movieDetailsArgs.movieId}")
         updateState {
             it.copy(
                 movieUiState = it.movieUiState.copy(id = movieId),
                 isScreenLoading = false
             )
         }
-        Log.d("MOVIEDETAILS", "movieId: ${_state.value.movieUiState.id}")
         isMovieHasVideo(movieId = movieId)
         getMovieActors(movieId = movieId)
         getMovieDetails(movieId = movieId)

@@ -21,6 +21,7 @@ interface ContinueWatchingDao {
         skip: Int
     ): List<RecentlyWatchedMovieEntity>
 
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addContinueWatchingTVShow(tvShowEntity: RecentlyWatchedTvShowEntity )
 
