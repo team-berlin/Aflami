@@ -31,25 +31,25 @@ interface RemoteDataSource {
         query: String,  page: Int
     ): BaseResponse<MovieDetailsDto>
 
-    suspend fun getTvShowsByKeyword(
+    suspend fun getTVShowsByKeyword(
         query: String,  page: Int
     ): BaseResponse<TVShowDetailsDto>
 
-    suspend fun getSeriesImagesById(seriesId: Long): MediaImagesResponse
-    suspend fun getTvShowDetailsById(seriesId: Long, ): TVShowDetailsDto
-    suspend fun getSeriesCastDetailsById(seriesId: Long, ): MediaCastResponse
-    suspend fun getSimilarSeriesById(seriesId: Long): BaseResponse<TVShowDetailsDto>
-    suspend fun getTvShowReviewsById(id: Long): BaseResponse<ReviewDto>
+    suspend fun getTVShowsImagesById(seriesId: Long): MediaImagesResponse
+    suspend fun getTVShowDetailsById(seriesId: Long, ): TVShowDetailsDto
+    suspend fun getTVShowsCastDetailsById(seriesId: Long, ): MediaCastResponse
+    suspend fun getSimilarTVShowsById(seriesId: Long): BaseResponse<TVShowDetailsDto>
+    suspend fun getTVShowReviewsById(id: Long): BaseResponse<ReviewDto>
     suspend fun getEpisodeSeasonSeries(seriesId: Long, seasonNumber: Int): SeasonEpisodesDto
 
     suspend fun getMovieGenres(): GenreResponse
-    suspend fun getSeriesGenres(): GenreResponse
+    suspend fun getTVShowsGenres(): GenreResponse
     suspend fun getPopularMovies() : BaseResponse<MovieDetailsDto>
     suspend fun getPopularTVShows() : BaseResponse<TVShowDetailsDto>
 
      suspend fun getTopRatedMovies(page: Int): BaseResponse<MovieDetailsDto>
 
-     suspend fun getTopRatedSeries(page: Int):BaseResponse<TVShowDetailsDto>
+     suspend fun getTopRatedTVShows(page: Int):BaseResponse<TVShowDetailsDto>
 
     suspend fun getMoviesByMoodIds(
         moodIds: List<Int>
@@ -57,7 +57,4 @@ interface RemoteDataSource {
 
     suspend fun getMovieVideos(movieId: Long): VideosResponse
     suspend fun getTVShowVideos(movieId: Long): VideosResponse
-
-
-
 }

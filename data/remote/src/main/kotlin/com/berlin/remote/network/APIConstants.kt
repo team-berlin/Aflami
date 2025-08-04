@@ -31,16 +31,16 @@ object ApiConstants {
     //endregion
 
     //region tv shows details
-    const val SERIES_ID = "series_id"
-    const val SERIES_DETAILS = "tv/{series_id}"
-    const val SERIES_IMAGES = "tv/{series_id}/images"
-    const val SERIES_CAST = "tv/{series_id}/credits"
-    const val SERIES_MORE_LIKE_THIS = "tv/{series_id}/similar"
-    const val SERIES_REVIEW = "tv/{series_id}/reviews"
+    const val TV_SHOW_ID = "series_id"
+    const val TV_SHOW_DETAILS = "tv/{series_id}"
+    const val TV_SHOW_IMAGES = "tv/{series_id}/images"
+    const val TV_SHOW_CAST = "tv/{series_id}/credits"
+    const val TV_SHOW_MORE_LIKE_THIS = "tv/{series_id}/similar"
+    const val TV_SHOW_REVIEW = "tv/{series_id}/reviews"
     const val EPISODE_SEASON_SERIES = "tv/{series_id}/season/{season_number}"
     const val SEASON_NUMBER = "season_number"
     const val POPULAR_TV_SHOWS = "tv/popular"
-    const val SERIES_GENRES = "genre/tv/list"
+    const val TV_SHOW_GENRES = "genre/tv/list"
 
     //endregion
 

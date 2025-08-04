@@ -1,6 +1,5 @@
 package com.berlin.repository
 
-import android.util.Log
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
@@ -30,7 +29,7 @@ class TVShowRepositoryImpl @Inject constructor(
 
     override suspend fun getTopRatedTVShows(page: Int): List<TVShow> {
         // Fetch top-rated series from the remote data source and map to domain model
-        return remoteDataSource.getTopRatedSeries(page).results?.map { seriesDto ->
+        return remoteDataSource.getTopRatedTVShows(page).results?.map { seriesDto ->
             seriesDto.toDomain(
             )
         } ?: emptyList()
@@ -45,7 +44,7 @@ class TVShowRepositoryImpl @Inject constructor(
         query: String,
         page: Int,
     ): List<TVShow> {
-        return remoteDataSource.getTvShowsByKeyword(query, page).results?.filterNotNull()?.map {
+        return remoteDataSource.getTVShowsByKeyword(query, page).results?.filterNotNull()?.map {
             it.toDomain()
         } ?: emptyList()
     }

@@ -22,12 +22,14 @@ interface ApiService {
         @Path(ApiConstants.MOVIE_ID) movieId: Long
     ): Response<MediaImagesResponse>
 
-    @GET(ApiConstants.SERIES_IMAGES)
-    suspend fun getSeriesImages(@Path(ApiConstants.SERIES_ID) seriesId: Long): Response<MediaImagesResponse>
+    @GET(ApiConstants.TV_SHOW_IMAGES)
+    suspend fun getTVShowsImages(
+        @Path(ApiConstants.TV_SHOW_ID) tvShowId: Long
+    ): Response<MediaImagesResponse>
 
     @GET(ApiConstants.MOVIE_DETAILS)
     suspend fun getMovieDetails(
-        @Path(ApiConstants.MOVIE_ID) id: Long,
+        @Path(ApiConstants.MOVIE_ID) movieId: Long,
     ): Response<MovieDetailsDto>
 
     @GET(ApiConstants.MOVIE_CAST)
@@ -42,7 +44,7 @@ interface ApiService {
 
     @GET(ApiConstants.MOVIE_REVIEW)
     suspend fun getMovieReviews(
-        @Path(ApiConstants.MOVIE_ID) id: Long
+        @Path(ApiConstants.MOVIE_ID) movieId: Long
     ): Response<BaseResponse<ReviewDto>>
 
     @GET(ApiConstants.SEARCH_BY_COUNTRY)
@@ -64,35 +66,35 @@ interface ApiService {
     ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.SEARCH_TV)
-    suspend fun searchTvShows(
+    suspend fun searchTVShows(
         @Query(ApiConstants.QUERY) query: String,
         @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<TVShowDetailsDto>>
 
 
-    @GET(ApiConstants.SERIES_DETAILS)
-    suspend fun getTvShowDetails(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long,
+    @GET(ApiConstants.TV_SHOW_DETAILS)
+    suspend fun getTVShowDetails(
+        @Path(ApiConstants.TV_SHOW_ID) tvShowId: Long,
     ): Response<TVShowDetailsDto>
 
-    @GET(ApiConstants.SERIES_CAST)
-    suspend fun getSeriesCastDetails(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long,
+    @GET(ApiConstants.TV_SHOW_CAST)
+    suspend fun getTVShowsCastDetails(
+        @Path(ApiConstants.TV_SHOW_ID) tvShowId: Long,
     ): Response<MediaCastResponse>
 
-    @GET(ApiConstants.SERIES_MORE_LIKE_THIS)
-    suspend fun getSeriesSimilar(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long
+    @GET(ApiConstants.TV_SHOW_MORE_LIKE_THIS)
+    suspend fun getTVShowsSimilar(
+        @Path(ApiConstants.TV_SHOW_ID) tvShowId: Long
     ): Response<BaseResponse<TVShowDetailsDto>>
 
-    @GET(ApiConstants.SERIES_REVIEW)
-    suspend fun getSeriesReviews(
-        @Path(ApiConstants.SERIES_ID) id: Long
+    @GET(ApiConstants.TV_SHOW_REVIEW)
+    suspend fun getTVShowsReviews(
+        @Path(ApiConstants.TV_SHOW_ID) tvShowId: Long
     ): Response<BaseResponse<ReviewDto>>
 
     @GET(ApiConstants.EPISODE_SEASON_SERIES)
     suspend fun getEpisodeSeasonSeries(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long,
+        @Path(ApiConstants.TV_SHOW_ID) tvShowId: Long,
         @Path(ApiConstants.SEASON_NUMBER) seasonNumber: Int
     ): Response<SeasonEpisodesDto>
 
@@ -100,8 +102,8 @@ interface ApiService {
     suspend fun getMovieGenres(
     ): Response<GenreResponse>
 
-    @GET(ApiConstants.SERIES_GENRES)
-    suspend fun getSeriesGenres(
+    @GET(ApiConstants.TV_SHOW_GENRES)
+    suspend fun getTVShowsGenres(
     ): Response<GenreResponse>
 
     @GET(ApiConstants.MOVIE_UPCOMING)
@@ -123,21 +125,21 @@ interface ApiService {
 
     @GET(ApiConstants.TOP_RATED_MOVIES)
     suspend fun getTopRatedMovies(
-        @Query("page") page: Int,
+        @Query(ApiConstants.PAGE) page: Int,
     ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.TOP_RATED_SERIES)
-    suspend fun getTopRatedSeries(
-        @Query("page") page: Int,
+    suspend fun getTopRatedTVShows(
+        @Query(ApiConstants.PAGE) page: Int,
     ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.TV_VIDEO_DETAILS)
-    suspend fun getTvShowVideos(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long
-    ):Response<VideosResponse>
+    suspend fun getTVShowVideos(
+        @Path(ApiConstants.TV_SHOW_ID) tvShowId: Long
+    ): Response<VideosResponse>
 
     @GET(ApiConstants.MOVIE_VIDEO_DETAILS)
     suspend fun getMovieVideos(
         @Path(ApiConstants.MOVIE_ID) movieId: Long
-    ):Response<VideosResponse>
+    ): Response<VideosResponse>
 }
