@@ -58,8 +58,8 @@ fun AflamiNavGraph(
         NavHost(
             navController = navController,
             startDestination = when {
-                isLoggedIn -> NavigationBarDestinations.HomeScreen
                 isFirsTime -> OnBoardingDestination
+                isLoggedIn -> NavigationBarDestinations.HomeScreen
                 else -> LoginDestination
             },
             enterTransition = { EnterTransition.None },

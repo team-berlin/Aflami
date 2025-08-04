@@ -18,7 +18,7 @@ class OnBoardingViewModel @Inject constructor(
     private val saveFirstEntryUseCase: SaveFirstEntryUseCase,
 ) : ViewModel() {
 
-    private val _isFirstEntry = MutableStateFlow(true)
+    private val _isFirstEntry = MutableStateFlow<Boolean?>(null)
     val isFirstEntry = _isFirstEntry.asStateFlow()
 
     protected val _effect = MutableSharedFlow<OnBoardingScreenEffect>()

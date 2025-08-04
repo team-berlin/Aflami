@@ -22,32 +22,34 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
+    private val onBoardingViewModel: OnBoardingViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
-//        val splashScreen = installSplashScreen()
-//
-//        splashScreen.setKeepOnScreenCondition {
-//            mainActivityViewModel.isLoading
-//        }
+        val splashScreen = installSplashScreen()
+
+        splashScreen.setKeepOnScreenCondition {
+            onBoardingViewModel.isFirstEntry.value == null
+        }
         enableEdgeToEdge()
         setContent {
-            val onBoardingViewModel: OnBoardingViewModel = hiltViewModel()
             val isFirstTime = onBoardingViewModel.isFirstEntry.collectAsState()
 
-            AflamiTheme {
-                AflamiNavGraph(
-                    navController = Theme.navController,
-                    isLoggedIn = true,
-                    isFirsTime = isFirstTime.value,
-                    modifier = Modifier.Companion
-                        .fillMaxSize()
-                        .background(Theme.color.surface)
-                        .navigationBarsPadding()
-                )
+            isFirstTime.value?.let { isFirstTime ->
+                AflamiTheme {
+                    AflamiNavGraph(
+                        navController = Theme.navController,
+                        isLoggedIn = false,
+                        isFirsTime = isFirstTime,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Theme.color.surface)
+                            .navigationBarsPadding()
+                    )
+                }
             }
         }
     }

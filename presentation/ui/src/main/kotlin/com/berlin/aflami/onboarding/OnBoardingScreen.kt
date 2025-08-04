@@ -68,7 +68,7 @@ fun OnBoardingScreen(
     val navController = Theme.navController
 
 
-    if (!isFirstEntry) {
+    if (isFirstEntry==false) {
         navController.navigate(
             LoginDestination
         ) {
