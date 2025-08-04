@@ -1,14 +1,14 @@
 package com.berlin.repository
 
-import android.util.Log
-import com.berlin.entity.ContinueWatchingMoviesModel
 import com.berlin.entity.Movie
+import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
+import com.berlin.repository.mapper.toPopularMovieEntity
 import com.berlin.repository.mapper.toRecentMovieEntity
 import repository.MovieRepository
 import javax.inject.Inject
@@ -16,6 +16,7 @@ import javax.inject.Inject
 class MovieRepositoryImpl @Inject constructor(
     private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource,
     private val recentHistoryLocalDataSource: RecentHistoryLocalDataSource,
+    private val homeLocalDataSource: HomeLocalDataSource,
     private val remoteDataSource: RemoteDataSource,
 
     ) : MovieRepository {
@@ -44,8 +45,16 @@ class MovieRepositoryImpl @Inject constructor(
 
 
     override suspend fun getPopularMovies(): List<Movie> {
-        return remoteDataSource.getPopularMovies().results
-            ?.map { movieDto -> movieDto.toDomain() } ?: emptyList()
+        val localMovies = homeLocalDataSource.getMovies()
+        if (localMovies.isNotEmpty()) {
+            return localMovies.map { it.toDomain() }
+        }
+        val remoteMovies = remoteDataSource.getPopularMovies().results?.mapNotNull { it.toDomain() }
+            ?: emptyList()
+        if (remoteMovies.isNotEmpty()) {
+            homeLocalDataSource.addMovies(remoteMovies.map { it.toPopularMovieEntity() })
+        }
+        return remoteMovies
     }
 
     override suspend fun getMoviesByMoods(moods: List<Int>): List<Movie> {
