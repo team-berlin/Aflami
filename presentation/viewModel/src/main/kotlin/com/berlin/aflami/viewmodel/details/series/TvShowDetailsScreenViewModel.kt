@@ -1,24 +1,27 @@
 package com.berlin.aflami.viewmodel.details.series
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.details.common.MediaDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.NO_COMPANY_PRODUCTION
 import com.berlin.aflami.viewmodel.details.common.NO_GALLERY
 import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
 import com.berlin.aflami.viewmodel.details.common.NO_REVIEWS
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.details.common.TVShowDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.toggle
 import com.berlin.aflami.viewmodel.details.movie.UiText
+import com.berlin.aflami.viewmodel.mapper.parseRuntime
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
 import com.berlin.aflami.viewmodel.mapper.toEpisodeUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
-import com.berlin.aflami.viewmodel.mapper.tvShowToUiState
+import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.entity.TVShow
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import usecase.mediadetails.GetTVShowVideos
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
@@ -28,8 +31,10 @@ import usecase.tvshow.GetTVShowCastUseCase
 import usecase.tvshow.GetTVShowDetailsUseCase
 import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
+import javax.inject.Inject
 
-class TvShowDetailsScreenViewModel(
+@HiltViewModel
+class TvShowDetailsScreenViewModel @Inject constructor(
     private val getTVShowDetailsUseCase: GetTVShowDetailsUseCase,
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
     private val getTVShowGalleryUseCase: GetTVShowGalleryUseCase,
@@ -38,11 +43,11 @@ class TvShowDetailsScreenViewModel(
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
     private val getTVShowVideos: GetTVShowVideos,
-    tvShowArgs: MediaDetailsArgs,
+    tvShowArgs: TVShowDetailsArgs,
 ) : BaseViewModel<TVShowDetailsUiState, TvShowDetailsScreenEffect>(TVShowDetailsUiState()),
     TvShowDetailsScreenInteractionListener {
 
-    private val tvShowId = tvShowArgs.mediaId
+    private val tvShowId = tvShowArgs.tvShowId
         ?: throw IllegalArgumentException("mediaId is null")
 
     init {
@@ -74,7 +79,7 @@ class TvShowDetailsScreenViewModel(
         tryToCall(
             call = {
                 val tvShow =
-                    getTVShowDetailsUseCase(tvShowId).tvShowToUiState()
+                    getTVShowDetailsUseCase(tvShowId).toUiState()
                 val tvShowPosters: List<String> = getTVShowGalleryUseCase(tvShowId).posters
                 Pair(tvShow, tvShowPosters)
             },
@@ -86,23 +91,23 @@ class TvShowDetailsScreenViewModel(
                         isScreenLoading = false
                     )
                 }
-                saveTVShowToContinueWatching(TVShow(
-                    id = tvShowId,
-                    rating = tvShowUiState.rating.toDouble(),
-                    title = tvShowUiState.title,
-                    releaseDate = tvShowUiState.releaseDate,
-                    posterURL = tvShowUiState.posterUrl,
-                    screenShot = tvShowUiState.posterUrl,
-                    description = tvShowUiState.description,
-                    genres = emptyList(),
-                    duration = tvShowUiState.duration.toInt(),
-                    hasVideo = true,
-                    companyProductions = emptyList(),
-                    originCountry = "",
-                    galleryUrl = emptyList(),
-                    numberOfSeasons = 0,
-                )
-                )
+                saveTVShowToContinueWatching(
+                    TVShow(
+                        id = tvShowId,
+                        rating = tvShowUiState.rating.toDouble(),
+                        title = tvShowUiState.title,
+                        releaseDate = tvShowUiState.releaseDate,
+                        posterURL = tvShowUiState.posterUrl,
+                        screenShot = tvShowUiState.posterUrl,
+                        description = tvShowUiState.description,
+                        genres = emptyList(),
+                        duration = tvShowUiState.duration.parseRuntime(),
+                        hasVideo = tvShowUiState.hasVideo,
+                        companyProductions = emptyList(),
+                        originCountry = tvShowUiState.originCountry,
+                        galleryUrl = emptyList(),
+                        numberOfSeasons = 0,
+                    ))
             },
             onError = ::updateScreenStateToError
         )
@@ -132,6 +137,7 @@ class TvShowDetailsScreenViewModel(
 
     private fun saveTVShowToContinueWatching(modelToBeSaved: TVShow) {
         viewModelScope.launch {
+            Log.d("WOWTEST", "saveTVShowToContinueWatching: $modelToBeSaved")
             addContinueWatchingTVShowUseCase(modelToBeSaved)
         }
     }
@@ -179,7 +185,7 @@ class TvShowDetailsScreenViewModel(
         updateRowSectionToLoading()
         tryToCall(
             call = {
-                getSimilarTVShowsUseCase(tvShowId = tvShowId).map { tVShow -> tVShow.tvShowToUiState() }
+                getSimilarTVShowsUseCase(tvShowId = tvShowId).map { tVShow -> tVShow.toUiState() }
             },
             onSuccess = ::updateMoreLikeThisSectionWithNewData,
             onError = ::updateRowSectionStateToError
@@ -428,6 +434,7 @@ class TvShowDetailsScreenViewModel(
     }
 
     private fun updateScreenStateToError(errorState: ErrorUiState) {
+        Log.e("WOWTEST", "Error: ${errorState.message}")
         updateState { screenState ->
             screenState.copy(
                 errorMessage = errorState.message,

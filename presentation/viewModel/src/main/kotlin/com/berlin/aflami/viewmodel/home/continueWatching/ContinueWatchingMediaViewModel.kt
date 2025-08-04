@@ -6,11 +6,14 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import usecase.movie.ContinueWatchingMovieUseCase
 import usecase.tvshow.ContinueWatchingTVShowUseCase
+import javax.inject.Inject
 
-class ContinueWatchingMediaViewModel(
+@HiltViewModel
+class ContinueWatchingMediaViewModel @Inject constructor(
     private val getContinueWatchingMoviesUseCase: ContinueWatchingMovieUseCase,
     private val getContinueWatchingTVShowsUseCase: ContinueWatchingTVShowUseCase,
 ) : BaseViewModel<ContinueWatchingScreenState, ContinueWatchingScreenEffect>(

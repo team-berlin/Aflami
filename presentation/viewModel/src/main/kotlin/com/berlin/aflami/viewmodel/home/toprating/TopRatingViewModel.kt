@@ -6,12 +6,15 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.update
 import usecase.movie.GetTopRatedMoviesUseCase
 import usecase.tvshow.GetTopRatedTVShowUseCase
+import javax.inject.Inject
 
-class TopRatingViewModel(
+@HiltViewModel
+class TopRatingViewModel @Inject constructor(
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     private val getTopRatedTvShowsUseCase: GetTopRatedTVShowUseCase,
 ) : BaseViewModel<TopRatingScreenState, TopRatingScreenEffect>(TopRatingScreenState()),

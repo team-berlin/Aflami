@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.details.common.MediaDetailsArgs
+import com.berlin.aflami.viewmodel.details.common.MovieDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
 import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.common.MoviesTabContent
@@ -16,6 +16,7 @@ import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
 import com.berlin.aflami.viewmodel.details.common.NO_REVIEWS
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
 import com.berlin.aflami.viewmodel.details.common.toggle
+import com.berlin.aflami.viewmodel.mapper.parseRuntime
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
 import com.berlin.aflami.viewmodel.mapper.toMovieUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
@@ -42,21 +43,22 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieReviewUseCase: GetMovieReviewUseCase,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val getMovieVideos: GetMovieVideos,
-    movieDetailsArgs: MediaDetailsArgs,
+    movieDetailsArgs: MovieDetailsArgs,
 ) : BaseViewModel<MovieDetailsScreenState, MovieDetailsScreenEffect>(
     MovieDetailsScreenState()
 ), MediaInteractionListener {
 
-    private val movieId = movieDetailsArgs.mediaId ?: 0
+    private val movieId = movieDetailsArgs.movieId ?: 0
 
     init {
+        Log.d("MOVIEDETAILS","${movieDetailsArgs.movieId}")
         updateState {
             it.copy(
                 movieUiState = it.movieUiState.copy(id = movieId),
                 isScreenLoading = false
             )
         }
-        Log.d("MovieDetailsViewModel", "movieId: ${_state.value.movieUiState.id}")
+        Log.d("MOVIEDETAILS", "movieId: ${_state.value.movieUiState.id}")
         isMovieHasVideo(movieId = movieId)
         getMovieActors(movieId = movieId)
         getMovieDetails(movieId = movieId)
@@ -106,7 +108,7 @@ class MovieDetailsViewModel @Inject constructor(
                         screenShot = movieUiState.posterUrl,
                         description =movieUiState.description,
                         genres = emptyList(),
-                        duration = movieUiState.duration.toInt(),
+                        duration = movieUiState.duration.parseRuntime(),
                         hasVideo = true,
                         companyProductions = emptyList(),
                         originCountry = "",

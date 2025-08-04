@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.base
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
@@ -48,6 +49,7 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
             } catch (e: ServerException) {
                 onError(ErrorUiState(e.message.toString()))
             } catch (e: Exception) {
+                Log.e("WOWTEST", "tryToCall: $e",e)
                 onError(ErrorUiState(e.message.toString()))
             }
         }

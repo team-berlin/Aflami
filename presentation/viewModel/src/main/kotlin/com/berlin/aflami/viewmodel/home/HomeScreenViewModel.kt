@@ -56,7 +56,6 @@ class HomeScreenViewModel @Inject constructor(
                     val tvShow = async { popularTVShowsUseCase() }
                     val movieList = movie.await().map { it.toMediaUiState() }
                     val tvShowList = tvShow.await().map { it.toMediaUiState() }
-                    Log.d("HomeScreenViewModel", "getPopularMedia: $movieList")
                     interleaveMoviesAndTvShowsEqually(movieList, tvShowList)
                 }
             },
@@ -289,12 +288,9 @@ class HomeScreenViewModel @Inject constructor(
     override fun onUpcomingMoviesCardClicked(id: Long) =
         sendNewEffect(HomeScreenEffect.NavigateToMovieDetailsScreen(id))
 
-
     override fun onMovieCardClicked(mediaId: Long) {
-        Log.d("HomeScreenViewModel", "onMovieCardClicked: $mediaId")
         sendNewEffect(HomeScreenEffect.NavigateToMovieDetailsScreen(mediaId))
     }
-
     override fun onTVShowCardClicked(mediaId: Long) =
         sendNewEffect(HomeScreenEffect.NavigateToTVShowDetailsScreen(mediaId))
 
