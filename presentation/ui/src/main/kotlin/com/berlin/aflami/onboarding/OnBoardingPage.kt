@@ -1,6 +1,4 @@
 package com.berlin.aflami.onboarding
-
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,7 +27,7 @@ fun OnBoardingPage(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     navigateToLogin: () -> Unit,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) {
 
     Box(
@@ -37,7 +37,7 @@ fun OnBoardingPage(
             painter = onBoardingModel.image,
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillHeight
+            contentScale = ContentScale.Crop
         )
         Box(
             modifier = Modifier
@@ -55,11 +55,12 @@ fun OnBoardingPage(
         )
         Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .padding(start = 12.dp, end = 12.dp, top = 520.dp, bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             BottomPageIndicator(
-                modifier = Modifier.padding(end = 120.dp),
+                modifier = Modifier.padding(end = 120.dp, bottom = 24.dp),
                 pageNumber = pagerState.currentPage,
                 pageCount = pagerState.pageCount,
             )

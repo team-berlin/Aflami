@@ -68,4 +68,5 @@
     <string name="page3_description">Keep track of what you’ve watched, how you felt, and what you loved. Your film journey, remembered.</string>
     <string name="guess_play"><![CDATA[Guess & Play!]]></string>
     <string name="page4_description">Put your film knowledge to the test with exciting quizzes. Every right guess brings you closer to the next movie adventure.</string>
+    <string name="skip">Skip</string>
 </resources>

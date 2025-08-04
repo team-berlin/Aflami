@@ -1,9 +1,12 @@
 package com.berlin.aflami.onboarding
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -12,12 +15,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -67,7 +73,6 @@ fun OnBoardingScreen(
     val coroutineScope = rememberCoroutineScope()
     val navController = Theme.navController
 
-
     if (isFirstEntry==false) {
         navController.navigate(
             LoginDestination
@@ -110,21 +115,23 @@ fun OnBoardingContent(
     pagerState: PagerState,
     coroutineScope: CoroutineScope,
 ) {
-    val lastPage = remember { pagerState.pageCount - 1 }
-
+    val isLastPage by remember {
+        derivedStateOf { pagerState.currentPage == pagerState.pageCount - 1 }
+    }
     Box(
         modifier = Modifier.fillMaxSize()
 
     ) {
-        AnimatedVisibility(pagerState.currentPage != lastPage) {
+        if( !isLastPage) {
             TextButton(
                 modifier = Modifier
+                    .statusBarsPadding()
                     .padding(top = 16.dp, start = 16.dp)
-                    .zIndex(1f),
+                    .zIndex(2f),
                 onClick = navigateToLogin
             ) {
                 Text(
-                    text = "Skip",
+                    text = stringResource(R.string.skip),
                     style = Theme.textStyle.label.medium,
                     color = Theme.color.primary,
 
@@ -135,12 +142,11 @@ fun OnBoardingContent(
         HorizontalPager(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 88.dp),
+                .zIndex(1f),
             state = pagerState,
             verticalAlignment = Alignment.Bottom
         ) { index ->
             OnBoardingPage(
-//                orientation = (orientation == Configuration.ORIENTATION_PORTRAIT),
                 modifier = Modifier.fillMaxSize(),
                 onBoardingModel = onBoardingList[index],
                 pagerState = pagerState,
