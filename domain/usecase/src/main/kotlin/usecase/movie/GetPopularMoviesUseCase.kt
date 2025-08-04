@@ -4,7 +4,7 @@ import com.berlin.entity.Movie
 import repository.MovieRepository
 
 class GetPopularMoviesUseCase(
-    private val repository: MovieRepository
+    private val movieRepository: MovieRepository
 ) {
-    suspend operator fun invoke(): List<Movie> = repository.getPopularMovies()
+    suspend operator fun invoke(): List<Movie> = movieRepository.getPopularMovies()
 }

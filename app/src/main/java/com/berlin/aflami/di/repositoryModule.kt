@@ -13,7 +13,7 @@ import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.TVShowRepository
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 import javax.inject.Singleton
 
 @Module
@@ -31,7 +31,7 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun bindTvShowDetailsRepository(
         impl: TvShowDetailsRepositoryImpl
-    ): TvShowDetailsRepository
+    ): TVShowDetailsRepository
 
 
     @Binds

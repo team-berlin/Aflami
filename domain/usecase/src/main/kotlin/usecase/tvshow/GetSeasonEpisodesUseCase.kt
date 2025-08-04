@@ -1,12 +1,12 @@
 package usecase.tvshow
 
 import com.berlin.entity.Episode
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 import javax.inject.Inject
 
 class GetSeasonEpisodesUseCase @Inject constructor(
-    private val repository: TvShowDetailsRepository,
+    private val tvShowRepository: TVShowDetailsRepository,
 ) {
     suspend operator fun invoke(seriesId: Long, seasonNumber: Int): List<Episode> =
-        repository.getSeasonEpisodes(seriesId, seasonNumber)
+        tvShowRepository.getSeasonEpisodes(seriesId, seasonNumber)
 }

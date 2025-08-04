@@ -28,7 +28,7 @@ class TVShowRepositoryImpl @Inject constructor(
         recentlyWatchedLocalDataSource.addRecentlyWatchedTvShow(tvShow.toLocalEntity())
     }
 
-    override suspend fun getTopRatedSeries(page: Int): List<TVShow> {
+    override suspend fun getTopRatedTVShows(page: Int): List<TVShow> {
         // Fetch top-rated series from the remote data source and map to domain model
         return remoteDataSource.getTopRatedSeries(page).results?.map { seriesDto ->
             seriesDto.toDomain(

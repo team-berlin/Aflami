@@ -23,17 +23,17 @@ class GetTopRatedTVShowUseCaseTest {
 
     @Test
     fun `should return list of TV shows when calling repository`() = runTest {
-        coEvery { tvShowRepository.getTopRatedSeries(PAGE) } returns TV_SHOWS
+        coEvery { tvShowRepository.getTopRatedTVShows(PAGE) } returns TV_SHOWS
 
         val callResult = getTopRatedTVShowUseCase(PAGE)
 
         assertThat(callResult).isEqualTo(TV_SHOWS)
-        coVerify(exactly = 1) { tvShowRepository.getTopRatedSeries(PAGE) }
+        coVerify(exactly = 1) { tvShowRepository.getTopRatedTVShows(PAGE) }
     }
 
     @Test
     fun `should throw exception if tvShowRepository throws exception`() = runTest {
-        coEvery { tvShowRepository.getTopRatedSeries(PAGE) } throws Exception()
+        coEvery { tvShowRepository.getTopRatedTVShows(PAGE) } throws Exception()
 
         assertThrows<Exception> {
             getTopRatedTVShowUseCase(PAGE)

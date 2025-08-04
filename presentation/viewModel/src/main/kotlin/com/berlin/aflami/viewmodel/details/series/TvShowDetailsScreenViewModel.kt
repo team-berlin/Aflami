@@ -23,7 +23,7 @@ import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.entity.TVShow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import usecase.mediadetails.GetTVShowVideos
+import usecase.tvshow.GetTVShowVideos
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.GetSeasonEpisodesUseCase
 import usecase.tvshow.GetSimilarTVShowsUseCase

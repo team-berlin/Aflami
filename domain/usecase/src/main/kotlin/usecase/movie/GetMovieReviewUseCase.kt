@@ -4,8 +4,8 @@ import com.berlin.entity.Review
 import repository.MovieDetailsRepository
 
 class GetMovieReviewUseCase(
-    private val repository: MovieDetailsRepository
+    private val movieDetailsRepository: MovieDetailsRepository
 ) {
     suspend operator fun invoke(id: Long): List<Review> =
-        repository.getMovieReviews(id)
+        movieDetailsRepository.getMovieReviews(id)
 }
