@@ -61,6 +61,11 @@
     <string name="retry">إعادة المحاولة</string>
     <string name="apply">اضافه</string>
     <string name="clear">مسح</string>
+    <string name="no_saved_items_here">لا توجد عناصر محفوظة!</string>
+    <string name="you_can_add_items_to_your_list_by_searching_for_them_in_the_app">برجاء اضافة عناصر جديده</string>
+    <string name="delete_list">حذف القائمة</string>
+    <string name="delete_confirm">هل أنت متأكد من مواصلة الحذف؟</string>
+    <string name="delete">حذف</string>
 
 
 </resources>

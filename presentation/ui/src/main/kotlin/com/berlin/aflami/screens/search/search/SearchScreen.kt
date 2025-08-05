@@ -54,7 +54,7 @@ import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.SearchByActorDestination
 import com.berlin.aflami.navigation.SearchByCountryDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
-import com.berlin.aflami.screens.search.components.CountryTourExploring
+import com.berlin.aflami.screens.search.components.NoDataContainer
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.SearchData
 import com.berlin.aflami.screens.search.getMovieGenreIcon
@@ -297,7 +297,7 @@ private fun SearchScreenContent(
                                     val isEmpty =
                                         movies.itemCount == 0 && moviesLoadState.refresh is LoadState.NotLoading && moviesLoadState.append is LoadState.NotLoading
                                     if (isEmpty) {
-                                        CountryTourExploring(
+                                        NoDataContainer(
                                             modifier = Modifier
                                                 .fillMaxSize()
                                                 .align(Alignment.CenterHorizontally),
@@ -370,7 +370,7 @@ private fun SearchScreenContent(
                                     val isEmpty =
                                         tvShows.itemCount == 0 && tvShowsLoadState.refresh is LoadState.NotLoading && tvShowsLoadState.append is LoadState.NotLoading
                                     if (isEmpty) {
-                                        CountryTourExploring(
+                                        NoDataContainer(
                                             modifier = Modifier
                                                 .fillMaxSize()
                                                 .align(Alignment.CenterHorizontally),
@@ -462,7 +462,7 @@ private fun SearchScreenContent(
 
 @Composable
 private fun ErrorContent() {
-    CountryTourExploring(
+    NoDataContainer(
         modifier = Modifier.fillMaxSize(),
         image = painterResource(com.berlin.ui.R.drawable.no_search_result),
         titleId = com.berlin.ui.R.string.no_search_result,

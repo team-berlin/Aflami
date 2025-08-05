@@ -17,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.screens.search.components.CountryTourExploring
+import com.berlin.aflami.screens.search.components.NoDataContainer
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 
@@ -36,7 +36,7 @@ fun NoInternetConnectionPlaceholder(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        CountryTourExploring(
+        NoDataContainer(
             image = painterResource(R.drawable.no_internet_placeholder),
             titleId = R.string.offline_title,
             messageId = R.string.check_connection_title

@@ -60,4 +60,9 @@
     <string name="retry">Retry</string>
     <string name="apply">Apply</string>
     <string name="clear">Clear</string>
+    <string name="no_saved_items_here">No Saved Items Here!</string>
+    <string name="you_can_add_items_to_your_list_by_searching_for_them_in_the_app">You can add items to your list by searching for them in the app.</string>
+    <string name="delete_list">Delete List</string>
+    <string name="delete_confirm">Are you sure to continue deleting?</string>
+    <string name="delete">Delete</string>
 </resources>
