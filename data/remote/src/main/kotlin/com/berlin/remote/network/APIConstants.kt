@@ -53,5 +53,6 @@ object ApiConstants {
     const val REQUEST_TOKEN = "request_token"
     const val LOGIN_USERNAME = "username"
     const val LOGIN_PASSWORD = "password"
+    const val ACCOUNT = "account"
     //endregion
 }

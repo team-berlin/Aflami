@@ -1,10 +1,10 @@
 package repository
 
-import com.berlin.entity.User
+import com.berlin.entity.UserProfile
 
 interface UserRepository {
-    suspend fun getUser(sessionId: String): User
-    suspend fun saveUserLocally(user: User)
-    suspend fun getUserLocally(): User?
+    suspend fun getUserProfile(sessionId: String): UserProfile
+    suspend fun saveUserLocally(userProfile: UserProfile)
+    suspend fun getUserLocally(): UserProfile?
     suspend fun logout()
 }

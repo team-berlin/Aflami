@@ -5,6 +5,7 @@ import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
 import com.berlin.repository.TVShowRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
+import com.berlin.repository.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,6 +15,7 @@ import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.TVShowRepository
 import repository.TVShowDetailsRepository
+import repository.UserRepository
 import javax.inject.Singleton
 
 @Module
@@ -51,5 +53,11 @@ abstract class RepositoryModule {
     abstract fun bindTvShowRepository(
         impl: TVShowRepositoryImpl
     ): TVShowRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(
+        impl: UserRepositoryImpl
+    ): UserRepository
 
 }

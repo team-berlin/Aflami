@@ -6,6 +6,7 @@ import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
+import com.berlin.local.dao.UserProfileDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,5 +45,11 @@ object DaoModule {
     @Singleton
     fun provideGenreDao(db: AflamiDatabase): GenreDao {
         return db.genreDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserProfileDao(db: AflamiDatabase): UserProfileDao {
+        return db.userProfileDao()
     }
 }
