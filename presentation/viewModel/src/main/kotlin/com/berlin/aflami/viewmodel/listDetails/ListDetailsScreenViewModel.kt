@@ -21,11 +21,20 @@ class ListDetailsScreenViewModel : BaseViewModel<ListDetailsScreenState, ListDet
         TODO("Not yet implemented")
     }
 
+    override fun onDeleteDialogDismiss() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDeleteConfirmed() {
+        TODO("Not yet implemented")
+    }
+
     override fun onMovieCardClicked(movieId: Long) {
         TODO("Not yet implemented")
     }
 
-    override fun onTVShowCardClicked(tvShowId: Long) {
+    override fun onRemoveMovieClicked(movieId: Long) {
         TODO("Not yet implemented")
     }
+
 }
