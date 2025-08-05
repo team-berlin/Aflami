@@ -4,6 +4,7 @@ import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.dto.MediaType
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
@@ -35,7 +36,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedMovies(page: Int): List<Movie> {
-        val localMovies = homeLocalDataSource.getMovies()
+        val localMovies = homeLocalDataSource.getMoviesByType(MediaType.TOP_RATING)
         if (!isExpiredOrEmpty(localMovies)) {
             return localMovies.map { it.toDomain() }
         }
@@ -52,7 +53,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUpComingMovies(): List<Movie> {
-        val localMovies = homeLocalDataSource.getMovies()
+        val localMovies = homeLocalDataSource.getMoviesByType(MediaType.UPCOMING)
         if (!isExpiredOrEmpty(localMovies)) {
             return localMovies.map { it.toDomain() }
         }
@@ -69,7 +70,7 @@ class MovieRepositoryImpl @Inject constructor(
 
 
     override suspend fun getPopularMovies(): List<Movie> {
-        val localMovies = homeLocalDataSource.getMovies()
+        val localMovies = homeLocalDataSource.getMoviesByType(MediaType.POPULAR)
         if (!isExpiredOrEmpty(localMovies)) {
             return localMovies.map { it.toDomain() }
         }

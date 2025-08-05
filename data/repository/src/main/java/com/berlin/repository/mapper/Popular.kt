@@ -2,6 +2,7 @@ package com.berlin.repository.mapper
 
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
+import com.berlin.repository.datasource.local.dto.MediaType
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 
@@ -13,7 +14,8 @@ fun Movie.toPopularMovieEntity(): MovieHomeEntity {
         releaseYear = releaseDate,
         genre = genres.map { it.id },
         poster = posterURL,
-        addedAt = System.currentTimeMillis()
+        addedAt = System.currentTimeMillis(),
+        type = MediaType.POPULAR
     )
 }
 
@@ -25,6 +27,7 @@ fun TVShow.toPopularTVShowEntity(): TVShowHomeEntity {
         releaseYear = releaseDate,
         genre = genres.map { it.id },
         poster = posterURL,
-        addedAt = System.currentTimeMillis()
+        addedAt = System.currentTimeMillis(),
+        type = MediaType.POPULAR
     )
 }

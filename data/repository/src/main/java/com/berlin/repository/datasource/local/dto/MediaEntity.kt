@@ -1,14 +1,12 @@
 package com.berlin.repository.datasource.local.dto
 
-
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "Movie_Home")
+@Entity(tableName = "Movie_Home", primaryKeys = ["id", "type"])
 data class MovieHomeEntity(
-    @PrimaryKey
     val id: Long,
-    val title: String ,
+    val type: MediaType,
+    val title: String,
     val rating: String,
     val releaseYear: String,
     val genre: List<Int>,
@@ -16,14 +14,19 @@ data class MovieHomeEntity(
     val addedAt: Long = System.currentTimeMillis()
 )
 
-@Entity(tableName = "TVShow_Home")
+@Entity(tableName = "TVShow_Home", primaryKeys = ["id", "type"])
 data class TVShowHomeEntity(
-    @PrimaryKey
     val id: Long,
-    val title: String ,
+    val type: MediaType,
+    val title: String,
     val rating: String,
     val releaseYear: String,
     val genre: List<Int>,
     val poster: String,
     val addedAt: Long = System.currentTimeMillis()
 )
+enum class MediaType {
+    POPULAR,
+    TOP_RATING,
+    UPCOMING
+}

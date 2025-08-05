@@ -1,35 +1,40 @@
 package com.berlin.local.datasource
 
-import com.berlin.local.dao.MediaHomeDao
+import com.berlin.local.dao.MovieHomeDao
+import com.berlin.local.dao.TVShowHomeDao
 import com.berlin.repository.datasource.local.HomeLocalDataSource
+import com.berlin.repository.datasource.local.dto.MediaType
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 import javax.inject.Inject
 
+
 class HomeLocalDataSourceImp @Inject constructor(
-    private val mediaHomeDao: MediaHomeDao
+    private val movieHomeDao: MovieHomeDao,
+    private val tvShowHomeDao: TVShowHomeDao
 ) : HomeLocalDataSource {
-    override suspend fun getMovies(): List<MovieHomeEntity> {
-        return mediaHomeDao.getMovies()
+
+    override suspend fun getMoviesByType(type: MediaType): List<MovieHomeEntity> {
+        return movieHomeDao.getMoviesByType(type)
     }
 
     override suspend fun addMovies(movies: List<MovieHomeEntity>) {
-        mediaHomeDao.insertMovies(movies)
+        movieHomeDao.insertMovies(movies)
     }
 
     override suspend fun clearMovies() {
-        mediaHomeDao.clearMovies()
+        movieHomeDao.clearMovies()
     }
 
-    override suspend fun getTVShows(): List<TVShowHomeEntity> {
-        return mediaHomeDao.getTVShows()
+    override suspend fun getTVShowsByType(type: MediaType): List<TVShowHomeEntity> {
+        return tvShowHomeDao.getTVShowsByType(type)
     }
 
     override suspend fun addTVShows(tvShows: List<TVShowHomeEntity>) {
-        mediaHomeDao.insertTVShows(tvShows)
+        tvShowHomeDao.insertTVShows(tvShows)
     }
 
     override suspend fun clearTVShows() {
-        mediaHomeDao.clearTVShows()
+        tvShowHomeDao.clearTVShows()
     }
 }
