@@ -16,16 +16,22 @@ data class TVShowDetailsUiState(
     val isScreenLoading: Boolean = false,
     val errorMessage: String? = null,
     val tvShowDetailsTabsUiState: TVShowDetailsTabsUiState = TVShowDetailsTabsUiState(),
+    val showLoginDialog:Boolean = false,
+    val showRatingDialog: Boolean = false,
+    val showAddToListDialog: Boolean = false,
+    val selectedRatingMediaId: Long? = null,
+    val selectedAddToListMediaId: Long? = null,
+    val selectedFavouriteListId: Int? = null
 )
 
 data class TVShowDetailsTabsUiState(
-    val tab: TVShowDetailsTabs = TVShowDetailsTabs.MORE_LIKE_THIS,
+    val tab: TVShowDetailsTabs = TVShowDetailsTabs.SEASONS,
     val isSelected: Boolean = false,
 )
 enum class TVShowDetailsTabs {
+    SEASONS,
     MORE_LIKE_THIS,
     REVIEWS,
-    SEASONS,
     GALLERY,
     COMPANY_PRODUCTION,
 }
