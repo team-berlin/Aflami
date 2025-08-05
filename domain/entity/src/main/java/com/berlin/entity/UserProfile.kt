@@ -6,8 +6,8 @@ data class UserProfile(
     val name: String,
     val includeAdult: Boolean,
     val avatarUrl: String,
-    val iso31661: String,
-    val iso6391: String
+    val countryCodeIso31661: String,
+    val countryCodeIso6391: String
 )
 
 enum class AppTheme {

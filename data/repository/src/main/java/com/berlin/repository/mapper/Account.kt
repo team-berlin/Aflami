@@ -11,8 +11,8 @@ fun AccountDto.toDomain(): UserProfile {
         name = name.orEmpty(),
         includeAdult = includeAdult ?: false,
         avatarUrl = avatar?.tmdb?.avatarPath?.let { "$POSTER_PREFIX$it" } ?: "",
-        iso31661 = iso31661.orEmpty(),
-        iso6391 = iso6391.orEmpty()
+        countryCodeIso31661 = countryCodeIso31661.orEmpty(),
+        countryCodeIso6391 = countryCodeIso6391.orEmpty()
     )
 }
 
@@ -22,8 +22,8 @@ fun UserProfile.toEntity(): UserProfileEntity = UserProfileEntity(
     name = name,
     avatarUrl = avatarUrl,
     includeAdult = includeAdult,
-    iso31661 = iso31661,
-    iso6391 = iso6391
+    countryCodeIso31661 = countryCodeIso31661,
+    countryCodeIso6391 = countryCodeIso6391
 )
 
 fun UserProfileEntity.toDomain(): UserProfile = UserProfile(
@@ -32,6 +32,6 @@ fun UserProfileEntity.toDomain(): UserProfile = UserProfile(
     name = name,
     avatarUrl = avatarUrl,
     includeAdult = includeAdult,
-    iso31661 = iso31661,
-    iso6391 = iso6391
+    countryCodeIso31661 = countryCodeIso31661,
+    countryCodeIso6391 = countryCodeIso6391
 )

@@ -14,15 +14,15 @@ data class UserProfileEntity(
     @ColumnInfo(name = "name")
     val name: String,
 
-    @ColumnInfo(name = "avatar_url") // ← snake_case
+    @ColumnInfo(name = "avatar_url")
     val avatarUrl: String,
 
     @ColumnInfo(name = "include_adult")
     val includeAdult: Boolean,
 
     @ColumnInfo(name = "iso_3166_1")
-    val iso31661: String,
+    val countryCodeIso31661: String,
 
     @ColumnInfo(name = "iso_639_1")
-    val iso6391: String
+    val countryCodeIso6391: String
 )

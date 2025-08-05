@@ -31,8 +31,8 @@ class GetUserProfileUseCaseTest {
             name = "John Doe",
             includeAdult = false,
             avatarUrl = "https://image.tmdb.org/t/p/original/abc.jpg",
-            iso6391 = "",
-            iso31661 = ""
+            countryCodeIso6391 = "",
+            countryCodeIso31661 = ""
         )
         coEvery { repository.getUserProfile(sessionId) } returns expectedUser
 
