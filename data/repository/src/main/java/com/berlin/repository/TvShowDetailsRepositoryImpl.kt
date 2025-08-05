@@ -82,7 +82,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
         tvShowId: Long,
         seasonNumber: Int,
     ): List<Episode> {
-        return remoteDataSource.getEpisodeSeasonSeries(
+        return remoteDataSource.getEpisodeSeasonTV(
             tvShowId,
             seasonNumber
         ).episodes?.map { it.toDomain() }
