@@ -1,7 +1,5 @@
 package com.berlin.repository
 
-import android.util.Log
-import com.berlin.entity.ContinueWatchingMoviesModel
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
@@ -36,8 +34,8 @@ class MovieRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getUpComingMovies(): List<Movie> {
-        return remoteDataSource.getUpComingMovies().results?.map {
+    override suspend fun getUpComingMovies(selectedGenres: Int): List<Movie> {
+        return remoteDataSource.getUpComingMovies(selectedGenres).results?.map {
             it.toDomain()
         } ?: emptyList()
     }
