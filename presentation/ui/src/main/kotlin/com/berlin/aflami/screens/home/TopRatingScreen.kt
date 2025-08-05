@@ -37,6 +37,7 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.navigation.MovieDetailsDestination
+import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.ui.color.ExtraColors.BackgroundGradient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingScreenEffect
@@ -44,7 +45,6 @@ import com.berlin.aflami.viewmodel.home.toprating.TopRatingViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TopRatingScreen(
@@ -57,11 +57,18 @@ fun TopRatingScreen(
         topRatingViewModel.effect.collect { effect ->
             when (effect) {
                 is TopRatingScreenEffect.NavigateToMediaDetailsScreen -> {
-                    navController.navigate(
-                        MovieDetailsDestination(
-                            effect.mediaId
+                    when(effect.mediaType){
+                        MediaType.MOVIE ->    navController.navigate(
+                            MovieDetailsDestination(
+                                effect.mediaId
+                            )
                         )
-                    )
+                        MediaType.TV_SHOW ->navController.navigate(
+                            TVShowDetailsDestination(
+                                effect.mediaId
+                            )
+                        )
+                    }
                 }
 
                 is TopRatingScreenEffect.NavigateBack -> {

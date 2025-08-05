@@ -17,6 +17,8 @@ data class MovieDetailsDto(
     val belongsToCollectionDto: CollectionDto? = null,
     @SerialName("budget")
     val budget: Int? = null,
+    @SerialName("genres_id")
+    val genresId: List<Int>? = null,
     @SerialName("genres")
     val genres: List<GenreDto>? = null,
     @SerialName("homepage")

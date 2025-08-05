@@ -20,7 +20,7 @@ fun TVShowDetailsDto.toDomain(
         id = this.id?.toLong() ?: 0L,
         title = this.name ?: "",
         rating = this.voteAverage ?: 0.0,
-        posterURL = this.posterPath ?: "",
+        posterURL = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
         releaseDate = this.firstAirDate ?: "",
         genres = this.genres?.map { it.toDomain() } ?: emptyList(),
         screenShot = this.posterPath ?: "",

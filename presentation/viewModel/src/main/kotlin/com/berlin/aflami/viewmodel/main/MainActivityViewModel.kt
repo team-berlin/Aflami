@@ -11,19 +11,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-//    private val isLoggedInUseCase: LoggedInUseIsLoggedInUseCase,
 ) : ViewModel() {
+    var isLoading by mutableStateOf(true)
+        private set
     init {
         viewModelScope.launch {
-            //loginState = Logg()
+
             isLoading = false
         }
     }
-
-//    var loginState by mutableStateOf(false)
-//        private set
-
-    var isLoading by mutableStateOf(true)
-        private set
-
 }
