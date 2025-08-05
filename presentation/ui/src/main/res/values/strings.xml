@@ -60,4 +60,15 @@
     <string name="retry">Retry</string>
     <string name="apply">Apply</string>
     <string name="clear">Clear</string>
+    <string name="profile">Profile</string>
+    <string name="language">Language</string>
+    <string name="app_theme">App Theme</string>
+    <string name="settings">Settings</string>
+    <string name="dark">Dark</string>
+    <string name="light">Light</string>
+    <string name="eng">ENG</string>
+    <string name="ar">AR</string>
+    <string name="v1_1">v1.1</string>
+    <string name="watch_history">Watch history</string>
+    <string name="my_rating">My rating</string>
 </resources>

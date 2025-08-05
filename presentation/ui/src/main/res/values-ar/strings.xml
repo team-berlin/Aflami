@@ -61,6 +61,16 @@
     <string name="retry">إعادة المحاولة</string>
     <string name="apply">اضافه</string>
     <string name="clear">مسح</string>
-
+    <string name="profile">الملف الشخصي</string>
+    <string name="language">اللغة</string>
+    <string name="app_theme">ثيم التطبيق</string>
+    <string name="settings">الاعدادات</string>
+    <string name="dark">داكن</string>
+    <string name="light">فاتح</string>
+    <string name="eng">الانجليزية</string>
+    <string name="ar">العربية</string>
+    <string name="v1_1">الاصدار1.1</string>
+    <string name="watch_history">سجل المشاهدات</string>
+    <string name="my_rating">تقيماتي</string>
 
 </resources>
