@@ -38,7 +38,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
 
     override suspend fun getTVShowsImages(id: Long): MediaImage {
         return try {
-            val imagesResponse = remoteDataSource.getTVShowsImagesById(id)
+            val imagesResponse = remoteDataSource.getTVImagesById(id)
 
             val backdrops = imagesResponse.backdrops
                 ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
@@ -53,7 +53,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTVShowsCastDetails(seriesId: Long): List<Actor> {
-        return remoteDataSource.getTVShowsCastDetailsById(
+        return remoteDataSource.getTVCastDetailsById(
             seriesId
         ).cast?.mapNotNull { castItemDto ->
             castItemDto.toDomain()
@@ -64,7 +64,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
         val galleryImages = getTVShowsImages(seriesId).backdrops.take(10)
         val hasVideo = getTVShowVideos(seriesId).isNotEmpty()
 
-        return remoteDataSource.getSimilarTVShowsById(seriesId).results?.mapNotNull { tvShowDto ->
+        return remoteDataSource.getSimilarTVById(seriesId).results?.mapNotNull { tvShowDto ->
             tvShowDto.toDomain(
                 galleryImages = galleryImages,
                 hasVideo = hasVideo
@@ -90,7 +90,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTVShowsGenres(): List<Genre> {
-        return remoteDataSource.getTVShowsGenres().genres.map { it.toDomain() }
+        return remoteDataSource.getTVGenres().genres.map { it.toDomain() }
     }
 
     override suspend fun getTVShowVideos(seriesId: Long): List<Video> {

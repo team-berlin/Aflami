@@ -140,14 +140,13 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse { apiService.getTVShowVideos(seriesId) }
     }
 
-    override suspend fun getUserFavouriteLists(userId: Long): List<FavouriteListDto> {
+    override suspend fun getUserFavouriteLists(): List<FavouriteListDto> {
         TODO("Not yet implemented")
     }
 
     override suspend fun getUserFavouriteListItems(
         pageNumber: Int,
         favouriteListId: Int,
-        userId: Long,
     ): List<MovieDto> {
         TODO("Not yet implemented")
     }

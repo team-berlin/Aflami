@@ -99,7 +99,6 @@ fun HomeScreen(
         exit = fadeOut(),
         visible = !homeScreenState.isLoading
     ) {
-
         HomeContent(
             homeScreenState = homeScreenState, homeScreenInteractionListener = viewModel
         )
@@ -139,7 +138,7 @@ private fun onReceiveHomeScreenEffect(
             )
         }
 
-        is HomeScreenEffect.NavigateToTVShowDetailsScreen ->{
+        is HomeScreenEffect.NavigateToTVShowDetailsScreen -> {
             navController.navigate(
                 TVShowDetailsDestination(homeScreenEffect.tvShowId)
             )
@@ -168,16 +167,16 @@ private fun HomeContent(
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
     val pagerState = rememberPagerState(
         initialPage = 1, pageCount = { homeScreenState.popularMediaUiState.popularMedia.size })
-    AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = homeScreenState.isLoading
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(R.string.loading)
-        )
-    }
+//    AnimatedVisibility(
+//        enter = fadeIn(),
+//        exit = fadeOut(),
+//        visible = homeScreenState.isLoading
+//    ) {
+//        CircularProgressIndicator(
+//            modifier = Modifier.fillMaxSize(),
+//            text = stringResource(R.string.loading)
+//        )
+//    }
     val mediaList: List<MediaUiState> =
         homeScreenState.continueWatchingUiState.continueWatchingMediaList
     val currentMedia =
@@ -187,16 +186,12 @@ private fun HomeContent(
             .fillMaxSize()
             .background(Theme.color.surface)
     ) {
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = homeScreenState.isLoading.not()
+        LazyColumn(
+            modifier = Modifier.padding(bottom = 64.dp),
+            state = listState
         ) {
-            LazyColumn(
-                modifier = Modifier.padding(bottom = 64.dp),
-                state = listState
-            ) {
-                item {
+            item {
+                AnimatedVisibility(homeScreenState.popularMediaUiState.errorMessage == null) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -280,29 +275,32 @@ private fun HomeContent(
                         }
                     }
                 }
-                if (mediaList.isNotEmpty()) {
-                    item {
-                        ContinueWatchingHomeSections(
-                            modifier = Modifier.background(Theme.color.surface),
-                            seeAllOnClick = {
-                                homeScreenInteractionListener.onShowAllContinueWatchingClicked()
-                            },
-                            state = mediaList,
-                            sectionTitleId = R.string.continue_watching,
-                            onMovieItemClicked = {
-                                homeScreenInteractionListener.onMovieCardClicked(
-                                    it
-                                )
-                            },
-                            onTVShowItemClicked = {
-                                homeScreenInteractionListener.onTVShowCardClicked(
-                                    it
-                                )
-                            }
-                        )
-                    }
+            }
+            item {
+                AnimatedVisibility(homeScreenState.continueWatchingUiState.errorMessage == null) {
+                    ContinueWatchingHomeSections(
+                        modifier = Modifier.background(Theme.color.surface),
+                        seeAllOnClick = {
+                            homeScreenInteractionListener.onShowAllContinueWatchingClicked()
+                        },
+                        state = mediaList,
+                        sectionTitleId = R.string.continue_watching,
+                        onMovieItemClicked = {
+                            homeScreenInteractionListener.onMovieCardClicked(
+                                it
+                            )
+                        },
+                        onTVShowItemClicked = {
+                            homeScreenInteractionListener.onTVShowCardClicked(
+                                it
+                            )
+                        }
+                    )
                 }
-                item {
+            }
+
+            item {
+                AnimatedVisibility(homeScreenState.topRatedMediaUiState.errorMessage == null) {
                     TopRatingHomeSections(
                         modifier = Modifier
                             .background(Theme.color.surface)
@@ -315,14 +313,16 @@ private fun HomeContent(
                         onTVShowItemClicked = { homeScreenInteractionListener.onTVShowCardClicked(it) }
                     )
                 }
-                item {
-                    MoodPickerSection(
-                        modifier = Modifier.background(Theme.color.surface),
-                        homeScreenState,
-                        homeScreenInteractionListener
-                    )
-                }
-                item {
+            }
+            item {
+                MoodPickerSection(
+                    modifier = Modifier.background(Theme.color.surface),
+                    homeScreenState,
+                    homeScreenInteractionListener
+                )
+            }
+            item {
+                AnimatedVisibility(homeScreenState.upcomingMoviesUiState.errorMessage == null) {
                     UpcomingMoviesSection(
                         movies = homeScreenState.upcomingMoviesUiState.upcomingMovies,
                         genres = homeScreenState.upcomingMoviesUiState.movieGenres,
@@ -337,6 +337,7 @@ private fun HomeContent(
                 }
             }
         }
+
         AnimatedVisibility(homeScreenState.moodPickerUiState.openMovieDialog) {
             with(homeScreenState.moodPickerUiState.selectedMovie) {
                 MoodPickerDialog(

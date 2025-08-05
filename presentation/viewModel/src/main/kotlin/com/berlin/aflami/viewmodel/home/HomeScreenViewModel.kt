@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.home
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PAGE_SIZE
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -13,9 +14,10 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import usecase.movie.GetMoviesByMoodUseCase
+import kotlinx.coroutines.launch
 import usecase.movie.ContinueWatchingMovieUseCase
 import usecase.movie.GetMovieGenresUseCase
+import usecase.movie.GetMoviesByMoodUseCase
 import usecase.movie.GetPopularMoviesUseCase
 import usecase.movie.GetTopRatedMoviesUseCase
 import usecase.movie.GetUpComingMoviesUseCase
@@ -39,12 +41,25 @@ class HomeScreenViewModel @Inject constructor(
     HomeScreenInteractionListener {
 
     init {
-        getPopularMedia()
-        getContinueWatchingMedia()
-        getTopRatingMovieAndTvShows()
-        loadGenresMovies()
-        getUpComingMoviesByGenre()
+        viewModelScope.launch {
+            updateState { it.copy(isLoading = true) }
+
+            val popularJob = async { getPopularMedia() }
+            val continueWatchingJob = async { getContinueWatchingMedia() }
+            val topRatedJob = async { getTopRatingMovieAndTvShows() }
+            val genreJob = async { loadGenresMovies() }
+            val upcomingJob = async { getUpComingMoviesByGenre() }
+
+            popularJob.await()
+            continueWatchingJob.await()
+            topRatedJob.await()
+            genreJob.await()
+            upcomingJob.await()
+
+            updateState { it.copy(isLoading = false) }
+        }
     }
+
 
     //region popularSection
     private fun getPopularMedia() {
@@ -138,8 +153,10 @@ class HomeScreenViewModel @Inject constructor(
     private fun updateContinueWatchingUiStateWithError(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                continueWatchingUiState = screenState.continueWatchingUiState.copy(errorMessage = errorUiState.message),
-                isLoading = false
+                continueWatchingUiState = screenState.continueWatchingUiState.copy(
+                    errorMessage = errorUiState.message,
+                    isLoading = false
+                ),
             )
         }
     }
@@ -299,9 +316,9 @@ class HomeScreenViewModel @Inject constructor(
             screenState.copy(
                 selectedGenres = newGenreId,
                 upcomingMoviesUiState = screenState.upcomingMoviesUiState.copy(
-                    movieGenres = selected
+                    movieGenres = selected,
+                    isLoading = false
                 ),
-                isLoading = false
             )
         }
         getUpComingMoviesByGenre()
