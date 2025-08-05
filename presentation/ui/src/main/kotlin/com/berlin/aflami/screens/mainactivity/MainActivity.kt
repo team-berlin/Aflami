@@ -25,17 +25,17 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-//        val splashScreen = installSplashScreen()
-//
-//        splashScreen.setKeepOnScreenCondition {
-//            mainActivityViewModel.isLoading
-//        }
+        val splashScreen = installSplashScreen()
+
+        splashScreen.setKeepOnScreenCondition {
+            mainActivityViewModel.isLoading
+        }
         enableEdgeToEdge()
         setContent {
             AflamiTheme {
                 AflamiNavGraph(
                     navController = Theme.navController,
-                    isLoggedIn = true,
+                    isLoggedIn =  true,
                     modifier = Modifier.Companion
                         .fillMaxSize()
                         .background(Theme.color.surface)
