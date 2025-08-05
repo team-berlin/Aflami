@@ -49,7 +49,7 @@ fun AvatarSection(
         Text(
             text = "@$userName",
             style = Theme.textStyle.label.medium,
-            color = Theme.color.textColors.body,
+            color = Theme.color.textColors.body
         )
 
         Row(
@@ -63,8 +63,7 @@ fun AvatarSection(
                     )
                 )
                 .padding(horizontal = 8.dp, vertical = 4.dp)
-        )
-        {
+        ) {
             Text(
                 text = "$userPoints pts.",
                 style = Theme.textStyle.label.small,
@@ -76,11 +75,6 @@ fun AvatarSection(
                 tint = Theme.color.textColors.onPrimary,
                 modifier = Modifier.size(16.dp)
             )
-
-
         }
-
-
     }
-
 }

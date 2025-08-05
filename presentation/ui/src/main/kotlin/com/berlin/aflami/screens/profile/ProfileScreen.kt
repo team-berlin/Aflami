@@ -23,11 +23,10 @@ import com.berlin.ui.R
 @Composable
 fun ProfileScreen() {
     ProfileContent()
-
 }
 
 @Composable
-fun ProfileContent() {
+private fun ProfileContent() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -54,7 +53,7 @@ fun ProfileContent() {
 
 @ThemeAndLocalePreviews
 @Composable
-fun PreviewProfileSection() {
+private fun PreviewProfileSection() {
     AflamiTheme {
         ProfileScreen()
     }
