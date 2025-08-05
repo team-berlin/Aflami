@@ -3,8 +3,8 @@ package usecase.movie
 import repository.MovieRepository
 
 class SaveRecentMoviesHistoryUseCase(
-    private val repository: MovieRepository
+    private val movieRepository: MovieRepository
 ) {
     suspend operator fun invoke(query: String) =
-        repository.saveRecentMoviesHistory(query)
+        movieRepository.saveRecentMoviesHistory(query)
 }

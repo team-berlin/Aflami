@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.reusableinteractionlistener.createnewlist
+package com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist
 
 interface CreateNewListInteractionListener {
     fun onUpdateNewListTitle(newListTitle: String)

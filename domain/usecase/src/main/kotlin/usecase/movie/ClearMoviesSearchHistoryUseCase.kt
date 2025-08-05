@@ -3,7 +3,7 @@ package usecase.movie
 import repository.MovieRepository
 
 class ClearMoviesSearchHistoryUseCase(
-    private val repository: MovieRepository
+    private val movieRepository: MovieRepository
 ) {
-    suspend operator fun invoke() = repository.clearMovieSearchHistory()
+    suspend operator fun invoke() = movieRepository.clearMovieSearchHistory()
 }

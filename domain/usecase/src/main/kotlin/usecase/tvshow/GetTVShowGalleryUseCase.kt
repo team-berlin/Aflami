@@ -1,10 +1,12 @@
 package usecase.tvshow
 
 import com.berlin.entity.MediaImage
-import repository.TvShowDetailsRepository
+import repository.TVShowDetailsRepository
 import javax.inject.Inject
 
-class GetTVShowGalleryUseCase @Inject constructor(private val tvShowDetailsRepository: TvShowDetailsRepository) {
+class GetTVShowGalleryUseCase @Inject constructor(
+    private val tvShowDetailsRepository: TVShowDetailsRepository
+) {
     suspend operator fun invoke(movieId: Long): MediaImage =
-        tvShowDetailsRepository.getSeriesImages(id = movieId)
+        tvShowDetailsRepository.getTVShowsImages(id = movieId)
 }

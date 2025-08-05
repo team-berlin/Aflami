@@ -5,7 +5,7 @@ import repository.TVShowRepository
 import javax.inject.Inject
 
 class GetPopularTVShowsUseCase @Inject constructor(
-    private val repository: TVShowRepository
+    private val tvShowRepository: TVShowRepository
 ) {
-    suspend operator fun invoke(): List<TVShow> = repository.getPopularTVShows()
+    suspend operator fun invoke(): List<TVShow> = tvShowRepository.getPopularTVShows()
 }

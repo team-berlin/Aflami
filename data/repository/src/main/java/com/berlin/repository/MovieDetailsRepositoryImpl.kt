@@ -1,13 +1,12 @@
 package com.berlin.repository
 
-import com.berlin.entity.Genre
 import com.berlin.entity.Actor
+import com.berlin.entity.Genre
 import com.berlin.entity.MediaImage
 import com.berlin.entity.Movie
 import com.berlin.entity.Review
 import com.berlin.entity.Video
 import com.berlin.exception.AflamiException
-import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.dto.GenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
