@@ -22,7 +22,7 @@ interface ApiService {
     ): Response<MediaImagesResponse>
 
     @GET(ApiConstants.SERIES_IMAGES)
-    suspend fun getSeriesImages(
+    suspend fun getTVImages(
         @Path(ApiConstants.SERIES_ID) seriesId: Long
     ): Response<MediaImagesResponse>
 
@@ -65,28 +65,28 @@ interface ApiService {
     ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.SEARCH_TV)
-    suspend fun searchTvShows(
+    suspend fun searchTVShows(
         @Query(ApiConstants.QUERY) query: String,
         @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.SERIES_DETAILS)
-    suspend fun getTvShowDetails(
+    suspend fun getTVShowDetails(
         @Path(ApiConstants.SERIES_ID) seriesId: Long
     ): Response<TVShowDetailsDto>
 
     @GET(ApiConstants.SERIES_CAST)
-    suspend fun getSeriesCastDetails(
+    suspend fun getTVCastDetails(
         @Path(ApiConstants.SERIES_ID) seriesId: Long
     ): Response<MediaCastResponse>
 
     @GET(ApiConstants.SERIES_MORE_LIKE_THIS)
-    suspend fun getSeriesSimilar(
+    suspend fun getTVSimilar(
         @Path(ApiConstants.SERIES_ID) seriesId: Long
     ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.SERIES_REVIEW)
-    suspend fun getSeriesReviews(
+    suspend fun getTVReviews(
         @Path(ApiConstants.SERIES_ID) seriesId: Long
     ): Response<BaseResponse<ReviewDto>>
 
@@ -100,7 +100,7 @@ interface ApiService {
     suspend fun getMovieGenres(): Response<GenreResponse>
 
     @GET(ApiConstants.SERIES_GENRES)
-    suspend fun getSeriesGenres(): Response<GenreResponse>
+    suspend fun getTVGenres(): Response<GenreResponse>
 
     @GET(ApiConstants.MOVIE_UPCOMING)
     suspend fun getUpcomingMovies(): Response<BaseResponse<MovieDetailsDto>>
@@ -127,7 +127,7 @@ interface ApiService {
     ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.TV_VIDEO_DETAILS)
-    suspend fun getTvShowVideos(
+    suspend fun getTVShowVideos(
         @Path(ApiConstants.SERIES_ID) seriesId: Long
     ): Response<VideosResponse>
 
