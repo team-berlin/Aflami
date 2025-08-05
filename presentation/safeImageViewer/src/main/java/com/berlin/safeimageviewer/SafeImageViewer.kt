@@ -7,6 +7,7 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,7 +52,7 @@ fun SafeImageViewer(
     fallback: Painter? = null,
     placeholder: Painter? = null,
     blurCheck: Boolean = true,
-    alignment: Alignment = Alignment.Center,
+    alignment: Alignment = Alignment.TopCenter,
 ) {
     val context = LocalContext.current
     val modelManager = remember {
@@ -66,7 +67,6 @@ fun SafeImageViewer(
 
     var result by remember { mutableStateOf<ImageClassificationResult?>(null) }
     var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
-
     LaunchedEffect(imageUri, blurCheck) {
         if (blurCheck) {
             result = classifyImage(context, imageUri, modelManager)
@@ -97,7 +97,6 @@ fun SafeImageViewer(
                 blurBitmapRenderScript(context, bitmap, 25f)
             } else bitmap
         }
-
         AsyncImage(
             model = blurredBitmap,
             contentDescription = contentDescription,
@@ -152,18 +151,19 @@ suspend fun classifyImage(
             .bitmapConfig(Bitmap.Config.ARGB_8888)
             .build()
     )
-
+    // gender model Detection
     val drawable = (result as? SuccessResult)?.image?: return@withContext null
     val bitmap = drawable.toBitmap()
 
-    val nsfwInterpreter = Interpreter(
-        modelManager.getModel(NSFW_MODEL),
-        Interpreter.Options().addDelegate(NnApiDelegate())
-    )
-    val genderInterpreter = Interpreter(
-        modelManager.getModel(GENDER_MODEL),
-        Interpreter.Options().addDelegate(NnApiDelegate())
-    )
+    val genderBuffer = bitmapToByteBuffer(bitmap, 128)
+    val genderInput = TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
+    genderInput.loadBuffer(genderBuffer)
+
+    val genderOutput = TensorBuffer.createFixedSize(intArrayOf(1, 2), DataType.FLOAT32)
+    modelManager.genderInterpreter?.run(genderInput.buffer, genderOutput.buffer.rewind())
+    val isFemale = genderOutput.floatArray.indices.maxByOrNull { genderOutput.floatArray[it] } == 1
+    if(isFemale) return@withContext ImageClassificationResult(bitmap,false, true)
+
 
     // --- NSFW Detection
     val nsfwBuffer = bitmapToByteBuffer(bitmap, 224)
@@ -171,22 +171,11 @@ suspend fun classifyImage(
     nsfwInput.loadBuffer(nsfwBuffer)
 
     val nsfwOutput = TensorBuffer.createFixedSize(intArrayOf(1, 5), DataType.FLOAT32)
-    nsfwInterpreter.run(nsfwInput.buffer, nsfwOutput.buffer.rewind())
+    modelManager.nsfwInterpreter?.run(nsfwInput.buffer, nsfwOutput.buffer.rewind())
     val isSafe = nsfwOutput.floatArray.indices.maxByOrNull { nsfwOutput.floatArray[it] } == 2
 
-    // gender model Detection
-    val genderBuffer = bitmapToByteBuffer(bitmap, 128)
-    val genderInput = TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
-    genderInput.loadBuffer(genderBuffer)
 
-    val genderOutput = TensorBuffer.createFixedSize(intArrayOf(1, 2), DataType.FLOAT32)
-    genderInterpreter.run(genderInput.buffer, genderOutput.buffer.rewind())
-    val isFemale = genderOutput.floatArray.indices.maxByOrNull { genderOutput.floatArray[it] } == 1
-
-    nsfwInterpreter.close()
-    genderInterpreter.close()
-
-    return@withContext ImageClassificationResult(bitmap, isSafe, isFemale)
+    return@withContext ImageClassificationResult(bitmap, isSafe, false)
 }
 fun bitmapToByteBuffer(bitmap: Bitmap, size: Int): ByteBuffer {
     val inputImage = bitmap.scale(size, size)
