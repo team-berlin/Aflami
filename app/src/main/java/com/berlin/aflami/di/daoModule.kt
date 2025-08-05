@@ -4,9 +4,10 @@ import com.berlin.local.AflamiDatabase
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
-import com.berlin.local.dao.MediaHomeDao
+import com.berlin.local.dao.MovieHomeDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
+import com.berlin.local.dao.TVShowHomeDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,9 +49,15 @@ object DaoModule {
     }
     @Provides
     @Singleton
-    fun provideMediaHomeDao(db: AflamiDatabase): MediaHomeDao {
-        return db.mediaHomeDao()
+    fun provideMovieHomeDao(db: AflamiDatabase): MovieHomeDao {
+        return db.movieHomeDao()
     }
+    @Provides
+    @Singleton
+    fun provideTVShowHomeDao(db: AflamiDatabase): TVShowHomeDao {
+        return db.tVShowHomeDao()
+    }
+
 
 
 }
