@@ -16,6 +16,8 @@ data class TVShowDetailsDto(
     val episodeRunTime: List<Int>? = null,
     @SerialName("first_air_date")
     val firstAirDate: String? = null,
+    @SerialName("genre_ids")
+    val genresId: List<Int>? = null,
     @SerialName("genres")
     val genres: List<GenreDto>? = null,
     @SerialName("homepage")

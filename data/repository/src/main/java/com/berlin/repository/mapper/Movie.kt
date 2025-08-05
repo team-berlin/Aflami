@@ -1,5 +1,6 @@
 package com.berlin.repository.mapper
 
+import android.util.Log
 import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Genre
 import com.berlin.entity.Movie
@@ -20,7 +21,7 @@ fun MovieDetailsDto.toDomain(
         title = this.title.orEmpty(),
         rating = (this.voteAverage ?: 0.0),
         releaseDate = this.releaseDate ?: "10-12-2014",
-        genres = this.genres?.map{it.toDomain() }?:emptyList(),
+        genres = this.genres?.map{it.toDomain() }?: genresId?.map { it.toDomainGenre() }?:emptyList(),
         posterURL = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
         screenShot = this.backdropPath?:"",
         description = this.overview?:"Description not available",
@@ -94,6 +95,9 @@ fun RecentlyWatchedMovieEntity.toDomain(): Movie {
 
 fun GenreDto.toDomain() = Genre(
     id = this.id ?: 0, name = this.name.orEmpty()
+)
+fun Int.toDomainGenre() = Genre(
+    id = this, name = ""
 )
 fun MovieEntity.toDomain(): Movie {
     return Movie(
