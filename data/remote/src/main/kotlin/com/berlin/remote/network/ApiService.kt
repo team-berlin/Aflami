@@ -1,14 +1,14 @@
 package com.berlin.remote.network
 
-import com.berlin.repository.datasource.remote.response.BaseResponse
-import com.berlin.repository.datasource.remote.response.GenreResponse
-import com.berlin.repository.datasource.remote.response.MediaCastResponse
-import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
+import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
+import com.berlin.repository.datasource.remote.response.BaseResponse
+import com.berlin.repository.datasource.remote.response.GenreResponse
+import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -135,4 +135,6 @@ interface ApiService {
     suspend fun getMovieVideos(
         @Path(ApiConstants.MOVIE_ID) movieId: Long
     ): Response<VideosResponse>
+
+
 }

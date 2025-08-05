@@ -5,13 +5,13 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class AddToListSheetState(
     val selectedListId: Int? = null,
-    val userCustomLists: List<CustomListItemUiState> = emptyList(),
+    val userCustomLists: List<FavouriteListItemUiState> = emptyList(),
     val isAddButtonEnabled: Boolean = false,
 )
 
 @Immutable
-data class CustomListItemUiState(
+data class FavouriteListItemUiState(
     val listTitle: String = "",
-    val numberOfItems: Int = 0,
+    val numberOfFavouriteMovies: Int = 0,
     val isSelected: Boolean = false,
 )

@@ -19,7 +19,8 @@ fun Movie.toMovieUiState(): MovieUiState {
         duration = duration.formatRuntime(),
         companyProductionUiState = companyProductions.map { it -> it.toCompanyProductionUiState() },
         originCountry = originCountry,
-        hasVideo = hasVideo
+        hasVideo = hasVideo,
+        isFavourite = isFavourite
     )
 }
 

@@ -2,16 +2,18 @@ package com.berlin.remote
 
 import com.berlin.remote.network.ApiService
 import com.berlin.repository.datasource.remote.RemoteDataSource
+import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
+import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
+import com.berlin.repository.datasource.remote.dto.movie.MovieDto
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
-import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import javax.inject.Inject
 
 class RetrofitRemoteDataSource @Inject constructor(
@@ -136,5 +138,17 @@ class RetrofitRemoteDataSource @Inject constructor(
     override suspend fun getTVShowVideos(seriesId: Long): VideosResponse {
         require(seriesId > 0) { "Invalid seriesId: $seriesId" }
         return wrapApiResponse { apiService.getTVShowVideos(seriesId) }
+    }
+
+    override suspend fun getUserFavouriteLists(userId: Long): List<FavouriteListDto> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUserFavouriteListItems(
+        pageNumber: Int,
+        favouriteListId: Int,
+        userId: Long,
+    ): List<MovieDto> {
+        TODO("Not yet implemented")
     }
 }
