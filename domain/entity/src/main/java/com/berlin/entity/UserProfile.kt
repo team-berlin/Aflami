@@ -1,10 +1,13 @@
 package com.berlin.entity
 
-data class User(
+data class UserProfile(
     val id: Int,
     val username: String,
-    val name: String?,
-    val avatarUrl: String?
+    val name: String,
+    val includeAdult: Boolean,
+    val avatarUrl: String,
+    val countryCodeIso31661: String,
+    val countryCodeIso6391: String
 )
 
 enum class AppTheme {

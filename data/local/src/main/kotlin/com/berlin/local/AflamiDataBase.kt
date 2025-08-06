@@ -11,6 +11,7 @@ import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
+import com.berlin.local.dao.UserProfileDao
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
 
 import com.berlin.repository.datasource.local.dto.GenreEntity
@@ -18,6 +19,7 @@ import com.berlin.repository.datasource.local.dto.RecentHistoryEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.UserProfileEntity
 
 @TypeConverters(Converters::class)
 @Database(
@@ -26,9 +28,9 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
         RecentHistoryEntity::class,
         CategoriesPreferencesEntity::class,
         RecentlyWatchedMovieEntity::class,
-        RecentlyWatchedTvShowEntity::class
-        ,
-        GenreEntity::class
+        RecentlyWatchedTvShowEntity::class,
+        GenreEntity::class,
+        UserProfileEntity::class
     ], version = 1, exportSchema = false
 )
 abstract class AflamiDatabase : RoomDatabase() {
@@ -37,6 +39,7 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun categoriesPreferencesDao(): CategoriesPreferencesDao
     abstract fun continueWatchingDao(): ContinueWatchingDao
     abstract fun genreDao(): GenreDao
+    abstract fun userProfileDao(): UserProfileDao
 
     companion object {
         private const val DATABASE_NAME = "Aflami_Database"

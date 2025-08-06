@@ -32,7 +32,7 @@ class AddContinueWatchingMovieUseCaseTest {
     fun `should throw exception when repository fails`() = runTest {
         coEvery { repository.addContinueWatchingMovie(TEST_MOVIE) } throws Exception(DB_ERROR)
 
-        assertThrows<Exception>{
+        assertThrows<Exception> {
             addContinueWatchingMovieUseCase(TEST_MOVIE)
         }
 
@@ -42,7 +42,7 @@ class AddContinueWatchingMovieUseCaseTest {
     }
 
     companion object {
-         val TEST_MOVIE = Movie(
+        val TEST_MOVIE = Movie(
             id = 90L,
             title = "Test Movie",
             rating = 7.9,
@@ -55,7 +55,8 @@ class AddContinueWatchingMovieUseCaseTest {
             hasVideo = false,
             companyProductions = emptyList(),
             originCountry = "PS",
-            galleryUrl = emptyList()
+            galleryUrl = emptyList(),
+            reviews = emptyList(),
         )
         const val DB_ERROR = "DB error"
     }

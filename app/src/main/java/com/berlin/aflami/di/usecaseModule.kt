@@ -9,8 +9,10 @@ import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.TVShowRepository
 import repository.TVShowDetailsRepository
+import repository.UserRepository
 import usecase.movie.GetMoviesByMoodUseCase
 import usecase.auth.GetLoginUseCase
+import usecase.auth.GetUserProfileUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
 import usecase.mediadetails.GetMovieVideos
@@ -195,4 +197,9 @@ object UseCaseModule {
     @Provides
     fun provideGetTopRatedMoviesUseCase(repository: MovieRepository): GetTopRatedMoviesUseCase =
         GetTopRatedMoviesUseCase(repository)
+
+    @Provides
+    fun provideGetUserProfileUseCase(
+        repository: UserRepository
+    ): GetUserProfileUseCase = GetUserProfileUseCase(repository)
 }
