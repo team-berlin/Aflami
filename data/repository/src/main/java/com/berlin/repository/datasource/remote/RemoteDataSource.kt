@@ -52,4 +52,5 @@ interface RemoteDataSource {
 
     fun deleteUserFavouriteList(listId: Int)
     fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long)
+    fun createNewFavouriteList(title: String)
 }

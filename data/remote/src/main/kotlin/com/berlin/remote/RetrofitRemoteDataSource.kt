@@ -158,4 +158,8 @@ class RetrofitRemoteDataSource @Inject constructor(
     override fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long) {
         TODO("Not yet implemented")
     }
+
+    override fun createNewFavouriteList(title: String) {
+        TODO("Not yet implemented")
+    }
 }
