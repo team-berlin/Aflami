@@ -1,12 +1,10 @@
 package com.berlin.aflami.viewmodel.profile
 
-import androidx.compose.ui.graphics.painter.Painter
-
 
 data class ProfileUiState(
-    val coverImage: Painter,
-    val userAvatar: Painter,
-    val userName: String,
-    val userPoints: Int,
-    val appVersion: String
+    val coverImageUrl: String? = null,
+    val userAvatarUrl: String? = null,
+    val userName: String = "",
+    val userPoints: Int = 0,
+    val appVersion: String = "v1.0.0"
 )
