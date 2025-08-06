@@ -10,15 +10,13 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
 ) : UserFavouriteListRepository {
     override suspend fun getUserFavouriteLists(): List<FavouriteList> {
-//        remoteDataSource.getUserFavouriteLists()
-        TODO("Not yet implemented")
-
+        remoteDataSource.getUserFavouriteLists()
     }
 
     override suspend fun getUserFavouriteListItems(
         pageNumber: Int,
         favouriteListId: Int,
     ): List<Movie> {
-        TODO("Not yet implemented")
+        remoteDataSource.getUserFavouriteListItems(pageNumber, favouriteListId)
     }
 }
