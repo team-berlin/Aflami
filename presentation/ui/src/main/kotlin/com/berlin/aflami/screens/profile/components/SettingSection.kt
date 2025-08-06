@@ -18,7 +18,10 @@ import com.berlin.ui.R
 fun SettingSection(
     isDarkThemeEnabled: Boolean,
     isLanguageEN: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLanguageClick: () -> Unit = {},
+    onThemeClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -35,7 +38,7 @@ fun SettingSection(
                 icon = painterResource(R.drawable.language),
                 title = stringResource(R.string.language),
                 subtitle = if (isLanguageEN) stringResource(R.string.eng) else stringResource(R.string.ar),
-                onClick = { }
+                onClick = onLanguageClick
             )
             SettingsItem(
                 icon = painterResource(R.drawable.app_theme),
@@ -43,13 +46,13 @@ fun SettingSection(
                 subtitle = if (isDarkThemeEnabled) stringResource(R.string.dark) else stringResource(
                     R.string.light
                 ),
-                onClick = { }
+                onClick = onThemeClick
             )
             SettingsItem(
                 icon = painterResource(R.drawable.settings),
                 title = stringResource(R.string.settings),
                 subtitle = "",
-                onClick = { }
+                onClick = onSettingsClick
             )
         }
 

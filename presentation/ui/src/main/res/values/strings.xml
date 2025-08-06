@@ -71,4 +71,9 @@
     <string name="v1_1">v1.1</string>
     <string name="watch_history">Watch history</string>
     <string name="my_rating">My rating</string>
+
+    //profile
+    <string name="language_dialog_english">English</string>
+    <string name="language_dialog_arabic">Arabic</string>
+    <string name="language_dialog_warning">You will be attacked by a group of bright colors!</string>
 </resources>

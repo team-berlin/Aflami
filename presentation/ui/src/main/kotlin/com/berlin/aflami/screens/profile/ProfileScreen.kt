@@ -45,6 +45,9 @@ private fun ProfileContent() {
         SettingSection(
             isLanguageEN = true,
             isDarkThemeEnabled = true,
+            onThemeClick = { /* Handle theme change */ },
+            onLanguageClick = { /* Handle language change */ },
+            onSettingsClick = { /* Handle settings click */ },
         )
 
     }

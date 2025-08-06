@@ -19,6 +19,7 @@ val AflamiDarkColors = AflamiColors(
         overly = listOf(Color(0x000D090B), Color(0xFF0D090B)),
         streakGradient = listOf(Color(0x52D85895),Color(0x00D85895)),
         pointsOverly = listOf(Color(0xFF3B0D23), Color(0xFF7D1C4A)),
+        primaryGradient = listOf(Color(0xFFD85895), Color(0xFF973A66)),
     ),
 
     textColors = TextColors(

@@ -73,4 +73,9 @@
     <string name="watch_history">سجل المشاهدات</string>
     <string name="my_rating">تقيماتي</string>
 
+    //profile
+    <string name="language_dialog_english">الانجليزية</string>
+    <string name="language_dialog_arabic">العربية</string>
+    <string name="language_dialog_warning">سوف يتم مهاجمتك من قبل مجموعة من الألوان الزاهية!</string>
+
 </resources>
