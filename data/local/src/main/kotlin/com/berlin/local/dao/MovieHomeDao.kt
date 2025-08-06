@@ -15,7 +15,7 @@ interface MovieHomeDao {
     @Query("SELECT * FROM Movie_Home WHERE type = :type")
     suspend fun getMoviesByType(type: MediaType): List<MovieHomeEntity>
 
-    @Query("DELETE FROM Movie_Home")
-    suspend fun clearMovies()
+    @Query("DELETE FROM Movie_Home WHERE type = :type")
+    suspend fun clearMovies(type: MediaType)
 
 }

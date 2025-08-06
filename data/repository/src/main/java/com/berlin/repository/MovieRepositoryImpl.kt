@@ -37,7 +37,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getTopRatedMovies(page: Int): List<Movie> {
         val localMovies = homeLocalDataSource.getMoviesByType(MediaType.TOP_RATING)
-        if (!isExpiredOrEmpty(localMovies)) {
+        if (!isExpiredOrEmpty(localMovies)&&localMovies.isNotEmpty()) {
             return localMovies.map { it.toDomain() }
         }
 
@@ -45,7 +45,7 @@ class MovieRepositoryImpl @Inject constructor(
             remoteDataSource.getTopRatedMovies(page).results?.mapNotNull { it.toDomain() }
                 ?: emptyList()
         if (remoteMovies.isNotEmpty()) {
-            homeLocalDataSource.clearMovies()
+            homeLocalDataSource.clearMovies(MediaType.TOP_RATING)
             homeLocalDataSource.addMovies(remoteMovies.map { it.toTopRateMovieEntity() })
         }
 
@@ -54,14 +54,14 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getUpComingMovies(): List<Movie> {
         val localMovies = homeLocalDataSource.getMoviesByType(MediaType.UPCOMING)
-        if (!isExpiredOrEmpty(localMovies)) {
+        if (!isExpiredOrEmpty(localMovies) &&localMovies.isNotEmpty()) {
             return localMovies.map { it.toDomain() }
         }
 
         val remoteMovies = remoteDataSource.getUpComingMovies()
             .results?.map { it.toDomain() } ?: emptyList()
         if (remoteMovies.isNotEmpty()) {
-            homeLocalDataSource.clearMovies()
+            homeLocalDataSource.clearMovies(MediaType.UPCOMING)
             homeLocalDataSource.addMovies(remoteMovies.map { it.toUpComingMovieEntity() })
         }
 
@@ -71,14 +71,14 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getPopularMovies(): List<Movie> {
         val localMovies = homeLocalDataSource.getMoviesByType(MediaType.POPULAR)
-        if (!isExpiredOrEmpty(localMovies)) {
+        if (!isExpiredOrEmpty(localMovies) && localMovies.isNotEmpty()) {
             return localMovies.map { it.toDomain() }
         }
 
         val remoteMovies = remoteDataSource.getPopularMovies().results?.map { it.toDomain() }
             ?: emptyList()
         if (remoteMovies.isNotEmpty()) {
-            homeLocalDataSource.clearMovies()
+            homeLocalDataSource.clearMovies(MediaType.POPULAR)
             homeLocalDataSource.addMovies(remoteMovies.map { it.toPopularMovieEntity() })
         }
 

@@ -8,8 +8,8 @@ import com.berlin.repository.datasource.local.dto.MediaType
 interface HomeLocalDataSource {
     suspend fun getMoviesByType(type: MediaType): List<MovieHomeEntity>
     suspend fun addMovies(movies: List<MovieHomeEntity>)
-    suspend fun clearMovies()
+    suspend fun clearMovies(type: MediaType)
     suspend fun getTVShowsByType(type: MediaType): List<TVShowHomeEntity>
     suspend fun addTVShows(tvShows: List<TVShowHomeEntity>)
-    suspend fun clearTVShows()
+    suspend fun clearTVShows(type: MediaType)
 }

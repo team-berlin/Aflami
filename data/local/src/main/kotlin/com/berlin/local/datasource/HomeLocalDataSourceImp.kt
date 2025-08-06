@@ -22,8 +22,8 @@ class HomeLocalDataSourceImp @Inject constructor(
         movieHomeDao.insertMovies(movies)
     }
 
-    override suspend fun clearMovies() {
-        movieHomeDao.clearMovies()
+    override suspend fun clearMovies(type: MediaType) {
+        movieHomeDao.clearMovies(type)
     }
 
     override suspend fun getTVShowsByType(type: MediaType): List<TVShowHomeEntity> {
@@ -34,7 +34,7 @@ class HomeLocalDataSourceImp @Inject constructor(
         tvShowHomeDao.insertTVShows(tvShows)
     }
 
-    override suspend fun clearTVShows() {
-        tvShowHomeDao.clearTVShows()
+    override suspend fun clearTVShows(type: MediaType) {
+        tvShowHomeDao.clearTVShows(type)
     }
 }

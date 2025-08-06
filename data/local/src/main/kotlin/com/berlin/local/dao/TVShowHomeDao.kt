@@ -16,6 +16,6 @@ interface TVShowHomeDao {
     @Query("SELECT * FROM TVShow_Home WHERE type = :type")
     suspend fun getTVShowsByType(type: MediaType): List<TVShowHomeEntity>
 
-    @Query("DELETE FROM TVShow_Home")
-    suspend fun clearTVShows()
+    @Query("DELETE FROM TVShow_Home  WHERE type = :type")
+    suspend fun clearTVShows(type: MediaType)
 }
