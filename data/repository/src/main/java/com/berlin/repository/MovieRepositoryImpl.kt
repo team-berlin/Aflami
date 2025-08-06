@@ -21,31 +21,48 @@ class MovieRepositoryImpl @Inject constructor(
     ) : MovieRepository {
 
     override suspend fun getContinueWatchingMovies(page: Int): List<Movie> {
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+
         return recentlyWatchedLocalDataSource.getRecentlyWatchedMovie(page = page).map {
             it.toDomain()
-        }
+        }.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } } ?:emptyList()
+
     }
 
     override suspend fun addContinueWatchingMovie(movie: Movie) {
         recentlyWatchedLocalDataSource.addRecentlyWatchedMovie(movie.toRecentMovieEntity())
+
     }
 
     override suspend fun getTopRatedMovies(page: Int): List<Movie> {
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+
         return remoteDataSource.getTopRatedMovies(page).results?.mapNotNull { it.toDomain() }
+            ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+
             ?: emptyList()
 
     }
 
     override suspend fun getUpComingMovies(): List<Movie> {
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+
         return remoteDataSource.getUpComingMovies().results?.map {
             it.toDomain()
-        } ?: emptyList()
+        }
+            ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+
+            ?: emptyList()
     }
 
 
     override suspend fun getPopularMovies(): List<Movie> {
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+
         return remoteDataSource.getPopularMovies().results
-            ?.map { movieDto -> movieDto.toDomain() } ?: emptyList()
+            ?.map { movieDto -> movieDto.toDomain() }
+            ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+            ?: emptyList()
     }
 
     override suspend fun getMoviesByMoods(moods: List<Int>): List<Movie> {
@@ -60,18 +77,26 @@ class MovieRepositoryImpl @Inject constructor(
         query: String,
         page: Int,
     ): List<Movie> {
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
         return remoteDataSource
             .getMoviesByCountryName(query, page).results
-            ?.map { it.toDomain() } ?: emptyList()
+            ?.map { it.toDomain() }
+            ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+
+            ?: emptyList()
     }
 
     override suspend fun getMoviesByActorName(actorName: String, page: Int): List<Movie> {
+
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
         return remoteDataSource.getMoviesByActorName(actorName, page)
             .results
             ?.filter { it.knownForDepartment == ACTING_DEPARTMENT }
             ?.flatMap { personDto ->
                 personDto.knownFor?.filter { it.mediaType == MOVIE_MEDIA_TYPE } ?: emptyList()
-            }?.map { it.toDomain() } ?: emptyList()
+            }?.map { it.toDomain() }
+            ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+            ?: emptyList()
     }
 
     override suspend fun getMovieByKeyWord(

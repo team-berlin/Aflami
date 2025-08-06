@@ -172,7 +172,7 @@ private fun SearchByCountryContent(
         Box(
             modifier = Modifier
                 .fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopCenter
         ) {
             val movies = state.moviesOfCountryFlow.collectAsLazyPagingItems()
 

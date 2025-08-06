@@ -31,29 +31,12 @@ fun MovieDetailsDto.toDomain(
             it.toDomain()
         } ?: emptyList(),
         originCountry = this.originCountry?.firstOrNull() ?: "",
-        galleryUrl =galleryImages ,
-        reviews = reviews
+        galleryUrl = galleryImages,
+        reviews = reviews,
+        isFavourite = false,
     )
 }
 
-fun Movie.toLocal(): MovieEntity {
-    return MovieEntity(
-        id = this.id,
-        title = this.title,
-        rating = this.rating,
-        releaseDate = this.releaseDate,
-        genres = emptyList(),
-        posterURL = this.posterURL,
-        screenShot = this.screenShot,
-        description = this.description,
-        duration = this.duration,
-        hasVideo = this.hasVideo,
-        productionCompanies = emptyList(),
-        originCountry = this.originCountry,
-        galleryUrl = this.galleryUrl,
-        reviews = emptyList()
-    )
-}
 
 fun Movie.toRecentMovieEntity(): RecentlyWatchedMovieEntity {
     return RecentlyWatchedMovieEntity(
@@ -61,7 +44,7 @@ fun Movie.toRecentMovieEntity(): RecentlyWatchedMovieEntity {
         title = this.title,
         rating = this.rating,
         releaseDate = this.releaseDate,
-        genres = emptyList(),
+        genres = this.genres.map { it.id },
         posterURL = this.posterURL,
         screenShot = this.screenShot,
         description = this.description,
@@ -90,6 +73,7 @@ fun RecentlyWatchedMovieEntity.toDomain(): Movie {
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
         reviews = emptyList(),
+        isFavourite = false,
     )
 }
 
@@ -115,6 +99,7 @@ fun MovieEntity.toDomain(): Movie {
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
         reviews = this.reviews,
+        isFavourite = false, // Assuming isFavourite is not stored in MovieEntity
     )
 }
 

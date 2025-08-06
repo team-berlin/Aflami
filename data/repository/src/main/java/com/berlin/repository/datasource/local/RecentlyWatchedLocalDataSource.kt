@@ -1,5 +1,6 @@
 package com.berlin.repository.datasource.local
 
+import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
 
@@ -16,5 +17,8 @@ interface RecentlyWatchedLocalDataSource {
     ): List<RecentlyWatchedTvShowEntity>
 
     suspend fun addRecentlyWatchedTvShow(tvShowEntity: RecentlyWatchedTvShowEntity)
+
+    suspend fun addCategoryAsPreference(categories: CategoriesPreferencesEntity)
+    suspend fun getCategoryAsPreference(): List<CategoriesPreferencesEntity>
 
 }
