@@ -47,6 +47,12 @@ object DaoModule {
     fun provideGenreDao(db: AflamiDatabase): GenreDao {
         return db.genreDao()
     }
+
+    @Provides
+    @Singleton
+    fun provideAppEntryDao(db: AflamiDatabase): AppEntryDao {
+        return db.appEntryDao()
+    }
     @Provides
     @Singleton
     fun provideMovieHomeDao(db: AflamiDatabase): HomeMovieDao {

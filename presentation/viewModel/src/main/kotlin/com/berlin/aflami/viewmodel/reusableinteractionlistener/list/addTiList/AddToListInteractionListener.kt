@@ -1,7 +1,7 @@
-package com.berlin.aflami.viewmodel.reusableinteractionlistener.addTiList
+package com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList
 
 interface AddToListInteractionListener {
-    fun onCancelClicked()
+    fun onCancelAddingToListClicked()
     fun onSelectListClicked(listId: Int)
     fun onAddToListClicked(listId: Int, movieId: Long)
     fun onCreateNewListClicked()

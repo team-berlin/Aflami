@@ -15,6 +15,8 @@ import com.berlin.repository.mapper.toRecentMovieEntity
 import com.berlin.repository.mapper.toTopRateMovieEntity
 import com.berlin.repository.mapper.toUpComingMovieEntity
 import com.berlin.repository.util.Constants
+import com.berlin.repository.util.Constants.ACTING_DEPARTMENT
+import com.berlin.repository.util.Constants.MOVIE_MEDIA_TYPE
 import repository.MovieRepository
 import javax.inject.Inject
 
@@ -26,9 +28,12 @@ class MovieRepositoryImpl @Inject constructor(
 ) : MovieRepository {
 
     override suspend fun getContinueWatchingMovies(page: Int): List<Movie> {
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+
         return recentlyWatchedLocalDataSource.getRecentlyWatchedMovie(page = page).map {
             it.toDomain()
-        }
+        }.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } } ?:emptyList()
+
     }
 
     override suspend fun addContinueWatchingMovie(movie: Movie) {
@@ -87,25 +92,37 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getMoviesByMoods(moods: List<Int>): List<Movie> {
         if (moods.isEmpty()) return emptyList()
-        return remoteDataSource.getMoviesByMoodIds(moods).results?.map {
+        return remoteDataSource.getMoviesByMoodIds(moods).results?.mapNotNull {
             it.toDomain()
         } ?: emptyList()
     }
+
+
 
     override suspend fun getMoviesByCountry(
         query: String,
         page: Int,
     ): List<Movie> {
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
         return remoteDataSource
             .getMoviesByCountryName(query, page).results
-            ?.map { it.toDomain() } ?: emptyList()
+            ?.map { it.toDomain() }
+            ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+
+            ?: emptyList()
     }
 
     override suspend fun getMoviesByActorName(actorName: String, page: Int): List<Movie> {
-        return remoteDataSource.getMoviesByCountryName(
-            actorName,
-            page
-        ).results?.map { it.toDomain() } ?: emptyList()
+
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+        return remoteDataSource.getMoviesByActorName(actorName, page)
+            .results
+            ?.filter { it.knownForDepartment == ACTING_DEPARTMENT }
+            ?.flatMap { personDto ->
+                personDto.knownFor?.filter { it.mediaType == MOVIE_MEDIA_TYPE } ?: emptyList()
+            }?.map { it.toDomain() }
+            ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+            ?: emptyList()
     }
 
     override suspend fun getMovieByKeyWord(
@@ -144,4 +161,6 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 }
+
+
 

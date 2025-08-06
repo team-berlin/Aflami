@@ -140,10 +140,7 @@ koin = [
     "koin-ksp-compiler"
 ]
 
-#hilt = [
-#    "hilt-android",
-#    "androidx-hilt-viewmodel"
-#]
+
 composeUiDebug = [
     "androidx-ui-tooling",
     "androidx-ui-test-manifest"

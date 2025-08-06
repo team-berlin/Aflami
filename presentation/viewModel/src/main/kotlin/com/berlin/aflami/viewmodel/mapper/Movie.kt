@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.mapper
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
+import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.aflami.viewmodel.shareduistate.toGenreUiState
 import com.berlin.entity.Movie
 import java.text.DecimalFormat
@@ -36,6 +37,25 @@ fun Movie.toMediaUiState(): MediaUiState {
     )
 }
 
+fun MovieUiState.toDomain(): Movie {
+    return Movie(
+        id = id,
+        title = title,
+        rating = rating.toDoubleOrNull() ?: 0.0,
+        releaseDate = releaseDate,
+        posterURL = posterUrl,
+        screenShot = posterUrl,
+        description = description,
+        genres = genre.map { it.toDomain() },
+        duration = duration.parseRuntime(),
+        hasVideo = hasVideo,
+        companyProductions = emptyList(),
+        originCountry = originCountry,
+        galleryUrl = emptyList(),
+        reviews = emptyList(),
+        isFavourite = false
+    )
+}
 fun Int.formatRuntime(): String {
     val hours = this / 60
     val remainingMinutes = this % 60

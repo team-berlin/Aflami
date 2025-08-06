@@ -6,4 +6,5 @@ object Constants {
     const val GENRE_TYPE_MOVIE = "MOVIE"
     const val GENRE_TYPE_TV = "TV"
     const val ACTING_DEPARTMENT = "Acting"
+    const val MOVIE_MEDIA_TYPE = "movie"
 }
