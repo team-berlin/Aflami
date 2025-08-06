@@ -174,14 +174,8 @@ fun classifyGender(bitmap: Bitmap,modelManager:FireBaseModelManager):Boolean{
     val genderBuffer = bitmap.toModelByteBuffer(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
     val genderInput = TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
     genderInput.loadBuffer(genderBuffer)
-    Log.d("WOWTEST","Input buffer size: ${genderInput.buffer.capacity()}, Output")
 
     val genderOutput = TensorBuffer.createFixedSize(intArrayOf(1, 2), DataType.FLOAT32)
-
-
-    val inputShape = modelManager.genderInterpreter?.getInputTensor(0)?.shape()
-    val outputShape = modelManager.genderInterpreter?.getOutputTensor(0)?.shape()
-    Log.d("WOWTEST","Input shape: ${inputShape?.joinToString()}, Output shape: ${outputShape?.joinToString()}")
 
     modelManager.genderInterpreter?.run(genderInput.buffer, genderOutput.buffer.rewind())
     val isFemale = genderOutput.floatArray.indices.maxByOrNull { genderOutput.floatArray[it] } == 1
@@ -228,7 +222,6 @@ fun Bitmap.toModelByteBuffer(
             byteBuffer.put(b.toByte())
         }
     }
-    Log.d("WOWTEST","Input buffer size to model bytebuffer: ${byteBuffer.capacity()}, Output")
 
     return byteBuffer
 }
