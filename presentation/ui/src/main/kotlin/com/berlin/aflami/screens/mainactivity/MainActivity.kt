@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
             AflamiTheme {
                 AflamiNavGraph(
                     navController = Theme.navController,
-                    isLoggedIn =  true,
+                    isLoggedIn = mainActivityViewModel.loginState,
                     modifier = Modifier.Companion
                         .fillMaxSize()
                         .background(Theme.color.surface)

@@ -9,6 +9,7 @@ import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.TVShowRepository
 import repository.TVShowDetailsRepository
+import usecase.auth.GetLoginStatus
 import usecase.movie.GetMoviesByMoodUseCase
 import usecase.auth.GetLoginUseCase
 import usecase.auth.GetValidatePasswordUseCase
@@ -184,9 +185,9 @@ object UseCaseModule {
     fun provideLoginUseCase(repository: AuthenticationRepository): GetLoginUseCase =
         GetLoginUseCase(repository)
 
-//    @Provides
-//    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLog =
-//        IsLoggedInUseCase(repository)
+    @Provides
+    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLoginStatus =
+        GetLoginStatus(repository)
 
     @Provides
     fun provideGetTopRatedSeriesUseCase(repository: TVShowRepository): GetTopRatedTVShowUseCase =

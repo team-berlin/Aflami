@@ -165,7 +165,7 @@ suspend fun classifyImage(
     val drawable = (result as? SuccessResult)?.image?: return@withContext null
     val bitmap = drawable.toBitmap()
     return@withContext when {
-        classifyGender(bitmap, modelManager) -> ImageClassificationResult(bitmap, isSafe = true, isFemale = true)
+        classifyGender(bitmap, modelManager) -> ImageClassificationResult(bitmap, isSafe = true, isFemale = false)
         classifyNSFW(bitmap, modelManager) -> ImageClassificationResult(bitmap, isSafe = true, isFemale = false)
         else -> ImageClassificationResult(bitmap, isSafe = false, isFemale = false)
     }
@@ -188,7 +188,7 @@ fun classifyNSFW(bitmap: Bitmap,modelManager:FireBaseModelManager):Boolean{
     val nsfwOutput = TensorBuffer.createFixedSize(intArrayOf(1, 5), DataType.FLOAT32)
 
     modelManager.nsfwInterpreter?.run(nsfwInput.buffer, nsfwOutput.buffer.rewind())
-    val isSafe = nsfwOutput.floatArray.indices.maxByOrNull { nsfwOutput.floatArray[it] } == 1
+    val isSafe = nsfwOutput.floatArray.indices.maxByOrNull { nsfwOutput.floatArray[it] } == 2
     return isSafe
 }
 fun Bitmap.toModelByteBuffer(
