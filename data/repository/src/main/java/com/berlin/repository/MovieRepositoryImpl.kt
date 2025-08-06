@@ -1,7 +1,5 @@
 package com.berlin.repository
 
-import android.util.Log
-import com.berlin.entity.ContinueWatchingMoviesModel
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
@@ -10,6 +8,8 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toRecentMovieEntity
+import com.berlin.repository.util.Constants.ACTING_DEPARTMENT
+import com.berlin.repository.util.Constants.MOVIE_MEDIA_TYPE
 import repository.MovieRepository
 import javax.inject.Inject
 
@@ -49,12 +49,11 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMoviesByMoods(moods: List<Int>): List<Movie> {
-            if (moods.isEmpty()) return emptyList()
-            return remoteDataSource.getMoviesByMoodIds(moods).results?.mapNotNull {
-                it.toDomain()
-            } ?: emptyList()
-        }
-
+        if (moods.isEmpty()) return emptyList()
+        return remoteDataSource.getMoviesByMoodIds(moods).results?.mapNotNull {
+            it.toDomain()
+        } ?: emptyList()
+    }
 
 
     override suspend fun getMoviesByCountry(
@@ -67,10 +66,12 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMoviesByActorName(actorName: String, page: Int): List<Movie> {
-        return remoteDataSource.getMoviesByCountryName(
-            actorName,
-            page
-        ).results?.map { it.toDomain() } ?: emptyList()
+        return remoteDataSource.getMoviesByActorName(actorName, page)
+            .results
+            ?.filter { it.knownForDepartment == ACTING_DEPARTMENT }
+            ?.flatMap { personDto ->
+                personDto.knownFor?.filter { it.mediaType == MOVIE_MEDIA_TYPE } ?: emptyList()
+            }?.map { it.toDomain() } ?: emptyList()
     }
 
     override suspend fun getMovieByKeyWord(
@@ -104,4 +105,6 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
 }
+
+
 
