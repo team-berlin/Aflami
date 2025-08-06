@@ -24,6 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.color.ExtraColors.onBoardingLinearGradientDownToTop
 import com.berlin.aflami.ui.color.ExtraColors.onBoardingLinearGradientTopToDown
@@ -83,7 +85,7 @@ fun CircleRevealPager(
         ) {
 
             Image(
-                painter = data[page].image,
+                painter = painterResource( data[page].image),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
@@ -111,12 +113,12 @@ fun CircleRevealPager(
                     pageCount = pagerState.pageCount,
                 )
                 Text(
-                    text = data[page].title,
+                    text = stringResource( data[page].title),
                     style = Theme.textStyle.headline.small,
                     color = Theme.color.textColors.onPrimary,
                 )
                 Text(
-                    text = data[page].description,
+                    text = stringResource(data[page].description),
                     style = Theme.textStyle.body.medium,
                     color = Theme.color.textColors.onPrimaryBody,
                 )
