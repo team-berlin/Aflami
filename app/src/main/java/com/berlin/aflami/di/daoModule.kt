@@ -1,6 +1,7 @@
 package com.berlin.aflami.di
 
 import com.berlin.local.AflamiDatabase
+import com.berlin.local.dao.AppEntryDao
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
@@ -44,5 +45,11 @@ object DaoModule {
     @Singleton
     fun provideGenreDao(db: AflamiDatabase): GenreDao {
         return db.genreDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppEntryDao(db: AflamiDatabase): AppEntryDao {
+        return db.appEntryDao()
     }
 }

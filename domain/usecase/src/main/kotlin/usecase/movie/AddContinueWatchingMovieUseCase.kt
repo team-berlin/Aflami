@@ -4,7 +4,7 @@ import com.berlin.entity.Movie
 import repository.MovieRepository
 
 class AddContinueWatchingMovieUseCase(
-    private val repository: MovieRepository
+    private val movieRepository: MovieRepository
 ) {
-    suspend operator fun invoke(movie: Movie) = repository.addContinueWatchingMovie(movie)
+    suspend operator fun invoke(movie: Movie) = movieRepository.addContinueWatchingMovie(movie)
 }

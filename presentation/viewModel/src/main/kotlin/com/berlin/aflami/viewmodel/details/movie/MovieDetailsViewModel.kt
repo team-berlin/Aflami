@@ -21,6 +21,7 @@ import com.berlin.aflami.viewmodel.mapper.toMovieUiState
 import com.berlin.aflami.viewmodel.mapper.toReviewUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
+import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -110,14 +111,15 @@ class MovieDetailsViewModel @Inject constructor(
                         releaseDate = movieUiState.releaseDate,
                         posterURL = movieUiState.posterUrl,
                         screenShot = movieUiState.posterUrl,
-                        description = movieUiState.description,
-                        genres = emptyList(),
+                        description =movieUiState.description,
+                        genres = movieUiState.genre.map { it.toDomain() },
                         duration = movieUiState.duration.parseRuntime(),
                         hasVideo = true,
                         companyProductions = emptyList(),
                         originCountry = "",
                         galleryUrl = emptyList(),
                         reviews = emptyList(),
+                        isFavourite = false
                     )
                 )
             },

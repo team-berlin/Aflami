@@ -4,10 +4,9 @@ import com.berlin.entity.Video
 import repository.MovieDetailsRepository
 
 class GetMovieVideos (
-    private val repository: MovieDetailsRepository
+    private val movieDetailsRepository: MovieDetailsRepository
 ){
     suspend operator fun invoke(id: Long): Video{
-        return repository.getMovieVideos(id).first{ it.videoType=="Trailer" }
+        return movieDetailsRepository.getMovieVideos(id).first{ it.videoType=="Trailer" }
     }
-
 }

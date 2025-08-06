@@ -22,13 +22,14 @@ import com.berlin.aflami.viewmodel.mapper.toReviewUiState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
+import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.TVShow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import usecase.mediadetails.GetTVShowVideos
+import usecase.tvshow.GetTVShowVideos
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.GetSeasonEpisodesUseCase
 import usecase.tvshow.GetSimilarTVShowsUseCase
@@ -113,7 +114,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         posterURL = tvShowUiState.posterUrl,
                         screenShot = tvShowUiState.posterUrl,
                         description = tvShowUiState.description,
-                        genres = emptyList(),
+                        genres = tvShowUiState.genre.map { it.toDomain() },
                         duration = tvShowUiState.duration.parseRuntime(),
                         hasVideo = tvShowUiState.hasVideo,
                         companyProductions = emptyList(),

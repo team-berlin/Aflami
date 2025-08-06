@@ -41,7 +41,7 @@ fun MediaCastItem(
                     RoundedCornerShape(16.dp)),
             contentAlignment = Alignment.Center
         ){
-            AsyncImage(
+            SafeImageViewer(
                 model = poster,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,

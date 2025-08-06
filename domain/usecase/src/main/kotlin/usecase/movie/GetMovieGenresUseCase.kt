@@ -4,7 +4,7 @@ import com.berlin.entity.Genre
 import repository.MovieDetailsRepository
 
 class GetMovieGenresUseCase(
-    private val repository: MovieDetailsRepository
+    private val movieDetailsRepository: MovieDetailsRepository
 ) {
-    suspend operator fun invoke(): List<Genre> = repository.getMovieGenres()
+    suspend operator fun invoke(): List<Genre> = movieDetailsRepository.getMovieGenres()
 }

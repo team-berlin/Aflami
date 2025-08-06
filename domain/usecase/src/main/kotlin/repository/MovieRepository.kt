@@ -1,6 +1,5 @@
 package repository
 
-import com.berlin.entity.ContinueWatchingMoviesModel
 import com.berlin.entity.Movie
 
 interface MovieRepository {
@@ -11,7 +10,7 @@ interface MovieRepository {
 
     //region home movies
     suspend fun getTopRatedMovies(page: Int): List<Movie>
-    suspend fun getUpComingMovies(): List<Movie>
+    suspend fun getUpComingMovies(selectedGenres: Int): List<Movie>
     suspend fun getPopularMovies(): List<Movie>
     suspend fun getMoviesByMoods(moods: List<Int>): List<Movie>
     //endregion

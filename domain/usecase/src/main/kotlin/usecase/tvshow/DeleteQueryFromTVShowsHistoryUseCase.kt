@@ -4,7 +4,7 @@ import repository.TVShowRepository
 import javax.inject.Inject
 
 class DeleteQueryFromTVShowsHistoryUseCase @Inject constructor(
-    private val repository: TVShowRepository
+    private val tvShowRepository: TVShowRepository
 ) {
-    suspend operator fun invoke(query: String) = repository.deleteTVShowQueryFromHistory(query)
+    suspend operator fun invoke(query: String) = tvShowRepository.deleteTVShowQueryFromHistory(query)
 }

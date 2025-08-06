@@ -4,17 +4,19 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.TVShowRepository
-import repository.TvShowDetailsRepository
-import usecase.GetMoviesByMoodUseCase
+import repository.TVShowDetailsRepository
+import usecase.auth.GetLoginStatus
+import usecase.movie.GetMoviesByMoodUseCase
 import usecase.auth.GetLoginUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
 import usecase.mediadetails.GetMovieVideos
-import usecase.mediadetails.GetTVShowVideos
+import usecase.tvshow.GetTVShowVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.ClearMoviesSearchHistoryUseCase
 import usecase.movie.ContinueWatchingMovieUseCase
@@ -33,6 +35,8 @@ import usecase.movie.GetUpComingMoviesUseCase
 import usecase.movie.SaveRecentMoviesHistoryUseCase
 import usecase.movie.SearchByActorNameUseCase
 import usecase.movie.SearchMoviesByCountryUseCase
+import usecase.onboarding.GetFirstEntryUseCase
+import usecase.onboarding.SaveFirstEntryUseCase
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.ContinueWatchingTVShowUseCase
 import usecase.tvshow.GetPopularTVShowsUseCase
@@ -101,7 +105,7 @@ object UseCaseModule {
         GetSimilarMoviesUseCase(repository)
 
     @Provides
-    fun provideGetSimilarSeriesUseCase(repository: TvShowDetailsRepository): GetSimilarTVShowsUseCase =
+    fun provideGetSimilarSeriesUseCase(repository: TVShowDetailsRepository): GetSimilarTVShowsUseCase =
         GetSimilarTVShowsUseCase(repository)
 
     @Provides
@@ -109,7 +113,7 @@ object UseCaseModule {
         GetMovieDetailsUseCase(repository)
 
     @Provides
-    fun provideGetTvShowDetailsUseCase(repository: TvShowDetailsRepository): GetTVShowDetailsUseCase =
+    fun provideGetTvShowDetailsUseCase(repository: TVShowDetailsRepository): GetTVShowDetailsUseCase =
         GetTVShowDetailsUseCase(repository)
 
     @Provides
@@ -117,7 +121,7 @@ object UseCaseModule {
         GetMovieGalleryUseCase(repository)
 
     @Provides
-    fun provideGetSeriesGalleryUseCase(repository: TvShowDetailsRepository): GetTVShowGalleryUseCase =
+    fun provideGetSeriesGalleryUseCase(repository: TVShowDetailsRepository): GetTVShowGalleryUseCase =
         GetTVShowGalleryUseCase(repository)
 
     @Provides
@@ -125,7 +129,7 @@ object UseCaseModule {
         GetMovieCastUseCase(repository)
 
     @Provides
-    fun provideGetSeriesCastUseCase(repository: TvShowDetailsRepository): GetTVShowCastUseCase =
+    fun provideGetSeriesCastUseCase(repository: TVShowDetailsRepository): GetTVShowCastUseCase =
         GetTVShowCastUseCase(repository)
 
     @Provides
@@ -133,11 +137,11 @@ object UseCaseModule {
         GetMovieReviewUseCase(repository)
 
     @Provides
-    fun provideGetSeriesReviewUseCase(repository: TvShowDetailsRepository): GetTVShowReviewUseCase =
+    fun provideGetSeriesReviewUseCase(repository: TVShowDetailsRepository): GetTVShowReviewUseCase =
         GetTVShowReviewUseCase(repository)
 
     @Provides
-    fun provideGetSeasonEpisodesUseCase(repository: TvShowDetailsRepository): GetSeasonEpisodesUseCase =
+    fun provideGetSeasonEpisodesUseCase(repository: TVShowDetailsRepository): GetSeasonEpisodesUseCase =
         GetSeasonEpisodesUseCase(repository)
 
     @Provides
@@ -165,7 +169,7 @@ object UseCaseModule {
         GetMovieGenresUseCase(repository)
 
     @Provides
-    fun provideGetSeriesGenresUseCase(repository: TvShowDetailsRepository): GetTVShowGenresUseCase =
+    fun provideGetSeriesGenresUseCase(repository: TVShowDetailsRepository): GetTVShowGenresUseCase =
         GetTVShowGenresUseCase(repository)
 
     @Provides
@@ -177,16 +181,16 @@ object UseCaseModule {
         GetMovieVideos(repository)
 
     @Provides
-    fun provideGetTVShowVideos(repository: TvShowDetailsRepository): GetTVShowVideos =
+    fun provideGetTVShowVideos(repository: TVShowDetailsRepository): GetTVShowVideos =
         GetTVShowVideos(repository)
 
     @Provides
     fun provideLoginUseCase(repository: AuthenticationRepository): GetLoginUseCase =
         GetLoginUseCase(repository)
 
-//    @Provides
-//    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLog =
-//        IsLoggedInUseCase(repository)
+    @Provides
+    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLoginStatus =
+        GetLoginStatus(repository)
 
     @Provides
     fun provideGetTopRatedSeriesUseCase(repository: TVShowRepository): GetTopRatedTVShowUseCase =
@@ -195,4 +199,15 @@ object UseCaseModule {
     @Provides
     fun provideGetTopRatedMoviesUseCase(repository: MovieRepository): GetTopRatedMoviesUseCase =
         GetTopRatedMoviesUseCase(repository)
+
+    @Provides
+    fun provideGetAppEntryUseCase(repository: AppEntryRepository):SaveFirstEntryUseCase =
+        SaveFirstEntryUseCase(repository)
+
+    @Provides
+    fun provideGetFirstEntryUseCase(repository: AppEntryRepository):GetFirstEntryUseCase =
+        GetFirstEntryUseCase(repository)
+
+
+
 }

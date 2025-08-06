@@ -61,7 +61,7 @@ fun MediaCard(
             else -> ContentScale.Inside
         }
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            AsyncImage(
+            SafeImageViewer(
                 model = mediaImg,
                 contentDescription = null,
                 contentScale = contentScale,

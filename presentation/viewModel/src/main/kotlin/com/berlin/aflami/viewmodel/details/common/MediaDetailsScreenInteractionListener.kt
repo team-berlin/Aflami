@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.details.common
 
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.addtofavourite.AddToFavouriteInteractionListener
-import com.berlin.aflami.viewmodel.reusableinteractionlistener.createnewlist.CreateNewListInteractionListener
+import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListInteractionListener
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.rate.RateInteractionListener
 
 interface MediaInteractionListener :

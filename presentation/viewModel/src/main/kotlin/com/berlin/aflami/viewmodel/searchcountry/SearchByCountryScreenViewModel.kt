@@ -12,12 +12,13 @@ import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toMovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.util.getCountriesNames
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import usecase.movie.SearchMoviesByCountryUseCase
 import javax.inject.Inject
 
-
+@HiltViewModel
 class SearchByCountryScreenViewModel @Inject constructor(
     private val searchMoviesByCountryUseCase: SearchMoviesByCountryUseCase,
 ) : BaseViewModel<SearchByCountryScreenState, SearchByCountryScreenEffect>(

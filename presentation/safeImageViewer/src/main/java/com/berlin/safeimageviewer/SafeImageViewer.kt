@@ -24,7 +24,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.scale
 import coil3.compose.AsyncImage
 import coil3.imageLoader
 import coil3.request.ImageRequest
@@ -36,15 +35,13 @@ import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.tensorflow.lite.DataType
-import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.nnapi.NnApiDelegate
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 @Composable
 fun SafeImageViewer(
-    imageUri: String,
+    model: String,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     contentScale: ContentScale? = ContentScale.Crop,
@@ -62,20 +59,31 @@ fun SafeImageViewer(
         ).modelManager()
     }
     val isModelDownloaded by remember { modelManager.isModelDownloaded }
-
-    if (!isModelDownloaded) return
+    if (!isModelDownloaded) {
+        AsyncImage(
+            model = model,
+            contentDescription = contentDescription,
+            error = error,
+            fallback = fallback,
+            placeholder = placeholder,
+            alignment = alignment,
+            modifier = modifier
+              ,
+            contentScale = contentScale ?: ContentScale.Crop
+        )
+    }
 
     var result by remember { mutableStateOf<ImageClassificationResult?>(null) }
     var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    LaunchedEffect(imageUri, blurCheck) {
+    LaunchedEffect(model, blurCheck) {
         if (blurCheck) {
-            result = classifyImage(context, imageUri, modelManager)
+            result = classifyImage(context, model, modelManager)
             displayBitmap = result?.bitmap
         } else {
             withContext(Dispatchers.IO) {
                 val res = context.imageLoader.execute(
                     ImageRequest.Builder(context)
-                        .data(imageUri)
+                        .data(model)
                         .allowHardware(false)
                         .bitmapConfig(Bitmap.Config.ARGB_8888)
                         .build()
@@ -139,6 +147,8 @@ fun blurBitmapRenderScript(context: Context, bitmap: Bitmap, radius: Float): Bit
 
     return outputBitmap
 }
+
+
 suspend fun classifyImage(
     context: Context,
     imageUri: String,
@@ -151,51 +161,70 @@ suspend fun classifyImage(
             .bitmapConfig(Bitmap.Config.ARGB_8888)
             .build()
     )
-    // gender model Detection
+
     val drawable = (result as? SuccessResult)?.image?: return@withContext null
     val bitmap = drawable.toBitmap()
-
-    val genderBuffer = bitmapToByteBuffer(bitmap, 128)
+    return@withContext when {
+        classifyGender(bitmap, modelManager) -> ImageClassificationResult(bitmap, isSafe = true, isFemale = false)
+        classifyNSFW(bitmap, modelManager) -> ImageClassificationResult(bitmap, isSafe = true, isFemale = false)
+        else -> ImageClassificationResult(bitmap, isSafe = false, isFemale = false)
+    }
+}
+fun classifyGender(bitmap: Bitmap,modelManager:FireBaseModelManager):Boolean{
+    val genderBuffer = bitmap.toModelByteBuffer(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
     val genderInput = TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
     genderInput.loadBuffer(genderBuffer)
 
     val genderOutput = TensorBuffer.createFixedSize(intArrayOf(1, 2), DataType.FLOAT32)
+
     modelManager.genderInterpreter?.run(genderInput.buffer, genderOutput.buffer.rewind())
     val isFemale = genderOutput.floatArray.indices.maxByOrNull { genderOutput.floatArray[it] } == 1
-    if(isFemale) return@withContext ImageClassificationResult(bitmap,false, true)
-
-
-    // --- NSFW Detection
-    val nsfwBuffer = bitmapToByteBuffer(bitmap, 224)
+    return isFemale
+}
+fun classifyNSFW(bitmap: Bitmap,modelManager:FireBaseModelManager):Boolean{
+    val nsfwBuffer = bitmap.toModelByteBuffer(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
     val nsfwInput = TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
     nsfwInput.loadBuffer(nsfwBuffer)
-
     val nsfwOutput = TensorBuffer.createFixedSize(intArrayOf(1, 5), DataType.FLOAT32)
+
     modelManager.nsfwInterpreter?.run(nsfwInput.buffer, nsfwOutput.buffer.rewind())
     val isSafe = nsfwOutput.floatArray.indices.maxByOrNull { nsfwOutput.floatArray[it] } == 2
-
-
-    return@withContext ImageClassificationResult(bitmap, isSafe, false)
+    return isSafe
 }
-fun bitmapToByteBuffer(bitmap: Bitmap, size: Int): ByteBuffer {
-    val inputImage = bitmap.scale(size, size)
-    val byteBuffer = ByteBuffer.allocateDirect(4 * size * size * 3)
+fun Bitmap.toModelByteBuffer(
+    inputShape: IntArray,
+    dataType: DataType
+): ByteBuffer {
+    val width = inputShape[1]
+    val height = inputShape[2]
+    val channels = inputShape[3]
+
+    val resized = Bitmap.createScaledBitmap(this, width, height, true)
+    val byteBuffer = ByteBuffer.allocateDirect(
+        width * height * channels * if (dataType == DataType.FLOAT32) 4 else 1
+    )
     byteBuffer.order(ByteOrder.nativeOrder())
 
-    val intValues = IntArray(size * size)
-    inputImage.getPixels(intValues, 0, size, 0, 0, size, size)
-
+    val intValues = IntArray(width * height)
+    resized.getPixels(intValues, 0, width, 0, 0, width, height)
     for (pixel in intValues) {
-        val r = (pixel shr 16 and 0xFF) / 255.0f
-        val g = (pixel shr 8 and 0xFF) / 255.0f
-        val b = (pixel and 0xFF) / 255.0f
-        byteBuffer.putFloat(r)
-        byteBuffer.putFloat(g)
-        byteBuffer.putFloat(b)
+        val r = (pixel shr 16) and 0xFF
+        val g = (pixel shr 8) and 0xFF
+        val b = pixel and 0xFF
+
+        if (dataType == DataType.FLOAT32) {
+            byteBuffer.putFloat(r / 255f)
+            byteBuffer.putFloat(g / 255f)
+            byteBuffer.putFloat(b / 255f)
+        } else {
+            byteBuffer.put(r.toByte())
+            byteBuffer.put(g.toByte())
+            byteBuffer.put(b.toByte())
+        }
     }
+
     return byteBuffer
 }
-
 
 data class ImageClassificationResult(
     val bitmap: Bitmap,
@@ -206,6 +235,6 @@ data class ImageClassificationResult(
 @Preview(showBackground = true)
 fun SafeImagePrev() {
     SafeImageViewer(
-        imageUri = "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=500",
+        model = "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=500",
     )
 }

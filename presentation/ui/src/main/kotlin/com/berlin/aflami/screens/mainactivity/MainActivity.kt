@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.berlin.aflami.navigation.AflamiNavGraph
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -22,7 +21,6 @@ class MainActivity : ComponentActivity() {
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
         val splashScreen = installSplashScreen()
@@ -30,13 +28,15 @@ class MainActivity : ComponentActivity() {
         splashScreen.setKeepOnScreenCondition {
             mainActivityViewModel.isLoading
         }
+
         enableEdgeToEdge()
         setContent {
             AflamiTheme {
                 AflamiNavGraph(
                     navController = Theme.navController,
-                    isLoggedIn =  true,
-                    modifier = Modifier.Companion
+                    isLoggedIn = mainActivityViewModel.loginState,
+                    isFirsTime = mainActivityViewModel.isFirstEntry,
+                    modifier = Modifier
                         .fillMaxSize()
                         .background(Theme.color.surface)
                         .navigationBarsPadding()
