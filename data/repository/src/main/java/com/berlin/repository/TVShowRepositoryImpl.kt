@@ -40,7 +40,7 @@ class TVShowRepositoryImpl @Inject constructor(
             return localTVShows.map { it.toDomain() }
         }
 
-        val remoteTVShows = remoteDataSource.getTopRatedTVShows(page).results?.map { seriesDto ->
+        val remoteTVShows = remoteDataSource.getTopRatedTV(page).results?.map { seriesDto ->
             seriesDto.toDomain()
         } ?: emptyList()
         if (remoteTVShows.isNotEmpty()) {

@@ -19,6 +19,7 @@ fun MovieHomeEntity.toDomain(): Movie {
         companyProductions = emptyList(),
         originCountry = "",
         galleryUrl = emptyList(),
-        reviews = emptyList()
+        reviews = emptyList(),
+        isFavourite = false,
     )
 }

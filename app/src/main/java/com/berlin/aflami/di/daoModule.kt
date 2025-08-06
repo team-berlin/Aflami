@@ -1,6 +1,7 @@
 package com.berlin.aflami.di
 
 import com.berlin.local.AflamiDatabase
+import com.berlin.local.dao.AppEntryDao
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao

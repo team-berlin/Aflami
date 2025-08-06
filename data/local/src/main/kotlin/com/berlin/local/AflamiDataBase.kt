@@ -34,10 +34,10 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
         RecentlyWatchedMovieEntity::class,
         RecentlyWatchedTvShowEntity::class,
         AppEntryEntity::class,
-        GenreEntity::class
-    ], version = 1, exportSchema = false
+        GenreEntity::class,
+        MovieHomeEntity::class,
         TVShowHomeEntity::class
-    ], version = 2, exportSchema = false
+    ], version = 1, exportSchema = false
 )
 abstract class AflamiDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao

@@ -1,16 +1,20 @@
 package com.berlin.aflami.di
 
+import com.berlin.local.datasource.AppEntryLocalDataSourceImpl
 import com.berlin.local.datasource.AuthenticationLocalDataSourceImp
 import com.berlin.local.datasource.CategoriesPreferencesDataSourceImpl
 import com.berlin.local.datasource.GenreLocalDataSourceImpl
+import com.berlin.local.datasource.HomeLocalDataSourceImp
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
 import com.berlin.local.datasource.RecentlyWatchedLocalDataSourceImpl
 import com.berlin.local.datasource.SearchLocalDataSourceImpl
 import com.berlin.remote.AuthenticationRemoteDataSourceImpl
 import com.berlin.remote.RetrofitRemoteDataSource
+import com.berlin.repository.datasource.local.AppEntryLocalDataSource
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
 import com.berlin.repository.datasource.local.GenreLocalDataSource
+import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
@@ -83,6 +87,6 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindHomeLocalDataSource(
-        impl: HomeLocalDataSourceImpl
+        impl: HomeLocalDataSourceImp
     ): HomeLocalDataSource
 }

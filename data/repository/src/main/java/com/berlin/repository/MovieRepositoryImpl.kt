@@ -57,13 +57,13 @@ class MovieRepositoryImpl @Inject constructor(
         return remoteMovies
     }
 
-    override suspend fun getUpComingMovies(): List<Movie> {
+    override suspend fun getUpComingMovies(selectedGenre: Int): List<Movie> {
         val localMovies = homeLocalDataSource.getMoviesBySection(SectionHome.UPCOMING)
         if (!isExpiredOrEmpty(localMovies) &&localMovies.isNotEmpty()) {
             return localMovies.map { it.toDomain() }
         }
 
-        val remoteMovies = remoteDataSource.getUpComingMovies()
+        val remoteMovies = remoteDataSource.getUpComingMovies(selectedGenre)
             .results?.map { it.toDomain() } ?: emptyList()
         if (remoteMovies.isNotEmpty()) {
             homeLocalDataSource.clearHomeScreenMovies(SectionHome.UPCOMING)
