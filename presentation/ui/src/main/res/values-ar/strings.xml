@@ -40,7 +40,7 @@
     <string name="create_account">إنشاء حساب</string>
     <string name="logo">شعار</string>
     <string name="login_error_message">كلمة المرور أو اسم المستخدم غير صحيح</string>
-    <string name="loading">جاري التحميل...</string>
+    <string name="loading">جاري التحميل…</string>
 
     <string name="offline_title">عذرًا! يبدو أنك غير متصل بالإنترنت.</string>
     <string name="check_connection_title">تحقق من اتصالك وحاول مرة أخرى، سنكون بانتظارك مع أفلامك والفشار.</string>
@@ -77,5 +77,7 @@
     <string name="language_dialog_english">الانجليزية</string>
     <string name="language_dialog_arabic">العربية</string>
     <string name="language_dialog_warning">سوف يتم مهاجمتك من قبل مجموعة من الألوان الزاهية!</string>
-
+    <string name="setting_dialog_change_password">تغيير كلمة المرور</string>
+    <string name="setting_dialog_logout">تسجيل الخروج</string>
+    <string name="setting_dialog_logout_quote">تعبت من المشاهدة ؟</string>
 </resources>

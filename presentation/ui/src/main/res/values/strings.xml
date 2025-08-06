@@ -76,4 +76,7 @@
     <string name="language_dialog_english">English</string>
     <string name="language_dialog_arabic">Arabic</string>
     <string name="language_dialog_warning">You will be attacked by a group of bright colors!</string>
+    <string name="setting_dialog_change_password">Change password</string>
+    <string name="setting_dialog_logout">Logout</string>
+    <string name="setting_dialog_logout_quote">Tired to watching?</string>
 </resources>
