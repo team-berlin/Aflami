@@ -49,4 +49,7 @@ interface RemoteDataSource {
         pageNumber: Int,
         favouriteListId: Int,
     ): List<MovieDto>
+
+    fun deleteUserFavouriteList(listId: Int)
+    fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long)
 }
