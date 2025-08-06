@@ -21,10 +21,11 @@ fun MovieDetailsDto.toDomain(
         title = this.title.orEmpty(),
         rating = (this.voteAverage ?: 0.0),
         releaseDate = this.releaseDate ?: "10-12-2014",
-        genres = this.genres?.map{it.toDomain() }?: genresId?.map { it.toDomainGenre() }?:emptyList(),
+        genres = this.genres?.map { it.toDomain() } ?: genresId?.map { it.toDomainGenre() }
+        ?: emptyList(),
         posterURL = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
-        screenShot = this.backdropPath?:"",
-        description = this.overview?:"Description not available",
+        screenShot = this.backdropPath ?: "",
+        description = this.overview ?: "Description not available",
         duration = this.runtime ?: 0,
         hasVideo = this.video == true,
         companyProductions = this.productionCompanies?.map {
@@ -33,7 +34,7 @@ fun MovieDetailsDto.toDomain(
         originCountry = this.originCountry?.firstOrNull() ?: "",
         galleryUrl = galleryImages,
         reviews = reviews,
-        isFavourite = false,
+        isFavourite = true
     )
 }
 
