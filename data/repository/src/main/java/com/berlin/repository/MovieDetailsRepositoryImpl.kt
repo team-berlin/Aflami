@@ -1,13 +1,13 @@
 package com.berlin.repository
 
-import com.berlin.entity.Genre
 import com.berlin.entity.Actor
+import com.berlin.entity.Genre
 import com.berlin.entity.MediaImage
 import com.berlin.entity.Movie
 import com.berlin.entity.Review
 import com.berlin.entity.Video
 import com.berlin.exception.AflamiException
-import com.berlin.repository.datasource.local.GenreLocalDataSource
+import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.GenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
@@ -19,6 +19,7 @@ import javax.inject.Inject
 
 class MovieDetailsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
+    private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource
 ) : MovieDetailsRepository {
 
     override suspend fun getMovieImages(movieId: Long): MediaImage {
@@ -30,7 +31,7 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 
             val posters = imagesResponse.posters
                 ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
-
+            recentlyWatchedLocalDataSource
             MediaImage(backdrops = backdrops.orEmpty(), posters = posters.orEmpty())
         } catch (e: Exception) {
             throw e
@@ -38,7 +39,6 @@ class MovieDetailsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMovieDetails(id: Long): Movie{
-
         val review=remoteDataSource.getMovieReviews(id).results?.map { it.toDomain() }?:emptyList()
         return try {
             remoteDataSource.getMovieDetails(id).toDomain(review)
@@ -57,9 +57,11 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 
     override suspend fun getSimilarMovies(movieId: Long): List<Movie> {
         val review=remoteDataSource.getMovieReviews(movieId).results?.map { it.toDomain() }?:emptyList()
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
         return remoteDataSource.getSimilarMovies(movieId).results?.mapNotNull { movieDto ->
             movieDto.toDomain(review)
-        } ?: emptyList()
+        }?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+            ?: emptyList()
     }
 
     override suspend fun getMovieReviews(movieId: Long): List<Review> {

@@ -1,20 +1,24 @@
 package com.berlin.aflami.di
 
+import com.berlin.local.datasource.AppEntryLocalDataSourceImpl
 import com.berlin.local.datasource.AuthenticationLocalDataSourceImp
 import com.berlin.local.datasource.CategoriesPreferencesDataSourceImpl
-import com.berlin.local.datasource.RecentlyWatchedLocalDataSourceImpl
 import com.berlin.local.datasource.GenreLocalDataSourceImpl
+import com.berlin.local.datasource.HomeLocalDataSourceImp
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
+import com.berlin.local.datasource.RecentlyWatchedLocalDataSourceImpl
 import com.berlin.local.datasource.SearchLocalDataSourceImpl
 import com.berlin.local.datasource.UserLocalDataSourceImp
 import com.berlin.remote.AuthenticationRemoteDataSourceImpl
 import com.berlin.remote.RetrofitRemoteDataSource
+import com.berlin.repository.datasource.local.AppEntryLocalDataSource
 import com.berlin.remote.UserRemoteDataSourceImpl
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
-import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.GenreLocalDataSource
+import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
+import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
 import com.berlin.repository.datasource.local.UserLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
@@ -72,7 +76,6 @@ abstract class DataSourceModule {
         impl: RecentlyWatchedLocalDataSourceImpl
     ): RecentlyWatchedLocalDataSource
 
-
     @Binds
     @Singleton
     abstract fun bindGenreLocalDataSource(
@@ -90,4 +93,16 @@ abstract class DataSourceModule {
     abstract fun bindUserRemoteDataSource(
         impl: UserRemoteDataSourceImpl
     ): UserRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAppEntryDataSource(
+        impl: AppEntryLocalDataSourceImpl
+    ): AppEntryLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindHomeLocalDataSource(
+        impl: HomeLocalDataSourceImp
+    ): HomeLocalDataSource
 }

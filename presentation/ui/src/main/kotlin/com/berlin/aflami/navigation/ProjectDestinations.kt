@@ -32,6 +32,9 @@ val bottomNavBarDestinationsMap = mapOf(
 )
 
 @Serializable
+object OnBoardingDestination
+
+@Serializable
 object LoginDestination
 
 @Serializable
@@ -63,3 +66,13 @@ object SearchByCountryDestination
 
 @Serializable
 object SearchByActorDestination
+
+@Serializable
+data class ListDetailsDestination(val listId: Int)
+
+@Serializable
+data class ListsScreen(
+    val showEditSheet: Boolean = false,
+    val requiredToEditListId: Int? = null,
+    val showDeletedSnackBar: Boolean? = false,
+)

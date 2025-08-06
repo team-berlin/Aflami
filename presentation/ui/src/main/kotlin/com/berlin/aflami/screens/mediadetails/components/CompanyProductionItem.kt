@@ -40,7 +40,7 @@ fun CompanyProductionItem(
             .border(1.dp, Theme.color.stroke, RoundedCornerShape(12.dp))
 
     ) {
-        AsyncImage(
+        SafeImageViewer(
             modifier = modifier,
             model = item.image?:"",
             contentDescription = stringResource(com.berlin.ui.R.string.company_production_image_cd),

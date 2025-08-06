@@ -13,7 +13,7 @@ fun TVShow.toUiState(): TVShowUiState {
         rating = DecimalFormat("#.#").format(rating).toString(),
         title = title,
         genre = genres.map { it.toGenreUiState() },
-        releaseDate = releaseDate,
+        releaseDate = releaseDate.take(4),
         numberOfSeasons = numberOfSeasons,
         description = description,
         duration = duration.formatRuntime(),

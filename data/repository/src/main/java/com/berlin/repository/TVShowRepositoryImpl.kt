@@ -1,19 +1,26 @@
 package com.berlin.repository
 
 import com.berlin.entity.TVShow
+import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocalEntity
+import com.berlin.repository.mapper.toPopularTVShowEntity
+import com.berlin.repository.mapper.toTopRateTVShowEntity
+import com.berlin.repository.util.Constants
 import repository.TVShowRepository
 import javax.inject.Inject
 
 class TVShowRepositoryImpl @Inject constructor(
     private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource,
     private val recentHistoryLocalDataSource: RecentHistoryLocalDataSource,
+    private val homeLocalDataSource: HomeLocalDataSource,
     private val remoteDataSource: RemoteDataSource,
 ) : TVShowRepository {
 
@@ -28,24 +35,52 @@ class TVShowRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedTVShows(page: Int): List<TVShow> {
-        // Fetch top-rated series from the remote data source and map to domain model
-        return remoteDataSource.getTopRatedTVShows(page).results?.map { seriesDto ->
-            seriesDto.toDomain(
-            )
+        val localTVShows = homeLocalDataSource.getTVShowsBySection(SectionHome.TOP_RATING)
+        if (!isExpiredOrEmpty(localTVShows)&&localTVShows.isNotEmpty()) {
+            return localTVShows.map { it.toDomain() }
+        }
+
+        val remoteTVShows = remoteDataSource.getTopRatedTV(page).results?.map { seriesDto ->
+            seriesDto.toDomain()
         } ?: emptyList()
+        if (remoteTVShows.isNotEmpty()) {
+            homeLocalDataSource.clearHomeScreenTVShows(SectionHome.TOP_RATING)
+            homeLocalDataSource.addTVShows(remoteTVShows.map { it.toTopRateTVShowEntity() })
+        }
+
+        return remoteTVShows
     }
 
     override suspend fun getPopularTVShows(): List<TVShow> {
-        return remoteDataSource.getPopularTVShows().results?.filterNotNull()
-            ?.map { tVShowDto -> tVShowDto.toDomain() } ?: emptyList()
+        val localTVShows = homeLocalDataSource.getTVShowsBySection(SectionHome.POPULAR)
+        if (!isExpiredOrEmpty(localTVShows)&&localTVShows.isNotEmpty()) {
+            return localTVShows.map { it.toDomain() }
+        }
+
+        val remoteTVShows = remoteDataSource.getPopularTVShows().results
+            ?.map { it.toDomain() } ?: emptyList()
+        if (remoteTVShows.isNotEmpty()) {
+            homeLocalDataSource.clearHomeScreenTVShows(SectionHome.POPULAR)
+            homeLocalDataSource.addTVShows(remoteTVShows.map { it.toPopularTVShowEntity() })
+        }
+
+        return remoteTVShows
     }
 
     override suspend fun searchTVShow(
         query: String,
         page: Int,
     ): List<TVShow> {
-        return remoteDataSource.getTVShowsByKeyword(query, page).results?.filterNotNull()?.map {
+        val genreScoresMap = recentlyWatchedLocalDataSource
+            .getCategoryAsPreference()
+            .associate { it.categoryId to it.count }
+
+        return remoteDataSource.getTVShowsByKeyword(query, page).results?.map {
             it.toDomain()
+        }?.sortedByDescending { tvShow ->
+            tvShow.genres.sumOf { genre ->
+                genreScoresMap[genre.id] ?:0
+            }
         } ?: emptyList()
     }
 
@@ -71,4 +106,9 @@ class TVShowRepositoryImpl @Inject constructor(
         recentHistoryLocalDataSource.clearSearchHistory()
     }
 
+    private fun isExpiredOrEmpty(list: List<TVShowHomeEntity>): Boolean {
+        return list.isEmpty() || list.any {
+            System.currentTimeMillis() - it.addedAt > Constants.HOME_CACHE_TIMEOUT_MILLIS
+        }
+    }
 }

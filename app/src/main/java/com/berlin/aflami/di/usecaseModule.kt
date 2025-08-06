@@ -4,15 +4,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.TVShowRepository
 import repository.TVShowDetailsRepository
 import repository.UserRepository
+import usecase.auth.GetLoginStatus
 import usecase.movie.GetMoviesByMoodUseCase
 import usecase.auth.GetLoginUseCase
-import usecase.auth.GetUserProfileUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
 import usecase.mediadetails.GetMovieVideos
@@ -35,6 +36,8 @@ import usecase.movie.GetUpComingMoviesUseCase
 import usecase.movie.SaveRecentMoviesHistoryUseCase
 import usecase.movie.SearchByActorNameUseCase
 import usecase.movie.SearchMoviesByCountryUseCase
+import usecase.onboarding.GetFirstEntryUseCase
+import usecase.onboarding.SaveFirstEntryUseCase
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.ContinueWatchingTVShowUseCase
 import usecase.tvshow.GetPopularTVShowsUseCase
@@ -186,9 +189,9 @@ object UseCaseModule {
     fun provideLoginUseCase(repository: AuthenticationRepository): GetLoginUseCase =
         GetLoginUseCase(repository)
 
-//    @Provides
-//    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLog =
-//        IsLoggedInUseCase(repository)
+    @Provides
+    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLoginStatus =
+        GetLoginStatus(repository)
 
     @Provides
     fun provideGetTopRatedSeriesUseCase(repository: TVShowRepository): GetTopRatedTVShowUseCase =
@@ -202,4 +205,15 @@ object UseCaseModule {
     fun provideGetUserProfileUseCase(
         repository: UserRepository
     ): GetUserProfileUseCase = GetUserProfileUseCase(repository)
+
+    @Provides
+    fun provideGetAppEntryUseCase(repository: AppEntryRepository):SaveFirstEntryUseCase =
+        SaveFirstEntryUseCase(repository)
+
+    @Provides
+    fun provideGetFirstEntryUseCase(repository: AppEntryRepository):GetFirstEntryUseCase =
+        GetFirstEntryUseCase(repository)
+
+
+
 }

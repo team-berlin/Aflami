@@ -18,5 +18,6 @@ dependencies {
     implementation(project(":domain:entity"))
     implementation(project(":data:repository"))
     implementation(libs.javax.inject)
+    implementation(libs.kotlin.datex)
 
 }

@@ -1,6 +1,5 @@
 package com.berlin.entity
 
-
 data class Movie(
     val id: Long,
     val title: String,
@@ -16,4 +15,5 @@ data class Movie(
     val originCountry: String,
     val galleryUrl:List<String>,
     val reviews: List<Review>,
+    val isFavourite:Boolean,
 )
