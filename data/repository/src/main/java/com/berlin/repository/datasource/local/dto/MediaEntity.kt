@@ -5,7 +5,7 @@ import androidx.room.Entity
 @Entity(tableName = "Movie_Home", primaryKeys = ["id", "type"])
 data class MovieHomeEntity(
     val id: Long,
-    val type: MediaType,
+    val sectionHome: SectionHome,
     val title: String,
     val rating: String,
     val releaseYear: String,
@@ -17,7 +17,7 @@ data class MovieHomeEntity(
 @Entity(tableName = "TVShow_Home", primaryKeys = ["id", "type"])
 data class TVShowHomeEntity(
     val id: Long,
-    val type: MediaType,
+    val sectionHome: SectionHome,
     val title: String,
     val rating: String,
     val releaseYear: String,
@@ -25,7 +25,7 @@ data class TVShowHomeEntity(
     val poster: String,
     val addedAt: Long = System.currentTimeMillis()
 )
-enum class MediaType {
+enum class SectionHome {
     POPULAR,
     TOP_RATING,
     UPCOMING

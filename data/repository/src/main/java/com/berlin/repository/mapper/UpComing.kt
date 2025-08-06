@@ -1,10 +1,8 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.Movie
-import com.berlin.entity.TVShow
-import com.berlin.repository.datasource.local.dto.MediaType
+import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
-import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 
 fun Movie.toUpComingMovieEntity(): MovieHomeEntity {
     return MovieHomeEntity(
@@ -15,6 +13,6 @@ fun Movie.toUpComingMovieEntity(): MovieHomeEntity {
         genre = genres.map { it.id },
         poster = posterURL,
         addedAt = System.currentTimeMillis(),
-        type = MediaType.UPCOMING
+        sectionHome = SectionHome.UPCOMING
     )
 }

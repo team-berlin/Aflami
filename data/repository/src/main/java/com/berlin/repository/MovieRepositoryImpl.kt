@@ -4,7 +4,7 @@ import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
-import com.berlin.repository.datasource.local.dto.MediaType
+import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
@@ -36,7 +36,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedMovies(page: Int): List<Movie> {
-        val localMovies = homeLocalDataSource.getMoviesByType(MediaType.TOP_RATING)
+        val localMovies = homeLocalDataSource.getMoviesByType(SectionHome.TOP_RATING)
         if (!isExpiredOrEmpty(localMovies)&&localMovies.isNotEmpty()) {
             return localMovies.map { it.toDomain() }
         }
@@ -45,7 +45,7 @@ class MovieRepositoryImpl @Inject constructor(
             remoteDataSource.getTopRatedMovies(page).results?.mapNotNull { it.toDomain() }
                 ?: emptyList()
         if (remoteMovies.isNotEmpty()) {
-            homeLocalDataSource.clearMovies(MediaType.TOP_RATING)
+            homeLocalDataSource.clearHomeScreenMovies(SectionHome.TOP_RATING)
             homeLocalDataSource.addMovies(remoteMovies.map { it.toTopRateMovieEntity() })
         }
 
@@ -53,7 +53,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUpComingMovies(): List<Movie> {
-        val localMovies = homeLocalDataSource.getMoviesByType(MediaType.UPCOMING)
+        val localMovies = homeLocalDataSource.getMoviesByType(SectionHome.UPCOMING)
         if (!isExpiredOrEmpty(localMovies) &&localMovies.isNotEmpty()) {
             return localMovies.map { it.toDomain() }
         }
@@ -61,7 +61,7 @@ class MovieRepositoryImpl @Inject constructor(
         val remoteMovies = remoteDataSource.getUpComingMovies()
             .results?.map { it.toDomain() } ?: emptyList()
         if (remoteMovies.isNotEmpty()) {
-            homeLocalDataSource.clearMovies(MediaType.UPCOMING)
+            homeLocalDataSource.clearHomeScreenMovies(SectionHome.UPCOMING)
             homeLocalDataSource.addMovies(remoteMovies.map { it.toUpComingMovieEntity() })
         }
 
@@ -70,7 +70,7 @@ class MovieRepositoryImpl @Inject constructor(
 
 
     override suspend fun getPopularMovies(): List<Movie> {
-        val localMovies = homeLocalDataSource.getMoviesByType(MediaType.POPULAR)
+        val localMovies = homeLocalDataSource.getMoviesByType(SectionHome.POPULAR)
         if (!isExpiredOrEmpty(localMovies) && localMovies.isNotEmpty()) {
             return localMovies.map { it.toDomain() }
         }
@@ -78,7 +78,7 @@ class MovieRepositoryImpl @Inject constructor(
         val remoteMovies = remoteDataSource.getPopularMovies().results?.map { it.toDomain() }
             ?: emptyList()
         if (remoteMovies.isNotEmpty()) {
-            homeLocalDataSource.clearMovies(MediaType.POPULAR)
+            homeLocalDataSource.clearHomeScreenMovies(SectionHome.POPULAR)
             homeLocalDataSource.addMovies(remoteMovies.map { it.toPopularMovieEntity() })
         }
 
