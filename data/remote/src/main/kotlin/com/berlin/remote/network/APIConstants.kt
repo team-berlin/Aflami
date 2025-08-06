@@ -9,6 +9,12 @@ object ApiConstants {
     const val MOVIE_ID = "movie_id"
     const val SERIES_ID = "series_id"
     const val SEASON_NUMBER = "season_number"
+    const val RELEASE_DATE_GTE = "release_date.gte"
+    const val RELEASE_DATE_LTE = "release_date.lte"
+    const val QUERY_SORT_BY = "sort_by"
+    const val QUERY_INCLUDE_ADULT = "include_adult"
+    const val QUERY_INCLUDE_VIDEO = "include_video"
+    const val QUERY_WITH_RELEASE_TYPE = "with_release_type"
     const val SESSION_ID = "session_id"
     const val REQUEST_TOKEN = "request_token"
     const val LOGIN_USERNAME = "username"
@@ -50,4 +56,10 @@ object ApiConstants {
     const val CREATE_SESSION_WITH_LOGIN_ENDPOINT = "authentication/token/validate_with_login"
     const val CREATE_SESSION_ENDPOINT = "authentication/session/new"
     const val DELETE_SESSION_ENDPOINT = "authentication/session"
+
+    //query constants
+    const val SORT_BY_POPULARITY_DESC = "popularity.desc"
+    const val INCLUDE_ADULT_DEFAULT = false
+    const val INCLUDE_VIDEO_DEFAULT = false
+    const val RELEASE_TYPE_THEATRICAL_AND_LIMITED = "2|3"
 }

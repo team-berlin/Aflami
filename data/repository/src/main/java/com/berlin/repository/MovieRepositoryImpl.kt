@@ -44,14 +44,13 @@ class MovieRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getUpComingMovies(): List<Movie> {
-        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+    override suspend fun getUpComingMovies(selectedGenres: Int): List<Movie> {
 
-        return remoteDataSource.getUpComingMovies().results?.map {
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+        return remoteDataSource.getUpComingMovies(selectedGenres).results?.map {
             it.toDomain()
         }
             ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
-
             ?: emptyList()
     }
 
