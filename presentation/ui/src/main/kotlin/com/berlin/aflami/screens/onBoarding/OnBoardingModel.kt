@@ -1,4 +1,4 @@
-package com.berlin.aflami.onboarding
+package com.berlin.aflami.screens.onBoarding
 
 import androidx.compose.ui.graphics.painter.Painter
 

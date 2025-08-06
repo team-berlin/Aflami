@@ -1,4 +1,4 @@
-package com.berlin.aflami.onboarding
+package com.berlin.aflami.screens.onBoarding
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -40,7 +40,6 @@ fun BottomPageIndicator(
 
             Box(
                 modifier = Modifier
-                    .weight(1f)
                     .size(width = 48.dp, height = 6.dp)
                     .clip(RoundedCornerShape(100.dp))
                     .background(color = animatedColor)

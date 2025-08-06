@@ -1,12 +1,12 @@
-package com.berlin.aflami.onboarding
+package com.berlin.aflami.screens.onBoarding
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -30,10 +30,10 @@ fun OnBoardingButtonNavigation(
 ) {
 
     Row(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         horizontalArrangement = Arrangement.Center,
     ) {
-        if (currentPage > 0) {
+        AnimatedVisibility(currentPage > 0) {
             Box(
                 modifier = Modifier
                     .padding(end = 8.dp)

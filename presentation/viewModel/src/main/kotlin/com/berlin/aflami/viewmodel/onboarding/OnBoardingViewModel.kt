@@ -40,7 +40,6 @@ class OnBoardingViewModel @Inject constructor(
         viewModelScope.launch {
             _isFirstEntry.value = false
             _effect.emit(OnBoardingScreenEffect.NavigateToLogin)
-
         }
     }
 }
