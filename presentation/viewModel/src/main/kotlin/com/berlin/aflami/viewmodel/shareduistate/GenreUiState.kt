@@ -9,3 +9,7 @@ data class GenreUiState(
     val name: String? = null,
 )
 fun Genre.toGenreUiState() = GenreUiState(id, name)
+fun GenreUiState.toDomain() = Genre(
+    id = id ?: 0,
+    name = name ?: ""
+)

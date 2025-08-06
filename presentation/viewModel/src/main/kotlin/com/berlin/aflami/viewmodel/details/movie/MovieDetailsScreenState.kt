@@ -24,20 +24,6 @@ data class MovieDetailsScreenState(
 )
 
 
-fun String.toLocalDate1(): LocalDate? {
-    return try {
-        LocalDate.parse(this)
-    } catch (e: Exception) {
-        null
-    }
-}
-
-data class MediaOptions(
-    val isSelected: Boolean,
-    val title: String,
-    val image: Painter,
-)
-
 data class MovieDetailsTabsUiState(
     val tab: MovieDetailsTabs = MovieDetailsTabs.MORE_LIKE_THIS,
     val isSelected: Boolean = false,

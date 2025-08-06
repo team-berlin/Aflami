@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.NewAflami" parent="android:Theme.Material.Light.NoActionBar" >
-        <item name="android:statusBarColor">#00000000</item>
     </style>
 </resources>
 

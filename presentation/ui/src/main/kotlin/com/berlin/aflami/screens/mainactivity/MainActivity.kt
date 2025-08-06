@@ -32,6 +32,10 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
 
         splashScreen.setKeepOnScreenCondition {
+            mainActivityViewModel.isLoading
+        }
+
+        splashScreen.setKeepOnScreenCondition {
             onBoardingViewModel.isFirstEntry.value == null
         }
         enableEdgeToEdge()
