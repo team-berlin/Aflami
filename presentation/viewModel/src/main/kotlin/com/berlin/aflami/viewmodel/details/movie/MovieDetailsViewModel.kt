@@ -104,7 +104,7 @@ class MovieDetailsViewModel @Inject constructor(
                         releaseDate = movieUiState.releaseDate,
                         posterURL = movieUiState.posterUrl,
                         screenShot = movieUiState.posterUrl,
-                        description =movieUiState.description,
+                        description = movieUiState.description,
                         genres = emptyList(),
                         duration = movieUiState.duration.parseRuntime(),
                         hasVideo = true,
@@ -112,6 +112,7 @@ class MovieDetailsViewModel @Inject constructor(
                         originCountry = "",
                         galleryUrl = emptyList(),
                         reviews = emptyList(),
+                        isFavourite = true,
                     )
                 )
             },

@@ -29,7 +29,7 @@ class TVShowRepositoryImpl @Inject constructor(
 
     override suspend fun getTopRatedTVShows(page: Int): List<TVShow> {
         // Fetch top-rated series from the remote data source and map to domain model
-        return remoteDataSource.getTopRatedTVShows(page).results?.map { seriesDto ->
+        return remoteDataSource.getTopRatedTV(page).results?.map { seriesDto ->
             seriesDto.toDomain(
             )
         } ?: emptyList()

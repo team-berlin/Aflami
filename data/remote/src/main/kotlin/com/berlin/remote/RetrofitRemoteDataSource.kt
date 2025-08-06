@@ -47,8 +47,8 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse { apiService.getMovieReviews(movieId) }
     }
 
-    override suspend fun getUpComingMovies(): BaseResponse<MovieDetailsDto> {
-        return wrapApiResponse { apiService.getUpcomingMovies() }
+    override suspend fun getUpComingMovies(selectedGenres: Int): BaseResponse<MovieDetailsDto> {
+        return wrapApiResponse { apiService.getUpcomingMovies(selectedGenres) }
     }
 
     override suspend fun getTVShowDetailsById(seriesId: Long): TVShowDetailsDto {
