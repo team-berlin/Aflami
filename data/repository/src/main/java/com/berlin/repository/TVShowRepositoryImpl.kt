@@ -35,7 +35,7 @@ class TVShowRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedTVShows(page: Int): List<TVShow> {
-        val localTVShows = homeLocalDataSource.getTVShowsByType(SectionHome.TOP_RATING)
+        val localTVShows = homeLocalDataSource.getTVShowsBySection(SectionHome.TOP_RATING)
         if (!isExpiredOrEmpty(localTVShows)&&localTVShows.isNotEmpty()) {
             return localTVShows.map { it.toDomain() }
         }
@@ -52,7 +52,7 @@ class TVShowRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPopularTVShows(): List<TVShow> {
-        val localTVShows = homeLocalDataSource.getTVShowsByType(SectionHome.POPULAR)
+        val localTVShows = homeLocalDataSource.getTVShowsBySection(SectionHome.POPULAR)
         if (!isExpiredOrEmpty(localTVShows)&&localTVShows.isNotEmpty()) {
             return localTVShows.map { it.toDomain() }
         }

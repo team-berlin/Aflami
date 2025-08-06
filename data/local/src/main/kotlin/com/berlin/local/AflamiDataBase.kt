@@ -9,10 +9,10 @@ import com.berlin.repository.datasource.Converters
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
-import com.berlin.local.dao.MovieHomeDao
+import com.berlin.local.dao.HomeMovieDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
-import com.berlin.local.dao.TVShowHomeDao
+import com.berlin.local.dao.HomeTVShowDao
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
 
 import com.berlin.repository.datasource.local.dto.GenreEntity
@@ -42,8 +42,8 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun categoriesPreferencesDao(): CategoriesPreferencesDao
     abstract fun continueWatchingDao(): ContinueWatchingDao
     abstract fun genreDao(): GenreDao
-    abstract fun movieHomeDao(): MovieHomeDao
-    abstract fun tVShowHomeDao(): TVShowHomeDao
+    abstract fun homeMovieDao(): HomeMovieDao
+    abstract fun homeTVShowDao(): HomeTVShowDao
 
 
     companion object {

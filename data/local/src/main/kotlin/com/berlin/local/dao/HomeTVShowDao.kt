@@ -8,12 +8,12 @@ import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 
 @Dao
-interface TVShowHomeDao {
+interface HomeTVShowDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTVShows(tvShows: List<TVShowHomeEntity>)
 
     @Query("SELECT * FROM TVShow_Home WHERE sectionHome = :sectionHome")
-    suspend fun getTVShowsByType(sectionHome: SectionHome): List<TVShowHomeEntity>
+    suspend fun getTVShowsBySection(sectionHome: SectionHome): List<TVShowHomeEntity>
 
     @Query("DELETE FROM TVShow_Home  WHERE sectionHome = :sectionHome")
     suspend fun clearHomeScreenTVShows(sectionHome: SectionHome)

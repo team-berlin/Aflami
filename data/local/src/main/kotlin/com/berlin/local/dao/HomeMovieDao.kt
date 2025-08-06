@@ -8,12 +8,12 @@ import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 
 @Dao
-interface MovieHomeDao {
+interface HomeMovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(movies: List<MovieHomeEntity>)
 
     @Query("SELECT * FROM Movie_Home WHERE sectionHome = :sectionHome")
-    suspend fun getMoviesByType(sectionHome: SectionHome): List<MovieHomeEntity>
+    suspend fun getMoviesBySection(sectionHome: SectionHome): List<MovieHomeEntity>
 
     @Query("DELETE FROM Movie_Home WHERE sectionHome = :sectionHome")
     suspend fun clearHomeScreenMovies(sectionHome: SectionHome)

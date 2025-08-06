@@ -36,7 +36,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedMovies(page: Int): List<Movie> {
-        val localMovies = homeLocalDataSource.getMoviesByType(SectionHome.TOP_RATING)
+        val localMovies = homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING)
         if (!isExpiredOrEmpty(localMovies)&&localMovies.isNotEmpty()) {
             return localMovies.map { it.toDomain() }
         }
@@ -53,7 +53,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUpComingMovies(): List<Movie> {
-        val localMovies = homeLocalDataSource.getMoviesByType(SectionHome.UPCOMING)
+        val localMovies = homeLocalDataSource.getMoviesBySection(SectionHome.UPCOMING)
         if (!isExpiredOrEmpty(localMovies) &&localMovies.isNotEmpty()) {
             return localMovies.map { it.toDomain() }
         }
@@ -70,7 +70,7 @@ class MovieRepositoryImpl @Inject constructor(
 
 
     override suspend fun getPopularMovies(): List<Movie> {
-        val localMovies = homeLocalDataSource.getMoviesByType(SectionHome.POPULAR)
+        val localMovies = homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR)
         if (!isExpiredOrEmpty(localMovies) && localMovies.isNotEmpty()) {
             return localMovies.map { it.toDomain() }
         }

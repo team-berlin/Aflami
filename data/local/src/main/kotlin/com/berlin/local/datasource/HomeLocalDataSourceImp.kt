@@ -1,7 +1,7 @@
 package com.berlin.local.datasource
 
-import com.berlin.local.dao.MovieHomeDao
-import com.berlin.local.dao.TVShowHomeDao
+import com.berlin.local.dao.HomeMovieDao
+import com.berlin.local.dao.HomeTVShowDao
 import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
@@ -10,31 +10,31 @@ import javax.inject.Inject
 
 
 class HomeLocalDataSourceImp @Inject constructor(
-    private val movieHomeDao: MovieHomeDao,
-    private val tvShowHomeDao: TVShowHomeDao
+    private val homeMovieDao: HomeMovieDao,
+    private val homeTVShowDao: HomeTVShowDao
 ) : HomeLocalDataSource {
 
-    override suspend fun getMoviesByType(sectionHome: SectionHome): List<MovieHomeEntity> {
-        return movieHomeDao.getMoviesByType(sectionHome)
+    override suspend fun getMoviesBySection(sectionHome: SectionHome): List<MovieHomeEntity> {
+        return homeMovieDao.getMoviesBySection(sectionHome)
     }
 
     override suspend fun addMovies(movies: List<MovieHomeEntity>) {
-        movieHomeDao.insertMovies(movies)
+        homeMovieDao.insertMovies(movies)
     }
 
     override suspend fun  clearHomeScreenMovies(sectionHome: SectionHome) {
-        movieHomeDao.clearHomeScreenMovies(sectionHome)
+        homeMovieDao.clearHomeScreenMovies(sectionHome)
     }
 
-    override suspend fun getTVShowsByType(sectionHome: SectionHome): List<TVShowHomeEntity> {
-        return tvShowHomeDao.getTVShowsByType(sectionHome)
+    override suspend fun getTVShowsBySection(sectionHome: SectionHome): List<TVShowHomeEntity> {
+        return homeTVShowDao.getTVShowsBySection(sectionHome)
     }
 
     override suspend fun addTVShows(tvShows: List<TVShowHomeEntity>) {
-        tvShowHomeDao.insertTVShows(tvShows)
+        homeTVShowDao.insertTVShows(tvShows)
     }
 
     override suspend fun clearHomeScreenTVShows(sectionHome: SectionHome) {
-        tvShowHomeDao.clearHomeScreenTVShows(sectionHome)
+        homeTVShowDao.clearHomeScreenTVShows(sectionHome)
     }
 }
