@@ -66,6 +66,7 @@ import com.berlin.aflami.viewmodel.search.SearchScreenInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
 
 @Composable
@@ -355,7 +356,7 @@ private fun SearchScreenContent(
                                                             },
                                                             mediaImg = movie.posterUrl,
                                                             title = movie.title,
-                                                            typeOfMedia = stringResource(R.string.movies),
+                                                            typeOfMedia = MediaType.MOVIE.name,
                                                             date = movie.releaseDate,
                                                             rating = movie.rating
                                                         )
@@ -411,7 +412,6 @@ private fun SearchScreenContent(
                                             ) { index ->
                                                 val tvShows = tvShows[index]
                                                 if (tvShows != null) {
-
                                                     MediaCard(
                                                         modifier = Modifier.height(222.dp),
                                                         mediaImg = tvShows.posterUrl,
@@ -421,7 +421,7 @@ private fun SearchScreenContent(
                                                                 tvShows.id
                                                             )
                                                         },
-                                                        typeOfMedia = stringResource(R.string.tv_shows),
+                                                        typeOfMedia =MediaType.TV_SHOW.name,
                                                         date = tvShows.releaseDate,
                                                         rating = tvShows.rating
                                                     )

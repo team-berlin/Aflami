@@ -5,12 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.berlin.local.dao.AppEntryDao
 import com.berlin.repository.datasource.Converters
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
+import com.berlin.repository.datasource.local.dto.AppEntryEntity
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
 
 import com.berlin.repository.datasource.local.dto.GenreEntity
@@ -26,8 +28,8 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
         RecentHistoryEntity::class,
         CategoriesPreferencesEntity::class,
         RecentlyWatchedMovieEntity::class,
-        RecentlyWatchedTvShowEntity::class
-        ,
+        RecentlyWatchedTvShowEntity::class,
+        AppEntryEntity::class,
         GenreEntity::class
     ], version = 1, exportSchema = false
 )
@@ -37,6 +39,7 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun categoriesPreferencesDao(): CategoriesPreferencesDao
     abstract fun continueWatchingDao(): ContinueWatchingDao
     abstract fun genreDao(): GenreDao
+    abstract fun appEntryDao():AppEntryDao
 
     companion object {
         private const val DATABASE_NAME = "Aflami_Database"

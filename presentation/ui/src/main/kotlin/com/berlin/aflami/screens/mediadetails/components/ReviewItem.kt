@@ -23,6 +23,7 @@ import com.berlin.aflami.component.Rating
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
 import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun ReviewItem(
@@ -45,11 +46,11 @@ fun ReviewItem(
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 12.dp),
         ) {
-            AsyncImage(
+            SafeImageViewer(
                 placeholder = painterResource(R.drawable.no_review_image),
                 error = painterResource(R.drawable.no_review_image),
                 fallback = painterResource(R.drawable.no_review_image),
-                model = review.avatarImage,
+                model = review.avatarImage?:"",
                 contentDescription = "Avatar Image",
                 modifier = Modifier
                     .size(48.dp)

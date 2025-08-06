@@ -20,6 +20,7 @@ import com.berlin.aflami.viewmodel.mapper.toReviewUiState
 import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
+import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.TVShow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -100,7 +101,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         posterURL = tvShowUiState.posterUrl,
                         screenShot = tvShowUiState.posterUrl,
                         description = tvShowUiState.description,
-                        genres = emptyList(),
+                        genres = tvShowUiState.genre.map { it.toDomain() },
                         duration = tvShowUiState.duration.parseRuntime(),
                         hasVideo = tvShowUiState.hasVideo,
                         companyProductions = emptyList(),

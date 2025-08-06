@@ -15,7 +15,7 @@ interface CategoriesPreferencesDao {
     suspend fun getCount(id: Int): Int?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entity: CategoriesPreferencesEntity)
+    suspend fun insert(categories:CategoriesPreferencesEntity)
 
     @Query("UPDATE categories_preferences SET count = count + 1 WHERE categoryId = :id")
     suspend fun increment(id: Int)
@@ -23,13 +23,4 @@ interface CategoriesPreferencesDao {
     @Query("SELECT * FROM categories_preferences")
     suspend fun getAll(): List<CategoriesPreferencesEntity>
 
-    @Transaction
-    suspend fun increaseOrInsert(id: Int) {
-        val existing = getCount(id)
-        if (existing == null) {
-            insert(CategoriesPreferencesEntity(id, 1))
-        } else {
-            increment(id)
-        }
-    }
 }

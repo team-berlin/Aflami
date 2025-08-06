@@ -32,6 +32,9 @@ val bottomNavBarDestinationsMap = mapOf(
 )
 
 @Serializable
+object OnBoardingDestination
+
+@Serializable
 object LoginDestination
 
 @Serializable

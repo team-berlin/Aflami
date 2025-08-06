@@ -7,6 +7,7 @@ import com.berlin.entity.MediaImage
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.Video
+import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 class TvShowDetailsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
+    private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource
 ) : TVShowDetailsRepository {
     override suspend fun getTVShowDetails(tvShowId: Long): TVShow {
 
@@ -63,13 +65,21 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
     override suspend fun getTVShowsSimilar(seriesId: Long): List<TVShow> {
         val galleryImages = getTVShowsImages(seriesId).backdrops.take(10)
         val hasVideo = getTVShowVideos(seriesId).isNotEmpty()
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference()
+            .associate { it.categoryId to it.count }
 
-        return remoteDataSource.getSimilarTVById(seriesId).results?.mapNotNull { tvShowDto ->
+        return remoteDataSource.getSimilarTVById(seriesId)
+            .results?.mapNotNull { tvShowDto ->
             tvShowDto.toDomain(
                 galleryImages = galleryImages,
                 hasVideo = hasVideo
             )
-        } ?: emptyList()
+        }?.sortedByDescending { tvShow ->
+            tvShow.genres.sumOf { genre ->
+                genreScoresMap[genre.id] ?: 0
+            }
+        }
+            ?: emptyList()
     }
 
     override suspend fun getTVShowReviews(seriesId: Long): List<Review> {

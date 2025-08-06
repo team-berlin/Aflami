@@ -28,23 +28,44 @@ class TVShowRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedTVShows(page: Int): List<TVShow> {
-        // Fetch top-rated series from the remote data source and map to domain model
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference()
+            .associate { it.categoryId to it.count }
         return remoteDataSource.getTopRatedTV(page).results?.map { seriesDto ->
-            seriesDto.toDomain()
+            seriesDto.toDomain(
+            )
+        }?.sortedByDescending { tvShow ->
+            tvShow.genres.sumOf { genre ->
+                genreScoresMap[genre.id] ?: 0
+            }
         } ?: emptyList()
     }
 
     override suspend fun getPopularTVShows(): List<TVShow> {
-        return remoteDataSource.getPopularTVShows().results?.filterNotNull()
-            ?.map { tVShowDto -> tVShowDto.toDomain() } ?: emptyList()
+        val genreScoresMap = recentlyWatchedLocalDataSource
+            .getCategoryAsPreference()
+            .associate { it.categoryId to it.count }
+
+        return remoteDataSource.getPopularTVShows()
+            .results
+            ?.map { tVShowDto -> tVShowDto.toDomain() }
+            ?.sortedByDescending { tvShow-> tvShow.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+     ?: emptyList()
     }
 
     override suspend fun searchTVShow(
         query: String,
         page: Int,
     ): List<TVShow> {
-        return remoteDataSource.getTVShowsByKeyword(query, page).results?.filterNotNull()?.map {
+        val genreScoresMap = recentlyWatchedLocalDataSource
+            .getCategoryAsPreference()
+            .associate { it.categoryId to it.count }
+
+        return remoteDataSource.getTVShowsByKeyword(query, page).results?.map {
             it.toDomain()
+        }?.sortedByDescending { tvShow ->
+            tvShow.genres.sumOf { genre ->
+                genreScoresMap[genre.id] ?:0
+            }
         } ?: emptyList()
     }
 

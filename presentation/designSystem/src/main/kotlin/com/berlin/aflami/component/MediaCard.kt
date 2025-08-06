@@ -61,7 +61,7 @@ fun MediaCard(
             else -> ContentScale.Inside
         }
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            AsyncImage(
+            SafeImageViewer(
                 model = mediaImg,
                 contentDescription = null,
                 contentScale = contentScale,
@@ -69,13 +69,6 @@ fun MediaCard(
                 error = painterResource(R.drawable.place_holder),
                 fallback = painterResource(R.drawable.place_holder),
             )
-//            AsyncImage(
-//                imageUri = mediaImg,
-//                modifier = Modifier.fillMaxSize(),
-//                contentScale = contentScale,
-//                error = painterResource(R.drawable.place_holder),
-//                fallback = painterResource(R.drawable.place_holder)
-//            )
             if (imageState is AsyncImagePainter.State.Loading) {
                 ShimmerBox(modifier = Modifier.fillMaxSize())
             }
@@ -108,7 +101,10 @@ fun MediaCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (typeOfMedia == "TVSHOW") stringResource(R.string.tv_show) else stringResource(R.string.movie),
+
+                    text = if (typeOfMedia == "TV_SHOW") stringResource(R.string.tv_show) else stringResource(
+                        R.string.movie
+                    ),
                     style = Theme.textStyle.label.small,
                     color = Theme.color.textColors.onPrimaryBody,
                     maxLines = 1,

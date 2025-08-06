@@ -23,20 +23,20 @@ class GetUpComingMoviesUseCaseTest {
 
     @Test
     fun `should return list of movies when calling repository`() = runTest {
-        coEvery { movieRepository.getUpComingMovies() } returns MOVIES
+        coEvery { movieRepository.getUpComingMovies(selectedGenres) } returns MOVIES
 
-        val callResult = getUpComingMoviesUseCase()
+        val callResult = getUpComingMoviesUseCase(state.value.selectedGenres)
 
         assertThat(callResult).isEqualTo(MOVIES)
-        coVerify(exactly = 1) { movieRepository.getUpComingMovies() }
+        coVerify(exactly = 1) { movieRepository.getUpComingMovies(selectedGenres) }
     }
 
     @Test
     fun `should throw exception if movieRepository throws exception`() = runTest {
-        coEvery { movieRepository.getUpComingMovies() } throws Exception()
+        coEvery { movieRepository.getUpComingMovies(selectedGenres) } throws Exception()
 
         assertThrows<Exception> {
-            getUpComingMoviesUseCase()
+            getUpComingMoviesUseCase(state.value.selectedGenres)
         }
     }
 
