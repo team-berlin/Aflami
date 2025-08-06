@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -152,11 +153,14 @@ private fun onReceiveMovieDetailsEffect(
                     mediaDetailsScreenEffect.movieId
                 )
             ) {
-                launchSingleTop = true
+                popUpTo(MovieDetailsDestination(movieId = mediaDetailsScreenEffect.movieId)){
+                    inclusive = true
+
+                }
             }
         }
 
-        is MovieDetailsScreenEffect.ShowLoginDialog -> TODO()
+        is MovieDetailsScreenEffect.ShowLoginDialog -> {}
         MovieDetailsScreenEffect.NavigateToLogin -> {
             navController.navigate(
                 LoginDestination
@@ -241,6 +245,7 @@ fun MovieDetailsContent(
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
                     onMovieCardClicked = { mediaId ->
+                        Log.e("click","click")
                         listener.onMediaCardClicked(mediaId)
                     },
                 )

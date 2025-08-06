@@ -31,6 +31,7 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
 import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
@@ -150,7 +151,10 @@ private fun onReceiveTVShowDetailsEffect(
                     tvShowDetailsScreenEffect.tvShowId
                 )
             ) {
-                launchSingleTop = true
+                popUpTo(MovieDetailsDestination(movieId = tvShowDetailsScreenEffect.tvShowId)){
+                    inclusive = true
+                }
+
             }
         }
 
