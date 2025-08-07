@@ -222,13 +222,14 @@ private fun HomeContent(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 96.dp)
+                                    .statusBarsPadding()
+                                    .padding(top = 56.dp)
                             ) {
                                 SectionTitle(
                                     title = stringResource(com.berlin.designsystem.R.string.popular),
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                                        .padding(start = 16.dp),
                                     icon = {
                                         Icon(
                                             modifier = Modifier
