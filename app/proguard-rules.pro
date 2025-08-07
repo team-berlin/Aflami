@@ -96,7 +96,23 @@
 
 # ======== Prevent R8 from removing Keep-annotated things ========
 -keepattributes *Annotation*, InnerClasses, EnclosingMethod, Signature, Exceptions, LineNumberTable, LocalVariableTable, LocalVariableTypeTable, SourceFile, RuntimeVisibleAnnotations, RuntimeInvisibleAnnotations, RuntimeVisibleParameterAnnotations, RuntimeInvisibleParameterAnnotations, AnnotationDefault
+# --- Ignore optional Google API Client HTTP classes ---
+-dontwarn com.google.api.client.http.**
+-dontwarn com.google.api.client.http.javanet.**
+-dontwarn org.joda.time.**
 
+# Ignore javax/java.awt since they are desktop-only classes
+-dontwarn java.awt.**
+-dontwarn javax.print.**
+-dontwarn javax.swing.**
+-dontwarn javax.lang.model.**
+-dontwarn javax.tools.**
+
+# Ignore Compose tooling in release
+-dontwarn androidx.compose.animation.tooling.**
+
+# Ignore missing classes used only in IDE previews / annotation processing
+-dontwarn androidx.compose.**
 -dontwarn timber.log.Timber
 -dontwarn com.google.api.client.http.**
 -dontwarn org.joda.time.**
