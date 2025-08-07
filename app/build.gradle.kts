@@ -82,6 +82,8 @@ dependencies {
     ksp(libs.roomCompiler)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.firebase.ml.modeldownloader)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.security.crypto)
 
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
