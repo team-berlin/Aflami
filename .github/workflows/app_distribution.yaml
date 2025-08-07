@@ -40,12 +40,12 @@ jobs:
           branch="${GITHUB_REF#refs/heads/}"
           echo "Current branch: $branch"
 
-          latest=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.4")
+          latest=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.1.1")
           echo "Latest tag: $latest"
 
           IFS='.' read -r major minor patch <<< "${latest#v}"
 
-          if [[ "$branch" == "main" || "$branch" == "release" ]]; then
+          if [[ "$branch" == "main" || "$branch" == "develop" ]]; then
             minor=$((minor + 1))
             patch=0
           else
@@ -58,13 +58,22 @@ jobs:
           echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
           echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
 
-      - name: Build release with version
+      - name: Restore firebase_release_key
         run: |
-          ./gradlew assembleDebug -PversionName=${{ env.NEW_TAG }}
+          echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > firebase_release_key.jks    
+
+      - name: Build release with version
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          ./gradlew assembleRelease -PversionName=${{ env.NEW_TAG }}
+       
 
       - name: Rename output with version
         run: |
-          mv app/build/outputs/apk/debug/app-debug.apk app-${{ env.NEW_TAG }}.apk
+          mv app/build/outputs/apk/release/app-release.apk app-${{ env.NEW_TAG }}.apk
 
 
       - name: Create and push Git tag
@@ -79,7 +88,7 @@ jobs:
         id: tester_group
         run: |
           if [[ "$GITHUB_REF_NAME" == "main" || "$GITHUB_REF_NAME" == "develop" ]]; then
-            echo "group=${{ secrets.TESTERS_RELEASE }}" >> "$GITHUB_OUTPUT"
+            echo "group=${{ secrets.TESTERS_BETA }}" >> "$GITHUB_OUTPUT"
           else
             echo "group=${{ secrets.TESTERS_BETA }}" >> "$GITHUB_OUTPUT"
           fi
