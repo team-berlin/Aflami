@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -36,6 +38,7 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.ListDetailsDestination
 import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
 import com.berlin.aflami.screens.lists.component.ListCard
@@ -55,8 +58,14 @@ import com.berlin.ui.R
 fun ListScreen(
     modifier: Modifier = Modifier, listScreenViewModel: ListScreenViewModel = hiltViewModel(),
 ) {
-    val state = listScreenViewModel.state.collectAsStateWithLifecycle()
-    ListsContent(listScreenState = state.value, interactionListener = listScreenViewModel)
+    val listScreenState = listScreenViewModel.state.collectAsStateWithLifecycle()
+    val navController = Theme.navController
+    LaunchedEffect(Unit) {
+        listScreenViewModel.effect.collect { listScreenEffect ->
+            onReceiveNewEffect(navController = navController, effect = listScreenEffect)
+        }
+    }
+    ListsContent(listScreenState = listScreenState.value, interactionListener = listScreenViewModel)
 }
 
 @Composable
@@ -65,7 +74,6 @@ private fun ListsContent(
     listScreenState: ListScreenState,
     interactionListener: ListScreenInteractionListener,
 ) {
-    val navController = Theme.navController
     Box(
         modifier = modifier.navigationBarsPadding()
     ) {
@@ -180,15 +188,25 @@ private fun ListsContent(
                 }
             }
         }
+        AnimatedVisibility(
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = listScreenState.favouriteList.isEmpty() && listScreenState.isUserLoggedIn
+        ) {
+            Image(
+                painter = painterResource(R.drawable.no_items_found),
+                contentDescription = stringResource(R.string.no_saved_items_here)
+            )
+        }
     }
 }
 
 private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavController) {
     when (effect) {
 
-        ListScreenEffect.NavigateBack -> TODO()
+        ListScreenEffect.NavigateBack -> navController.navigate(NavigationBarDestinations.HomeScreen)
         is ListScreenEffect.NavigateToSeeAllListScreen -> navController.navigate(
-            ListDetailsDestination(listId = effect.listId)
+            ListDetailsDestination(listId = effect.listId, listTitle = effect.listTitle)
         )
 
         is ListScreenEffect.ShowCreateNewListStatusSnackBar -> TODO()

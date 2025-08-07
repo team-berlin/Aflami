@@ -68,7 +68,7 @@ object SearchByCountryDestination
 object SearchByActorDestination
 
 @Serializable
-data class ListDetailsDestination(val listId: Int)
+data class ListDetailsDestination(val listId: Int, val listTitle: String)
 
 @Serializable
 data class ListsScreen(

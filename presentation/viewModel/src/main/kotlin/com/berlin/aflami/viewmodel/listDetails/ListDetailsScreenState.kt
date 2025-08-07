@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.emptyFlow
 
 @Immutable
 data class ListDetailsScreenState(
+    val listTitle: String = "",
+    val listId: Int? = null,
     val listItems: Flow<PagingData<MovieUiState>> = emptyFlow(),
     val showDeleteListDialog: Boolean = false,
     val isScreenLoading: Boolean = false,

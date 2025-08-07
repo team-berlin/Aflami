@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,7 +28,6 @@ import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.listdetails.component.DeleteListDialog
 import com.berlin.aflami.screens.listdetails.component.MoviesListItem
 import com.berlin.aflami.screens.search.components.NoDataContainer
-import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.listDetails.ListDetailsScreenInteractionListener
 import com.berlin.aflami.viewmodel.listDetails.ListDetailsScreenState
@@ -39,7 +37,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ListDetailsScreen(
-    listDetailsViewModel: ListDetailsScreenViewModel = hiltViewModel()
+    listDetailsViewModel: ListDetailsScreenViewModel = hiltViewModel(),
 ) {
 
     val state by listDetailsViewModel.state.collectAsStateWithLifecycle()
@@ -119,6 +117,7 @@ private fun ListDetailsContent(
         ) {
             MoviesListItem(
                 movies = movies,
+                listId = state.listId ?: throw IllegalArgumentException("no list if found!"),
                 modifier = Modifier.fillMaxSize(),
                 onClickMovie = listener::onMovieCardClicked,
                 onClickDislikeItem = listener::onRemoveMovieClicked
@@ -135,31 +134,12 @@ private fun ListDetailsContent(
     }
 }
 
-@Preview
-@Composable
-private fun PreviewListDetailsContent() {
-    AflamiTheme {
-        ListDetailsContent(
-            state = ListDetailsScreenState(),
-            listener = object : ListDetailsScreenInteractionListener {
-                override fun onMovieCardClicked(id: Long) {}
-                override fun onRemoveMovieClicked(id: Long) {}
-                override fun onBackClicked() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onRenameClicked(listId: Int) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onDeleteIconClicked(listId: Int) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onDeleteDialogDismiss() {}
-                override fun onDeleteConfirmed() {}
-            }
-        )
-    }
-
-}
+//@Preview
+//@Composable
+//private fun PreviewListDetailsContent() {
+//    AflamiTheme {
+//        ListDetailsContent(
+//            state = ListDetailsScreenState(),
+//        )
+//    }
+//}

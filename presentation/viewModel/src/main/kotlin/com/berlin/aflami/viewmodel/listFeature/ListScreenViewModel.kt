@@ -79,7 +79,7 @@ class ListScreenViewModel(
         }
 
     override fun onClickListCard(listId: Int, listName: String) =
-        sendNewEffect(ListScreenEffect.NavigateToSeeAllListScreen(listId))
+        sendNewEffect(ListScreenEffect.NavigateToSeeAllListScreen(listId, listName))
 
     override fun onCancelCreatingNewListClicked() {
         updateState { screenState ->

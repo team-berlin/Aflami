@@ -24,9 +24,10 @@ import com.berlin.ui.R
 @Composable
 fun MoviesListItem(
     movies: LazyPagingItems<MovieUiState>,
+    listId: Int,
     modifier: Modifier = Modifier,
     onClickMovie: (Long) -> Unit,
-    onClickDislikeItem: (Long) -> Unit = { }
+    onClickDislikeItem: (Int, Long) -> Unit,
 ) {
     val itemState = rememberLazyGridState()
     LazyVerticalGrid(
@@ -56,7 +57,7 @@ fun MoviesListItem(
                     paddingValues = PaddingValues(6.dp),
                     painter = painterResource(R.drawable.heart),
                     contentDescription = null,
-                    onClick = { onClickDislikeItem(movie.id) },
+                    onClick = { onClickDislikeItem(listId, movie.id) },
                 )
             }
         }

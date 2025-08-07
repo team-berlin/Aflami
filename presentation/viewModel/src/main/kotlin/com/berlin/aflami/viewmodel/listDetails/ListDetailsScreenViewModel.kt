@@ -23,8 +23,17 @@ class ListDetailsScreenViewModel @Inject constructor(
     private val favouriteListId: Int =
         favouriteListDetailsArgs.favouriteListId
             ?: throw IllegalArgumentException("list id is null")
+    private val favouriteListTitle: String =
+        favouriteListDetailsArgs.favouriteListTitle
+            ?: throw IllegalArgumentException("list title is null")
 
     init {
+        updateState { screenState ->
+            screenState.copy(
+                listId = favouriteListId,
+                listTitle = favouriteListTitle
+            )
+        }
         getAllFavoriteListItems(favouriteListId = favouriteListId)
     }
 

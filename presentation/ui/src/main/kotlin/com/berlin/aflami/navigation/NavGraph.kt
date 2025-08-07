@@ -15,6 +15,7 @@ import com.berlin.aflami.navigation.routes.castDetailsScreen
 import com.berlin.aflami.navigation.routes.categoriesRoute
 import com.berlin.aflami.navigation.routes.gamesRoute
 import com.berlin.aflami.navigation.routes.homeScreenRoute
+import com.berlin.aflami.navigation.routes.listsDetailsRoute
 import com.berlin.aflami.navigation.routes.listsRoute
 import com.berlin.aflami.navigation.routes.loginRoute
 import com.berlin.aflami.navigation.routes.movieDetailsRoute
@@ -109,6 +110,7 @@ private fun getCurrentNavBarScreen(navController: NavHostController): Navigation
 fun NavGraphBuilder.bottomNavigationBarGraph() {
     homeScreenRoute()
     listsRoute()
+    listsDetailsRoute()
     profileRoute()
     categoriesRoute()
     gamesRoute()
