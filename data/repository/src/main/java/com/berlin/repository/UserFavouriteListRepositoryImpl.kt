@@ -19,11 +19,10 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
         pageNumber: Int,
         favouriteListId: Int,
     ): List<Movie> {
-        remoteDataSource.getUserFavouriteListItems(pageNumber, favouriteListId)
+        return remoteDataSource.getUserFavouriteListItems(pageNumber, favouriteListId)
             .map { favouriteListItem ->
                 favouriteListItem.toMovie()
             }
-        TODO()
     }
 
     override suspend fun deleteUserFavouriteList(listId: Int) =

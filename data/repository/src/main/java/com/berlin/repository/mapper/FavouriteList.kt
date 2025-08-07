@@ -15,11 +15,11 @@ fun FavouriteListDto.toDomain(): FavouriteList {
 
 fun FavouriteListItem.toMovie(): Movie {
     return Movie(
-        id = id,
+        id = id.toLong(),
         title = title,
         rating = voteAverage,
         releaseDate = releaseDate,
-        posterURL = posterPath ?: "No Poster",
+        posterURL = posterPath,
         description = overview,
         genres = genreIds.map { it.toDomainGenre() },
         isFavourite = true,

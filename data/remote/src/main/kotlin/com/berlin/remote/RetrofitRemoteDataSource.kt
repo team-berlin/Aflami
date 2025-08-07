@@ -3,7 +3,6 @@ package com.berlin.remote
 import com.berlin.remote.network.ApiService
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
-import com.berlin.repository.datasource.remote.dto.CreateListResponse
 import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.FavouriteListItem
 import com.berlin.repository.datasource.remote.dto.PersonDto
@@ -15,7 +14,6 @@ import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.request.CreateListRequest
 import com.berlin.repository.datasource.remote.dto.request.RemoveMovieFromListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
-import com.berlin.repository.datasource.remote.response.DeleteResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
@@ -176,8 +174,8 @@ class RetrofitRemoteDataSource @Inject constructor(
         }.favouriteListItems
     }
 
-    override suspend fun deleteUserFavouriteList(listId: Int): DeleteResponse {
-        return wrapApiResponse {
+    override suspend fun deleteUserFavouriteList(listId: Int) {
+        wrapApiResponse {
             apiService.deleteUserFavouriteList(
                 sessionId = authenticationLocalDataSource.getUserSessionId()
                     ?: throw IllegalStateException("userSessionID == null"),
@@ -189,8 +187,8 @@ class RetrofitRemoteDataSource @Inject constructor(
     override suspend fun deleteMovieFromUserFavouriteList(
         listId: Int,
         movieId: Long,
-    ): DeleteResponse {
-        return wrapApiResponse {
+    ) {
+        wrapApiResponse {
             apiService.deleteMovieFromList(
                 listId = listId,
                 sessionId = authenticationLocalDataSource.getUserSessionId()
@@ -200,8 +198,8 @@ class RetrofitRemoteDataSource @Inject constructor(
         }
     }
 
-    override suspend fun createNewFavouriteList(title: String): CreateListResponse {
-        return wrapApiResponse {
+    override suspend fun createNewFavouriteList(title: String) {
+        wrapApiResponse {
             apiService.createNewFavouriteList(
                 sessionId = authenticationLocalDataSource.getUserSessionId()
                     ?: throw IllegalStateException("userSessionID == null"),
