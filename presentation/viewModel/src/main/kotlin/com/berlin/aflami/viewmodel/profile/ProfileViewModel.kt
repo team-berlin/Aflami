@@ -1,9 +1,13 @@
 package com.berlin.aflami.viewmodel.profile
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.entity.AppLanguage
+import com.berlin.entity.AppTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
 import usecase.profile.SetLanguageUseCase
@@ -22,10 +26,6 @@ class ProfileViewModel @Inject constructor(
 
     init {
     }
-
-
-
-
 
     override fun onWatchHistoryClick() {
         sendNewEffect(ProfileScreenEffect.NavigateToWatchHistoryScreen)
@@ -48,6 +48,69 @@ class ProfileViewModel @Inject constructor(
         updateState { it.copy(activeDialog = ProfileDialogType.SETTINGS) }
     }
 
+    override fun onDarkThemeSelected() {
+        updateState {
+            it.copy(
+                isDarkThemeSelected = true,
+                isLightThemeSelected = false,
+                selectedTheme = AppTheme.DARK.name,
+                isDarkThemeEnabled = true,
+
+                )
+        }
+
+    }
+
+    override fun onLightThemeSelected() {
+        updateState {
+            it.copy(
+                isDarkThemeSelected = false,
+                isLightThemeSelected = true,
+                selectedTheme = AppTheme.LIGHT.name,
+                isDarkThemeEnabled = false,
+            )
+        }
+
+    }
+
+    override fun onArabicSelected() {
+        updateState {
+            it.copy(
+                isEnglishSelected = false,
+                isArabicSelected = true,
+                selectedLanguage = AppLanguage.AR.name,
+                isLanguageEN = false,
+            )
+        }
+    }
+
+    override fun onEnglishSelected() {
+        updateState {
+            it.copy(
+                isEnglishSelected = true,
+                isArabicSelected = false,
+                selectedLanguage = AppLanguage.EN.name,
+                isLanguageEN = true,
+            )
+        }
+    }
+
+    override fun onApplyThemeOption() {
+        viewModelScope.launch {
+            val selectedTheme = AppTheme.valueOf(state.value.selectedTheme)
+            setThemeUseCase(selectedTheme)
+            updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+        }
+    }
+
+    override fun onApplyLanguageOption() {
+        viewModelScope.launch {
+            val selectedLanguage = AppLanguage.valueOf(state.value.selectedLanguage)
+            setLanguageUseCase(selectedLanguage)
+            updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+        }
+    }
+
     override fun onDialogDismissed() {
         updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
     }
@@ -56,8 +119,6 @@ class ProfileViewModel @Inject constructor(
         Log.e("HomeScreenViewModel", "updatePopularUiStateWithError: ${errorUiState.message}")
 
     }
-
-
 
 
 }
