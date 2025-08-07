@@ -48,7 +48,8 @@ fun UpcomingMoviesSection(
             genres = genres,
             onGenreClick = onGenreClick,
             modifier = Modifier
-                .fillMaxWidth()
+                .padding(vertical = 12.dp)
+            .fillMaxWidth()
         )
 
         MoviesColumn(

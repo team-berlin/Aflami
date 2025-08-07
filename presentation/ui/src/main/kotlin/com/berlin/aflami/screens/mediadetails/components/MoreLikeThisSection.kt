@@ -63,7 +63,7 @@ fun TvShowMoreLikeThisSection(
                     .height(196.dp),
                 mediaImg = media.posterUrl,
                 title = media.title,
-                typeOfMedia = stringResource(R.string.Tv_Show),
+                typeOfMedia ="TV_SHOW",
                 date = media.releaseDate.substringBefore("-"),
                 rating = media.rating,
                 onClick =  {

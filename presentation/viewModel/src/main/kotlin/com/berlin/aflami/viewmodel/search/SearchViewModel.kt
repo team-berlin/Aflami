@@ -180,9 +180,9 @@ class SearchViewModel @Inject constructor(
 
     private fun getFilterTVShowAsFlow(query: String): Flow<PagingData<TVShowUiState>> {
         val selectedRating =
-            state.value.filterItemUiState.filterMovieSelected.selectedRating
+            state.value.filterItemUiState.filterTvShowSelected.selectedRating
         val selectedGenreId =
-            state.value.filterItemUiState.filterMovieSelected.selectedGenres
+            state.value.filterItemUiState.filterTvShowSelected.selectedGenres
 
         return Pager(
             config = defaultPageConfigurations(),

@@ -310,7 +310,7 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun getUpComingMoviesByGenre() {
         tryToCall(
-            call = { getUpComingMoviesUseCase(state.value.selectedGenres).map { movie -> movie.toMovieUiState() } },
+            call = { getUpComingMoviesUseCase().map { movie -> movie.toMovieUiState() } },
             onSuccess = ::updateScreenWithNewUpComingMovies,
             onError = ::updateUpComingSectionWithError
         )
