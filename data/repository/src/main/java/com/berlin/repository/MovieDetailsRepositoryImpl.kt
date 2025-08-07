@@ -7,11 +7,13 @@ import com.berlin.entity.Movie
 import com.berlin.entity.Review
 import com.berlin.entity.Video
 import com.berlin.exception.AflamiException
+import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
-import com.berlin.repository.datasource.local.dto.GenreEntity
+import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
+import com.berlin.repository.mapper.toMoviesGenreEntity
 import com.berlin.repository.util.Constants
 import repository.MovieDetailsRepository
 import java.time.Instant
@@ -19,7 +21,8 @@ import javax.inject.Inject
 
 class MovieDetailsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource
+    private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource,
+    private val genreLocalDataSource: GenreLocalDataSource
 ) : MovieDetailsRepository {
 
     override suspend fun getMovieImages(movieId: Long): MediaImage {
@@ -72,7 +75,15 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 
 
     override suspend fun getMovieGenres(): List<Genre> {
-        return remoteDataSource.getMovieGenres().genres.map { it.toDomain() }
+        val cachedGenres = genreLocalDataSource.getCachedMovieGenres()
+        if (!isExpiredOrEmpty(cachedGenres)) {
+            return cachedGenres.map { it.toDomain() }
+        }
+
+        val remoteGenres = remoteDataSource.getMovieGenres().genres
+        val genreEntities = remoteGenres.map { it.toMoviesGenreEntity() }
+        genreLocalDataSource.cacheMovieGenres(genreEntities)
+        return remoteGenres.map { it.toDomain() }
     }
 
     override suspend fun getMovieVideos(id: Long): List<Video> {
@@ -82,7 +93,7 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 
     }
 
-    private fun isExpiredOrEmpty(list: List<GenreEntity>): Boolean {
+    private fun isExpiredOrEmpty(list: List<MoviesGenreEntity>): Boolean {
         return list.isEmpty() || list.any { Instant.now().toEpochMilli() - it.time >Constants.CACHE_TIMEOUT }
     }
 }

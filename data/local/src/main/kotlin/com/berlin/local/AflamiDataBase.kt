@@ -17,12 +17,16 @@ import com.berlin.local.dao.UserProfileDao
 import com.berlin.repository.datasource.Converters
 import com.berlin.repository.datasource.local.dto.AppEntryEntity
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
+
 import com.berlin.repository.datasource.local.dto.GenreEntity
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
+import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
+import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 import com.berlin.repository.datasource.local.dto.RecentHistoryEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 import com.berlin.repository.datasource.local.dto.UserProfileEntity
 
@@ -35,7 +39,8 @@ import com.berlin.repository.datasource.local.dto.UserProfileEntity
         RecentlyWatchedMovieEntity::class,
         RecentlyWatchedTvShowEntity::class,
         AppEntryEntity::class,
-        GenreEntity::class,
+        TVShowGenreEntity::class,
+        MoviesGenreEntity::class,
         MovieHomeEntity::class,
         TVShowHomeEntity::class,
         UserProfileEntity::class

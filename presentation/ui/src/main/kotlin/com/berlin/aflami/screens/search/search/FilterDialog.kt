@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -126,8 +127,8 @@ fun FilterDialog(
                     )
                     LazyRow(
                         modifier = Modifier
-                            .height(96.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp),
                         contentPadding = PaddingValues(horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -230,7 +231,7 @@ fun Chips(
 
         Text(
             modifier = Modifier
-                .height(32.dp)
+                .wrapContentHeight()
                 .let {
                     if (!isSingleWord) it.width(56.dp) else it
                 },
