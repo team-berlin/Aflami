@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.home.sections
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -48,7 +49,6 @@ fun UpcomingMoviesSection(
             onGenreClick = onGenreClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(96.dp)
         )
 
         MoviesColumn(

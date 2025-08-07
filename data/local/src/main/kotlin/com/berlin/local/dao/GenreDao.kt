@@ -4,16 +4,26 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.berlin.repository.datasource.local.dto.GenreEntity
+import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
+import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 
 @Dao
 interface GenreDao {
-    @Query("SELECT * FROM genre_cache WHERE type = :type")
-    suspend fun getCachedGenres(type: String): List<GenreEntity>
+    @Query("SELECT * FROM tVShow_genre")
+    suspend fun getCachedTVGenres(): List<TVShowGenreEntity>
+
+    @Query("SELECT * FROM movies_genre")
+    suspend fun getCachedMovieGenres(): List<MoviesGenreEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun cacheGenres(genres: List<GenreEntity>)
+    suspend fun cacheTVGenres(genres: List<TVShowGenreEntity>)
 
-    @Query("DELETE FROM genre_cache WHERE type = :type")
-    suspend fun clearCachedGenres(type: String)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun cacheMovieGenres(genres: List<MoviesGenreEntity>)
+
+    @Query("DELETE FROM tVShow_genre")
+    suspend fun clearCachedTVGenres()
+
+    @Query("DELETE FROM movies_genre")
+    suspend fun clearCachedMovieGenres()
 }
