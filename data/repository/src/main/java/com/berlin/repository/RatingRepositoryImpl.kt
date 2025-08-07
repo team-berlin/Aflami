@@ -17,7 +17,7 @@ class RatingRepositoryImpl @Inject constructor(
         sessionId: String
     ): RatingResult {
         val request = SubmitRatingRequestDto(value = rating)
-        val response = remoteDataSource.rateMovie(movieId, sessionId, request)
+        val response = remoteDataSource.postRateMovie(movieId, sessionId, request)
         return response.toDomain()
     }
 
@@ -27,7 +27,7 @@ class RatingRepositoryImpl @Inject constructor(
         sessionId: String
     ): RatingResult {
         val request = SubmitRatingRequestDto(value = rating)
-        val response = remoteDataSource.rateTvShow(tvId, sessionId, request)
+        val response = remoteDataSource.postRateTvShow(tvId, sessionId, request)
         return response.toDomain()
     }
 

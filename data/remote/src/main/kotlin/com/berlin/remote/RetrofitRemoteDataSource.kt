@@ -140,7 +140,7 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse { apiService.getTVShowVideos(seriesId) }
     }
 
-    override suspend fun rateMovie(
+    override suspend fun postRateMovie(
         movieId: Int,
         sessionId: String,
         rating: SubmitRatingRequestDto
@@ -152,7 +152,7 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse { apiService.rateMovie(movieId, sessionId, rating) }
     }
 
-    override suspend fun rateTvShow(
+    override suspend fun postRateTvShow(
         tvId: Int,
         sessionId: String,
         rating: SubmitRatingRequestDto
