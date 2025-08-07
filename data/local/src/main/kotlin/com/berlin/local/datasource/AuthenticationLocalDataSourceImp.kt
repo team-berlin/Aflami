@@ -1,51 +1,92 @@
 package com.berlin.local.datasource
 
-import android.annotation.SuppressLint
-import android.content.SharedPreferences
-import com.berlin.local.utils.SharedPrefConstants.USER_SESSION_ID_SHARED_PREFERENCES_KEY
-import com.berlin.local.utils.SharedPrefConstants.USER_TOKEN_SHARED_PREFERENCES_KEY
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import com.berlin.local.utils.DataStoreKeys
+import com.berlin.local.utils.EncryptionUtils
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@SuppressLint("UseKtx")
-class AuthenticationLocalDataSourceImp @Inject constructor(
-    private var prefs: SharedPreferences
+@Singleton
+class AuthenticationLocalDataSourceImpl @Inject constructor(
+    private val dataStore: DataStore<Preferences>,
 ) : AuthenticationLocalDataSource {
 
-    override suspend fun saveUserToken(userToken: String) = withContext(Dispatchers.IO) {
-        val editor = prefs.edit()
-        editor.putString(USER_TOKEN_SHARED_PREFERENCES_KEY, userToken)
-        return@withContext editor.commit()
+    override fun observeLoginStatus(): Flow<Boolean> {
+        return dataStore.data
+            .catch { emit(emptyPreferences()) } // optional: handle IOExceptions safely
+            .map { preferences ->
+                preferences[DataStoreKeys.USER_SESSION_ID]?.isNotBlank() == true
+            }
+            .distinctUntilChanged()
     }
 
-    override suspend fun getUserToken(): String? = withContext(Dispatchers.IO) {
-        prefs.getString(USER_TOKEN_SHARED_PREFERENCES_KEY, null)
-    }
 
-    override suspend fun deleteUserToken(): Boolean =
-        withContext(Dispatchers.IO) {
-            val editor = prefs.edit()
-            editor.remove(USER_TOKEN_SHARED_PREFERENCES_KEY)
-            return@withContext editor.commit()
+    override suspend fun saveUserToken(userToken: String): Boolean {
+        return try {
+            val encrypted = EncryptionUtils.encrypt(userToken)
+            dataStore.edit { it[DataStoreKeys.USER_TOKEN] = encrypted }
+            true
+        } catch (e: Exception) {
+            false
         }
-
-    override suspend fun saveUserSessionId(userSessionId: String) = withContext(Dispatchers.IO) {
-        val editor = prefs.edit()
-        editor.putString(USER_SESSION_ID_SHARED_PREFERENCES_KEY, userSessionId)
-        return@withContext editor.commit()
-    }
-
-    override suspend fun getUserSessionId(): String? = withContext(Dispatchers.IO) {
-        prefs.getString(USER_SESSION_ID_SHARED_PREFERENCES_KEY, null)
     }
 
 
-    override suspend fun deleteUserSessionId(): Boolean =
-        withContext(Dispatchers.IO) {
-            val editor = prefs.edit()
-            editor.remove(USER_TOKEN_SHARED_PREFERENCES_KEY)
-            return@withContext editor.commit()
+    override suspend fun getUserToken(): String? {
+        return try {
+            val encrypted = dataStore.data.first()[DataStoreKeys.USER_TOKEN] ?: return null
+            EncryptionUtils.decrypt(encrypted)
+        } catch (e: Exception) {
+            null
         }
+    }
+
+    override suspend fun deleteUserToken(): Boolean {
+        return try {
+            dataStore.edit { it.remove(DataStoreKeys.USER_TOKEN) }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    override suspend fun saveUserSessionId(userSessionId: String): Boolean {
+        return try {
+            val encrypted = EncryptionUtils.encrypt(userSessionId)
+            dataStore.edit { it[DataStoreKeys.USER_SESSION_ID] = encrypted }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+
+    override suspend fun getUserSessionId(): String? {
+        return try {
+            val encrypted = dataStore.data.first()[DataStoreKeys.USER_SESSION_ID] ?: return null
+            EncryptionUtils.decrypt(encrypted)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+
+    override suspend fun deleteUserSessionId(): Boolean {
+        return try {
+            dataStore.edit { it.remove(DataStoreKeys.USER_SESSION_ID) }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 }

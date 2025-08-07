@@ -35,5 +35,8 @@ dependencies {
     testImplementation(libs.bundles.test)
     implementation(libs.kotlin.datex)
     implementation(libs.javax.inject)
+    implementation(libs.kotlinx.coroutines.core) // or latest stable
+    implementation(libs.kotlinx.coroutines.android)
+
     api(project(":domain:entity"))
 }
