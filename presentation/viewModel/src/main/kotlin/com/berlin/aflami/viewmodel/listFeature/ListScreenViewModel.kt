@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.listFeature
 
+import androidx.compose.ui.text.input.TextFieldValue
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toFavouriteListUiState
@@ -37,11 +38,22 @@ class ListScreenViewModel(
 
     //region ListScreenInteractionListener sendNewEffacts
     override fun onBackClicked() = sendNewEffect(ListScreenEffect.NavigateBack)
+    override fun onListNameChange(newListTitle: TextFieldValue) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onNavigateToLoginClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickAddList() {
+        TODO("Not yet implemented")
+    }
 
     override fun onCreateNewListClicked() =
         sendNewEffect(ListScreenEffect.ShowCreateNewListSheet)
 
-    override fun onClickListCard(listId: Int) =
+    override fun onClickListCard(listId: Int,listName: String) =
         sendNewEffect(ListScreenEffect.NavigateToSeeAllListScreen(listId))
 
     override fun onCancelCreatingNewListClicked() =

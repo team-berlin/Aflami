@@ -11,6 +11,7 @@ data class AddToListSheetState(
 
 @Immutable
 data class FavouriteListItemUiState(
+    val listId: Int,
     val listTitle: String = "",
     val numberOfFavouriteMovies: Int = 0,
     val isSelected: Boolean = false,
