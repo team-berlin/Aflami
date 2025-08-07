@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +31,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
+import com.berlin.aflami.component.SnackBar
+import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.navigation.CastDestination
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.MovieDetailsDestination
@@ -53,6 +56,7 @@ import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
+import kotlinx.coroutines.delay
 
 @Composable
 fun MovieDetailsScreen(
@@ -65,9 +69,22 @@ fun MovieDetailsScreen(
         viewModel.effect.collect { newEffect ->
             onReceiveMovieDetailsEffect(
                 navController = navController,
-                mediaDetailsScreenEffect = newEffect
+                mediaDetailsScreenEffect = newEffect,
             )
         }
+    }
+
+    AnimatedVisibility(
+        visible = uiState.snackBarMessage != null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        SnackBar(
+            status = SnackBarStatus.SUCCESS,
+            modifier = Modifier.fillMaxWidth(),
+            text = uiState.snackBarMessage.orEmpty(),
+            iconPainter = painterResource(id = R.drawable.success)
+        )
     }
 
     AnimatedVisibility(
@@ -85,6 +102,7 @@ fun MovieDetailsScreen(
     ) {
         NoInternetConnectionPlaceholder()
     }
+
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
@@ -113,7 +131,7 @@ fun MovieDetailsScreen(
         onLoginClick = {
             viewModel.onLoginButtonClicked()
         },
-        onDismiss = { },
+        onDismiss = {viewModel.onLoginDialogDismissed() },
         title = stringResource(com.berlin.ui.R.string.login_required),
         description = stringResource(com.berlin.ui.R.string.login_required_warning)
     )

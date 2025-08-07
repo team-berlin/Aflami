@@ -29,6 +29,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
+import com.berlin.aflami.component.SnackBar
+import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.navigation.CastDestination
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.MovieDetailsDestination
@@ -66,6 +68,19 @@ fun TvShowDetailsScreen(
                 tvShowDetailsScreenEffect = newEffect
             )
         }
+    }
+
+    AnimatedVisibility(
+        visible = uiState.snackBarMessage != null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        SnackBar(
+            status = SnackBarStatus.SUCCESS,
+            modifier = Modifier.fillMaxWidth(),
+            text = uiState.snackBarMessage.orEmpty(),
+            iconPainter = painterResource(id = R.drawable.success)
+        )
     }
 
     AnimatedVisibility(
@@ -111,7 +126,7 @@ fun TvShowDetailsScreen(
             onLoginClick = {
                 viewModel.onLoginButtonClicked()
             },
-            onDismiss = { },
+            onDismiss = { viewModel.onLoginDialogDismissed() },
             title = stringResource(com.berlin.ui.R.string.login_required),
             description = stringResource(com.berlin.ui.R.string.login_required_warning)
         )

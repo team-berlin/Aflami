@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -24,10 +25,11 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import usecase.auth.GetLoginStatus
 import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.GetMovieCastUseCase
@@ -45,6 +47,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
     private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
     private val movieReviewUseCase: GetMovieReviewUseCase,
+    private val getLoginStatusUseCase: GetLoginStatus,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val getMovieVideos: GetMovieVideos,
     private val rateMovieUseCase: RateMovieUseCase,
@@ -53,9 +56,8 @@ class MovieDetailsViewModel @Inject constructor(
     MovieDetailsUiState()
 ), MediaInteractionListener {
 
-    private val _showLoginRequiredDialog = MutableStateFlow(false)
-    val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
-
+//    private val _showLoginRequiredDialog = MutableStateFlow(false)
+//    val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
     private val movieId = movieDetailsArgs.movieId ?: 0
 
@@ -128,6 +130,16 @@ class MovieDetailsViewModel @Inject constructor(
             onError = ::updateScreenStateToError
         )
     }
+
+    private fun showSnackBar(message: String) {
+        updateState { it.copy(snackBarMessage = message) }
+
+        viewModelScope.launch {
+            delay(3000)
+            updateState { it.copy(snackBarMessage = null) }
+        }
+    }
+
 
     private fun getMovieActors(movieId: Long) {
         updateState { screenState ->
@@ -248,7 +260,7 @@ class MovieDetailsViewModel @Inject constructor(
             call = {
                 getMovieGalleryUseCase(movieId).backdrops
             },
-            onSuccess = ::updateMediaGellarySectionWithNewImages,
+            onSuccess = ::updateMediaGallerySectionWithNewImages,
             onError = {
                 updateRowSectionStateToError(
                     NO_GALLERY
@@ -257,7 +269,7 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
-    private fun updateMediaGellarySectionWithNewImages(backdrops: List<String>) {
+    private fun updateMediaGallerySectionWithNewImages(backdrops: List<String>) {
         if (backdrops.isEmpty()) {
             updateState {
                 it.copy(
@@ -344,9 +356,13 @@ class MovieDetailsViewModel @Inject constructor(
         sendNewEffect(MovieDetailsScreenEffect.NavigateToMovieDetailsScreen(movieId))
 
     override fun onLoginButtonClicked() {
-        _showLoginRequiredDialog.value = false
+        updateState { it.copy(showLoginDialog = false) }
         sendNewEffect(MovieDetailsScreenEffect.NavigateToLogin)
 
+    }
+
+    override fun onLoginDialogDismissed() {
+        updateState { it.copy(showLoginDialog = false) }
     }
 
     override fun onRateIconClicked(movieId: Long) {
@@ -360,18 +376,44 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-
     override fun onSelectRateClicked(rate: Float) {
         TODO("Not yet implemented")
     }
 
     override fun onSubmitRateClicked(rate: Int) {
-        val mediaId = _state.value.selectedRatingMediaId ?: return
-        //TODO: Handle the actual rating submission here, e.g., call usecase.submitRating(mediaId, rating)
-        _state.update {
-            it.copy(
-                showRatingDialog = false,
-                selectedRatingMediaId = null
+        val movieId = _state.value.selectedRatingMediaId?.toInt() ?: return
+
+        viewModelScope.launch {
+            updateState { it.copy(isScreenLoading = true) }
+
+            tryToCall(
+                call = {
+                    // TODO: Replace this with actual sessionId from local/session manager
+                    val sessionId = "SESSION_ID_FROM_USER_PREFS"
+                    rateMovieUseCase(movieId, rating = rate.toDouble(), sessionId = sessionId)
+                },
+                onSuccess = { result ->
+                    showSnackBar("Successfully submitted rating.")
+                    updateState {
+                        it.copy(
+                            showRatingDialog = false,
+                            selectedRatingMediaId = null,
+                            isScreenLoading = false
+                        )
+                    }
+                },
+                onError = {
+                    stateError ->
+                    showSnackBar("Failed to submit rating.")
+                    updateState {
+                        it.copy(
+                            showRatingDialog = false,
+                            selectedRatingMediaId = null,
+                            isScreenLoading = false,
+                            errorMessage = stateError.message
+                        )
+                    }
+                }
             )
         }
     }
@@ -482,11 +524,10 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun checkLoginThen(actionIfLoggedIn: () -> Unit) {
         viewModelScope.launch {
-            // handle is logged in or not
-            if (true) {
+            if (getLoginStatusUseCase()) {
                 actionIfLoggedIn()
             } else {
-                _showLoginRequiredDialog.value = true
+                updateState { it.copy(showLoginDialog = true) }
             }
         }
     }

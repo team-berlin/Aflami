@@ -17,6 +17,7 @@ interface MediaInteractionListener :
     fun onShowCastClicked(mediaId: Long)
     fun onMediaCardClicked(mediaId: Long)
     fun onLoginButtonClicked()
+    fun onLoginDialogDismissed()
 
 }
 

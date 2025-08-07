@@ -24,10 +24,12 @@ import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.TVShow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import usecase.auth.GetLoginStatus
 import usecase.tvshow.GetTVShowVideos
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.GetSeasonEpisodesUseCase
@@ -45,6 +47,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
     private val getTVShowGalleryUseCase: GetTVShowGalleryUseCase,
     private val getSimilarTVShowsUseCase: GetSimilarTVShowsUseCase,
+    private val getLoginStatusUseCase: GetLoginStatus,
     private val tvShowReviewUseCase: GetTVShowReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
@@ -53,9 +56,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     tvShowArgs: TVShowDetailsArgs,
 ) : BaseViewModel<TVShowDetailsUiState, TvShowDetailsScreenEffect>(TVShowDetailsUiState()),
     TvShowDetailsScreenInteractionListener {
-
-    private val _showLoginRequiredDialog = MutableStateFlow(false)
-    val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
 
     private val tvShowId = tvShowArgs.tvShowId
@@ -341,6 +341,15 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         }
     }
 
+    private fun showSnackBar(message: String) {
+        updateState { it.copy(snackBarMessage = message) }
+
+        viewModelScope.launch {
+            delay(3000)
+            updateState { it.copy(snackBarMessage = null) }
+        }
+    }
+
     private fun updateCompanyProductionWithNoDataFound() {
         updateState { screenState ->
             screenState.copy(
@@ -376,8 +385,12 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         sendNewEffect(TvShowDetailsScreenEffect.NavigateToMediaDetailsScreen(tvShowId))
 
     override fun onLoginButtonClicked() {
-        _showLoginRequiredDialog.value = false
+        updateState { it.copy(showLoginDialog = false) }
         sendNewEffect(TvShowDetailsScreenEffect.NavigateToLogin)
+    }
+
+    override fun onLoginDialogDismissed() {
+        updateState { it.copy(showLoginDialog = false) }
     }
 
 
@@ -391,20 +404,45 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             }
         }
     }
-//        sendNewEffect(TvShowDetailsScreenEffect.ShowRatingDialog(tvShowId))
-
 
     override fun onSelectRateClicked(rate: Float) {
         TODO("Not yet implemented")
     }
 
     override fun onSubmitRateClicked(rate: Int) {
-        val mediaId = _state.value.selectedRatingMediaId ?: return
-        //TODO: Handle the actual rating submission here, e.g., call usecase.submitRating(mediaId, rating)
-        _state.update {
-            it.copy(
-                showRatingDialog = false,
-                selectedRatingMediaId = null
+        val movieId = _state.value.selectedRatingMediaId?.toInt() ?: return
+
+        viewModelScope.launch {
+            updateState { it.copy(isScreenLoading = true) }
+
+            tryToCall(
+                call = {
+                    // TODO: Replace this with actual sessionId from local/session manager
+                    val sessionId = "SESSION_ID_FROM_USER_PREFS"
+                    rateTvShowUseCase(movieId, rating = rate.toDouble(), sessionId = sessionId)
+                },
+                onSuccess = { result ->
+                    showSnackBar("Successfully submitted rating.")
+                    updateState {
+                        it.copy(
+                            showRatingDialog = false,
+                            selectedRatingMediaId = null,
+                            isScreenLoading = false
+                        )
+                    }
+                },
+                onError = {
+                        stateError ->
+                    showSnackBar("Failed to submit rating.")
+                    updateState {
+                        it.copy(
+                            showRatingDialog = false,
+                            selectedRatingMediaId = null,
+                            isScreenLoading = false,
+                            errorMessage = stateError.message
+                        )
+                    }
+                }
             )
         }
     }
@@ -517,11 +555,10 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     private fun checkLoginThen(actionIfLoggedIn: () -> Unit) {
         viewModelScope.launch {
-            // handle is logged in or not
-            if (true) {
+            if (getLoginStatusUseCase()) {
                 actionIfLoggedIn()
             } else {
-                _showLoginRequiredDialog.value = true
+                updateState { it.copy(showLoginDialog = true) }
             }
         }
     }
