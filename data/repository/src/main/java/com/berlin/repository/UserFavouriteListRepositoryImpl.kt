@@ -1,8 +1,10 @@
 package com.berlin.repository
 
+import android.util.Log
 import com.berlin.entity.FavouriteList
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.remote.RemoteDataSource
+import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toMovie
 import repository.UserFavouriteListRepository
 import javax.inject.Inject
@@ -10,9 +12,11 @@ import javax.inject.Inject
 class UserFavouriteListRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
 ) : UserFavouriteListRepository {
-    override suspend fun getUserFavouriteLists(): List<FavouriteList> {
-//        remoteDataSource.getUserFavouriteLists()
-        TODO()
+    override suspend fun getUserFavouriteLists(pageNumber: Int): List<FavouriteList> {
+        return remoteDataSource.getUserFavouriteLists(page = pageNumber)
+            .map { favouriteListDto -> favouriteListDto.toDomain() }.also {
+                Log.d("Khairy", "getUserFavouriteLists from repository returned $it")
+            }
     }
 
     override suspend fun getUserFavouriteListItems(
@@ -22,6 +26,8 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
         return remoteDataSource.getUserFavouriteListItems(pageNumber, favouriteListId)
             .map { favouriteListItem ->
                 favouriteListItem.toMovie()
+            }.also {
+                Log.d("Khairy", "getUserFavouriteList Item from repository returned $it")
             }
     }
 

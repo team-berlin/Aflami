@@ -1,8 +1,10 @@
 package com.berlin.remote.network
 
+import com.berlin.remote.network.ApiConstants.ACCOUNT_ID
 import com.berlin.remote.network.ApiConstants.LIST_ID
 import com.berlin.remote.network.ApiConstants.PAGE
 import com.berlin.remote.network.ApiConstants.SESSION_ID
+import com.berlin.remote.network.ApiConstants.USER_LISTS
 import com.berlin.repository.datasource.remote.dto.CreateListResponse
 import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
@@ -15,6 +17,7 @@ import com.berlin.repository.datasource.remote.dto.request.CreateListRequest
 import com.berlin.repository.datasource.remote.dto.request.RemoveMovieFromListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.DeleteResponse
+import com.berlin.repository.datasource.remote.response.FavouriteListResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
@@ -186,6 +189,12 @@ interface ApiService {
         @Path(LIST_ID) listId: Int,
         @Query(PAGE) pageNumber: Int,
     ): Response<FavouriteListDto>
+
+    @GET(USER_LISTS)
+    suspend fun getUserLists(
+        @Path(ACCOUNT_ID) accountId: String,
+        @Query(SESSION_ID) sessionId: String,
+    ): Response<FavouriteListResponse>
 
 }
 

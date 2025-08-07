@@ -1,12 +1,15 @@
 package com.berlin.aflami.viewmodel.listFeature
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
-import com.berlin.aflami.viewmodel.mapper.toFavouriteListUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.FavouriteListItemUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -33,6 +36,7 @@ class ListScreenViewModel @Inject constructor(
     private fun observeLoginStatus() {
         viewModelScope.launch {
             isLoggedIn.collect { loggedIn ->
+                Log.d("Khairy", "is user logged in ??? $loggedIn")
                 updateState { screenState ->
                     if (loggedIn) getAllUserFavouriteLists()
                     screenState.copy(isUserLoggedIn = loggedIn)
@@ -44,13 +48,20 @@ class ListScreenViewModel @Inject constructor(
     //region getUserFavouriteLists
     private fun getAllUserFavouriteLists() {
         tryToCall(
-            call = { getAllFavouriteListsUseCase().map { favouriteList -> favouriteList.toFavouriteListUiState() } },
+            call = { getAllFavouriteListsAsFlow() },
             onSuccess = ::updateScreenStateWithUserFavouriteLists,
             onError = ::updateScreenStateWithErrorMessage,
         )
     }
 
-    private fun updateScreenStateWithUserFavouriteLists(userFavouriteLists: List<FavouriteListItemUiState>) {
+    private fun getAllFavouriteListsAsFlow(): Flow<PagingData<FavouriteListItemUiState>> = Pager(
+        config = defaultPageConfigurations(),
+        pagingSourceFactory = {
+            AllFavouriteListsPagingSource(getAllFavouriteListsUseCase)
+        }
+    ).flow
+
+    private fun updateScreenStateWithUserFavouriteLists(userFavouriteLists: Flow<PagingData<FavouriteListItemUiState>>) {
         updateState { screenState -> screenState.copy(favouriteList = userFavouriteLists) }
     }
 
@@ -66,7 +77,8 @@ class ListScreenViewModel @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun onLoginClicked() = sendNewEffect(ListScreenEffect.NavigateToLoginScreen)
+    override fun onLoginClicked() =
+        sendNewEffect(ListScreenEffect.NavigateToLoginScreen)
 
     override fun onClickAddList() {
         TODO("Not yet implemented")

@@ -44,7 +44,7 @@ interface RemoteDataSource {
     suspend fun getMovieVideos(movieId: Long): VideosResponse
     suspend fun getTVShowVideos(seriesId: Long): VideosResponse
 
-    suspend fun getUserFavouriteLists(): List<FavouriteListDto>
+    suspend fun getUserFavouriteLists(page: Int): List<FavouriteListDto>
     suspend fun getUserFavouriteListItems(
         pageNumber: Int,
         favouriteListId: Int,

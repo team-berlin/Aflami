@@ -63,7 +63,10 @@ object ApiConstants {
     const val INCLUDE_VIDEO_DEFAULT = false
     const val RELEASE_TYPE_THEATRICAL_AND_LIMITED = "2|3"
     const val LIST = "list"
+    const val USER_LISTS = "account/{account_id}/lists"
     const val LIST_ID = "list_id"
     const val LIST_LISTID = "list/{list_id}"
     const val DELETE_MOVIE_FROM_LIST = "list/{list_id}/remove_item"
+    const val ACCOUNT_ID = "account_id"
+    const val API_KEY = "api_key"
 }

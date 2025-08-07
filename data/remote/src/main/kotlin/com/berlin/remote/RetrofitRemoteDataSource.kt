@@ -1,5 +1,6 @@
 package com.berlin.remote
 
+import android.util.Log
 import com.berlin.remote.network.ApiService
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
@@ -158,8 +159,16 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse { apiService.getTVShowVideos(seriesId) }
     }
 
-    override suspend fun getUserFavouriteLists(): List<FavouriteListDto> {
-        TODO("Not yet implemented")
+    override suspend fun getUserFavouriteLists(page: Int): List<FavouriteListDto> {
+        return wrapApiResponse {
+            apiService.getUserLists(
+                accountId = "14884776",
+                sessionId = authenticationLocalDataSource.getUserSessionId()
+                    ?: throw IllegalStateException("userSessionID == null"),
+            )
+        }.results.also {
+            Log.d("Khairy", "getUserFavouriteLists from retrofit remote DS returned $it")
+        }
     }
 
     override suspend fun getUserFavouriteListItems(

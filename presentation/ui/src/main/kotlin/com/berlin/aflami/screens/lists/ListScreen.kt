@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.lists
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -20,7 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,12 +28,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.ListDetailsDestination
@@ -44,7 +44,6 @@ import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
 import com.berlin.aflami.screens.lists.component.ListCard
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.search.components.NoDataContainer
-import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.listFeature.ListScreenEffect
 import com.berlin.aflami.viewmodel.listFeature.ListScreenInteractionListener
@@ -74,6 +73,11 @@ private fun ListsContent(
     listScreenState: ListScreenState,
     interactionListener: ListScreenInteractionListener,
 ) {
+    val favouriteLists: LazyPagingItems<FavouriteListItemUiState> =
+        listScreenState.favouriteList.collectAsLazyPagingItems().also {
+            Log.d("Khairy", "user favourite list count in the ui ${it.itemCount}")
+        }
+
     Box(
         modifier = modifier.navigationBarsPadding()
     ) {
@@ -103,7 +107,7 @@ private fun ListsContent(
             )
         }
         AnimatedVisibility(
-            enter = fadeIn(), exit = fadeOut(), visible = listScreenState.favouriteList.isNotEmpty()
+            enter = fadeIn(), exit = fadeOut(), visible = favouriteLists.itemCount != 0
         ) {
             Column(
                 modifier = modifier
@@ -131,12 +135,12 @@ private fun ListsContent(
                     transitionSpec = {
                         fadeIn(tween(700)) togetherWith fadeOut(tween(700))
                     },
-                ) { (isLoading, errorState, lists) ->
+                ) { (isLoading, errorState) ->
                     when {
                         isLoading -> {
                             CircularProgressIndicator(
                                 modifier = Modifier.fillMaxSize(),
-                                text = stringResource(com.berlin.ui.R.string.loading)
+                                text = stringResource(R.string.loading)
                             )
                         }
 
@@ -146,7 +150,7 @@ private fun ListsContent(
                             )
                         }
 
-                        lists.isEmpty() -> {
+                        favouriteLists.itemCount == 0 -> {
                             NoDataContainer(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -166,32 +170,35 @@ private fun ListsContent(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 contentPadding = PaddingValues(horizontal = 16.dp),
                             ) {
-                                items(lists) {
-                                    ListCard(
-                                        title = it.listTitle,
-                                        count = it.numberOfFavouriteMovies,
-                                        modifier = modifier
-                                            .size(156.dp, 147.dp)
-                                            .clickable(
-                                                onClick = {
+                                items(
+                                    favouriteLists.itemCount,
+                                    key = { index -> favouriteLists[index]?.listId!! }) { index ->
+                                    val item = favouriteLists[index]
+                                    item?.let {
+                                        ListCard(
+                                            title = it.listTitle,
+                                            count = it.numberOfFavouriteMovies,
+                                            modifier = modifier
+                                                .size(156.dp, 147.dp)
+                                                .clickable {
                                                     interactionListener.onClickListCard(
                                                         it.listId, it.listTitle
                                                     )
-                                                })
-                                    )
+                                                }
+                                        )
+                                    }
                                 }
-
                             }
                         }
-                    }
 
+                    }
                 }
             }
         }
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
-            visible = listScreenState.favouriteList.isEmpty() && listScreenState.isUserLoggedIn
+            visible = favouriteLists.itemCount == 0 && listScreenState.isUserLoggedIn
         ) {
             Image(
                 painter = painterResource(R.drawable.no_items_found),
@@ -215,35 +222,39 @@ private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavContr
     }
 }
 
-@Preview
-@Composable
-private fun PreviewListsContent() {
-    AflamiTheme {
-        ListsContent(
-            listScreenState = ListScreenState(
-                isScreenLoading = false, favouriteList = listOf(
-                    FavouriteListItemUiState(
-                        listId = 1, listTitle = "My Favourite Movies", numberOfFavouriteMovies = 10
-                    ), FavouriteListItemUiState(
-                        listId = 2, listTitle = "My Favourite TV Shows", numberOfFavouriteMovies = 5
-                    )
-                )
-            ), interactionListener = object : ListScreenInteractionListener {
-                override fun onBackClicked() {}
-                override fun onListNameChange(newListTitle: TextFieldValue) {}
-                override fun onLoginClicked() {}
-                override fun onClickAddList() {}
-                override fun onCreateNewListClicked() {}
-                override fun onClickListCard(listId: Int, listName: String) {}
-                override fun onUpdateNewListTitle(newListTitle: String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onCreateNewListClicked(listTitle: String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onCancelCreatingNewListClicked() {}
-            })
-    }
-}
+//@Preview
+//@Composable
+//private fun PreviewListsContent() {
+//    AflamiTheme {
+//        ListsContent(
+//            listScreenState = ListScreenState(
+//                isScreenLoading = false, favouriteList = listOf(
+//                    FavouriteListItemUiState(
+//                        listId = 1,
+//                        listTitle = "My Favourite Movies",
+//                        numberOfFavouriteMovies = 10
+//                    ), FavouriteListItemUiState(
+//                        listId = 2,
+//                        listTitle = "My Favourite TV Shows",
+//                        numberOfFavouriteMovies = 5
+//                    )
+//                )
+//            ), interactionListener = object : ListScreenInteractionListener {
+//                override fun onBackClicked() {}
+//                override fun onListNameChange(newListTitle: TextFieldValue) {}
+//                override fun onLoginClicked() {}
+//                override fun onClickAddList() {}
+//                override fun onCreateNewListClicked() {}
+//                override fun onClickListCard(listId: Int, listName: String) {}
+//                override fun onUpdateNewListTitle(newListTitle: String) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onCreateNewListClicked(listTitle: String) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onCancelCreatingNewListClicked() {}
+//            })
+//    }
+//}
