@@ -1,6 +1,8 @@
 package com.berlin.aflami.viewmodel.profile
 
+import android.util.Log
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
@@ -17,24 +19,45 @@ class ProfileViewModel @Inject constructor(
 
 ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
+
+    init {
+    }
+
+
+
+
+
     override fun onWatchHistoryClick() {
-        TODO("Not yet implemented")
+        sendNewEffect(ProfileScreenEffect.NavigateToWatchHistoryScreen)
     }
 
     override fun onMyRatingClick() {
-        TODO("Not yet implemented")
+        sendNewEffect(ProfileScreenEffect.NavigateToMyRatingScreen)
     }
 
     override fun onLanguageClick() {
-        TODO("Not yet implemented")
+        updateState { it.copy(activeDialog = ProfileDialogType.LANGUAGE) }
     }
 
     override fun onAppThemeClick() {
-        TODO("Not yet implemented")
+        updateState { it.copy(activeDialog = ProfileDialogType.THEME) }
+
     }
 
     override fun onSettingsClick() {
-        TODO("Not yet implemented")
+        updateState { it.copy(activeDialog = ProfileDialogType.SETTINGS) }
     }
+
+    override fun onDialogDismissed() {
+        updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+    }
+
+    private fun updateError(errorUiState: ErrorUiState) {
+        Log.e("HomeScreenViewModel", "updatePopularUiStateWithError: ${errorUiState.message}")
+
+    }
+
+
+
 
 }
