@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginStatus
@@ -27,20 +28,19 @@ class ListScreenViewModel @Inject constructor(
 ) : BaseViewModel<ListScreenState, ListScreenEffect>(ListScreenState()),
     ListScreenInteractionListener {
     val isLoggedIn: StateFlow<Boolean> = getIsUserLoggedInUseCase()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     init {
-        isLoggedIn
         observeLoginStatus()
     }
 
     private fun observeLoginStatus() {
         viewModelScope.launch {
-            isLoggedIn.collect { loggedIn ->
+            isLoggedIn.drop(1).collect { loggedIn ->
                 Log.d("Khairy", "is user logged in ??? $loggedIn")
                 updateState { screenState ->
                     if (loggedIn) getAllUserFavouriteLists()
-                    screenState.copy(isUserLoggedIn = loggedIn)
+                    screenState.copy(isUserLoggedIn = loggedIn, isScreenLoading = false)
                 }
             }
         }

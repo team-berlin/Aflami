@@ -15,7 +15,7 @@ data class ListScreenState(
     val favouriteList: Flow<PagingData<FavouriteListItemUiState>> = emptyFlow(),
     val createNewListSheetState: CreateNewListUiState = CreateNewListUiState(),
     val isUserLoggedIn: Boolean = false,
-    val isScreenLoading: Boolean = false,
+    val isScreenLoading: Boolean = true,
     val errorMessage: String = "",
     val editListSheetState: EditListSheetState = EditListSheetState(),
 )

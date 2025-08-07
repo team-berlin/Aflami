@@ -29,7 +29,6 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
             .distinctUntilChanged()
     }
 
-
     override suspend fun saveUserToken(userToken: String): Boolean {
         return try {
             val encrypted = EncryptionUtils.encrypt(userToken)
@@ -39,7 +38,6 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
             false
         }
     }
-
 
     override suspend fun getUserToken(): String? {
         return try {
@@ -69,7 +67,6 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
         }
     }
 
-
     override suspend fun getUserSessionId(): String? {
         return try {
             val encrypted = dataStore.data.first()[DataStoreKeys.USER_SESSION_ID] ?: return null
@@ -79,7 +76,6 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
         }
     }
 
-
     override suspend fun deleteUserSessionId(): Boolean {
         return try {
             dataStore.edit { it.remove(DataStoreKeys.USER_SESSION_ID) }
@@ -88,5 +84,4 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
             false
         }
     }
-
 }

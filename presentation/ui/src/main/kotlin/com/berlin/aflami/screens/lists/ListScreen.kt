@@ -93,117 +93,130 @@ private fun ListsContent(
                 onDismiss = interactionListener::onCancelCreatingNewListClicked,
             )
         }
-
-        //where is loading ?!
         AnimatedVisibility(
             enter = fadeIn(),
-            exit = fadeOut(),
-            visible = listScreenState.isUserLoggedIn.not()
+            exit = fadeOut(), visible = listScreenState.isScreenLoading
         ) {
-            LoginRequiredDialog(
-                title = "Add to list",
-                onLoginClick = interactionListener::onLoginClicked,
-                onDismiss = interactionListener::onBackClicked,
-            )
+            CircularProgressIndicator(
+                modifier = Modifier.fillMaxSize(),
+                text = stringResource(R.string.loading)
+            ).also {
+                Log.d("Khairy", "loading and showing progressBar composeable ....")
+            }
         }
-        AnimatedVisibility(
-            enter = fadeIn(), exit = fadeOut(), visible = favouriteLists.itemCount != 0
-        ) {
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(Theme.color.surface)
-                    .statusBarsPadding(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally,
+        //where is loading ?!
+        AnimatedVisibility(listScreenState.isScreenLoading.not()) {
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = favouriteLists.itemCount == 0 && listScreenState.isUserLoggedIn
             ) {
-                DefaultBar(
-                    title = stringResource(R.string.lists),
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    showNavigateBackButton = false,
-                    lastOption = painterResource(R.drawable.add),
-                    onLastOptionClicked = interactionListener::onClickAddList,
+                Image(
+                    painter = painterResource(R.drawable.no_items_found),
+                    contentDescription = stringResource(R.string.no_saved_items_here)
                 )
+            }
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = listScreenState.isUserLoggedIn.not()
+            ) {
+                LoginRequiredDialog(
+                    title = "Add to list",
+                    onLoginClick = interactionListener::onLoginClicked,
+                    onDismiss = interactionListener::onBackClicked,
+                )
+            }
+            AnimatedVisibility(
+                enter = fadeIn(), exit = fadeOut(), visible = favouriteLists.itemCount != 0
+            ) {
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .background(Theme.color.surface)
+                        .statusBarsPadding(),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    DefaultBar(
+                        title = stringResource(R.string.lists),
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        showNavigateBackButton = false,
+                        lastOption = painterResource(R.drawable.add),
+                        onLastOptionClicked = interactionListener::onClickAddList,
+                    )
 
-                AnimatedContent(
-                    modifier = Modifier.fillMaxSize(),
-                    targetState = Triple(
-                        listScreenState.isScreenLoading,
-                        listScreenState.errorMessage,
-                        listScreenState.favouriteList
-                    ),
-                    transitionSpec = {
-                        fadeIn(tween(700)) togetherWith fadeOut(tween(700))
-                    },
-                ) { (isLoading, errorState) ->
-                    when {
-                        isLoading -> {
-                            CircularProgressIndicator(
-                                modifier = Modifier.fillMaxSize(),
-                                text = stringResource(R.string.loading)
-                            )
-                        }
+                    AnimatedContent(
+                        modifier = Modifier.fillMaxSize(),
+                        targetState = Triple(
+                            listScreenState.isScreenLoading,
+                            listScreenState.errorMessage,
+                            listScreenState.favouriteList
+                        ),
+                        transitionSpec = {
+                            fadeIn(tween(700)) togetherWith fadeOut(tween(700))
+                        },
+                    ) { (isLoading, errorState) ->
+                        when {
+                            isLoading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.fillMaxSize(),
+                                    text = stringResource(R.string.loading)
+                                )
+                            }
 
-                        errorState.isNotEmpty() -> {
-                            NoInternetConnectionPlaceholder(
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                        }
+                            errorState.isNotEmpty() -> {
+                                NoInternetConnectionPlaceholder(
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
 
-                        favouriteLists.itemCount == 0 -> {
-                            NoDataContainer(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .align(Alignment.CenterHorizontally),
-                                image = painterResource(R.drawable.no_items_found),
-                                R.string.no_lists_yet,
-                                R.string.our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love
-                            )
-                        }
+                            favouriteLists.itemCount == 0 -> {
+                                NoDataContainer(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .align(Alignment.CenterHorizontally),
+                                    image = painterResource(R.drawable.no_items_found),
+                                    R.string.no_lists_yet,
+                                    R.string.our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love
+                                )
+                            }
 
-                        else -> {
-                            LazyVerticalGrid(
-                                modifier = Modifier.fillMaxSize(),
-                                columns = GridCells.Adaptive(minSize = 156.dp),
-                                state = rememberLazyGridState(),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                contentPadding = PaddingValues(horizontal = 16.dp),
-                            ) {
-                                items(
-                                    favouriteLists.itemCount,
-                                    key = { index -> favouriteLists[index]?.listId!! }) { index ->
-                                    val item = favouriteLists[index]
-                                    item?.let {
-                                        ListCard(
-                                            title = it.listTitle,
-                                            count = it.numberOfFavouriteMovies,
-                                            modifier = modifier
-                                                .size(156.dp, 147.dp)
-                                                .clickable {
-                                                    interactionListener.onClickListCard(
-                                                        it.listId, it.listTitle
-                                                    )
-                                                }
-                                        )
+                            else -> {
+                                LazyVerticalGrid(
+                                    modifier = Modifier.fillMaxSize(),
+                                    columns = GridCells.Adaptive(minSize = 156.dp),
+                                    state = rememberLazyGridState(),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    contentPadding = PaddingValues(horizontal = 16.dp),
+                                ) {
+                                    items(
+                                        favouriteLists.itemCount,
+                                        key = { index -> favouriteLists[index]?.listId!! }) { index ->
+                                        val item = favouriteLists[index]
+                                        item?.let {
+                                            ListCard(
+                                                title = it.listTitle,
+                                                count = it.numberOfFavouriteMovies,
+                                                modifier = modifier
+                                                    .size(156.dp, 147.dp)
+                                                    .clickable {
+                                                        interactionListener.onClickListCard(
+                                                            it.listId, it.listTitle
+                                                        )
+                                                    }
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        }
 
+                        }
                     }
                 }
             }
-        }
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = favouriteLists.itemCount == 0 && listScreenState.isUserLoggedIn
-        ) {
-            Image(
-                painter = painterResource(R.drawable.no_items_found),
-                contentDescription = stringResource(R.string.no_saved_items_here)
-            )
+
         }
     }
 }
