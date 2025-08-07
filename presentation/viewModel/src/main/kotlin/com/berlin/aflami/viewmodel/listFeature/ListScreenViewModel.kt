@@ -6,6 +6,7 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.mapper.toFavouriteListUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.FavouriteListItemUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -13,8 +14,10 @@ import kotlinx.coroutines.launch
 import usecase.auth.GetLoginStatus
 import usecase.favouritelist.CreateNewFavouriteListUseCase
 import usecase.favouritelist.GetAllFavouriteListsUseCase
+import javax.inject.Inject
 
-class ListScreenViewModel(
+@HiltViewModel
+class ListScreenViewModel @Inject constructor(
     private val createNewFavouriteListUseCase: CreateNewFavouriteListUseCase,
     private val getAllFavouriteListsUseCase: GetAllFavouriteListsUseCase,
     private val getIsUserLoggedInUseCase: GetLoginStatus,
