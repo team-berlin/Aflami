@@ -17,11 +17,8 @@ import com.berlin.local.dao.UserProfileDao
 import com.berlin.repository.datasource.Converters
 import com.berlin.repository.datasource.local.dto.AppEntryEntity
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
-
-import com.berlin.repository.datasource.local.dto.GenreEntity
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
-import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 import com.berlin.repository.datasource.local.dto.RecentHistoryEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
