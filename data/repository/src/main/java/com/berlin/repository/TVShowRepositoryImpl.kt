@@ -21,7 +21,7 @@ class TVShowRepositoryImpl @Inject constructor(
     private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource,
     private val recentHistoryLocalDataSource: RecentHistoryLocalDataSource,
     private val homeLocalDataSource: HomeLocalDataSource,
-    private val remoteDataSource: RemoteDataSource,
+    private val remoteDataSource: RemoteDataSource
 ) : TVShowRepository {
 
     override suspend fun getContinueWatchingTVShows(page: Int): List<TVShow> {

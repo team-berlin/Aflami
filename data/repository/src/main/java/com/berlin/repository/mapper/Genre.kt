@@ -1,22 +1,37 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.Genre
-import com.berlin.repository.datasource.local.dto.GenreEntity
+import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
+import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 import com.berlin.repository.datasource.remote.dto.GenreDto
 
-fun GenreDto.toGenreEntity(type: String): GenreEntity {
-    return GenreEntity(
+
+fun GenreDto.toTVShowGenreEntity(): TVShowGenreEntity {
+    return TVShowGenreEntity(
         id = id?.toLong() ?: 0L,
         name = name ?: "",
-        type = type,
         time = System.currentTimeMillis()
     )
 }
 
-fun GenreEntity.toDomain(): Genre {
+fun GenreDto.toMoviesGenreEntity(): MoviesGenreEntity {
+    return MoviesGenreEntity(
+        id = id?.toLong() ?: 0L,
+        name = name ?: "",
+        time = System.currentTimeMillis()
+    )
+}
+
+fun TVShowGenreEntity.toDomain(): Genre {
     return Genre(
         id = id.toInt(),
         name = name
     )
 }
 
+fun MoviesGenreEntity.toDomain(): Genre {
+    return Genre(
+        id = id.toInt(),
+        name = name
+    )
+}

@@ -17,6 +17,8 @@ data class HomeScreenState(
     val selectedGenres: Int = -1,
     val moodPickerUiState: MoodPickerUiState = MoodPickerUiState(),
     val upcomingMoviesUiState: UpcomingMoviesUiState = UpcomingMoviesUiState(),
+    val movieGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
+    val tVShowGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
     val isLoading: Boolean = false,
     val error: ErrorUiState? = null,
 )
@@ -44,7 +46,6 @@ data class TopRatedMediaUiState(
 @Immutable
 data class UpcomingMoviesUiState(
     val upcomingMovies: List<MovieUiState> = emptyList(),
-    val movieGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 )
