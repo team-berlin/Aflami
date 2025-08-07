@@ -62,4 +62,8 @@ object ApiConstants {
     const val INCLUDE_ADULT_DEFAULT = false
     const val INCLUDE_VIDEO_DEFAULT = false
     const val RELEASE_TYPE_THEATRICAL_AND_LIMITED = "2|3"
+
+    // Rating endpoints
+    const val RATE_MOVIE = "movie/{$MOVIE_ID}/rating"
+    const val RATE_TV_SHOW = "tv/{$SERIES_ID}/rating"
 }

@@ -12,6 +12,8 @@ import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
+import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
+import com.berlin.repository.datasource.remote.response.SubmitRatingResponse
 import javax.inject.Inject
 
 class RetrofitRemoteDataSource @Inject constructor(
@@ -136,5 +138,29 @@ class RetrofitRemoteDataSource @Inject constructor(
     override suspend fun getTVShowVideos(seriesId: Long): VideosResponse {
         require(seriesId > 0) { "Invalid seriesId: $seriesId" }
         return wrapApiResponse { apiService.getTVShowVideos(seriesId) }
+    }
+
+    override suspend fun rateMovie(
+        movieId: Int,
+        sessionId: String,
+        rating: SubmitRatingRequestDto
+    ): SubmitRatingResponse {
+        require(movieId > 0) { "Invalid movieId: $movieId" }
+        require(sessionId.isNotBlank()) { "Session ID cannot be blank" }
+        require(rating.value in 0.5..10.0) { "Rating value must be between 0.5 and 10.0" }
+
+        return wrapApiResponse { apiService.rateMovie(movieId, sessionId, rating) }
+    }
+
+    override suspend fun rateTvShow(
+        tvId: Int,
+        sessionId: String,
+        rating: SubmitRatingRequestDto
+    ): SubmitRatingResponse {
+        require(tvId > 0) { "Invalid tvId: $tvId" }
+        require(sessionId.isNotBlank()) { "Session ID cannot be blank" }
+        require(rating.value in 0.5..10.0) { "Rating value must be between 0.5 and 10.0" }
+
+        return wrapApiResponse { apiService.rateTvShow(tvId, sessionId, rating) }
     }
 }

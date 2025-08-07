@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.common.NO_COMPANY_PRODUCTION
 import com.berlin.aflami.viewmodel.details.common.NO_GALLERY
 import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
@@ -14,7 +13,6 @@ import com.berlin.aflami.viewmodel.details.common.NO_SEASON
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
 import com.berlin.aflami.viewmodel.details.common.TVShowDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.toggle
-import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.mapper.parseRuntime
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
@@ -38,6 +36,7 @@ import usecase.tvshow.GetTVShowCastUseCase
 import usecase.tvshow.GetTVShowDetailsUseCase
 import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
+import usecase.tvshow.RateTvShowUseCase
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,6 +49,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
     private val getTVShowVideos: GetTVShowVideos,
+    private val rateTvShowUseCase: RateTvShowUseCase,
     tvShowArgs: TVShowDetailsArgs,
 ) : BaseViewModel<TVShowDetailsUiState, TvShowDetailsScreenEffect>(TVShowDetailsUiState()),
     TvShowDetailsScreenInteractionListener {

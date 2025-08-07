@@ -35,6 +35,7 @@ import usecase.movie.GetMovieDetailsUseCase
 import usecase.movie.GetMovieGalleryUseCase
 import usecase.movie.GetMovieReviewUseCase
 import usecase.movie.GetSimilarMoviesUseCase
+import usecase.movie.RateMovieUseCase
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,6 +47,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieReviewUseCase: GetMovieReviewUseCase,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val getMovieVideos: GetMovieVideos,
+    private val rateMovieUseCase: RateMovieUseCase,
     movieDetailsArgs: MovieDetailsArgs,
 ) : BaseViewModel<MovieDetailsUiState, MovieDetailsScreenEffect>(
     MovieDetailsUiState()

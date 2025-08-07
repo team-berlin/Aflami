@@ -8,6 +8,7 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
+import repository.RatingRepository
 import repository.TVShowRepository
 import repository.TVShowDetailsRepository
 import usecase.auth.GetLoginStatus
@@ -32,6 +33,7 @@ import usecase.movie.GetSearchMoviesUseCase
 import usecase.movie.GetSimilarMoviesUseCase
 import usecase.movie.GetTopRatedMoviesUseCase
 import usecase.movie.GetUpComingMoviesUseCase
+import usecase.movie.RateMovieUseCase
 import usecase.movie.SaveRecentMoviesHistoryUseCase
 import usecase.movie.SearchByActorNameUseCase
 import usecase.movie.SearchMoviesByCountryUseCase
@@ -49,6 +51,7 @@ import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
 import usecase.tvshow.GetTopRatedTVShowUseCase
+import usecase.tvshow.RateTvShowUseCase
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -208,6 +211,12 @@ object UseCaseModule {
     fun provideGetFirstEntryUseCase(repository: AppEntryRepository):GetFirstEntryUseCase =
         GetFirstEntryUseCase(repository)
 
+    @Provides
+    fun provideRateMovieUseCase(repository: RatingRepository): RateMovieUseCase =
+        RateMovieUseCase(repository)
 
+    @Provides
+    fun provideRateTvShowUseCase(repository: RatingRepository): RateTvShowUseCase =
+        RateTvShowUseCase(repository)
 
 }
