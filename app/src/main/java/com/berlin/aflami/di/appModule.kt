@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.berlin.local.AflamiDatabase
+import com.berlin.local.dataStore.SettingsPreferencesDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,4 +27,13 @@ object AppModule {
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
         return context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     }
+
+    @Provides
+    @Singleton
+    fun settingsPreferencesDataStore(@ApplicationContext context: Context): SettingsPreferencesDataStore {
+        return SettingsPreferencesDataStore(context)
+    }
+
 }
+
+

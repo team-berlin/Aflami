@@ -20,6 +20,7 @@ val AflamiLightColors = AflamiColors(
         overly = listOf(Color(0x00FAF5F7),Color(0xFFFAF5F7)),
         streakGradient = listOf(Color(0x52D85895),Color(0x00D85895)),
         pointsOverly = listOf(Color(0xFFD02C7A),Color(0xFF7D1C4A)),
+        primaryGradient = listOf(Color(0xFFF564A9), Color(0xFF973A66)),
     ),
     textColors = TextColors(
         title = Color(0xDE1F1F1F),
