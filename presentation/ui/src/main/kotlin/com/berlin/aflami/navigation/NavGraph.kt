@@ -91,8 +91,6 @@ private fun ShowNavigationBar(
     }
 
     NavBar(
-
-        navDestinations = bottomNavList,
         currentRoute = selectedRoute,
         onNavDestinationClicked = { route ->
             if (route != selectedRoute) {
