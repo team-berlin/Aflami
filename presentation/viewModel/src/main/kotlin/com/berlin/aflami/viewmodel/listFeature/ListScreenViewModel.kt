@@ -27,9 +27,10 @@ class ListScreenViewModel @Inject constructor(
 ) : BaseViewModel<ListScreenState, ListScreenEffect>(ListScreenState()),
     ListScreenInteractionListener {
     val isLoggedIn: StateFlow<Boolean> = getIsUserLoggedInUseCase()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     init {
+        isLoggedIn
         observeLoginStatus()
     }
 
