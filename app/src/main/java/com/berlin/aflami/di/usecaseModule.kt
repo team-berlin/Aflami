@@ -8,16 +8,16 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.TVShowRepository
+import repository.SettingsRepository
 import repository.TVShowDetailsRepository
+import repository.TVShowRepository
 import repository.UserRepository
 import usecase.auth.GetLoginStatus
-import usecase.movie.GetMoviesByMoodUseCase
 import usecase.auth.GetLoginUseCase
+import usecase.auth.GetUserProfileUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
 import usecase.mediadetails.GetMovieVideos
-import usecase.tvshow.GetTVShowVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.ClearMoviesSearchHistoryUseCase
 import usecase.movie.ContinueWatchingMovieUseCase
@@ -27,6 +27,7 @@ import usecase.movie.GetMovieDetailsUseCase
 import usecase.movie.GetMovieGalleryUseCase
 import usecase.movie.GetMovieGenresUseCase
 import usecase.movie.GetMovieReviewUseCase
+import usecase.movie.GetMoviesByMoodUseCase
 import usecase.movie.GetPopularMoviesUseCase
 import usecase.movie.GetRecentMoviesHistoryUseCase
 import usecase.movie.GetSearchMoviesUseCase
@@ -38,6 +39,10 @@ import usecase.movie.SearchByActorNameUseCase
 import usecase.movie.SearchMoviesByCountryUseCase
 import usecase.onboarding.GetFirstEntryUseCase
 import usecase.onboarding.SaveFirstEntryUseCase
+import usecase.profile.GetLanguageUseCase
+import usecase.profile.GetThemeUseCase
+import usecase.profile.SetLanguageUseCase
+import usecase.profile.SetThemeUseCase
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.ContinueWatchingTVShowUseCase
 import usecase.tvshow.GetPopularTVShowsUseCase
@@ -49,6 +54,7 @@ import usecase.tvshow.GetTVShowDetailsUseCase
 import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
+import usecase.tvshow.GetTVShowVideos
 import usecase.tvshow.GetTopRatedTVShowUseCase
 
 @Module
@@ -213,6 +219,24 @@ object UseCaseModule {
     @Provides
     fun provideGetFirstEntryUseCase(repository: AppEntryRepository):GetFirstEntryUseCase =
         GetFirstEntryUseCase(repository)
+
+    @Provides
+    fun GetLanguageUseCase(repository: SettingsRepository): GetLanguageUseCase =
+        GetLanguageUseCase(repository)
+
+    @Provides
+    fun GetThemeUseCase(repository: SettingsRepository): GetThemeUseCase =
+        GetThemeUseCase(repository)
+
+    @Provides
+    fun SetLanguageUseCase(repository: SettingsRepository): SetLanguageUseCase =
+        SetLanguageUseCase(repository)
+
+    @Provides
+    fun SetThemeUseCase(repository: SettingsRepository): SetThemeUseCase =
+        SetThemeUseCase(repository)
+
+
 
 
 

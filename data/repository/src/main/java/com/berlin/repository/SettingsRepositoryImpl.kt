@@ -4,8 +4,9 @@ import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import com.berlin.repository.datasource.local.dataStore.SettingsLocalDataSource
 import repository.SettingsRepository
+import javax.inject.Inject
 
-class SettingsRepositoryImpl(
+class SettingsRepositoryImpl @Inject constructor(
     private val settingsDataStore: SettingsLocalDataSource
 ) : SettingsRepository {
     override suspend fun getTheme(): AppTheme {

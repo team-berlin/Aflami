@@ -1,8 +1,9 @@
 package com.berlin.local.dataStore
 
 import com.berlin.repository.datasource.local.dataStore.SettingsLocalDataSource
+import javax.inject.Inject
 
-class SettingsLocalDataSourceImpl(
+class SettingsLocalDataSourceImpl @Inject constructor(
     private val preferences: SettingsPreferencesDataStore
 ) : SettingsLocalDataSource {
 

@@ -5,12 +5,13 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
+import javax.inject.Inject
 
 private const val PREFERENCES_NAME = "settings_preferences"
 
 private val Context.dataStore by preferencesDataStore(PREFERENCES_NAME)
 
-class SettingsPreferencesDataStore(private val context: Context) {
+class SettingsPreferencesDataStore @Inject constructor(private val context: Context) {
 
     companion object {
         val APP_THEME = stringPreferencesKey("app_theme")

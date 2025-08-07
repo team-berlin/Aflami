@@ -6,24 +6,25 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.berlin.local.dao.AppEntryDao
-import com.berlin.repository.datasource.Converters
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
 import com.berlin.local.dao.HomeMovieDao
+import com.berlin.local.dao.HomeTVShowDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
-import com.berlin.local.dao.HomeTVShowDao
+import com.berlin.local.dao.UserProfileDao
+import com.berlin.repository.datasource.Converters
 import com.berlin.repository.datasource.local.dto.AppEntryEntity
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
-
 import com.berlin.repository.datasource.local.dto.GenreEntity
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
-import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 import com.berlin.repository.datasource.local.dto.RecentHistoryEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
+import com.berlin.repository.datasource.local.dto.UserProfileEntity
 
 @TypeConverters(Converters::class)
 @Database(
@@ -36,7 +37,9 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
         AppEntryEntity::class,
         GenreEntity::class,
         MovieHomeEntity::class,
-        TVShowHomeEntity::class
+        TVShowHomeEntity::class,
+        UserProfileEntity::class
+
     ], version = 1, exportSchema = false
 )
 abstract class AflamiDatabase : RoomDatabase() {
@@ -48,6 +51,7 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun appEntryDao():AppEntryDao
     abstract fun homeMovieDao(): HomeMovieDao
     abstract fun homeTVShowDao(): HomeTVShowDao
+    abstract fun userProfileDao(): UserProfileDao
 
 
     companion object {

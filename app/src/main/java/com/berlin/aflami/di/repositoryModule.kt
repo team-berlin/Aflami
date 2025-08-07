@@ -5,8 +5,9 @@ import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
 import com.berlin.repository.TVShowRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
-import com.berlin.repository.datasource.AppEntryRepositoryImpl
 import com.berlin.repository.UserRepositoryImpl
+import com.berlin.repository.datasource.AppEntryRepositoryImpl
+import com.yourapp.settings.data.repository.SettingsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,8 +16,9 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.TVShowRepository
+import repository.SettingsRepository
 import repository.TVShowDetailsRepository
+import repository.TVShowRepository
 import repository.UserRepository
 import javax.inject.Singleton
 
@@ -67,4 +69,10 @@ abstract class RepositoryModule {
     abstract fun bindAppEntryRepository(
         impl: AppEntryRepositoryImpl
     ): AppEntryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(
+        impl: SettingsRepositoryImpl
+    ): SettingsRepository
 }

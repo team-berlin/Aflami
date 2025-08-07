@@ -6,9 +6,9 @@ import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
 import com.berlin.local.dao.HomeMovieDao
+import com.berlin.local.dao.HomeTVShowDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
-import com.berlin.local.dao.HomeTVShowDao
 import com.berlin.local.dao.UserProfileDao
 import dagger.Module
 import dagger.Provides
@@ -71,7 +71,5 @@ object DaoModule {
     fun provideTVShowHomeDao(db: AflamiDatabase): HomeTVShowDao {
         return db.homeTVShowDao()
     }
-
-
 
 }
