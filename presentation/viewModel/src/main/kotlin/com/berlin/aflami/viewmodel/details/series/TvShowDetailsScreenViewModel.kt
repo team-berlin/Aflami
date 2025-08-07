@@ -10,6 +10,7 @@ import com.berlin.aflami.viewmodel.details.common.NO_COMPANY_PRODUCTION
 import com.berlin.aflami.viewmodel.details.common.NO_GALLERY
 import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
 import com.berlin.aflami.viewmodel.details.common.NO_REVIEWS
+import com.berlin.aflami.viewmodel.details.common.NO_SEASON
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
 import com.berlin.aflami.viewmodel.details.common.TVShowDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.toggle
@@ -163,7 +164,11 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 fetchSeasonToEpisodesMap(tvShowId, numberOfSeasons)
             },
             onSuccess = ::updateRowSectionWithNewSeasonToEpisodesMap,
-            onError = ::updateRowSectionStateToError,
+            onError = {
+                updateRowSectionStateToError(
+                    NO_SEASON
+                )
+            }
         )
     }
 
@@ -202,7 +207,11 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 getSimilarTVShowsUseCase(tvShowId = tvShowId).map { tVShow -> tVShow.toUiState() }
             },
             onSuccess = ::updateMoreLikeThisSectionWithNewData,
-            onError = ::updateRowSectionStateToError
+            onError = {
+                updateRowSectionStateToError(
+                    error = NO_MORE_MEDIA
+                )
+            }
         )
     }
 
@@ -238,7 +247,11 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 tvShowReviewUseCase(tvShowId).map { review -> review.toReviewUiState() }
             },
             onSuccess = ::updateReviewRowSectionWithNewData,
-            onError = ::updateRowSectionStateToError,
+            onError = {
+                updateRowSectionStateToError(
+                    NO_REVIEWS
+                )
+            }
         )
     }
 
@@ -274,7 +287,11 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 getTVShowGalleryUseCase(tvShowId).backdrops
             },
             onSuccess = ::updateMediaGellarySectionWithNewImages,
-            onError = ::updateRowSectionStateToError
+            onError = {
+                updateRowSectionStateToError(
+                    NO_GALLERY
+                )
+            }
         )
     }
 
@@ -478,13 +495,13 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             )
         }
     }
-
-    private fun updateRowSectionStateToError(errorState: ErrorUiState) {
+    private fun updateRowSectionStateToError(error: Int) {
         updateState { screenState ->
             screenState.copy(
-                rowSection = TVShowRowSectionUiState.Error(
-                    errorState.message
+                rowSection = TVShowRowSectionUiState.NoDataFound(
+                    UiText.Resource(error)
                 ),
+                isScreenLoading = false
             )
         }
     }

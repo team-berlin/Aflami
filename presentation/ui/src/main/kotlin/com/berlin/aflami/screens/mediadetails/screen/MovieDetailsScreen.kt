@@ -281,7 +281,6 @@ fun MovieDetailsContent(
 @Composable
 fun MoviesRowSectionUiState.getDisplayMessage(): String {
     return when (this) {
-        is MoviesRowSectionUiState.Error -> this.message.orEmpty()
         is MoviesRowSectionUiState.NoDataFound -> this.message.asString()
         else -> "Unknown error!"
     }

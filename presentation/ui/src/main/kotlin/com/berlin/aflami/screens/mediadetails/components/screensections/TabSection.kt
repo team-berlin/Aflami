@@ -73,7 +73,6 @@ fun MovieTabSection(
                 .animateContentSize()
         ) {
             when (moviesRowSectionUiState) {
-                is MoviesRowSectionUiState.Error,
                 is MoviesRowSectionUiState.NoDataFound,
                     -> {
                     Box(

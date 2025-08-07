@@ -111,7 +111,7 @@ class MovieDetailsViewModel @Inject constructor(
                         releaseDate = movieUiState.releaseDate,
                         posterURL = movieUiState.posterUrl,
                         screenShot = movieUiState.posterUrl,
-                        description =movieUiState.description,
+                        description = movieUiState.description,
                         genres = movieUiState.genre.map { it.toDomain() },
                         duration = movieUiState.duration.parseRuntime(),
                         hasVideo = true,
@@ -164,7 +164,11 @@ class MovieDetailsViewModel @Inject constructor(
                 getSimilarMoviesUseCase(movieId = movieId).map { tVShow -> tVShow.toMovieUiState() }
             },
             onSuccess = ::updateMoreLikeThisSectionWithNewData,
-            onError = ::updateRowSectionStateToError
+            onError = {
+                updateRowSectionStateToError(
+                    error = NO_MORE_MEDIA
+                )
+            }
         )
     }
 
@@ -202,7 +206,11 @@ class MovieDetailsViewModel @Inject constructor(
                 movieReviewUseCase(movieId).map { review -> review.toReviewUiState() }
             },
             onSuccess = ::updateReviewRowSectionWithNewData,
-            onError = ::updateRowSectionStateToError,
+            onError = {
+                updateRowSectionStateToError(
+                    NO_REVIEWS
+                )
+            }
         )
     }
 
@@ -239,7 +247,11 @@ class MovieDetailsViewModel @Inject constructor(
                 getMovieGalleryUseCase(movieId).backdrops
             },
             onSuccess = ::updateMediaGellarySectionWithNewImages,
-            onError = ::updateRowSectionStateToError
+            onError = {
+                updateRowSectionStateToError(
+                    NO_GALLERY
+                )
+            }
         )
     }
 
@@ -446,11 +458,11 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun updateRowSectionStateToError(errorState: ErrorUiState) {
+    private fun updateRowSectionStateToError(error: Int) {
         updateState { screenState ->
             screenState.copy(
-                rowSection = MoviesRowSectionUiState.Error(
-                    errorState.message
+                rowSection = MoviesRowSectionUiState.NoDataFound(
+                    UiText.Resource(error)
                 ),
                 isScreenLoading = false
             )

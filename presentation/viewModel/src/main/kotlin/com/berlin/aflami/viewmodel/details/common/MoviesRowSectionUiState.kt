@@ -6,7 +6,6 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 sealed interface MoviesRowSectionUiState {
     object Loading : MoviesRowSectionUiState
     data class Success(val content: MoviesTabContent) : MoviesRowSectionUiState
-    data class Error(val message: String? = null) : MoviesRowSectionUiState
     data class NoDataFound(val message: UiText) : MoviesRowSectionUiState
 }
 
