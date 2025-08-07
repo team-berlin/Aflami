@@ -104,7 +104,7 @@ class HomeScreenViewModel @Inject constructor(
     //endregion
 
     //region continueWatchingSection
-    private fun getContinueWatchingMedia() {
+     fun getContinueWatchingMedia() {
         tryToCall(
             call = {
                 coroutineScope {
