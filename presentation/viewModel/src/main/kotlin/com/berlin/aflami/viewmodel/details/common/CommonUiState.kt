@@ -29,3 +29,4 @@ val NO_REVIEWS = R.string.there_is_no_reviews
 val NO_GALLERY = R.string.there_is_no_gallery
 val NO_MORE_MEDIA = R.string.there_is_no_more_media
 val NO_COMPANY_PRODUCTION = R.string.there_is_no_company_production
+val NO_SEASON= R.string.there_is_no_season
