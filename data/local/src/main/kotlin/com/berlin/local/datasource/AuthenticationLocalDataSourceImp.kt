@@ -29,6 +29,26 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
             .distinctUntilChanged()
     }
 
+    override suspend fun saveUserAccountId(accountId: Int): Boolean {
+        return try {
+            val encrypted = EncryptionUtils.encrypt(accountId.toString())
+            dataStore.edit { it[DataStoreKeys.USER_ACCOUNT_ID] = encrypted }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    override suspend fun getUserAccountId(): Int {
+        return try {
+            val encrypted: String = dataStore.data.first()[DataStoreKeys.USER_ACCOUNT_ID]
+                ?: throw IllegalStateException("account id not found in local storage ")
+            EncryptionUtils.decrypt(encrypted).toInt()
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
     override suspend fun saveUserToken(userToken: String): Boolean {
         return try {
             val encrypted = EncryptionUtils.encrypt(userToken)

@@ -192,7 +192,7 @@ interface ApiService {
 
     @GET(USER_LISTS)
     suspend fun getUserLists(
-        @Path(ACCOUNT_ID) accountId: String,
+        @Path(ACCOUNT_ID) accountId: Int,
         @Query(SESSION_ID) sessionId: String,
     ): Response<FavouriteListResponse>
 
