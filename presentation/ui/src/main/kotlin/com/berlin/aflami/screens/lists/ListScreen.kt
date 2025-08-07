@@ -1,0 +1,209 @@
+package com.berlin.aflami.screens.lists
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.berlin.aflami.component.CircularProgressIndicator
+import com.berlin.aflami.component.DefaultBar
+import com.berlin.aflami.screens.lists.component.ListCard
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
+import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
+import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
+import com.berlin.aflami.screens.search.components.NoDataContainer
+import com.berlin.aflami.ui.theme.AflamiTheme
+import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.listFeature.ListScreenInteractionListener
+import com.berlin.aflami.viewmodel.listFeature.ListScreenState
+import com.berlin.aflami.viewmodel.listFeature.ListScreenViewModel
+import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.FavouriteListItemUiState
+import com.berlin.ui.R
+
+
+@Composable
+fun ListScreen(
+    modifier: Modifier = Modifier, listViewModel: ListScreenViewModel = hiltViewModel()
+) {
+    val state = listViewModel.state.collectAsStateWithLifecycle()
+
+}
+
+@Composable
+private fun ListsContent(
+    modifier: Modifier = Modifier,
+    state: ListScreenState,
+    interactionListener: ListScreenInteractionListener
+) {
+    Box(
+        modifier = modifier.navigationBarsPadding()
+    ) {
+        AnimatedVisibility(
+            enter = fadeIn(), exit = fadeOut(), visible = state.createNewListDialogVisible
+        ) {
+            CreateNewListDialog(
+                listName = state.listName,
+                onListNameChanged = interactionListener::onListNameChange,
+                onCreateListClick = interactionListener::onCreateNewListClicked,
+                onDismiss = interactionListener::onCancelCreatingNewListClicked,
+            )
+        }
+
+
+        AnimatedVisibility(
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = !state.isUserLoggedIn && !state.isScreenLoading
+        ) {
+            LoginRequiredDialog(
+                title = "Add to list",
+                onLoginClick = interactionListener::onNavigateToLoginClicked,
+                onDismiss = interactionListener::onBackClicked,
+            )
+        }
+        AnimatedVisibility(
+            enter = fadeIn(), exit = fadeOut(), visible = state.isUserLoggedIn
+        ) {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(Theme.color.surface)
+                    .statusBarsPadding(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                DefaultBar(
+                    title = stringResource(R.string.lists),
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    showNavigateBackButton = false,
+                    lastOption = painterResource(R.drawable.add),
+                    onLastOptionClicked = interactionListener::onClickAddList,
+                )
+
+                AnimatedContent(
+                    modifier = Modifier.fillMaxSize(),
+                    targetState = Triple(
+                        state.isScreenLoading, state.errorMessage, state.favouriteList
+                    ),
+                    transitionSpec = {
+                        fadeIn(tween(700)) togetherWith fadeOut(tween(700))
+                    },
+                ) { (isLoading, errorState, lists) ->
+                    when {
+                        isLoading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier.fillMaxSize(),
+                                text = stringResource(com.berlin.ui.R.string.loading)
+                            )
+                        }
+
+                        errorState.isNotEmpty() -> {
+                            NoInternetConnectionPlaceholder(
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+
+                        lists.isEmpty() -> {
+                            NoDataContainer(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .align(Alignment.CenterHorizontally),
+                                image = painterResource(R.drawable.no_items_found),
+                                R.string.no_lists_yet,
+                                R.string.our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love
+                            )
+                        }
+
+                        else -> {
+                            LazyVerticalGrid(
+                                modifier = Modifier.fillMaxSize(),
+                                columns = GridCells.Adaptive(minSize = 156.dp),
+                                state = rememberLazyGridState(),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                contentPadding = PaddingValues(horizontal = 16.dp),
+                            ) {
+                                items(lists) {
+                                    ListCard(
+                                        title = it.listTitle,
+                                        count = it.numberOfFavouriteMovies,
+                                        modifier = modifier
+                                            .size(156.dp, 147.dp)
+                                            .clickable(
+                                                onClick = {
+                                                    interactionListener.onClickListCard(
+                                                        it.listId, it.listTitle
+                                                    )
+                                                })
+                                    )
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+
+@Preview
+@Composable
+private fun PreviewListsContent() {
+    AflamiTheme {
+        ListsContent(
+            state = ListScreenState(
+                isScreenLoading = false, favouriteList = listOf(
+                    FavouriteListItemUiState(
+                        listId = 1, listTitle = "My Favourite Movies", numberOfFavouriteMovies = 10
+                    ), FavouriteListItemUiState(
+                        listId = 2, listTitle = "My Favourite TV Shows", numberOfFavouriteMovies = 5
+                    )
+                )
+            ), interactionListener = object : ListScreenInteractionListener {
+                override fun onBackClicked() {}
+                override fun onListNameChange(newListTitle: TextFieldValue) {}
+                override fun onNavigateToLoginClicked() {}
+                override fun onClickAddList() {}
+                override fun onCreateNewListClicked() {}
+                override fun onClickListCard(listId: Int, listName: String) {}
+                override fun onUpdateNewListTitle(newListTitle: String) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onCreateNewListClicked(listTitle: String) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onCancelCreatingNewListClicked() {}
+            })
+    }
+}
