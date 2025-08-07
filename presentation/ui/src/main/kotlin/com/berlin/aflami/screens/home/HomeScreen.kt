@@ -62,6 +62,7 @@ import com.berlin.aflami.viewmodel.home.HomeScreenViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -71,9 +72,14 @@ fun HomeScreen(
     val navController = Theme.navController
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect { homeScreenEffect ->
-            onReceiveHomeScreenEffect(navController, homeScreenEffect)
+
+        launch {
+            viewModel.effect.collect { homeScreenEffect ->
+                onReceiveHomeScreenEffect(navController, homeScreenEffect)
+            }
         }
+
+        viewModel.getContinueWatchingMedia()
     }
 
     AnimatedVisibility(
@@ -155,6 +161,8 @@ private fun HomeContent(
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
+
+
 
     val appBarAlpha by remember {
         derivedStateOf {
