@@ -6,4 +6,5 @@ import androidx.compose.runtime.Immutable
 data class CreateNewListUiState(
     val newListTitle: String = "",
     val isCreateNewListButtonEnabled: Boolean = false,
+    val isCreateNewListDialogVisible: Boolean = false,
 )

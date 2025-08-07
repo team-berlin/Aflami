@@ -33,13 +33,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
-import com.berlin.aflami.screens.lists.component.ListCard
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
+import com.berlin.aflami.screens.lists.component.ListCard
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.search.components.NoDataContainer
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.listFeature.ListScreenEffect
 import com.berlin.aflami.viewmodel.listFeature.ListScreenInteractionListener
 import com.berlin.aflami.viewmodel.listFeature.ListScreenState
 import com.berlin.aflami.viewmodel.listFeature.ListScreenViewModel
@@ -49,46 +50,48 @@ import com.berlin.ui.R
 
 @Composable
 fun ListScreen(
-    modifier: Modifier = Modifier, listViewModel: ListScreenViewModel = hiltViewModel()
+    modifier: Modifier = Modifier, listScreenViewModel: ListScreenViewModel = hiltViewModel(),
 ) {
-    val state = listViewModel.state.collectAsStateWithLifecycle()
-
+    val state = listScreenViewModel.state.collectAsStateWithLifecycle()
+    ListsContent(listScreenState = state.value, interactionListener = listScreenViewModel)
 }
 
 @Composable
 private fun ListsContent(
     modifier: Modifier = Modifier,
-    state: ListScreenState,
-    interactionListener: ListScreenInteractionListener
+    listScreenState: ListScreenState,
+    interactionListener: ListScreenInteractionListener,
 ) {
     Box(
         modifier = modifier.navigationBarsPadding()
     ) {
         AnimatedVisibility(
-            enter = fadeIn(), exit = fadeOut(), visible = state.createNewListDialogVisible
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = listScreenState.createNewListSheetState.isCreateNewListDialogVisible
         ) {
             CreateNewListDialog(
-                listName = state.listName,
+                listName = listScreenState.listName,
                 onListNameChanged = interactionListener::onListNameChange,
                 onCreateListClick = interactionListener::onCreateNewListClicked,
                 onDismiss = interactionListener::onCancelCreatingNewListClicked,
             )
         }
 
-
+        //where is loading ?!
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
-            visible = !state.isUserLoggedIn && !state.isScreenLoading
+            visible = listScreenState.isUserLoggedIn.not()
         ) {
             LoginRequiredDialog(
                 title = "Add to list",
-                onLoginClick = interactionListener::onNavigateToLoginClicked,
+                onLoginClick = interactionListener::onLoginClicked,
                 onDismiss = interactionListener::onBackClicked,
             )
         }
         AnimatedVisibility(
-            enter = fadeIn(), exit = fadeOut(), visible = state.isUserLoggedIn
+            enter = fadeIn(), exit = fadeOut(), visible = listScreenState.favouriteList.isNotEmpty()
         ) {
             Column(
                 modifier = modifier
@@ -109,7 +112,9 @@ private fun ListsContent(
                 AnimatedContent(
                     modifier = Modifier.fillMaxSize(),
                     targetState = Triple(
-                        state.isScreenLoading, state.errorMessage, state.favouriteList
+                        listScreenState.isScreenLoading,
+                        listScreenState.errorMessage,
+                        listScreenState.favouriteList
                     ),
                     transitionSpec = {
                         fadeIn(tween(700)) togetherWith fadeOut(tween(700))
@@ -174,13 +179,22 @@ private fun ListsContent(
     }
 }
 
+private fun onReceiveNewEffect(effect: ListScreenEffect) {
+    when (effect) {
+        ListScreenEffect.NavigateBack -> TODO()
+        is ListScreenEffect.NavigateToSeeAllListScreen -> TODO()
+        ListScreenEffect.ShowCreateNewListSheet -> TODO()
+        is ListScreenEffect.ShowCreateNewListStatusSnackBar -> TODO()
+        is ListScreenEffect.ShowEditListStatusSnackBar -> TODO()
+    }
+}
 
 @Preview
 @Composable
 private fun PreviewListsContent() {
     AflamiTheme {
         ListsContent(
-            state = ListScreenState(
+            listScreenState = ListScreenState(
                 isScreenLoading = false, favouriteList = listOf(
                     FavouriteListItemUiState(
                         listId = 1, listTitle = "My Favourite Movies", numberOfFavouriteMovies = 10
@@ -191,7 +205,7 @@ private fun PreviewListsContent() {
             ), interactionListener = object : ListScreenInteractionListener {
                 override fun onBackClicked() {}
                 override fun onListNameChange(newListTitle: TextFieldValue) {}
-                override fun onNavigateToLoginClicked() {}
+                override fun onLoginClicked() {}
                 override fun onClickAddList() {}
                 override fun onCreateNewListClicked() {}
                 override fun onClickListCard(listId: Int, listName: String) {}

@@ -6,7 +6,7 @@ import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlis
 interface ListScreenInteractionListener : CreateNewListInteractionListener {
     fun onBackClicked()
     fun onListNameChange(newListTitle: TextFieldValue)
-    fun onNavigateToLoginClicked()
+    fun onLoginClicked()
     fun onClickAddList()
     fun onCreateNewListClicked()
     fun onClickListCard(listId: Int, listName: String)
