@@ -11,10 +11,9 @@ class AllFavouriteListsPagingSource(
 ) : BasePagingSource<FavouriteListItemUiState>() {
 
     override suspend fun fetchData(page: Int): List<FavouriteListItemUiState> {
-        return getAllFavouriteListsUseCase(pageNumber = page).map { favouriteList ->
+        return getAllFavouriteListsUseCase.invoke(pageNumber = page).map { favouriteList ->
+            Log.d("khairy", "favouriteList = $favouriteList")
             favouriteList.toFavourListItemUiState()
-        }.also {
-            Log.d("Khairy", "page $page from all favourite lists returned $it")
         }
     }
 }

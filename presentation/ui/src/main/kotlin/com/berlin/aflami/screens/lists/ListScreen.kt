@@ -75,9 +75,7 @@ private fun ListsContent(
     interactionListener: ListScreenInteractionListener,
 ) {
     val favouriteLists: LazyPagingItems<FavouriteListItemUiState> =
-        listScreenState.favouriteList.collectAsLazyPagingItems().also {
-            Log.d("Khairy", "user favourite list count in the ui ${it.itemCount}")
-        }
+        listScreenState.favouriteList.collectAsLazyPagingItems()
 
     Box(
         modifier = modifier.navigationBarsPadding()
@@ -113,20 +111,10 @@ private fun ListsContent(
                 exit = fadeOut(),
                 visible = favouriteLists.itemCount == 0 && listScreenState.isUserLoggedIn
             ) {
-                Column {
-                    Image(
-                        painter = painterResource(R.drawable.no_items_found),
-                        contentDescription = stringResource(R.string.no_saved_items_here)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .background(Theme.color.surface)
-                            .size(50.dp)
-                            .clickable {
-                                interactionListener.onClickAddList()
-                            }
-                    )
-                }
+                Image(
+                    painter = painterResource(R.drawable.no_items_found),
+                    contentDescription = stringResource(R.string.no_saved_items_here)
+                )
             }
             AnimatedVisibility(
                 enter = fadeIn(),
@@ -140,8 +128,11 @@ private fun ListsContent(
                 )
             }
             AnimatedVisibility(
-                enter = fadeIn(), exit = fadeOut(), visible = favouriteLists.itemCount != 0
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = listScreenState.isScreenLoading.not() && listScreenState.isUserLoggedIn
             ) {
+                Log.d("khairy", "item count = ${favouriteLists.itemCount}")
                 Column(
                     modifier = modifier
                         .fillMaxSize()
@@ -228,7 +219,6 @@ private fun ListsContent(
                     }
                 }
             }
-
         }
     }
 }

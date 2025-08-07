@@ -29,16 +29,6 @@ data class FavouriteListDto(
     @SerialName("name")
     val listTitle: String,
 
-    @SerialName("page")
-    val page: Int,
-
     @SerialName("poster_path")
     val posterPath: String?,
-
-    @SerialName("total_pages")
-    val totalPages: Int,
-
-    @SerialName("total_results")
-    val totalResults: Int,
 )
-

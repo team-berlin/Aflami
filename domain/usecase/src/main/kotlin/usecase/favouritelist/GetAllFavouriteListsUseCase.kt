@@ -7,6 +7,7 @@ import javax.inject.Inject
 class GetAllFavouriteListsUseCase @Inject constructor(
     private val userFavouriteListRepository: UserFavouriteListRepository,
 ) {
-    suspend operator fun invoke(pageNumber: Int): List<FavouriteList> =
-        userFavouriteListRepository.getUserFavouriteLists(pageNumber = pageNumber)
+    suspend operator fun invoke(pageNumber: Int): List<FavouriteList> {
+        return userFavouriteListRepository.getUserFavouriteLists(pageNumber = pageNumber)
+    }
 }

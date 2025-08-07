@@ -194,6 +194,7 @@ interface ApiService {
     suspend fun getUserLists(
         @Path(ACCOUNT_ID) accountId: Int,
         @Query(SESSION_ID) sessionId: String,
+        @Query("page") page: Int, // ← ADD THIS
     ): Response<FavouriteListResponse>
 
 }

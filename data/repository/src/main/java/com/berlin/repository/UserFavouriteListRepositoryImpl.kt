@@ -13,8 +13,12 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
 ) : UserFavouriteListRepository {
     override suspend fun getUserFavouriteLists(pageNumber: Int): List<FavouriteList> {
+        Log.d("Khairy", "fav list page = $pageNumber")
         return remoteDataSource.getUserFavouriteLists(page = pageNumber)
-            .map { favouriteListDto -> favouriteListDto.toDomain() }.also {
+            .map { favouriteListDto ->
+                Log.d("Khairy", "repository $favouriteListDto")
+                favouriteListDto.toDomain()
+            }.also {
                 Log.d("Khairy", "getUserFavouriteLists from repository returned $it")
             }
     }

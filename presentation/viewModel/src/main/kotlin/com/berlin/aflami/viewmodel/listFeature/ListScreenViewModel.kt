@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.FavouriteListItemUiState
@@ -26,13 +27,10 @@ class ListScreenViewModel @Inject constructor(
     private val getIsUserLoggedInUseCase: GetLoginStatus,
 ) : BaseViewModel<ListScreenState, ListScreenEffect>(ListScreenState()),
     ListScreenInteractionListener {
-    val isLoggedIn: StateFlow<Boolean> = getIsUserLoggedInUseCase()
-        .stateIn(
-            viewModelScope, SharingStarted.WhileSubscribed(5000),
-            false
-        )
-
-    private var hasReceivedRealValue = false
+    val isLoggedIn: StateFlow<Boolean> = getIsUserLoggedInUseCase().stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000),
+        false
+    )
 
     init {
         Log.d("khairy", "viewModel created")
@@ -45,10 +43,9 @@ class ListScreenViewModel @Inject constructor(
                 .collect { loggedIn ->
                     Log.d("Khairy", "is user logged in ??? $loggedIn")
                     updateState { screenState ->
-                        if (loggedIn && hasReceivedRealValue) getAllUserFavouriteLists()
+                        if (loggedIn) getAllUserFavouriteLists()
                         screenState.copy(isUserLoggedIn = loggedIn, isScreenLoading = false)
                     }
-                    hasReceivedRealValue = true
                 }
         }
     }
@@ -57,7 +54,7 @@ class ListScreenViewModel @Inject constructor(
     private fun getAllUserFavouriteLists() {
         Log.d("khairy", "getting all user fav lists ")
         tryToCall(
-            call = { getAllFavouriteListsAsFlow() },
+            call = { getAllFavouriteListsAsFlow().cachedIn(viewModelScope) },
             onSuccess = ::updateScreenStateWithUserFavouriteLists,
             onError = ::updateScreenStateWithErrorMessage,
         )
@@ -71,11 +68,15 @@ class ListScreenViewModel @Inject constructor(
     ).flow
 
     private fun updateScreenStateWithUserFavouriteLists(userFavouriteLists: Flow<PagingData<FavouriteListItemUiState>>) {
-        updateState { screenState -> screenState.copy(favouriteList = userFavouriteLists) }
+        updateState { screenState -> screenState.copy(favouriteList = userFavouriteLists) }.also {
+            Log.d("khairy", "update screen state with new list $userFavouriteLists")
+        }
     }
 
     private fun updateScreenStateWithErrorMessage(errorUiState: ErrorUiState) {
-        updateState { screenState -> screenState.copy(errorMessage = errorUiState.message) }
+        updateState { screenState -> screenState.copy(errorMessage = errorUiState.message) }.also {
+            Log.d("khairy", "failed $errorUiState")
+        }
     }
     //endregion
 

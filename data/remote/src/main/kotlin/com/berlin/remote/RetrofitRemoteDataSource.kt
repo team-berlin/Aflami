@@ -163,12 +163,11 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse {
             apiService.getUserLists(
                 accountId = authenticationLocalDataSource.getUserAccountId(),
+                page = page,
                 sessionId = authenticationLocalDataSource.getUserSessionId()
                     ?: throw IllegalStateException("userSessionID == null"),
             )
-        }.results.also {
-            Log.d("Khairy", "getUserFavouriteLists from retrofit remote DS returned $it")
-        }
+        }.results
     }
 
     override suspend fun getUserFavouriteListItems(
