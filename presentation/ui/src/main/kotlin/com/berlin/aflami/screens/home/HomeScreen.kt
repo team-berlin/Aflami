@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -72,13 +73,11 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
 
-        launch {
-            viewModel.effect.collect { homeScreenEffect ->
-                onReceiveHomeScreenEffect(navController, homeScreenEffect)
-            }
+        viewModel.effect.collect { homeScreenEffect ->
+            onReceiveHomeScreenEffect(navController, homeScreenEffect)
         }
 
-        viewModel.getContinueWatchingMedia()
+//        viewModel.getContinueWatchingMedia()
     }
 
     AnimatedVisibility(
@@ -159,7 +158,6 @@ private fun HomeContent(
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
-
 
 
     val appBarAlpha by remember {
@@ -364,8 +362,7 @@ private fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appBarBgColor)
-                .statusBarsPadding()
-            , onSearchClicked = {
+                .statusBarsPadding(), onSearchClicked = {
                 homeScreenInteractionListener.onSearchClicked()
             }, containerColor = Color.Unspecified
         )

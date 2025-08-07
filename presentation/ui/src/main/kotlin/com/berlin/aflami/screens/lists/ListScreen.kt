@@ -87,6 +87,7 @@ private fun ListsContent(
             exit = fadeOut(),
             visible = listScreenState.createNewListSheetState.isCreateNewListDialogVisible
         ) {
+            interactionListener.onCreateNewListClicked("khairy")
             CreateNewListDialog(
                 listName = TextFieldValue(listScreenState.createNewListSheetState.newListTitle),
                 onListNameChanged = interactionListener::onListNameChange,
