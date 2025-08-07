@@ -5,13 +5,13 @@ import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.datasource.remote.dto.CreateListResponse
 import com.berlin.repository.datasource.remote.dto.FavouriteListDto
+import com.berlin.repository.datasource.remote.dto.FavouriteListItem
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
-import com.berlin.repository.datasource.remote.dto.movie.MovieDto
 import com.berlin.repository.datasource.remote.dto.request.CreateListRequest
 import com.berlin.repository.datasource.remote.dto.request.RemoveMovieFromListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
@@ -167,8 +167,13 @@ class RetrofitRemoteDataSource @Inject constructor(
     override suspend fun getUserFavouriteListItems(
         pageNumber: Int,
         favouriteListId: Int,
-    ): List<MovieDto> {
-        TODO("Not yet implemented")
+    ): List<FavouriteListItem> {
+        return wrapApiResponse {
+            apiService.getFavouriteMoviesFromList(
+                listId = favouriteListId,
+                pageNumber = pageNumber
+            )
+        }.favouriteListItems
     }
 
     override suspend fun deleteUserFavouriteList(listId: Int): DeleteResponse {

@@ -24,7 +24,7 @@ data class FavouriteListDto(
     val itemCount: Int,
 
     @SerialName("items")
-    val items: List<FavouriteListItem>,
+    val favouriteListItems: List<FavouriteListItem>,
 
     @SerialName("name")
     val listTitle: String,

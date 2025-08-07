@@ -1,8 +1,10 @@
 package com.berlin.remote.network
 
 import com.berlin.remote.network.ApiConstants.LIST_ID
+import com.berlin.remote.network.ApiConstants.PAGE
 import com.berlin.remote.network.ApiConstants.SESSION_ID
 import com.berlin.repository.datasource.remote.dto.CreateListResponse
+import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
@@ -165,7 +167,7 @@ interface ApiService {
         @Body createListRequest: CreateListRequest,
     ): Response<CreateListResponse>
 
-    @DELETE(ApiConstants.DELETE_LIST)
+    @DELETE(ApiConstants.LIST_LISTID)
     suspend fun deleteUserFavouriteList(
         @Query(SESSION_ID) sessionId: String,
         @Path(LIST_ID) favouriteListId: Int,
@@ -176,7 +178,13 @@ interface ApiService {
         @Path(LIST_ID) listId: Int,
         @Query(SESSION_ID) sessionId: String,
         @Body removeMovieFromListRequest: RemoveMovieFromListRequest,
-    ): Response<DeleteResponse> // or Response<Unit> if you don’t care about response
+    ): Response<DeleteResponse>
+
+    @GET(ApiConstants.LIST_LISTID)
+    suspend fun getFavouriteMoviesFromList(
+        @Path(LIST_ID) listId: Int,
+        @Query(PAGE) pageNumber: Int,
+    ): Response<FavouriteListDto>
 
 }
 

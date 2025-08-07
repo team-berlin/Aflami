@@ -3,6 +3,7 @@ package com.berlin.repository
 import com.berlin.entity.FavouriteList
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.remote.RemoteDataSource
+import com.berlin.repository.mapper.toMovie
 import repository.UserFavouriteListRepository
 import javax.inject.Inject
 
@@ -18,7 +19,10 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
         pageNumber: Int,
         favouriteListId: Int,
     ): List<Movie> {
-//        remoteDataSource.getUserFavouriteListItems(pageNumber, favouriteListId)
+        remoteDataSource.getUserFavouriteListItems(pageNumber, favouriteListId)
+            .map { favouriteListItem ->
+                favouriteListItem.toMovie()
+            }
         TODO()
     }
 
