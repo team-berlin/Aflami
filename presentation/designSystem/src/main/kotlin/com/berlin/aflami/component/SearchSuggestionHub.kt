@@ -43,7 +43,7 @@ fun SearchSuggestionHub(
             subtitle = stringResource(R.string.search_by_favorite_actor),
             contentDescription = stringResource(R.string.icon_cd),
             gradientBackground = blueLinearGradient,
-            painter = painterResource(R.drawable.find_by_actor),
+            painter = painterResource(R.drawable.news_img),
             onClick = onSearchByActorClick
         )
     }

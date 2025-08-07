@@ -47,7 +47,7 @@ fun MoodPickerSection(
         headerText = stringResource(R.string.mood_picker_title),
         promptText = stringResource(R.string.mood_picker_prompt),
         actionText = stringResource(R.string.mood_picker_get_now),
-        imagePainter = painterResource(R.drawable.clown),
+        imagePainter = painterResource(com.berlin.ui.R.drawable.clown),
         selectedMood = selectedMoodIcon,
         viewModel = listener as HomeScreenViewModel,
      )
