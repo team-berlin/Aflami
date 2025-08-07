@@ -1,34 +1,27 @@
 package com.berlin.aflami.di
 
 import com.berlin.repository.AuthenticationRepositoryImpl
-import com.berlin.repository.HomeRepositoryImpl
 import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
-import com.berlin.repository.SearchRepositoryImpl
+import com.berlin.repository.TVShowRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
-import com.berlin.repository.WatchedMediaRepositoryImpl
+import com.berlin.repository.datasource.AppEntryRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import repository.AppEntryRepository
 import repository.AuthenticationRepository
-import repository.ContinueWatchingRepository
-import repository.HomeRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.SearchRepository
-import repository.TvShowDetailsRepository
+import repository.TVShowRepository
+import repository.TVShowDetailsRepository
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
-    @Binds
-    @Singleton
-    abstract fun bindSearchRepository(
-        impl: SearchRepositoryImpl
-    ): SearchRepository
 
     @Binds
     @Singleton
@@ -40,13 +33,8 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun bindTvShowDetailsRepository(
         impl: TvShowDetailsRepositoryImpl
-    ): TvShowDetailsRepository
+    ): TVShowDetailsRepository
 
-    @Binds
-    @Singleton
-    abstract fun bindContinueWatchingRepository(
-        impl: WatchedMediaRepositoryImpl
-    ): ContinueWatchingRepository
 
     @Binds
     @Singleton
@@ -62,7 +50,13 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindHomeRepository(
-        impl: HomeRepositoryImpl
-    ): HomeRepository
+    abstract fun bindTvShowRepository(
+        impl: TVShowRepositoryImpl
+    ): TVShowRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAppEntryRepository(
+        impl: AppEntryRepositoryImpl
+    ): AppEntryRepository
 }

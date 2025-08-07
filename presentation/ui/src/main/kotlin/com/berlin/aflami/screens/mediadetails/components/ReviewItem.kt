@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,8 +21,9 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.uistate.ReviewUiState
+import com.berlin.aflami.viewmodel.details.common.ReviewUiState
 import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun ReviewItem(
@@ -46,11 +46,11 @@ fun ReviewItem(
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 12.dp),
         ) {
-            AsyncImage(
+            SafeImageViewer(
                 placeholder = painterResource(R.drawable.no_review_image),
                 error = painterResource(R.drawable.no_review_image),
                 fallback = painterResource(R.drawable.no_review_image),
-                model = review.avatarImage,
+                model = review.avatarImage?:"",
                 contentDescription = "Avatar Image",
                 modifier = Modifier
                     .size(48.dp)

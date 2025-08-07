@@ -4,13 +4,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.berlin.repository.datasource.local.dto.ContinueWatchingMovieEntity
-import com.berlin.repository.datasource.local.dto.ContinueWatchingTVShowEntity
+import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
+import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
 
 @Dao
 interface ContinueWatchingDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addContinueWatchingMovie(movieEntity: ContinueWatchingMovieEntity)
+    suspend fun addContinueWatchingMovie(movieEntity: RecentlyWatchedMovieEntity)
 
     @Query(
         """SELECT * FROM Movie_Continue_Watching 
@@ -19,10 +19,11 @@ interface ContinueWatchingDao {
     suspend fun getContinueWatchingMovies(
         pageSize: Int,
         skip: Int
-    ): List<ContinueWatchingMovieEntity>
+    ): List<RecentlyWatchedMovieEntity>
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addContinueWatchingTVShow(tvShowEntity: ContinueWatchingTVShowEntity )
+    suspend fun addContinueWatchingTVShow(tvShowEntity: RecentlyWatchedTvShowEntity )
 
     @Query(
         """SELECT * FROM TVShow_Continue_Watching 
@@ -30,5 +31,5 @@ interface ContinueWatchingDao {
     )    suspend fun getContinueWatchingTVShows(
         pageSize: Int,
         skip: Int
-    ): List<ContinueWatchingTVShowEntity>
+    ): List<RecentlyWatchedTvShowEntity>
 }

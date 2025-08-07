@@ -10,15 +10,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.screens.home.component.MoodPicker
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.home.HomeInteractionListener
-import com.berlin.aflami.viewmodel.home.HomeUiState
-import com.berlin.aflami.viewmodel.home.HomeViewModel
+import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
+import com.berlin.aflami.viewmodel.home.HomeScreenState
+import com.berlin.aflami.viewmodel.home.HomeScreenViewModel
 import com.berlin.aflami.viewmodel.mapper.UserMood
 import com.berlin.designsystem.R
 
 @Composable
 fun MoodPickerSection(
-    modifier: Modifier = Modifier, state: HomeUiState, listener: HomeInteractionListener
+    modifier: Modifier = Modifier, state: HomeScreenState, listener: HomeScreenInteractionListener
 ) {
     val moodIcons = remember {
         listOf(
@@ -49,7 +49,7 @@ fun MoodPickerSection(
         actionText = stringResource(R.string.mood_picker_get_now),
         imagePainter = painterResource(R.drawable.clown),
         selectedMood = selectedMoodIcon,
-        viewModel = listener as HomeViewModel,
+        viewModel = listener as HomeScreenViewModel,
      )
 }
 

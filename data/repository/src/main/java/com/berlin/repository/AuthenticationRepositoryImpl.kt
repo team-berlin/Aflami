@@ -1,23 +1,23 @@
 package com.berlin.repository
 
-import com.berlin.entity.NotFoundException
+import com.berlin.exception.NotFoundException
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
 import repository.AuthenticationRepository
 import javax.inject.Inject
 
 class AuthenticationRepositoryImpl  @Inject constructor(
-    private val remoteDataSource: AuthenticationRemoteDataSource,
-    private val localDataSource: AuthenticationLocalDataSource,
+    private val authenticationRemoteDataSource: AuthenticationRemoteDataSource,
+    private val authenticationLocalDataSource: AuthenticationLocalDataSource,
 ) : AuthenticationRepository {
 
     private suspend fun requestToken(): String {
-        return remoteDataSource.requestToken().requestToken
+        return authenticationRemoteDataSource.requestToken().requestToken
             ?: throw NotFoundException("Token not found")
     }
 
     private suspend fun createSession(requestToken: String): String {
-        return remoteDataSource.createSession(requestToken).sessionId
+        return authenticationRemoteDataSource.createSession(requestToken).sessionId
             ?: throw NotFoundException("Session not found")
     }
 
@@ -26,15 +26,15 @@ class AuthenticationRepositoryImpl  @Inject constructor(
         password: String,
     ) {
         val requestToken = requestToken()
-        remoteDataSource.login(userName, password, requestToken).also {
+        authenticationRemoteDataSource.login(userName, password, requestToken).also {
             val session =
                 createSession(it.requestToken ?: throw NotFoundException("Token not found"))
-            localDataSource.saveUserSessionId(session)
+            authenticationLocalDataSource.saveUserSessionId(session)
         }
     }
 
     override suspend fun isLoggedIn(): Boolean {
-        val result = localDataSource.getUserSessionId()
+        val result = authenticationLocalDataSource.getUserSessionId()
         return result != null
     }
 

@@ -34,22 +34,22 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryEffect
-import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryInteractionListener
-import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenUiState
-import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryViewModel
+import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenEffect
+import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenInteractionListener
+import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenState
+import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
 
 @Composable
 fun SearchByCountryScreen(
-    viewModel: SearchByCountryViewModel = hiltViewModel(),
+    viewModel: SearchByCountryScreenViewModel = hiltViewModel(),
 ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsState()
@@ -72,7 +72,7 @@ fun SearchByCountryScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = state.error != null && state.query.text.isNotEmpty()
+        visible = state.errorMessage != null && state.countryName.text.isNotEmpty()
     ) {
         NoInternetConnectionPlaceholder()
     }
@@ -93,17 +93,16 @@ fun SearchByCountryScreen(
 
 private fun onReceiveSearchByCountryEffect(
     navController: NavController,
-    effect: SearchByCountryEffect,
+    effect: SearchByCountryScreenEffect,
 ) {
     when (effect) {
-        SearchByCountryEffect.NavigatedBack -> navController.popBackStack()
+        SearchByCountryScreenEffect.NavigatedBack -> navController.popBackStack()
 
-        is SearchByCountryEffect.NavigatedToMovieDetailsScreen -> {
+        is SearchByCountryScreenEffect.NavigatedToMovieDetailsScreen -> {
 
             navController.navigate(
-                MediaDetailsDestination(
-                    mediaId = effect.movieId,
-                    mediaType = MediaType.valueOf("MOVIE"),
+                MovieDetailsDestination(
+                    movieId = effect.movieId,
                 )
             )
         }
@@ -113,8 +112,8 @@ private fun onReceiveSearchByCountryEffect(
 
 @Composable
 private fun SearchByCountryContent(
-    state: SearchByCountryScreenUiState,
-    listener: SearchByCountryInteractionListener,
+    state: SearchByCountryScreenState,
+    listener: SearchByCountryScreenInteractionListener,
 ) {
     Column(
         modifier = Modifier
@@ -152,7 +151,7 @@ private fun SearchByCountryContent(
 
         val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
-            text = state.query,
+            text = state.countryName,
             hintText = stringResource(R.string.country_name),
             modifier = Modifier
                 .fillMaxWidth()
@@ -173,14 +172,14 @@ private fun SearchByCountryContent(
         Box(
             modifier = Modifier
                 .fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopCenter
         ) {
-            val movies = state.movies.collectAsLazyPagingItems()
+            val movies = state.moviesOfCountryFlow.collectAsLazyPagingItems()
 
             when (movies.loadState.refresh) {
 
                 is LoadState.Loading -> {
-                    if (state.query.text.isBlank()) {
+                    if (state.countryName.text.isBlank()) {
                         InitContent()
                     } else {
                         com.berlin.aflami.component.CircularProgressIndicator(
@@ -191,9 +190,9 @@ private fun SearchByCountryContent(
                 }
 
                 is LoadState.NotLoading -> {
-                    if (state.query.text.isBlank()) {
+                    if (state.countryName.text.isBlank()) {
                         InitContent()
-                    } else if (movies.itemCount == 0 && state.query.text.isNotBlank()) {
+                    } else if (movies.itemCount == 0 && state.countryName.text.isNotBlank()) {
                         com.berlin.aflami.component.CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center),
                             text = stringResource(R.string.loading)
@@ -221,7 +220,9 @@ private fun SearchByCountryContent(
                 visible = state.dropDownExpanded && state.filteredCountries.isNotEmpty(),
                 filteredCountries = state.filteredCountries,
                 onCountryNameChanged = listener::onCountryNameChanged,
-                onCountryClick = listener::onCountryClicked
+                onCountryClick = {
+                    listener.onCountryClicked(countryName = state.countryName.text)
+                }
             )
         }
     }

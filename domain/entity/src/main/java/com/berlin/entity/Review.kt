@@ -1,6 +1,5 @@
 package com.berlin.entity
 
-import kotlinx.datetime.LocalDate
 
 data class Review(
     val id: String,

@@ -1,110 +1,116 @@
 package com.berlin.repository.mapper
 
-import com.berlin.entity.GenreEntity
-import com.berlin.entity.Media
+import android.util.Log
+import com.berlin.entity.CompanyProduction
+import com.berlin.entity.Genre
 import com.berlin.entity.Movie
-import com.berlin.entity.MovieDetails
-import com.berlin.entity.ProductionCompanyEntity
-import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.entity.Review
+import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
+import com.berlin.repository.datasource.local.dto.MovieEntity
 import com.berlin.repository.datasource.remote.dto.GenreDto
-import com.berlin.repository.datasource.remote.dto.MovieDetailsDto
-import com.berlin.repository.datasource.remote.dto.MovieDto
-import com.berlin.repository.datasource.remote.dto.ProductionCompany
-import kotlinx.datetime.LocalDate
-import java.time.Instant
+import com.berlin.repository.datasource.remote.dto.ProductionCompanyDto
+import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 
-fun SearchingEntity.toDomain(): Movie {
-    return Movie(
-        id = this.id,
-        title = this.title,
-        rating = this.rating,
-        releaseYear = stringToLocalDate(releaseYear),
-        genre = this.genre,
-        poster = this.poster
-    )
-}
 
-fun MovieDto.toLocal(query: String, type: String, page: Int, mediaType: String): SearchingEntity {
-    return SearchingEntity(
-        query = query,
-        type = type,
-        time = Instant.now().epochSecond,
-        id = this.id?.toLong() ?: 0L,
-        title = this.title ?: "",
-        rating = this.voteAverage ?: 0.0,
-        releaseYear = (releaseDate ?: ""),
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
-        page = page,
-        mediaType = mediaType
-    )
-}
-
-fun MovieDto.toDomain(): Movie {
+fun MovieDetailsDto.toDomain(
+     reviews: List<Review> =emptyList(),
+     galleryImages: List<String> = emptyList()
+): Movie {
     return Movie(
         id = this.id?.toLong() ?: 0L,
         title = this.title.orEmpty(),
         rating = (this.voteAverage ?: 0.0),
-        releaseYear = stringToLocalDate(releaseDate ?: ""),
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
-    )
-}
-
-fun MovieDetailsDto.toDomain(): MovieDetails {
-    return MovieDetails(
-        id = this.id?.toLong() ?: 0L,
-        title = this.title.orEmpty(),
-        overview = this.overview.orEmpty(),
-        posterUrl = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
-        backdropUrl = "$BACKDROP_PREFIX${this.backdropPath.orEmpty()}",
-        releaseDate = this.releaseDate.orEmpty(),
-        rating = this.voteAverage ?: 0.0,
-        runtime = this.runtime ?: 0,
-        genres = this.genres?.map { it.toEntity() } ?: emptyList(),
-        productionCompanies = this.productionCompanies?.map { company ->
-            company.toEntity()
+        releaseDate = this.releaseDate ?: "10-12-2014",
+        genres = this.genres?.map { it.toDomain() } ?: genresId?.map { it.toDomainGenre() }
+        ?: emptyList(),
+        posterURL = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        screenShot = this.backdropPath ?: "",
+        description = this.overview ?: "Description not available",
+        duration = this.runtime ?: 0,
+        hasVideo = this.video == true,
+        companyProductions = this.productionCompanies?.map {
+            it.toDomain()
         } ?: emptyList(),
-        hasVideo = this.video,
-        originCountry = this.originCountry?.get(0),
-        duration = this.runtime.formatRuntime())
-}
-
-fun MovieDto.toDomain(mediaType: String): Media {
-    return Media(
-        id = this.id?.toLong() ?: 0L,
-        title = this.title.orEmpty(),
-        rating = this.voteAverage ?: 0.0,
-        releaseYear = stringToLocalDate(releaseDate ?: ""),
-        mediaType = mediaType,
-        genre = this.genreIds?.filterNotNull() ?: emptyList(),
-        poster = "$POSTER_PREFIX${this.posterPath.orEmpty()}"
+        originCountry = this.originCountry?.firstOrNull() ?: "",
+        galleryUrl = galleryImages,
+        reviews = reviews,
+        isFavourite = true
     )
 }
 
-fun stringToLocalDate(dateString: String): LocalDate {
-    return runCatching {
-        LocalDate.parse(dateString)
-    }.getOrElse { LocalDate.parse("1960-01-01") }
+
+fun Movie.toRecentMovieEntity(): RecentlyWatchedMovieEntity {
+    return RecentlyWatchedMovieEntity(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseDate = this.releaseDate,
+        genres = this.genres.map { it.id },
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        productionCompanies = emptyList(),
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        reviews = emptyList(),
+    )
 }
 
-fun GenreDto.toEntity() = GenreEntity(
+fun RecentlyWatchedMovieEntity.toDomain(): Movie {
+    return Movie(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseDate = this.releaseDate,
+        genres = emptyList(),
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        companyProductions = emptyList(),
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        reviews = emptyList(),
+        isFavourite = false,
+    )
+}
+
+fun GenreDto.toDomain() = Genre(
     id = this.id ?: 0, name = this.name.orEmpty()
 )
+fun Int.toDomainGenre() = Genre(
+    id = this, name = ""
+)
+fun MovieEntity.toDomain(): Movie {
+    return Movie(
+        id = this.id,
+        title = this.title,
+        rating = this.rating,
+        releaseDate = this.releaseDate,
+        genres = this.genres,
+        posterURL = this.posterURL,
+        screenShot = this.screenShot,
+        description = this.description,
+        duration = this.duration,
+        hasVideo = this.hasVideo,
+        companyProductions = this.productionCompanies,
+        originCountry = this.originCountry,
+        galleryUrl = this.galleryUrl,
+        reviews = this.reviews,
+        isFavourite = false, // Assuming isFavourite is not stored in MovieEntity
+    )
+}
 
-fun ProductionCompany.toEntity() = ProductionCompanyEntity(
+
+ fun ProductionCompanyDto.toDomain() = CompanyProduction(
     id = this.id ?: 0,
     name = this.name.orEmpty(),
-    poster = this.logoPath?.let { "$POSTER_PREFIX$it" },
-    originCountry = this.originCountry.orEmpty()
+    posterURL = this.logoPath?.let { "$POSTER_PREFIX$it" } ?: "",
+    originCountry = this.originCountry?:"",
 )
-
-fun Int?.formatRuntime(): String? {
-    if (this == null || this == 0) return null
-    val hours = this / 60
-    val remainingMinutes = this % 60
-    return "${hours}h ${remainingMinutes}m"
-}
 
 const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
 const val BACKDROP_PREFIX = "https://image.tmdb.org/t/p/original"

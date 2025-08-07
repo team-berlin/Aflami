@@ -47,6 +47,6 @@ fun getGenreNameById(id: Int, mediaType: MediaType): Int {
 
     return when (mediaType) {
         MediaType.MOVIE -> movieGenres[id] ?: R.string.all
-        MediaType.TVSHOW -> tvGenres[id] ?: R.string.all
+        MediaType.TV_SHOW -> tvGenres[id] ?: R.string.all
     }
 }

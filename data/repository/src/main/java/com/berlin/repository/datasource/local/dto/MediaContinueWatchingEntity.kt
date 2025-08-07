@@ -4,25 +4,42 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "Movie_Continue_Watching")
-data class ContinueWatchingMovieEntity(
+data class RecentlyWatchedMovieEntity(
     @PrimaryKey
-    val id:Long,
+    val id: Long,
     val title: String,
     val rating: Double,
-    val posterUrl:String,
-    val typeOfMedia:String,
-    val releaseYear: String,
+    val releaseDate: String,
+    val posterURL: String,
+    val screenShot: String,
+    val description: String,
+    val genres: List<Int>,
+    val duration: Int,
+    val hasVideo: Boolean,
+    val productionCompanies: List<String>,
+    val originCountry: String,
+    val galleryUrl: List<String>,
+    val reviews: List<String>,
 )
 
 @Entity(tableName = "TVShow_Continue_Watching")
-data class ContinueWatchingTVShowEntity(
+data class RecentlyWatchedTvShowEntity(
     @PrimaryKey
-    val id:Long,
+    val id: Long,
     val title: String,
     val rating: Double,
-    val posterUrl:String,
-    val typeOfMedia:String,
-    val releaseYear: String,
+    val posterURL: String,
+    val releaseDate: String,
+    val screenShot: String,
+    val description: String,
+    val genres: List<Int>,
+    val duration: Int,
+    val hasVideo: Boolean,
+    val productionCompanies: List<String>,
+    val originCountry: String,
+    val seasons: List<String>,
+    val galleryUrl: List<String>,
+    val reviews: List<String>,
 )
 
 

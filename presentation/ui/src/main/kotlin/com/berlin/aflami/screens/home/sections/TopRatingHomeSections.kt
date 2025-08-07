@@ -1,6 +1,7 @@
 package com.berlin.aflami.screens.home.sections
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -31,9 +33,10 @@ import com.berlin.ui.R
 fun TopRatingHomeSections(
     modifier: Modifier = Modifier,
     seeAllOnClick: () -> Unit,
-    cardClick: (id: Long, type: MediaType) -> Unit,
+    onMovieItemClicked: (movieId: Long) -> Unit = {},
+    onTVShowItemClicked: (tvShowId: Long) -> Unit = {},
     state: List<MediaUiState>,
-    sectionTitleId: Int
+    sectionTitleId: Int,
 ) {
     Column(
         modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -66,27 +69,28 @@ fun TopRatingHomeSections(
             val spaceBetween = 8.dp
             val maxCardsInRow = (screenWidth / (156.dp + spaceBetween)).toInt().coerceAtLeast(2)
 
-
             val totalSpacing = spaceBetween * (maxCardsInRow - 1)
             val cardWidth = (screenWidth - totalSpacing) / maxCardsInRow
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.size) { index ->
-                    val item = state[index]
+                items(state) {item->
                     MediaCard(
                         Modifier
                             .height(222.dp)
                             .width(cardWidth),
                         mediaImg = item.poster,
                         title = item.title,
-                        typeOfMedia = item.mediaType.name,
+                        typeOfMedia = item.mediaType?.name ?: MediaType.MOVIE.name,
                         date = item.releaseYear,
                         rating = item.rating,
                     ) {
-                        cardClick(item.id, item.mediaType)
-                    }
+                        when(item.mediaType){
+                            MediaType.MOVIE -> onMovieItemClicked(item.id)
+                            MediaType.TV_SHOW -> onTVShowItemClicked(item.id)
+                            else -> throw IllegalArgumentException("Unknown media type")
+                        }                    }
                 }
 
             }

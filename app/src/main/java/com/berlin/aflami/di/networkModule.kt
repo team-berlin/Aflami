@@ -5,7 +5,6 @@ import com.berlin.aflami.util.ApiKeyInterceptor
 import com.berlin.aflami.util.LanguageInterceptor
 import com.berlin.remote.network.ApiService
 import com.berlin.remote.network.AuthenticationApiService
-import com.berlin.remote.network.HomeApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -76,8 +75,5 @@ object NetworkModule {
     fun provideAuthenticationApiService(retrofit: Retrofit): AuthenticationApiService =
         retrofit.create(AuthenticationApiService::class.java)
 
-    @Provides
-    @Singleton
-    fun provideHomeApiService(retrofit: Retrofit): HomeApiService =
-        retrofit.create(HomeApiService::class.java)
+
 }

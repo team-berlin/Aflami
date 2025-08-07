@@ -1,11 +1,17 @@
 package com.berlin.aflami.viewmodel.shareduistate
 
-data class MovieUIState(
+import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
+
+data class MovieUiState(
     val id: Long = 0L,
     val title: String = "",
     val rating: String = "",
-    val releaseYear: String = "",
-    val genre: List<Int> = emptyList(),
-    val poster: String = "",
-    val mediaType: String = "",
+    val releaseDate: String = "",
+    val genre: List<GenreUiState> = emptyList(),
+    val companyProductionUiState: List<CompanyProductionUiState> = emptyList(),
+    val posterUrl: String = "",
+    val description: String = "",
+    val duration: String = "",
+    val originCountry: String = "",
+    val hasVideo: Boolean = false,
 )

@@ -66,8 +66,8 @@ fun GallerySection(
                     for (col in 0 until columns) {
                         val index = row * columns + col
                         if (index < backDropsList.size) {
-                            SafeImageViewer(
-                                imageUri = backDropsList[index],
+                            AsyncImage(
+                                model = backDropsList[index],
                                 contentDescription = stringResource(com.berlin.ui.R.string.cast),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier

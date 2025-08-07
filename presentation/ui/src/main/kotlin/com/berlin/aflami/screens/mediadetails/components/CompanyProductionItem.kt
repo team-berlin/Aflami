@@ -24,7 +24,7 @@ import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
 import com.berlin.designsystem.R
 import com.berlin.safeimageviewer.SafeImageViewer
 
@@ -42,7 +42,7 @@ fun CompanyProductionItem(
     ) {
         SafeImageViewer(
             modifier = modifier,
-            imageUri = item.image?:"",
+            model = item.image?:"",
             contentDescription = stringResource(com.berlin.ui.R.string.company_production_image_cd),
             contentScale = ContentScale.Crop,
             error = painterResource(R.drawable.place_holder),

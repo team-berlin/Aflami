@@ -1,20 +1,20 @@
 package com.berlin.aflami.viewmodel.mediadetails
 
 import androidx.lifecycle.SavedStateHandle
-import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
-import com.berlin.aflami.viewmodel.mapper.toUiState
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsScreenEffect
-import com.berlin.aflami.viewmodel.mediadetails.details.MediaDetailsViewModel
+import com.berlin.aflami.viewmodel.mapper.toMediaUiState
+import com.berlin.aflami.viewmodel.mapper.toEpisodeUiState
+import com.berlin.aflami.viewmodel.mapper.toReviewUiState
+import com.berlin.aflami.viewmodel.mediadetails.details.movie.MovieDetailsScreenEffect
+import com.berlin.aflami.viewmodel.mediadetails.details.movie.MovieDetailsViewModel
+import com.berlin.aflami.viewmodel.mediadetails.details.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.mediadetails.uistate.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.RowSectionUiState
 import com.berlin.aflami.viewmodel.mediadetails.uistate.TabContent
-import com.berlin.aflami.viewmodel.mediadetails.uistate.UiText
+import com.berlin.aflami.viewmodel.mediadetails.details.movie.UiText
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.entity.Episodes
-import com.berlin.entity.GenreEntity
+import com.berlin.entity.Episode
 import com.berlin.entity.Movie
-import com.berlin.entity.MovieDetails
-import com.berlin.entity.ProductionCompanyEntity
+import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Review
 import com.berlin.entity.TvShowDetails
 import com.google.common.truth.Truth.assertThat
@@ -35,11 +35,11 @@ import org.junit.Before
 import org.junit.Test
 import usecase.mediadetails.GetMovieCastUseCase
 import usecase.mediadetails.GetMovieDetailsUseCase
-import usecase.mediadetails.GetMovieGalleryUseCase
+import usecase.movie.GetMovieGalleryUseCase
 import usecase.mediadetails.GetMovieReviewUseCase
 import usecase.mediadetails.GetSeasonEpisodesUseCase
 import usecase.mediadetails.GetSeriesCastUseCase
-import usecase.mediadetails.GetSeriesGalleryUseCase
+import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.mediadetails.GetSeriesReviewUseCase
 import usecase.mediadetails.GetSimilarMoviesUseCase
 import usecase.mediadetails.GetSimilarSeriesUseCase
@@ -47,14 +47,14 @@ import usecase.mediadetails.GetTvShowDetailsUseCase
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MediaDetailsViewModelTest {
-    private lateinit var viewModel: MediaDetailsViewModel
+    private lateinit var viewModel: MovieDetailsViewModel
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var getMovieDetailsUseCase: GetMovieDetailsUseCase
     private lateinit var getTvShowDetailsUseCase: GetTvShowDetailsUseCase
     private lateinit var getMovieCastUseCase: GetMovieCastUseCase
     private lateinit var getSeriesCastUseCase: GetSeriesCastUseCase
     private lateinit var getMovieGalleryUseCase: GetMovieGalleryUseCase
-    private lateinit var getSeriesGalleryUseCase: GetSeriesGalleryUseCase
+    private lateinit var getTVShowGalleryUseCase: GetTVShowGalleryUseCase
     private lateinit var getSimilarMoviesUseCase: GetSimilarMoviesUseCase
     private lateinit var getSimilarSeriesUseCase: GetSimilarSeriesUseCase
     private lateinit var getMovieReviewUseCase: GetMovieReviewUseCase
@@ -80,7 +80,7 @@ class MediaDetailsViewModelTest {
         getMovieCastUseCase = mockk(relaxed = true)
         getSeriesCastUseCase = mockk(relaxed = true)
         getMovieGalleryUseCase = mockk(relaxed = true)
-        getSeriesGalleryUseCase = mockk(relaxed = true)
+        getTVShowGalleryUseCase = mockk(relaxed = true)
         getSimilarMoviesUseCase = mockk(relaxed = true)
         getSimilarSeriesUseCase = mockk(relaxed = true)
         getMovieReviewUseCase = mockk(relaxed = true)
@@ -92,14 +92,14 @@ class MediaDetailsViewModelTest {
 
         mockkStatic(Dispatchers::class)
         every { Dispatchers.IO } returns testDispatcher
-        viewModel = MediaDetailsViewModel(
+        viewModel = MovieDetailsViewModel(
             savedStateHandle,
             getMovieDetailsUseCase,
             getTvShowDetailsUseCase,
             getMovieCastUseCase,
             getSeriesCastUseCase,
             getMovieGalleryUseCase,
-            getSeriesGalleryUseCase,
+            getTVShowGalleryUseCase,
             getSimilarMoviesUseCase,
             getSimilarSeriesUseCase,
             getMovieReviewUseCase,
@@ -121,7 +121,7 @@ class MediaDetailsViewModelTest {
             releaseDate = "2023-01-01",
             rating = 20.0,
             runtime = 120,
-            productionCompanies = listOf(ProductionCompanyEntity(1, "Test Studio", null, null)),
+            productionCompanies = listOf(CompanyProduction(1, "Test Studio", null, null)),
             hasVideo = false,
             originCountry = "US",
             duration = null
@@ -136,9 +136,9 @@ class MediaDetailsViewModelTest {
         // Then
         val state = viewModel.state.value
         assertThat(state.isLoading).isFalse()
-        assertThat(state.id).isEqualTo(1)
+        assertThat(state.mediaId).isEqualTo(1)
         assertThat(state.title).isEqualTo("Test Movie")
-        assertThat(state.overview).isEqualTo("A test movie")
+        assertThat(state.description).isEqualTo("A test movie")
         assertThat(state.posterUrl).isEqualTo("poster.jpg")
         assertThat(state.backdropUrl).isEqualTo("backdrop.jpg")
         assertThat(state.releaseDate).isEqualTo("2023-01-01")
@@ -147,7 +147,7 @@ class MediaDetailsViewModelTest {
         assertThat(state.genres).containsExactly("Action")
         assertThat(state.hasVideo).isFalse()
         assertThat(state.originalCountry).isEqualTo("US")
-        assertThat(state.duration).isNull()
+        assertThat(state.runtime).isNull()
         assertThat(viewModel.companyProductionCache).isNotNull()
         assertThat(viewModel.companyProductionCache!!.first().id).isEqualTo("1")
         assertThat(viewModel.companyProductionCache!!.first().name).isEqualTo("Test Studio")
@@ -166,22 +166,22 @@ class MediaDetailsViewModelTest {
             releaseDate = "2022-01-01",
             rating = 7.5,
             runtime = 45,
-            productionCompanies = listOf(ProductionCompanyEntity(2, "Test Network", null, null)),
+            productionCompanies = listOf(CompanyProduction(2, "Test Network", null, null)),
             seasons = emptyList(),
             numberOfSeasons = 3,
             originCountry = "US",
         )
         coEvery { getTvShowDetailsUseCase(2, any()) } returns tvShow
         every { savedStateHandle.get<String>("id") } returns "2"
-        every { savedStateHandle.get<String>("media_type") } returns MediaType.TVSHOW.name
-        viewModel = MediaDetailsViewModel(
+        every { savedStateHandle.get<String>("media_type") } returns MediaType.TV_SHOW.name
+        viewModel = MovieDetailsViewModel(
             savedStateHandle,
             getMovieDetailsUseCase,
             getTvShowDetailsUseCase,
             getMovieCastUseCase,
             getSeriesCastUseCase,
             getMovieGalleryUseCase,
-            getSeriesGalleryUseCase,
+            getTVShowGalleryUseCase,
             getSimilarMoviesUseCase,
             getSimilarSeriesUseCase,
             getMovieReviewUseCase,
@@ -190,15 +190,15 @@ class MediaDetailsViewModelTest {
         )
 
         // When
-        viewModel.getMediaDetails(2, MediaType.TVSHOW, "en")
+        viewModel.getMediaDetails(2, MediaType.TV_SHOW, "en")
         advanceUntilIdle()
 
         // Then
         val state = viewModel.state.value
         assertThat(state.isLoading).isFalse()
-        assertThat(state.id).isEqualTo(2)
+        assertThat(state.mediaId).isEqualTo(2)
         assertThat(state.title).isEqualTo("Test Show")
-        assertThat(state.overview).isEqualTo("A test TV show")
+        assertThat(state.description).isEqualTo("A test TV show")
         assertThat(state.posterUrl).isEqualTo("poster.jpg")
         assertThat(state.backdropUrl).isEqualTo("backdrop.jpg")
         assertThat(state.releaseDate).isEqualTo("2022-01-01") // just the year, not full date!
@@ -236,7 +236,7 @@ class MediaDetailsViewModelTest {
     @Test
     fun `onPlayClicked should update isPlaying and send PlayMedia effect`() = runTest {
         // Given
-        val effects = mutableListOf<MediaDetailsScreenEffect>()
+        val effects = mutableListOf<MovieDetailsScreenEffect>()
         val job = launch { viewModel.effect.collect { effects.add(it) } }
 
         // When
@@ -245,7 +245,7 @@ class MediaDetailsViewModelTest {
 
         // Then
         assertThat(viewModel.state.value.isPlaying).isTrue()
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.PlayMedia(id = 1))
+        assertThat(effects).containsExactly(MovieDetailsScreenEffect.PlayMedia(mediaId = 1))
         job.cancel()
     }
 
@@ -273,7 +273,7 @@ class MediaDetailsViewModelTest {
         val successState = state.rowSection as RowSectionUiState.Success
         assertThat(successState.content).isInstanceOf(TabContent.Reviews::class.java)
         val reviewsContent = successState.content as TabContent.Reviews
-        assertThat(reviewsContent.items).containsExactly(review.toUiState())
+        assertThat(reviewsContent.items).containsExactly(review.toReviewUiState())
     }
 
     @Test
@@ -290,7 +290,7 @@ class MediaDetailsViewModelTest {
         assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
 
         val noDataState = state.rowSection as RowSectionUiState.NoDataFound
-        assertThat(noDataState.message).isEqualTo(UiText.Resource(MediaDetailsViewModel.NO_REVIEWS))
+        assertThat(noDataState.message).isEqualTo(UiText.Resource(MovieDetailsViewModel.NO_REVIEWS))
     }
 
     @Test
@@ -327,7 +327,7 @@ class MediaDetailsViewModelTest {
             assertThat(state.rowSection).isInstanceOf(RowSectionUiState.NoDataFound::class.java)
 
             val noDataState = state.rowSection as RowSectionUiState.NoDataFound
-            assertThat(noDataState.message).isEqualTo(UiText.Resource(MediaDetailsViewModel.NO_GALLERY))
+            assertThat(noDataState.message).isEqualTo(UiText.Resource(MovieDetailsViewModel.NO_GALLERY))
         }
 
     @Test
@@ -355,15 +355,15 @@ class MediaDetailsViewModelTest {
     @Test
     fun `onSeasonsClicked with episodes should update state with season episodes`() = runTest {
         // Given
-        val episode = Episodes(
-            id = 1,
+        val episode = Episode(
+            episodeId = 1,
             name = "Episode 1",
-            overview = "Episode overview",
+            description = "Episode overview",
             episodeNumber = 1,
             airDate = null,
             episodeType = null,
-            runtime = null,
-            voteAverage = null,
+            duration = null,
+            rating = null,
             stillPath = null
         )
         coEvery { getSeasonEpisodesUseCase(1, 0) } returns listOf(episode)
@@ -378,7 +378,7 @@ class MediaDetailsViewModelTest {
         val successState = state.rowSection as RowSectionUiState.Success
         assertThat(successState.content).isInstanceOf(TabContent.Season::class.java)
         val seasonContent = successState.content as TabContent.Season
-        assertThat(seasonContent.items[0]).isEqualTo(listOf(episode.toUiState()))
+        assertThat(seasonContent.items[0]).isEqualTo(listOf(episode.toEpisodeUiState()))
     }
 
     @Test
@@ -405,11 +405,11 @@ class MediaDetailsViewModelTest {
                 id = 55,
                 title = "Matrix",
                 rating = 8.8,
-                genre = listOf(28, 12, 878),
-                releaseYear = LocalDate.parse("1999-03-31"),
+                genres = listOf(28, 12, 878),
+                releaseDate = LocalDate.parse("1999-03-31"),
                 poster = "poster.png"
             )
-            val mappedUiState = movie.toUIStateMedia()
+            val mappedUiState = movie.toMediaUiState()
             coEvery { getSimilarMoviesUseCase(1) } returns listOf(movie)
 
             // When
@@ -428,7 +428,7 @@ class MediaDetailsViewModelTest {
     @Test
     fun `onBackClicked should send NavigateBack effect`() = runTest {
         // Given
-        val effects = mutableListOf<MediaDetailsScreenEffect>()
+        val effects = mutableListOf<MovieDetailsScreenEffect>()
         val job = launch { viewModel.effect.collect { effects.add(it) } }
 
         // When
@@ -436,7 +436,7 @@ class MediaDetailsViewModelTest {
         advanceUntilIdle()
 
         // Then
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.NavigateBack)
+        assertThat(effects).containsExactly(MovieDetailsScreenEffect.NavigateBack)
         job.cancel()
     }
 
@@ -548,9 +548,9 @@ class MediaDetailsViewModelTest {
     @Test
     fun `toggleMovieDetailsTab to SEASON should load seasons`() = runTest {
         // GIVEN
-        val episode = Episodes(
-            id = 1, name = "E1", overview = "E1", episodeNumber = 1,
-            airDate = null, episodeType = null, runtime = null, voteAverage = null, stillPath = null
+        val episode = Episode(
+            episodeId = 1, name = "E1", description = "E1", episodeNumber = 1,
+            airDate = null, episodeType = null, duration = null, rating = null, stillPath = null
         )
         coEvery { getSeasonEpisodesUseCase(1, 0) } returns listOf(episode)
         // Use a TV Show with numberOfSeasons = 1
@@ -571,15 +571,15 @@ class MediaDetailsViewModelTest {
         )
         coEvery { getTvShowDetailsUseCase(1, any()) } returns tvShow
         every { savedStateHandle.get<String>("id") } returns "1"
-        every { savedStateHandle.get<String>("media_type") } returns MediaType.TVSHOW.name
-        viewModel = MediaDetailsViewModel(
+        every { savedStateHandle.get<String>("media_type") } returns MediaType.TV_SHOW.name
+        viewModel = MovieDetailsViewModel(
             savedStateHandle,
             getMovieDetailsUseCase,
             getTvShowDetailsUseCase,
             getMovieCastUseCase,
             getSeriesCastUseCase,
             getMovieGalleryUseCase,
-            getSeriesGalleryUseCase,
+            getTVShowGalleryUseCase,
             getSimilarMoviesUseCase,
             getSimilarSeriesUseCase,
             getMovieReviewUseCase,
@@ -587,17 +587,17 @@ class MediaDetailsViewModelTest {
             getSeasonEpisodesUseCase
         )
 
-        viewModel.getMediaDetails(1, MediaType.TVSHOW, "en")
+        viewModel.getMediaDetails(1, MediaType.TV_SHOW, "en")
         advanceUntilIdle()
 
         // WHEN
-        viewModel.toggleMovieDetailsTab(MovieDetailsTabs.SEASON, 1, MediaType.TVSHOW)
+        viewModel.toggleMovieDetailsTab(MovieDetailsTabs.SEASON, 1, MediaType.TV_SHOW)
         advanceUntilIdle()
 
         // THEN
         val rowSection = viewModel.state.value.rowSection as RowSectionUiState.Success
         val seasonContent = rowSection.content as TabContent.Season
-        assertThat(seasonContent.items[0]).isEqualTo(listOf(episode.toUiState()))
+        assertThat(seasonContent.items[0]).isEqualTo(listOf(episode.toEpisodeUiState()))
     }
 
     @Test
@@ -631,15 +631,15 @@ class MediaDetailsViewModelTest {
 
     @Test
     fun `onSeasonsClicked with multiple seasons adds all episodes`() = runTest {
-        val episode1 = Episodes(id = 111, name = "E1", overview = "", episodeNumber = 1, airDate = null, episodeType = null, runtime = null, voteAverage = null, stillPath = null)
-        val episode2 = Episodes(id = 222, name = "E2", overview = "", episodeNumber = 1, airDate = null, episodeType = null, runtime = null, voteAverage = null, stillPath = null)
+        val episode1 = Episode(episodeId = 111, name = "E1", description = "", episodeNumber = 1, airDate = null, episodeType = null, duration = null, rating = null, stillPath = null)
+        val episode2 = Episode(episodeId = 222, name = "E2", description = "", episodeNumber = 1, airDate = null, episodeType = null, duration = null, rating = null, stillPath = null)
         coEvery { getSeasonEpisodesUseCase(1, 0) } returns listOf(episode1)
         coEvery { getSeasonEpisodesUseCase(1, 1) } returns listOf(episode2)
         viewModel.onSeasonsClicked(1, 2)
         advanceUntilIdle()
         val content = (viewModel.state.value.rowSection as RowSectionUiState.Success).content as TabContent.Season
-        assertThat(content.items[0]).isEqualTo(listOf(episode1.toUiState()))
-        assertThat(content.items[1]).isEqualTo(listOf(episode2.toUiState()))
+        assertThat(content.items[0]).isEqualTo(listOf(episode1.toEpisodeUiState()))
+        assertThat(content.items[1]).isEqualTo(listOf(episode2.toEpisodeUiState()))
     }
 
     @Test
@@ -670,11 +670,11 @@ class MediaDetailsViewModelTest {
     }
 
     @Test fun `onShowCastClicked triggers navigation effect`() = runTest {
-        val effects = mutableListOf<MediaDetailsScreenEffect>()
+        val effects = mutableListOf<MovieDetailsScreenEffect>()
         val job = launch { viewModel.effect.collect { effects.add(it) } }
         viewModel.onShowCastClicked()
         advanceUntilIdle()
-        assertThat(effects).containsExactly(MediaDetailsScreenEffect.NavigateToShowAllCastScreen(1, MediaType.MOVIE))
+        assertThat(effects).containsExactly(MovieDetailsScreenEffect.NavigateToShowAllCastScreen(1, MediaType.MOVIE))
         job.cancel()
     }
 }

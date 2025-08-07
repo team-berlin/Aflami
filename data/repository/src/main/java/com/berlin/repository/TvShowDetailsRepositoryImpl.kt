@@ -1,48 +1,46 @@
 package com.berlin.repository
 
-import android.util.Log
-import com.berlin.entity.Episodes
+import com.berlin.entity.Actor
+import com.berlin.entity.Episode
 import com.berlin.entity.Genre
-import com.berlin.entity.MediaCast
 import com.berlin.entity.MediaImage
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
-import com.berlin.entity.TvShowDetails
 import com.berlin.entity.Video
-import com.berlin.repository.datasource.local.GenreLocalDataSource
-import com.berlin.repository.datasource.local.dto.GenreEntity
+import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
-import com.berlin.repository.mapper.toGenreEntity
-import com.berlin.repository.mapper.toTVShow
-import com.berlin.repository.util.Constants
-import com.berlin.repository.util.Constants.GENRE_TYPE_TV
-import exceptions.AflamiExceptions
-import repository.TvShowDetailsRepository
-import java.time.Instant
+import repository.TVShowDetailsRepository
 import javax.inject.Inject
 
-class TvShowDetailsRepositoryImpl  @Inject constructor(
+class TvShowDetailsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val genreLocalDataSource: GenreLocalDataSource
-) : TvShowDetailsRepository {
+    private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource
+) : TVShowDetailsRepository {
+    override suspend fun getTVShowDetails(tvShowId: Long): TVShow {
 
-
-    override suspend fun getTvShowDetails(id: Long): TvShowDetails? {
-        return try {
-            remoteDataSource.getTvShowDetails(id).toDomain()
-        } catch (exception: AflamiExceptions) {
-            throw exception
+        val galleryImages = try {
+            getTVShowsImages(tvShowId).backdrops.take(10)
+        } catch (e: Exception) {
+            emptyList<String>()
         }
+        val hasVideo = try {
+            getTVShowVideos(tvShowId).isNotEmpty()
+
+        } catch (e: Exception) {
+            false
+        }
+        return remoteDataSource.getTVShowDetailsById(tvShowId)
+            .toDomain(
+                galleryImages = galleryImages,
+                hasVideo = hasVideo,
+            )
     }
 
-    override suspend fun getSeriesImages(id: Long): MediaImage {
+    override suspend fun getTVShowsImages(id: Long): MediaImage {
         return try {
-            val imagesResponse = remoteDataSource.getSeriesImages(id)
-
-            Log.d("SeriesRepository", "Backdrops: ${imagesResponse.backdrops}")
-            Log.d("SeriesRepository", "Posters: ${imagesResponse.posters}")
+            val imagesResponse = remoteDataSource.getTVImagesById(id)
 
             val backdrops = imagesResponse.backdrops
                 ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
@@ -56,42 +54,54 @@ class TvShowDetailsRepositoryImpl  @Inject constructor(
         }
     }
 
-    override suspend fun getSeriesCastDetails(seriesId: Long): List<MediaCast> {
-        return remoteDataSource.getSeriesCastDetails(
+    override suspend fun getTVShowsCastDetails(seriesId: Long): List<Actor> {
+        return remoteDataSource.getTVCastDetailsById(
             seriesId
         ).cast?.mapNotNull { castItemDto ->
-            castItemDto?.toDomain()
+            castItemDto.toDomain()
         } ?: emptyList()
     }
 
-    override suspend fun getSeriesSimilar(seriesId: Long): List<TVShow> {
-        return remoteDataSource.getSeriesSimilar(seriesId).results?.mapNotNull { tvShowDto ->
-            tvShowDto?.toTVShow()
-        } ?: emptyList()
-    }
+    override suspend fun getTVShowsSimilar(seriesId: Long): List<TVShow> {
+        val galleryImages = getTVShowsImages(seriesId).backdrops.take(10)
+        val hasVideo = getTVShowVideos(seriesId).isNotEmpty()
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference()
+            .associate { it.categoryId to it.count }
 
-    override suspend fun getReviews(id: Long): List<Review> {
-        return remoteDataSource.getMovieReviews(id).results?.filterNotNull()
-            ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
-    }
-
-    override suspend fun getSeasonEpisodes(
-        seriesId: Long,
-        seasonNumber: Int,
-    ): List<Episodes?> {
-        return remoteDataSource.getEpisodeSeasonSeries(seriesId, seasonNumber).toDomain().episodes
+        return remoteDataSource.getSimilarTVById(seriesId)
+            .results?.mapNotNull { tvShowDto ->
+            tvShowDto.toDomain(
+                galleryImages = galleryImages,
+                hasVideo = hasVideo
+            )
+        }
+            ?.sortedByDescending { tvShow ->
+            tvShow.genres.sumOf { genre ->
+                genreScoresMap[genre.id] ?: 0
+            }
+        }
             ?: emptyList()
     }
 
-    override suspend fun getSeriesGenres(): List<Genre> {
-        val cachedGenres = genreLocalDataSource.getCachedGenres(GENRE_TYPE_TV)
-        if (!isExpiredOrEmpty(cachedGenres)) {
-            return cachedGenres.map { it.toDomain() }
-        }
+    override suspend fun getTVShowReviews(seriesId: Long): List<Review> {
+        return remoteDataSource.getTVShowReviewsById(seriesId).results?.filterNotNull()
+            ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
+    }
 
-        val genres = remoteDataSource.getSeriesGenres().genres.map { it.toGenreEntity(GENRE_TYPE_TV) }
-        genreLocalDataSource.cacheGenres(genres)
-        return genres.map { it.toDomain() }
+
+    override suspend fun getSeasonEpisodes(
+        tvShowId: Long,
+        seasonNumber: Int,
+    ): List<Episode> {
+        return remoteDataSource.getEpisodeSeasonTV(
+            tvShowId,
+            seasonNumber
+        ).episodes?.map { it.toDomain() }
+            ?: emptyList()
+    }
+
+    override suspend fun getTVShowsGenres(): List<Genre> {
+        return remoteDataSource.getTVGenres().genres.map { it.toDomain() }
     }
 
     override suspend fun getTVShowVideos(seriesId: Long): List<Video> {
@@ -100,8 +110,8 @@ class TvShowDetailsRepositoryImpl  @Inject constructor(
         } ?: emptyList()
     }
 
-    private fun isExpiredOrEmpty(list: List<GenreEntity>): Boolean {
-        return list.isEmpty() || list.any { Instant.now().toEpochMilli() - it.time > Constants.CACHE_TIMEOUT }
-    }
+//    private fun isExpiredOrEmpty(list: List<GenreEntity>): Boolean {
+//        return list.isEmpty() || list.any { Instant.now().toEpochMilli() - it.time > Constants.CACHE_TIMEOUT }
+//    }
 
 }

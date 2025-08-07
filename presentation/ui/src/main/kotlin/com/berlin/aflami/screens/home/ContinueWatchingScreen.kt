@@ -23,24 +23,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaEffect
-import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaInteractionListener
-import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaUiState
-import com.berlin.aflami.viewmodel.watchedmedia.ContinueWatchingMediaViewModel
+import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenEffect
+import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingMediaInteractionListener
+import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenState
+import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingMediaViewModel
 import com.berlin.ui.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ContinueWatchingScreen(
-    viewModel: ContinueWatchingMediaViewModel = koinViewModel(),
+    viewModel: ContinueWatchingMediaViewModel = hiltViewModel(),
 ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsState()
@@ -73,15 +74,15 @@ fun ContinueWatchingScreen(
     }
 }
 
-private fun onReceiveEffect(navController: NavController, effect: ContinueWatchingMediaEffect) {
+private fun onReceiveEffect(navController: NavController, effect: ContinueWatchingScreenEffect) {
     when (effect) {
-        is ContinueWatchingMediaEffect.NavigateToDetails -> {
+        is ContinueWatchingScreenEffect.NavigateToDetailsScreen -> {
             navController.navigate(
-                MediaDetailsDestination(effect.id, effect.type)
+                MovieDetailsDestination(effect.mediaId)
             )
         }
 
-        is ContinueWatchingMediaEffect.OnBackClicked -> {
+        is ContinueWatchingScreenEffect.NavigateBack -> {
             navController.popBackStack()
         }
     }
@@ -89,7 +90,7 @@ private fun onReceiveEffect(navController: NavController, effect: ContinueWatchi
 
 @Composable
 fun WatchedMediaContent(
-    state: ContinueWatchingMediaUiState, listener: ContinueWatchingMediaInteractionListener,
+    state: ContinueWatchingScreenState, listener: ContinueWatchingMediaInteractionListener,
 ) {
 
     Column(modifier = Modifier.fillMaxSize().background(Theme.color.surface)) {
@@ -116,7 +117,7 @@ fun WatchedMediaContent(
             }
         })
 
-        val pagedMovies = state.continueWatchingItems.collectAsLazyPagingItems()
+        val pagedMovies = state.continueWatchingMediaFlow.collectAsLazyPagingItems()
 
         when {
             state.isLoading -> {

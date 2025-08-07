@@ -70,9 +70,9 @@ import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.login.FormUiState
-import com.berlin.aflami.viewmodel.login.LoginEffect
+import com.berlin.aflami.viewmodel.login.LoginScreenEffect
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
-import com.berlin.aflami.viewmodel.login.LoginUiState
+import com.berlin.aflami.viewmodel.login.LoginScreenState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.ui.R
 
@@ -87,18 +87,18 @@ fun LoginScreen(
     LaunchedEffect(Unit) {
         viewmodel.effect.collect {
             when (it) {
-                LoginEffect.NavigateToHome -> {
+                LoginScreenEffect.NavigateToHomeScreen -> {
                     navController.navigate(
                         NavigationBarDestinations.HomeScreen
                     )
                 }
 
-                LoginEffect.NavigateToCreateAccount -> {
+                LoginScreenEffect.NavigateToCreateAccountScreen -> {
 
                     navController.navigate(WebViewDestination(REGISTER_URL))
                 }
 
-                LoginEffect.NavigateToForgotPassword -> {
+                LoginScreenEffect.NavigateToForgotPassword -> {
                     navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
                 }
             }
@@ -108,7 +108,7 @@ fun LoginScreen(
 
 
 @Composable
-fun LoginContent(uiState: LoginUiState, listener: LoginInteractionListener) {
+fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) {
     Box(
         modifier = Modifier
             .fillMaxSize()

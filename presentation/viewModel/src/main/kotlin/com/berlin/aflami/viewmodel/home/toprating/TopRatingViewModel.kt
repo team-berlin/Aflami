@@ -1,77 +1,70 @@
 package com.berlin.aflami.viewmodel.home.toprating
 
-import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.base.BaseViewModel
-import com.berlin.aflami.viewmodel.mapper.toUIStateMedia
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import usecase.GetTopRatedMoviesUseCase
-import usecase.GetTopRatedSeriesUseCase
+import usecase.movie.GetTopRatedMoviesUseCase
+import usecase.tvshow.GetTopRatedTVShowUseCase
+import javax.inject.Inject
 
-class TopRatingViewModel(
+@HiltViewModel
+class TopRatingViewModel @Inject constructor(
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
-    private val getTopRatedSeriesUseCase: GetTopRatedSeriesUseCase,
-) : BaseViewModel<TopRatingUiState, TopRatingScreenEffect>(TopRatingUiState()),
+    private val getTopRatedTvShowsUseCase: GetTopRatedTVShowUseCase,
+) : BaseViewModel<TopRatingScreenState, TopRatingScreenEffect>(TopRatingScreenState()),
     TopRatingInteractionListener {
 
-    val topRatedPagingFlow: Flow<PagingData<MediaUiState>> = Pager(
-        config = PagingConfig(pageSize = 20, initialLoadSize = 20),
+    init {
+        getTopRatingMedia()
+    }
+
+    //region TopRatingInteractionListener implementation
+    override fun onBackClicked() = sendNewEffect(TopRatingScreenEffect.NavigateBack)
+
+    override fun onMediaCardClicked(mediaId: Long, mediaType: MediaType) =
+        sendNewEffect(TopRatingScreenEffect.NavigateToMediaDetailsScreen(mediaId, mediaType))
+    //endregion
+
+    private fun getTopRatingMedia() {
+        updateScreenStateToLoading()
+        tryToCall(
+            call = { getTopRatedMediaAsFlow(getTopRatedMoviesUseCase, getTopRatedTvShowsUseCase) },
+            onSuccess = ::updateScreenStateWithNewTopRatedMedia,
+            onError = ::updateScreenStateWithError
+        )
+    }
+
+    private fun getTopRatedMediaAsFlow(
+        getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+        getTopRatedTvShowsUseCase: GetTopRatedTVShowUseCase,
+    ): Flow<PagingData<MediaUiState>> = Pager(
+        config = defaultPageConfigurations(),
         pagingSourceFactory = {
-            BasePagingSource(
-                call = { page ->
-                    coroutineScope {
-                        val moviesDeferred =
-                            async { getTopRatedMoviesUseCase(page).map { it.toUIStateMedia() } }
-                        val seriesDeferred =
-                            async { getTopRatedSeriesUseCase(page).map { it.toUIStateMedia() } }
-                        val topRatedMovies = moviesDeferred.await()
-                        val topRatedSeries = seriesDeferred.await()
-                        _state.update { it.copy(isLoading = false) }
-                        (topRatedMovies + topRatedSeries).sortedByDescending { it.rating }
-                    }
-                }
+            TopRatingMoviesPagingSource(
+                getTopRatedMoviesUseCase,
+                getTopRatedTvShowsUseCase
             )
         }
-    ).flow.cachedIn(viewModelScope)
+    ).flow
 
-    fun getTopRatingMoviesAndTvShows() {
-        _state.update { oldState ->
-            oldState.copy(isLoading = true, errorMessage = null, topRatedMedia = emptyList())
-        }
-        viewModelScope.launch {
-            Pager(
-                config = PagingConfig(pageSize = 20, initialLoadSize = 20),
-                pagingSourceFactory = {
-                    BasePagingSource(
-                        call = { page ->
-                            val moviesDeferred =
-                                async { getTopRatedMoviesUseCase(page).map { it.toUIStateMedia() } }
-                            val seriesDeferred =
-                                async { getTopRatedSeriesUseCase(page).map { it.toUIStateMedia() } }
-                            val topRatedMovies = moviesDeferred.await()
-                            val topRatedSeries = seriesDeferred.await()
-                            (topRatedMovies + topRatedSeries).sortedByDescending { it.rating }
-                        }
-                    )
-                }
+    private fun updateScreenStateWithNewTopRatedMedia(topRatingMediaFlow: Flow<PagingData<MediaUiState>>) {
+        _state.update {
+            it.copy(
+                topRatedMediaFlow = topRatingMediaFlow,
+                isLoading = false,
             )
         }
     }
 
-    override fun onBackClicked() = sendNewEffect(TopRatingScreenEffect.NavigateBack)
+    private fun updateScreenStateWithError(errorUiState: ErrorUiState) =
+        updateState { it.copy(errorMessage = errorUiState.message) }
 
-    override fun onMediaCardClicked(
-        id: Long,
-        mediaType: MediaType,
-    ) = sendNewEffect(TopRatingScreenEffect.NavigateToMediaDetailsScreen(id, mediaType))
+    private fun updateScreenStateToLoading() = updateState { it.copy(isLoading = true) }
+
 }

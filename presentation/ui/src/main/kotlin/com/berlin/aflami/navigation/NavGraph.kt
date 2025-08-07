@@ -17,12 +17,14 @@ import com.berlin.aflami.navigation.routes.gamesRoute
 import com.berlin.aflami.navigation.routes.homeScreenRoute
 import com.berlin.aflami.navigation.routes.listsRoute
 import com.berlin.aflami.navigation.routes.loginRoute
-import com.berlin.aflami.navigation.routes.mediaDetailsRoute
+import com.berlin.aflami.navigation.routes.movieDetailsRoute
+import com.berlin.aflami.navigation.routes.onBoarding
 import com.berlin.aflami.navigation.routes.profileRoute
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchByCountryRoute
 import com.berlin.aflami.navigation.routes.searchScreenRoute
 import com.berlin.aflami.navigation.routes.topRatingMedia
+import com.berlin.aflami.navigation.routes.tvShowDetailsRoute
 import com.berlin.aflami.navigation.routes.videoWebView
 import com.berlin.aflami.navigation.routes.watchedMedia
 import com.berlin.aflami.navigation.routes.webView
@@ -42,6 +44,7 @@ import com.berlin.aflami.navigation.routes.webView
 fun AflamiNavGraph(
     modifier: Modifier = Modifier,
     isLoggedIn: Boolean,
+    isFirsTime: Boolean,
     navController: NavHostController,
 ) {
     Scaffold(
@@ -54,7 +57,11 @@ fun AflamiNavGraph(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = if (isLoggedIn) NavigationBarDestinations.HomeScreen else LoginDestination,
+            startDestination = when {
+                isFirsTime -> OnBoardingDestination
+                isLoggedIn -> NavigationBarDestinations.HomeScreen
+                else -> LoginDestination
+            },
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None }
         ) {
@@ -64,6 +71,7 @@ fun AflamiNavGraph(
             detailsNavigationGraph()
         }
     }
+
 }
 
 @Composable
@@ -113,6 +121,7 @@ fun NavGraphBuilder.searchNavigationGraph() {
 }
 
 fun NavGraphBuilder.loginNavigationGraph() {
+    onBoarding()
     loginRoute()
     webView()
 }
@@ -124,7 +133,8 @@ fun NavGraphBuilder.homeNavigationGraph() {
 }
 
 fun NavGraphBuilder.detailsNavigationGraph() {
-    mediaDetailsRoute()
+    tvShowDetailsRoute()
+    movieDetailsRoute()
     castDetailsScreen()
     videoWebView()
 }

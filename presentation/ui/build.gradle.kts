@@ -22,7 +22,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
     implementation(libs.bundles.koin)
-    implementation(libs.androidx.navigation)
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.splashscreen)
     implementation(project(":presentation:designSystem"))
@@ -36,7 +38,4 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
 
-    val paging_version = "3.3.6"
-    implementation("androidx.paging:paging-runtime:$paging_version")
-    implementation("androidx.paging:paging-compose:$paging_version")
 }

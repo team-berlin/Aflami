@@ -1,5 +1,7 @@
 package com.berlin.repository.datasource.remote.dto
 
+import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
+import com.berlin.repository.datasource.remote.dto.movie.MovieDto
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
@@ -18,7 +20,7 @@ data class PersonDto(
 	val popularity: Double? = null,
 
 	@SerialName("known_for")
-	val knownFor: List<MediaDto?>? = null,
+	val knownFor: List<MovieDetailsDto>? = null,
 
 	@SerialName("name")
 	val name: String? = null,

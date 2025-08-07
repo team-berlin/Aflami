@@ -1,16 +1,19 @@
 package com.berlin.entity
 
-import kotlinx.datetime.LocalDate
-
 data class TVShow(
     val id :Long,
     val title:String,
     val rating: Double,
-    val releaseYear: LocalDate?,
-    val genre:List<Int>,
-    val poster:String,
-    val backdropPath: String? = null,
-    val overview: String? = null,
-    val releaseDate: String? = null,
-    val runtime: Int? = null,
+    val posterURL:String,
+    val releaseDate: String,
+    val screenShot: String,
+    val description: String,
+    val genres: List<Genre>,
+    val duration: Int,
+    val companyProductions: List<CompanyProduction>,
+    val originCountry: String,
+    val numberOfSeasons:Int,
+
+    val hasVideo: Boolean,
+    val galleryUrl:List<String>,
 )

@@ -4,5 +4,5 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaType
 
 interface TopRatingInteractionListener {
     fun onBackClicked()
-    fun onMediaCardClicked(id: Long, type: MediaType)
+    fun onMediaCardClicked(mediaId: Long, mediaType: MediaType)
 }

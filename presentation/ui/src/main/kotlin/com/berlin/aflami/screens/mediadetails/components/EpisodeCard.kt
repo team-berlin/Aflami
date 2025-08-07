@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.search.mediadetails
+package com.berlin.aflami.screens.mediadetails.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,14 +25,13 @@ import coil3.compose.AsyncImage
 import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.uistate.EpisodesUiState
+import com.berlin.aflami.viewmodel.details.series.EpisodeUiState
 import com.berlin.designsystem.R
 import com.berlin.safeimageviewer.SafeImageViewer
 
-
 @Composable
 fun EpisodeCard(
-    episode: EpisodesUiState,
+    episode: EpisodeUiState,
     modifier: Modifier = Modifier,
     onClickPlay: () -> Unit = {}
 ) {
@@ -97,7 +96,7 @@ private fun ImageWithRatingBadge(
     ) {
         SafeImageViewer(
             modifier = Modifier.fillMaxSize(),
-            imageUri = imageUrl,
+            model = imageUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             alignment = Alignment.TopCenter,

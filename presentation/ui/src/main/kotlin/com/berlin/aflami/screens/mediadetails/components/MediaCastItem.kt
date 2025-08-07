@@ -42,7 +42,7 @@ fun MediaCastItem(
             contentAlignment = Alignment.Center
         ){
             SafeImageViewer(
-                imageUri = poster,
+                model = poster,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),

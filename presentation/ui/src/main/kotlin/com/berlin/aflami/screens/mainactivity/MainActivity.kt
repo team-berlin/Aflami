@@ -13,29 +13,30 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.berlin.aflami.navigation.AflamiNavGraph
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.main.MainViewModel
+import com.berlin.aflami.viewmodel.main.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val mainViewModel: MainViewModel by viewModels()
+    private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
         val splashScreen = installSplashScreen()
 
         splashScreen.setKeepOnScreenCondition {
-            mainViewModel.isLoading
+            mainActivityViewModel.isLoading
         }
+
         enableEdgeToEdge()
         setContent {
             AflamiTheme {
                 AflamiNavGraph(
                     navController = Theme.navController,
-                    isLoggedIn = mainViewModel.loginState,
-                    modifier = Modifier.Companion
+                    isLoggedIn = mainActivityViewModel.loginState,
+                    isFirsTime = mainActivityViewModel.isFirstEntry,
+                    modifier = Modifier
                         .fillMaxSize()
                         .background(Theme.color.surface)
                         .navigationBarsPadding()

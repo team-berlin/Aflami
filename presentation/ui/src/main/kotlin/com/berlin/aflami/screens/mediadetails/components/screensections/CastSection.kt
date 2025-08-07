@@ -17,11 +17,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.screens.mediadetails.components.MediaCastItem
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.mediadetails.uistate.MediaCastUiState
+import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 
 @Composable
 fun CastSection(
-    cast: List<MediaCastUiState>,
+    cast: List<ActorUiState>,
     onShowAllClicked: () -> Unit
 ) {
     Column(

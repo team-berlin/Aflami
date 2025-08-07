@@ -51,5 +51,20 @@ object ExtraColors {
 
     )
 
+    val onBoardingLinearGradientTopToDown=Brush.verticalGradient(
+        listOf(
+            Color(0x000D0608),
+            Color(0xFF0D0608)
+        ),
+
+    )
+    val onBoardingLinearGradientDownToTop=Brush.verticalGradient(
+        listOf(
+            Color(0xFF0D0608),
+            Color(0x000D0608),
+        ),
+
+    )
+
 
 }

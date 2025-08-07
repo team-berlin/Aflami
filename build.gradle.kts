@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.kover)
     alias(libs.plugins.kotlin.serialization) apply false
-
     alias(libs.plugins.firebase.gms.service) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.firebase.performance) apply false

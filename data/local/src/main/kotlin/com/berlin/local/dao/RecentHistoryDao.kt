@@ -17,6 +17,6 @@ interface RecentHistoryDao {
     @Query("DELETE FROM search_cache")
     suspend fun clearSearchHistory()
     
-    @Query("SELECT DISTINCT `query` FROM search_cache ORDER BY time DESC LIMIT 10")
+    @Query("SELECT DISTINCT `query` FROM search_cache ORDER BY timeStamp DESC LIMIT 10")
     suspend fun getRecentSearchQueries(): List<String>
 }

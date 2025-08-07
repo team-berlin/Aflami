@@ -13,12 +13,11 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.androidxUi)
-    implementation(libs.bundles.coil)
     debugImplementation(libs.bundles.composeUiDebug)
-    implementation(libs.androidx.navigation)
+    implementation(libs.navigation.compose)
+    implementation(libs.bundles.coil)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.core.splashscreen)
 
     implementation(project(":presentation:safeImageViewer"))
-
 }

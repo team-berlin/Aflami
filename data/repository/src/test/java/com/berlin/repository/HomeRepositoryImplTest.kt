@@ -1,6 +1,5 @@
 package com.berlin.repository
 
-import com.berlin.repository.datasource.remote.HomeRemoteDataSource
 import com.berlin.repository.fake.FakeHomeRemoteDataSource
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -9,11 +8,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
-import repository.HomeRepository
+import repository.MovieRepository
 
 class HomeRepositoryImplTest {
     private lateinit var homeRemoteDataSource: HomeRemoteDataSource
-    private lateinit var homeRepository: HomeRepository
+    private lateinit var homeRepository: MovieRepository
 
     @Before
     fun setUp(){

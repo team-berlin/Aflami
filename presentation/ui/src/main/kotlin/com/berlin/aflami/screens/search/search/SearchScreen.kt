@@ -50,7 +50,7 @@ import com.berlin.aflami.component.TabBar
 import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.SearchByActorDestination
 import com.berlin.aflami.navigation.SearchByCountryDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
@@ -61,8 +61,8 @@ import com.berlin.aflami.screens.search.getMovieGenreIcon
 import com.berlin.aflami.screens.search.getTvShowGenreIcon
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
-import com.berlin.aflami.viewmodel.search.SearchInteractionListener
-import com.berlin.aflami.viewmodel.search.SearchUiEffect
+import com.berlin.aflami.viewmodel.search.SearchScreenEffect
+import com.berlin.aflami.viewmodel.search.SearchScreenInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
@@ -120,28 +120,27 @@ fun SearchScreen(
 
 private fun onReceiveSearchEffect(
     navController: NavController,
-    effect: SearchUiEffect,
+    effect: SearchScreenEffect,
 ) {
     when (effect) {
-        is SearchUiEffect.NavigatedBack -> navController.popBackStack()
+        is SearchScreenEffect.NavigatedBack -> navController.popBackStack()
 
-        is SearchUiEffect.NavigatedToMovieDetailsScreen -> {
+        is SearchScreenEffect.NavigatedToMovieDetailsScreen -> {
 
             navController.navigate(
-                MediaDetailsDestination(
-                    mediaId = effect.id,
-                    mediaType = MediaType.valueOf("MOVIE"),
+                MovieDetailsDestination(
+                    movieId = effect.id,
                 )
             )
         }
 
-        is SearchUiEffect.NavigateToActorSearch -> {
+        is SearchScreenEffect.NavigateToActorSearchScreen -> {
             navController.navigate(
                 SearchByActorDestination
             )
         }
 
-        is SearchUiEffect.NavigateToWorldSearch -> {
+        is SearchScreenEffect.NavigateToWorldSearchScreen -> {
             navController.navigate(
                 SearchByCountryDestination
             )
@@ -153,7 +152,7 @@ private fun onReceiveSearchEffect(
 @Composable
 private fun SearchScreenContent(
     state: SearchUiState,
-    listenerSearch: SearchInteractionListener,
+    listenerSearch: SearchScreenInteractionListener,
     filterSearch: FilterInteractionListener,
     recentSearchState: List<String>,
     onItemClick: (TextFieldValue) -> Unit,
@@ -351,14 +350,14 @@ private fun SearchScreenContent(
                                                         MediaCard(
                                                             modifier = Modifier.height(222.dp),
                                                             onClick = {
-                                                                listenerSearch.onCardClicked(
-                                                                    id = movie.id
+                                                                listenerSearch.onMediaCardClicked(
+                                                                    mediaId = movie.id
                                                                 )
                                                             },
-                                                            mediaImg = movie.poster,
+                                                            mediaImg = movie.posterUrl,
                                                             title = movie.title,
-                                                            typeOfMedia = stringResource(R.string.movies),
-                                                            date = movie.releaseYear,
+                                                            typeOfMedia = MediaType.MOVIE.name,
+                                                            date = movie.releaseDate,
                                                             rating = movie.rating
                                                         )
                                                     }
@@ -413,18 +412,17 @@ private fun SearchScreenContent(
                                             ) { index ->
                                                 val tvShows = tvShows[index]
                                                 if (tvShows != null) {
-
                                                     MediaCard(
                                                         modifier = Modifier.height(222.dp),
-                                                        mediaImg = tvShows.poster,
+                                                        mediaImg = tvShows.posterUrl,
                                                         title = tvShows.title,
                                                         onClick = {
-                                                            listenerSearch.onCardClicked(
+                                                            listenerSearch.onMediaCardClicked(
                                                                 tvShows.id
                                                             )
                                                         },
-                                                        typeOfMedia = stringResource(R.string.tv_shows),
-                                                        date = tvShows.releaseYear,
+                                                        typeOfMedia =MediaType.TV_SHOW.name,
+                                                        date = tvShows.releaseDate,
                                                         rating = tvShows.rating
                                                     )
 

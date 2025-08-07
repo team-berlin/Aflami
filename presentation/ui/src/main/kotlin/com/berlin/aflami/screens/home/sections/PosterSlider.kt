@@ -18,10 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.berlin.aflami.component.PlayButton
 import com.berlin.aflami.component.RatingCard
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.safeimageviewer.SafeImageViewer
 import kotlinx.coroutines.delay
@@ -30,20 +33,22 @@ import kotlinx.coroutines.delay
 fun PosterSlider(
     modifier: Modifier = Modifier,
     mediaList: List<MediaUiState>,
-    onClick: (MediaUiState) -> Unit = {},
+    onMovieItemClicked: (movieId: Long) -> Unit = {},
+    onTVShowItemClicked: (tvShowId: Long) -> Unit = {},
     pagerState: PagerState,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val itemWidth = remember { 244.dp }
-    val contentPadding =remember { (screenWidth - itemWidth) / 2 }
+    val contentPadding = remember { (screenWidth - itemWidth) / 2 }
 
     LaunchedEffect(pagerState) {
         while (true) {
             delay(4000)
-            if(pagerState.pageCount>0) {
+            if (pagerState.pageCount > 0) {
                 val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
-                pagerState.animateScrollToPage(nextPage
-                
+                pagerState.animateScrollToPage(
+                    nextPage
+
                 )
             }
         }
@@ -62,7 +67,13 @@ fun PosterSlider(
         mediaItem?.let {
             SliderCard(
                 isCentered = pageIndex == pagerState.currentPage,
-                onClick = { onClick(it) },
+                onClick = {
+                    when (it.mediaType) {
+                        MediaType.MOVIE -> onMovieItemClicked(it.id)
+                        MediaType.TV_SHOW -> onTVShowItemClicked(it.id)
+                        else -> throw IllegalArgumentException("Unknown media type")
+                    }
+                },
                 rating = it.rating,
                 posterImageUrl = it.poster
             )
@@ -94,12 +105,14 @@ fun SliderCard(
                 interactionSource = null,
                 indication = null,
 
-            ) ,
+                ) ,
         contentAlignment = Alignment.BottomCenter
     ) {
 
-        SafeImageViewer(
-            imageUri = posterImageUrl,
+        AsyncImage(
+            model = posterImageUrl,
+            contentDescription = "poster Image",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .width(cardWidth)
                 .height(cardHeight)
@@ -117,4 +130,3 @@ fun SliderCard(
         }
     }
 }
-

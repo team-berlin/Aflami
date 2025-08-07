@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -30,36 +29,46 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.navigation.MediaDetailsDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
+import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.ui.color.ExtraColors.BackgroundGradient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingScreenEffect
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingViewModel
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TopRatingScreen(
-    topRatingViewModel: TopRatingViewModel = koinViewModel(),
+    topRatingViewModel: TopRatingViewModel = hiltViewModel(),
 ) {
-    val screenState by topRatingViewModel.state.collectAsState()
-    val navController=Theme.navController
+    val topRatingScreenState by topRatingViewModel.state.collectAsStateWithLifecycle()
+    val navController = Theme.navController
 
     LaunchedEffect(Unit) {
         topRatingViewModel.effect.collect { effect ->
             when (effect) {
                 is TopRatingScreenEffect.NavigateToMediaDetailsScreen -> {
-                    navController.navigate(
-                        MediaDetailsDestination(
-                            effect.id, effect.type
+                    when(effect.mediaType){
+                        MediaType.MOVIE ->    navController.navigate(
+                            MovieDetailsDestination(
+                                effect.mediaId
+                            )
                         )
-                    )
+                        MediaType.TV_SHOW ->navController.navigate(
+                            TVShowDetailsDestination(
+                                effect.mediaId
+                            )
+                        )
+                    }
                 }
 
                 is TopRatingScreenEffect.NavigateBack -> {
@@ -69,16 +78,16 @@ fun TopRatingScreen(
         }
     }
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = screenState.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = topRatingScreenState.isLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
 
-    val topRatedItems = topRatingViewModel.topRatedPagingFlow.collectAsLazyPagingItems()
+    val topRatedItems = topRatingScreenState.topRatedMediaFlow.collectAsLazyPagingItems()
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = !screenState.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = !topRatingScreenState.isLoading
     ) {
         TopRatingContent(
             topRatedMediaItems = topRatedItems, viewModel = topRatingViewModel
@@ -152,10 +161,11 @@ private fun TopRatingContent(
                         title = topRatedMedia.title,
                         onClick = {
                             viewModel.onMediaCardClicked(
-                                id = topRatedMedia.id, mediaType = topRatedMedia.mediaType
+                                mediaId = topRatedMedia.id,
+                                mediaType = topRatedMedia.mediaType ?: MediaType.MOVIE
                             )
                         },
-                        typeOfMedia = topRatedMedia.mediaType.name,
+                        typeOfMedia = topRatedMedia.mediaType?.name ?: MediaType.MOVIE.name,
                         date = topRatedMedia.releaseYear,
                         rating = topRatedMedia.rating
                     )
