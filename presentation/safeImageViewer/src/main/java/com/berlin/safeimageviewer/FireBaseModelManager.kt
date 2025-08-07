@@ -1,12 +1,18 @@
 package com.berlin.safeimageviewer
 
-import android.content.SharedPreferences
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions
 import com.google.firebase.ml.modeldownloader.DownloadType
 import com.google.firebase.ml.modeldownloader.FirebaseModelDownloader
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
 import java.nio.MappedByteBuffer
@@ -15,31 +21,38 @@ import javax.inject.Inject
 
 
 class FireBaseModelManager @Inject constructor(
-    val prefs: SharedPreferences
+    private val networkConnectivityObserver: NetworkConnectivityObserver,
 ) {
     val models = mutableMapOf<String, MappedByteBuffer>()
-    val isModelDownloaded = mutableStateOf(false)
+    private val _isModelDownloaded = MutableStateFlow(false)
+    val isModelDownloaded: StateFlow<Boolean> = _isModelDownloaded.asStateFlow()
 
     internal var nsfwInterpreter: Interpreter? = null
     internal var genderInterpreter: Interpreter? = null
     suspend fun downloadModelsOnce() {
-        while (!isModelDownloaded.value) {
+        networkConnectivityObserver.observe().first { it == NetworkStatus.Available }
+        withContext(Dispatchers.IO) {
             try {
-                models[NSFW_MODEL] = loadFirebaseModel(NSFW_MODEL)
-                models[GENDER_MODEL] = loadFirebaseModel(GENDER_MODEL)
+                coroutineScope {
+                    val nsfwJob = async {
+                        models[NSFW_MODEL] = loadFirebaseModel(NSFW_MODEL)
+                    }
 
-                nsfwInterpreter = Interpreter(
-                    getModel(NSFW_MODEL),
-                    Interpreter.Options()
-                )
-                genderInterpreter = Interpreter(
-                    getModel(GENDER_MODEL),
-                    Interpreter.Options()
-                )
+                    val genderModelJob = async {
+                        models[GENDER_MODEL] = loadFirebaseModel(GENDER_MODEL)
+                    }
 
-                isModelDownloaded.value = true
+                    nsfwJob.await()
+                    genderModelJob.await()
+
+                    nsfwInterpreter = Interpreter(getModel(NSFW_MODEL), Interpreter.Options())
+                    genderInterpreter = Interpreter(getModel(GENDER_MODEL), Interpreter.Options())
+
+                    _isModelDownloaded.value = true
+                }
+
             } catch (e: Exception) {
-                Log.e("FireBaseModelManager", "Error downloading models: ${e.message}")
+                Log.e("FireBaseModelManager", "Error downloading models: ${e.message}", e)
             }
         }
     }
@@ -52,9 +65,7 @@ class FireBaseModelManager @Inject constructor(
     suspend fun loadFirebaseModel(name: String): MappedByteBuffer {
         val downloader = FirebaseModelDownloader.getInstance()
         val model = downloader.getModel(
-            name,
-            DownloadType.LOCAL_MODEL,
-            CustomModelDownloadConditions.Builder().requireWifi().build()
+            name, DownloadType.LOCAL_MODEL, CustomModelDownloadConditions.Builder().build()
         ).await()
 
         val file = model.file ?: throw IllegalStateException("Model not downloaded")
