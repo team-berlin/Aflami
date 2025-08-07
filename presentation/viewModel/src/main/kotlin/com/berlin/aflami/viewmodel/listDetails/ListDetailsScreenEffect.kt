@@ -7,6 +7,8 @@ sealed interface ListDetailsScreenEffect {
     object NavigateToCreateNewListSheet : ListDetailsScreenEffect
     data class NavigateToMovieDetailsScreen(val movieId: Long) : ListDetailsScreenEffect
     object DismissDeleteDialog : ListDetailsScreenEffect
+    object ShowDeleteMovieFromListFailedSnackBar : ListDetailsScreenEffect
+    object ShowDeleteMovieFromListSucceededSnackBar : ListDetailsScreenEffect
     data class NavigateBackAndShowDeleteListStatusSnackBar(val isListDeletedSuccessfully: Boolean) :
         ListDetailsScreenEffect
 
