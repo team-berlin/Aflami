@@ -37,7 +37,7 @@ import com.berlin.repository.datasource.local.dto.SearchingEntity
         GenreEntity::class,
         MovieHomeEntity::class,
         TVShowHomeEntity::class
-    ], version = 2, exportSchema = false
+    ], version = 1, exportSchema = false
 )
 abstract class AflamiDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
