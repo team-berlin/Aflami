@@ -1,0 +1,61 @@
+package com.berlin.aflami.screens.listdetails.component
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import com.berlin.aflami.component.PrimaryButton
+import com.berlin.aflami.component.TextField
+import com.berlin.aflami.ui.theme.Theme
+import com.berlin.ui.R
+
+@Composable
+fun CreateNewListDialog(
+    modifier: Modifier = Modifier,
+    listName: TextFieldValue = TextFieldValue(""),
+    onListNameChanged: (TextFieldValue) -> Unit = {},
+    onCreateListClick: () -> Unit = {},
+    onDismiss: () -> Unit = {}
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Column(
+            modifier = modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+        ) {
+            DialogTitleBar(
+                titleResource = R.string.create_new_list,
+                modifier = modifier.fillMaxWidth(),
+                onDismiss = onDismiss
+            )
+            TextField(
+                text = listName,
+                onValueChange = onListNameChanged,
+                hintText = stringResource(R.string.my_favorite),
+                leadingIcon = R.drawable.nav_lists,
+                modifier = modifier.fillMaxWidth()
+            )
+
+            PrimaryButton(
+                onClick = onCreateListClick,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                containerColor = Theme.color.primary
+            ) {
+                Text(
+                    stringResource(R.string.create),
+                    style = Theme.textStyle.label.large,
+                    color = Theme.color.onPrimaryButton
+                )
+            }
+        }
+    }
+}

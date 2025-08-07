@@ -1,4 +1,4 @@
-package com.berlin.aflami.component
+package com.berlin.aflami.screens.lists.component
 
 
 import androidx.compose.foundation.background
@@ -14,15 +14,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.designsystem.R
 
 
 @Composable
 fun ListCard(
     title: String,
-    itemCount: String,
+    count: Int,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -56,7 +59,7 @@ fun ListCard(
                     style = Theme.textStyle.title.medium
                 )
                 Text(
-                    itemCount,
+                    text = stringResource(R.string.item_count, count),
                     color = Theme.color.textColors.hint,
                     style = Theme.textStyle.label.large
                 )
@@ -85,7 +88,7 @@ private fun ListCardPreview() {
     AflamiTheme {
         ListCard(
             title = "My favorite",
-            itemCount = "12 item"
+            count = 18
         )
     }
 }
