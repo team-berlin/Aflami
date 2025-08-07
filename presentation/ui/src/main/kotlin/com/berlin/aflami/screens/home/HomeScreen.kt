@@ -295,7 +295,7 @@ private fun HomeContent(
                             seeAllOnClick = {
                                 homeScreenInteractionListener.onShowAllContinueWatchingClicked()
                             },
-                            state = mediaList,
+                            state = mediaList.take(10),
                             sectionTitleId = R.string.continue_watching,
                             onMovieItemClicked = {
                                 homeScreenInteractionListener.onMovieCardClicked(
