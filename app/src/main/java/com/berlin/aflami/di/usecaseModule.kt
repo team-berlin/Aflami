@@ -221,19 +221,19 @@ object UseCaseModule {
         GetFirstEntryUseCase(repository)
 
     @Provides
-    fun GetLanguageUseCase(repository: SettingsRepository): GetLanguageUseCase =
+    fun provideGetLanguageUseCase(repository: SettingsRepository): GetLanguageUseCase =
         GetLanguageUseCase(repository)
 
     @Provides
-    fun GetThemeUseCase(repository: SettingsRepository): GetThemeUseCase =
+    fun provideGetThemeUseCase(repository: SettingsRepository): GetThemeUseCase =
         GetThemeUseCase(repository)
 
     @Provides
-    fun SetLanguageUseCase(repository: SettingsRepository): SetLanguageUseCase =
+    fun provideSetLanguageUseCase(repository: SettingsRepository): SetLanguageUseCase =
         SetLanguageUseCase(repository)
 
     @Provides
-    fun SetThemeUseCase(repository: SettingsRepository): SetThemeUseCase =
+    fun provideSetThemeUseCase(repository: SettingsRepository): SetThemeUseCase =
         SetThemeUseCase(repository)
 
 
