@@ -31,8 +31,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
+import com.berlin.aflami.navigation.ListDetailsDestination
+import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
 import com.berlin.aflami.screens.lists.component.ListCard
@@ -62,6 +65,7 @@ private fun ListsContent(
     listScreenState: ListScreenState,
     interactionListener: ListScreenInteractionListener,
 ) {
+    val navController = Theme.navController
     Box(
         modifier = modifier.navigationBarsPadding()
     ) {
@@ -179,13 +183,18 @@ private fun ListsContent(
     }
 }
 
-private fun onReceiveNewEffect(effect: ListScreenEffect) {
+private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavController) {
     when (effect) {
+
         ListScreenEffect.NavigateBack -> TODO()
-        is ListScreenEffect.NavigateToSeeAllListScreen -> TODO()
+        is ListScreenEffect.NavigateToSeeAllListScreen -> navController.navigate(
+            ListDetailsDestination(listId = effect.listId)
+        )
+
         ListScreenEffect.ShowCreateNewListSheet -> TODO()
         is ListScreenEffect.ShowCreateNewListStatusSnackBar -> TODO()
         is ListScreenEffect.ShowEditListStatusSnackBar -> TODO()
+        ListScreenEffect.NavigateToLoginScreen -> navController.navigate(route = LoginDestination)
     }
 }
 
