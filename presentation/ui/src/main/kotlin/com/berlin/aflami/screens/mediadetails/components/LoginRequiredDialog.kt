@@ -2,6 +2,7 @@ package com.berlin.aflami.screens.mediadetails.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -71,10 +72,11 @@ fun LoginRequiredDialog(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(80.dp)
-                        .clip(CircleShape)
+                        .clip(RoundedCornerShape(24.dp))
+                        .border(1.dp,Theme.color.stroke)
                 ) {
                     Image(
-                        painter = painterResource(id =com.berlin.designsystem.R.drawable.user_im),
+                        painter = painterResource(id =com.berlin.designsystem.R.drawable.no_review_image),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -95,7 +97,7 @@ fun LoginRequiredDialog(
                     Modifier
                         .fillMaxWidth()
                         .height(48.dp)
-                        .clip(RoundedCornerShape(12.dp))
+                        .clip(RoundedCornerShape(16.dp))
                         .background(Theme.color.primaryVariant)
                         .clickable { onLoginClick() },
                     contentAlignment = Alignment.Center
