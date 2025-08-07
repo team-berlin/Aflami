@@ -1,8 +1,8 @@
 package usecase.profile
 
-import com.berlin.entity.AppLanguage
+import kotlinx.coroutines.flow.Flow
 import repository.SettingsRepository
 
 class GetLanguageUseCase(private val settingsRepository: SettingsRepository) {
-    suspend operator fun invoke(): AppLanguage = settingsRepository.getLanguage()
+    suspend operator fun invoke(): Flow<String?> = settingsRepository.getLanguage()
 }

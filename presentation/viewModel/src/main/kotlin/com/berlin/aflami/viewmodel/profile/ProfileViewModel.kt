@@ -25,7 +25,40 @@ class ProfileViewModel @Inject constructor(
     ProfileInteractionListener {
 
     init {
+        collectTheme()
+        collectLanguage()
     }
+
+    private fun collectTheme() {
+        viewModelScope.launch {
+            getThemeUseCase().collect { theme ->
+                updateState {
+                    it.copy(
+                        selectedTheme = theme!!,
+                        isDarkThemeSelected = theme == AppTheme.DARK.name,
+                        isLightThemeSelected = theme == AppTheme.LIGHT.name,
+                        isDarkThemeEnabled = theme == AppTheme.DARK.name
+                    )
+                }
+            }
+        }
+    }
+
+    private fun collectLanguage() {
+        viewModelScope.launch {
+            getLanguageUseCase().collect { language ->
+                updateState {
+                    it.copy(
+                        selectedLanguage = language!!,
+                        isArabicSelected = language == AppLanguage.AR.name,
+                        isEnglishSelected = language == AppLanguage.EN.name,
+                        isLanguageEN = language == AppLanguage.EN.name
+                    )
+                }
+            }
+        }
+    }
+
 
     override fun onWatchHistoryClick() {
         sendNewEffect(ProfileScreenEffect.NavigateToWatchHistoryScreen)
@@ -70,6 +103,7 @@ class ProfileViewModel @Inject constructor(
                 isDarkThemeEnabled = false,
             )
         }
+        sendNewEffect(ProfileScreenEffect.RefreshActivity)
 
     }
 

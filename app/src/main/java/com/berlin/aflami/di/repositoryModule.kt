@@ -3,11 +3,11 @@ package com.berlin.aflami.di
 import com.berlin.repository.AuthenticationRepositoryImpl
 import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
+import com.berlin.repository.SettingsRepositoryImpl
 import com.berlin.repository.TVShowRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
 import com.berlin.repository.UserRepositoryImpl
 import com.berlin.repository.datasource.AppEntryRepositoryImpl
-import com.yourapp.settings.data.repository.SettingsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
