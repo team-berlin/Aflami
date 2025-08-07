@@ -3,13 +3,18 @@ package com.berlin.repository
 import com.berlin.exception.NotFoundException
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
+import kotlinx.coroutines.flow.Flow
 import repository.AuthenticationRepository
 import javax.inject.Inject
 
-class AuthenticationRepositoryImpl  @Inject constructor(
+class AuthenticationRepositoryImpl @Inject constructor(
     private val authenticationRemoteDataSource: AuthenticationRemoteDataSource,
     private val authenticationLocalDataSource: AuthenticationLocalDataSource,
 ) : AuthenticationRepository {
+
+    override fun observeLoginStatus(): Flow<Boolean> {
+        return authenticationLocalDataSource.observeLoginStatus()
+    }
 
     private suspend fun requestToken(): String {
         return authenticationRemoteDataSource.requestToken().requestToken
@@ -39,7 +44,6 @@ class AuthenticationRepositoryImpl  @Inject constructor(
     }
 
     override suspend fun logout() {
-
     }
 
 }
