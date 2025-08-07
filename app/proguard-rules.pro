@@ -98,7 +98,8 @@
 -keepattributes *Annotation*, InnerClasses, EnclosingMethod, Signature, Exceptions, LineNumberTable, LocalVariableTable, LocalVariableTypeTable, SourceFile, RuntimeVisibleAnnotations, RuntimeInvisibleAnnotations, RuntimeVisibleParameterAnnotations, RuntimeInvisibleParameterAnnotations, AnnotationDefault
 
 -dontwarn timber.log.Timber
-
+-dontwarn com.google.api.client.http.**
+-dontwarn org.joda.time.**
 -dontwarn java.sql.JDBCType
 -dontwarn javax.lang.model.SourceVersion
 -dontwarn javax.lang.model.element.AnnotationMirror
