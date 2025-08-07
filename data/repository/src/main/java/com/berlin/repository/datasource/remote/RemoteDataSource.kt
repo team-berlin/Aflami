@@ -1,5 +1,7 @@
 package com.berlin.repository.datasource.remote
 
+import com.berlin.repository.datasource.remote.dto.CreateListResponse
+import com.berlin.repository.datasource.remote.dto.DeleteListResponse
 import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
@@ -50,7 +52,7 @@ interface RemoteDataSource {
         favouriteListId: Int,
     ): List<MovieDto>
 
-    fun deleteUserFavouriteList(listId: Int)
-    fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long)
-    fun createNewFavouriteList(title: String)
+    suspend fun deleteUserFavouriteList(listId: Int): DeleteListResponse
+    suspend fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long)
+    suspend fun createNewFavouriteList(title: String): CreateListResponse
 }

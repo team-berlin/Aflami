@@ -1,7 +1,10 @@
 package com.berlin.remote
 
 import com.berlin.remote.network.ApiService
+import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
+import com.berlin.repository.datasource.remote.dto.CreateListResponse
+import com.berlin.repository.datasource.remote.dto.DeleteListResponse
 import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
@@ -10,6 +13,7 @@ import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.movie.MovieDto
+import com.berlin.repository.datasource.remote.dto.request.CreateListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
@@ -17,7 +21,8 @@ import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import javax.inject.Inject
 
 class RetrofitRemoteDataSource @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val authenticationLocalDataSource: AuthenticationLocalDataSource,
 ) : RemoteDataSource {
     override suspend fun getSimilarMovies(movieId: Long): BaseResponse<MovieDetailsDto> {
         require(movieId > 0) { "Invalid movieId: $movieId" }
@@ -87,22 +92,34 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse { apiService.getTVGenres() }
     }
 
-    override suspend fun getMoviesByCountryName(countryName: String, page: Int): BaseResponse<MovieDetailsDto> {
+    override suspend fun getMoviesByCountryName(
+        countryName: String,
+        page: Int,
+    ): BaseResponse<MovieDetailsDto> {
         require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse { apiService.searchMoviesByCountry(countryName, page) }
     }
 
-    override suspend fun getMoviesByActorName(actorName: String, page: Int): BaseResponse<PersonDto> {
+    override suspend fun getMoviesByActorName(
+        actorName: String,
+        page: Int,
+    ): BaseResponse<PersonDto> {
         require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse { apiService.searchMoviesByActor(actorName, page) }
     }
 
-    override suspend fun getMoviesByKeyword(query: String, page: Int): BaseResponse<MovieDetailsDto> {
+    override suspend fun getMoviesByKeyword(
+        query: String,
+        page: Int,
+    ): BaseResponse<MovieDetailsDto> {
         require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse { apiService.searchMovies(query, page) }
     }
 
-    override suspend fun getTVShowsByKeyword(query: String, page: Int): BaseResponse<TVShowDetailsDto> {
+    override suspend fun getTVShowsByKeyword(
+        query: String,
+        page: Int,
+    ): BaseResponse<TVShowDetailsDto> {
         require(page > 0) { "Page must be greater than 0" }
         return wrapApiResponse { apiService.searchTVShows(query, page) }
     }
@@ -151,15 +168,27 @@ class RetrofitRemoteDataSource @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun deleteUserFavouriteList(listId: Int) {
+    override suspend fun deleteUserFavouriteList(listId: Int): DeleteListResponse {
+        return wrapApiResponse {
+            apiService.deleteUserFavouriteList(
+                sessionId = authenticationLocalDataSource.getUserSessionId()
+                    ?: throw IllegalStateException("userSessionID == null"),
+                favouriteListId = listId
+            )
+        }
+    }
+
+    override suspend fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long) {
         TODO("Not yet implemented")
     }
 
-    override fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long) {
-        TODO("Not yet implemented")
-    }
-
-    override fun createNewFavouriteList(title: String) {
-        TODO("Not yet implemented")
+    override suspend fun createNewFavouriteList(title: String): CreateListResponse {
+        return wrapApiResponse {
+            apiService.createNewFavouriteList(
+                sessionId = authenticationLocalDataSource.getUserSessionId()
+                    ?: throw IllegalStateException("userSessionID == null"),
+                createListRequest = CreateListRequest(name = title, description = "", language = "")
+            )
+        }
     }
 }

@@ -62,4 +62,7 @@ object ApiConstants {
     const val INCLUDE_ADULT_DEFAULT = false
     const val INCLUDE_VIDEO_DEFAULT = false
     const val RELEASE_TYPE_THEATRICAL_AND_LIMITED = "2|3"
+    const val LIST = "list"
+    const val LIST_ID = "list_id"
+    const val DELETE_LIST = "list/{list_id}"
 }

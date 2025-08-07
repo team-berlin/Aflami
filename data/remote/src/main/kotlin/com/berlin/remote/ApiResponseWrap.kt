@@ -10,7 +10,7 @@ import java.net.UnknownHostException
 
 suspend fun <T> wrapApiResponse(request: suspend () -> Response<T>): T {
     try {
-        val response = request()
+        val response: Response<T> = request()
         if (response.isSuccessful) {
             return response.body() ?: throw NotFoundException("Response body is null")
         } else {

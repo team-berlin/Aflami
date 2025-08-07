@@ -1,11 +1,15 @@
 package com.berlin.remote.network
 
+import com.berlin.remote.network.ApiConstants.LIST_ID
+import com.berlin.repository.datasource.remote.dto.CreateListResponse
+import com.berlin.repository.datasource.remote.dto.DeleteListResponse
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
+import com.berlin.repository.datasource.remote.dto.request.CreateListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
@@ -13,92 +17,94 @@ import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
     @GET(ApiConstants.MOVIE_IMAGES)
     suspend fun getMovieImages(
-        @Path(ApiConstants.MOVIE_ID) movieId: Long
+        @Path(ApiConstants.MOVIE_ID) movieId: Long,
     ): Response<MediaImagesResponse>
 
     @GET(ApiConstants.SERIES_IMAGES)
     suspend fun getTVImages(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long
+        @Path(ApiConstants.SERIES_ID) seriesId: Long,
     ): Response<MediaImagesResponse>
 
     @GET(ApiConstants.MOVIE_DETAILS)
     suspend fun getMovieDetails(
-        @Path(ApiConstants.MOVIE_ID) movieId: Long
+        @Path(ApiConstants.MOVIE_ID) movieId: Long,
     ): Response<MovieDetailsDto>
 
     @GET(ApiConstants.MOVIE_CAST)
     suspend fun getMovieCastDetails(
-        @Path(ApiConstants.MOVIE_ID) movieId: Long
+        @Path(ApiConstants.MOVIE_ID) movieId: Long,
     ): Response<MediaCastResponse>
 
     @GET(ApiConstants.MOVIE_MORE_LIKE_THIS)
     suspend fun getMovieSimilar(
-        @Path(ApiConstants.MOVIE_ID) movieId: Long
+        @Path(ApiConstants.MOVIE_ID) movieId: Long,
     ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.MOVIE_REVIEW)
     suspend fun getMovieReviews(
-        @Path(ApiConstants.MOVIE_ID) movieId: Long
+        @Path(ApiConstants.MOVIE_ID) movieId: Long,
     ): Response<BaseResponse<ReviewDto>>
 
     @GET(ApiConstants.SEARCH_BY_COUNTRY)
     suspend fun searchMoviesByCountry(
         @Query(ApiConstants.WITH_ORIGIN_COUNTRY) countryName: String,
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.PAGE) page: Int,
     ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.SEARCH_BY_ACTOR)
     suspend fun searchMoviesByActor(
         @Query(ApiConstants.QUERY) actorName: String,
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.PAGE) page: Int,
     ): Response<BaseResponse<PersonDto>>
 
     @GET(ApiConstants.SEARCH_MOVIE)
     suspend fun searchMovies(
         @Query(ApiConstants.QUERY) query: String,
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.PAGE) page: Int,
     ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.SEARCH_TV)
     suspend fun searchTVShows(
         @Query(ApiConstants.QUERY) query: String,
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.PAGE) page: Int,
     ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.SERIES_DETAILS)
     suspend fun getTVShowDetails(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long
+        @Path(ApiConstants.SERIES_ID) seriesId: Long,
     ): Response<TVShowDetailsDto>
 
     @GET(ApiConstants.SERIES_CAST)
     suspend fun getTVCastDetails(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long
+        @Path(ApiConstants.SERIES_ID) seriesId: Long,
     ): Response<MediaCastResponse>
 
     @GET(ApiConstants.SERIES_MORE_LIKE_THIS)
     suspend fun getTVSimilar(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long
+        @Path(ApiConstants.SERIES_ID) seriesId: Long,
     ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.SERIES_REVIEW)
     suspend fun getTVReviews(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long
+        @Path(ApiConstants.SERIES_ID) seriesId: Long,
     ): Response<BaseResponse<ReviewDto>>
 
     @GET(ApiConstants.EPISODE_SEASON_SERIES)
     suspend fun getEpisodeSeasonSeries(
         @Path(ApiConstants.SERIES_ID) seriesId: Long,
-        @Path(ApiConstants.SEASON_NUMBER) seasonNumber: Int
+        @Path(ApiConstants.SEASON_NUMBER) seasonNumber: Int,
     ): Response<SeasonEpisodesDto>
 
     @GET(ApiConstants.MOVIE_GENRES)
@@ -109,16 +115,16 @@ interface ApiService {
 
     @GET(ApiConstants.DISCOVER_MOVIE)
     suspend fun getUpcomingMovies(
-        @Query(ApiConstants.WITH_GENRES)  selectedGenres: Int? = null,
+        @Query(ApiConstants.WITH_GENRES) selectedGenres: Int? = null,
 
         @Query(ApiConstants.QUERY_SORT_BY) sortBy: String = ApiConstants.SORT_BY_POPULARITY_DESC,
         @Query(ApiConstants.QUERY_INCLUDE_ADULT) includeAdult: Boolean = ApiConstants.INCLUDE_ADULT_DEFAULT,
         @Query(ApiConstants.QUERY_INCLUDE_VIDEO) includeVideo: Boolean = ApiConstants.INCLUDE_VIDEO_DEFAULT,
-        @Query(ApiConstants.QUERY_WITH_RELEASE_TYPE) releaseType: String =ApiConstants. RELEASE_TYPE_THEATRICAL_AND_LIMITED,
-        @Query(ApiConstants.RELEASE_DATE_GTE)  releaseDateRangeStart: String=DEFAULT_GTE,
-        @Query(ApiConstants.RELEASE_DATE_LTE)  releaseDateRangeEnd: String= DEFAULT_LTE
+        @Query(ApiConstants.QUERY_WITH_RELEASE_TYPE) releaseType: String = ApiConstants.RELEASE_TYPE_THEATRICAL_AND_LIMITED,
+        @Query(ApiConstants.RELEASE_DATE_GTE) releaseDateRangeStart: String = DEFAULT_GTE,
+        @Query(ApiConstants.RELEASE_DATE_LTE) releaseDateRangeEnd: String = DEFAULT_LTE,
     )
-    : Response<BaseResponse<MovieDetailsDto>>
+            : Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.POPULAR_MOVIES)
     suspend fun popularMovies(): Response<BaseResponse<MovieDetailsDto>>
@@ -128,29 +134,40 @@ interface ApiService {
 
     @GET(ApiConstants.DISCOVER_MOVIE)
     suspend fun getMoviesByMoods(
-        @Query(ApiConstants.WITH_GENRES) genresIds: List<Int>
+        @Query(ApiConstants.WITH_GENRES) genresIds: List<Int>,
     ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.TOP_RATED_MOVIES)
     suspend fun getTopRatedMovies(
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.PAGE) page: Int,
     ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.TOP_RATED_SERIES)
     suspend fun getTopRatedSeries(
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.PAGE) page: Int,
     ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.TV_VIDEO_DETAILS)
     suspend fun getTVShowVideos(
-        @Path(ApiConstants.SERIES_ID) seriesId: Long
+        @Path(ApiConstants.SERIES_ID) seriesId: Long,
     ): Response<VideosResponse>
 
     @GET(ApiConstants.MOVIE_VIDEO_DETAILS)
     suspend fun getMovieVideos(
-        @Path(ApiConstants.MOVIE_ID) movieId: Long
+        @Path(ApiConstants.MOVIE_ID) movieId: Long,
     ): Response<VideosResponse>
 
+    @POST(ApiConstants.LIST)
+    suspend fun createNewFavouriteList(
+        @Query("session_id") sessionId: String,
+        @Body createListRequest: CreateListRequest,
+    ): Response<CreateListResponse>
+
+    @DELETE(ApiConstants.DELETE_LIST)
+    suspend fun deleteUserFavouriteList(
+        @Query("session_id") sessionId: String,
+        @Path(LIST_ID) favouriteListId: Int,
+    ): Response<DeleteListResponse>
 
 }
 
