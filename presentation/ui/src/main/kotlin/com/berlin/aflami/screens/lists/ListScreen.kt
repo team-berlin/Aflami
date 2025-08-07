@@ -191,7 +191,6 @@ private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavContr
             ListDetailsDestination(listId = effect.listId)
         )
 
-        ListScreenEffect.ShowCreateNewListSheet -> TODO()
         is ListScreenEffect.ShowCreateNewListStatusSnackBar -> TODO()
         is ListScreenEffect.ShowEditListStatusSnackBar -> TODO()
         ListScreenEffect.NavigateToLoginScreen -> navController.navigate(route = LoginDestination)

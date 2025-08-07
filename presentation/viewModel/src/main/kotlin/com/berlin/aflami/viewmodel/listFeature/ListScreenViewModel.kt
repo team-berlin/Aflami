@@ -70,7 +70,13 @@ class ListScreenViewModel(
     }
 
     override fun onCreateNewListClicked() =
-        sendNewEffect(ListScreenEffect.ShowCreateNewListSheet)
+        updateState { screenState ->
+            screenState.copy(
+                createNewListSheetState = screenState.createNewListSheetState.copy(
+                    isCreateNewListDialogVisible = true
+                )
+            )
+        }
 
     override fun onClickListCard(listId: Int, listName: String) =
         sendNewEffect(ListScreenEffect.NavigateToSeeAllListScreen(listId))
