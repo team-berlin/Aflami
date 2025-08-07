@@ -27,26 +27,35 @@ class ListScreenViewModel @Inject constructor(
 ) : BaseViewModel<ListScreenState, ListScreenEffect>(ListScreenState()),
     ListScreenInteractionListener {
     val isLoggedIn: StateFlow<Boolean> = getIsUserLoggedInUseCase()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+        .stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000),
+            false
+        )
+
+    private var hasReceivedRealValue = false
 
     init {
+        Log.d("khairy", "viewModel created")
         observeLoginStatus()
     }
 
     private fun observeLoginStatus() {
         viewModelScope.launch {
-            isLoggedIn.collect { loggedIn ->
-                Log.d("Khairy", "is user logged in ??? $loggedIn")
-                updateState { screenState ->
-                    if (loggedIn) getAllUserFavouriteLists()
-                    screenState.copy(isUserLoggedIn = loggedIn, isScreenLoading = false)
+            isLoggedIn
+                .collect { loggedIn ->
+                    Log.d("Khairy", "is user logged in ??? $loggedIn")
+                    updateState { screenState ->
+                        if (loggedIn && hasReceivedRealValue) getAllUserFavouriteLists()
+                        screenState.copy(isUserLoggedIn = loggedIn, isScreenLoading = false)
+                    }
+                    hasReceivedRealValue = true
                 }
-            }
         }
     }
 
     //region getUserFavouriteLists
     private fun getAllUserFavouriteLists() {
+        Log.d("khairy", "getting all user fav lists ")
         tryToCall(
             call = { getAllFavouriteListsAsFlow() },
             onSuccess = ::updateScreenStateWithUserFavouriteLists,
@@ -74,17 +83,19 @@ class ListScreenViewModel @Inject constructor(
     override fun onBackClicked() = sendNewEffect(ListScreenEffect.NavigateBack)
 
     override fun onListNameChange(newListTitle: TextFieldValue) {
-        TODO("Not yet implemented")
+        updateState { screenState ->
+            screenState.copy(
+                createNewListSheetState = screenState.createNewListSheetState.copy(
+                    newListTitle = newListTitle.text
+                )
+            )
+        }
     }
 
     override fun onLoginClicked() =
         sendNewEffect(ListScreenEffect.NavigateToLoginScreen)
 
     override fun onClickAddList() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onCreateNewListClicked() =
         updateState { screenState ->
             screenState.copy(
                 createNewListSheetState = screenState.createNewListSheetState.copy(
@@ -92,6 +103,16 @@ class ListScreenViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+//    override fun onCreateNewListClicked() =
+//        updateState { screenState ->
+//            screenState.copy(
+//                createNewListSheetState = screenState.createNewListSheetState.copy(
+//                    isCreateNewListDialogVisible = true
+//                )
+//            )
+//        }
 
     override fun onClickListCard(listId: Int, listName: String) =
         sendNewEffect(ListScreenEffect.NavigateToSeeAllListScreen(listId, listName))
@@ -120,6 +141,7 @@ class ListScreenViewModel @Inject constructor(
         }
 
     override fun onCreateNewListClicked(listTitle: String) {
+        Log.d("khairy", "onCreateNewListClicked: listTitle $listTitle ")
         tryToCall(
             call = {
                 createNewFavouriteListUseCase(listTitle)

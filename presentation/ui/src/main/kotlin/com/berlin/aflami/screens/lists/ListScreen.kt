@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -87,7 +88,7 @@ private fun ListsContent(
             visible = listScreenState.createNewListSheetState.isCreateNewListDialogVisible
         ) {
             CreateNewListDialog(
-                listName = listScreenState.listName,
+                listName = TextFieldValue(listScreenState.createNewListSheetState.newListTitle),
                 onListNameChanged = interactionListener::onListNameChange,
                 onCreateListClick = interactionListener::onCreateNewListClicked,
                 onDismiss = interactionListener::onCancelCreatingNewListClicked,
@@ -111,10 +112,20 @@ private fun ListsContent(
                 exit = fadeOut(),
                 visible = favouriteLists.itemCount == 0 && listScreenState.isUserLoggedIn
             ) {
-                Image(
-                    painter = painterResource(R.drawable.no_items_found),
-                    contentDescription = stringResource(R.string.no_saved_items_here)
-                )
+                Column {
+                    Image(
+                        painter = painterResource(R.drawable.no_items_found),
+                        contentDescription = stringResource(R.string.no_saved_items_here)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .background(Theme.color.surface)
+                            .size(50.dp)
+                            .clickable {
+                                interactionListener.onClickAddList()
+                            }
+                    )
+                }
             }
             AnimatedVisibility(
                 enter = fadeIn(),
@@ -229,8 +240,10 @@ private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavContr
             ListDetailsDestination(listId = effect.listId, listTitle = effect.listTitle)
         )
 
-        is ListScreenEffect.ShowCreateNewListStatusSnackBar -> TODO()
-        is ListScreenEffect.ShowEditListStatusSnackBar -> TODO()
+        is ListScreenEffect.ShowCreateNewListStatusSnackBar -> {
+        }
+
+        is ListScreenEffect.ShowEditListStatusSnackBar -> {}
         ListScreenEffect.NavigateToLoginScreen -> navController.navigate(route = LoginDestination)
     }
 }

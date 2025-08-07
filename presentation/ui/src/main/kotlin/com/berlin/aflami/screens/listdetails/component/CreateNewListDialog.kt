@@ -22,8 +22,8 @@ fun CreateNewListDialog(
     modifier: Modifier = Modifier,
     listName: TextFieldValue = TextFieldValue(""),
     onListNameChanged: (TextFieldValue) -> Unit = {},
-    onCreateListClick: () -> Unit = {},
-    onDismiss: () -> Unit = {}
+    onCreateListClick: (String) -> Unit = {},
+    onDismiss: () -> Unit = {},
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Column(
@@ -44,11 +44,11 @@ fun CreateNewListDialog(
             )
 
             PrimaryButton(
-                onClick = onCreateListClick,
+                onClick = { onCreateListClick(listName.text) },
                 modifier = modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                containerColor = Theme.color.primary
+                containerColor = Theme.color.primary,
             ) {
                 Text(
                     stringResource(R.string.create),

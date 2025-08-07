@@ -8,6 +8,5 @@ interface ListScreenInteractionListener : CreateNewListInteractionListener {
     fun onListNameChange(newListTitle: TextFieldValue)
     fun onLoginClicked()
     fun onClickAddList()
-    fun onCreateNewListClicked()
     fun onClickListCard(listId: Int, listName: String)
 }
