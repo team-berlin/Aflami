@@ -1,13 +1,12 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.details.common.MovieDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
+import com.berlin.aflami.viewmodel.details.common.MovieDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.common.MoviesTabContent
 import com.berlin.aflami.viewmodel.details.common.NO_COMPANY_PRODUCTION
@@ -25,6 +24,9 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
@@ -45,9 +47,13 @@ class MovieDetailsViewModel @Inject constructor(
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val getMovieVideos: GetMovieVideos,
     movieDetailsArgs: MovieDetailsArgs,
-) : BaseViewModel<MovieDetailsScreenState, MovieDetailsScreenEffect>(
-    MovieDetailsScreenState()
+) : BaseViewModel<MovieDetailsUiState, MovieDetailsScreenEffect>(
+    MovieDetailsUiState()
 ), MediaInteractionListener {
+
+    private val _showLoginRequiredDialog = MutableStateFlow(false)
+    val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
+
 
     private val movieId = movieDetailsArgs.movieId ?: 0
 
@@ -105,7 +111,7 @@ class MovieDetailsViewModel @Inject constructor(
                         releaseDate = movieUiState.releaseDate,
                         posterURL = movieUiState.posterUrl,
                         screenShot = movieUiState.posterUrl,
-                        description =movieUiState.description,
+                        description = movieUiState.description,
                         genres = movieUiState.genre.map { it.toDomain() },
                         duration = movieUiState.duration.parseRuntime(),
                         hasVideo = true,
@@ -158,7 +164,11 @@ class MovieDetailsViewModel @Inject constructor(
                 getSimilarMoviesUseCase(movieId = movieId).map { tVShow -> tVShow.toMovieUiState() }
             },
             onSuccess = ::updateMoreLikeThisSectionWithNewData,
-            onError = ::updateRowSectionStateToError
+            onError = {
+                updateRowSectionStateToError(
+                    error = NO_MORE_MEDIA
+                )
+            }
         )
     }
 
@@ -196,7 +206,11 @@ class MovieDetailsViewModel @Inject constructor(
                 movieReviewUseCase(movieId).map { review -> review.toReviewUiState() }
             },
             onSuccess = ::updateReviewRowSectionWithNewData,
-            onError = ::updateRowSectionStateToError,
+            onError = {
+                updateRowSectionStateToError(
+                    NO_REVIEWS
+                )
+            }
         )
     }
 
@@ -233,7 +247,11 @@ class MovieDetailsViewModel @Inject constructor(
                 getMovieGalleryUseCase(movieId).backdrops
             },
             onSuccess = ::updateMediaGellarySectionWithNewImages,
-            onError = ::updateRowSectionStateToError
+            onError = {
+                updateRowSectionStateToError(
+                    NO_GALLERY
+                )
+            }
         )
     }
 
@@ -323,31 +341,71 @@ class MovieDetailsViewModel @Inject constructor(
     override fun onMediaCardClicked(movieId: Long) =
         sendNewEffect(MovieDetailsScreenEffect.NavigateToMovieDetailsScreen(movieId))
 
-    override fun onRateIconClicked(movieId: Long) =
-        sendNewEffect(MovieDetailsScreenEffect.ShowRatingDialog(movieId))
+    override fun onLoginButtonClicked() {
+        _showLoginRequiredDialog.value = false
+        sendNewEffect(MovieDetailsScreenEffect.NavigateToLogin)
+
+    }
+
+    override fun onRateIconClicked(movieId: Long) {
+        checkLoginThen {
+            updateState {
+                it.copy(
+                    showRatingDialog = true,
+                    selectedRatingMediaId = movieId
+                )
+            }
+        }
+    }
 
 
     override fun onSelectRateClicked(rate: Float) {
         TODO("Not yet implemented")
     }
 
-    override fun onSubmitRateClicked(rate: Float) {
-        TODO("Not yet implemented")
+    override fun onSubmitRateClicked(rate: Int) {
+        val mediaId = _state.value.selectedRatingMediaId ?: return
+        //TODO: Handle the actual rating submission here, e.g., call usecase.submitRating(mediaId, rating)
+        _state.update {
+            it.copy(
+                showRatingDialog = false,
+                selectedRatingMediaId = null
+            )
+        }
     }
 
     override fun onCancelRatingClicked() {
-        TODO("Not yet implemented")
+        updateState {
+            it.copy(
+                showRatingDialog = false,
+                selectedRatingMediaId = null
+            )
+        }
     }
 
     override fun onAddMediaToFavouriteListClicked(
         favouriteListId: Int,
-        mediaId: Int,
+        mediaId: Long,
     ) {
-        TODO("Not yet implemented")
+        checkLoginThen {
+            updateState {
+                it.copy(
+                    showAddToListDialog = true,
+                    selectedFavouriteListId = favouriteListId,
+                    selectedAddToListMediaId = mediaId
+                )
+            }
+        }
     }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {
-        TODO("Not yet implemented")
+        updateState {
+            it.copy(
+                showAddToListDialog = false,
+                selectedAddToListMediaId = null,
+                selectedFavouriteListId = null
+            )
+        }
     }
 
     override fun onCreateNewFavouriteListClicked() {
@@ -394,15 +452,17 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun updateRowSectionToLoading() {
         updateState { screenState ->
-            screenState.copy()
+            screenState.copy(
+                rowSection = MoviesRowSectionUiState.Loading,
+            )
         }
     }
 
-    private fun updateRowSectionStateToError(errorState: ErrorUiState) {
+    private fun updateRowSectionStateToError(error: Int) {
         updateState { screenState ->
             screenState.copy(
-                rowSection = MoviesRowSectionUiState.Error(
-                    errorState.message
+                rowSection = MoviesRowSectionUiState.NoDataFound(
+                    UiText.Resource(error)
                 ),
                 isScreenLoading = false
             )
@@ -415,6 +475,17 @@ class MovieDetailsViewModel @Inject constructor(
                 errorMessage = errorState.message,
                 isScreenLoading = false
             )
+        }
+    }
+
+    private fun checkLoginThen(actionIfLoggedIn: () -> Unit) {
+        viewModelScope.launch {
+            // handle is logged in or not
+            if (true) {
+                actionIfLoggedIn()
+            } else {
+                _showLoginRequiredDialog.value = true
+            }
         }
     }
 }

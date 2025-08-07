@@ -16,6 +16,7 @@ interface MediaInteractionListener :
     fun onReadMoreReviewClicked(reviewId: String)
     fun onShowCastClicked(mediaId: Long)
     fun onMediaCardClicked(mediaId: Long)
+    fun onLoginButtonClicked()
 
 }
 

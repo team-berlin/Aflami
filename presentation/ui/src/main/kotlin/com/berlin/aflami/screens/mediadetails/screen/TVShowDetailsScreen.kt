@@ -30,9 +30,13 @@ import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.CastDestination
+import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
+import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
+import com.berlin.aflami.screens.mediadetails.components.RateDialog
 import com.berlin.aflami.screens.mediadetails.components.TVShowBackdropPager
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.DescriptionSection
@@ -52,204 +56,220 @@ fun TvShowDetailsScreen(
     viewModel: TvShowDetailsScreenViewModel = hiltViewModel(),
 ) {
 
-        val navController = Theme.navController
-        val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val navController = Theme.navController
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
-        LaunchedEffect(Unit) {
-            viewModel.effect.collect { newEffect ->
-                onReceiveTVShowDetailsEffect(
-                    navController = navController,
-                    tvShowDetailsScreenEffect = newEffect
-                )
-            }
-        }
-
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = uiState.isScreenLoading
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize(),
-                text = stringResource(com.berlin.ui.R.string.loading)
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { newEffect ->
+            onReceiveTVShowDetailsEffect(
+                navController = navController,
+                tvShowDetailsScreenEffect = newEffect
             )
-        }
-        AnimatedVisibility(
-            visible = uiState.errorMessage != null
-        ) {
-            NoInternetConnectionPlaceholder()
-        }
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = !uiState.isScreenLoading
-        ) {
-            TvShowDetailsContent(
-                state = uiState,
-                listener = viewModel,
-                isDescriptionExpanded = uiState.isDescriptionExpanded,
-                onToggleDescriptionExpand = { viewModel.onReadMoreDescriptionClicked() },
-                movieDetailsTabs = uiState.tvShowDetailsTabsUiState.tab,
-                onChipClick = { tab ->
-                    viewModel.toggleTvShowDetailsTab(
-                        tvShowDetailsTabs = uiState.tvShowDetailsTabsUiState.tab,
-                        tvShowId = uiState.tvShowUiState.id,
-                    )
-                },
-            )
-        }
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = false
-        ) {
-//        LoginRequiredDialog(
-//            onLoginClick = {
-////                viewModel.showLoginDialog(false)
-//            },
-////            onDismiss = { viewModel.showLoginDialog(false) },
-//            title = stringResource(com.berlin.ui.R.string.login_required),
-//            description = stringResource(com.berlin.ui.R.string.login_required_warning)
-//        )
         }
     }
 
-    private fun onReceiveTVShowDetailsEffect(
-        navController: NavController,
-        tvShowDetailsScreenEffect: TvShowDetailsScreenEffect
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.isScreenLoading
     ) {
-        when (tvShowDetailsScreenEffect) {
-            is TvShowDetailsScreenEffect.NavigateToShowAllCastScreen -> {
-                navController.navigate(
-                    CastDestination(
-                        tvShowDetailsScreenEffect.tvShowId,
-                        MediaType.TV_SHOW
-                    )
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(com.berlin.ui.R.string.loading)
+        )
+    }
+    AnimatedVisibility(
+        visible = uiState.errorMessage != null
+    ) {
+        NoInternetConnectionPlaceholder()
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = !uiState.isScreenLoading
+    ) {
+        TvShowDetailsContent(
+            state = uiState,
+            listener = viewModel,
+            isDescriptionExpanded = uiState.isDescriptionExpanded,
+            onToggleDescriptionExpand = { viewModel.onReadMoreDescriptionClicked() },
+            movieDetailsTabs = uiState.tvShowDetailsTabsUiState.tab,
+            onChipClick = { tab ->
+                viewModel.toggleTvShowDetailsTab(
+                    tvShowDetailsTabs = tab,
+                    tvShowId = uiState.tvShowUiState.id,
                 )
-            }
-
-            is TvShowDetailsScreenEffect.NavigateBack -> {
-                navController.popBackStack()
-            }
-
-            is TvShowDetailsScreenEffect.PlayMedia -> {
-                navController.navigate(
-                    VideoWebViewDestination(tvShowDetailsScreenEffect.videoUrl)
-                )
-            }
-
-            is TvShowDetailsScreenEffect.ShowAddToFavoriteListDialog -> {}
-            is TvShowDetailsScreenEffect.ShowRatingDialog -> {}
-            is TvShowDetailsScreenEffect.NavigateToMediaDetailsScreen -> {
-                navController.navigate(
-                    TVShowDetailsDestination(
-                        tvShowDetailsScreenEffect.tvShowId
-                    )
-                ) {
-                    launchSingleTop = true
-                }
-            }
-
-        }
+            },
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.showLoginDialog
+    ) {
+        LoginRequiredDialog(
+            onLoginClick = {
+                viewModel.onLoginButtonClicked()
+            },
+            onDismiss = { },
+            title = stringResource(com.berlin.ui.R.string.login_required),
+            description = stringResource(com.berlin.ui.R.string.login_required_warning)
+        )
     }
 
-    @Composable
-    fun TvShowDetailsContent(
-        state: TVShowDetailsUiState,
-        listener: MediaInteractionListener,
-        isDescriptionExpanded: Boolean,
-        onToggleDescriptionExpand: () -> Unit,
-        movieDetailsTabs: TVShowDetailsTabs,
-        onChipClick: (TVShowDetailsTabs) -> Unit,
+}
+
+private fun onReceiveTVShowDetailsEffect(
+    navController: NavController,
+    tvShowDetailsScreenEffect: TvShowDetailsScreenEffect
+) {
+    when (tvShowDetailsScreenEffect) {
+        is TvShowDetailsScreenEffect.NavigateToShowAllCastScreen -> {
+            navController.navigate(
+                CastDestination(
+                    tvShowDetailsScreenEffect.tvShowId,
+                    MediaType.TV_SHOW
+                )
+            )
+        }
+
+        is TvShowDetailsScreenEffect.NavigateBack -> {
+            navController.popBackStack()
+        }
+
+        is TvShowDetailsScreenEffect.PlayMedia -> {
+            navController.navigate(
+                VideoWebViewDestination(tvShowDetailsScreenEffect.videoUrl)
+            )
+        }
+
+        is TvShowDetailsScreenEffect.ShowAddToFavoriteListDialog -> {}
+        is TvShowDetailsScreenEffect.ShowRatingDialog -> {}
+        is TvShowDetailsScreenEffect.NavigateToMediaDetailsScreen -> {
+            navController.navigate(
+                TVShowDetailsDestination(
+                    tvShowDetailsScreenEffect.tvShowId
+                )
+            ) {
+                popUpTo(MovieDetailsDestination(movieId = tvShowDetailsScreenEffect.tvShowId)){
+                    inclusive = true
+                }
+
+            }
+        }
+
+        TvShowDetailsScreenEffect.NavigateToLogin -> {
+            navController.navigate(
+                LoginDestination
+            )
+        }
+    }
+}
+
+@Composable
+fun TvShowDetailsContent(
+    state: TVShowDetailsUiState,
+    listener: MediaInteractionListener,
+    isDescriptionExpanded: Boolean,
+    onToggleDescriptionExpand: () -> Unit,
+    movieDetailsTabs: TVShowDetailsTabs,
+    onChipClick: (TVShowDetailsTabs) -> Unit,
 //
-    ) {
-        val listState = rememberLazyListState()
-        val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
-        val appBarAlpha by remember {
-            derivedStateOf {
-                val offset =
-                    if (listState.firstVisibleItemIndex == 0) listState.firstVisibleItemScrollOffset else appBarFadeHeightPx
-                (offset / appBarFadeHeightPx.toFloat()).coerceIn(0f, 1f)
-            }
+) {
+    val listState = rememberLazyListState()
+    val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
+    val appBarAlpha by remember {
+        derivedStateOf {
+            val offset =
+                if (listState.firstVisibleItemIndex == 0) listState.firstVisibleItemScrollOffset else appBarFadeHeightPx
+            (offset / appBarFadeHeightPx.toFloat()).coerceIn(0f, 1f)
         }
-        val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
-        val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
-
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(Theme.color.surface)
-
-        ) {
-            LazyColumn(state = listState) {
-                item {
-                    TVShowBackdropPager(
-                        state = state,
-                        onPlayClick = { listener.onPlayClicked(state.videoUrl) })
-                }
-
-                item {
-                    with(state.tvShowUiState) {
-                        MediaOverviewSection(
-                            title = title,
-                            generes = genre,
-                            releaseDate = releaseDate,
-                            duration = duration,
-                            originalCountry = originCountry,
-                            numberOfSeasons = null
-                        )
-                    }
-                }
-                item {
-                    DescriptionSection(
-                        state.tvShowUiState.description, isExpanded = isDescriptionExpanded,
-                        onToggleExpand = onToggleDescriptionExpand
-                    )
-                }
-                item {
-                    CastSection(
-                        cast = state.castList,
-                        onShowAllClicked = { listener.onShowCastClicked(state.tvShowUiState.id) }
-                    )
-                }
-                item {
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp),
-                        color = Theme.color.stroke,
-                        thickness = 1.dp
-                    )
-                }
-                item {
-                    TVShowTabSection(
-                        tvShowDetailsTabs = movieDetailsTabs,
-                        rowState = state.rowSection,
-                        onChipClick = onChipClick,
-                        isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
-                        onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
-                        onTVShowCardClicked = { mediaId ->
-                            listener.onMediaCardClicked(mediaId)
-                        },
-                    )
-                }
-            }
-            DefaultBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(appBarBgColor)
-                    .statusBarsPadding(),
-
-                firstOption = painterResource(R.drawable.ic_rounded_star),
-                lastOption = painterResource(R.drawable.ic_rounded_add_heart),
-                onFirstOptionClicked = { listener.onRateIconClicked(state.tvShowUiState.id) },
-                onLastOptionClicked = {
-                    listener.onAddMediaToFavouriteListClicked(0, state.tvShowUiState.id.toInt())
-                },
-                onNavigateBackClicked = { listener.onBackClicked() },
-                optionContainerColor = Theme.color.surfaceHigh,
-                containerColor = Color.Unspecified, // transparent so Modifier.background takes effect
-            )
-        }
-
     }
+    val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
+    val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
+
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Theme.color.surface)
+
+    ) {
+        LazyColumn(state = listState) {
+            item {
+                TVShowBackdropPager(
+                    state = state,
+                    onPlayClick = { listener.onPlayClicked(state.videoUrl) })
+            }
+
+            item {
+                with(state.tvShowUiState) {
+                    MediaOverviewSection(
+                        title = title,
+                        generes = genre,
+                        releaseDate = releaseDate,
+                        duration = duration,
+                        originalCountry = originCountry,
+                        numberOfSeasons = null
+                    )
+                }
+            }
+            item {
+                DescriptionSection(
+                    state.tvShowUiState.description, isExpanded = isDescriptionExpanded,
+                    onToggleExpand = onToggleDescriptionExpand
+                )
+            }
+            item {
+                CastSection(
+                    cast = state.castList,
+                    onShowAllClicked = { listener.onShowCastClicked(state.tvShowUiState.id) }
+                )
+            }
+            item {
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
+                    color = Theme.color.stroke,
+                    thickness = 1.dp
+                )
+            }
+            item {
+                TVShowTabSection(
+                    tvShowDetailsTabs = movieDetailsTabs,
+                    rowState = state.rowSection,
+                    onChipClick = onChipClick,
+                    isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
+                    onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
+                    onTVShowCardClicked = { mediaId ->
+                        listener.onMediaCardClicked(mediaId)
+                    },
+                )
+            }
+        }
+        DefaultBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(appBarBgColor)
+                .statusBarsPadding(),
+
+            firstOption = painterResource(R.drawable.ic_rounded_star),
+            lastOption = painterResource(R.drawable.ic_rounded_add_heart),
+            onFirstOptionClicked = { listener.onRateIconClicked(state.tvShowUiState.id) },
+            onLastOptionClicked = {
+                listener.onAddMediaToFavouriteListClicked(0, state.tvShowUiState.id)
+            },
+            onNavigateBackClicked = { listener.onBackClicked() },
+            optionContainerColor = Theme.color.surfaceHigh,
+            containerColor = Color.Unspecified, // transparent so Modifier.background takes effect
+        )
+    }
+
+    if (state.showRatingDialog && state.selectedRatingMediaId != null) {
+        RateDialog(
+            onDismiss = { listener.onCancelRatingClicked() },
+            onRate = { rating -> listener.onSubmitRateClicked(rating) }
+        )
+    }
+
+}

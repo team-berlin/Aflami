@@ -7,7 +7,7 @@ import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import kotlinx.datetime.LocalDate
 
-data class MovieDetailsScreenState(
+data class MovieDetailsUiState(
     val isFavorite: Boolean = false,
     val posters: List<String> = emptyList(),
     val isMovieHasVideo: Boolean = false,
@@ -21,6 +21,11 @@ data class MovieDetailsScreenState(
     val errorMessage: String? = null,
     val movieDetailsTabsUiState: MovieDetailsTabsUiState = MovieDetailsTabsUiState(),
     val showLoginDialog:Boolean = false,
+    val showRatingDialog: Boolean = false,
+    val showAddToListDialog: Boolean = false,
+    val selectedRatingMediaId: Long? = null,
+    val selectedAddToListMediaId: Long? = null,
+    val selectedFavouriteListId: Int? = null
 )
 
 

@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -227,7 +228,7 @@ private fun HomeContent(
                                     title = stringResource(com.berlin.designsystem.R.string.popular),
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(start = 16.dp),
+                                        .padding(vertical = 8.dp, horizontal = 16.dp),
                                     icon = {
                                         Icon(
                                             modifier = Modifier
@@ -364,9 +365,10 @@ private fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appBarBgColor)
-                .statusBarsPadding(), onSearchClicked = {
+                .statusBarsPadding()
+            , onSearchClicked = {
                 homeScreenInteractionListener.onSearchClicked()
-            }, containerColor = appBarBgColor
+            }, containerColor = Color.Unspecified
         )
     }
 }
