@@ -1,8 +1,8 @@
 package com.berlin.remote.network
 
 import com.berlin.remote.network.ApiConstants.LIST_ID
+import com.berlin.remote.network.ApiConstants.SESSION_ID
 import com.berlin.repository.datasource.remote.dto.CreateListResponse
-import com.berlin.repository.datasource.remote.dto.DeleteListResponse
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
@@ -10,7 +10,9 @@ import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.request.CreateListRequest
+import com.berlin.repository.datasource.remote.dto.request.RemoveMovieFromListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
+import com.berlin.repository.datasource.remote.response.DeleteResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
@@ -159,15 +161,22 @@ interface ApiService {
 
     @POST(ApiConstants.LIST)
     suspend fun createNewFavouriteList(
-        @Query("session_id") sessionId: String,
+        @Query(SESSION_ID) sessionId: String,
         @Body createListRequest: CreateListRequest,
     ): Response<CreateListResponse>
 
     @DELETE(ApiConstants.DELETE_LIST)
     suspend fun deleteUserFavouriteList(
-        @Query("session_id") sessionId: String,
+        @Query(SESSION_ID) sessionId: String,
         @Path(LIST_ID) favouriteListId: Int,
-    ): Response<DeleteListResponse>
+    ): Response<DeleteResponse>
+
+    @POST(ApiConstants.DELETE_MOVIE_FROM_LIST)
+    suspend fun deleteMovieFromList(
+        @Path(LIST_ID) listId: Int,
+        @Query(SESSION_ID) sessionId: String,
+        @Body removeMovieFromListRequest: RemoveMovieFromListRequest,
+    ): Response<DeleteResponse> // or Response<Unit> if you don’t care about response
 
 }
 

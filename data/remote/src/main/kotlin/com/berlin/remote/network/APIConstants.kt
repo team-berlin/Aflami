@@ -65,4 +65,5 @@ object ApiConstants {
     const val LIST = "list"
     const val LIST_ID = "list_id"
     const val DELETE_LIST = "list/{list_id}"
+    const val DELETE_MOVIE_FROM_LIST = "list/{list_id}/remove_item"
 }

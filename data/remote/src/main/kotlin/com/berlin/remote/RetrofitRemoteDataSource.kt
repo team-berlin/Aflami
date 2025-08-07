@@ -4,7 +4,6 @@ import com.berlin.remote.network.ApiService
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.datasource.remote.dto.CreateListResponse
-import com.berlin.repository.datasource.remote.dto.DeleteListResponse
 import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
@@ -14,7 +13,9 @@ import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.movie.MovieDto
 import com.berlin.repository.datasource.remote.dto.request.CreateListRequest
+import com.berlin.repository.datasource.remote.dto.request.RemoveMovieFromListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
+import com.berlin.repository.datasource.remote.response.DeleteResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
@@ -24,6 +25,8 @@ class RetrofitRemoteDataSource @Inject constructor(
     private val apiService: ApiService,
     private val authenticationLocalDataSource: AuthenticationLocalDataSource,
 ) : RemoteDataSource {
+
+
     override suspend fun getSimilarMovies(movieId: Long): BaseResponse<MovieDetailsDto> {
         require(movieId > 0) { "Invalid movieId: $movieId" }
         return wrapApiResponse { apiService.getMovieSimilar(movieId) }
@@ -168,7 +171,7 @@ class RetrofitRemoteDataSource @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteUserFavouriteList(listId: Int): DeleteListResponse {
+    override suspend fun deleteUserFavouriteList(listId: Int): DeleteResponse {
         return wrapApiResponse {
             apiService.deleteUserFavouriteList(
                 sessionId = authenticationLocalDataSource.getUserSessionId()
@@ -178,8 +181,18 @@ class RetrofitRemoteDataSource @Inject constructor(
         }
     }
 
-    override suspend fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long) {
-        TODO("Not yet implemented")
+    override suspend fun deleteMovieFromUserFavouriteList(
+        listId: Int,
+        movieId: Long,
+    ): DeleteResponse {
+        return wrapApiResponse {
+            apiService.deleteMovieFromList(
+                listId = listId,
+                sessionId = authenticationLocalDataSource.getUserSessionId()
+                    ?: throw IllegalStateException("userSessionID == null"),
+                removeMovieFromListRequest = RemoveMovieFromListRequest(movieId = movieId)
+            )
+        }
     }
 
     override suspend fun createNewFavouriteList(title: String): CreateListResponse {
