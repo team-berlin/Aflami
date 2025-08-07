@@ -21,6 +21,7 @@ import usecase.movie.GetTopRatedMoviesUseCase
 import usecase.movie.GetUpComingMoviesUseCase
 import usecase.tvshow.ContinueWatchingTVShowUseCase
 import usecase.tvshow.GetPopularTVShowsUseCase
+import usecase.tvshow.GetTVShowGenresUseCase
 import usecase.tvshow.GetTopRatedTVShowUseCase
 import javax.inject.Inject
 
@@ -30,6 +31,7 @@ class HomeScreenViewModel @Inject constructor(
     private val popularTVShowsUseCase: GetPopularTVShowsUseCase,
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase,
     private val getMoviesByGenreUseCase: GetMovieGenresUseCase,
+    private val getTVShowGenresUseCase: GetTVShowGenresUseCase,
     private val getWatchedMovieUseCase: ContinueWatchingMovieUseCase,
     private val getWatchedTVShowUseCase: ContinueWatchingTVShowUseCase,
     private val getTopRatedSeriesUseCase: GetTopRatedTVShowUseCase,
@@ -43,6 +45,7 @@ class HomeScreenViewModel @Inject constructor(
         getContinueWatchingMedia()
         getTopRatingMovieAndTvShows()
         loadGenresMovies()
+        loadGenresTVShow()
         getUpComingMoviesByGenre()
     }
 
@@ -188,7 +191,7 @@ class HomeScreenViewModel @Inject constructor(
     //endregion
 
     private fun List<String>.toGenreIds(): List<Int> {
-        return state.value.upcomingMoviesUiState.movieGenres.filter { this.contains(it.name) }
+        return state.value.movieGenres.filter { this.contains(it.name) }
             .map { it.id }
     }
 
@@ -293,16 +296,14 @@ class HomeScreenViewModel @Inject constructor(
     //region onChangeUpComingMovieGenre
     override fun onChangeUpcomingMovieGenre(newGenreId: Int) {
         updateState { screenState ->
-            val selected = screenState.upcomingMoviesUiState.movieGenres.map { genre ->
+            val selected = screenState.movieGenres.map { genre ->
                 genre.copy(isSelected = genre.id == newGenreId)
             }
             screenState.copy(
                 selectedGenres = newGenreId,
-                upcomingMoviesUiState = screenState.upcomingMoviesUiState.copy(
-                    movieGenres = selected
-                ),
+                movieGenres =  selected,
                 isLoading = false
-            )
+                )
         }
         getUpComingMoviesByGenre()
     }
@@ -362,13 +363,38 @@ class HomeScreenViewModel @Inject constructor(
             onError = ::updateUpComingMoviesWithError
         )
     }
-
+    private fun loadGenresTVShow() {
+        tryToCall(
+            call = {
+                val tvShowsGenre = getTVShowGenresUseCase()
+                val all = GenreUiState(
+                    id = -1, name = "All", isSelected = true
+                )
+                val genres = tvShowsGenre.map { genre ->
+                    GenreUiState(
+                        id = genre.id, name = genre.name, isSelected = false
+                    )
+                }
+                listOf(all) + genres
+            },
+            onSuccess = ::updateScreenWithNewTVShowGenres,
+            onError = ::updateUpComingMoviesWithError
+        )
+    }
     private fun updateScreenWithNewMovieGenres(movieGenres: List<GenreUiState>) {
         updateState { state ->
             state.copy(
+                movieGenres = movieGenres,
                 upcomingMoviesUiState = state.upcomingMoviesUiState.copy(
-                    movieGenres = movieGenres, isLoading = false
+                    isLoading = false
                 )
+            )
+        }
+    }
+    private fun updateScreenWithNewTVShowGenres(tVShowGenres: List<GenreUiState>) {
+        updateState { state ->
+            state.copy(
+                tVShowGenres = tVShowGenres
             )
         }
     }
