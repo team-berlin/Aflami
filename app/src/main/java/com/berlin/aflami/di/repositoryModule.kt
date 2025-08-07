@@ -5,6 +5,7 @@ import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
 import com.berlin.repository.TVShowRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
+import com.berlin.repository.UserFavouriteListRepositoryImpl
 import com.berlin.repository.datasource.AppEntryRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -14,8 +15,9 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.TVShowRepository
 import repository.TVShowDetailsRepository
+import repository.TVShowRepository
+import repository.UserFavouriteListRepository
 import javax.inject.Singleton
 
 @Module
@@ -26,37 +28,43 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindMovieDetailsRepository(
-        impl: MovieDetailsRepositoryImpl
+        impl: MovieDetailsRepositoryImpl,
     ): MovieDetailsRepository
 
     @Binds
     @Singleton
     abstract fun bindTvShowDetailsRepository(
-        impl: TvShowDetailsRepositoryImpl
+        impl: TvShowDetailsRepositoryImpl,
     ): TVShowDetailsRepository
 
 
     @Binds
     @Singleton
     abstract fun bindMovieRepository(
-        impl: MovieRepositoryImpl
+        impl: MovieRepositoryImpl,
     ): MovieRepository
 
     @Binds
     @Singleton
     abstract fun bindAuthenticationRepository(
-        impl: AuthenticationRepositoryImpl
+        impl: AuthenticationRepositoryImpl,
     ): AuthenticationRepository
 
     @Binds
     @Singleton
     abstract fun bindTvShowRepository(
-        impl: TVShowRepositoryImpl
+        impl: TVShowRepositoryImpl,
     ): TVShowRepository
 
     @Binds
     @Singleton
     abstract fun bindAppEntryRepository(
-        impl: AppEntryRepositoryImpl
+        impl: AppEntryRepositoryImpl,
     ): AppEntryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserFavouriteListRepository(
+        impl: UserFavouriteListRepositoryImpl,
+    ): UserFavouriteListRepository
 }

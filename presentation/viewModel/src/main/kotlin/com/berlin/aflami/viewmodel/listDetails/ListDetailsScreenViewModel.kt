@@ -15,13 +15,14 @@ import javax.inject.Inject
 class ListDetailsScreenViewModel @Inject constructor(
     private val getAllFavouriteListItemsUseCase: GetFavouriteListItemsUseCase,
     private val deleteMovieFromUserFavouriteList: DeleteMovieFromUserFavouriteList,
-    listDetailsArgs: ListDetailsArgs,
+    favouriteListDetailsArgs: FavouriteListDetailsArgs,
 ) : BaseViewModel<ListDetailsScreenState, ListDetailsScreenEffect>(
     ListDetailsScreenState()
 ), ListDetailsScreenInteractionListener {
 
     private val favouriteListId: Int =
-        listDetailsArgs.favouriteListId ?: throw IllegalArgumentException("list id is null")
+        favouriteListDetailsArgs.favouriteListId
+            ?: throw IllegalArgumentException("list id is null")
 
     init {
         getAllFavoriteListItems(favouriteListId = favouriteListId)

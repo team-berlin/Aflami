@@ -1,12 +1,13 @@
 package usecase.auth
 
+import kotlinx.coroutines.flow.Flow
 import repository.AuthenticationRepository
 
 class GetLoginStatus(
-    private val authenticationRepository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository,
 
-) {
-    suspend operator fun invoke(): Boolean {
-        return authenticationRepository.isLoggedIn()
+    ) {
+    operator fun invoke(): Flow<Boolean> {
+        return authenticationRepository.observeLoginStatus()
     }
 }

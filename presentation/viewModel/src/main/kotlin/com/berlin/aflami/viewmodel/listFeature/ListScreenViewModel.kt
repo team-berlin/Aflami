@@ -8,6 +8,7 @@ import com.berlin.aflami.viewmodel.mapper.toFavouriteListUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.FavouriteListItemUiState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginStatus
 import usecase.favouritelist.CreateNewFavouriteListUseCase
@@ -19,8 +20,7 @@ class ListScreenViewModel(
     private val getIsUserLoggedInUseCase: GetLoginStatus,
 ) : BaseViewModel<ListScreenState, ListScreenEffect>(ListScreenState()),
     ListScreenInteractionListener {
-    val isLoggedIn: StateFlow<Boolean> = getIsUserLoggedInUseCase
-        .observeLoginStatus()
+    val isLoggedIn: StateFlow<Boolean> = getIsUserLoggedInUseCase()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     init {

@@ -8,15 +8,19 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.TVShowRepository
 import repository.TVShowDetailsRepository
+import repository.TVShowRepository
+import repository.UserFavouriteListRepository
 import usecase.auth.GetLoginStatus
-import usecase.movie.GetMoviesByMoodUseCase
 import usecase.auth.GetLoginUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
+import usecase.favouritelist.CreateNewFavouriteListUseCase
+import usecase.favouritelist.DeleteMovieFromUserFavouriteList
+import usecase.favouritelist.DeleteUserFavouriteListUseCase
+import usecase.favouritelist.GetAllFavouriteListsUseCase
+import usecase.favouritelist.GetFavouriteListItemsUseCase
 import usecase.mediadetails.GetMovieVideos
-import usecase.tvshow.GetTVShowVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.ClearMoviesSearchHistoryUseCase
 import usecase.movie.ContinueWatchingMovieUseCase
@@ -26,6 +30,7 @@ import usecase.movie.GetMovieDetailsUseCase
 import usecase.movie.GetMovieGalleryUseCase
 import usecase.movie.GetMovieGenresUseCase
 import usecase.movie.GetMovieReviewUseCase
+import usecase.movie.GetMoviesByMoodUseCase
 import usecase.movie.GetPopularMoviesUseCase
 import usecase.movie.GetRecentMoviesHistoryUseCase
 import usecase.movie.GetSearchMoviesUseCase
@@ -48,6 +53,7 @@ import usecase.tvshow.GetTVShowDetailsUseCase
 import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
+import usecase.tvshow.GetTVShowVideos
 import usecase.tvshow.GetTopRatedTVShowUseCase
 
 @Module
@@ -201,13 +207,30 @@ object UseCaseModule {
         GetTopRatedMoviesUseCase(repository)
 
     @Provides
-    fun provideGetAppEntryUseCase(repository: AppEntryRepository):SaveFirstEntryUseCase =
+    fun provideGetAppEntryUseCase(repository: AppEntryRepository): SaveFirstEntryUseCase =
         SaveFirstEntryUseCase(repository)
 
     @Provides
-    fun provideGetFirstEntryUseCase(repository: AppEntryRepository):GetFirstEntryUseCase =
+    fun provideGetFirstEntryUseCase(repository: AppEntryRepository): GetFirstEntryUseCase =
         GetFirstEntryUseCase(repository)
 
+    @Provides
+    fun provideCreateNewFavouriteListUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        CreateNewFavouriteListUseCase(userFavouriteListRepository)
 
+    @Provides
+    fun provideDeleteMovieFromUserFavouriteList(userFavouriteListRepository: UserFavouriteListRepository) =
+        DeleteMovieFromUserFavouriteList(userFavouriteListRepository)
 
+    @Provides
+    fun provideDeleteUserFavouriteListUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        DeleteUserFavouriteListUseCase(userFavouriteListRepository)
+
+    @Provides
+    fun provideGetAllFavouriteListsUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        GetAllFavouriteListsUseCase(userFavouriteListRepository)
+
+    @Provides
+    fun provideGetFavouriteListItemsUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        GetFavouriteListItemsUseCase(userFavouriteListRepository)
 }
