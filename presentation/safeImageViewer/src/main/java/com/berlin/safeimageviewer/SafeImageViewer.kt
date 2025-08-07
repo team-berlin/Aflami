@@ -10,6 +10,7 @@ import android.renderscript.ScriptIntrinsicBlur
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,8 +59,11 @@ fun SafeImageViewer(
             FireBaseModelManagerEntryPoint::class.java
         ).modelManager()
     }
-    val isModelDownloaded by remember { modelManager.isModelDownloaded }
-    if (!isModelDownloaded) {
+    val isModelDownloaded =remember {  modelManager.isModelDownloaded.value }
+
+    var result by remember { mutableStateOf<ImageClassificationResult?>(null) }
+    var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    if (!isModelDownloaded ) {
         AsyncImage(
             model = model,
             contentDescription = contentDescription,
@@ -72,58 +76,55 @@ fun SafeImageViewer(
             contentScale = contentScale ?: ContentScale.Crop
         )
     }
-
-    var result by remember { mutableStateOf<ImageClassificationResult?>(null) }
-    var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    LaunchedEffect(model, blurCheck) {
-        if (blurCheck) {
-            result = classifyImage(context, model, modelManager)
-            displayBitmap = result?.bitmap
-        } else {
-            withContext(Dispatchers.IO) {
-                val res = context.imageLoader.execute(
-                    ImageRequest.Builder(context)
-                        .data(model)
-                        .allowHardware(false)
-                        .bitmapConfig(Bitmap.Config.ARGB_8888)
-                        .build()
-                )
-
-                val bmp = (res as? SuccessResult)?.image?.toBitmap()
-                displayBitmap = bmp
+    else {
+        LaunchedEffect(model, blurCheck) {
+            if (blurCheck) {
+                result = classifyImage(context, model, modelManager)
+                displayBitmap = result?.bitmap
+            } else {
+                withContext(Dispatchers.IO) {
+                    val res = context.imageLoader.execute(
+                        ImageRequest.Builder(context)
+                            .data(model)
+                            .allowHardware(false)
+                            .bitmapConfig(Bitmap.Config.ARGB_8888)
+                            .build()
+                    )
+                    val bmp = (res as? SuccessResult)?.image?.toBitmap()
+                    displayBitmap = bmp
+                }
             }
         }
-    }
+        displayBitmap?.let { bitmap ->
+            val shouldBlur = if (blurCheck) {
+                result?.let { !it.isSafe || it.isFemale } == true
+            } else false
 
-    displayBitmap?.let { bitmap ->
-        val shouldBlur = if (blurCheck) {
-            result?.let { !it.isSafe || it.isFemale } == true
-        } else true
-
-        val blurredBitmap = remember(bitmap, shouldBlur) {
-            if (shouldBlur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                blurBitmapRenderScript(context, bitmap, 25f)
-            } else bitmap
+            val blurredBitmap = remember(bitmap, shouldBlur) {
+                if (shouldBlur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                    blurBitmapRenderScript(context, bitmap, 25f)
+                } else bitmap
+            }
+            AsyncImage(
+                model = blurredBitmap,
+                contentDescription = contentDescription,
+                error = error,
+                fallback = fallback,
+                placeholder = placeholder,
+                alignment = alignment,
+                modifier = modifier
+                    .then(
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && shouldBlur) {
+                            Modifier.blur(
+                                radius = 16.dp,
+                                edgeTreatment = BlurredEdgeTreatment.Unbounded
+                            )
+                        } else Modifier
+                    )
+                    .shadow(elevation = if (shouldBlur) 1.dp else 0.dp),
+                contentScale = contentScale ?: ContentScale.Crop
+            )
         }
-        AsyncImage(
-            model = blurredBitmap,
-            contentDescription = contentDescription,
-            error = error,
-            fallback = fallback,
-            placeholder = placeholder,
-            alignment = alignment,
-            modifier = modifier
-                .then(
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && shouldBlur) {
-                        Modifier.blur(
-                            radius = 16.dp,
-                            edgeTreatment = BlurredEdgeTreatment.Unbounded
-                        )
-                    } else Modifier
-                )
-                .shadow(elevation = if (shouldBlur) 1.dp else 0.dp),
-            contentScale = contentScale ?: ContentScale.Crop
-        )
     }
 }
 
@@ -166,7 +167,7 @@ suspend fun classifyImage(
     val bitmap = drawable.toBitmap()
     return@withContext when {
         classifyGender(bitmap, modelManager) -> ImageClassificationResult(bitmap, isSafe = true, isFemale = false)
-        classifyNSFW(bitmap, modelManager) -> ImageClassificationResult(bitmap, isSafe = true, isFemale = false)
+        classifyNSFW(bitmap, modelManager) -> ImageClassificationResult(bitmap, isSafe = false, isFemale = true)
         else -> ImageClassificationResult(bitmap, isSafe = false, isFemale = false)
     }
 }
