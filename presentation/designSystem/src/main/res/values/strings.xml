@@ -92,5 +92,6 @@
     <string name="soap">Soap</string>
     <string name="talk">Talk Shows</string>
     <string name="war_politics"><![CDATA[War & Politics]]></string>
+    <string name="item_count">%1$d item</string>
 
 </resources>
