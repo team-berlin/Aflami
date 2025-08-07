@@ -30,13 +30,16 @@ fun MovieDetailsMoreLikeThisSection(
             MediaCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(196.dp)
-                    .clickable { onMediaClick(media.id) },
+                    .height(196.dp),
                 mediaImg = media.posterUrl,
                 title = media.title,
                 typeOfMedia = stringResource(R.string.movie),
                 date = media.releaseDate.substringBefore("-"),
-                rating = media.rating
+                rating = media.rating,
+                onClick = {
+                    onMediaClick(media.id)
+                }
+
             )
         }
     }
@@ -57,13 +60,15 @@ fun TvShowMoreLikeThisSection(
             MediaCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(196.dp)
-                    .clickable { onMediaClick(media.id) },
+                    .height(196.dp),
                 mediaImg = media.posterUrl,
                 title = media.title,
                 typeOfMedia = stringResource(R.string.Tv_Show),
                 date = media.releaseDate.substringBefore("-"),
-                rating = media.rating
+                rating = media.rating,
+                onClick =  {
+                    onMediaClick(media.id)
+                }
             )
         }
     }

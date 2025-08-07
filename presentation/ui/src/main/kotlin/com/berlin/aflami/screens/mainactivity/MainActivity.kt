@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.berlin.aflami.navigation.AflamiNavGraph
@@ -26,21 +28,25 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
 
         splashScreen.setKeepOnScreenCondition {
-            mainActivityViewModel.isLoading
+            mainActivityViewModel.state.value.isLoading
         }
 
         enableEdgeToEdge()
         setContent {
             AflamiTheme {
-                AflamiNavGraph(
-                    navController = Theme.navController,
-                    isLoggedIn = mainActivityViewModel.loginState,
-                    isFirsTime = mainActivityViewModel.isFirstEntry,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Theme.color.surface)
-                        .navigationBarsPadding()
-                )
+                val mainState by mainActivityViewModel.state.collectAsState()
+
+                if (!mainState.isLoading) {
+                    AflamiNavGraph(
+                        navController = Theme.navController,
+                        isLoggedIn = mainState.isLoggedIn,
+                        isFirsTime = mainState.isFirstEntry,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Theme.color.surface)
+                            .navigationBarsPadding()
+                    )
+                }
             }
         }
     }

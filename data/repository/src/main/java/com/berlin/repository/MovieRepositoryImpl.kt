@@ -1,13 +1,20 @@
 package com.berlin.repository
 
 import com.berlin.entity.Movie
+import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.dto.SectionHome
+import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
+import com.berlin.repository.mapper.toPopularMovieEntity
 import com.berlin.repository.mapper.toRecentMovieEntity
+import com.berlin.repository.mapper.toTopRateMovieEntity
+import com.berlin.repository.mapper.toUpComingMovieEntity
+import com.berlin.repository.util.Constants
 import com.berlin.repository.util.Constants.ACTING_DEPARTMENT
 import com.berlin.repository.util.Constants.MOVIE_MEDIA_TYPE
 import repository.MovieRepository
@@ -16,9 +23,9 @@ import javax.inject.Inject
 class MovieRepositoryImpl @Inject constructor(
     private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource,
     private val recentHistoryLocalDataSource: RecentHistoryLocalDataSource,
+    private val homeLocalDataSource: HomeLocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-
-    ) : MovieRepository {
+) : MovieRepository {
 
     override suspend fun getContinueWatchingMovies(page: Int): List<Movie> {
         val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
@@ -31,37 +38,56 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun addContinueWatchingMovie(movie: Movie) {
         recentlyWatchedLocalDataSource.addRecentlyWatchedMovie(movie.toRecentMovieEntity())
-
     }
 
     override suspend fun getTopRatedMovies(page: Int): List<Movie> {
-        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+        val localMovies = homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING)
+        if (!isExpiredOrEmpty(localMovies)&&localMovies.isNotEmpty()) {
+            return localMovies.map { it.toDomain() }
+        }
 
-        return remoteDataSource.getTopRatedMovies(page).results?.mapNotNull { it.toDomain() }
-            ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+        val remoteMovies =
+            remoteDataSource.getTopRatedMovies(page).results?.mapNotNull { it.toDomain() }
+                ?: emptyList()
+        if (remoteMovies.isNotEmpty()) {
+            homeLocalDataSource.clearHomeScreenMovies(SectionHome.TOP_RATING)
+            homeLocalDataSource.addMovies(remoteMovies.map { it.toTopRateMovieEntity() })
+        }
 
-            ?: emptyList()
-
+        return remoteMovies
     }
 
-    override suspend fun getUpComingMovies(selectedGenres: Int): List<Movie> {
-
-        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
-        return remoteDataSource.getUpComingMovies(selectedGenres).results?.map {
-            it.toDomain()
+    override suspend fun getUpComingMovies(selectedGenre: Int): List<Movie> {
+        val localMovies = homeLocalDataSource.getMoviesBySection(SectionHome.UPCOMING)
+        if (!isExpiredOrEmpty(localMovies) &&localMovies.isNotEmpty()) {
+            return localMovies.map { it.toDomain() }
         }
-            ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
-            ?: emptyList()
+
+        val remoteMovies = remoteDataSource.getUpComingMovies(selectedGenre)
+            .results?.map { it.toDomain() } ?: emptyList()
+        if (remoteMovies.isNotEmpty()) {
+            homeLocalDataSource.clearHomeScreenMovies(SectionHome.UPCOMING)
+            homeLocalDataSource.addMovies(remoteMovies.map { it.toUpComingMovieEntity() })
+        }
+
+        return remoteMovies
     }
 
 
     override suspend fun getPopularMovies(): List<Movie> {
-        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+        val localMovies = homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR)
+        if (!isExpiredOrEmpty(localMovies) && localMovies.isNotEmpty()) {
+            return localMovies.map { it.toDomain() }
+        }
 
-        return remoteDataSource.getPopularMovies().results
-            ?.map { movieDto -> movieDto.toDomain() }
-            ?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+        val remoteMovies = remoteDataSource.getPopularMovies().results?.map { it.toDomain() }
             ?: emptyList()
+        if (remoteMovies.isNotEmpty()) {
+            homeLocalDataSource.clearHomeScreenMovies(SectionHome.POPULAR)
+            homeLocalDataSource.addMovies(remoteMovies.map { it.toPopularMovieEntity() })
+        }
+
+        return remoteMovies
     }
 
     override suspend fun getMoviesByMoods(moods: List<Int>): List<Movie> {
@@ -70,6 +96,7 @@ class MovieRepositoryImpl @Inject constructor(
             it.toDomain()
         } ?: emptyList()
     }
+
 
 
     override suspend fun getMoviesByCountry(
@@ -128,6 +155,11 @@ class MovieRepositoryImpl @Inject constructor(
         recentHistoryLocalDataSource.clearSearchHistory()
     }
 
+    private fun isExpiredOrEmpty(list: List<MovieHomeEntity>): Boolean {
+        return list.isEmpty() || list.any {
+            System.currentTimeMillis() - it.addedAt > Constants.HOME_CACHE_TIMEOUT_MILLIS
+        }
+    }
 }
 
 

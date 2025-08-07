@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.Chips
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.MovieDetailsMoreLikeThisSection
@@ -72,7 +73,6 @@ fun MovieTabSection(
                 .animateContentSize()
         ) {
             when (moviesRowSectionUiState) {
-                is MoviesRowSectionUiState.Error,
                 is MoviesRowSectionUiState.NoDataFound,
                     -> {
                     Box(
@@ -95,7 +95,9 @@ fun MovieTabSection(
                         .padding(horizontal = 16.dp, vertical = 32.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Loading()
+                    CircularProgressIndicator(
+                        modifier =Modifier.fillMaxSize()
+                    )
                 }
 
                 is MoviesRowSectionUiState.Success -> {
@@ -179,7 +181,9 @@ fun TVShowTabSection(
                         .padding(horizontal = 16.dp, vertical = 32.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Loading()
+                    CircularProgressIndicator(
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
 
                 is TVShowRowSectionUiState.Success -> {

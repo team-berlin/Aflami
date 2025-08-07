@@ -13,6 +13,7 @@ import com.berlin.repository.datasource.local.AppEntryLocalDataSource
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
 import com.berlin.repository.datasource.local.GenreLocalDataSource
+import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
@@ -82,9 +83,9 @@ abstract class DataSourceModule {
         impl: AppEntryLocalDataSourceImpl,
     ): AppEntryLocalDataSource
 
-//    @Binds
-//    @Singleton
-//    abstract fun bindHomeLocalDataSource(
-//        impl: HomeLocalDataSourceImp,
-//    ): HomeLocalDataSource
+    @Binds
+    @Singleton
+    abstract fun bindHomeLocalDataSource(
+        impl: HomeLocalDataSourceImp,
+    ): HomeLocalDataSource
 }

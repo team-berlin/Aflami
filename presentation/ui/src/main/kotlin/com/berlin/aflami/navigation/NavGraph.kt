@@ -1,11 +1,14 @@
 package com.berlin.aflami.navigation
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -80,18 +83,20 @@ private fun ShowNavigationBar(
     selectedRoute: NavigationBarDestinations,
     navController: NavHostController,
 ) {
-    NavBar(
 
-        navDestinations = bottomNavList,
+    val currentNavBarScreen = getCurrentNavBarScreen(navController)
+    val context = LocalContext.current
+
+    BackHandler(enabled = currentNavBarScreen != null) {
+        (context as? Activity)?.finish()
+    }
+
+    NavBar(
         currentRoute = selectedRoute,
         onNavDestinationClicked = { route ->
             if (route != selectedRoute) {
                 navController.navigate(route) {
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
                     launchSingleTop = true
-                    restoreState = true
                 }
             }
         },

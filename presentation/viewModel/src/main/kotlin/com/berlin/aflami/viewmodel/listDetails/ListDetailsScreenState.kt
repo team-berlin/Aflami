@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.listDetails
 
+//data class ListDetailsScreenState()
 import androidx.compose.runtime.Immutable
 import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState

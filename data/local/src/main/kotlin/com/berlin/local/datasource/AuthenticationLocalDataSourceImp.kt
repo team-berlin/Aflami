@@ -49,6 +49,7 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
         }
     }
 
+
     override suspend fun saveUserToken(userToken: String): Boolean {
         return try {
             val encrypted = EncryptionUtils.encrypt(userToken)

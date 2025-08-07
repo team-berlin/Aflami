@@ -71,9 +71,14 @@ fun HomeScreen(
     val navController = Theme.navController
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect { homeScreenEffect ->
-            onReceiveHomeScreenEffect(navController, homeScreenEffect)
+
+        launch {
+            viewModel.effect.collect { homeScreenEffect ->
+                onReceiveHomeScreenEffect(navController, homeScreenEffect)
+            }
         }
+
+        viewModel.getContinueWatchingMedia()
     }
 
     AnimatedVisibility(
@@ -155,6 +160,8 @@ private fun HomeContent(
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
 
+
+
     val appBarAlpha by remember {
         derivedStateOf {
             val offset =
@@ -167,16 +174,16 @@ private fun HomeContent(
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
     val pagerState = rememberPagerState(
         initialPage = 1, pageCount = { homeScreenState.popularMediaUiState.popularMedia.size })
-//    AnimatedVisibility(
-//        enter = fadeIn(),
-//        exit = fadeOut(),
-//        visible = homeScreenState.isLoading
-//    ) {
-//        CircularProgressIndicator(
-//            modifier = Modifier.fillMaxSize(),
-//            text = stringResource(R.string.loading)
-//        )
-//    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = homeScreenState.isLoading
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
+    }
     val mediaList: List<MediaUiState> =
         homeScreenState.continueWatchingUiState.continueWatchingMediaList
     val currentMedia =
@@ -186,12 +193,16 @@ private fun HomeContent(
             .fillMaxSize()
             .background(Theme.color.surface)
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(bottom = 64.dp),
-            state = listState
+        AnimatedVisibility(
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = homeScreenState.isLoading.not()
         ) {
-            item {
-                AnimatedVisibility(homeScreenState.popularMediaUiState.errorMessage == null) {
+            LazyColumn(
+                modifier = Modifier.padding(bottom = 64.dp),
+                state = listState
+            ) {
+                item {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -208,7 +219,8 @@ private fun HomeContent(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 96.dp)
+                                    .statusBarsPadding()
+                                    .padding(top = 56.dp)
                             ) {
                                 SectionTitle(
                                     title = stringResource(com.berlin.designsystem.R.string.popular),
@@ -275,32 +287,29 @@ private fun HomeContent(
                         }
                     }
                 }
-            }
-            item {
-                AnimatedVisibility(homeScreenState.continueWatchingUiState.errorMessage == null) {
-                    ContinueWatchingHomeSections(
-                        modifier = Modifier.background(Theme.color.surface),
-                        seeAllOnClick = {
-                            homeScreenInteractionListener.onShowAllContinueWatchingClicked()
-                        },
-                        state = mediaList,
-                        sectionTitleId = R.string.continue_watching,
-                        onMovieItemClicked = {
-                            homeScreenInteractionListener.onMovieCardClicked(
-                                it
-                            )
-                        },
-                        onTVShowItemClicked = {
-                            homeScreenInteractionListener.onTVShowCardClicked(
-                                it
-                            )
-                        }
-                    )
+                if (mediaList.isNotEmpty()) {
+                    item {
+                        ContinueWatchingHomeSections(
+                            modifier = Modifier.background(Theme.color.surface),
+                            seeAllOnClick = {
+                                homeScreenInteractionListener.onShowAllContinueWatchingClicked()
+                            },
+                            state = mediaList.take(10),
+                            sectionTitleId = R.string.continue_watching,
+                            onMovieItemClicked = {
+                                homeScreenInteractionListener.onMovieCardClicked(
+                                    it
+                                )
+                            },
+                            onTVShowItemClicked = {
+                                homeScreenInteractionListener.onTVShowCardClicked(
+                                    it
+                                )
+                            }
+                        )
+                    }
                 }
-            }
-
-            item {
-                AnimatedVisibility(homeScreenState.topRatedMediaUiState.errorMessage == null) {
+                item {
                     TopRatingHomeSections(
                         modifier = Modifier
                             .background(Theme.color.surface)
@@ -313,16 +322,14 @@ private fun HomeContent(
                         onTVShowItemClicked = { homeScreenInteractionListener.onTVShowCardClicked(it) }
                     )
                 }
-            }
-            item {
-                MoodPickerSection(
-                    modifier = Modifier.background(Theme.color.surface),
-                    homeScreenState,
-                    homeScreenInteractionListener
-                )
-            }
-            item {
-                AnimatedVisibility(homeScreenState.upcomingMoviesUiState.errorMessage == null) {
+                item {
+                    MoodPickerSection(
+                        modifier = Modifier.background(Theme.color.surface),
+                        homeScreenState,
+                        homeScreenInteractionListener
+                    )
+                }
+                item {
                     UpcomingMoviesSection(
                         movies = homeScreenState.upcomingMoviesUiState.upcomingMovies,
                         genres = homeScreenState.upcomingMoviesUiState.movieGenres,
@@ -357,9 +364,10 @@ private fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appBarBgColor)
-                .statusBarsPadding(), onSearchClicked = {
+                .statusBarsPadding()
+            , onSearchClicked = {
                 homeScreenInteractionListener.onSearchClicked()
-            }, containerColor = appBarBgColor
+            }, containerColor = Color.Unspecified
         )
     }
 }

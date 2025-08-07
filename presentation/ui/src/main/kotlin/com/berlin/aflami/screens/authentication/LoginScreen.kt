@@ -65,6 +65,7 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.buttons.ButtonState
 import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.ui.theme.AflamiTheme
@@ -90,7 +91,12 @@ fun LoginScreen(
                 LoginScreenEffect.NavigateToHomeScreen -> {
                     navController.navigate(
                         NavigationBarDestinations.HomeScreen
-                    )
+                    ){
+                        popUpTo(LoginDestination){
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
 
                 LoginScreenEffect.NavigateToCreateAccountScreen -> {

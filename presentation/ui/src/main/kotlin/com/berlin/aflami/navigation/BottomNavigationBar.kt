@@ -1,7 +1,6 @@
 package com.berlin.aflami.navigation
 
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -32,42 +31,21 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
-data class BottomNavigationItem(
+enum class BottomNavigationItem(
     @DrawableRes val icon: Int,
     @StringRes val label: Int,
     val route: NavigationBarDestinations,
-)
-val bottomNavList: List<BottomNavigationItem> = listOf<BottomNavigationItem>(
-    BottomNavigationItem(
-        icon = R.drawable.home,
-        label = R.string.label_home,
-        route = NavigationBarDestinations.HomeScreen
-    ),
-    BottomNavigationItem(
-        icon = R.drawable.lists,
-        label = R.string.label_lists,
-        route = NavigationBarDestinations.ListScreen
-    ),
-    BottomNavigationItem(
-        icon = R.drawable.categories,
-        label = R.string.label_categories,
-        route = NavigationBarDestinations.CategoriesScreen
-    ),
-    BottomNavigationItem(
-        icon = R.drawable.letsplay,
-        label = R.string.label_lets_play,
-        route = NavigationBarDestinations.GamesScreen
-    ),
-    BottomNavigationItem(
-        icon = R.drawable.profile,
-        label = R.string.label_profile,
-        route = NavigationBarDestinations.ProfileScreen
-    )
-)
+) {
+    Home(R.drawable.home, R.string.label_home, NavigationBarDestinations.HomeScreen),
+    Lists(R.drawable.lists, R.string.label_lists, NavigationBarDestinations.ListScreen),
+    Categories(R.drawable.categories, R.string.label_categories, NavigationBarDestinations.CategoriesScreen),
+    Games(R.drawable.letsplay, R.string.label_lets_play, NavigationBarDestinations.GamesScreen),
+    Profile(R.drawable.profile, R.string.label_profile, NavigationBarDestinations.ProfileScreen);
+}
+val bottomNavList = BottomNavigationItem.entries
 
 @Composable
 fun NavBar(
-    navDestinations: List<BottomNavigationItem>,
     currentRoute: NavigationBarDestinations,
     onNavDestinationClicked: (NavigationBarDestinations) -> Unit,
     modifier: Modifier = Modifier,
@@ -92,7 +70,7 @@ fun NavBar(
             horizontalArrangement = Arrangement.SpaceAround
         ) {
 
-            navDestinations.forEach { item ->
+            bottomNavList.forEach { item ->
                 val isSelected = currentRoute == item.route
 
                 val backgroundColor = if (isSelected) indicatorColor else Color.Unspecified
@@ -147,45 +125,3 @@ fun NavBar(
         }
     }
 }
-
-//@ThemeAndLocalePreviews
-//@Composable
-//private fun NavBarPreview() {
-//    AflamiTheme {
-//        val items = listOf(
-//            BottomNavItem(
-//                icon = painterResource(id = R.drawable.home),
-//                route = NavBar.HomeScreen,
-//                label = stringResource(R.string.label_home)
-//            ),
-//            BottomNavItem(
-//                icon = painterResource(id = R.drawable.lists),
-//                route = NavBar.ListScreen,
-//                label = stringResource(R.string.label_lists)
-//            ),
-//            BottomNavItem(
-//                icon = painterResource(id = R.drawable.categories),
-//                route = NavBar.,
-//                label = stringResource(R.string.label_categories)
-//            ),
-//            BottomNavItem(
-//                icon = painterResource(id = R.drawable.letsplay),
-//                route = NavBar.play",
-//                label = stringResource(R.string.label_lets_play)
-//            ),
-//            BottomNavItem(
-//                icon = painterResource(id = R.drawable.profile),
-//                route = NavBar.,
-//                label = stringResource(R.string.label_profile)
-//            )
-//        )
-//
-//        val selectedRoute = remember { mutableStateOf("home") }
-//
-//        NavBar(
-//            navDestinations = items,
-//            currentRoute = selectedRoute.value,
-//            onNavDestinationClicked = { selectedRoute.value = it }
-//        )
-//    }
-//}
