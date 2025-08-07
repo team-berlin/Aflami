@@ -6,4 +6,5 @@ interface ProfileInteractionListener {
     fun onLanguageClick()
     fun onAppThemeClick()
     fun onSettingsClick()
+    fun onDialogDismissed()
 }
