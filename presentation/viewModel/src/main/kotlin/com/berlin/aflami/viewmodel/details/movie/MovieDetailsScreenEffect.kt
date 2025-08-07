@@ -14,4 +14,6 @@ sealed interface MovieDetailsScreenEffect {
         val favouriteListId: Int,
         val movieId: Int,
     ) : MovieDetailsScreenEffect
+    data object NavigateToLogin : MovieDetailsScreenEffect
+
 }

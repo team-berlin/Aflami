@@ -26,13 +26,13 @@ import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenState
+import com.berlin.aflami.viewmodel.details.movie.MovieDetailsUiState
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsUiState
 import com.berlin.designsystem.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun MovieBackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) {
+fun MovieBackdropPager(state: MovieDetailsUiState, onPlayClick: () -> Unit) {
     val posterList = state.posters.take(4)
     val pagerState = rememberPagerState(pageCount = { posterList.size })
 
@@ -109,8 +109,8 @@ fun MovieBackdropPager(state: MovieDetailsScreenState, onPlayClick: () -> Unit) 
                 dropShadowAlpha = 0.09f,
                 borderWidth = 2,
                 size = 64,
-                enabled = state.movieUiState.hasVideo,
-                tint = if (state.movieUiState.hasVideo) Theme.color.primary else Theme.color.disable
+                enabled = state.isMovieHasVideo,
+                tint = if (state.isMovieHasVideo) Theme.color.primary else Theme.color.disable
             )
         }
     }
@@ -193,8 +193,8 @@ fun TVShowBackdropPager(state: TVShowDetailsUiState, onPlayClick: () -> Unit) {
                 dropShadowAlpha = 0.09f,
                 borderWidth = 2,
                 size = 64,
-                enabled = state.tvShowUiState.hasVideo,
-                tint = if (state.tvShowUiState.hasVideo) Theme.color.primary else Theme.color.disable
+                enabled = state.isTVShowHasVideo,
+                tint = if (state.isTVShowHasVideo) Theme.color.primary else Theme.color.disable
             )
         }
     }

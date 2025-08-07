@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
@@ -39,13 +40,15 @@ fun OnBoardingButtonNavigation(
                     .padding(end = 8.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Theme.color.primaryVariant)
-                    .padding(horizontal = 24.dp, vertical = 18.dp)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) {
                         onPreviousClick()
                     }
+                    .padding(horizontal = 24.dp, vertical = 18.dp),
+                contentAlignment = Alignment.Center
+
 
             ) {
                 Icon(
@@ -59,14 +62,14 @@ fun OnBoardingButtonNavigation(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
                 .background(Theme.color.primaryVariant)
-                .padding(horizontal = 24.dp, vertical = 18.dp)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) {
                     onNextClick()
                 }
-
+                .padding(horizontal = 24.dp, vertical = 18.dp),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 painter = painterResource(R.drawable.arrow_left),

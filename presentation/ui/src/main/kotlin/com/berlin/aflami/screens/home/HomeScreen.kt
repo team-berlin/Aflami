@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -62,6 +63,7 @@ import com.berlin.aflami.viewmodel.home.HomeScreenViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -71,9 +73,14 @@ fun HomeScreen(
     val navController = Theme.navController
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect { homeScreenEffect ->
-            onReceiveHomeScreenEffect(navController, homeScreenEffect)
+
+        launch {
+            viewModel.effect.collect { homeScreenEffect ->
+                onReceiveHomeScreenEffect(navController, homeScreenEffect)
+            }
         }
+
+        viewModel.getContinueWatchingMedia()
     }
 
     AnimatedVisibility(
@@ -156,6 +163,8 @@ private fun HomeContent(
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
 
+
+
     val appBarAlpha by remember {
         derivedStateOf {
             val offset =
@@ -213,7 +222,8 @@ private fun HomeContent(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 96.dp)
+                                    .statusBarsPadding()
+                                    .padding(top = 56.dp)
                             ) {
                                 SectionTitle(
                                     title = stringResource(com.berlin.designsystem.R.string.popular),
@@ -287,7 +297,7 @@ private fun HomeContent(
                             seeAllOnClick = {
                                 homeScreenInteractionListener.onShowAllContinueWatchingClicked()
                             },
-                            state = mediaList,
+                            state = mediaList.take(10),
                             sectionTitleId = R.string.continue_watching,
                             onMovieItemClicked = {
                                 homeScreenInteractionListener.onMovieCardClicked(
@@ -356,9 +366,10 @@ private fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appBarBgColor)
-                .statusBarsPadding(), onSearchClicked = {
+                .statusBarsPadding()
+            , onSearchClicked = {
                 homeScreenInteractionListener.onSearchClicked()
-            }, containerColor = appBarBgColor
+            }, containerColor = Color.Unspecified
         )
     }
 }
