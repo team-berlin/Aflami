@@ -48,24 +48,32 @@ private fun ProfileContent(
         ProfileDialogType.THEME -> {
             OptionsDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
-                onApplyClick = {},
+                onApplyClick = { profileScreenInteractionListener.onApplyThemeOption() },
                 title = R.string.app_theme,
-                firstOptionTitleRes = com.berlin.ui.R.string.dark,
-                secondOptionTitleRes = com.berlin.ui.R.string.light,
+                firstOptionTitleRes = R.string.dark,
+                secondOptionTitleRes = R.string.light,
                 firstOptionIconRes = com.berlin.designsystem.R.drawable.dark,
                 secondOptionIconRes = com.berlin.designsystem.R.drawable.light,
+                isFirstOptionSelected = profileScreenState.isDarkThemeSelected,
+                isSecondOptionSelected = profileScreenState.isLightThemeSelected,
+                onFirstOptionClick = { profileScreenInteractionListener.onDarkThemeSelected() },
+                onSecondOptionClick = { profileScreenInteractionListener.onLightThemeSelected() }
             )
         }
 
         ProfileDialogType.LANGUAGE -> {
             OptionsDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
-                onApplyClick = { },
+                onApplyClick = { profileScreenInteractionListener.onApplyLanguageOption() },
                 title = R.string.language,
                 firstOptionTitleRes = R.string.language_dialog_english,
                 secondOptionTitleRes = R.string.language_dialog_arabic,
                 firstOptionIconRes = com.berlin.designsystem.R.drawable.english,
                 secondOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
+                isFirstOptionSelected = profileScreenState.isEnglishSelected,
+                isSecondOptionSelected = profileScreenState.isArabicSelected,
+                onFirstOptionClick = { profileScreenInteractionListener.onEnglishSelected() },
+                onSecondOptionClick = { profileScreenInteractionListener.onArabicSelected() }
             )
 
         }
