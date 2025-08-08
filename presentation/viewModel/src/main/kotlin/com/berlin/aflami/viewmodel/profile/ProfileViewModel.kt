@@ -32,9 +32,11 @@ class ProfileViewModel @Inject constructor(
     private fun collectTheme() {
         viewModelScope.launch {
             getThemeUseCase().collect { theme ->
+                val safeTheme = theme ?: AppTheme.DARK.name
+
                 updateState {
                     it.copy(
-                        selectedTheme = theme!!,
+                        selectedTheme = safeTheme,
                         isDarkThemeSelected = theme == AppTheme.DARK.name,
                         isLightThemeSelected = theme == AppTheme.LIGHT.name,
                         isDarkThemeEnabled = theme == AppTheme.DARK.name
@@ -47,9 +49,11 @@ class ProfileViewModel @Inject constructor(
     private fun collectLanguage() {
         viewModelScope.launch {
             getLanguageUseCase().collect { language ->
+                val safeTheme = language ?: AppLanguage.AR.name
+
                 updateState {
                     it.copy(
-                        selectedLanguage = language!!,
+                        selectedLanguage = safeTheme,
                         isArabicSelected = language == AppLanguage.AR.name,
                         isEnglishSelected = language == AppLanguage.EN.name,
                         isLanguageEN = language == AppLanguage.EN.name
@@ -103,7 +107,6 @@ class ProfileViewModel @Inject constructor(
                 isDarkThemeEnabled = false,
             )
         }
-        sendNewEffect(ProfileScreenEffect.RefreshActivity)
 
     }
 
@@ -142,17 +145,21 @@ class ProfileViewModel @Inject constructor(
             val selectedLanguage = AppLanguage.valueOf(state.value.selectedLanguage)
             setLanguageUseCase(selectedLanguage)
             updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+            sendNewEffect(ProfileScreenEffect.RefreshActivity)
         }
     }
 
     override fun onDialogDismissed() {
         updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
     }
+    override fun onChangePasswordClicked() =
+        sendNewEffect(ProfileScreenEffect.NavigateToChangePasswordScreen)
+
+    override fun onLogoutClicked() = sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
+
 
     private fun updateError(errorUiState: ErrorUiState) {
         Log.e("HomeScreenViewModel", "updatePopularUiStateWithError: ${errorUiState.message}")
 
     }
-
-
 }
