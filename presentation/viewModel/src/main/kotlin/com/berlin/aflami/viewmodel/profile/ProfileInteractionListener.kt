@@ -14,4 +14,5 @@ interface ProfileInteractionListener {
     fun onApplyLanguageOption()
     fun onDialogDismissed()
     fun onChangePasswordClicked()
+    fun onLogoutClicked()
 }

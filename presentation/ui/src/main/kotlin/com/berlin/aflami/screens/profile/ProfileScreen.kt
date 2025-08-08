@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berlin.aflami.component.ThemeAndLocalePreviews
+import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.profile.components.OptionsDialog
 import com.berlin.aflami.screens.profile.components.ProfileSection
@@ -50,6 +51,9 @@ fun ProfileScreen(
                     navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
                 }
 
+                ProfileScreenEffect.NavigateToLoginScreen -> {
+                    navController.navigate(route = LoginDestination)
+                }
             }
         }
     }
@@ -98,6 +102,7 @@ private fun ProfileContent(
             SettingsDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
                 onFirstOptionClick = { profileScreenInteractionListener.onChangePasswordClicked() },
+                onSecondOptionClick = { profileScreenInteractionListener.onLogoutClicked() },
             )
         }
 
