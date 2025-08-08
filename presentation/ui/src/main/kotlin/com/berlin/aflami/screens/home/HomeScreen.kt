@@ -49,7 +49,6 @@ import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.navigation.TopRatingMediaDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
-import com.berlin.aflami.screens.home.component.getGenreNameById
 import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
 import com.berlin.aflami.screens.home.sections.MoodPickerSection
 import com.berlin.aflami.screens.home.sections.PosterSlider
@@ -276,13 +275,30 @@ private fun HomeContent(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         items(items = media.genre) { genreId ->
-                                            val genreName =
-                                                getGenreNameById(genreId, media.mediaType!!)
-                                            Box(
-                                                modifier = Modifier.padding(horizontal = 4.dp)
-                                            ) {
-                                                GenersChip(label = stringResource(genreName))
-                                            }
+                                           when(media.mediaType){
+                                               MediaType.MOVIE ->
+                                                   homeScreenState.movieGenres.forEach {
+                                                       movieGenre->
+                                                   if (movieGenre.id==genreId)
+                                                   Box(
+                                                       modifier = Modifier.padding(horizontal = 4.dp)
+                                                   ) {
+                                                       GenersChip(label = movieGenre.name)
+                                                   }
+                                               }
+                                               MediaType.TV_SHOW ->
+                                                   homeScreenState.tVShowGenres.forEach {
+                                                       tVShow->
+                                                       if (tVShow.id==genreId)
+                                                       Box(
+                                                       modifier = Modifier.padding(horizontal = 4.dp)
+                                                   ) {
+                                                       GenersChip(label = tVShow.name)
+                                                   }
+                                               }
+                                               null -> TODO()
+                                           }
+
                                         }
                                     }
                                 }
@@ -335,7 +351,7 @@ private fun HomeContent(
                 item {
                     UpcomingMoviesSection(
                         movies = homeScreenState.upcomingMoviesUiState.upcomingMovies,
-                        genres = homeScreenState.upcomingMoviesUiState.movieGenres,
+                        genres = homeScreenState.movieGenres,
                         onMovieClick = {
                             homeScreenInteractionListener.onUpcomingMoviesCardClicked(
                                 it

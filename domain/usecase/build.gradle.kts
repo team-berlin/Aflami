@@ -32,6 +32,7 @@ kover {
     }
 }
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     testImplementation(libs.bundles.test)
     implementation(libs.kotlin.datex)
     implementation(libs.javax.inject)

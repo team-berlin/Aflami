@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -23,6 +24,9 @@ dependencies {
 
 
     implementation(libs.javax.inject)
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
+
+
 
     implementation(project(":data:repository"))
 }

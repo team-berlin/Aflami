@@ -121,7 +121,10 @@ fun WatchedMediaContent(
 
         when {
             state.isLoading -> {
-                Loading()
+                CircularProgressIndicator(
+                    modifier = Modifier.fillMaxSize(),
+                    text = stringResource(R.string.loading)
+                )
             }
 
             else -> {

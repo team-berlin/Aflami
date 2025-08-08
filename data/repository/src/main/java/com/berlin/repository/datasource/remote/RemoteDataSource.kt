@@ -21,7 +21,7 @@ interface RemoteDataSource {
     suspend fun getMovieDetails(movieId: Long): MovieDetailsDto
     suspend fun getMovieCastDetails(movieId: Long): MediaCastResponse
     suspend fun getMovieReviews(movieId: Long): BaseResponse<ReviewDto>
-    suspend fun getUpComingMovies(selectedGenres: Int): BaseResponse<MovieDetailsDto>
+    suspend fun getUpComingMovies(): BaseResponse<MovieDetailsDto>
     suspend fun getTVShowDetailsById(seriesId: Long): TVShowDetailsDto
     suspend fun getTVCastDetailsById(seriesId: Long): MediaCastResponse
     suspend fun getSimilarTVById(seriesId: Long): BaseResponse<TVShowDetailsDto>
