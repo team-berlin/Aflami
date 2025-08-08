@@ -18,8 +18,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.berlin.aflami.component.ThemeAndLocalePreviews
-import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.profile.components.OptionsDialog
 import com.berlin.aflami.screens.profile.components.ProfileSection
@@ -33,7 +33,6 @@ import com.berlin.aflami.viewmodel.profile.ProfileInteractionListener
 import com.berlin.aflami.viewmodel.profile.ProfileScreenEffect
 import com.berlin.aflami.viewmodel.profile.ProfileUiState
 import com.berlin.aflami.viewmodel.profile.ProfileViewModel
-import com.berlin.aflami.viewmodel.profile.watchhistory.WatchHistoryScreenEffect
 import com.berlin.ui.R
 
 @Composable
@@ -50,19 +49,12 @@ fun ProfileScreen(
     }
     ProfileContent(profileScreenState, viewModel)
 
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect {
-            when (it) {
-
-                ProfileScreenEffect.NavigateToMyRatingScreen -> TODO()
-                ProfileScreenEffect.NavigateToWatchHistoryScreen -> TODO()
-                ProfileScreenEffect.NavigateToChangePasswordScreen -> {
-                    navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
-                }
-
 }
 
-private fun WatchHistoryonReceiveEffect(navController: NavController, effect: ProfileScreenEffect) {
+private fun WatchHistoryonReceiveEffect(
+    navController: NavController,
+    effect: ProfileScreenEffect
+) {
     when (effect) {
         ProfileScreenEffect.NavigateToMyRatingScreen -> {}
         ProfileScreenEffect.NavigateToWatchHistoryScreen -> {
@@ -70,21 +62,18 @@ private fun WatchHistoryonReceiveEffect(navController: NavController, effect: Pr
                 WatchHistoryDestination
             )
         }
+
+        ProfileScreenEffect.NavigateToChangePasswordScreen -> {
+            navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
+        }
+
         ProfileScreenEffect.RefreshActivity -> {}
-    }
-}
-
-                ProfileScreenEffect.NavigateToLoginScreen -> {
-                    navController.navigate(route = LoginDestination)
-                }
-
-                ProfileScreenEffect.RefreshActivity -> {
-                    (navController.context as? androidx.activity.ComponentActivity)?.recreate()
-                }
-            }
+        ProfileScreenEffect.NavigateToLoginScreen -> {
+            navController.navigate(route = LoginDestination)
         }
     }
 }
+
 @Composable
 private fun ProfileContent(
     profileScreenState: ProfileUiState,
@@ -147,7 +136,7 @@ private fun ProfileContent(
     {
         ProfileSection(userAvatar = "", userName = "", painterResource(R.drawable.profile_cover))
         Spacer(modifier = Modifier.height(24.dp))
-        WatchHistoryRatingSection{
+        WatchHistoryRatingSection {
             profileScreenInteractionListener.onWatchHistoryClick()
         }
         Spacer(modifier = Modifier.height(24.dp))

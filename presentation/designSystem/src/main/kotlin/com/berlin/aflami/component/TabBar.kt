@@ -76,7 +76,6 @@ fun TabBar(
                     if (!isSelected)
                         onTabChange(index)
                 },
-                interactionSource = remember { MutableInteractionSource() }
                 ) {
                 Text(
                     text = status.text,
