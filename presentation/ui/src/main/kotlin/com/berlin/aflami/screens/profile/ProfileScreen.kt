@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,7 +16,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.berlin.aflami.component.ThemeAndLocalePreviews
+import com.berlin.aflami.navigation.MovieDetailsDestination
+import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.screens.profile.components.OptionsDialog
 import com.berlin.aflami.screens.profile.components.ProfileSection
 import com.berlin.aflami.screens.profile.components.SettingSection
@@ -23,10 +27,13 @@ import com.berlin.aflami.screens.profile.components.SettingsDialog
 import com.berlin.aflami.screens.profile.components.WatchHistoryRatingSection
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenEffect
 import com.berlin.aflami.viewmodel.profile.ProfileDialogType
 import com.berlin.aflami.viewmodel.profile.ProfileInteractionListener
+import com.berlin.aflami.viewmodel.profile.ProfileScreenEffect
 import com.berlin.aflami.viewmodel.profile.ProfileUiState
 import com.berlin.aflami.viewmodel.profile.ProfileViewModel
+import com.berlin.aflami.viewmodel.profile.watchhistory.WatchHistoryScreenEffect
 import com.berlin.ui.R
 
 @Composable
@@ -35,7 +42,26 @@ fun ProfileScreen(
 ) {
     val profileScreenState by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { newEffect ->
+            WatchHistoryonReceiveEffect(navController = navController, effect = newEffect)
+        }
+    }
     ProfileContent(profileScreenState, viewModel)
+
+}
+
+private fun WatchHistoryonReceiveEffect(navController: NavController, effect: ProfileScreenEffect) {
+    when (effect) {
+        ProfileScreenEffect.NavigateToMyRatingScreen -> {}
+        ProfileScreenEffect.NavigateToWatchHistoryScreen -> {
+            navController.navigate(
+                WatchHistoryDestination
+            )
+        }
+        ProfileScreenEffect.RefreshActivity -> {}
+    }
 }
 
 @Composable
@@ -98,7 +124,9 @@ private fun ProfileContent(
     {
         ProfileSection(userAvatar = "", userName = "", painterResource(R.drawable.profile_cover))
         Spacer(modifier = Modifier.height(24.dp))
-        WatchHistoryRatingSection()
+        WatchHistoryRatingSection{
+            profileScreenInteractionListener.onWatchHistoryClick()
+        }
         Spacer(modifier = Modifier.height(24.dp))
         HorizontalDivider(thickness = 1.dp, color = Theme.color.stroke)
         Spacer(modifier = Modifier.height(24.dp))

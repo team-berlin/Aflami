@@ -68,6 +68,9 @@ object SearchByCountryDestination
 object SearchByActorDestination
 
 @Serializable
+object WatchHistoryDestination
+
+@Serializable
 data class ListDetailsDestination(val listId: Int)
 
 @Serializable

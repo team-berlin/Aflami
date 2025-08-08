@@ -13,7 +13,8 @@ import com.berlin.ui.R
 
 @Composable
 fun WatchHistoryRatingSection(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onWatchHistoryClick: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -25,11 +26,16 @@ fun WatchHistoryRatingSection(
             title = stringResource(R.string.watch_history),
             image = painterResource(R.drawable.watch_history), // ⏰ (or use painter if using actual image)
             modifier = Modifier.weight(1f)
-        )
+        ){
+            onWatchHistoryClick()
+
+        }
         HistoryInfoCard(
             title = stringResource(R.string.my_rating),
             image = painterResource(R.drawable.my_rating), // ⏰ (or use painter if using actual image)
             modifier = Modifier.weight(1f)
-        )
+        ){
+            onWatchHistoryClick()
+        }
     }
 }
