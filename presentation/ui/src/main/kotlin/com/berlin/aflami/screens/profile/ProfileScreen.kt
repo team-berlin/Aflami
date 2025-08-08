@@ -18,8 +18,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.berlin.aflami.component.ThemeAndLocalePreviews
-import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.WatchHistoryDestination
+import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.profile.components.OptionsDialog
 import com.berlin.aflami.screens.profile.components.ProfileSection
 import com.berlin.aflami.screens.profile.components.SettingSection
@@ -27,7 +28,6 @@ import com.berlin.aflami.screens.profile.components.SettingsDialog
 import com.berlin.aflami.screens.profile.components.WatchHistoryRatingSection
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenEffect
 import com.berlin.aflami.viewmodel.profile.ProfileDialogType
 import com.berlin.aflami.viewmodel.profile.ProfileInteractionListener
 import com.berlin.aflami.viewmodel.profile.ProfileScreenEffect
@@ -50,6 +50,16 @@ fun ProfileScreen(
     }
     ProfileContent(profileScreenState, viewModel)
 
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect {
+            when (it) {
+
+                ProfileScreenEffect.NavigateToMyRatingScreen -> TODO()
+                ProfileScreenEffect.NavigateToWatchHistoryScreen -> TODO()
+                ProfileScreenEffect.NavigateToChangePasswordScreen -> {
+                    navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
+                }
+
 }
 
 private fun WatchHistoryonReceiveEffect(navController: NavController, effect: ProfileScreenEffect) {
@@ -64,6 +74,17 @@ private fun WatchHistoryonReceiveEffect(navController: NavController, effect: Pr
     }
 }
 
+                ProfileScreenEffect.NavigateToLoginScreen -> {
+                    navController.navigate(route = LoginDestination)
+                }
+
+                ProfileScreenEffect.RefreshActivity -> {
+                    (navController.context as? androidx.activity.ComponentActivity)?.recreate()
+                }
+            }
+        }
+    }
+}
 @Composable
 private fun ProfileContent(
     profileScreenState: ProfileUiState,
@@ -107,6 +128,8 @@ private fun ProfileContent(
         ProfileDialogType.SETTINGS -> {
             SettingsDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
+                onFirstOptionClick = { profileScreenInteractionListener.onChangePasswordClicked() },
+                onSecondOptionClick = { profileScreenInteractionListener.onLogoutClicked() },
             )
         }
 
@@ -150,3 +173,4 @@ private fun PreviewProfileSection() {
     }
 }
 
+private const val RESET_PASSWORD_URL = "https://www.themoviedb.org/reset-password"

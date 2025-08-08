@@ -107,7 +107,6 @@ class ProfileViewModel @Inject constructor(
                 isDarkThemeEnabled = false,
             )
         }
-        sendNewEffect(ProfileScreenEffect.RefreshActivity)
 
     }
 
@@ -146,17 +145,21 @@ class ProfileViewModel @Inject constructor(
             val selectedLanguage = AppLanguage.valueOf(state.value.selectedLanguage)
             setLanguageUseCase(selectedLanguage)
             updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+            sendNewEffect(ProfileScreenEffect.RefreshActivity)
         }
     }
 
     override fun onDialogDismissed() {
         updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
     }
+    override fun onChangePasswordClicked() =
+        sendNewEffect(ProfileScreenEffect.NavigateToChangePasswordScreen)
+
+    override fun onLogoutClicked() = sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
+
 
     private fun updateError(errorUiState: ErrorUiState) {
         Log.e("HomeScreenViewModel", "updatePopularUiStateWithError: ${errorUiState.message}")
 
     }
-
-
 }

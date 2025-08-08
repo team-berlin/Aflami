@@ -27,7 +27,7 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
 
     suspend fun getTheme(): Flow<String?> {
         return context.dataStore.data.map { prefs ->
-            prefs[APP_THEME]
+            prefs[APP_THEME] ?: "DARK"
         }
     }
 
@@ -38,7 +38,7 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
     }
     suspend fun getLanguage(): Flow<String?> {
         return context.dataStore.data.map { prefs ->
-            prefs[APP_LANGUAGE]
+            prefs[APP_LANGUAGE] ?: "AR"
         }
 
     }
