@@ -21,6 +21,7 @@ import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
+import com.berlin.aflami.screens.RequiredLoggedInPlaceholder
 import com.berlin.aflami.screens.profile.components.OptionsDialog
 import com.berlin.aflami.screens.profile.components.ProfileSection
 import com.berlin.aflami.screens.profile.components.SettingSection
@@ -41,7 +42,12 @@ fun ProfileScreen(
 ) {
     val profileScreenState by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
+    if (profileScreenState.isLoggedIn) {
+        ProfileContent(profileScreenState, viewModel)
+    } else {
+        RequiredLoggedInPlaceholder()
 
+    }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
             WatchHistoryonReceiveEffect(navController = navController, effect = newEffect)

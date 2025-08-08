@@ -8,6 +8,7 @@ import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import usecase.auth.GetLoginStatus
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
 import usecase.profile.SetLanguageUseCase
@@ -19,7 +20,8 @@ class ProfileViewModel @Inject constructor(
     val getLanguageUseCase: GetLanguageUseCase,
     val getThemeUseCase: GetThemeUseCase,
     val setLanguageUseCase: SetLanguageUseCase,
-    val setThemeUseCase: SetThemeUseCase
+    val setThemeUseCase: SetThemeUseCase,
+    val getLoginStatus: GetLoginStatus,
 
 ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
@@ -27,6 +29,7 @@ class ProfileViewModel @Inject constructor(
     init {
         collectTheme()
         collectLanguage()
+        checkLoginStatus()
     }
 
     private fun collectTheme() {
@@ -63,6 +66,12 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private fun checkLoginStatus() {
+        viewModelScope.launch {
+            val loggedIn = getLoginStatus()
+            updateState { it.copy(isLoggedIn = loggedIn) }
+        }
+    }
 
     override fun onWatchHistoryClick() {
         sendNewEffect(ProfileScreenEffect.NavigateToWatchHistoryScreen)
