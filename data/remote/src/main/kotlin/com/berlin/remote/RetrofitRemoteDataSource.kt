@@ -13,8 +13,9 @@ import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
+import com.berlin.repository.datasource.remote.dto.rating.RatedMediaDto
 import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
-import com.berlin.repository.datasource.remote.response.SubmitRatingResponse
+import com.berlin.repository.datasource.remote.response.rating.SubmitRatingResponse
 import javax.inject.Inject
 
 class RetrofitRemoteDataSource @Inject constructor(
@@ -163,5 +164,19 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse { apiService.rateTvShow(tvId,
             sessionId = authenticationLocalDataSource.getUserSessionId()?: throw IllegalStateException("Session ID is missing. User might not be logged in.")
             , rating) }
+    }
+
+    override suspend fun getRatedMovies(page: Int): BaseResponse<RatedMediaDto> {
+        val sessionId = authenticationLocalDataSource.getUserSessionId()?: throw IllegalStateException("Session ID is missing. User might not be logged in.")
+        return wrapApiResponse {
+            apiService.getRatedMovies(TODO("Add Account Id"), sessionId, page)
+        }
+    }
+
+    override suspend fun getRatedTVShows(page: Int): BaseResponse<RatedMediaDto> {
+        val sessionId = authenticationLocalDataSource.getUserSessionId()?: throw IllegalStateException("Session ID is missing. User might not be logged in.")
+        return wrapApiResponse {
+            apiService.getRatedTVShows(TODO("Add Account Id"), sessionId, page)
+        }
     }
 }

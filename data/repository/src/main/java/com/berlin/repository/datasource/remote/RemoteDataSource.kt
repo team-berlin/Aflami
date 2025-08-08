@@ -9,9 +9,10 @@ import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
+import com.berlin.repository.datasource.remote.dto.rating.RatedMediaDto
 import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
-import com.berlin.repository.datasource.remote.response.SubmitRatingResponse
+import com.berlin.repository.datasource.remote.response.rating.SubmitRatingResponse
 
 interface RemoteDataSource {
     suspend fun getSimilarMovies(movieId: Long): BaseResponse<MovieDetailsDto>
@@ -42,4 +43,6 @@ interface RemoteDataSource {
 
     suspend fun postRateMovie(movieId: Int, rating: SubmitRatingRequestDto): SubmitRatingResponse
     suspend fun postRateTvShow(tvId: Int, rating: SubmitRatingRequestDto): SubmitRatingResponse
+    suspend fun getRatedMovies(page: Int): BaseResponse<RatedMediaDto>
+    suspend fun getRatedTVShows(page: Int): BaseResponse<RatedMediaDto>
 }

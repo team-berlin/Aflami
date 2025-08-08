@@ -9,8 +9,9 @@ import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
+import com.berlin.repository.datasource.remote.dto.rating.RatedMediaDto
 import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
-import com.berlin.repository.datasource.remote.response.SubmitRatingResponse
+import com.berlin.repository.datasource.remote.response.rating.SubmitRatingResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -154,6 +155,20 @@ interface ApiService {
     suspend fun getMovieVideos(
         @Path(ApiConstants.MOVIE_ID) movieId: Long
     ): Response<VideosResponse>
+
+    @GET(ApiConstants.RATED_MOVIES)
+    suspend fun getRatedMovies(
+        @Path(ApiConstants.ACCOUNT_ID) accountId: String,
+        @Query(ApiConstants.SESSION_ID) sessionId: String,
+        @Query(ApiConstants.PAGE) page: Int
+    ): Response<BaseResponse<RatedMediaDto>>
+
+    @GET(ApiConstants.RATED_TV_SHOWS)
+    suspend fun getRatedTVShows(
+        @Path(ApiConstants.ACCOUNT_ID) accountId: String,
+        @Query(ApiConstants.SESSION_ID) sessionId: String,
+        @Query(ApiConstants.PAGE) page: Int
+    ): Response<BaseResponse<RatedMediaDto>>
 
     @POST(ApiConstants.RATE_MOVIE)
     suspend fun rateMovie(

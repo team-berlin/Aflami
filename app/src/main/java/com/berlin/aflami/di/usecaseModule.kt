@@ -8,7 +8,7 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.RatingRepository
+import repository.RatingActionRepository
 import repository.TVShowRepository
 import repository.TVShowDetailsRepository
 import usecase.auth.GetLoginStatus
@@ -212,11 +212,11 @@ object UseCaseModule {
         GetFirstEntryUseCase(repository)
 
     @Provides
-    fun provideRateMovieUseCase(repository: RatingRepository): RateMovieUseCase =
+    fun provideRateMovieUseCase(repository: RatingActionRepository): RateMovieUseCase =
         RateMovieUseCase(repository)
 
     @Provides
-    fun provideRateTvShowUseCase(repository: RatingRepository): RateTvShowUseCase =
+    fun provideRateTvShowUseCase(repository: RatingActionRepository): RateTvShowUseCase =
         RateTvShowUseCase(repository)
 
 }

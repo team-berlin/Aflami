@@ -3,7 +3,8 @@ package com.berlin.aflami.di
 import com.berlin.repository.AuthenticationRepositoryImpl
 import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
-import com.berlin.repository.RatingRepositoryImpl
+import com.berlin.repository.RatedMediaRepositoryImp
+import com.berlin.repository.RatingActionRepositoryImpl
 import com.berlin.repository.TVShowRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
 import com.berlin.repository.datasource.AppEntryRepositoryImpl
@@ -15,7 +16,8 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.RatingRepository
+import repository.RatedMediaRepository
+import repository.RatingActionRepository
 import repository.TVShowRepository
 import repository.TVShowDetailsRepository
 import javax.inject.Singleton
@@ -65,6 +67,12 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindRatingRepository(
-        impl: RatingRepositoryImpl
-    ): RatingRepository
+        impl: RatingActionRepositoryImpl
+    ): RatingActionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRatedMediaRepository(
+        impl: RatedMediaRepositoryImp
+    ): RatedMediaRepository
 }
