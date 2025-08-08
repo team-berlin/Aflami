@@ -5,4 +5,5 @@ sealed class ProfileScreenEffect {
     object NavigateToMyRatingScreen : ProfileScreenEffect()
     object NavigateToChangePasswordScreen : ProfileScreenEffect()
     object NavigateToLoginScreen : ProfileScreenEffect()
+    object RefreshActivity : ProfileScreenEffect()
 }

@@ -54,6 +54,10 @@ fun ProfileScreen(
                 ProfileScreenEffect.NavigateToLoginScreen -> {
                     navController.navigate(route = LoginDestination)
                 }
+
+                ProfileScreenEffect.RefreshActivity -> {
+                    (navController.context as? androidx.activity.ComponentActivity)?.recreate()
+                }
             }
         }
     }

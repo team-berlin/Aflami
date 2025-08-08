@@ -145,6 +145,7 @@ class ProfileViewModel @Inject constructor(
             val selectedLanguage = AppLanguage.valueOf(state.value.selectedLanguage)
             setLanguageUseCase(selectedLanguage)
             updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+            sendNewEffect(ProfileScreenEffect.RefreshActivity)
         }
     }
 
@@ -161,6 +162,4 @@ class ProfileViewModel @Inject constructor(
         Log.e("HomeScreenViewModel", "updatePopularUiStateWithError: ${errorUiState.message}")
 
     }
-
-
 }

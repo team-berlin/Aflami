@@ -61,6 +61,7 @@ class MainActivity : ComponentActivity() {
                         navController = Theme.navController,
                         isLoggedIn = mainState.isLoggedIn,
                         isFirsTime = mainState.isFirstEntry,
+                        selectedLanguage = profileState.selectedLanguage,
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Theme.color.surface)
@@ -83,6 +84,7 @@ fun UpdateLocale(selectedLanguage: String) {
             "EN" -> Locale("en")
             else -> Locale.getDefault()
         }
+        Locale.setDefault(locale)
         val config = Configuration(context.resources.configuration)
         config.setLocale(locale)
         context.resources.updateConfiguration(config, context.resources.displayMetrics)
