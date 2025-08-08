@@ -11,33 +11,14 @@ class SettingsLocalDataSourceImpl @Inject constructor(
 
 ) : SettingsLocalDataSource {
 
-    override suspend fun setTheme(theme: String) {
-        /*  dataStore.edit { prefs ->
-              prefs[APP_THEME] = theme
-          }*/
-        preferences.setTheme(theme)
-    }
+    override suspend fun setTheme(theme: String) = preferences.setTheme(theme)
 
-    override suspend fun getTheme(): Flow<String?> {
-        /* return dataStore.data.map { prefs ->
-             prefs[APP_THEME]
-         }*/
-        return preferences.getTheme()
-    }
+    override suspend fun getTheme(): Flow<String?> = preferences.getTheme()
 
-    override suspend fun setLanguage(language: String) {
-        /*dataStore.edit { prefs ->
-            prefs[APP_LANGUAGE] = language*/
-        preferences.setLanguage(language)
-    }
+    override suspend fun setLanguage(language: String) = preferences.setLanguage(language)
 
-    override suspend fun getLanguage(): Flow<String?> {
-        /* return dataStore.data.map { prefs ->
-            prefs[APP_LANGUAGE]
-        }*/
 
-        return preferences.getLanguage()
-    }
+    override suspend fun getLanguage(): Flow<String?> = preferences.getLanguage()
 }
 
 
