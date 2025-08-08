@@ -160,14 +160,13 @@ class RetrofitRemoteDataSource @Inject constructor(
     }
 
     override suspend fun getUserFavouriteLists(page: Int): List<FavouriteListDto> {
-        return wrapApiResponse {
-            apiService.getUserLists(
-                accountId = authenticationLocalDataSource.getUserAccountId(),
-                page = page,
-                sessionId = authenticationLocalDataSource.getUserSessionId()
-                    ?: throw IllegalStateException("userSessionID == null"),
-            )
-        }.results
+        Log.d("Khairy", "remote DS$page")
+        return apiService.getUserLists(
+            accountId = authenticationLocalDataSource.getUserAccountId(),
+            page = page,
+            sessionId = authenticationLocalDataSource.getUserSessionId()
+                ?: throw IllegalStateException("userSessionID == null"),
+        ).body()!!.results!!
     }
 
     override suspend fun getUserFavouriteListItems(
@@ -179,7 +178,7 @@ class RetrofitRemoteDataSource @Inject constructor(
                 listId = favouriteListId,
                 pageNumber = pageNumber
             )
-        }.favouriteListItems
+        }.favouriteListItems!!
     }
 
     override suspend fun deleteUserFavouriteList(listId: Int) {

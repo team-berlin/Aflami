@@ -7,11 +7,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FavouriteListResponse(
     @SerialName("page")
-    val page: Int,
+    val page: Int? = null,
+
     @SerialName("results")
-    val results: List<FavouriteListDto>,
+    val results: List<FavouriteListDto>? = null,
+
     @SerialName("total_pages")
-    val totalPages: Int,
+    val totalPages: Int? = null,
+
     @SerialName("total_results")
-    val totalResults: Int,
+    val totalResults: Int? = null,
 )

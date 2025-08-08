@@ -18,8 +18,6 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
             .map { favouriteListDto ->
                 Log.d("Khairy", "repository $favouriteListDto")
                 favouriteListDto.toDomain()
-            }.also {
-                Log.d("Khairy", "getUserFavouriteLists from repository returned $it")
             }
     }
 

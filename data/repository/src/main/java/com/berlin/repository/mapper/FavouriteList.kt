@@ -7,19 +7,19 @@ import com.berlin.repository.datasource.remote.dto.FavouriteListItem
 
 fun FavouriteListDto.toDomain(): FavouriteList {
     return FavouriteList(
-        listId = listId, listTitle = listTitle, numberOfFavouriteMovies = favoriteCount
+        listId = listId!!, listTitle = listTitle!!, numberOfFavouriteMovies = favoriteCount!!
     )
 }
 
 fun FavouriteListItem.toMovie(): Movie {
     return Movie(
-        id = id.toLong(),
-        title = title,
-        rating = voteAverage,
-        releaseDate = releaseDate,
+        id = id?.toLong()!!,
+        title = title!!,
+        rating = voteAverage!!,
+        releaseDate = releaseDate!!,
         posterURL = posterPath!!,
-        description = overview,
-        genres = genreIds.map { it.toDomainGenre() },
+        description = overview!!,
+        genres = genreIds?.map { it.toDomainGenre() }!!,
         isFavourite = true,
         screenShot = "",
         duration = 1,
