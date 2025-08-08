@@ -89,4 +89,8 @@
     <string name="setting_dialog_change_password">تغيير كلمة المرور</string>
     <string name="setting_dialog_logout">تسجيل الخروج</string>
     <string name="setting_dialog_logout_quote">تعبت من المشاهدة ؟</string>
+    <string name="Please_login">الرجاء تسجيل الدخول للوصول الى بيانات حساب </string>
+    <string name="space">-</string>
+
+
 </resources>

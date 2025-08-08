@@ -17,6 +17,8 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
     companion object {
         val APP_THEME = stringPreferencesKey("app_theme")
         val APP_LANGUAGE = stringPreferencesKey("app_language")
+        val App_CONTENT_RESTRICTION = stringPreferencesKey("app_content_restriction")
+
     }
 
     suspend fun setTheme(theme: String) {
@@ -25,7 +27,7 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
         }
     }
 
-    suspend fun getTheme(): Flow<String?> {
+    fun getTheme(): Flow<String?> {
         return context.dataStore.data.map { prefs ->
             prefs[APP_THEME] ?: "DARK"
         }
@@ -36,11 +38,23 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
             prefs[APP_LANGUAGE] = lang
         }
     }
-    suspend fun getLanguage(): Flow<String?> {
+    fun getLanguage(): Flow<String?> {
         return context.dataStore.data.map { prefs ->
             prefs[APP_LANGUAGE] ?: "AR"
         }
 
+    }
+
+    suspend fun setContentRestriction(contentRestrictionLevel: String) {
+        context.dataStore.edit { prefs ->
+            prefs[App_CONTENT_RESTRICTION] = contentRestrictionLevel
+        }
+    }
+
+    fun getContentRestriction(): Flow<String?> {
+        return context.dataStore.data.map { prefs ->
+            prefs[App_CONTENT_RESTRICTION] ?: "50"
+        }
     }
 
 }

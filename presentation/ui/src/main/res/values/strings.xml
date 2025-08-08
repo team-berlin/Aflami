@@ -88,4 +88,7 @@
     <string name="guess_play"><![CDATA[Guess & Play!]]></string>
     <string name="page4_description">Put your film knowledge to the test with exciting quizzes. Every right guess brings you closer to the next movie adventure.</string>
     <string name="skip">Skip</string>
+    <string name="Please_login">Please login to access your account details and other features!</string>
+    <string name="space">-</string>
+
 </resources>

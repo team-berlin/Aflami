@@ -10,4 +10,7 @@ interface SettingsRepository {
     suspend fun setTheme(theme: AppTheme)
     suspend fun getLanguage(): Flow<String?>
     suspend fun setLanguage(language: AppLanguage)
+    suspend fun getContentRestriction(): Flow<String?>
+    suspend fun setContentRestriction(contentRestrictionLevel: String)
+
 }

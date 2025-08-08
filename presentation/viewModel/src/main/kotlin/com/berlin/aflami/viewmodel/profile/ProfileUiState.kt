@@ -19,6 +19,7 @@ data class ProfileUiState(
     val isLightThemeSelected: Boolean = false,
     val isEnglishSelected: Boolean = false,
     val isArabicSelected: Boolean = true,
+    val isLoggedIn: Boolean = false,
 
 
 )
