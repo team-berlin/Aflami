@@ -47,9 +47,8 @@ fun MediaGridList(
                         },
                         mediaImg = movie.poster,
                         title = movie.title,
-                        typeOfMedia = if (movie.mediaType == MediaType.MOVIE) stringResource(R.string.movie) else stringResource(
-                            com.berlin.designsystem.R.string.tv_shows
-                        ),
+                        typeOfMedia = if (movie.mediaType == MediaType.TV_SHOW) stringResource(
+                            com.berlin.designsystem.R.string.tv_shows) else stringResource(R.string.movie),
                         date = movie.releaseYear,
                         rating = movie.rating
                     )
