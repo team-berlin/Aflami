@@ -40,7 +40,7 @@ jobs:
           branch="${GITHUB_REF#refs/heads/}"
           echo "Current branch: $branch"
 
-          latest=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.3.0")
+          latest=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.4.0")
           echo "Latest tag: $latest"
 
           IFS='.' read -r major minor patch <<< "${latest#v}"
