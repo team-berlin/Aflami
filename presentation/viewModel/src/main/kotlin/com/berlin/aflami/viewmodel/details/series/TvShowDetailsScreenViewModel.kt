@@ -25,9 +25,6 @@ import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.TVShow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginStatus
 import usecase.tvshow.GetTVShowVideos
@@ -199,12 +196,12 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     override fun onShowMoreMediaLikeThisClicked(
-        tvShowId: Long,
+        mediaId: Long,
     ) {
         updateRowSectionToLoading()
         tryToCall(
             call = {
-                getSimilarTVShowsUseCase(tvShowId = tvShowId).map { tVShow -> tVShow.toUiState() }
+                getSimilarTVShowsUseCase(tvShowId = mediaId).map { tVShow -> tVShow.toUiState() }
             },
             onSuccess = ::updateMoreLikeThisSectionWithNewData,
             onError = {
@@ -239,12 +236,12 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     override fun onShowReviewsClicked(
-        tvShowId: Long,
+        mediaId: Long,
     ) {
         updateRowSectionToLoading()
         tryToCall(
             call = {
-                tvShowReviewUseCase(tvShowId).map { review -> review.toReviewUiState() }
+                tvShowReviewUseCase(mediaId).map { review -> review.toReviewUiState() }
             },
             onSuccess = ::updateReviewRowSectionWithNewData,
             onError = {
@@ -279,14 +276,14 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     override fun onShowMediaGalleryClicked(
-        tvShowId: Long,
+        mediaId: Long,
     ) {
         updateRowSectionToLoading()
         tryToCall(
             call = {
-                getTVShowGalleryUseCase(tvShowId).backdrops
+                getTVShowGalleryUseCase(mediaId).backdrops
             },
-            onSuccess = ::updateMediaGellarySectionWithNewImages,
+            onSuccess = ::updateMediaGallerySectionWithNewImages,
             onError = {
                 updateRowSectionStateToError(
                     NO_GALLERY
@@ -295,7 +292,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         )
     }
 
-    private fun updateMediaGellarySectionWithNewImages(backdrops: List<String>) {
+    private fun updateMediaGallerySectionWithNewImages(backdrops: List<String>) {
         if (backdrops.isEmpty()) {
             updateState {
                 it.copy(
@@ -377,12 +374,12 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         )
     }
 
-    override fun onShowCastClicked(tvShowId: Long) = sendNewEffect(
-        TvShowDetailsScreenEffect.NavigateToShowAllCastScreen(tvShowId)
+    override fun onShowCastClicked(mediaId: Long) = sendNewEffect(
+        TvShowDetailsScreenEffect.NavigateToShowAllCastScreen(mediaId)
     )
 
-    override fun onMediaCardClicked(tvShowId: Long) =
-        sendNewEffect(TvShowDetailsScreenEffect.NavigateToMediaDetailsScreen(tvShowId))
+    override fun onMediaCardClicked(mediaId: Long) =
+        sendNewEffect(TvShowDetailsScreenEffect.NavigateToMediaDetailsScreen(mediaId))
 
     override fun onLoginButtonClicked() {
         updateState { it.copy(showLoginDialog = false) }
@@ -394,12 +391,12 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
 
-    override fun onRateIconClicked(tvShowId: Long) {
+    override fun onRateIconClicked(id: Long) {
         checkLoginThen {
             updateState {
                 it.copy(
                     showRatingDialog = true,
-                    selectedRatingMediaId = tvShowId
+                    selectedRatingMediaId = id
                 )
             }
         }
@@ -417,9 +414,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
             tryToCall(
                 call = {
-                    // TODO: Replace this with actual sessionId from local/session manager
-                    val sessionId = "SESSION_ID_FROM_USER_PREFS"
-                    rateTvShowUseCase(movieId, rating = rate.toDouble(), sessionId = sessionId)
+                    rateTvShowUseCase(movieId, rating = rate.toDouble())
                 },
                 onSuccess = { result ->
                     showSnackBar("Successfully submitted rating.")
@@ -509,9 +504,9 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             if (screenState.tvShowDetailsTabsUiState.tab == tvShowDetailsTabs) return@updateState screenState
 
             when (tvShowDetailsTabs) {
-                TVShowDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(tvShowId = tvShowId)
-                TVShowDetailsTabs.REVIEWS -> onShowReviewsClicked(tvShowId = tvShowId)
-                TVShowDetailsTabs.GALLERY -> onShowMediaGalleryClicked(tvShowId = tvShowId)
+                TVShowDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(mediaId = tvShowId)
+                TVShowDetailsTabs.REVIEWS -> onShowReviewsClicked(mediaId = tvShowId)
+                TVShowDetailsTabs.GALLERY -> onShowMediaGalleryClicked(mediaId = tvShowId)
                 TVShowDetailsTabs.COMPANY_PRODUCTION -> onShowCompanyProductionClicked()
                 TVShowDetailsTabs.SEASONS -> onSeasonsClicked(
                     tvShowId = tvShowId,

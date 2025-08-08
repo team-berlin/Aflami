@@ -40,6 +40,6 @@ interface RemoteDataSource {
     suspend fun getMovieVideos(movieId: Long): VideosResponse
     suspend fun getTVShowVideos(seriesId: Long): VideosResponse
 
-    suspend fun postRateMovie(movieId: Int, sessionId: String, rating: SubmitRatingRequestDto): SubmitRatingResponse
-    suspend fun postRateTvShow(tvId: Int, sessionId: String, rating: SubmitRatingRequestDto): SubmitRatingResponse
+    suspend fun postRateMovie(movieId: Int, rating: SubmitRatingRequestDto): SubmitRatingResponse
+    suspend fun postRateTvShow(tvId: Int, rating: SubmitRatingRequestDto): SubmitRatingResponse
 }

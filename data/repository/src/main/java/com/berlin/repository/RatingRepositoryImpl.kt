@@ -14,20 +14,18 @@ class RatingRepositoryImpl @Inject constructor(
     override suspend fun rateMovie(
         movieId: Int,
         rating: Double,
-        sessionId: String
     ): RatingResult {
         val request = SubmitRatingRequestDto(value = rating)
-        val response = remoteDataSource.postRateMovie(movieId, sessionId, request)
+        val response = remoteDataSource.postRateMovie(movieId, request)
         return response.toDomain()
     }
 
     override suspend fun rateTvShow(
         tvId: Int,
         rating: Double,
-        sessionId: String
     ): RatingResult {
         val request = SubmitRatingRequestDto(value = rating)
-        val response = remoteDataSource.postRateTvShow(tvId, sessionId, request)
+        val response = remoteDataSource.postRateTvShow(tvId, request)
         return response.toDomain()
     }
 

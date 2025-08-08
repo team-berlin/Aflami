@@ -26,8 +26,6 @@ import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginStatus
 import usecase.mediadetails.GetMovieVideos
@@ -56,8 +54,6 @@ class MovieDetailsViewModel @Inject constructor(
     MovieDetailsUiState()
 ), MediaInteractionListener {
 
-//    private val _showLoginRequiredDialog = MutableStateFlow(false)
-//    val showLoginRequiredDialog = _showLoginRequiredDialog.asStateFlow()
 
     private val movieId = movieDetailsArgs.movieId ?: 0
 
@@ -71,7 +67,7 @@ class MovieDetailsViewModel @Inject constructor(
         isMovieHasVideo(movieId = movieId)
         getMovieActors(movieId = movieId)
         getMovieDetails(movieId = movieId)
-        onShowMoreMediaLikeThisClicked(movieId = movieId)
+        onShowMoreMediaLikeThisClicked(mediaId = movieId)
     }
 
     private fun isMovieHasVideo(movieId: Long) {
@@ -133,7 +129,6 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun showSnackBar(message: String) {
         updateState { it.copy(snackBarMessage = message) }
-
         viewModelScope.launch {
             delay(3000)
             updateState { it.copy(snackBarMessage = null) }
@@ -170,12 +165,12 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onShowMoreMediaLikeThisClicked(
-        movieId: Long,
+        mediaId: Long,
     ) {
         updateRowSectionToLoading()
         tryToCall(
             call = {
-                getSimilarMoviesUseCase(movieId = movieId).map { tVShow -> tVShow.toMovieUiState() }
+                getSimilarMoviesUseCase(movieId = mediaId).map { tVShow -> tVShow.toMovieUiState() }
             },
             onSuccess = ::updateMoreLikeThisSectionWithNewData,
             onError = {
@@ -212,12 +207,12 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onShowReviewsClicked(
-        movieId: Long,
+        mediaId: Long,
     ) {
         updateRowSectionToLoading()
         tryToCall(
             call = {
-                movieReviewUseCase(movieId).map { review -> review.toReviewUiState() }
+                movieReviewUseCase(mediaId).map { review -> review.toReviewUiState() }
             },
             onSuccess = ::updateReviewRowSectionWithNewData,
             onError = {
@@ -253,12 +248,12 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onShowMediaGalleryClicked(
-        movieId: Long,
+        mediaId: Long,
     ) {
         updateRowSectionToLoading()
         tryToCall(
             call = {
-                getMovieGalleryUseCase(movieId).backdrops
+                getMovieGalleryUseCase(mediaId).backdrops
             },
             onSuccess = ::updateMediaGallerySectionWithNewImages,
             onError = {
@@ -348,12 +343,12 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
-    override fun onShowCastClicked(movieId: Long) = sendNewEffect(
-        MovieDetailsScreenEffect.NavigateToShowAllCastScreen(movieId = movieId)
+    override fun onShowCastClicked(mediaId: Long) = sendNewEffect(
+        MovieDetailsScreenEffect.NavigateToShowAllCastScreen(movieId = mediaId)
     )
 
-    override fun onMediaCardClicked(movieId: Long) =
-        sendNewEffect(MovieDetailsScreenEffect.NavigateToMovieDetailsScreen(movieId))
+    override fun onMediaCardClicked(mediaId: Long) =
+        sendNewEffect(MovieDetailsScreenEffect.NavigateToMovieDetailsScreen(mediaId))
 
     override fun onLoginButtonClicked() {
         updateState { it.copy(showLoginDialog = false) }
@@ -365,12 +360,12 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { it.copy(showLoginDialog = false) }
     }
 
-    override fun onRateIconClicked(movieId: Long) {
+    override fun onRateIconClicked(id: Long) {
         checkLoginThen {
             updateState {
                 it.copy(
                     showRatingDialog = true,
-                    selectedRatingMediaId = movieId
+                    selectedRatingMediaId = id
                 )
             }
         }
@@ -388,9 +383,7 @@ class MovieDetailsViewModel @Inject constructor(
 
             tryToCall(
                 call = {
-                    // TODO: Replace this with actual sessionId from local/session manager
-                    val sessionId = "SESSION_ID_FROM_USER_PREFS"
-                    rateMovieUseCase(movieId, rating = rate.toDouble(), sessionId = sessionId)
+                    rateMovieUseCase(movieId, rating = rate.toDouble())
                 },
                 onSuccess = { result ->
                     showSnackBar("Successfully submitted rating.")
@@ -404,6 +397,8 @@ class MovieDetailsViewModel @Inject constructor(
                 },
                 onError = {
                     stateError ->
+                    Log.d("SubmitRateInViewmodel", "onSubmitRateClicked: $stateError")
+
                     showSnackBar("Failed to submit rating.")
                     updateState {
                         it.copy(
@@ -480,9 +475,9 @@ class MovieDetailsViewModel @Inject constructor(
             if (screenState.movieDetailsTabsUiState.tab == movieDetailsTabs) return@updateState screenState
 
             when (movieDetailsTabs) {
-                MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(movieId = movieId)
-                MovieDetailsTabs.REVIEWS -> onShowReviewsClicked(movieId = movieId)
-                MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(movieId = movieId)
+                MovieDetailsTabs.MORE_LIKE_THIS -> onShowMoreMediaLikeThisClicked(mediaId = movieId)
+                MovieDetailsTabs.REVIEWS -> onShowReviewsClicked(mediaId = movieId)
+                MovieDetailsTabs.GALLERY -> onShowMediaGalleryClicked(mediaId = movieId)
                 MovieDetailsTabs.COMPANY_PRODUCTION -> onShowCompanyProductionClicked()
             }
             screenState.copy(

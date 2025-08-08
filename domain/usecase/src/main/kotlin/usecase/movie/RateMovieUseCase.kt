@@ -7,7 +7,7 @@ import javax.inject.Inject
 class RateMovieUseCase @Inject constructor(
     private val ratingRepository: RatingRepository
 ) {
-    suspend operator fun invoke(movieId: Int, rating: Double, sessionId: String): RatingResult {
-        return ratingRepository.rateMovie(movieId, rating, sessionId)
+    suspend operator fun invoke(movieId: Int, rating: Double): RatingResult {
+        return ratingRepository.rateMovie(movieId, rating)
     }
 }
