@@ -107,7 +107,7 @@ class ProfileViewModel @Inject constructor(
                 isDarkThemeEnabled = false,
             )
         }
-        sendNewEffect(ProfileScreenEffect.RefreshActivity)
+        // sendNewEffect(ProfileScreenEffect.RefreshActivity)
 
     }
 
@@ -152,6 +152,8 @@ class ProfileViewModel @Inject constructor(
     override fun onDialogDismissed() {
         updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
     }
+    override fun onChangePasswordClicked() =
+        sendNewEffect(ProfileScreenEffect.NavigateToChangePasswordScreen)
 
     private fun updateError(errorUiState: ErrorUiState) {
         Log.e("HomeScreenViewModel", "updatePopularUiStateWithError: ${errorUiState.message}")

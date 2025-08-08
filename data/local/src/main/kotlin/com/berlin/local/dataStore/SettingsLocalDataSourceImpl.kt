@@ -5,10 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class SettingsLocalDataSourceImpl @Inject constructor(
-    //private val dataStore: DataStore<Preferences>
     private val preferences: SettingsPreferencesDataStore,
-
-
 ) : SettingsLocalDataSource {
 
     override suspend fun setTheme(theme: String) = preferences.setTheme(theme)

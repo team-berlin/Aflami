@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berlin.aflami.component.ThemeAndLocalePreviews
+import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.profile.components.OptionsDialog
 import com.berlin.aflami.screens.profile.components.ProfileSection
 import com.berlin.aflami.screens.profile.components.SettingSection
@@ -25,6 +27,7 @@ import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.profile.ProfileDialogType
 import com.berlin.aflami.viewmodel.profile.ProfileInteractionListener
+import com.berlin.aflami.viewmodel.profile.ProfileScreenEffect
 import com.berlin.aflami.viewmodel.profile.ProfileUiState
 import com.berlin.aflami.viewmodel.profile.ProfileViewModel
 import com.berlin.ui.R
@@ -36,8 +39,21 @@ fun ProfileScreen(
     val profileScreenState by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
     ProfileContent(profileScreenState, viewModel)
-}
 
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect {
+            when (it) {
+
+                ProfileScreenEffect.NavigateToMyRatingScreen -> TODO()
+                ProfileScreenEffect.NavigateToWatchHistoryScreen -> TODO()
+                ProfileScreenEffect.NavigateToChangePasswordScreen -> {
+                    navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
+                }
+
+            }
+        }
+    }
+}
 @Composable
 private fun ProfileContent(
     profileScreenState: ProfileUiState,
@@ -81,6 +97,7 @@ private fun ProfileContent(
         ProfileDialogType.SETTINGS -> {
             SettingsDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
+                onFirstOptionClick = { profileScreenInteractionListener.onChangePasswordClicked() },
             )
         }
 
@@ -122,3 +139,4 @@ private fun PreviewProfileSection() {
     }
 }
 
+private const val RESET_PASSWORD_URL = "https://www.themoviedb.org/reset-password"
