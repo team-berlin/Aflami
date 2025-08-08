@@ -142,7 +142,6 @@ class ListScreenViewModel @Inject constructor(
         }
 
     override fun onCreateNewListClicked(listTitle: String) {
-        Log.d("khairy", "onCreateNewListClicked: listTitle $listTitle ")
         tryToCall(
             call = {
                 createNewFavouriteListUseCase(listTitle)

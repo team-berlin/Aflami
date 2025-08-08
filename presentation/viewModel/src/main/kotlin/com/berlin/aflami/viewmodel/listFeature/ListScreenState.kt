@@ -16,6 +16,7 @@ data class ListScreenState(
     val createNewListSheetState: CreateNewListUiState = CreateNewListUiState(),
     val isUserLoggedIn: Boolean = false,
     val isScreenLoading: Boolean = true,
+    val isCreateNewListDialogVisible: Boolean = false,
     val errorMessage: String = "",
     val editListSheetState: EditListSheetState = EditListSheetState(),
 )

@@ -35,6 +35,7 @@ import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
+import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.MovieBackdropPager
 import com.berlin.aflami.screens.mediadetails.components.RateDialog
@@ -69,6 +70,8 @@ fun MovieDetailsScreen(
             )
         }
     }
+
+
 
     AnimatedVisibility(
         enter = fadeIn(),
@@ -117,6 +120,15 @@ fun MovieDetailsScreen(
         title = stringResource(com.berlin.ui.R.string.login_required),
         description = stringResource(com.berlin.ui.R.string.login_required_warning)
     )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.showAddToListDialog
+    ) {
+        CreateNewListDialog(
+
+        )
     }
 }
 

@@ -7,18 +7,19 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -40,7 +41,6 @@ import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.navigation.ListDetailsDestination
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
-import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
 import com.berlin.aflami.screens.lists.component.ListCard
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
@@ -78,7 +78,11 @@ private fun ListsContent(
         listScreenState.favouriteList.collectAsLazyPagingItems()
 
     Box(
-        modifier = modifier.navigationBarsPadding()
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(Theme.color.surface)
+                .navigationBarsPadding()
     ) {
         AnimatedVisibility(
             enter = fadeIn(),
@@ -93,6 +97,20 @@ private fun ListsContent(
                 onDismiss = interactionListener::onCancelCreatingNewListClicked,
             )
         }
+
+//        AnimatedVisibility(
+//            enter = fadeIn(),
+//            exit = fadeOut(),
+//            visible = listScreenState.isUserLoggedIn.not() && listScreenState.isScreenLoading.not()
+//        ) {
+//            LoginRequiredDialog(
+//                title = "Lists",
+//                onLoginClick = interactionListener::onLoginClicked,
+//                onDismiss = interactionListener::onBackClicked,
+//            )
+//        }
+
+
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(), visible = listScreenState.isScreenLoading
@@ -105,32 +123,19 @@ private fun ListsContent(
             }
         }
         //where is loading ?!
-        AnimatedVisibility(listScreenState.isScreenLoading.not()) {
+//            AnimatedVisibility(
+//                enter = fadeIn(),
+//                exit = fadeOut(),
+//                visible = favouriteLists.itemCount == 0 && listScreenState.isUserLoggedIn
+//            ) {
+//                Image(
+//                    painter = painterResource(R.drawable.no_items_found),
+//                    contentDescription = stringResource(R.string.no_saved_items_here)
+//                )
+//            }
+
             AnimatedVisibility(
-                enter = fadeIn(),
-                exit = fadeOut(),
-                visible = favouriteLists.itemCount == 0 && listScreenState.isUserLoggedIn
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.no_items_found),
-                    contentDescription = stringResource(R.string.no_saved_items_here)
-                )
-            }
-            AnimatedVisibility(
-                enter = fadeIn(),
-                exit = fadeOut(),
-                visible = listScreenState.isUserLoggedIn.not()
-            ) {
-                LoginRequiredDialog(
-                    title = "Add to list",
-                    onLoginClick = interactionListener::onLoginClicked,
-                    onDismiss = interactionListener::onBackClicked,
-                )
-            }
-            AnimatedVisibility(
-                enter = fadeIn(),
-                exit = fadeOut(),
-                visible = listScreenState.isScreenLoading.not() && listScreenState.isUserLoggedIn
+                enter = fadeIn(), exit = fadeOut(), visible = listScreenState.isUserLoggedIn
             ) {
                 Log.d("khairy", "item count = ${favouriteLists.itemCount}")
                 Column(
@@ -165,12 +170,6 @@ private fun ListsContent(
                                 CircularProgressIndicator(
                                     modifier = Modifier.fillMaxSize(),
                                     text = stringResource(R.string.loading)
-                                )
-                            }
-
-                            errorState.isNotEmpty() -> {
-                                NoInternetConnectionPlaceholder(
-                                    modifier = Modifier.fillMaxSize(),
                                 )
                             }
 
@@ -221,7 +220,6 @@ private fun ListsContent(
             }
         }
     }
-}
 
 private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavController) {
     when (effect) {
@@ -232,6 +230,7 @@ private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavContr
         )
 
         is ListScreenEffect.ShowCreateNewListStatusSnackBar -> {
+
         }
 
         is ListScreenEffect.ShowEditListStatusSnackBar -> {}

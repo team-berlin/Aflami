@@ -27,12 +27,11 @@ fun CreateNewListDialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Column(
-            modifier = modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier.padding(12.dp),
         ) {
             DialogTitleBar(
                 titleResource = R.string.create_new_list,
-                modifier = modifier.fillMaxWidth(),
                 onDismiss = onDismiss
             )
             TextField(
@@ -40,7 +39,6 @@ fun CreateNewListDialog(
                 onValueChange = onListNameChanged,
                 hintText = stringResource(R.string.my_favorite),
                 leadingIcon = R.drawable.nav_lists,
-                modifier = modifier.fillMaxWidth()
             )
 
             PrimaryButton(
