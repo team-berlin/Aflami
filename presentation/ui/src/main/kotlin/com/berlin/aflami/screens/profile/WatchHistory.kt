@@ -34,6 +34,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.MediaCard
+import com.berlin.aflami.component.TabBar
+import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
@@ -130,6 +132,28 @@ fun WatchHistoryContent(
             }
         })
 
+        TabBar(
+            selectedTabIndex = state.selectedTabOption.index,
+            containerColor = Theme.color.surface,
+            items = listOf(
+                TabBarItem(
+                    text = stringResource(com.berlin.designsystem.R.string.movies),
+                    isSelected = state.selectedTabOption == TabOption.MOVIES,
+                ), TabBarItem(
+                    text = stringResource(com.berlin.designsystem.R.string.tv_shows),
+                    isSelected = state.selectedTabOption == TabOption.TV_SHOWS,
+                )
+            ),
+            onTabChange = {
+                listener.onTabOptionClicked(
+                    when (it) {
+                        0 -> TabOption.MOVIES
+                        1 -> TabOption.TV_SHOWS
+                        else -> throw IllegalArgumentException("Invalid tab index")
+                    }
+                )
+            },
+        )
         when {
             state.isLoading -> {
                 CircularProgressIndicator(

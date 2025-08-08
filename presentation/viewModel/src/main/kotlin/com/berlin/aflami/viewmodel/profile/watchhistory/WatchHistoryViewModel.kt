@@ -29,6 +29,11 @@ class WatchHistoryViewModel @Inject constructor(
         sendNewEffect(WatchHistoryScreenEffect.NavigateToDetailsScreen(mediaId, mediaType))
 
 
+    init {
+        getWatchHistoryToMovie()
+        getWatchHistoryToTVShow()
+
+    }
     private fun getWatchHistoryToMovie() {
         updateScreenStateToLoading()
         tryToCall(
