@@ -42,7 +42,7 @@ import com.berlin.repository.datasource.local.dto.UserProfileEntity
         TVShowHomeEntity::class,
         UserProfileEntity::class
 
-    ], version = 1, exportSchema = false
+    ], version =2 , exportSchema = false
 )
 abstract class AflamiDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
