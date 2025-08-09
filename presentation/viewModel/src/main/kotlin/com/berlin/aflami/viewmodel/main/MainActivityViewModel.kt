@@ -6,13 +6,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatus
+import usecase.auth.GetLoginStatusUseCase
 import usecase.onboarding.GetFirstEntryUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val isLoggedInUseCase: GetLoginStatus,
+    private val isLoggedInUseCase: GetLoginStatusUseCase,
     private val getFirstEntryUseCase: GetFirstEntryUseCase,
 
     ) : ViewModel() {

@@ -4,36 +4,37 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.AuthenticationRepository
 
 class GetLogoutUseCaseTest {
-    private val repository: AuthenticationRepository = mockk(relaxed = true)
-    private lateinit var getLogoutUseCase: GetLogoutUseCase
+    private val authenticationRepository: AuthenticationRepository = mockk()
+    private val getLogoutUseCase: GetLogoutUseCase = GetLogoutUseCase(authenticationRepository)
 
-    @Before
-    fun setup() {
-        getLogoutUseCase = GetLogoutUseCase(repository)
-    }
 
     @Test
     fun `should call logout function once when invoked`() = runTest {
+        // Arrange
+        coEvery { authenticationRepository.logout() } returns Unit
+
+        // Act
         getLogoutUseCase()
 
-        coVerify(exactly = 1) { repository.logout() }
+        // Assert
+        coVerify(exactly = 1) { authenticationRepository.logout() }
     }
 
     @Test
     fun `should throw exception when logout fails`() = runTest {
-        coEvery { repository.logout() } throws Exception(LOGOUT_FAILED)
+        // Arrange
+        coEvery { authenticationRepository.logout() } throws Exception(LOGOUT_FAILED)
 
-        assertThrows<Exception> {
-            getLogoutUseCase()
-        }
+        // Act
+        assertThrows<Exception> { getLogoutUseCase() }
 
-        coVerify(exactly = 1) { repository.logout() }
+        // Assert
+        coVerify(exactly = 1) { authenticationRepository.logout() }
     }
 
     companion object {

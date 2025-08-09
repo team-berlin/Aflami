@@ -4,38 +4,43 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.AuthenticationRepository
 
 class GetLoginUseCaseTest {
-    private val repository: AuthenticationRepository = mockk(relaxed = true)
-    private lateinit var getLoginUseCase: GetLoginUseCase
+    private val authenticationRepository: AuthenticationRepository = mockk()
+    private val getLoginUseCase: GetLoginUseCase = GetLoginUseCase(authenticationRepository)
 
-    @Before
-    fun setup() {
-        getLoginUseCase = GetLoginUseCase(repository)
-    }
 
     @Test
     fun `should call loginUseCases when the parameters correct`() = runTest {
+        // Arrange
+        coEvery { authenticationRepository.login(USERNAME, PASSWORD) } returns Unit
+
+        // Act
         getLoginUseCase(USERNAME, PASSWORD)
 
-        coVerify(exactly = 1) { repository.login(USERNAME, PASSWORD) }
+        // Assert
+        coVerify(exactly = 1) { authenticationRepository.login(USERNAME, PASSWORD) }
     }
 
     @Test
     fun `should throw exception when the parameters are not correct`() = runTest {
+        // Arrange
         coEvery {
-            repository.login(USERNAME, PASSWORD)
+            authenticationRepository.login(USERNAME, PASSWORD)
         } throws Exception(INVALID_CREDENTIALS)
 
+        // Act
         assertThrows<Exception> {
             getLoginUseCase(USERNAME, PASSWORD)
         }
 
-        coVerify(exactly = 1) { repository.login(USERNAME, PASSWORD) }
+        // Assert
+        coVerify(exactly = 1) {
+            authenticationRepository.login(USERNAME, PASSWORD)
+        }
     }
 
     companion object {

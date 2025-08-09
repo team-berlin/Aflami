@@ -8,7 +8,7 @@ import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatus
+import usecase.auth.GetLoginStatusUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
 import usecase.profile.SetLanguageUseCase
@@ -21,9 +21,9 @@ class ProfileViewModel @Inject constructor(
     val getThemeUseCase: GetThemeUseCase,
     val setLanguageUseCase: SetLanguageUseCase,
     val setThemeUseCase: SetThemeUseCase,
-    val getLoginStatus: GetLoginStatus,
+    val getLoginStatus: GetLoginStatusUseCase,
 
-) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
+    ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
 
     init {

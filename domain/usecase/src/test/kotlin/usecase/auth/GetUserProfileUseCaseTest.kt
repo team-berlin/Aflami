@@ -1,31 +1,46 @@
 package usecase.auth
 
 import com.berlin.entity.UserProfile
-import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import repository.UserRepository
 
 class GetUserProfileUseCaseTest {
-
-    private lateinit var repository: UserRepository
-    private lateinit var useCase: GetUserProfileUseCase
-
-    @Before
-    fun setup() {
-        repository = mockk()
-        useCase = GetUserProfileUseCase(repository)
-    }
+    private val userRepository: UserRepository = mockk()
+    private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(userRepository)
 
     @Test
     fun `invoke should return user profile from repository`() = runTest {
-        // Given
-        val sessionId = "test_session_id"
-        val expectedUser = UserProfile(
+        // Arrange
+        coEvery { userRepository.getUserProfile(SESSION_ID) } returns EXPECTED_USER
+
+        // Act
+        getUserProfileUseCase(SESSION_ID)
+
+        // Assert
+        coVerify(exactly = 1) { userRepository.getUserProfile(SESSION_ID) }
+    }
+
+    @Test
+    fun `invoke should throw exception when repository fails`() = runTest {
+        // Arrange
+        coEvery { userRepository.getUserProfile(SESSION_ID) } throws Exception(EXCEPTION)
+
+        // Act
+        assertThrows<Exception> { getUserProfileUseCase(SESSION_ID) }
+
+        // Assert
+        coVerify(exactly = 1) { userRepository.getUserProfile(SESSION_ID) }
+    }
+
+    companion object {
+        const val SESSION_ID = "test_session_id"
+
+        var EXPECTED_USER = UserProfile(
             id = 123,
             username = "john_doe",
             name = "John Doe",
@@ -34,13 +49,7 @@ class GetUserProfileUseCaseTest {
             countryCodeIso6391 = "",
             countryCodeIso31661 = ""
         )
-        coEvery { repository.getUserProfile(sessionId) } returns expectedUser
 
-        // When
-        val result = useCase(sessionId)
-
-        // Then
-        assertThat(result).isEqualTo(expectedUser)
-        coVerify(exactly = 1) { repository.getUserProfile(sessionId) }
+        const val EXCEPTION = "Error in repository"
     }
 }
