@@ -1,25 +1,23 @@
 package com.berlin.repository
 
+import com.berlin.entity.auth.LoginToken
+import com.berlin.entity.auth.Session
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.auth.LoginDto
 import com.berlin.repository.datasource.remote.dto.auth.SessionDto
 import com.google.common.truth.Truth.assertThat
+import io.mockk.clearMocks
 import io.mockk.coEvery
-import io.mockk.coVerifySequence
-import io.mockk.every
+import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class AuthenticationRepositoryImplTest {
-
     private lateinit var authenticationRepository: AuthenticationRepositoryImpl
     private lateinit var remoteDataSource: AuthenticationRemoteDataSource
     private lateinit var localDataSource: AuthenticationLocalDataSource
@@ -28,87 +26,114 @@ class AuthenticationRepositoryImplTest {
     fun setUp() {
         remoteDataSource = mockk()
         localDataSource = mockk()
-        authenticationRepository = AuthenticationRepositoryImpl(
-            authenticationRemoteDataSource = remoteDataSource,
-            authenticationLocalDataSource = localDataSource
+        authenticationRepository = AuthenticationRepositoryImpl(remoteDataSource, localDataSource)
+
+    }
+
+    @Test
+    fun `should return request token when requestToken is called`() = runTest {
+        //given
+        val requestToken = dummyLoginLoginDto
+        coEvery { remoteDataSource.requestToken() } returns requestToken
+
+        //when
+        val result = authenticationRepository.requestToken()
+        //then
+        assertThat(result).isEqualTo(dummyLoginToken)
+    }
+
+    @Test
+    fun `should throw exception when remoteDataSource fails to requestToken`() = runTest {
+        // Given
+        val expectedException = Exception("Network error")
+        coEvery { remoteDataSource.requestToken() } throws expectedException
+        //when & Then
+        assertThrows<Exception> { authenticationRepository.requestToken() }
+    }
+
+
+    @Test
+    fun `should create session when passed valid RequestToken`() = runTest {
+        //given
+        val requestToken = "0046d05c556e3bdc3cfb786369e05992fb272e2e"
+
+        coEvery { remoteDataSource.createSession(requestToken) } returns dummySessionDto
+        coEvery { localDataSource.saveUserSessionId(any()) } returns true
+        //when
+        val result = authenticationRepository.createSession(requestToken)
+        //then
+        assertThat(result).isEqualTo(dummySession)
+
+    }
+
+    @Test
+    fun `should throw exception when remoteDataSource fails to create session`() = runTest {
+        // Given
+        val requestToken = "0046d05c556e3bdc3cfb786369e05992fb272e2e"
+        val expectedException = Exception("Network error")
+        coEvery { remoteDataSource.createSession(requestToken) } throws expectedException
+        //when & Then
+        assertThrows<Exception> { remoteDataSource.createSession(requestToken) }
+    }
+
+
+    @Test
+    fun `should login and save token when credentials are valid`() = runTest {
+        // Given
+
+        coEvery { remoteDataSource.login(any(), any(), any()) } returns dummyLoginLoginDto
+        coEvery { localDataSource.saveUserToken(any()) } returns true
+
+        // When
+        val result = authenticationRepository.login(
+            userName = "testUser",
+            password = "testPass",
+            requestToken = "testToken"
         )
-    }
-
-    @Test
-    fun `observeLoginStatus should return values from localDataSource`() = runTest {
-        // Given
-        val flow = MutableStateFlow(true)
-        every { localDataSource.observeLoginStatus() } returns flow
-
-        // When
-        val result = authenticationRepository.observeLoginStatus().first()
 
         // Then
-        assertThat(result).isTrue()
+        assertThat(result).isEqualTo(dummyLoginToken)
+        coVerify {
+            remoteDataSource.login(any(), any(), any())
+            localDataSource.saveUserToken(any())
+        }
     }
 
     @Test
-    fun `login should request token, login remotely, create session and save it locally`() =
-        runTest {
-            // Given
-            coEvery { remoteDataSource.requestToken() } returns dummyLoginLoginDto
-            coEvery { remoteDataSource.login(any(), any(), any()) } returns dummyLoginLoginDto
-            coEvery { remoteDataSource.createSession(any()) } returns dummySessionDto
-            coEvery { localDataSource.saveUserSessionId(any()) } returns true
-
-            // When
-            authenticationRepository.login("testUser", "testPass")
-
-            // Then
-            coVerifySequence {
-                remoteDataSource.requestToken()
-                remoteDataSource.login("testUser", "testPass", dummyLoginLoginDto.requestToken!!)
-                remoteDataSource.createSession(dummyLoginLoginDto.requestToken)
-            }
-        }
-
-    @Test
-    fun `login should throw when requestToken fails`() = runTest {
+    fun `should throw when remote login fails`() = runTest {
         // Given
-        coEvery { remoteDataSource.requestToken() } throws Exception("Network error")
+        val expectedException = Exception("Network error")
+        coEvery { remoteDataSource.login(any(), any(), any()) } throws expectedException
 
-        // When / Then
+        // When & Then
         assertThrows<Exception> {
-            runTest { authenticationRepository.login("testUser", "testPass") }
+            authenticationRepository.login(
+                userName = "testUser",
+                password = "testPass",
+                requestToken = "testToken"
+            )
         }
     }
 
-    @Test
-    fun `isLoggedIn should return true when session exists`() = runTest {
-        // Given
-        coEvery { localDataSource.getUserSessionId() } returns "session_123"
-
-        // When
-        val result = authenticationRepository.isLoggedIn()
-
-        // Then
-        assertThat(result).isTrue()
+    @After
+    fun tearDown() {
+        clearMocks(this)
     }
-
-    @Test
-    fun `isLoggedIn should return false when no session exists`() = runTest {
-        // Given
-        coEvery { localDataSource.getUserSessionId() } returns null
-
-        // When
-        val result = authenticationRepository.isLoggedIn()
-
-        // Then
-        assertThat(result).isFalse()
-    }
-
 }
 
 val dummySessionDto = SessionDto(
     success = true,
     sessionId = "ejqrrt6e3bdc3cfb786369e05992fb272e2e1"
 )
-
+val dummySession = Session(
+    success = true,
+    sessionId = "ejqrrt6e3bdc3cfb786369e05992fb272e2e1"
+)
+val dummyLoginToken = LoginToken(
+    success = true,
+    expiresAt = "2025-07-23 15:57:05 UTC",
+    requestToken = "0046d05c556e3bdc3cfb786369e05992fb272e2e"
+)
 val dummyLoginLoginDto = LoginDto(
     success = true,
     expiresAt = "2025-07-23 15:57:05 UTC",
