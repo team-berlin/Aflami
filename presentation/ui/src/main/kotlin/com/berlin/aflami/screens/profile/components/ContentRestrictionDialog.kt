@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,20 +32,26 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 
 @Composable
-fun OptionsDialog(
+fun ContentRestrictionDialog(
     modifier: Modifier = Modifier,
-    onApplyClick: () -> Unit,
+    onSaveClick: () -> Unit,
     onDismiss: () -> Unit,
     onFirstOptionClick: () -> Unit = {},
     onSecondOptionClick: () -> Unit = {},
+    onThirdOptionClick: () -> Unit = {},
     isFirstOptionSelected: Boolean = false,
     isSecondOptionSelected: Boolean = false,
+    isThirdOptionSelected: Boolean = false,
     title: Int,
     firstOptionTitleRes: Int? = null,
     secondOptionTitleRes: Int? = null,
+    thirdOptionTitleRes: Int? = null,
     firstOptionIconRes: Int? = null,
     secondOptionIconRes: Int? = null,
-    isThemeDialog: Boolean
+    thirdOptionIconRes: Int? = null,
+    firstOptionSubTitleIdRes: Int? = null,
+    secondOptionSubTitleIdRes: Int? = null,
+    thirdOptionSubTitleIdRes: Int? = null,
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Box(
@@ -65,7 +70,8 @@ fun OptionsDialog(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
-                ) {
+                )
+                {
                     Text(
                         text = stringResource(id = title),
                         style = Theme.textStyle.title.large,
@@ -94,7 +100,7 @@ fun OptionsDialog(
                         onClick = onFirstOptionClick,
                         iconId = firstOptionIconRes,
                         selectionTitleId = firstOptionTitleRes,
-                        subTitleId = null
+                        subTitleId = firstOptionSubTitleIdRes
                     )
                 }
                 if (secondOptionIconRes != null && secondOptionTitleRes != null) {
@@ -103,35 +109,18 @@ fun OptionsDialog(
                         onClick = onSecondOptionClick,
                         iconId = secondOptionIconRes,
                         selectionTitleId = secondOptionTitleRes,
-                        subTitleId = null
+                        subTitleId = secondOptionSubTitleIdRes
                     )
-                    if (isSecondOptionSelected && isThemeDialog) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    Theme.color.surfaceHigh,
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_ai_star),
-                                    contentDescription = null,
-                                    tint = Theme.color.statusColors.yellowAccent
-                                )
-                                Text(
-                                    text = stringResource(id = com.berlin.ui.R.string.language_dialog_warning),
-                                    style = Theme.textStyle.label.small,
-                                    color = Theme.color.statusColors.yellowAccent,
-                                )
-                            }
-                        }
-                    }
+                }
+
+                if (thirdOptionIconRes != null && thirdOptionTitleRes != null) {
+                    SelectionButton(
+                        selected = isThirdOptionSelected,
+                        onClick = onThirdOptionClick,
+                        iconId = thirdOptionIconRes,
+                        selectionTitleId = thirdOptionTitleRes,
+                        subTitleId = thirdOptionSubTitleIdRes
+                    )
                 }
 
                 Box(
@@ -145,12 +134,12 @@ fun OptionsDialog(
                                     end = Offset(0f, Float.POSITIVE_INFINITY)
                                 )
                         )
-                        .clickable { onApplyClick() },
+                        .clickable { onSaveClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         modifier = Modifier.padding(vertical = 16.dp, horizontal = 4.dp),
-                        text = stringResource(com.berlin.ui.R.string.apply),
+                        text = stringResource(com.berlin.ui.R.string.save),
                         color = Theme.color.textColors.onPrimary,
                         style = Theme.textStyle.label.large,
                     )
@@ -162,42 +151,13 @@ fun OptionsDialog(
 
 @Composable
 @Preview
-fun OptionsDialogThemePreview() {
+fun ContentRestrictionDialogPreview() {
     ContentRestrictionDialog(
         title = com.berlin.ui.R.string.app_theme,
         firstOptionTitleRes = com.berlin.ui.R.string.dark,
         secondOptionTitleRes = com.berlin.ui.R.string.light,
         firstOptionIconRes = R.drawable.dark,
         secondOptionIconRes = R.drawable.light,
-        onSaveClick = {},
-        onDismiss = {}
-    )
-}
-
-@Composable
-@Preview
-fun OptionsDialogLanguagePreview() {
-    ContentRestrictionDialog(
-        title = com.berlin.ui.R.string.language,
-        firstOptionTitleRes = com.berlin.ui.R.string.language_dialog_english,
-        secondOptionTitleRes = com.berlin.ui.R.string.language_dialog_arabic,
-        firstOptionIconRes = R.drawable.english,
-        secondOptionIconRes = R.drawable.arabic,
-        onSaveClick = {},
-        onDismiss = {}
-    )
-}
-
-@Composable
-@Preview
-fun OptionsDialogLightThemePreview() {
-    ContentRestrictionDialog(
-        title = com.berlin.ui.R.string.app_theme,
-        firstOptionTitleRes = com.berlin.ui.R.string.dark,
-        secondOptionTitleRes = com.berlin.ui.R.string.light,
-        firstOptionIconRes = R.drawable.dark,
-        secondOptionIconRes = R.drawable.light,
-        isSecondOptionSelected = true,
         onSaveClick = {},
         onDismiss = {}
     )

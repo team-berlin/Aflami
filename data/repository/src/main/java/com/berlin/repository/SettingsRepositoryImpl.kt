@@ -25,6 +25,14 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setLanguage(language: AppLanguage) {
         settingsDataStore.setLanguage(language.name)
     }
+    override suspend fun setContentRestriction(contentRestrictionLevel: String) {
+        settingsDataStore.setContentRestriction(contentRestrictionLevel)
+    }
+
+    override suspend fun getContentRestriction(): Flow<String?> {
+        return settingsDataStore.getContentRestriction()
+    }
+
 
 
 }
