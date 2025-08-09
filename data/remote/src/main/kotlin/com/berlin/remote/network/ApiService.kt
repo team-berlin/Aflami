@@ -173,8 +173,8 @@ interface ApiService {
 
     @DELETE(ApiConstants.LIST_LISTID)
     suspend fun deleteUserFavouriteList(
-        @Query(SESSION_ID) sessionId: String,
         @Path(LIST_ID) favouriteListId: Int,
+        @Query(SESSION_ID) sessionId: String,
     ): Response<DeleteResponse>
 
     @POST(ApiConstants.DELETE_MOVIE_FROM_LIST)

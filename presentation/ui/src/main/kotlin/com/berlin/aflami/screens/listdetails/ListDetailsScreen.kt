@@ -160,6 +160,8 @@ private fun onReceiveNewEffect(effect: ListDetailsScreenEffect, navController: N
     when (effect) {
         ListDetailsScreenEffect.NavigateBack -> navController.popBackStack()
         is ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar -> {
+            Log.d("Khairy", "navigating to ListScreen to show deleted list snack bar")
+
             navController.navigate(
                 route = ListsScreenWithArgs(
                     showDeletedSnackBar = true,
@@ -175,7 +177,7 @@ private fun onReceiveNewEffect(effect: ListDetailsScreenEffect, navController: N
 
         is ListDetailsScreenEffect.NavigateToAllListsScreenAndShowEditListSheet -> {
             navController.navigate(
-                ListsScreenWithArgs(
+                route = ListsScreenWithArgs(
                     showEditSheet = true,
                     requiredToEditListId = effect.listId,
                 )

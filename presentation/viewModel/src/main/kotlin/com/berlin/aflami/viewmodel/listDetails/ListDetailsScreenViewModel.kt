@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.listDetails
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -22,19 +23,15 @@ class ListDetailsScreenViewModel @Inject constructor(
     ListDetailsScreenState()
 ), ListDetailsScreenInteractionListener {
 
-    private val favouriteListId: Int =
-        favouriteListDetailsArgs.favouriteListId
-            ?: throw IllegalArgumentException("list id is null")
-    private val favouriteListTitle: String =
-        favouriteListDetailsArgs.favouriteListTitle
-            ?: throw IllegalArgumentException("list title is null")
+    private val favouriteListId: Int = favouriteListDetailsArgs.favouriteListId
+        ?: throw IllegalArgumentException("list id is null")
+    private val favouriteListTitle: String = favouriteListDetailsArgs.favouriteListTitle
+        ?: throw IllegalArgumentException("list title is null")
 
     init {
         updateState { screenState ->
             screenState.copy(
-                listId = favouriteListId,
-                listTitle = favouriteListTitle,
-                isScreenLoading = true
+                listId = favouriteListId, listTitle = favouriteListTitle, isScreenLoading = true
             )
         }
         getAllFavoriteListItems(favouriteListId = favouriteListId)
@@ -54,8 +51,7 @@ class ListDetailsScreenViewModel @Inject constructor(
     private fun updateScreenStateWithErrorMessage(state1: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = state1.message,
-                isScreenLoading = false
+                errorMessage = state1.message, isScreenLoading = false
             )
         }
     }
@@ -75,8 +71,7 @@ class ListDetailsScreenViewModel @Inject constructor(
     private fun updateScreenWithNewFavouriteMovies(flowOfMoviesUiStates: Flow<PagingData<MovieUiState>>) {
         updateState { screenState ->
             screenState.copy(
-                listItems = flowOfMoviesUiStates,
-                isScreenLoading = false
+                listItems = flowOfMoviesUiStates, isScreenLoading = false
             )
         }
     }
@@ -95,11 +90,15 @@ class ListDetailsScreenViewModel @Inject constructor(
 
     override fun onDeleteConfirmed(listId: Int) {
         updateState { screenState -> screenState.copy(showDeleteListDialog = false) }
-        tryToCall(
-            call = { deleteUserFavouriteListUseCase(listId = listId) },
-            onSuccess = { ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar(true) },
-            onError = { ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar(false) }
-        )
+        tryToCall(call = { deleteUserFavouriteListUseCase(listId = listId) }, onSuccess = {
+            sendNewEffect(ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar(true)).also {
+                Log.d("Khairy", "delete list successful and going to show snack bar")
+            }
+        }, onError = { errorUiState ->
+            sendNewEffect(ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar(false)).also {
+                Log.d("Khairy", "delete list failed error uiState is ${errorUiState}")
+            }
+        })
     }
     //endregion
 
