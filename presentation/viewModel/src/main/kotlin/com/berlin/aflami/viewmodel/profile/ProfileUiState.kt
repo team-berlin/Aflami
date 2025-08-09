@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.profile
 
 import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
+import com.berlin.entity.ContentRestriction
 
 
 data class ProfileUiState(
@@ -23,6 +24,7 @@ data class ProfileUiState(
     val isStrictSelected: Boolean = true,
     val isModeratedSelected: Boolean = false,
     val isOffSelected: Boolean = false,
+    val selectedRestriction: String = ContentRestriction.STRICT.name
 
 
 )

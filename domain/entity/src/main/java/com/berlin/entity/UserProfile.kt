@@ -18,3 +18,7 @@ enum class AppLanguage(val code: String) {
     EN("en"),
     AR("ar")
 }
+
+enum class ContentRestriction {
+    STRICT, MODERATE, OFF
+}
