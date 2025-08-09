@@ -30,8 +30,14 @@ dependencies {
     implementation(libs.firebase.ml.modeldownloader)
     implementation (libs.tensorflow.lite.gpu)
 
+    implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.datastore.preferences.core.android)
+    implementation(libs.androidx.datastore.preferences)
+
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.hilt.android)
+
+    implementation(project(":data:local"))
 
 }
