@@ -80,4 +80,9 @@
     <string name="no_lists_yet">No lists yet!</string>
     <string name="our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love">Our brain is still empty, Click on + and start saving your favorite items and shows you love!</string>
     <string name="lists">Lists</string>
+
+    <plurals name="item_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
 </resources>

@@ -13,9 +13,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.berlin.aflami.component.PrimaryButton
+import com.berlin.aflami.screens.lists.component.Dialog
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 
@@ -26,14 +27,16 @@ fun DeleteListDialog(
     listId: Int,
     onConfirm: (listId: Int) -> Unit,
 ) {
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(
+        onDismiss = onDismiss,
+        isDismissible = true,
+        modifier = modifier,
+    ) {
         Column(
             modifier = modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             DialogTitleBar(
-                titleResource = R.string.delete_list,
-                modifier = modifier.fillMaxWidth(),
-                onDismiss = onDismiss
+                titleResource = R.string.delete_list, onDismiss = onDismiss
             )
             Image(
                 painter = painterResource(R.drawable.deletealert),
@@ -41,9 +44,8 @@ fun DeleteListDialog(
                 modifier = modifier.height(100.dp),
                 contentScale = ContentScale.FillHeight
             )
-
             Text(
-                modifier = modifier.padding(top = 12.dp),
+                modifier = modifier.padding(top = 12.dp, bottom = 24.dp),
                 text = stringResource(R.string.delete_confirm),
                 style = Theme.textStyle.title.small,
                 color = Theme.color.textColors.body,
@@ -55,15 +57,24 @@ fun DeleteListDialog(
                 modifier = modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                containerColor = Theme.color.primaryVariant
+                containerColor = Theme.color.statusColors.redVariant
             ) {
                 Text(
                     stringResource(R.string.delete),
                     style = Theme.textStyle.label.large,
-                    color = Theme.color.primary
+                    color = Theme.color.statusColors.redAccent
                 )
             }
-
         }
     }
+}
+
+@Preview
+@Composable
+private fun DeleteListDialogPreview() {
+    DeleteListDialog(
+        onDismiss = {},
+        listId = 1,
+        onConfirm = {}
+    )
 }

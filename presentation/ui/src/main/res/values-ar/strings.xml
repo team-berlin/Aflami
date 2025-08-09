@@ -82,5 +82,14 @@
     <string name="our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love">عقلنا لا يزال فارغًا، اضغط على + وابدأ بحفظ عناصرك وعروضك المفضلة التي تحبها!</string>
     <string name="lists">القوائم</string>
 
+    <plurals name="item_count">
+        <item quantity="zero">لا عناصر</item>
+        <item quantity="one">عنصر واحد</item>
+        <item quantity="two">عنصران</item>
+        <item quantity="few">%d عناصر</item>
+        <item quantity="many">%d عنصراً</item>
+        <item quantity="other">%d عنصر</item>
+    </plurals>
+
 
 </resources>

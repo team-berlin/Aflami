@@ -10,10 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.component.TextField
+import com.berlin.aflami.screens.lists.component.Dialog
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 
@@ -25,14 +26,16 @@ fun CreateNewListDialog(
     onCreateListClick: (String) -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(
+        modifier = modifier,
+        onDismiss = onDismiss,
+    ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier.padding(12.dp),
         ) {
             DialogTitleBar(
-                titleResource = R.string.create_new_list,
-                onDismiss = onDismiss
+                titleResource = R.string.create_new_list, onDismiss = onDismiss
             )
             TextField(
                 text = listName,
@@ -50,10 +53,15 @@ fun CreateNewListDialog(
             ) {
                 Text(
                     stringResource(R.string.create),
-                    style = Theme.textStyle.label.large,
-                    color = Theme.color.onPrimaryButton
+                    style = Theme.textStyle.label.large, color = Theme.color.textColors.onPrimary
                 )
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewCreateNewListDialog() {
+    CreateNewListDialog()
 }
