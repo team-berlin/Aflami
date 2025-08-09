@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.profile
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.RequiredLoggedInPlaceholder
+import com.berlin.aflami.screens.profile.components.ContentRestrictionDialog
 import com.berlin.aflami.screens.profile.components.OptionsDialog
 import com.berlin.aflami.screens.profile.components.ProfileSection
 import com.berlin.aflami.screens.profile.components.SettingSection
@@ -77,7 +79,7 @@ private fun WatchHistoryonReceiveEffect(
         }
 
         ProfileScreenEffect.RefreshActivity -> {
-            (navController.context as? androidx.activity.ComponentActivity)?.recreate()
+            (navController.context as? ComponentActivity)?.recreate()
         }
 
         ProfileScreenEffect.NavigateToLoginScreen -> {
@@ -143,6 +145,23 @@ private fun ProfileContent(
         }
 
         ProfileDialogType.CONTENT_RESTRICTION -> {
+            ContentRestrictionDialog(
+                onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
+                title = R.string.setting_dialog_content_restriction,
+                firstOptionTitleRes = R.string.strict,
+                secondOptionTitleRes = R.string.moderate,
+                thirdOptionTitleRes = R.string.off,
+                isFirstOptionSelected = profileScreenState.isStrictSelected,
+                isSecondOptionSelected = profileScreenState.isModeratedSelected,
+                isThirdOptionSelected = profileScreenState.isOffSelected,
+                onFirstOptionClick = { profileScreenInteractionListener.onStrictSelected() },
+                onSecondOptionClick = { profileScreenInteractionListener.onModerateSelected() },
+                onThirdOptionClick = { profileScreenInteractionListener.onOffRestrictionSelected() },
+                onSaveClick = { profileScreenInteractionListener.onSaveContentRestriction() },
+                firstOptionIconRes = com.berlin.designsystem.R.drawable.english,
+                secondOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
+                thirdOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
+            )
 
 
         }

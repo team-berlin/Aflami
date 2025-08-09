@@ -1,9 +1,7 @@
 package com.berlin.aflami.viewmodel.profile
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
-import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -169,15 +167,33 @@ class ProfileViewModel @Inject constructor(
     }
 
     override fun onStrictSelected() {
-        TODO("Not yet implemented")
+        updateState {
+            it.copy(
+                isStrictSelected = true,
+                isModeratedSelected = false,
+                isOffSelected = false
+            )
+        }
     }
 
     override fun onModerateSelected() {
-        TODO("Not yet implemented")
+        updateState {
+            it.copy(
+                isStrictSelected = false,
+                isModeratedSelected = true,
+                isOffSelected = false
+            )
+        }
     }
 
     override fun onOffRestrictionSelected() {
-        TODO("Not yet implemented")
+        updateState {
+            it.copy(
+                isStrictSelected = false,
+                isModeratedSelected = false,
+                isOffSelected = true
+            )
+        }
     }
 
     override fun onSaveContentRestriction() {
@@ -187,8 +203,4 @@ class ProfileViewModel @Inject constructor(
     override fun onLogoutClicked() = sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
 
 
-    private fun updateError(errorUiState: ErrorUiState) {
-        Log.e("HomeScreenViewModel", "updatePopularUiStateWithError: ${errorUiState.message}")
-
-    }
 }

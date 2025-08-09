@@ -169,7 +169,7 @@ fun OptionsDialogThemePreview() {
         secondOptionTitleRes = com.berlin.ui.R.string.light,
         firstOptionIconRes = R.drawable.dark,
         secondOptionIconRes = R.drawable.light,
-        onApplyClick = {},
+        onSaveClick = {},
         onDismiss = {}
     )
 }
@@ -183,7 +183,7 @@ fun OptionsDialogLanguagePreview() {
         secondOptionTitleRes = com.berlin.ui.R.string.language_dialog_arabic,
         firstOptionIconRes = R.drawable.english,
         secondOptionIconRes = R.drawable.arabic,
-        onApplyClick = {},
+        onSaveClick = {},
         onDismiss = {}
     )
 }
@@ -198,7 +198,7 @@ fun OptionsDialogLightThemePreview() {
         firstOptionIconRes = R.drawable.dark,
         secondOptionIconRes = R.drawable.light,
         isSecondOptionSelected = true,
-        onApplyClick = {},
+        onSaveClick = {},
         onDismiss = {}
     )
 }

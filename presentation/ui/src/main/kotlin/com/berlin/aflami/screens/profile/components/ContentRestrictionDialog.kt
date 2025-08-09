@@ -34,17 +34,24 @@ import com.berlin.designsystem.R
 @Composable
 fun ContentRestrictionDialog(
     modifier: Modifier = Modifier,
-    onApplyClick: () -> Unit,
+    onSaveClick: () -> Unit,
     onDismiss: () -> Unit,
     onFirstOptionClick: () -> Unit = {},
     onSecondOptionClick: () -> Unit = {},
+    onThirdOptionClick: () -> Unit = {},
     isFirstOptionSelected: Boolean = false,
     isSecondOptionSelected: Boolean = false,
+    isThirdOptionSelected: Boolean = false,
     title: Int,
     firstOptionTitleRes: Int? = null,
     secondOptionTitleRes: Int? = null,
+    thirdOptionTitleRes: Int? = null,
     firstOptionIconRes: Int? = null,
     secondOptionIconRes: Int? = null,
+    thirdOptionIconRes: Int? = null,
+    firstOptionSubTitleIdRes: Int? = null,
+    secondOptionSubTitleIdRes: Int? = null,
+    thirdOptionSubTitleIdRes: Int? = null,
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Box(
@@ -93,7 +100,7 @@ fun ContentRestrictionDialog(
                         onClick = onFirstOptionClick,
                         iconId = firstOptionIconRes,
                         selectionTitleId = firstOptionTitleRes,
-                        subTitleId = null
+                        subTitleId = firstOptionSubTitleIdRes
                     )
                 }
                 if (secondOptionIconRes != null && secondOptionTitleRes != null) {
@@ -102,7 +109,17 @@ fun ContentRestrictionDialog(
                         onClick = onSecondOptionClick,
                         iconId = secondOptionIconRes,
                         selectionTitleId = secondOptionTitleRes,
-                        subTitleId = null
+                        subTitleId = secondOptionSubTitleIdRes
+                    )
+                }
+
+                if (thirdOptionIconRes != null && thirdOptionTitleRes != null) {
+                    SelectionButton(
+                        selected = isThirdOptionSelected,
+                        onClick = onThirdOptionClick,
+                        iconId = thirdOptionIconRes,
+                        selectionTitleId = thirdOptionTitleRes,
+                        subTitleId = thirdOptionSubTitleIdRes
                     )
                 }
 
@@ -117,7 +134,7 @@ fun ContentRestrictionDialog(
                                     end = Offset(0f, Float.POSITIVE_INFINITY)
                                 )
                         )
-                        .clickable { onApplyClick() },
+                        .clickable { onSaveClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -141,7 +158,7 @@ fun ContentRestrictionDialogPreview() {
         secondOptionTitleRes = com.berlin.ui.R.string.light,
         firstOptionIconRes = R.drawable.dark,
         secondOptionIconRes = R.drawable.light,
-        onApplyClick = {},
+        onSaveClick = {},
         onDismiss = {}
     )
 }

@@ -20,6 +20,9 @@ data class ProfileUiState(
     val isEnglishSelected: Boolean = false,
     val isArabicSelected: Boolean = true,
     val isLoggedIn: Boolean = false,
+    val isStrictSelected: Boolean = true,
+    val isModeratedSelected: Boolean = false,
+    val isOffSelected: Boolean = false,
 
 
 )

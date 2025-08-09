@@ -94,6 +94,9 @@
     <string name="no_result_found">لا يوجد نتائج</string>
     <string name="Please_login">الرجاء تسجيل الدخول للوصول الى بيانات حساب </string>
     <string name="save">حفظ</string>
+    <string name="strict">صارم</string>
+    <string name="moderate">معتدل</string>
+    <string name="off">غلق</string>
 
 
 </resources>

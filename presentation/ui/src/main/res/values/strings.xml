@@ -93,5 +93,9 @@
     <string name="no_result_found">No result found</string>
     <string name="Please_login">Please login to access your account details and other features!</string>
     <string name="save">Save</string>
+    <string name="strict">Strict</string>
+    <string name="moderate">Moderate</string>
+    <string name="off">Off</string>
+
 
 </resources>
