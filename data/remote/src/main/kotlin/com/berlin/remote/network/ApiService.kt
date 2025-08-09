@@ -2,6 +2,7 @@ package com.berlin.remote.network
 
 import com.berlin.remote.network.ApiConstants.ACCOUNT_ID
 import com.berlin.remote.network.ApiConstants.LIST_ID
+import com.berlin.remote.network.ApiConstants.LIST_LISTID
 import com.berlin.remote.network.ApiConstants.PAGE
 import com.berlin.remote.network.ApiConstants.SESSION_ID
 import com.berlin.remote.network.ApiConstants.USER_LISTS
@@ -13,7 +14,7 @@ import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
-import com.berlin.repository.datasource.remote.dto.request.CreateListRequest
+import com.berlin.repository.datasource.remote.dto.request.ListRequest
 import com.berlin.repository.datasource.remote.dto.request.RemoveMovieFromListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.DeleteResponse
@@ -31,6 +32,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -168,7 +170,7 @@ interface ApiService {
     @POST(ApiConstants.LIST)
     suspend fun createNewFavouriteList(
         @Query(SESSION_ID) sessionId: String,
-        @Body createListRequest: CreateListRequest,
+        @Body listRequest: ListRequest,
     ): Response<CreateListResponse>
 
     @DELETE(ApiConstants.LIST_LISTID)
@@ -196,6 +198,13 @@ interface ApiService {
         @Query(SESSION_ID) sessionId: String,
         @Query("page") page: Int, // ← ADD THIS
     ): Response<FavouriteListResponse>
+
+    @PUT(LIST_LISTID)
+    suspend fun updateList(
+        @Path(LIST_ID) listId: Int,
+        @Query(SESSION_ID) sessionId: String,
+        @Body listRequest: ListRequest,
+    ): Response<CreateListResponse>
 
 }
 
