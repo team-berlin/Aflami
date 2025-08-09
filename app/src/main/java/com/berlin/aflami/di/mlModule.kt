@@ -1,6 +1,7 @@
 package com.berlin.aflami.di
 
 import android.content.Context
+import com.berlin.local.dataStore.SettingsPreferencesDataStore
 import com.berlin.safeimageviewer.NetworkConnectivityObserver
 import com.berlin.safeimageviewer.FireBaseModelManager
 import com.berlin.safeimageviewer.NetworkNetworkConnectivityObserverImpl
@@ -29,8 +30,9 @@ object ModelManagerModule {
     @Provides
     @Singleton
     fun provideModelManager(
-        networkConnectivityObserver: NetworkConnectivityObserver
+        networkConnectivityObserver: NetworkConnectivityObserver,
+        settingsPreferencesDataStore: SettingsPreferencesDataStore
     ): FireBaseModelManager {
-        return FireBaseModelManager(networkConnectivityObserver)
+        return FireBaseModelManager(networkConnectivityObserver,settingsPreferencesDataStore)
     }
 }
