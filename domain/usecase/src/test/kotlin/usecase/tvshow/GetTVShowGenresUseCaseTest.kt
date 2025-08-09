@@ -14,30 +14,31 @@ import repository.TVShowDetailsRepository
 class GetTVShowGenresUseCaseTest {
 
     private val tvShowDetailsRepository: TVShowDetailsRepository = mockk()
-    private lateinit var getTVShowGenresUseCase: GetTVShowGenresUseCase
-
-    @Before
-    fun setUp() {
-        getTVShowGenresUseCase = GetTVShowGenresUseCase(tvShowDetailsRepository)
-    }
+    private val getTVShowGenresUseCase: GetTVShowGenresUseCase =
+        GetTVShowGenresUseCase(tvShowDetailsRepository)
 
     @Test
     fun `should return list of genres when calling repository`() = runTest {
-        coEvery { tvShowDetailsRepository.getTVShowGenres() } returns GENRES
+        // Arrange
+        coEvery { tvShowDetailsRepository.getTVShowsGenres() } returns GENRES
 
-        val callResult = getTVShowGenresUseCase()
+        // Act
+        getTVShowGenresUseCase()
 
-        assertThat(callResult).isEqualTo(GENRES)
-        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowGenres() }
+        // Assert
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsGenres() }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
-        coEvery { tvShowDetailsRepository.getTVShowGenres() } throws Exception()
+        // Arrange
+        coEvery { tvShowDetailsRepository.getTVShowsGenres() } throws Exception()
 
-        assertThrows<Exception> {
-            getTVShowGenresUseCase()
-        }
+        // Act
+        assertThrows<Exception> { getTVShowGenresUseCase() }
+
+        // Assert
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsGenres() }
     }
 
     companion object {

@@ -12,27 +12,32 @@ import repository.TVShowRepository
 class SaveRecentTVShowsHistoryUseCaseTest {
 
     private val tvShowRepository: TVShowRepository = mockk(relaxed = true)
-    private lateinit var saveRecentTVShowsHistoryUseCase: SaveRecentTVShowsHistoryUseCase
+    private val saveRecentTVShowsHistoryUseCase: SaveRecentTVShowsHistoryUseCase =
+        SaveRecentTVShowsHistoryUseCase(tvShowRepository)
 
-    @Before
-    fun setUp() {
-        saveRecentTVShowsHistoryUseCase = SaveRecentTVShowsHistoryUseCase(tvShowRepository)
-    }
 
     @Test
     fun `should call repository to save recent TV show query`() = runTest {
+        // Arrange
+        coEvery { tvShowRepository.saveRecentTVShowsHistory(QUERY) } returns Unit
+
+        // Act
         saveRecentTVShowsHistoryUseCase(QUERY)
 
+        // Assert
         coVerify(exactly = 1) { tvShowRepository.saveRecentTVShowsHistory(QUERY) }
     }
 
     @Test
     fun `should throw exception if repository throws exception`() = runTest {
+        // Arrange
         coEvery { tvShowRepository.saveRecentTVShowsHistory(QUERY) } throws Exception()
 
-        assertThrows<Exception> {
-            saveRecentTVShowsHistoryUseCase(QUERY)
-        }
+        // Act
+        assertThrows<Exception> { saveRecentTVShowsHistoryUseCase(QUERY) }
+
+        // Assert
+        coVerify(exactly = 1) { tvShowRepository.saveRecentTVShowsHistory(QUERY) }
     }
 
     companion object {

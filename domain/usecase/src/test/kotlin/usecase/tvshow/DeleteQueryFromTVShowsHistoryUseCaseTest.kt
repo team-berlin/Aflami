@@ -8,30 +8,42 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TVShowRepository
+import usecase.movie.DeleteQueryFromMoviesHistoryUseCaseTest
 
 class DeleteQueryFromTVShowsHistoryUseCaseTest {
 
     private val tvShowRepository: TVShowRepository = mockk(relaxed = true)
-    private lateinit var deleteQueryFromTVShowsHistoryUseCase: DeleteQueryFromTVShowsHistoryUseCase
+    private val deleteQueryFromTVShowsHistoryUseCase: DeleteQueryFromTVShowsHistoryUseCase =
+        DeleteQueryFromTVShowsHistoryUseCase(tvShowRepository)
 
-    @Before
-    fun setUp() {
-        deleteQueryFromTVShowsHistoryUseCase = DeleteQueryFromTVShowsHistoryUseCase(tvShowRepository)
-    }
 
     @Test
     fun `should call repository to delete query from TV show history`() = runTest {
+        // Arrange
+        coEvery {
+            tvShowRepository.deleteTVShowQueryFromHistory(DeleteQueryFromMoviesHistoryUseCaseTest.Companion.QUERY)
+        } returns Unit
+
+        // Act
         deleteQueryFromTVShowsHistoryUseCase(QUERY)
 
+        //Assert
         coVerify(exactly = 1) { tvShowRepository.deleteTVShowQueryFromHistory(QUERY) }
     }
 
     @Test
     fun `should throw exception if repository throws exception`() = runTest {
+        // Arrange
         coEvery { tvShowRepository.deleteTVShowQueryFromHistory(QUERY) } throws Exception()
 
+        // Act
         assertThrows<Exception> {
             deleteQueryFromTVShowsHistoryUseCase(QUERY)
+        }
+
+        // Assert
+        coVerify(exactly = 1) {
+            tvShowRepository.deleteTVShowQueryFromHistory(QUERY)
         }
     }
 

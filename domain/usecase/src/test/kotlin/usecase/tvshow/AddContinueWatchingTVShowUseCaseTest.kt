@@ -13,33 +13,36 @@ import usecase.movie.AddContinueWatchingMovieUseCaseTest.Companion.DB_ERROR
 
 class AddContinueWatchingTVShowUseCaseTest {
 
-    private val repository: TVShowRepository = mockk(relaxed = true)
-    private lateinit var addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase
-
-    @Before
-    fun setup() {
-        addContinueWatchingTVShowUseCase = AddContinueWatchingTVShowUseCase(repository)
-    }
+    private val tvShowRepository: TVShowRepository = mockk()
+    private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase =
+        AddContinueWatchingTVShowUseCase(tvShowRepository)
 
     @Test
     fun `should call addContinueWatchingMovie once with correct movie`() = runTest {
+        // Arrange
+        coEvery { tvShowRepository.addContinueWatchingTVShow(TV_SHOW) } returns Unit
+
+        // Act
         addContinueWatchingTVShowUseCase(TV_SHOW)
 
+        // Assert
         coVerify(exactly = 1) {
-            repository.addContinueWatchingTVShow(TV_SHOW)
+            tvShowRepository.addContinueWatchingTVShow(TV_SHOW)
         }
     }
 
     @Test
     fun `should throw exception when repository fails`() = runTest {
-        coEvery { repository.addContinueWatchingTVShow(TV_SHOW) } throws Exception(DB_ERROR)
+        // Arrange
+        coEvery { tvShowRepository.addContinueWatchingTVShow(TV_SHOW) } throws
+                Exception()
 
-        assertThrows<Exception> {
-            addContinueWatchingTVShowUseCase(TV_SHOW)
-        }
+        // Act
+        assertThrows<Exception> { addContinueWatchingTVShowUseCase(TV_SHOW) }
 
+        // Assert
         coVerify(exactly = 1) {
-            repository.addContinueWatchingTVShow(TV_SHOW)
+            tvShowRepository.addContinueWatchingTVShow(TV_SHOW)
         }
     }
 
@@ -57,9 +60,8 @@ class AddContinueWatchingTVShowUseCaseTest {
             hasVideo = false,
             companyProductions = emptyList(),
             originCountry = "PS",
-            seasons = emptyList(),
             galleryUrl = emptyList(),
-            reviews = emptyList()
+            numberOfSeasons = 2,
         )
     }
 }

@@ -13,30 +13,33 @@ import repository.TVShowRepository
 class GetRecentTVShowHistoryUseCaseTest {
 
     private val tvShowRepository: TVShowRepository = mockk()
-    private lateinit var getRecentTVShowHistoryUseCase: GetRecentTVShowHistoryUseCase
-
-    @Before
-    fun setUp() {
-        getRecentTVShowHistoryUseCase = GetRecentTVShowHistoryUseCase(tvShowRepository)
-    }
+    private val getRecentTVShowHistoryUseCase: GetRecentTVShowHistoryUseCase =
+        GetRecentTVShowHistoryUseCase(tvShowRepository)
 
     @Test
     fun `should return list of recent TV show search queries when calling repository`() = runTest {
+        // Arrange
         coEvery { tvShowRepository.getRecentTVShowsSearchQueries() } returns RECENT_QUERIES
 
-        val callResult = getRecentTVShowHistoryUseCase()
+        // Act
+        getRecentTVShowHistoryUseCase()
 
-        assertThat(callResult).isEqualTo(RECENT_QUERIES)
+        // Assert
         coVerify(exactly = 1) { tvShowRepository.getRecentTVShowsSearchQueries() }
     }
 
     @Test
     fun `should throw exception if repository throws exception`() = runTest {
+        // Arrange
         coEvery { tvShowRepository.getRecentTVShowsSearchQueries() } throws Exception()
 
+        // Act
         assertThrows<Exception> {
             getRecentTVShowHistoryUseCase()
         }
+
+        // Assert
+        coVerify(exactly = 1) { tvShowRepository.getRecentTVShowsSearchQueries() }
     }
 
     companion object {

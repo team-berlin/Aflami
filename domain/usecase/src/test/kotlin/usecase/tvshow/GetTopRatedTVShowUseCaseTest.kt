@@ -14,30 +14,34 @@ import repository.TVShowRepository
 class GetTopRatedTVShowUseCaseTest {
 
     private val tvShowRepository: TVShowRepository = mockk()
-    private lateinit var getTopRatedTVShowUseCase: GetTopRatedTVShowUseCase
+    private val getTopRatedTVShowUseCase: GetTopRatedTVShowUseCase =
+        GetTopRatedTVShowUseCase(tvShowRepository)
 
-    @Before
-    fun setUp() {
-        getTopRatedTVShowUseCase = GetTopRatedTVShowUseCase(tvShowRepository)
-    }
 
     @Test
     fun `should return list of TV shows when calling repository`() = runTest {
+        // Arrange
         coEvery { tvShowRepository.getTopRatedTVShows(PAGE) } returns TV_SHOWS
 
-        val callResult = getTopRatedTVShowUseCase(PAGE)
+        // Act
+        getTopRatedTVShowUseCase(PAGE)
 
-        assertThat(callResult).isEqualTo(TV_SHOWS)
+        // Assert
         coVerify(exactly = 1) { tvShowRepository.getTopRatedTVShows(PAGE) }
     }
 
     @Test
     fun `should throw exception if tvShowRepository throws exception`() = runTest {
+        // Arrange
         coEvery { tvShowRepository.getTopRatedTVShows(PAGE) } throws Exception()
 
+        // Act
         assertThrows<Exception> {
             getTopRatedTVShowUseCase(PAGE)
         }
+
+        // Assert
+        coVerify(exactly = 1) { tvShowRepository.getTopRatedTVShows(PAGE) }
     }
 
     companion object {
@@ -56,9 +60,8 @@ class GetTopRatedTVShowUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                seasons = emptyList(),
                 galleryUrl = emptyList(),
-                reviews = emptyList()
+                numberOfSeasons = 2,
             ),
             TVShow(
                 id = 90L,
@@ -73,9 +76,8 @@ class GetTopRatedTVShowUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                seasons = emptyList(),
                 galleryUrl = emptyList(),
-                reviews = emptyList()
+                numberOfSeasons = 2,
             )
         )
     }

@@ -13,30 +13,34 @@ import repository.TVShowDetailsRepository
 
 class GetSimilarTVShowsUseCaseTest {
     private val tvShowDetailsRepository: TVShowDetailsRepository = mockk()
-    private lateinit var getSimilarTVShowsUseCase: GetSimilarTVShowsUseCase
+    private val getSimilarTVShowsUseCase: GetSimilarTVShowsUseCase =
+        GetSimilarTVShowsUseCase(tvShowDetailsRepository)
 
-    @Before
-    fun setUp() {
-        getSimilarTVShowsUseCase = GetSimilarTVShowsUseCase(tvShowDetailsRepository)
-    }
 
     @Test
     fun `should return list of TV shows when calling repository`() = runTest {
-        coEvery { tvShowDetailsRepository.getSimilarTVShows(TV_SHOW_ID) } returns TV_SHOWS
+        // Arrange
+        coEvery { tvShowDetailsRepository.getTVShowsSimilar(TV_SHOW_ID) } returns TV_SHOWS
 
-        val callResult = getSimilarTVShowsUseCase(TV_SHOW_ID)
+        // Act
+        getSimilarTVShowsUseCase(TV_SHOW_ID)
 
-        assertThat(callResult).isEqualTo(TV_SHOWS)
-        coVerify(exactly = 1) { tvShowDetailsRepository.getSimilarTVShows(TV_SHOW_ID) }
+        // Assert
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsSimilar(TV_SHOW_ID) }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
-        coEvery { tvShowDetailsRepository.getSimilarTVShows(TV_SHOW_ID) } throws Exception()
+        // Arrange
+        coEvery { tvShowDetailsRepository.getTVShowsSimilar(TV_SHOW_ID) } throws Exception()
 
+        // Act
         assertThrows<Exception> {
             getSimilarTVShowsUseCase(TV_SHOW_ID)
         }
+
+        // Assert
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsSimilar(TV_SHOW_ID) }
     }
 
     companion object {
@@ -55,9 +59,8 @@ class GetSimilarTVShowsUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                seasons = emptyList(),
                 galleryUrl = emptyList(),
-                reviews = emptyList()
+                numberOfSeasons = 2,
             ),
             TVShow(
                 id = 90L,
@@ -72,9 +75,8 @@ class GetSimilarTVShowsUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                seasons = emptyList(),
                 galleryUrl = emptyList(),
-                reviews = emptyList()
+                numberOfSeasons = 2,
             )
         )
     }

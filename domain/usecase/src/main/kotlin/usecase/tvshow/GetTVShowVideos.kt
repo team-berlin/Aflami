@@ -3,7 +3,7 @@ package usecase.tvshow
 import com.berlin.entity.Video
 import repository.TVShowDetailsRepository
 
-class GetTVShowVideos (
+class GetTVShowVideos(
     private val tvShowDetailsRepository: TVShowDetailsRepository
 ){
     suspend operator fun invoke(id: Long): Video {

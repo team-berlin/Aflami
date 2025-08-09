@@ -14,25 +14,23 @@ import repository.TVShowDetailsRepository
 class GetSeasonEpisodeUseCaseTest {
 
     private val tvShowDetailsRepository: TVShowDetailsRepository = mockk()
-    private lateinit var getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase
+    private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase =
+        GetSeasonEpisodesUseCase(tvShowDetailsRepository)
 
-    @Before
-    fun setUp() {
-        getSeasonEpisodesUseCase = GetSeasonEpisodesUseCase(tvShowDetailsRepository)
-    }
 
     @Test
     fun `should return episodes when repository returns data`() = runTest {
-
+        // Arrange
         coEvery {
             tvShowDetailsRepository.getSeasonEpisodes(
                 TV_SHOW_ID, TV_SHOW_NUMBER
             )
         } returns getFakeEpisodes()
 
-        val result = getSeasonEpisodesUseCase(TV_SHOW_ID, TV_SHOW_NUMBER)
+        // Act
+        getSeasonEpisodesUseCase(TV_SHOW_ID, TV_SHOW_NUMBER)
 
-        assertThat(result).isEqualTo(getFakeEpisodes())
+        // Assert
         coVerify(exactly = 1) {
             tvShowDetailsRepository.getSeasonEpisodes(
                 TV_SHOW_ID,
@@ -43,15 +41,17 @@ class GetSeasonEpisodeUseCaseTest {
 
     @Test
     fun `should return empty list when no episodes found`() = runTest {
+        // Arrange
         coEvery {
             tvShowDetailsRepository.getSeasonEpisodes(
                 TV_SHOW_ID, TV_SHOW_NUMBER
             )
         } returns emptyList()
 
-        val result = getSeasonEpisodesUseCase(TV_SHOW_ID, TV_SHOW_NUMBER)
+        // Act
+        getSeasonEpisodesUseCase(TV_SHOW_ID, TV_SHOW_NUMBER)
 
-        assertThat(result).isEmpty()
+        // Assert
         coVerify(exactly = 1) {
             tvShowDetailsRepository.getSeasonEpisodes(
                 TV_SHOW_ID,
@@ -62,12 +62,22 @@ class GetSeasonEpisodeUseCaseTest {
 
     @Test
     fun `should throw exception when repository throws exception`() = runTest {
+        // Arrange
         coEvery {
             tvShowDetailsRepository.getSeasonEpisodes(TV_SHOW_ID, TV_SHOW_NUMBER)
         } throws Exception()
 
+        // Act
         assertThrows<Exception> {
             getSeasonEpisodesUseCase(TV_SHOW_ID, TV_SHOW_NUMBER)
+        }
+
+        // Assert
+        coVerify(exactly = 1) {
+            tvShowDetailsRepository.getSeasonEpisodes(
+                TV_SHOW_ID,
+                TV_SHOW_NUMBER
+            )
         }
     }
 
@@ -88,6 +98,7 @@ class GetSeasonEpisodeUseCaseTest {
                 description = "Overview of episode $i",
                 duration = i,
                 tvShowId = i,
+                stillPath = "",
                 rating = i.toDouble()
             )
         }

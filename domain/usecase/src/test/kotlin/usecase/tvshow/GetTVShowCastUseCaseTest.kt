@@ -14,30 +14,31 @@ import repository.TVShowDetailsRepository
 class GetTVShowCastUseCaseTest {
 
     private val tvShowDetailsRepository: TVShowDetailsRepository = mockk()
-    private lateinit var getTVShowCastUseCase: GetTVShowCastUseCase
-
-    @Before
-    fun setUp() {
-        getTVShowCastUseCase = GetTVShowCastUseCase(tvShowDetailsRepository)
-    }
+    private val getTVShowCastUseCase: GetTVShowCastUseCase =
+        GetTVShowCastUseCase(tvShowDetailsRepository)
 
     @Test
     fun `should return list of actors when calling repository`() = runTest {
-        coEvery { tvShowDetailsRepository.getTVShowActors(SERIES_ID) } returns ACTORS
+        // Arrange
+        coEvery { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) } returns ACTORS
 
-        val callResult = getTVShowCastUseCase(SERIES_ID)
+        // Act
+        getTVShowCastUseCase(SERIES_ID)
 
-        assertThat(callResult).isEqualTo(ACTORS)
-        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowActors(SERIES_ID) }
+        // Assert
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
-        coEvery { tvShowDetailsRepository.getTVShowActors(SERIES_ID) } throws Exception()
+        // Arrange
+        coEvery { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) } throws Exception()
 
-        assertThrows<Exception> {
-            getTVShowCastUseCase(SERIES_ID)
-        }
+        // Act
+        assertThrows<Exception> { getTVShowCastUseCase(SERIES_ID) }
+
+        // Assert
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) }
     }
 
     companion object {

@@ -1,12 +1,10 @@
 package usecase.tvshow
 
 import com.berlin.entity.TVShow
-import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TVShowRepository
@@ -14,30 +12,33 @@ import repository.TVShowRepository
 class GetPopularTVShowsUseCaseTest {
 
     private val tvShowRepository: TVShowRepository = mockk()
-    private lateinit var getPopularTVShowsUseCase: GetPopularTVShowsUseCase
-
-    @Before
-    fun setUp() {
-        getPopularTVShowsUseCase = GetPopularTVShowsUseCase(tvShowRepository)
-    }
+    private val getPopularTVShowsUseCase: GetPopularTVShowsUseCase =
+        GetPopularTVShowsUseCase(tvShowRepository)
 
     @Test
     fun `should return list of TV shows when calling repository`() = runTest {
+        // Arrange
         coEvery { tvShowRepository.getPopularTVShows() } returns TV_SHOWS
 
-        val callResult = getPopularTVShowsUseCase()
+        // Act
+        getPopularTVShowsUseCase()
 
-        assertThat(callResult).isEqualTo(TV_SHOWS)
+        // Assert
         coVerify(exactly = 1) { tvShowRepository.getPopularTVShows() }
     }
 
     @Test
     fun `should throw exception if tvShowRepository throws exception`() = runTest {
+        // Arrange
         coEvery { tvShowRepository.getPopularTVShows() } throws Exception()
 
+        // Atc
         assertThrows<Exception> {
             getPopularTVShowsUseCase()
         }
+
+        // Assert
+        coVerify(exactly = 1) { tvShowRepository.getPopularTVShows() }
     }
 
     companion object {
@@ -55,9 +56,8 @@ class GetPopularTVShowsUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                seasons = emptyList(),
                 galleryUrl = emptyList(),
-                reviews = emptyList()
+                numberOfSeasons = 2,
             ),
             TVShow(
                 id = 90L,
@@ -72,9 +72,8 @@ class GetPopularTVShowsUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                seasons = emptyList(),
                 galleryUrl = emptyList(),
-                reviews = emptyList()
+                numberOfSeasons = 2,
             )
         )
     }

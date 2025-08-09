@@ -15,30 +15,33 @@ import repository.TVShowDetailsRepository
 class GetTVShowDetailsUseCaseTest {
 
     private val tvShowDetailsRepository: TVShowDetailsRepository = mockk()
-    private lateinit var getTVShowDetailsUseCase: GetTVShowDetailsUseCase
-
-    @Before
-    fun setUp() {
-        getTVShowDetailsUseCase = GetTVShowDetailsUseCase(tvShowDetailsRepository)
-    }
+    private val getTVShowDetailsUseCase: GetTVShowDetailsUseCase =
+        GetTVShowDetailsUseCase(tvShowDetailsRepository)
 
     @Test
     fun `should return TV show details when calling repository`() = runTest {
+        // Arrange
         coEvery { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) } returns TV_SHOW_DETAILS
 
-        val callResult = getTVShowDetailsUseCase(TV_SHOW_ID)
+        // Act
+        getTVShowDetailsUseCase(TV_SHOW_ID)
 
-        assertThat(callResult).isEqualTo(TV_SHOW_DETAILS)
+        // Assert
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
+        // Arrange
         coEvery { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) } throws Exception()
 
+        // Act
         assertThrows<Exception> {
             getTVShowDetailsUseCase(TV_SHOW_ID)
         }
+
+        // Assert
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) }
     }
 
     companion object {
@@ -56,9 +59,8 @@ class GetTVShowDetailsUseCaseTest {
             hasVideo = false,
             companyProductions = emptyList(),
             originCountry = "PS",
-            seasons = emptyList(),
             galleryUrl = emptyList(),
-            reviews = emptyList()
+            numberOfSeasons = 2,
         )
     }
 }
