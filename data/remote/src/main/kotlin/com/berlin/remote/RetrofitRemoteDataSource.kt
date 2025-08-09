@@ -167,7 +167,8 @@ class RetrofitRemoteDataSource @Inject constructor(
     }
 
     override suspend fun getRatedMovies(page: Int): BaseResponse<RatedMediaDto> {
-        val sessionId = authenticationLocalDataSource.getUserSessionId()?: throw IllegalStateException("Session ID is missing. User might not be logged in.")
+        val sessionId = authenticationLocalDataSource.getUserSessionId()?:
+        throw IllegalStateException("Session ID is missing. User might not be logged in.")
         return wrapApiResponse {
             apiService.getRatedMovies(TODO("Add Account Id"), sessionId, page)
         }
