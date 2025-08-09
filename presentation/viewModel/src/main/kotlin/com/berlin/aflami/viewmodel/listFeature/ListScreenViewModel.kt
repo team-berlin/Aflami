@@ -27,9 +27,9 @@ class ListScreenViewModel @Inject constructor(
     private val getIsUserLoggedInUseCase: GetLoginStatus,
 ) : BaseViewModel<ListScreenState, ListScreenEffect>(ListScreenState()),
     ListScreenInteractionListener {
-    val isLoggedIn: StateFlow<Boolean> = getIsUserLoggedInUseCase().stateIn(
+    val isLoggedIn: StateFlow<Boolean?> = getIsUserLoggedInUseCase().stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000),
-        false
+        null
     )
 
     init {
@@ -43,8 +43,12 @@ class ListScreenViewModel @Inject constructor(
                 .collect { loggedIn ->
                     Log.d("Khairy", "is user logged in ??? $loggedIn")
                     updateState { screenState ->
-                        if (loggedIn) getAllUserFavouriteLists()
-                        screenState.copy(isUserLoggedIn = loggedIn, isScreenLoading = false)
+                        if (loggedIn == true) getAllUserFavouriteLists()
+                        screenState.copy(
+                            isUserLoggedIn = loggedIn,
+                            loginRequiredDialog = loggedIn?.not() ?: false,
+                            isScreenLoading = loggedIn ?: true
+                        )
                     }
                 }
         }
@@ -52,6 +56,7 @@ class ListScreenViewModel @Inject constructor(
 
     //region getUserFavouriteLists
     private fun getAllUserFavouriteLists() {
+        updateState { screenState -> screenState.copy(isScreenLoading = true) }
         Log.d("khairy", "getting all user fav lists ")
         tryToCall(
             call = { getAllFavouriteListsAsFlow().cachedIn(viewModelScope) },
@@ -68,13 +73,23 @@ class ListScreenViewModel @Inject constructor(
     ).flow
 
     private fun updateScreenStateWithUserFavouriteLists(userFavouriteLists: Flow<PagingData<FavouriteListItemUiState>>) {
-        updateState { screenState -> screenState.copy(favouriteList = userFavouriteLists) }.also {
+        updateState { screenState ->
+            screenState.copy(
+                favouriteList = userFavouriteLists,
+                isScreenLoading = false
+            )
+        }.also {
             Log.d("khairy", "update screen state with new list $userFavouriteLists")
         }
     }
 
     private fun updateScreenStateWithErrorMessage(errorUiState: ErrorUiState) {
-        updateState { screenState -> screenState.copy(errorMessage = errorUiState.message) }.also {
+        updateState { screenState ->
+            screenState.copy(
+                errorMessage = errorUiState.message,
+                isScreenLoading = false
+            )
+        }.also {
             Log.d("khairy", "failed $errorUiState")
         }
     }

@@ -1,25 +1,20 @@
 package com.berlin.aflami.screens.lists
 
 import android.util.Log
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -34,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
@@ -78,18 +74,16 @@ private fun ListsContent(
         listScreenState.favouriteList.collectAsLazyPagingItems()
 
     Box(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .background(Theme.color.surface)
-                .navigationBarsPadding()
+        modifier = modifier
+            .fillMaxSize()
+            .background(Theme.color.surface)
+            .navigationBarsPadding()
     ) {
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
             visible = listScreenState.createNewListSheetState.isCreateNewListDialogVisible
         ) {
-            interactionListener.onCreateNewListClicked("khairy")
             CreateNewListDialog(
                 listName = TextFieldValue(listScreenState.createNewListSheetState.newListTitle),
                 onListNameChanged = interactionListener::onListNameChange,
@@ -97,129 +91,108 @@ private fun ListsContent(
                 onDismiss = interactionListener::onCancelCreatingNewListClicked,
             )
         }
-
-//        AnimatedVisibility(
-//            enter = fadeIn(),
-//            exit = fadeOut(),
-//            visible = listScreenState.isUserLoggedIn.not() && listScreenState.isScreenLoading.not()
-//        ) {
-//            LoginRequiredDialog(
-//                title = "Lists",
-//                onLoginClick = interactionListener::onLoginClicked,
-//                onDismiss = interactionListener::onBackClicked,
-//            )
-//        }
-
-
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(), visible = listScreenState.isScreenLoading
+            enter = fadeIn(), exit = fadeOut(), visible = listScreenState.isScreenLoading
         ) {
             CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize(),
-                text = stringResource(R.string.loading)
+                modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
             ).also {
                 Log.d("Khairy", "loading and showing progressBar composeable ....")
             }
         }
-        //where is loading ?!
-//            AnimatedVisibility(
-//                enter = fadeIn(),
-//                exit = fadeOut(),
-//                visible = favouriteLists.itemCount == 0 && listScreenState.isUserLoggedIn
-//            ) {
-//                Image(
-//                    painter = painterResource(R.drawable.no_items_found),
-//                    contentDescription = stringResource(R.string.no_saved_items_here)
-//                )
-//            }
-
-            AnimatedVisibility(
-                enter = fadeIn(), exit = fadeOut(), visible = listScreenState.isUserLoggedIn
+        AnimatedVisibility(
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = listScreenState.loginRequiredDialog
+        ) {
+            LoginRequiredDialog(
+                title = "Lists",
+                onLoginClick = interactionListener::onLoginClicked,
+                onDismiss = interactionListener::onBackClicked,
+            )
+        }
+        AnimatedVisibility(
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = ((favouriteLists.loadState.refresh !is LoadState.Loading && listScreenState.isUserLoggedIn == true) && !listScreenState.isScreenLoading),
+        ) {
+            val result =
+                ((favouriteLists.itemCount == 0 && listScreenState.isUserLoggedIn == true) && !listScreenState.isScreenLoading)
+            Log.d(
+                "khairy",
+                "no data because result = $result ${favouriteLists.itemCount == 0} && ${listScreenState.isUserLoggedIn == true} && ${!listScreenState.isScreenLoading}"
+            )
+            NoDataContainer(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.Center),
+                image = painterResource(R.drawable.no_items_found),
+                R.string.no_lists_yet,
+                R.string.our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love
+            )
+        }
+        AnimatedVisibility(
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = favouriteLists.itemCount != 0 && listScreenState.isUserLoggedIn == true
+        ) {
+            Log.d("khairy", "item count = ${favouriteLists.itemCount}")
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(Theme.color.surface)
+                    .statusBarsPadding(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Log.d("khairy", "item count = ${favouriteLists.itemCount}")
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .background(Theme.color.surface)
-                        .statusBarsPadding(),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                DefaultBar(
+                    title = stringResource(R.string.lists),
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    showNavigateBackButton = false,
+                    lastOption = painterResource(R.drawable.add),
+                    onLastOptionClicked = interactionListener::onClickAddList,
+                )
+//                AnimatedContent(
+//                    modifier = Modifier.fillMaxSize(),
+//                    targetState = Triple(
+//                        listScreenState.isScreenLoading,
+//                        listScreenState.errorMessage,
+//                        listScreenState.favouriteList
+//                    ),
+//                    transitionSpec = {
+//                        fadeIn(tween(700)) togetherWith fadeOut(tween(700))
+//                    },
+//                ) { (isLoading, errorState, favouriteList) ->
+                LazyVerticalGrid(
+                    modifier = Modifier.fillMaxSize(),
+                    columns = GridCells.Adaptive(minSize = 156.dp),
+                    state = rememberLazyGridState(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
                 ) {
-                    DefaultBar(
-                        title = stringResource(R.string.lists),
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        showNavigateBackButton = false,
-                        lastOption = painterResource(R.drawable.add),
-                        onLastOptionClicked = interactionListener::onClickAddList,
-                    )
-
-                    AnimatedContent(
-                        modifier = Modifier.fillMaxSize(),
-                        targetState = Triple(
-                            listScreenState.isScreenLoading,
-                            listScreenState.errorMessage,
-                            listScreenState.favouriteList
-                        ),
-                        transitionSpec = {
-                            fadeIn(tween(700)) togetherWith fadeOut(tween(700))
-                        },
-                    ) { (isLoading, errorState) ->
-                        when {
-                            isLoading -> {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.fillMaxSize(),
-                                    text = stringResource(R.string.loading)
-                                )
-                            }
-
-                            favouriteLists.itemCount == 0 -> {
-                                NoDataContainer(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .align(Alignment.CenterHorizontally),
-                                    image = painterResource(R.drawable.no_items_found),
-                                    R.string.no_lists_yet,
-                                    R.string.our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love
-                                )
-                            }
-
-                            else -> {
-                                LazyVerticalGrid(
-                                    modifier = Modifier.fillMaxSize(),
-                                    columns = GridCells.Adaptive(minSize = 156.dp),
-                                    state = rememberLazyGridState(),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    contentPadding = PaddingValues(horizontal = 16.dp),
-                                ) {
-                                    items(
-                                        favouriteLists.itemCount,
-                                        key = { index -> favouriteLists[index]?.listId!! }) { index ->
-                                        val item = favouriteLists[index]
-                                        item?.let {
-                                            ListCard(
-                                                title = it.listTitle,
-                                                count = it.numberOfFavouriteMovies,
-                                                modifier = modifier
-                                                    .size(156.dp, 147.dp)
-                                                    .clickable {
-                                                        interactionListener.onClickListCard(
-                                                            it.listId, it.listTitle
-                                                        )
-                                                    }
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
+                    items(
+                        favouriteLists.itemCount,
+                        key = { index -> favouriteLists[index]?.listId!! }) { index ->
+                        val item = favouriteLists[index]
+                        item?.let {
+                            ListCard(
+                                title = it.listTitle,
+                                count = it.numberOfFavouriteMovies,
+                                modifier = modifier
+                                    .size(156.dp, 147.dp)
+                                    .clickable {
+                                        interactionListener.onClickListCard(
+                                            it.listId, it.listTitle
+                                        )
+                                    })
                         }
                     }
                 }
             }
         }
     }
+}
 
 private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavController) {
     when (effect) {
