@@ -46,7 +46,9 @@ fun ProfileScreen(
     if (profileScreenState.isLoggedIn) {
         ProfileContent(profileScreenState, viewModel)
     } else {
-        RequiredLoggedInPlaceholder()
+        RequiredLoggedInPlaceholder() {
+            navController.navigate(LoginDestination)
+        }
 
     }
     LaunchedEffect(Unit) {
