@@ -73,7 +73,9 @@ private fun WatchHistoryonReceiveEffect(
             navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
         }
 
-        ProfileScreenEffect.RefreshActivity -> {}
+        ProfileScreenEffect.RefreshActivity -> {
+            (navController.context as? androidx.activity.ComponentActivity)?.recreate()
+        }
         ProfileScreenEffect.NavigateToLoginScreen -> {
             navController.navigate(route = LoginDestination)
         }
