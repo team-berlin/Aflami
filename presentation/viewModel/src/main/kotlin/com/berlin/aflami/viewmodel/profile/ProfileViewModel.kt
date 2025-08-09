@@ -164,6 +164,26 @@ class ProfileViewModel @Inject constructor(
     override fun onChangePasswordClicked() =
         sendNewEffect(ProfileScreenEffect.NavigateToChangePasswordScreen)
 
+    override fun onContentRestrictionClicked() {
+        updateState { it.copy(activeDialog = ProfileDialogType.CONTENT_RESTRICTION) }
+    }
+
+    override fun onStrictSelected() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onModerateSelected() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onOffRestrictionSelected() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSaveContentRestriction() {
+        TODO("Not yet implemented")
+    }
+
     override fun onLogoutClicked() = sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
 
 

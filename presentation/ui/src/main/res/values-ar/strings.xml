@@ -59,7 +59,7 @@
     <string name="read_less">قراءة اقل</string>
     <string name="read_more">قراءة المزيد</string>
     <string name="retry">إعادة المحاولة</string>
-    <string name="apply">اضافه</string>
+    <string name="apply">تطبيق</string>
     <string name="clear">مسح</string>
     <string name="profile">الملف الشخصي</string>
     <string name="language">اللغة</string>
@@ -93,7 +93,7 @@
     <string name="watch__history">سجل المشاهدات</string>
     <string name="no_result_found">لا يوجد نتائج</string>
     <string name="Please_login">الرجاء تسجيل الدخول للوصول الى بيانات حساب </string>
-    <string name="space">-</string>
+    <string name="save">حفظ</string>
 
 
 </resources>

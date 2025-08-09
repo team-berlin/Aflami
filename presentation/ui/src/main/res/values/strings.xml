@@ -92,6 +92,6 @@
     <string name="watch__history">Watch history</string>
     <string name="no_result_found">No result found</string>
     <string name="Please_login">Please login to access your account details and other features!</string>
-    <string name="space">-</string>
+    <string name="save">Save</string>
 
 </resources>

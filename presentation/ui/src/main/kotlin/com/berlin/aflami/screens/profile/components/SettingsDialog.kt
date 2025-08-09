@@ -63,7 +63,6 @@ fun SettingsDialog(
                 Row(
                     Modifier
                         .fillMaxWidth(),
-                    //horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(

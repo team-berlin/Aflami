@@ -110,7 +110,8 @@ private fun ProfileContent(
                 isFirstOptionSelected = profileScreenState.isDarkThemeSelected,
                 isSecondOptionSelected = profileScreenState.isLightThemeSelected,
                 onFirstOptionClick = { profileScreenInteractionListener.onDarkThemeSelected() },
-                onSecondOptionClick = { profileScreenInteractionListener.onLightThemeSelected() }
+                onSecondOptionClick = { profileScreenInteractionListener.onLightThemeSelected() },
+                isThemeDialog = true
             )
         }
 
@@ -126,7 +127,8 @@ private fun ProfileContent(
                 isFirstOptionSelected = profileScreenState.isEnglishSelected,
                 isSecondOptionSelected = profileScreenState.isArabicSelected,
                 onFirstOptionClick = { profileScreenInteractionListener.onEnglishSelected() },
-                onSecondOptionClick = { profileScreenInteractionListener.onArabicSelected() }
+                onSecondOptionClick = { profileScreenInteractionListener.onArabicSelected() },
+                isThemeDialog = false
             )
 
         }
@@ -135,9 +137,14 @@ private fun ProfileContent(
             SettingsDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
                 onFirstOptionClick = { profileScreenInteractionListener.onChangePasswordClicked() },
-                onSecondOptionClick = { },
+                onSecondOptionClick = { profileScreenInteractionListener.onContentRestrictionClicked() },
                 onThirdOptionClick = { profileScreenInteractionListener.onLogoutClicked() },
             )
+        }
+
+        ProfileDialogType.CONTENT_RESTRICTION -> {
+
+
         }
 
         else -> Unit
