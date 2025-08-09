@@ -24,7 +24,8 @@ data class ProfileUiState(
     val isStrictSelected: Boolean = true,
     val isModeratedSelected: Boolean = false,
     val isOffSelected: Boolean = false,
-    val selectedRestriction: String = ContentRestriction.STRICT.name
+    val selectedRestriction: String = ContentRestriction.STRICT.name,
+    val contentRestrictionPercentage: Int = 100
 
 
 )

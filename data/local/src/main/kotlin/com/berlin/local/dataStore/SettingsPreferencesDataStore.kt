@@ -56,6 +56,5 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
             prefs[App_CONTENT_RESTRICTION] ?: "STRICT"
         }
     }
-
 }
 

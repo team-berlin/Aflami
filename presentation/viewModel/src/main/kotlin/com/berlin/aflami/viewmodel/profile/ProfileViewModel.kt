@@ -74,6 +74,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             getContentRestrictionUseCase().collect { contentRestriction ->
                 val appContentRestriction = contentRestriction ?: ContentRestriction.STRICT.name
+                val percentage = getContentRestrictionPercentage(appContentRestriction)
 
                 updateState {
                     it.copy(
@@ -81,6 +82,7 @@ class ProfileViewModel @Inject constructor(
                         isStrictSelected = contentRestriction == ContentRestriction.STRICT.name,
                         isModeratedSelected = contentRestriction == ContentRestriction.MODERATE.name,
                         isOffSelected = contentRestriction == ContentRestriction.OFF.name,
+                        contentRestrictionPercentage = percentage
                     )
                 }
 
@@ -224,8 +226,24 @@ class ProfileViewModel @Inject constructor(
     override fun onSaveContentRestriction() {
         viewModelScope.launch {
             val selectRestriction = ContentRestriction.valueOf(state.value.selectedRestriction)
+            val percentage = getContentRestrictionPercentage(selectRestriction.name)
             setContentRestrictionUseCase(selectRestriction)
-            updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+            updateState {
+                it.copy(
+                    selectedRestriction = selectRestriction.name,
+                    contentRestrictionPercentage = percentage,
+                    activeDialog = ProfileDialogType.NONE,
+                )
+            }
+        }
+    }
+
+    private fun getContentRestrictionPercentage(restriction: String): Int {
+        return when (restriction.uppercase()) {
+            "STRICT" -> 100
+            "MODERATE" -> 50
+            "OFF" -> 0
+            else -> 100
         }
     }
 
