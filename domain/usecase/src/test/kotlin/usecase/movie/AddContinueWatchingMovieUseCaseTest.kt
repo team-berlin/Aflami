@@ -5,39 +5,44 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
 
 class AddContinueWatchingMovieUseCaseTest {
-    private val repository: MovieRepository = mockk(relaxed = true)
-    private lateinit var addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase
+    private val movieRepository: MovieRepository = mockk()
+    private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase =
+        AddContinueWatchingMovieUseCase(movieRepository)
 
-    @Before
-    fun setup() {
-        addContinueWatchingMovieUseCase = AddContinueWatchingMovieUseCase(repository)
-    }
 
     @Test
     fun `should call addContinueWatchingMovie once with correct movie`() = runTest {
+        // Arrange
+        coEvery { movieRepository.addContinueWatchingMovie(TEST_MOVIE) } returns Unit
+
+        // Act
         addContinueWatchingMovieUseCase(TEST_MOVIE)
 
+        // Assert
         coVerify(exactly = 1) {
-            repository.addContinueWatchingMovie(TEST_MOVIE)
+            movieRepository.addContinueWatchingMovie(TEST_MOVIE)
         }
     }
 
     @Test
-    fun `should throw exception when repository fails`() = runTest {
-        coEvery { repository.addContinueWatchingMovie(TEST_MOVIE) } throws Exception(DB_ERROR)
+    fun `should throw exception when repository fails to add movie`() = runTest {
+        // Arrange
+        coEvery { movieRepository.addContinueWatchingMovie(TEST_MOVIE) } throws
+                Exception(DB_ERROR)
 
+        // Act
         assertThrows<Exception> {
             addContinueWatchingMovieUseCase(TEST_MOVIE)
         }
 
+        // Assert
         coVerify(exactly = 1) {
-            repository.addContinueWatchingMovie(TEST_MOVIE)
+            movieRepository.addContinueWatchingMovie(TEST_MOVIE)
         }
     }
 
@@ -57,6 +62,7 @@ class AddContinueWatchingMovieUseCaseTest {
             originCountry = "PS",
             galleryUrl = emptyList(),
             reviews = emptyList(),
+            isFavourite = false,
         )
         const val DB_ERROR = "DB error"
     }
