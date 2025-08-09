@@ -13,11 +13,10 @@ import kotlinx.coroutines.flow.emptyFlow
 data class ListScreenState(
     val listName: TextFieldValue = TextFieldValue(""),
     val favouriteList: Flow<PagingData<FavouriteListItemUiState>> = emptyFlow(),
-    val createNewListSheetState: CreateNewListUiState = CreateNewListUiState(),
-    val loginRequiredDialog: Boolean = false,
     val isUserLoggedIn: Boolean? = null,
-    val isScreenLoading: Boolean = true,
-    val isCreateNewListDialogVisible: Boolean = false,
-    val errorMessage: String = "",
+    val isLoginRequiredDialogVisible: Boolean = false,
+    val createNewListSheetState: CreateNewListUiState = CreateNewListUiState(),
     val editListSheetState: EditListSheetState = EditListSheetState(),
+    val isScreenLoading: Boolean = true,
+    val errorMessage: String = "",
 )

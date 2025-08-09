@@ -23,7 +23,8 @@ import com.berlin.ui.R
 fun DeleteListDialog(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
+    listId: Int,
+    onConfirm: (listId: Int) -> Unit,
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Column(
@@ -50,7 +51,7 @@ fun DeleteListDialog(
             )
 
             PrimaryButton(
-                onClick = onConfirm,
+                onClick = { onConfirm(listId) },
                 modifier = modifier
                     .fillMaxWidth()
                     .height(56.dp),

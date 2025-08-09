@@ -18,6 +18,7 @@ import usecase.auth.GetValidateUsernameUseCase
 import usecase.favouritelist.CreateNewFavouriteListUseCase
 import usecase.favouritelist.DeleteMovieFromUserFavouriteList
 import usecase.favouritelist.DeleteUserFavouriteListUseCase
+import usecase.favouritelist.EditListTitleUseCase
 import usecase.favouritelist.GetAllFavouriteListsUseCase
 import usecase.favouritelist.GetFavouriteListItemsUseCase
 import usecase.mediadetails.GetMovieVideos
@@ -233,4 +234,8 @@ object UseCaseModule {
     @Provides
     fun provideGetFavouriteListItemsUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
         GetFavouriteListItemsUseCase(userFavouriteListRepository)
+
+    @Provides
+    fun provideEditFavouriteListTitleUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        EditListTitleUseCase(userFavouriteListRepository)
 }

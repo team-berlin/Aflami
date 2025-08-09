@@ -91,6 +91,19 @@ private fun ListsContent(
                 onDismiss = interactionListener::onCancelCreatingNewListClicked,
             )
         }
+        //Edit List Dialog
+//        AnimatedVisibility(
+//            enter = fadeIn(),
+//            exit = fadeOut(),
+//            visible = listScreenState.editListSheetState.isEditNewListDialogVisible
+//        ) {
+//            CreateNewListDialog(
+//                listName = TextFieldValue(listScreenState.createNewListSheetState.newListTitle),
+//                onListNameChanged = { interactionListener.onOldListTitleChanged(it.text) },
+//                onCreateListClick = interactionListener::onSaveOldListTitleToNewTitleClicked,
+//                onDismiss = interactionListener::onCancelEditingListClicked,
+//            )
+//        }
         AnimatedVisibility(
             enter = fadeIn(), exit = fadeOut(), visible = listScreenState.isScreenLoading
         ) {
@@ -103,7 +116,7 @@ private fun ListsContent(
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
-            visible = listScreenState.loginRequiredDialog
+            visible = listScreenState.isLoginRequiredDialogVisible
         ) {
             LoginRequiredDialog(
                 title = "Lists",
@@ -169,7 +182,7 @@ private fun ListsContent(
                     state = rememberLazyGridState(),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    contentPadding = PaddingValues(top = 16.dp, bottom = 64.dp),
                 ) {
                     items(
                         favouriteLists.itemCount,
@@ -208,6 +221,9 @@ private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavContr
 
         is ListScreenEffect.ShowEditListStatusSnackBar -> {}
         ListScreenEffect.NavigateToLoginScreen -> navController.navigate(route = LoginDestination)
+        is ListScreenEffect.ShowListDeletedSnackBar -> {
+
+        }
     }
 }
 

@@ -4,7 +4,8 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class EditListSheetState(
-    val currentListId: Int? = null,
+    val isEditNewListDialogVisible: Boolean = false,
+    val requiredListIdToEdit: Int? = null,
     val currentListTitle: String = "",
     val isSaveButtonEnabled: Boolean = false,
     val errorMessage: String = "",

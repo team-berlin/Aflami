@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginStatus
 import usecase.favouritelist.CreateNewFavouriteListUseCase
+import usecase.favouritelist.EditListTitleUseCase
 import usecase.favouritelist.GetAllFavouriteListsUseCase
 import javax.inject.Inject
 
@@ -25,32 +26,58 @@ class ListScreenViewModel @Inject constructor(
     private val createNewFavouriteListUseCase: CreateNewFavouriteListUseCase,
     private val getAllFavouriteListsUseCase: GetAllFavouriteListsUseCase,
     private val getIsUserLoggedInUseCase: GetLoginStatus,
+    private val editListTitleUseCase: EditListTitleUseCase,
+    favouriteListArgs: FavouriteListArgs,
 ) : BaseViewModel<ListScreenState, ListScreenEffect>(ListScreenState()),
     ListScreenInteractionListener {
+
+    val shouldShowEditSheet = favouriteListArgs.shouldShowEditSheet
+    val requiredListIdToEdit = favouriteListArgs.requiredListIdToEdit
+    val shouldShowDeleteSnackBar = favouriteListArgs.shouldShowDeleteSnackBar
+    val isListDeletedSuccessfully = favouriteListArgs.isListDeletedSuccessfully
+
     val isLoggedIn: StateFlow<Boolean?> = getIsUserLoggedInUseCase().stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5000),
-        null
+        viewModelScope, SharingStarted.WhileSubscribed(5000), null
     )
 
     init {
-        Log.d("khairy", "viewModel created")
+        shouldShowEditSheet?.let {
+            Log.d("Khairy", "showEditSheet ??? $shouldShowEditSheet and id = $requiredListIdToEdit")
+            updateState { screenState ->
+                screenState.copy(
+                    editListSheetState = screenState.editListSheetState.copy(
+                        isSaveButtonEnabled = true, requiredListIdToEdit = requiredListIdToEdit
+                    )
+                )
+            }
+        }
+        shouldShowDeleteSnackBar?.let {
+            Log.d(
+                "Khairy",
+                "showDeleteSheet ??? $shouldShowDeleteSnackBar and isDeleted = $isListDeletedSuccessfully"
+            )
+            sendNewEffect(
+                ListScreenEffect.ShowListDeletedSnackBar(
+                    isListDeletedSuccessfully!!
+                )
+            )
+        }
         observeLoginStatus()
     }
 
     private fun observeLoginStatus() {
         viewModelScope.launch {
-            isLoggedIn
-                .collect { loggedIn ->
-                    Log.d("Khairy", "is user logged in ??? $loggedIn")
-                    updateState { screenState ->
-                        if (loggedIn == true) getAllUserFavouriteLists()
-                        screenState.copy(
-                            isUserLoggedIn = loggedIn,
-                            loginRequiredDialog = loggedIn?.not() ?: false,
-                            isScreenLoading = loggedIn ?: true
-                        )
-                    }
+            isLoggedIn.collect { loggedIn ->
+                Log.d("Khairy", "is user logged in ??? $loggedIn")
+                updateState { screenState ->
+                    if (loggedIn == true) getAllUserFavouriteLists()
+                    screenState.copy(
+                        isUserLoggedIn = loggedIn,
+                        isLoginRequiredDialogVisible = if (loggedIn == false) true else false,
+                        isScreenLoading = loggedIn ?: true
+                    )
                 }
+            }
         }
     }
 
@@ -66,17 +93,14 @@ class ListScreenViewModel @Inject constructor(
     }
 
     private fun getAllFavouriteListsAsFlow(): Flow<PagingData<FavouriteListItemUiState>> = Pager(
-        config = defaultPageConfigurations(),
-        pagingSourceFactory = {
+        config = defaultPageConfigurations(), pagingSourceFactory = {
             AllFavouriteListsPagingSource(getAllFavouriteListsUseCase)
-        }
-    ).flow
+        }).flow
 
     private fun updateScreenStateWithUserFavouriteLists(userFavouriteLists: Flow<PagingData<FavouriteListItemUiState>>) {
         updateState { screenState ->
             screenState.copy(
-                favouriteList = userFavouriteLists,
-                isScreenLoading = false
+                favouriteList = userFavouriteLists, isScreenLoading = false
             )
         }.also {
             Log.d("khairy", "update screen state with new list $userFavouriteLists")
@@ -86,8 +110,7 @@ class ListScreenViewModel @Inject constructor(
     private fun updateScreenStateWithErrorMessage(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorUiState.message,
-                isScreenLoading = false
+                errorMessage = errorUiState.message, isScreenLoading = false
             )
         }.also {
             Log.d("khairy", "failed $errorUiState")
@@ -108,8 +131,7 @@ class ListScreenViewModel @Inject constructor(
         }
     }
 
-    override fun onLoginClicked() =
-        sendNewEffect(ListScreenEffect.NavigateToLoginScreen)
+    override fun onLoginClicked() = sendNewEffect(ListScreenEffect.NavigateToLoginScreen)
 
     override fun onClickAddList() {
         updateState { screenState ->
@@ -147,14 +169,13 @@ class ListScreenViewModel @Inject constructor(
 
     //endregion
 
-    override fun onUpdateNewListTitle(newListTitle: String) =
-        updateState { screenState ->
-            screenState.copy(
-                createNewListSheetState = screenState.createNewListSheetState.copy(
-                    newListTitle = newListTitle
-                )
+    override fun onUpdateNewListTitle(newListTitle: String) = updateState { screenState ->
+        screenState.copy(
+            createNewListSheetState = screenState.createNewListSheetState.copy(
+                newListTitle = newListTitle
             )
-        }
+        )
+    }
 
     override fun onCreateNewListClicked(listTitle: String) {
         tryToCall(
@@ -176,6 +197,25 @@ class ListScreenViewModel @Inject constructor(
                 )
             },
         )
+    }
+
+    override fun onCancelEditingListClicked() = updateState { screenState ->
+        screenState.copy(
+            editListSheetState = screenState.editListSheetState.copy(
+                isEditNewListDialogVisible = false,
+            )
+        )
+    }
+
+    override fun onOldListTitleChanged(editedListTitle: String) = updateState { screenState ->
+        screenState.copy(editListSheetState = screenState.editListSheetState.copy(currentListTitle = editedListTitle))
+    }
+
+    override fun onSaveOldListTitleToNewTitleClicked(listId: Int, editedListTitle: String) {
+        tryToCall(
+            call = { editListTitleUseCase(listId = listId, newListTitle = editedListTitle) },
+            onSuccess = {},
+            onError = {})
     }
 
 

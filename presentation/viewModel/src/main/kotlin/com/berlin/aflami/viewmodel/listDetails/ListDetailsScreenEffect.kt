@@ -2,11 +2,9 @@ package com.berlin.aflami.viewmodel.listDetails
 
 sealed interface ListDetailsScreenEffect {
     object NavigateBack : ListDetailsScreenEffect
-    object NavigateToDeleteListSheet : ListDetailsScreenEffect
-    object NavigateToEditListSheet : ListDetailsScreenEffect
-    object NavigateToCreateNewListSheet : ListDetailsScreenEffect
+
+    //    object NavigateToDeleteListSheet : ListDetailsScreenEffect
     data class NavigateToMovieDetailsScreen(val movieId: Long) : ListDetailsScreenEffect
-    object DismissDeleteDialog : ListDetailsScreenEffect
     object ShowDeleteMovieFromListFailedSnackBar : ListDetailsScreenEffect
     object ShowDeleteMovieFromListSucceededSnackBar : ListDetailsScreenEffect
     data class NavigateBackAndShowDeleteListStatusSnackBar(val isListDeletedSuccessfully: Boolean) :

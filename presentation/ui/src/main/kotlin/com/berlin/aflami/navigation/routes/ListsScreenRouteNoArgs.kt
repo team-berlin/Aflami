@@ -5,6 +5,6 @@ import androidx.navigation.compose.composable
 import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.lists.ListScreen
 
-fun NavGraphBuilder.listsRoute() = composable<NavigationBarDestinations.ListScreen> {
+fun NavGraphBuilder.listsRoute() = composable<NavigationBarDestinations.ListsScreenNoArgs> {
     ListScreen()
 }

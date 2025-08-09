@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -20,6 +19,7 @@ import com.berlin.aflami.navigation.routes.gamesRoute
 import com.berlin.aflami.navigation.routes.homeScreenRoute
 import com.berlin.aflami.navigation.routes.listsDetailsRoute
 import com.berlin.aflami.navigation.routes.listsRoute
+import com.berlin.aflami.navigation.routes.listsScreenRouteWithArgs
 import com.berlin.aflami.navigation.routes.loginRoute
 import com.berlin.aflami.navigation.routes.movieDetailsRoute
 import com.berlin.aflami.navigation.routes.onBoarding
@@ -103,18 +103,29 @@ private fun ShowNavigationBar(
     )
 }
 
+//@Composable
+//private fun getCurrentNavBarScreen(navController: NavHostController): NavigationBarDestinations? {
+//    val backStackEntry by navController.currentBackStackEntryAsState()
+//    val currentRoute: String? = backStackEntry?.destination?.route
+//    val currentNavigationBarDestinationsDestination: NavigationBarDestinations? =
+//        bottomNavBarDestinationsMap[currentRoute]
+//    return currentNavigationBarDestinationsDestination
+//}
+
 @Composable
 private fun getCurrentNavBarScreen(navController: NavHostController): NavigationBarDestinations? {
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute: String? = backStackEntry?.destination?.route
-    val currentNavigationBarDestinationsDestination: NavigationBarDestinations? =
-        bottomNavBarDestinationsMap[currentRoute]
-    return currentNavigationBarDestinationsDestination
+    val currentRoute = backStackEntry?.destination?.route
+
+    return bottomNavBarDestinationsMap.entries.firstOrNull { (route, _) ->
+        currentRoute?.startsWith(route!!) == true
+    }?.value
 }
 
 fun NavGraphBuilder.bottomNavigationBarGraph() {
     homeScreenRoute()
     listsRoute()
+    listsScreenRouteWithArgs()
     listsDetailsRoute()
     profileRoute()
     categoriesRoute()

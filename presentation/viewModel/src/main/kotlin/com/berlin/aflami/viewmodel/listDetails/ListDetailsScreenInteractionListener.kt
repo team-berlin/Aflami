@@ -5,7 +5,7 @@ interface ListDetailsScreenInteractionListener {
     fun onRenameClicked(listId: Int)
     fun onDeleteIconClicked(listId: Int)
     fun onDeleteDialogDismiss()
-    fun onDeleteConfirmed()
+    fun onDeleteConfirmed(listId: Int)
     fun onMovieCardClicked(movieId: Long)
     fun onRemoveMovieClicked(listId: Int, movieId: Long)
 }

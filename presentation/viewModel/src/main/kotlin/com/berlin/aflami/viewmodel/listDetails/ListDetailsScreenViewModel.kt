@@ -8,6 +8,7 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import usecase.favouritelist.DeleteMovieFromUserFavouriteList
+import usecase.favouritelist.DeleteUserFavouriteListUseCase
 import usecase.favouritelist.GetFavouriteListItemsUseCase
 import javax.inject.Inject
 
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class ListDetailsScreenViewModel @Inject constructor(
     private val getAllFavouriteListItemsUseCase: GetFavouriteListItemsUseCase,
     private val deleteMovieFromUserFavouriteList: DeleteMovieFromUserFavouriteList,
+    private val deleteUserFavouriteListUseCase: DeleteUserFavouriteListUseCase,
     favouriteListDetailsArgs: FavouriteListDetailsArgs,
 ) : BaseViewModel<ListDetailsScreenState, ListDetailsScreenEffect>(
     ListDetailsScreenState()
@@ -31,7 +33,8 @@ class ListDetailsScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 listId = favouriteListId,
-                listTitle = favouriteListTitle
+                listTitle = favouriteListTitle,
+                isScreenLoading = true
             )
         }
         getAllFavoriteListItems(favouriteListId = favouriteListId)
@@ -49,7 +52,12 @@ class ListDetailsScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenStateWithErrorMessage(state1: ErrorUiState) {
-        updateState { screenState -> screenState.copy(errorMessage = state1.message) }
+        updateState { screenState ->
+            screenState.copy(
+                errorMessage = state1.message,
+                isScreenLoading = false
+            )
+        }
     }
 
     private fun getFavouriteListMoviesAsFlow(favouriteListId: Int): Flow<PagingData<MovieUiState>> =
@@ -65,23 +73,33 @@ class ListDetailsScreenViewModel @Inject constructor(
         updateState { screenState -> screenState.copy(isScreenLoading = true) }
 
     private fun updateScreenWithNewFavouriteMovies(flowOfMoviesUiStates: Flow<PagingData<MovieUiState>>) {
-        updateState { screenState -> screenState.copy(listItems = flowOfMoviesUiStates) }
+        updateState { screenState ->
+            screenState.copy(
+                listItems = flowOfMoviesUiStates,
+                isScreenLoading = false
+            )
+        }
     }
 
     //region renameAndDeleteListInteraction interactionListeners
     override fun onBackClicked() = sendNewEffect(ListDetailsScreenEffect.NavigateBack)
 
     override fun onRenameClicked(listId: Int) =
-        sendNewEffect(ListDetailsScreenEffect.NavigateToEditListSheet)
+        sendNewEffect(ListDetailsScreenEffect.NavigateToAllListsScreenAndShowEditListSheet(listId))
 
     override fun onDeleteIconClicked(listId: Int) =
-        sendNewEffect(ListDetailsScreenEffect.NavigateToDeleteListSheet)
+        updateState { screenState -> screenState.copy(showDeleteListDialog = true) }
 
     override fun onDeleteDialogDismiss() =
-        sendNewEffect(ListDetailsScreenEffect.DismissDeleteDialog)
+        updateState { screenState -> screenState.copy(showDeleteListDialog = false) }
 
-    override fun onDeleteConfirmed() {
-        TODO("Not yet implemented")
+    override fun onDeleteConfirmed(listId: Int) {
+        updateState { screenState -> screenState.copy(showDeleteListDialog = false) }
+        tryToCall(
+            call = { deleteUserFavouriteListUseCase(listId = listId) },
+            onSuccess = { ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar(true) },
+            onError = { ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar(false) }
+        )
     }
     //endregion
 

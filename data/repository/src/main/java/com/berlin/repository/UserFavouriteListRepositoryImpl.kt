@@ -41,4 +41,7 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
 
     override suspend fun createNewFavouriteList(title: String) =
         remoteDataSource.createNewFavouriteList(title = title)
+
+    override suspend fun editListTitle(listId: Int, newListTitle: String) =
+        remoteDataSource.editListTitle(listId = listId, newListTitle = newListTitle)
 }

@@ -5,6 +5,7 @@ import com.berlin.aflami.viewmodel.details.cast.CastDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.MovieDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.TVShowDetailsArgs
 import com.berlin.aflami.viewmodel.listDetails.FavouriteListDetailsArgs
+import com.berlin.aflami.viewmodel.listFeature.FavouriteListArgs
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +32,10 @@ object ViewModel {
     @Provides
     fun provideFavouriteListDetailsArgs(savedStateHandle: SavedStateHandle): FavouriteListDetailsArgs {
         return FavouriteListDetailsArgs(savedStateHandle)
+    }
+
+    @Provides
+    fun provideFavouriteListArgs(savedStateHandle: SavedStateHandle): FavouriteListArgs {
+        return FavouriteListArgs(savedStateHandle)
     }
 }

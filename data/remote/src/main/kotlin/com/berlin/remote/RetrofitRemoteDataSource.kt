@@ -221,4 +221,8 @@ class RetrofitRemoteDataSource @Inject constructor(
             Log.d("khairy", "createNewFavouriteList return $it")
         }
     }
+
+    override suspend fun editListTitle(listId: Int, newListTitle: String) {
+        TODO("Not Yet Implemented")
+    }
 }
