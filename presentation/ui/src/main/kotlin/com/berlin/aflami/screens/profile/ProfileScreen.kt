@@ -19,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.RequiredLoggedInPlaceholder
@@ -77,7 +78,12 @@ private fun WatchHistoryonReceiveEffect(
             (navController.context as? androidx.activity.ComponentActivity)?.recreate()
         }
         ProfileScreenEffect.NavigateToLoginScreen -> {
-            navController.navigate(route = LoginDestination)
+            navController.navigate(route = LoginDestination) {
+                popUpTo(NavigationBarDestinations.HomeScreen) {
+                    inclusive = true
+                }
+            }
+
         }
     }
 }
