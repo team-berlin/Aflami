@@ -56,15 +56,14 @@ fun SettingsDialog(
         ) {
             Column(
                 Modifier
-                    .widthIn(min = 328.dp, max = 360.dp)
-                    .padding(horizontal = 12.dp),
+                    .widthIn(min = 328.dp, max = 360.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Row(
                     Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    //horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -72,6 +71,8 @@ fun SettingsDialog(
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title,
                     )
+                    Spacer(modifier = Modifier.weight(1f))
+
                     IconButton(
                         onClick = onDismiss,
                         modifier = Modifier.background(
@@ -98,7 +99,8 @@ fun SettingsDialog(
                             .clickable { onFirstOptionClick() }
                     ) {
                         Row(
-                            modifier = Modifier.padding(vertical = 8.dp),
+                            modifier = Modifier
+                                .padding(vertical = 8.dp, horizontal = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
@@ -149,7 +151,7 @@ fun SettingsDialog(
                             .clickable { onSecondOptionClick() }
                     ) {
                         Row(
-                            modifier = Modifier.padding(vertical = 8.dp),
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
@@ -196,7 +198,7 @@ fun SettingsDialog(
                             .fillMaxWidth()
                     ) {
                         Row(
-                            modifier = Modifier.padding(vertical = 8.dp),
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
