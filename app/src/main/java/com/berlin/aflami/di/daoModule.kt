@@ -6,9 +6,10 @@ import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
 import com.berlin.local.dao.HomeMovieDao
+import com.berlin.local.dao.HomeTVShowDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
-import com.berlin.local.dao.HomeTVShowDao
+import com.berlin.local.dao.UserProfileDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,6 +52,12 @@ object DaoModule {
 
     @Provides
     @Singleton
+    fun provideUserProfileDao(db: AflamiDatabase): UserProfileDao {
+        return db.userProfileDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideAppEntryDao(db: AflamiDatabase): AppEntryDao {
         return db.appEntryDao()
     }
@@ -64,7 +71,5 @@ object DaoModule {
     fun provideTVShowHomeDao(db: AflamiDatabase): HomeTVShowDao {
         return db.homeTVShowDao()
     }
-
-
 
 }

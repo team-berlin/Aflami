@@ -56,6 +56,8 @@ object ApiConstants {
     const val CREATE_SESSION_WITH_LOGIN_ENDPOINT = "authentication/token/validate_with_login"
     const val CREATE_SESSION_ENDPOINT = "authentication/session/new"
     const val DELETE_SESSION_ENDPOINT = "authentication/session"
+    const val ACCOUNT = "account"
+    //endregion
 
     //query constants
     const val SORT_BY_POPULARITY_DESC = "popularity.desc"

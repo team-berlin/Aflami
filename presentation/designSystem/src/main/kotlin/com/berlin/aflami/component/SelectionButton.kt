@@ -140,7 +140,7 @@ private fun ThemeSelectionButtonPreview() {
                 selected = theme == "Light",
                 onClick = { theme = "Light" },
                 iconId = R.drawable.light,
-                selectionTitleId = R.string.light
+                selectionTitleId = R.string.light,
             )
             SelectionButton(
                 selected = theme == "Dark",

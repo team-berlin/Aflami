@@ -2,21 +2,34 @@ package com.berlin.local.datasource
 
 import com.berlin.local.dao.GenreDao
 import com.berlin.repository.datasource.local.GenreLocalDataSource
-import com.berlin.repository.datasource.local.dto.GenreEntity
+import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
+import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 import javax.inject.Inject
 
-class GenreLocalDataSourceImpl  @Inject constructor (
+class GenreLocalDataSourceImpl @Inject constructor(
     private val genreDao: GenreDao
 ) : GenreLocalDataSource {
-    override suspend fun getCachedGenres(type: String): List<GenreEntity> {
-        return genreDao.getCachedGenres(type)
+    override suspend fun getCachedTVGenres(): List<TVShowGenreEntity> {
+        return genreDao.getCachedTVGenres()
     }
 
-    override suspend fun cacheGenres(genres: List<GenreEntity>) {
-        genreDao.cacheGenres(genres)
+    override suspend fun getCachedMovieGenres(): List<MoviesGenreEntity> {
+        return genreDao.getCachedMovieGenres()
     }
 
-    override suspend fun clearCachedGenres(type: String) {
-        genreDao.clearCachedGenres(type)
+    override suspend fun cacheTVGenres(genres: List<TVShowGenreEntity>) {
+        genreDao.cacheTVGenres(genres)
+    }
+
+    override suspend fun cacheMovieGenres(genres: List<MoviesGenreEntity>) {
+        genreDao.cacheMovieGenres(genres)
+    }
+
+    override suspend fun clearCachedTVGenres() {
+        genreDao.clearCachedTVGenres()
+    }
+
+    override suspend fun clearCachedMovieGenres() {
+        genreDao.clearCachedMovieGenres()
     }
 }
