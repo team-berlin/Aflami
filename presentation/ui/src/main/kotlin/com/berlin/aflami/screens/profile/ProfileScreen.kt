@@ -161,6 +161,9 @@ private fun ProfileContent(
                 firstOptionIconRes = com.berlin.designsystem.R.drawable.english,
                 secondOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
                 thirdOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
+                firstOptionSubTitleIdRes = R.string.strict_description,
+                secondOptionSubTitleIdRes = R.string.moderate_description,
+                thirdOptionSubTitleIdRes = R.string.off_description
             )
 
 

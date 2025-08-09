@@ -97,6 +97,9 @@
     <string name="strict">صارم</string>
     <string name="moderate">معتدل</string>
     <string name="off">غلق</string>
+    <string name="strict_description">إخفاء جميع المحتوى الحساس.</string>
+    <string name="moderate_description">إخفاء المشاهد الصريحة فقط.</string>
+    <string name="off_description">عدم إخفاء المحتوى.</string>
 
 
 </resources>

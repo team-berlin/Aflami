@@ -96,6 +96,9 @@
     <string name="strict">Strict</string>
     <string name="moderate">Moderate</string>
     <string name="off">Off</string>
+    <string name="strict_description">Blurs all sensitive content.</string>
+    <string name="moderate_description">Blurs explicit scenes only.</string>
+    <string name="off_description">No content is blurred.</string>
 
 
 </resources>
