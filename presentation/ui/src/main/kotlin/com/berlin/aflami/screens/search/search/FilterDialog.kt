@@ -256,9 +256,14 @@ fun RatingBar(
     ) {
         for (i in 1..10) {
             Icon(
-                painter = painterResource(R.drawable.star),
+                painter = painterResource(
+                    id = if (i <= currentRating)
+                        R.drawable.ic_star_filled
+                    else
+                        R.drawable.ic_star_outline
+                ),
                 contentDescription = null,
-                tint = if (i <= currentRating) Theme.color.statusColors.yellowAccent else Theme.color.surfaceHigh,
+                tint = Theme.color.statusColors.yellowAccent,
                 modifier = Modifier
                     .size(24.dp)
                     .clickable(
