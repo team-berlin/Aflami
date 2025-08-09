@@ -1,64 +1,56 @@
 package usecase.movie
 
 import com.berlin.entity.Movie
-import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
 
-class GetSearchMoviesUseCaseTest {
+class GetMoviesByMoodUseCaseTest {
     private val movieRepository: MovieRepository = mockk()
-    private val getSearchMoviesUseCase: GetSearchMoviesUseCase =
-        GetSearchMoviesUseCase(movieRepository)
+    private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase =
+        GetMoviesByMoodUseCase(movieRepository)
 
     @Test
-    fun `should return movies when repository returns result`() = runTest {
+    fun `should return list of int when list of int is valid`() = runTest {
         // Arrange
-        coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } returns movies
+        coEvery { movieRepository.getMoviesByMoods(GENRES) } returns MOVIES
 
         // Act
-        getSearchMoviesUseCase(QUERY, PAGE)
+        getMoviesByMoodUseCase(GENRES)
 
         // Assert
-        coVerify(exactly = 1) { movieRepository.getMovieByKeyWord(QUERY, PAGE) }
+        coVerify(exactly = 1) {
+            movieRepository.getMoviesByMoods(GENRES)
+        }
     }
 
     @Test
-    fun `should return empty list when repository returns nothing`() = runTest {
+    fun `should throw exception when repository fails `() = runTest {
         // Arrange
-        coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } returns emptyList()
+        coEvery { movieRepository.getMoviesByMoods(GENRES) } throws Exception()
 
         // Act
-        getSearchMoviesUseCase(QUERY, PAGE)
+        assertThrows<Exception> { getMoviesByMoodUseCase(GENRES) }
 
         // Assert
-        coVerify(exactly = 1) { movieRepository.getMovieByKeyWord(QUERY, PAGE) }
-    }
-
-    @Test
-    fun `should throw exception when repository throws`() = runTest {
-        // Arrange
-        coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } throws Exception(EXCEPTION)
-
-        // Act
-        assertThrows<Exception> { getSearchMoviesUseCase(QUERY, PAGE) }
-
-        // Assert
-        coVerify(exactly = 1) { movieRepository.getMovieByKeyWord(QUERY, PAGE) }
+        coVerify(exactly = 1) {
+            movieRepository.getMoviesByMoods(GENRES)
+        }
     }
 
     companion object {
-        val movies = listOf(
+
+        val GENRES = listOf(2, 46, 394, 38)
+        val MOVIES = listOf(
             Movie(
                 id = 90L,
                 title = "Test Movie",
                 rating = 7.9,
-                releaseDate = "1/12/2001",
+                releaseDate = "1/12/2020",
                 posterURL = "/test.jpg",
                 screenShot = "/test.jpg",
                 description = "This is the test movie",
@@ -69,13 +61,13 @@ class GetSearchMoviesUseCaseTest {
                 originCountry = "PS",
                 galleryUrl = emptyList(),
                 reviews = emptyList(),
-                isFavourite = false,
+                isFavourite = false
             ),
             Movie(
                 id = 24L,
                 title = "Test Movie two",
                 rating = 9.7,
-                releaseDate = "1/12/2001",
+                releaseDate = "1/12/2021",
                 posterURL = "/test.jpg",
                 screenShot = "/test.jpg",
                 description = "This is the test movie",
@@ -89,9 +81,6 @@ class GetSearchMoviesUseCaseTest {
                 isFavourite = false,
             )
         )
-        const val PAGE = 1
-        const val QUERY = "Movie"
-
-        const val EXCEPTION = "Network error"
     }
+
 }

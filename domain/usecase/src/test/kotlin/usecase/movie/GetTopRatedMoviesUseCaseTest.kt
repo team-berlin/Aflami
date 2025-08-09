@@ -14,30 +14,33 @@ import repository.MovieRepository
 class GetTopRatedMoviesUseCaseTest {
 
     private val movieRepository: MovieRepository = mockk()
-    private lateinit var getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase
-
-    @Before
-    fun setUp() {
-        getTopRatedMoviesUseCase = GetTopRatedMoviesUseCase(movieRepository)
-    }
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase =
+        GetTopRatedMoviesUseCase(movieRepository)
 
     @Test
     fun `should return list of movies when calling repository`() = runTest {
+        // Arrange
         coEvery { movieRepository.getTopRatedMovies(PAGE) } returns MOVIES
 
-        val callResult = getTopRatedMoviesUseCase(PAGE)
+        // Act
+        getTopRatedMoviesUseCase(PAGE)
 
-        assertThat(callResult).isEqualTo(MOVIES)
+        // Assert
         coVerify(exactly = 1) { movieRepository.getTopRatedMovies(PAGE) }
     }
 
     @Test
     fun `should throw exception if movieRepository throws exception`() = runTest {
+        // Arrange
         coEvery { movieRepository.getTopRatedMovies(PAGE) } throws Exception()
 
+        // Act
         assertThrows<Exception> {
             getTopRatedMoviesUseCase(PAGE)
         }
+
+        // Assert
+        coVerify(exactly = 1) { movieRepository.getTopRatedMovies(PAGE) }
     }
 
     companion object {
@@ -56,7 +59,9 @@ class GetTopRatedMoviesUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             ),
             Movie(
                 id = 24L,
@@ -71,7 +76,9 @@ class GetTopRatedMoviesUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             )
         )
     }

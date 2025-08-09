@@ -12,49 +12,58 @@ import repository.MovieRepository
 
 class SearchByCountryUseCaseTest {
     private val movieRepository: MovieRepository = mockk()
-    private lateinit var searchMoviesByCountryUseCase: SearchMoviesByCountryUseCase
+    private val searchMoviesByCountryUseCase: SearchMoviesByCountryUseCase =
+        SearchMoviesByCountryUseCase(movieRepository)
 
-    @Before
-    fun setUp() {
-        searchMoviesByCountryUseCase = SearchMoviesByCountryUseCase(movieRepository)
-    }
 
     @Test
     fun `should call getMoviesByCountry in repository when invoke is called`() = runTest {
+        // Arrange
         coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
 
+        //Act
         searchMoviesByCountryUseCase(QUERY, PAGE)
 
+        // Assert
         coVerify { movieRepository.getMoviesByCountry(QUERY, PAGE) }
     }
 
     @Test
     fun `When search by valid country name and movies not found, then return empty list`() =
         runTest {
+            // Arraneg
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
 
+            // Act
             val result = searchMoviesByCountryUseCase(QUERY, PAGE)
 
+            // Assert
             assertThat(result).isEmpty()
         }
 
     @Test
     fun `When search by valid country name, then return list of movies relate to country`() =
         runTest {
+            // Arrange
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns MOVIES
 
+            // Act
             val result = searchMoviesByCountryUseCase.invoke(QUERY, PAGE)
 
+            // Assert
             assertThat(result).containsExactlyElementsIn(MOVIES)
         }
 
     @Test
     fun `When search by invalid country name, then return list of movies relate to country`() =
         runTest {
+            // Arrange
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
 
+            // Act
             val result = searchMoviesByCountryUseCase.invoke(QUERY, PAGE)
 
+            // Assert
             assertThat(result).isEmpty()
         }
 
@@ -73,7 +82,9 @@ class SearchByCountryUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             ),
             Movie(
                 id = 24L,
@@ -88,7 +99,9 @@ class SearchByCountryUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             )
         )
         const val QUERY = "Inception"

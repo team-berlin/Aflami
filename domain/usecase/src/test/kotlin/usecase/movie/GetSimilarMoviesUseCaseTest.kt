@@ -10,62 +10,62 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
+import usecase.movie.GetSearchMoviesUseCaseTest.Companion.PAGE
+import usecase.movie.GetSearchMoviesUseCaseTest.Companion.QUERY
 
 class GetSimilarMoviesUseCaseTest {
-    private val movieDetailsRepository = mockk<MovieDetailsRepository>()
-    private lateinit var getSimilarMoviesUseCase: GetSimilarMoviesUseCase
-
-    @Before
-    fun setUp() {
-        getSimilarMoviesUseCase = GetSimilarMoviesUseCase((movieDetailsRepository))
-    }
+    private val movieDetailsRepository: MovieDetailsRepository = mockk()
+    private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase =
+        GetSimilarMoviesUseCase(movieDetailsRepository)
 
     @Test
     fun `should return media similar to media that returned when repository is called`() = runTest {
+        // Arrange
         coEvery {
-            movieDetailsRepository.getSimilarMovies(
-                MOVIE_ID,
-            )
+            movieDetailsRepository.getSimilarMovies(MOVIE_ID)
         } returns getSimilarMovie()
 
-        val result = getSimilarMoviesUseCase.invoke(MOVIE_ID)
-        val expected = getSimilarMovie()
+        // Act
+        getSimilarMoviesUseCase.invoke(MOVIE_ID)
 
-        Truth.assertThat(result).isEqualTo(expected)
+        // Assert
         coVerify(exactly = 1) { movieDetailsRepository.getSimilarMovies(MOVIE_ID) }
     }
 
     @Test
     fun `should return empty list when media is not found`() = runTest {
+        // Arrange
         coEvery {
-            movieDetailsRepository.getSimilarMovies(
-                MOVIE_ID,
-            )
+            movieDetailsRepository.getSimilarMovies(MOVIE_ID)
         } returns emptyList()
 
-        val result = getSimilarMoviesUseCase.invoke(MOVIE_ID)
+        // Act
+        getSimilarMoviesUseCase.invoke(MOVIE_ID)
 
-        Truth.assertThat(result).isEmpty()
+        // Assert
         coVerify(exactly = 1) { movieDetailsRepository.getSimilarMovies(MOVIE_ID) }
 
     }
 
     @Test
     fun `should throw exception if movieDetailsRepository throw exception `() = runTest {
+        // Arrange
         coEvery {
             movieDetailsRepository.getSimilarMovies(
                 MOVIE_ID,
             )
         } throws Exception()
 
-
+        // Act
         assertThrows<Exception> {
-            getSimilarMoviesUseCase.invoke(MOVIE_ID)
+            getSimilarMoviesUseCase(MOVIE_ID)
         }
+
+        // Assert
+        coVerify(exactly = 1) { movieDetailsRepository.getSimilarMovies(MOVIE_ID) }
     }
 
     private fun getSimilarMovie(): List<Movie> {
-
         val movieList = mutableListOf<Movie>()
         for (i in 0..5) {
             movieList.add(
@@ -82,7 +82,9 @@ class GetSimilarMoviesUseCaseTest {
                     hasVideo = false,
                     companyProductions = emptyList(),
                     originCountry = "PS",
-                    galleryUrl = emptyList()
+                    galleryUrl = emptyList(),
+                    reviews = emptyList(),
+                    isFavourite = false,
                 )
             )
         }

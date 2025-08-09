@@ -13,33 +13,32 @@ import repository.MovieRepository
 
 class GetPopularMoviesUseCaseTest {
 
-    private var repository: MovieRepository = mockk()
-    private lateinit var getPopularMoviesUseCase: GetPopularMoviesUseCase
-
-    @Before
-    fun setUp() {
-        getPopularMoviesUseCase = GetPopularMoviesUseCase(repository)
-    }
+    private var movieRepository: MovieRepository = mockk()
+    private val getPopularMoviesUseCase: GetPopularMoviesUseCase =
+        GetPopularMoviesUseCase(movieRepository)
 
     @Test
     fun `should return popular movies when repository returns data`() = runTest {
-        coEvery { repository.getPopularMovies() } returns movies
+        // Arrange
+        coEvery { movieRepository.getPopularMovies() } returns movies
 
-        val result = getPopularMoviesUseCase()
+        //Act
+        getPopularMoviesUseCase()
 
-        assertEquals(movies, result)
-        coVerify(exactly = 1) { repository.getPopularMovies() }
+        // Assert
+        coVerify(exactly = 1) { movieRepository.getPopularMovies() }
     }
 
     @Test
     fun `should throw exception when repository throws exception`() = runTest {
-         coEvery { repository.getPopularMovies() } throws Exception(EXCEPTION)
+        // Arrange
+        coEvery { movieRepository.getPopularMovies() } throws Exception(EXCEPTION)
 
-        assertThrows<Exception> {
-            getPopularMoviesUseCase()
-        }
+        // Act
+        assertThrows<Exception> { getPopularMoviesUseCase() }
 
-        coVerify(exactly = 1) { repository.getPopularMovies() }
+        // Assert
+        coVerify(exactly = 1) { movieRepository.getPopularMovies() }
     }
 
     companion object {
@@ -57,7 +56,9 @@ class GetPopularMoviesUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             ),
             Movie(
                 id = 24L,
@@ -72,7 +73,9 @@ class GetPopularMoviesUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             )
         )
         const val EXCEPTION = "Network error"

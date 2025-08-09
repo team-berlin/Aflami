@@ -12,37 +12,42 @@ import repository.MovieRepository
 class SearchByActorNameUseCaseTest {
 
     private val movieRepository: MovieRepository = mockk()
-    private lateinit var searchByActorNameUseCase: SearchByActorNameUseCase
-
-    @Before
-    fun setUp() {
-        searchByActorNameUseCase = SearchByActorNameUseCase(movieRepository)
-    }
+    private val searchByActorNameUseCase: SearchByActorNameUseCase =
+        SearchByActorNameUseCase(movieRepository)
 
     @Test
     fun `When search by valid actor name and no media found, then return empty list`() = runTest {
+        // Arrange
         coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns emptyList()
 
+        // Act
         val result = searchByActorNameUseCase.invoke(ACTOR_NAME, PAGE)
 
+        // Assert
         assertThat(result).isEmpty()
     }
 
     @Test
     fun `When search by valid actor name, then return list of media related to actor`() = runTest {
-
+        // Arrange
         coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns MOVIES
 
+        // Act
         val result = searchByActorNameUseCase.invoke(ACTOR_NAME, PAGE)
 
+        // Assert
         assertThat(result).hasSize(2)
     }
 
     @Test
     fun `When search by invalid actor name, then return empty list`() = runTest {
+        // Arrange
         coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns emptyList()
+
+        // Act
         val result = searchByActorNameUseCase.invoke(ACTOR_NAME, PAGE)
 
+        // Assert
         assertThat(result).isEmpty()
     }
 
@@ -61,7 +66,9 @@ class SearchByActorNameUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             ),
             Movie(
                 id = 24L,
@@ -76,7 +83,9 @@ class SearchByActorNameUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             )
         )
         const val ACTOR_NAME = "Tom"
