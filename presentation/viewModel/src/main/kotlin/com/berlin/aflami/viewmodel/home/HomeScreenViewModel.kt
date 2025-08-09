@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.home
 
-import android.util.Log
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PAGE_SIZE
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -11,11 +10,13 @@ import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import usecase.movie.GetMoviesByMoodUseCase
 import usecase.movie.ContinueWatchingMovieUseCase
 import usecase.movie.GetMovieGenresUseCase
+import usecase.movie.GetMoviesByMoodUseCase
 import usecase.movie.GetPopularMoviesUseCase
 import usecase.movie.GetTopRatedMoviesUseCase
 import usecase.movie.GetUpComingMoviesUseCase
@@ -37,6 +38,7 @@ class HomeScreenViewModel @Inject constructor(
     private val getTopRatedSeriesUseCase: GetTopRatedTVShowUseCase,
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<HomeScreenState, HomeScreenEffect>(HomeScreenState()),
     HomeScreenInteractionListener {
 
@@ -62,7 +64,8 @@ class HomeScreenViewModel @Inject constructor(
                 }
             },
             onSuccess = ::updateScreenWithNewPopularMedia,
-            onError = ::updatePopularUiStateWithError
+            onError = ::updatePopularUiStateWithError,
+            dispatcher = coroutineDispatcher
         )
     }
 
@@ -71,7 +74,6 @@ class HomeScreenViewModel @Inject constructor(
         tvShows: List<MediaUiState>,
     ): List<MediaUiState> {
         val arrangedList = mutableListOf<MediaUiState>()
-
         repeat(PAGE_SIZE) { counter ->
             with(arrangedList) {
                 add(movies[counter])
@@ -94,7 +96,6 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updatePopularUiStateWithError(errorUiState: ErrorUiState) {
-        Log.e("HomeScreenViewModel", "updatePopularUiStateWithError: ${errorUiState.message}")
         updateState {
             it.copy(
                 popularMediaUiState = it.popularMediaUiState.copy(
@@ -107,7 +108,7 @@ class HomeScreenViewModel @Inject constructor(
     //endregion
 
     //region continueWatchingSection
-     fun getContinueWatchingMedia() {
+    fun getContinueWatchingMedia() {
         tryToCall(
             call = {
                 coroutineScope {
@@ -122,7 +123,8 @@ class HomeScreenViewModel @Inject constructor(
                 }
             },
             onSuccess = ::updateScreenWithNewContinueWatchingMedia,
-            onError = ::updateContinueWatchingUiStateWithError
+            onError = ::updateContinueWatchingUiStateWithError,
+            dispatcher = coroutineDispatcher
         )
     }
 
@@ -164,6 +166,7 @@ class HomeScreenViewModel @Inject constructor(
             },
             onSuccess = ::updateScreenWithTopRatingMedia,
             onError = ::updateTopRatingSectionWithError,
+            dispatcher = coroutineDispatcher
         )
     }
 
@@ -250,13 +253,14 @@ class HomeScreenViewModel @Inject constructor(
 
     //region onGetNowClicked implementation
     override fun onGetNowClicked(userMood: UserMood) {
-        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(openMovieDialog = true)) }
+        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(openMovieDialog = true, selectedMood = UserMoodUiState(userMood))) }
         tryToCall(
             call = {
                 getMoviesByMoodUseCase(userMood.moodGenres.toGenreIds()).map { movie -> movie.toMovieUiState() }
             },
             onSuccess = ::updateDialogWithNewMovies,
             onError = ::updateScreenWithError,
+            dispatcher = coroutineDispatcher
         )
     }
 
@@ -301,9 +305,9 @@ class HomeScreenViewModel @Inject constructor(
             }
             screenState.copy(
                 selectedGenres = newGenreId,
-                movieGenres =  selected,
+                movieGenres = selected,
                 isLoading = false
-                )
+            )
         }
         getUpComingMoviesByGenre()
     }
@@ -312,7 +316,8 @@ class HomeScreenViewModel @Inject constructor(
         tryToCall(
             call = { getUpComingMoviesUseCase().map { movie -> movie.toMovieUiState() } },
             onSuccess = ::updateScreenWithNewUpComingMovies,
-            onError = ::updateUpComingSectionWithError
+            onError = ::updateUpComingSectionWithError,
+            dispatcher = coroutineDispatcher
         )
     }
 
@@ -345,7 +350,7 @@ class HomeScreenViewModel @Inject constructor(
     }
     //endregion
 
-    private fun loadGenresMovies() {
+     fun loadGenresMovies() {
         tryToCall(
             call = {
                 val movieGenres = getMoviesByGenreUseCase()
@@ -360,10 +365,12 @@ class HomeScreenViewModel @Inject constructor(
                 listOf(all) + genres
             },
             onSuccess = ::updateScreenWithNewMovieGenres,
-            onError = ::updateUpComingMoviesWithError
+            onError = ::updateUpComingMoviesWithError,
+            dispatcher = coroutineDispatcher
         )
     }
-    private fun loadGenresTVShow() {
+
+     fun loadGenresTVShow() {
         tryToCall(
             call = {
                 val tvShowsGenre = getTVShowGenresUseCase()
@@ -378,9 +385,11 @@ class HomeScreenViewModel @Inject constructor(
                 listOf(all) + genres
             },
             onSuccess = ::updateScreenWithNewTVShowGenres,
-            onError = ::updateUpComingMoviesWithError
+            onError = ::updateUpComingMoviesWithError,
+            dispatcher = coroutineDispatcher
         )
     }
+
     private fun updateScreenWithNewMovieGenres(movieGenres: List<GenreUiState>) {
         updateState { state ->
             state.copy(
@@ -391,6 +400,7 @@ class HomeScreenViewModel @Inject constructor(
             )
         }
     }
+
     private fun updateScreenWithNewTVShowGenres(tVShowGenres: List<GenreUiState>) {
         updateState { state ->
             state.copy(
