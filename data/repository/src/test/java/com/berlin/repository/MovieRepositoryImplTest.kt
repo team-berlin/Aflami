@@ -7,11 +7,12 @@ import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.fake.dummydata.DummyData.baseResponseMovieDetails
 import com.berlin.repository.fake.dummydata.DummyData.baseResponsePersonDto
+import com.berlin.repository.fake.dummydata.DummyData.baseResponseTVShowDetails
 import com.berlin.repository.fake.dummydata.DummyData.movieEntity
-import com.berlin.repository.fake.dummydata.DummyData.movieHomeEntityPopular
 import com.berlin.repository.fake.dummydata.DummyData.movieHomeEntityTopRated
 import com.berlin.repository.fake.dummydata.DummyData.movieHomeEntityUpcoming
-import com.berlin.repository.fake.dummydata.DummyData.preferencesList
+import com.berlin.repository.fake.dummydata.DummyData.mediaPreferencesList
+import com.berlin.repository.fake.dummydata.DummyData.movieHomeEntity
 import com.berlin.repository.fake.dummydata.DummyData.recentlyWatchedMovieEntity
 import com.berlin.repository.mapper.toDomain
 import io.mockk.Runs
@@ -50,7 +51,7 @@ class MovieRepositoryImplTest {
 
         val movieList = listOf(recentlyWatchedMovieEntity)
         val page = 1
-        val categoryPreferences = preferencesList
+        val categoryPreferences = mediaPreferencesList
         coEvery { recentlyWatchedLocalDataSource.getCategoryAsPreference() } returns categoryPreferences
         coEvery { recentlyWatchedLocalDataSource.getRecentlyWatchedMovie(page = page) } returns movieList
 
@@ -64,6 +65,7 @@ class MovieRepositoryImplTest {
     fun `addContinueWatchingMovie should save a movie`() = runTest {
 
         val movie = movieEntity
+        coEvery { recentlyWatchedLocalDataSource.addRecentlyWatchedMovie(any()) } just Runs
         movieRepository.addContinueWatchingMovie(movie)
 
         coVerify { recentlyWatchedLocalDataSource.addRecentlyWatchedMovie(any()) }
@@ -72,12 +74,14 @@ class MovieRepositoryImplTest {
     @Test
     fun `getTopRatedMovies returns local data if not expired`() = runTest {
 
-        val localMovies = listOf(movieHomeEntityTopRated)
-        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING) } returns localMovies
+        val localMovie = listOf(
+            movieHomeEntity.copy(addedAt = System.currentTimeMillis())
+        )
+        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING) } returns localMovie
 
-        val result = homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING)
+        val result = movieRepository.getTopRatedMovies(1)
 
-        assertEquals(1, result.size)
+        assertEquals(localMovie.map { it.toDomain() }, result)
     }
 
     @Test
@@ -98,12 +102,14 @@ class MovieRepositoryImplTest {
     @Test
     fun `getUpComingMovies returns local data if not expired`() = runTest {
 
-        val localMovies = listOf(movieHomeEntityUpcoming)
-        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.UPCOMING) } returns localMovies
+        val localMovie = listOf(
+            movieHomeEntity.copy(addedAt = System.currentTimeMillis())
+        )
+        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.UPCOMING) } returns localMovie
 
-        val result = homeLocalDataSource.getMoviesBySection(SectionHome.UPCOMING)
+        val result = movieRepository.getUpComingMovies()
 
-        assertEquals(1, result.size)
+        assertEquals(localMovie.map { it.toDomain() }, result)
     }
 
     @Test
@@ -123,30 +129,33 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun `getPopularMovies returns local data if not expired`() = runTest {
-        val localMovies = listOf(movieHomeEntityPopular)
-        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR) } returns localMovies
+    fun `getPopularMovie returns local data if not expired`() = runTest {
 
-        val result = homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR)
+        val localMovie = listOf(
+            movieHomeEntity.copy(addedAt = System.currentTimeMillis())
+        )
+        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR) } returns localMovie
 
-        assertEquals(1, result.size)
+        val result = movieRepository.getPopularMovies()
+
+        assertEquals(localMovie.map { it.toDomain() }, result)
     }
 
     @Test
-    fun `getPopularMovies returns remote data when local is empty`() = runTest {
+    fun `getPopularMovie returns remote data when local is empty`() = runTest {
 
-        val movieList = baseResponseMovieDetails
-
+        val remoteMovie = baseResponseMovieDetails
         coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR) } returns emptyList()
-        coEvery { remoteDataSource.getPopularMovies() } returns movieList
+        coEvery { remoteDataSource.getPopularMovies() } returns remoteMovie
         coEvery { homeLocalDataSource.clearHomeScreenMovies(any()) } just Runs
         coEvery { homeLocalDataSource.addMovies(any()) } just Runs
 
         val result = movieRepository.getPopularMovies()
 
-        assertEquals(1, result.size)
-
+        assertEquals(remoteMovie.results?.map { it.toDomain() }, result)
     }
+
+
 
     @Test
     fun `getMoviesByMoods should return a list of movies`() = runTest {
@@ -164,7 +173,7 @@ class MovieRepositoryImplTest {
         val query = "egypt"
         val page = 1
         val movieList = baseResponseMovieDetails
-        val categoryPreferences = preferencesList
+        val categoryPreferences = mediaPreferencesList
 
         coEvery { recentlyWatchedLocalDataSource.getCategoryAsPreference() } returns categoryPreferences
         coEvery { remoteDataSource.getMoviesByCountryName(query, page) } returns movieList
@@ -180,7 +189,7 @@ class MovieRepositoryImplTest {
         val actorName = "ahmed helmy"
         val page = 1
         val movieList = baseResponsePersonDto
-        val categoryPreferences = preferencesList
+        val categoryPreferences = mediaPreferencesList
 
         coEvery { recentlyWatchedLocalDataSource.getCategoryAsPreference() } returns categoryPreferences
         coEvery { remoteDataSource.getMoviesByActorName(actorName, page) } returns movieList
@@ -200,7 +209,8 @@ class MovieRepositoryImplTest {
 
         val result = movieRepository.getMovieByKeyWord(query, page)
 
-        assertEquals(1, result.size)
+        val expectedList = movieList.results?.map { it.toDomain() }
+        assertEquals(expectedList?.size, result.size)
         coVerify { remoteDataSource.getMoviesByKeyword(query, page) }
     }
 

@@ -4,14 +4,20 @@ import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Genre
 import com.berlin.entity.Movie
 import com.berlin.entity.Review
+import com.berlin.entity.Season
+import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
+import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
 import com.berlin.repository.datasource.local.dto.SectionHome
+import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 import com.berlin.repository.datasource.remote.dto.PersonDto
+import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.util.Constants.ACTING_DEPARTMENT
+import com.berlin.repository.util.Constants.MOVIE_MEDIA_TYPE
 
 object DummyData {
 
@@ -69,6 +75,61 @@ object DummyData {
         isFavourite = false
     )
 
+    // ==== TVShow Entity =====
+    val recentlyWatchedTvShowEntity = RecentlyWatchedTvShowEntity(
+        id = 1,
+        title = "Recently Watched TV Show",
+        rating = 8.9,
+        posterURL = "/recent_tv.jpg",
+        releaseDate = "2024-07-01",
+        screenShot = "/recent_tv_screen.jpg",
+        description = "A recently watched TV show description",
+        genres = listOf(1, 2),
+        duration = 45,
+        hasVideo = true,
+        productionCompanies = listOf("Berlin TV Productions"),
+        originCountry = "US",
+        seasons = listOf("Season 1", "Season 2"),
+        galleryUrl = listOf("/gallery_tv1.jpg", "/gallery_tv2.jpg"),
+        reviews = listOf("Amazing show!", "Binge-worthy")
+    )
+
+    val tvShowEntity = TVShow(
+        id = 1,
+        title = "Test TV Show",
+        rating = 9.5,
+        posterURL = "/tv_poster.jpg",
+        releaseDate = "2023-02-15",
+        screenShot = "/tv_screenshot.jpg",
+        description = "A thrilling drama TV show.",
+        genres = listOf(Genre(id = 1, name = "Drama")),
+        duration = 50,
+        companyProductions = listOf(
+            CompanyProduction(
+                id = 1,
+                name = "Drama Productions",
+                posterURL = "/company_tv.jpg",
+                originCountry = "US"
+            )
+        ),
+        originCountry = "US",
+        numberOfSeasons = 3,
+        hasVideo = false,
+        galleryUrl = listOf("/tv_gallery1.jpg", "/tv_gallery2.jpg")
+    )
+
+    // ===== Example Season =====
+    val sampleSeason = Season(
+        id = 1,
+        episodeCount = 10,
+        episodes = emptyList(),
+        name = "Season 1",
+        description = "First season of the show",
+        posterURL = "/season1_poster.jpg",
+        seasonNumber = 1
+    )
+
+    //===== Movie =====
     val movieHomeEntity = MovieHomeEntity(
         id = 1,
         title = "Local Movie",
@@ -95,7 +156,7 @@ object DummyData {
     )
 
     // ===== Preferences =====
-    val preferencesList = listOf(
+    val mediaPreferencesList = listOf(
         CategoriesPreferencesEntity(categoryId = 101, count = 5),
         CategoriesPreferencesEntity(categoryId = 102, count = 1)
     )
@@ -104,6 +165,7 @@ object DummyData {
     val movieDetailsDto = MovieDetailsDto(
         id = 1,
         title = "Remote Movie",
+        mediaType = MOVIE_MEDIA_TYPE,
     )
 
     val baseResponseMovieDetails = BaseResponse(
@@ -120,5 +182,46 @@ object DummyData {
 
     val baseResponsePersonDto = BaseResponse(
         results = listOf(personDto),
+    )
+
+
+    //==== TVShow =====
+
+    val tvShowHomeEntity = TVShowHomeEntity(
+        id = 1,
+        title = "Local TV Show",
+        addedAt = System.currentTimeMillis(),
+        sectionHome = SectionHome.TOP_RATING,
+        rating = "9.0",
+        releaseYear = "2023",
+        genre = listOf(1, 2),
+        poster = "/poster_top_tv.jpg"
+    )
+
+    val tvShowHomeEntityTopRated = tvShowHomeEntity.copy(
+        sectionHome = SectionHome.TOP_RATING,
+        title = "Top Rated TV Show"
+    )
+
+    val tvShowHomeEntityUpcoming = tvShowHomeEntity.copy(
+        sectionHome = SectionHome.UPCOMING,
+        title = "Upcoming TV Show"
+    )
+
+    val tvShowHomeEntityPopular = tvShowHomeEntity.copy(
+        sectionHome = SectionHome.POPULAR,
+        title = "Popular TV Show"
+    )
+
+    // ===== Remote Responses =====
+    val tvShowDetailsDto = TVShowDetailsDto(
+        id = 1,
+        name = "Remote TV Show",
+        numberOfEpisodes = 10,
+        numberOfSeasons = 2
+        )
+
+    val baseResponseTVShowDetails = BaseResponse(
+        results = listOf(tvShowDetailsDto),
     )
 }
