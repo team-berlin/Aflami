@@ -49,7 +49,6 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
             } catch (e: ServerException) {
                 onError(ErrorUiState(e.message.toString()))
             } catch (e: Exception) {
-                Log.e("WOWTEST", "tryToCall: $e",e)
                 onError(ErrorUiState(e.message.toString()))
             }
         }
@@ -67,7 +66,7 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
         enablePlaceholders = enablePlaceholders
     )
 
-    protected fun updateState(updater: (SCREEN_STATE) -> SCREEN_STATE) = _state.update(updater)
+    protected fun updateState(updater: (SCREEN_STATE,) -> SCREEN_STATE) = _state.update(updater)
 
     protected fun sendNewEffect(newEffect: SCREEN_EFFECT) {
         viewModelScope.launch() {
