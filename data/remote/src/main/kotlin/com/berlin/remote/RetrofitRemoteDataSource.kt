@@ -12,7 +12,7 @@ import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
-import com.berlin.repository.datasource.remote.dto.request.CreateListRequest
+import com.berlin.repository.datasource.remote.dto.request.ListRequest
 import com.berlin.repository.datasource.remote.dto.request.RemoveMovieFromListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
@@ -166,7 +166,7 @@ class RetrofitRemoteDataSource @Inject constructor(
             page = page,
             sessionId = authenticationLocalDataSource.getUserSessionId()
                 ?: throw IllegalStateException("userSessionID == null"),
-        ).body()!!.results!!
+        ).body()!!.results ?: emptyList()
     }
 
     override suspend fun getUserFavouriteListItems(
@@ -178,7 +178,7 @@ class RetrofitRemoteDataSource @Inject constructor(
                 listId = favouriteListId,
                 pageNumber = pageNumber
             )
-        }.favouriteListItems!!
+        }.favouriteListItems ?: emptyList()
     }
 
     override suspend fun deleteUserFavouriteList(listId: Int) {
@@ -211,7 +211,7 @@ class RetrofitRemoteDataSource @Inject constructor(
             apiService.createNewFavouriteList(
                 sessionId = authenticationLocalDataSource.getUserSessionId()
                     ?: throw IllegalStateException("userSessionID == null"),
-                createListRequest = CreateListRequest(
+                listRequest = ListRequest(
                     name = title,
                     description = "",
                     language = "en"
@@ -223,6 +223,13 @@ class RetrofitRemoteDataSource @Inject constructor(
     }
 
     override suspend fun editListTitle(listId: Int, newListTitle: String) {
-        TODO("Not Yet Implemented")
+        wrapApiResponse {
+            apiService.updateList(
+                listId = listId,
+                sessionId = authenticationLocalDataSource.getUserSessionId()
+                    ?: throw IllegalStateException("userSessionID == null"),
+                listRequest = ListRequest(name = newListTitle, description = "")
+            )
+        }
     }
 }
