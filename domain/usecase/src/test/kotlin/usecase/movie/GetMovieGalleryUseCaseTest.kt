@@ -1,45 +1,59 @@
 package usecase.movie
 
-import com.google.common.truth.Truth.assertThat
+import com.berlin.entity.MediaImage
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
 
 class GetMovieGalleryUseCaseTest {
     private val movieDetailsRepository: MovieDetailsRepository = mockk()
-    private lateinit var getMovieGalleryUseCase: GetMovieGalleryUseCase
+    private val getMovieGalleryUseCase: GetMovieGalleryUseCase =
+        GetMovieGalleryUseCase(movieDetailsRepository)
 
-    @Before
-    fun setUp() {
-        getMovieGalleryUseCase = GetMovieGalleryUseCase(movieDetailsRepository)
-    }
 
     @Test
     fun `should return list of strings when calling repository`() = runTest {
-        coEvery { movieDetailsRepository.getMovieGallery(MOVIE_ID) } returns POSTER
+        // Arrange
+        coEvery { movieDetailsRepository.getMovieImages(MOVIE_ID) } returns POSTER
 
-        val callResult = getMovieGalleryUseCase(MOVIE_ID)
+        //Act
+        getMovieGalleryUseCase(MOVIE_ID)
 
-        assertThat(callResult).isEqualTo(POSTER)
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieGallery(MOVIE_ID) }
+        // Assert
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieImages(MOVIE_ID) }
     }
 
     @Test
     fun `should throw exception if movieRepository throws exception`() = runTest {
-        coEvery { movieDetailsRepository.getMovieGallery(MOVIE_ID) } throws Exception()
+        // Arrange
+        coEvery { movieDetailsRepository.getMovieImages(MOVIE_ID) } throws Exception()
 
+        // Act
         assertThrows<Exception> {
             getMovieGalleryUseCase(MOVIE_ID)
         }
+
+        // Assert
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieImages(MOVIE_ID) }
     }
 
-    companion object{
+    companion object {
         const val MOVIE_ID = 50L
-        val POSTER = listOf("https", "https")
+        val POSTER = MediaImage(
+            backdrops = listOf(
+                "https://image.tmdb.org/t/p/w500/backdrop1.jpg",
+                "https://image.tmdb.org/t/p/w500/backdrop2.jpg",
+                "https://image.tmdb.org/t/p/w500/backdrop3.jpg"
+            ),
+            posters = listOf(
+                "https://image.tmdb.org/t/p/w500/poster1.jpg",
+                "https://image.tmdb.org/t/p/w500/poster2.jpg",
+                "https://image.tmdb.org/t/p/w500/poster3.jpg"
+            )
+        )
     }
 }

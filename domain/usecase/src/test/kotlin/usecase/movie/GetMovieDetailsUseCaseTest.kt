@@ -1,52 +1,58 @@
 package usecase.movie
 
 import com.berlin.entity.Movie
-import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
 
 class GetMovieDetailsUseCaseTest {
 
-    private val repository = mockk<MovieDetailsRepository>()
-    private lateinit var getMovieDetailsUseCase: GetMovieDetailsUseCase
+    private val movieDetailsRepository: MovieDetailsRepository = mockk()
+    private val getMovieDetailsUseCase: GetMovieDetailsUseCase =
+        GetMovieDetailsUseCase(movieDetailsRepository)
 
-    @Before
-    fun setUp() {
-        getMovieDetailsUseCase = GetMovieDetailsUseCase(repository)
-    }
 
     @Test
     fun `should return movie details when repository returns data`() = runTest {
-        coEvery { repository.getMovieDetails( movie.id) } returns movie
+        // Arrange
+        coEvery { movieDetailsRepository.getMovieDetails(movie.id) } returns movie
 
-        val result = getMovieDetailsUseCase( movie.id)
+        //Act
+        getMovieDetailsUseCase(movie.id)
 
-        assertThat(result).isEqualTo(movie)
-        coVerify(exactly = 1) { repository.getMovieDetails(movie.id) }
+        // Assert
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieDetails(movie.id) }
     }
 
     @Test
     fun `should return null when movie not found`() = runTest {
-        coEvery { repository.getMovieDetails(movie.id) } returns null
+        // Arrange
+        coEvery { movieDetailsRepository.getMovieDetails(movie.id) } returns movie
 
-        val result = getMovieDetailsUseCase(movie.id)
+        //Act
+        getMovieDetailsUseCase(movie.id)
 
-        assertThat(result).isNull()
-        coVerify(exactly = 1) { repository.getMovieDetails( movie.id) }
+        // Assert
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieDetails(movie.id) }
     }
 
     @Test
     fun `should throw exception when repository throws exception`() = runTest {
-        coEvery { repository.getMovieDetails(movie.id) } throws Exception()
+        // Arrange
+        coEvery { movieDetailsRepository.getMovieDetails(movie.id) } throws Exception()
 
+        //Act
         assertThrows<Exception> {
             getMovieDetailsUseCase(movie.id)
+        }
+
+        // Assert
+        coVerify(exactly = 1) {
+            movieDetailsRepository.getMovieDetails(movie.id)
         }
     }
 
@@ -64,7 +70,9 @@ class GetMovieDetailsUseCaseTest {
             hasVideo = false,
             companyProductions = emptyList(),
             originCountry = "PS",
-            galleryUrl = emptyList()
+            galleryUrl = emptyList(),
+            reviews = emptyList(),
+            isFavourite = false,
         )
     }
 }

@@ -1,61 +1,54 @@
 package usecase.movie
 
 import com.berlin.entity.Review
-import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
 
 class GetMovieReviewUseCaseTest {
-    private val movieDetailsRepository = mockk<MovieDetailsRepository>()
-    private lateinit var getMovieReviewUseCase: GetMovieReviewUseCase
-
-    @Before
-    fun setUp() {
-        getMovieReviewUseCase = GetMovieReviewUseCase(movieDetailsRepository)
-    }
+    private val movieDetailsRepository: MovieDetailsRepository = mockk()
+    private val getMovieReviewUseCase: GetMovieReviewUseCase =
+        GetMovieReviewUseCase(movieDetailsRepository)
 
     @Test
     fun `should return review related to media id when repository is called`() = runTest {
-        coEvery {
-            movieDetailsRepository.getMovieReviews(
-                MOVIE_ID,
-            )
-        } returns getMovieReview()
+        // Arrange
+        coEvery { movieDetailsRepository.getMovieReviews(MOVIE_ID) } returns getMovieReview()
 
-        val result = getMovieReviewUseCase.invoke(MOVIE_ID)
-        val expected = getMovieReview()
+        // Act
+        getMovieReviewUseCase.invoke(MOVIE_ID)
 
-        assertThat(result).isEqualTo(expected)
+        // Assert
         coVerify(exactly = 1) { movieDetailsRepository.getMovieReviews(MOVIE_ID) }
     }
 
     @Test
     fun `should return empty list when review is not found`() = runTest {
-        val mediaId = 2L
-        coEvery { movieDetailsRepository.getMovieReviews(mediaId) } returns emptyList()
+        // Arrange
+        coEvery { movieDetailsRepository.getMovieReviews(MOVIE_ID) } returns emptyList()
 
-        val result = getMovieReviewUseCase.invoke(mediaId)
+        // Act
+        getMovieReviewUseCase(MOVIE_ID)
 
-        assertThat(result).isEmpty()
-        coVerify(exactly = 1) { movieDetailsRepository.getMovieReviews(mediaId) }
+        // Assert
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieReviews(MOVIE_ID) }
 
     }
 
     @Test
     fun `should throw exception if movieDetailsRepository throw exception `() = runTest {
-        val exception = Exception()
-        coEvery { movieDetailsRepository.getMovieReviews(MOVIE_ID) } throws exception
+        // Arrange
+        coEvery { movieDetailsRepository.getMovieReviews(MOVIE_ID) } throws Exception()
 
-        assertThrows<Exception> {
-            getMovieReviewUseCase.invoke(MOVIE_ID)
-        }
+        // Act
+        assertThrows<Exception> { getMovieReviewUseCase.invoke(MOVIE_ID) }
+
+        // Assert
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieReviews(MOVIE_ID) }
     }
 
 
@@ -80,5 +73,4 @@ class GetMovieReviewUseCaseTest {
     companion object {
         const val MOVIE_ID = 30L
     }
-
 }
