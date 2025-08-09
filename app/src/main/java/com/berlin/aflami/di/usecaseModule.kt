@@ -12,8 +12,7 @@ import repository.RatingActionRepository
 import repository.TVShowRepository
 import repository.SettingsRepository
 import repository.TVShowDetailsRepository
-import repository.TVShowRepository
-import repository.UserRepository
+import repository.UserProfileRepository
 import usecase.auth.GetLoginStatus
 import usecase.auth.GetLoginUseCase
 import usecase.auth.GetUserProfileUseCase
@@ -213,7 +212,7 @@ object UseCaseModule {
 
     @Provides
     fun provideGetUserProfileUseCase(
-        repository: UserRepository
+        repository: UserProfileRepository
     ): GetUserProfileUseCase = GetUserProfileUseCase(repository)
 
     @Provides

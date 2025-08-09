@@ -2,9 +2,10 @@ package repository
 
 import com.berlin.entity.UserProfile
 
-interface UserRepository {
+interface UserProfileRepository {
     suspend fun getUserProfile(sessionId: String): UserProfile
     suspend fun saveUserLocally(userProfile: UserProfile)
     suspend fun getUserLocally(): UserProfile?
-    suspend fun logout()
+    suspend fun refreshUserProfile()
+    suspend fun clearLocalUser()
 }

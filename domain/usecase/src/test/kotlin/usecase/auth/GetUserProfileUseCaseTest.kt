@@ -8,11 +8,11 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import repository.UserRepository
+import repository.UserProfileRepository
 
 class GetUserProfileUseCaseTest {
 
-    private lateinit var repository: UserRepository
+    private lateinit var repository: UserProfileRepository
     private lateinit var useCase: GetUserProfileUseCase
 
     @Before

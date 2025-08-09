@@ -5,13 +5,13 @@ import com.berlin.repository.datasource.local.UserLocalDataSource
 import com.berlin.repository.datasource.remote.UserRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toEntity
-import repository.UserRepository
+import repository.UserProfileRepository
 import javax.inject.Inject
 
-class UserRepositoryImpl @Inject constructor(
+class UserProfileRepositoryImpl @Inject constructor(
     private val userRemoteDataSource: UserRemoteDataSource,
     private val userLocalDataSource: UserLocalDataSource
-) : UserRepository {
+) : UserProfileRepository {
     override suspend fun getUserProfile(sessionId: String): UserProfile {
         val dto = userRemoteDataSource.getUserProfile(sessionId)
         val user = dto.toDomain()
@@ -27,7 +27,11 @@ class UserRepositoryImpl @Inject constructor(
         return userLocalDataSource.getUser()?.toDomain()
     }
 
-    override suspend fun logout() {
+    override suspend fun refreshUserProfile() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun clearLocalUser() {
         userLocalDataSource.clear()
     }
 }

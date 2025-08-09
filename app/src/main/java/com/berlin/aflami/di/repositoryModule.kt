@@ -8,7 +8,7 @@ import com.berlin.repository.RatingActionRepositoryImpl
 import com.berlin.repository.SettingsRepositoryImpl
 import com.berlin.repository.TVShowRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
-import com.berlin.repository.UserRepositoryImpl
+import com.berlin.repository.UserProfileRepositoryImpl
 import com.berlin.repository.datasource.AppEntryRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -23,8 +23,7 @@ import repository.RatedMediaRepository
 import repository.RatingActionRepository
 import repository.TVShowRepository
 import repository.TVShowDetailsRepository
-import repository.TVShowRepository
-import repository.UserRepository
+import repository.UserProfileRepository
 import javax.inject.Singleton
 
 @Module
@@ -66,8 +65,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindUserRepository(
-        impl: UserRepositoryImpl
-    ): UserRepository
+        impl: UserProfileRepositoryImpl
+    ): UserProfileRepository
 
     @Binds
     @Singleton
