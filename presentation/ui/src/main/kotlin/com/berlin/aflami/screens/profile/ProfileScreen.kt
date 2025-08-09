@@ -79,6 +79,7 @@ private fun WatchHistoryonReceiveEffect(
         ProfileScreenEffect.RefreshActivity -> {
             (navController.context as? androidx.activity.ComponentActivity)?.recreate()
         }
+
         ProfileScreenEffect.NavigateToLoginScreen -> {
             navController.navigate(route = LoginDestination) {
                 popUpTo(NavigationBarDestinations.HomeScreen) {
@@ -134,7 +135,8 @@ private fun ProfileContent(
             SettingsDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
                 onFirstOptionClick = { profileScreenInteractionListener.onChangePasswordClicked() },
-                onSecondOptionClick = { profileScreenInteractionListener.onLogoutClicked() },
+                onSecondOptionClick = { },
+                onThirdOptionClick = { profileScreenInteractionListener.onLogoutClicked() },
             )
         }
 
@@ -147,7 +149,6 @@ private fun ProfileContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
-
     )
     {
         ProfileSection(userAvatar = "", userName = "", painterResource(R.drawable.profile_cover))

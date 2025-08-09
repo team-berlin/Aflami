@@ -79,6 +79,7 @@
     <string name="setting_dialog_change_password">Change password</string>
     <string name="setting_dialog_logout">Logout</string>
     <string name="setting_dialog_logout_quote">Tired to watching?</string>
+    <string name="setting_dialog_content_restriction">Content Restriction</string>
     <string name="movies_that_feel_you">Movies That Feel You</string>
     <string name="page1_descerption">This isn’t just a movie app — it’s a mood experience. Tap your vibe and let the story begin.</string>
     <string name="build_your_watchlist_show_love">Build Your Watchlist, show love</string>

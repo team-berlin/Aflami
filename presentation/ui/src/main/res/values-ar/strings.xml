@@ -87,6 +87,7 @@
     <string name="language_dialog_arabic">العربية</string>
     <string name="language_dialog_warning">سوف يتم مهاجمتك من قبل مجموعة من الألوان الزاهية!</string>
     <string name="setting_dialog_change_password">تغيير كلمة المرور</string>
+    <string name="setting_dialog_content_restriction">تقييد المحتوى</string>
     <string name="setting_dialog_logout">تسجيل الخروج</string>
     <string name="setting_dialog_logout_quote">تعبت من المشاهدة ؟</string>
     <string name="watch__history">سجل المشاهدات</string>
