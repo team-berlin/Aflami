@@ -338,12 +338,12 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         }
     }
 
-    private fun showSnackBar(message: String) {
-        updateState { it.copy(snackBarMessage = message) }
+    private fun showSnackBar(message: String, isSuccess: Boolean) {
+        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
 
         viewModelScope.launch {
             delay(3000)
-            updateState { it.copy(snackBarMessage = null) }
+            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
         }
     }
 
@@ -410,33 +410,29 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         val movieId = _state.value.selectedRatingMediaId?.toInt() ?: return
 
         viewModelScope.launch {
-            updateState { it.copy(isScreenLoading = true) }
-
             tryToCall(
                 call = {
                     rateTvShowUseCase(movieId, rating = rate.toDouble())
                 },
                 onSuccess = { result ->
-                    showSnackBar("Successfully submitted rating.")
                     updateState {
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMediaId = null,
-                            isScreenLoading = false
                         )
                     }
+                    showSnackBar("Successfully submitted rating.",true)
                 },
                 onError = {
                         stateError ->
-                    showSnackBar("Failed to submit rating.")
                     updateState {
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMediaId = null,
-                            isScreenLoading = false,
                             errorMessage = stateError.message
                         )
                     }
+                    showSnackBar("Failed to submit rating.",false)
                 }
             )
         }

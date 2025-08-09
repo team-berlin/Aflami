@@ -127,11 +127,11 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
-    private fun showSnackBar(message: String) {
-        updateState { it.copy(snackBarMessage = message) }
+    private fun showSnackBar(message: String, isSuccess: Boolean) {
+        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
         viewModelScope.launch {
             delay(3000)
-            updateState { it.copy(snackBarMessage = null) }
+            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
         }
     }
 
@@ -379,35 +379,29 @@ class MovieDetailsViewModel @Inject constructor(
         val movieId = _state.value.selectedRatingMediaId?.toInt() ?: return
 
         viewModelScope.launch {
-            updateState { it.copy(isScreenLoading = true) }
-
             tryToCall(
                 call = {
                     rateMovieUseCase(movieId, rating = rate.toDouble())
                 },
                 onSuccess = { result ->
-                    showSnackBar("Successfully submitted rating.")
                     updateState {
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMediaId = null,
-                            isScreenLoading = false
                         )
                     }
+                    showSnackBar("Successfully submitted rating.", isSuccess = true)
                 },
                 onError = {
                     stateError ->
-                    Log.d("SubmitRateInViewmodel", "onSubmitRateClicked: $stateError")
-
-                    showSnackBar("Failed to submit rating.")
                     updateState {
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMediaId = null,
-                            isScreenLoading = false,
                             errorMessage = stateError.message
                         )
                     }
+                    showSnackBar("Failed to submit rating.", isSuccess = false)
                 }
             )
         }

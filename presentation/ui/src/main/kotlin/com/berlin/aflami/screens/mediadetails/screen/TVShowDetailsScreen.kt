@@ -71,19 +71,6 @@ fun TvShowDetailsScreen(
     }
 
     AnimatedVisibility(
-        visible = uiState.snackBarMessage != null,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        SnackBar(
-            status = SnackBarStatus.SUCCESS,
-            modifier = Modifier.fillMaxWidth(),
-            text = uiState.snackBarMessage.orEmpty(),
-            iconPainter = painterResource(id = R.drawable.success)
-        )
-    }
-
-    AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
         visible = uiState.isScreenLoading
@@ -117,6 +104,32 @@ fun TvShowDetailsScreen(
             },
         )
     }
+
+    AnimatedVisibility(
+        visible = uiState.snackBarMessage != null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        val status =
+            when(uiState.isSnackBarStatusSuccess){
+                true -> SnackBarStatus.SUCCESS
+                false -> SnackBarStatus.ERROR
+                else -> SnackBarStatus.ERROR
+            }
+        val icon = when (status) {
+            SnackBarStatus.SUCCESS -> painterResource(id = R.drawable.success)
+            SnackBarStatus.ERROR -> painterResource(id = R.drawable.error)
+        }
+        Box(Modifier.statusBarsPadding()) {
+            SnackBar(
+                status = status,
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                text = uiState.snackBarMessage.orEmpty(),
+                iconPainter = icon
+            )
+        }
+    }
+
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),

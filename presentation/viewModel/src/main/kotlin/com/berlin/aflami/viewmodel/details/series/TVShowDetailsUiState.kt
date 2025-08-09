@@ -23,6 +23,7 @@ data class TVShowDetailsUiState(
     val selectedAddToListMediaId: Long? = null,
     val selectedFavouriteListId: Int? = null,
     val snackBarMessage: String? = null,
+    val isSnackBarStatusSuccess: Boolean? = null,
 )
 
 data class TVShowDetailsTabsUiState(
