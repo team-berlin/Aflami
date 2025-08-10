@@ -15,6 +15,7 @@ import usecase.auth.GetLoginStatus
 import usecase.auth.GetLoginUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
+import usecase.favouritelist.AddMovieToFavouriteListUseCase
 import usecase.favouritelist.CreateNewFavouriteListUseCase
 import usecase.favouritelist.DeleteMovieFromUserFavouriteList
 import usecase.favouritelist.DeleteUserFavouriteListUseCase
@@ -238,4 +239,8 @@ object UseCaseModule {
     @Provides
     fun provideEditFavouriteListTitleUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
         EditListTitleUseCase(userFavouriteListRepository)
+
+    @Provides
+    fun provideAddMovieToUserFavouriteListUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        AddMovieToFavouriteListUseCase(userFavouriteListRepository)
 }
