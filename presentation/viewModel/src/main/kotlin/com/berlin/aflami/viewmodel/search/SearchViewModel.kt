@@ -67,7 +67,7 @@ class SearchViewModel @Inject constructor(
     }
 
     // region Recent Searches
-    private fun loadRecentSearches() {
+    fun loadRecentSearches() {
         updateUiStateWithLoading()
         tryToCall(
             call = {
@@ -83,10 +83,10 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    private fun updateRecentSearchesWithError(error: ErrorUiState) {
+    fun updateRecentSearchesWithError(error: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = error.message ?: FAILED_RECENT_SEARCHES,
+                errorMessage = error.message,
                 isLoading = false
             )
         }
@@ -132,7 +132,7 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    private fun updateRecentSearchClearedWithError(error: ErrorUiState) {
+    fun updateRecentSearchClearedWithError(error: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
                 errorMessage = error.message,
@@ -197,7 +197,7 @@ class SearchViewModel @Inject constructor(
         ).flow.cachedIn(viewModelScope)
     }
 
-    private fun onFetchTvShowsSuccess(tvShowsFlow: Flow<PagingData<TVShowUiState>>) {
+    fun onFetchTvShowsSuccess(tvShowsFlow: Flow<PagingData<TVShowUiState>>) {
         updateState { it.copy(tvShows = tvShowsFlow, errorMessage = null, isLoading = false) }
     }
     // endregion
@@ -236,7 +236,7 @@ class SearchViewModel @Inject constructor(
     }
 
     // endregion
-    private fun updateScreenStateToError(errorUiState: ErrorUiState) =
+    fun updateScreenStateToError(errorUiState: ErrorUiState) =
         updateState { screenState ->
             screenState.copy(
                 errorMessage = errorUiState.message,
@@ -309,7 +309,6 @@ class SearchViewModel @Inject constructor(
 
     override fun onFilterButtonClicked() {
         updateState { it.copy(isDialogVisible = true, isLoading = false) }
-
     }
 
     override fun onSearchCleared() {
@@ -508,7 +507,7 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    private fun defaultGenreUiStates(genres: List<Genre>): List<GenreUiState> {
+    fun defaultGenreUiStates(genres: List<Genre>): List<GenreUiState> {
         val all = GenreUiState(-1, "All", isSelected = true)
         val realGenre = genres.map { genre ->
             GenreUiState(

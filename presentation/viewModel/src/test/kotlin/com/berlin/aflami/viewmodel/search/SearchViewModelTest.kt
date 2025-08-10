@@ -1,232 +1,561 @@
-//package com.berlin.aflami.viewmodel.search
-//
-//
-//import android.util.Log
-//import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
-//import com.berlin.entity.Movie
-//import com.berlin.entity.TVShow
-//import com.google.common.truth.Truth.assertThat
-//import io.mockk.coEvery
-//import io.mockk.every
-//import io.mockk.mockk
-//import io.mockk.mockkStatic
-//import kotlinx.coroutines.Dispatchers
-//import kotlinx.coroutines.ExperimentalCoroutinesApi
-//import kotlinx.coroutines.test.StandardTestDispatcher
-//import kotlinx.coroutines.test.advanceUntilIdle
-//import kotlinx.coroutines.test.runTest
-//import kotlinx.coroutines.test.setMain
-//import kotlinx.datetime.LocalDate
-//import org.junit.Before
-//import org.junit.Test
-//import usecase.ClearSearchHistoryUseCase
-//import usecase.DeleteQueryFromHistoryUseCase
-//import usecase.GetRecentHistoryUseCase
-//import usecase.GetSearchMoviesUseCase
-//import usecase.GetSearchTvShowsUseCase
-//import usecase.SaveRecentHistoryUseCase
-//
-//@OptIn(ExperimentalCoroutinesApi::class)
-//class SearchViewModelTest {
-//    private lateinit var viewModel: SearchViewModel
-//    private lateinit var searchMoviesUseCase: GetSearchMoviesUseCase
-//    private lateinit var searchTvShowsUseCase: GetSearchTvShowsUseCase
-//    private lateinit var getRecentHistoryUseCase: GetRecentHistoryUseCase
-//    private lateinit var saveRecentHistoryUseCase: SaveRecentHistoryUseCase
-//    private lateinit var deleteQueryFromHistoryUseCase: DeleteQueryFromHistoryUseCase
-//    private lateinit var clearSearchHistoryUseCase: ClearSearchHistoryUseCase
-//
-//    private val testDispatcher = StandardTestDispatcher()
-//
-//    @Before
-//    fun setup() {
-//        Dispatchers.setMain(testDispatcher)
-//        searchMoviesUseCase = mockk()
-//        searchTvShowsUseCase = mockk()
-//        getRecentHistoryUseCase = mockk()
-//        saveRecentHistoryUseCase = mockk()
-//        deleteQueryFromHistoryUseCase = mockk()
-//        clearSearchHistoryUseCase = mockk()
-//
-//        mockkStatic(Log::class)
-//        every { Log.d(any(), any()) } returns 0
-//        every { Log.e(any(), any()) } returns 0
-//        coEvery { getRecentHistoryUseCase() } returns emptyList()
-//        coEvery { saveRecentHistoryUseCase(any()) } returns Unit
-//        coEvery { deleteQueryFromHistoryUseCase(any()) } returns Unit
-//        coEvery { clearSearchHistoryUseCase() } returns Unit
-//
-//
-//
-//        mockkStatic(Dispatchers::class)
-//        every { Dispatchers.IO } returns testDispatcher
-//
-//        viewModel = SearchViewModel(
-//            searchMoviesUseCase,
-//            searchTvShowsUseCase,
-//            getRecentHistoryUseCase,
-//            saveRecentHistoryUseCase,
-//            deleteQueryFromHistoryUseCase,
-//            clearSearchHistoryUseCase
-//        )
-//    }
-//
-//    @Test
-//    fun `onFocusChanged true should set searchUIState to Searching Init`() = runTest {
-//        viewModel.onFocusChanged(true)
-//        assertThat(viewModel.searchUIState.value).isEqualTo(SearchUiState.Searching.Init)
-//    }
-//
-//    @Test
-//    fun `updateRating should update selected rating in filterUiState`() = runTest {
-//        viewModel.updateRating(7.5f)
-//        advanceUntilIdle()
-//        assertThat(viewModel.filterUiState.value.selectedRating).isEqualTo(7.5f)
-//    }
-//
-//    @Test
-//    fun `toggleGenre should update genre in filterUiState`() = runTest {
-//        viewModel.toggleGenre(GenreType.ACTION)
-//        advanceUntilIdle()
-//        assertThat(viewModel.filterUiState.value.selectedGenre.type).isEqualTo(GenreType.ACTION)
-//    }
-//
-//    @Test
-//    fun `onSearchClick should update UI state to Success when movies are returned`() = runTest {
-//        val movie = Movie(1, "Movie 2", 8.0, LocalDate(2021, 1, 1), emptyList(), "img")
-//
-//        coEvery { searchMoviesUseCase(any(), any()) } returns listOf(movie)
-//
-//        viewModel.updateSearchQuery("test")
-//        advanceUntilIdle()
-//
-//        val state = viewModel.searchUIState.value
-//        assertThat(state).isInstanceOf(SearchUiState.Searching.Success::class.java)
-//
-//        val successState = state as SearchUiState.Searching.Success
-//        assertThat(successState.data).containsExactly(
-//            MediaUiState(
-//                id = 1,
-//                title = "Movie 2",
-//                rating = "8.0",
-//                releaseYear = "2021",
-//                genre = emptyList(),
-//                poster = "img"
-//            )
-//        )
-//    }
-//
-//    @Test
-//    fun `onSearchClick blank query should set state to Searching Init`() = runTest {
-//        viewModel.onSearchClick("")
-//        assertThat(viewModel.searchUIState.value).isEqualTo(SearchUiState.Searching.Init)
-//    }
-//
-//    @Test
-//    fun `onSearchClick error should update error state`() = runTest {
-//        val query = "fail"
-//        val exceptionMessage = "Network error"
-//        coEvery { searchMoviesUseCase(query, any()) } throws RuntimeException(exceptionMessage)
-//
-//        viewModel.updateSearchQuery(query)
-//        advanceUntilIdle()
-//
-//        val state = viewModel.searchUIState.value as SearchUiState.Searching.Error
-//        assertThat(state.errorMessage).isEqualTo(exceptionMessage)
-//    }
-//
-//    @Test
-//    fun `onFilterIconClicked should show dialog`() = runTest {
-//        viewModel.onFilterIconClicked()
-//        assertThat(viewModel.filterDialogState.value).isTrue()
-//    }
-//
-//    @Test
-//    fun `onDismiss should hide dialog`() = runTest {
-//        viewModel.onDismiss()
-//        assertThat(viewModel.filterDialogState.value).isFalse()
-//    }
-//
-//    @Test
-//    fun `clearFilters should reset filterUiState`() = runTest {
-//        viewModel.updateRating(9.0f)
-//        viewModel.toggleGenre(GenreType.HORROR)
-//        viewModel.clearFilters()
-//        advanceUntilIdle()
-//
-//        val state = viewModel.filterUiState.value
-//        assertThat(state.selectedRating).isEqualTo(1f)
-//        assertThat(state.selectedGenre.type).isEqualTo(GenreType.ALL)
-//    }
-//
-//    @Test
-//    fun `clearSearchState should reset query and uiState`() = runTest {
-//        viewModel.clearSearchState()
-//        assertThat(viewModel.searchUIState.value).isEqualTo(SearchUiState.Init)
-//        assertThat(viewModel.queryFlow.value).isEmpty()
-//    }
-//
-//    @Test
-//    fun `onSearchClick should call searchMedia with TV_SHOW when tab index is 1`() = runTest {
-//        // Given
-//        val domainTvShow =
-//            TVShow(1, "Breaking Bad", 8.5, LocalDate(2008, 1, 20), listOf(18), "bb.jpg")
-//        val expectedUi = MediaUiState(
-//            id = 1,
-//            title = "Breaking Bad",
-//            rating = "8.5",
-//            releaseYear = LocalDate(2008, 1, 20).toString(),
-//            genre = listOf(18),
-//            poster = "bb.jpg"
-//        )
-//
-//        coEvery { searchTvShowsUseCase(any(), any()) } returns listOf(domainTvShow)
-//
-//        viewModel.onTabChange(1)
-//        viewModel.updateSearchQuery("breaking bad")
-//        advanceUntilIdle()
-//
-//        // Then
-//        val state = viewModel.searchUIState.value
-//        assertThat(state).isInstanceOf(SearchUiState.Searching.Success::class.java)
-//
-//        val successState = state as SearchUiState.Searching.Success
-//        assertThat(successState.data).containsExactly(expectedUi)
-//    }
-//
-//    @Test
-//    fun `loadRecentSearches should update state`() = runTest {
-//        val fakeList = listOf("Breaking Bad", "Oppenheimer")
-//        coEvery { getRecentHistoryUseCase() } returns fakeList
-//
-//        viewModel.loadRecentSearches()
-//        advanceUntilIdle()
-//
-//        assert(viewModel.recentSearchState.value == fakeList)
-//    }
-//
-//    @Test
-//    fun `clearSearchHistory should call use case and reload`() = runTest {
-//        coEvery { clearSearchHistoryUseCase() } returns Unit
-//        coEvery { getRecentHistoryUseCase() } returns emptyList()
-//
-//        viewModel.clearSearchHistory()
-//    }
-//
-//    @Test
-//    fun `deleteQueryFromHistory should call use case and reload`() = runTest {
-//        val query = "Batman"
-//        coEvery { deleteQueryFromHistoryUseCase(query) } returns Unit
-//        coEvery { getRecentHistoryUseCase() } returns emptyList()
-//
-//        viewModel.deleteQueryFromHistory(query)
-//
-//    }
-//
-//    @Test
-//    fun `clearSearchState should reset UI state and query`() = runTest {
-//        viewModel.clearSearchState()
-//        assert(viewModel.searchUIState.value == SearchUiState.Init)
-//        assert(viewModel.queryFlow.value == "")
-//    }
-//}
+package com.berlin.aflami.viewmodel.search
+
+import androidx.compose.ui.text.input.TextFieldValue
+import app.cash.turbine.test
+import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.entity.Genre
+import com.google.common.truth.Truth.assertThat
+import io.mockk.Runs
+import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.just
+import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
+import usecase.movie.ClearMoviesSearchHistoryUseCase
+import usecase.movie.DeleteQueryFromMoviesHistoryUseCase
+import usecase.movie.GetMovieGenresUseCase
+import usecase.movie.GetRecentMoviesHistoryUseCase
+import usecase.movie.GetSearchMoviesUseCase
+import usecase.movie.SaveRecentMoviesHistoryUseCase
+import usecase.tvshow.ClearTVShowSearchHistoryUseCase
+import usecase.tvshow.DeleteQueryFromTVShowsHistoryUseCase
+import usecase.tvshow.GetRecentTVShowHistoryUseCase
+import usecase.tvshow.GetSearchTVShowsUseCase
+import usecase.tvshow.GetTVShowGenresUseCase
+import usecase.tvshow.SaveRecentTVShowsHistoryUseCase
+
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class SearchViewModelTest {
+
+    // region Mocks
+    private val searchMoviesUseCase: GetSearchMoviesUseCase = mockk()
+    private val searchTVShowsUseCase: GetSearchTVShowsUseCase = mockk()
+    private val recentMoviesHistoryUseCase: GetRecentMoviesHistoryUseCase = mockk()
+    private val recentTvShowHistoryUseCase: GetRecentTVShowHistoryUseCase = mockk()
+    private val saveRecentMoviesHistoryUseCase: SaveRecentMoviesHistoryUseCase = mockk()
+    private val saveRecentTVShowHistoryUseCase: SaveRecentTVShowsHistoryUseCase = mockk()
+    private val deleteQueryFromMoviesHistoryUseCase: DeleteQueryFromMoviesHistoryUseCase = mockk()
+    private val deleteQueryFromTVShowHistoryUseCase: DeleteQueryFromTVShowsHistoryUseCase = mockk()
+    private val clearMoviesSearchHistoryUseCase: ClearMoviesSearchHistoryUseCase = mockk()
+    private val clearTvShowSearchHistoryUseCase: ClearTVShowSearchHistoryUseCase = mockk()
+    private val getMovieGenresUseCase: GetMovieGenresUseCase = mockk()
+    private val getTVShowGenresUseCase: GetTVShowGenresUseCase = mockk()
+
+    // endregion
+    private lateinit var searchViewModel: SearchViewModel
+
+    private val testDispatcher = StandardTestDispatcher()
+
+    @Before
+    fun setup() {
+        Dispatchers.setMain(testDispatcher)
+
+        coEvery { getMovieGenresUseCase() } returns emptyList()
+        coEvery { getTVShowGenresUseCase() } returns emptyList()
+        coEvery { recentMoviesHistoryUseCase() } returns emptyList()
+        coEvery { recentTvShowHistoryUseCase() } returns emptyList()
+
+        createViewModel()
+    }
+
+    private fun createViewModel() {
+        searchViewModel = SearchViewModel(
+            searchMoviesUseCase,
+            searchTVShowsUseCase,
+            recentMoviesHistoryUseCase,
+            recentTvShowHistoryUseCase,
+            saveRecentMoviesHistoryUseCase,
+            saveRecentTVShowHistoryUseCase,
+            deleteQueryFromMoviesHistoryUseCase,
+            deleteQueryFromTVShowHistoryUseCase,
+            clearMoviesSearchHistoryUseCase,
+            clearTvShowSearchHistoryUseCase,
+            getMovieGenresUseCase,
+            getTVShowGenresUseCase
+        )
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        clearAllMocks()
+    }
+
+    @Test
+    fun `init block calls necessary functions`() = runTest {
+        coVerify(exactly = 1) { recentMoviesHistoryUseCase() }
+        coVerify(exactly = 1) { recentTvShowHistoryUseCase() }
+        coVerify(exactly = 1) { getMovieGenresUseCase() }
+        coVerify(exactly = 1) { getTVShowGenresUseCase() }
+    }
+
+    @Test
+    fun `loadRecentSearch should load recent searches successfully`() = runTest {
+        // Arrange
+        coEvery { recentMoviesHistoryUseCase() } returns RECENT_MOVIES_SEARCHES
+        coEvery { recentTvShowHistoryUseCase() } returns RECENT_TV_SHOW_SEARCHES
+
+        // Act
+        searchViewModel.loadRecentSearches()
+        advanceUntilIdle()
+
+        // Assert
+        val expected = (RECENT_MOVIES_SEARCHES + RECENT_TV_SHOW_SEARCHES).distinct()
+        val state = searchViewModel.state.value.recentSearches
+        assertThat(state).isEqualTo(expected)
+    }
+
+    @Test
+    fun `updateRecentSearchesWithError updates state with error message and sets loading to false`() =
+        runTest {
+            // Arrange
+            val errorMessage = "Test error message"
+            val errorUiState = ErrorUiState(errorMessage)
+
+            // Act
+            searchViewModel.updateRecentSearchesWithError(errorUiState)
+            advanceUntilIdle()
+
+            // Assert
+            assertThat(searchViewModel.state.value.errorMessage).isEqualTo(errorMessage)
+            assertThat(searchViewModel.state.value.isLoading).isFalse()
+        }
+
+    @Test
+    fun `updateScreenStateToError updates state with error message and sets loading to false`() =
+        runTest {
+            // Arrange
+            val errorMessage = "Screen error"
+            val errorUiState = ErrorUiState(errorMessage)
+
+            // Act
+            searchViewModel.updateScreenStateToError(errorUiState)
+            advanceUntilIdle()
+
+            // Assert
+            assertThat(searchViewModel.state.value.errorMessage).isEqualTo(errorMessage)
+            assertThat(searchViewModel.state.value.isLoading).isFalse()
+        }
+
+    @Test
+    fun `onRecentSearchClicked updates search query`() = runTest {
+        val query = "test query"
+        searchViewModel.onRecentSearchClicked(query)
+        advanceUntilIdle()
+
+        assertThat(searchViewModel.state.value.searchQuery.text).isEqualTo(query)
+    }
+
+    @Test
+    fun `onRecentSearchCleared should delete query from history`() = runTest {
+        // Given
+        val query = "test query"
+        coEvery { deleteQueryFromMoviesHistoryUseCase(query) } returns Unit
+        coEvery { deleteQueryFromTVShowHistoryUseCase(query) } returns Unit
+
+        // When
+        searchViewModel.onRecentSearchCleared(query)
+
+        // Then
+        coVerify { deleteQueryFromMoviesHistoryUseCase(query) }
+        coVerify { deleteQueryFromTVShowHistoryUseCase(query) }
+    }
+
+    @Test
+    fun `onAllRecentSearchesCleared should clear all history`() = runTest {
+        // Given
+        coEvery { clearMoviesSearchHistoryUseCase() } returns Unit
+        coEvery { clearTvShowSearchHistoryUseCase() } returns Unit
+
+        // When
+        searchViewModel.onAllRecentSearchesCleared()
+
+        // Then
+        coVerify { clearMoviesSearchHistoryUseCase() }
+        coVerify { clearTvShowSearchHistoryUseCase() }
+        assertEquals(emptyList<String>(), searchViewModel.state.value.recentSearches)
+    }
+
+    @Test
+    fun `onTabOptionClicked should update selected tab`() = runTest {
+        // Given
+        val tabOption = TabOption.TV_SHOWS
+
+        // When
+        searchViewModel.onTabOptionClicked(tabOption)
+
+        // Then
+        assertEquals(tabOption, searchViewModel.state.value.selectedTabOption)
+        assertThat(searchViewModel.state.value.isLoading).isFalse()
+    }
+
+    @Test
+    fun `onMediaCardClicked should send navigation effect for movie`() = runTest {
+        // Given
+        val mediaId = 123L
+        searchViewModel.onTabOptionClicked(TabOption.MOVIES)
+
+        // When
+        searchViewModel.onMediaCardClicked(mediaId)
+
+        // Then
+        searchViewModel.effect.test {
+            val effect = awaitItem() as SearchScreenEffect.NavigatedToMovieDetailsScreen
+            assertEquals(mediaId, effect.id)
+            assertEquals(MediaType.MOVIE.name, effect.mediaType)
+        }
+    }
+
+    @Test
+    fun `onMediaCardClicked should send navigation effect for tv show`() = runTest {
+        // Given
+        val mediaId = 123L
+        searchViewModel.onTabOptionClicked(TabOption.TV_SHOWS)
+
+        // When
+        searchViewModel.onMediaCardClicked(mediaId)
+
+        // Then
+        searchViewModel.effect.test {
+            val effect = awaitItem() as SearchScreenEffect.NavigatedToMovieDetailsScreen
+            assertEquals(mediaId, effect.id)
+            assertEquals(MediaType.TV_SHOW.name, effect.mediaType)
+        }
+    }
+
+    @Test
+    fun `onFilterButtonClicked should show filter dialog`() = runTest {
+        // When
+        searchViewModel.onFilterButtonClicked()
+
+        // Then
+        assertThat(searchViewModel.state.value.isDialogVisible).isTrue()
+        assertThat(searchViewModel.state.value.isLoading).isFalse()
+    }
+
+    @Test
+    fun `onCancelClicked should hide filter dialog`() = runTest {
+        // Given
+        searchViewModel.onFilterButtonClicked() // Show dialog first
+
+        // When
+        searchViewModel.onCancelClicked()
+
+        // Then
+        assertThat(searchViewModel.state.value.isDialogVisible).isFalse()
+    }
+
+    @Test
+    fun `onSearchCleared should clear search query and hide dialog`() = runTest {
+        // Given
+        searchViewModel.onSearchQueryChanged(TextFieldValue("test"))
+        searchViewModel.onFilterButtonClicked()
+
+        // When
+        searchViewModel.onSearchCleared()
+
+        // Then
+        assertEquals(TextFieldValue(""), searchViewModel.state.value.searchQuery)
+        assertThat(searchViewModel.state.value.isLoading).isFalse()
+        assertThat(searchViewModel.state.value.isDialogVisible).isFalse()
+    }
+
+    @Test
+    fun `onRatingStarChanged should update movie rating when movies tab selected`() = runTest {
+        // Given
+        val rating = 4.5f
+        searchViewModel.onTabOptionClicked(TabOption.MOVIES)
+
+        // When
+        searchViewModel.onRatingStarChanged(rating)
+
+        // Then
+        assertEquals(
+            rating,
+            searchViewModel.state.value.filterItemUiState.filterMovieSelected.selectedRating
+        )
+    }
+
+    @Test
+    fun `onRatingStarChanged should update tv show rating when tv shows tab selected`() = runTest {
+        // Given
+        val rating = 3.5f
+        searchViewModel.onTabOptionClicked(TabOption.TV_SHOWS)
+
+        // When
+        searchViewModel.onRatingStarChanged(rating)
+
+        // Then
+        assertEquals(
+            rating,
+            searchViewModel.state.value.filterItemUiState.filterTvShowSelected.selectedRating
+        )
+    }
+
+    @Test
+    fun `onFilterGenreChanged should update movie genre when movies tab selected`() = runTest {
+        // Given
+        val genreId = 1
+        searchViewModel.onTabOptionClicked(TabOption.MOVIES)
+
+        // When
+        searchViewModel.onFilterGenreChanged(genreId)
+
+        // Then
+        assertEquals(
+            genreId,
+            searchViewModel.state.value.filterItemUiState.filterMovieSelected.selectedGenres
+        )
+        assertThat(searchViewModel.state.value.isLoading).isFalse()
+    }
+
+    @Test
+    fun `onApplyButtonClicked should apply filter and hide dialog`() = runTest {
+        // Given
+        searchViewModel.onFilterButtonClicked() // Show dialog first
+
+        // When
+        searchViewModel.onApplyButtonClicked()
+
+        // Then
+        assertThat(searchViewModel.state.value.isDialogVisible).isFalse()
+        assertThat(searchViewModel.state.value.isLoading).isTrue()
+    }
+
+    @Test
+    fun `onClearButtonClicked should clear movie filters when movies tab selected`() = runTest {
+        // Given
+        searchViewModel.onTabOptionClicked(TabOption.MOVIES)
+        searchViewModel.onRatingStarChanged(4.0f)
+        searchViewModel.onFilterGenreChanged(1)
+
+        // When
+        searchViewModel.onClearButtonClicked()
+
+        // Then
+        val movieFilter = searchViewModel.state.value.filterItemUiState.filterMovieSelected
+        assertEquals(0f, movieFilter.selectedRating)
+        assertEquals(-1, movieFilter.selectedGenres)
+        assertThat(searchViewModel.state.value.isLoading).isFalse()
+    }
+
+    @Test
+    fun `onClearButtonClicked should clear tv show filters when tv shows tab selected`() = runTest {
+        // Given
+        searchViewModel.onTabOptionClicked(TabOption.TV_SHOWS)
+        searchViewModel.onRatingStarChanged(3.0f)
+        searchViewModel.onFilterGenreChanged(2)
+
+        // When
+        searchViewModel.onClearButtonClicked()
+
+        // Then
+        val tvShowFilter = searchViewModel.state.value.filterItemUiState.filterTvShowSelected
+        assertEquals(0f, tvShowFilter.selectedRating)
+        assertEquals(-1, tvShowFilter.selectedGenres)
+        assertThat(searchViewModel.state.value.isLoading).isFalse()
+    }
+
+    @Test
+    fun `onBackClicked should send NavigatedBack effect`() = runTest {
+        // Arrange
+        val job = launch(testDispatcher) {
+            searchViewModel.effect.collect { EFFECTS.add(it) }
+        }
+
+        // Act
+        searchViewModel.onBackClicked()
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(EFFECTS).contains(SearchScreenEffect.NavigatedBack)
+        job.cancel()
+    }
+
+    @Test
+    fun `onWorldSearchCardClicked should send NavigateToWorldSearchScreen effect`() = runTest {
+        // Arrange
+        val job = launch(testDispatcher) {
+            searchViewModel.effect.collect { EFFECTS.add(it) }
+        }
+
+        // Act
+        searchViewModel.onWorldSearchCardClicked()
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(EFFECTS).contains(SearchScreenEffect.NavigateToWorldSearchScreen)
+        job.cancel()
+    }
+
+    @Test
+    fun `onActorSearchCardClicked should send NavigateToActorSearchScreen effect`() = runTest {
+        // Arrange
+        val job = launch(testDispatcher) {
+            searchViewModel.effect.collect { EFFECTS.add(it) }
+        }
+
+        // Act
+        searchViewModel.onActorSearchCardClicked()
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(EFFECTS).contains(SearchScreenEffect.NavigateToActorSearchScreen)
+        job.cancel()
+    }
+
+    @Test
+    fun `onItemClicked should update search query and set loading`() = runTest {
+        // Given
+        val query = TextFieldValue("clicked item")
+
+        // When
+        searchViewModel.onItemClicked(query)
+
+        // Then
+        assertEquals(query, searchViewModel.state.value.searchQuery)
+        assertThat(searchViewModel.state.value.isLoading).isTrue()
+    }
+
+    @Test
+    fun `should load movie and tv show genres on initialization`() = runTest {
+        // Then
+        coVerify { getMovieGenresUseCase() }
+        coVerify { getTVShowGenresUseCase() }
+
+        val movieGenres =
+            searchViewModel.state.value.filterItemUiState.filterMovieSelected.genreUiStates
+        val tvShowGenres =
+            searchViewModel.state.value.filterItemUiState.filterTvShowSelected.genreUiStates
+
+        assertThat(movieGenres.isNotEmpty()).isTrue()
+        assertThat(tvShowGenres.isNotEmpty()).isTrue()
+
+        assertEquals("All", movieGenres.first().name)
+        assertEquals("All", tvShowGenres.first().name)
+    }
+
+    @Test
+    fun `deleteQueryFromHistory calls delete use cases and reloads recent searches`() = runTest {
+        // Arrange
+        val query = "test query"
+
+        coEvery { deleteQueryFromMoviesHistoryUseCase(query) } just Runs
+        coEvery { deleteQueryFromTVShowHistoryUseCase(query) } just Runs
+        coEvery { recentMoviesHistoryUseCase() } returns listOf("movie1")
+        coEvery { recentTvShowHistoryUseCase() } returns listOf("tvshow1")
+
+        // Act
+        searchViewModel.deleteQueryFromHistory(query)
+        advanceUntilIdle()
+
+        // Assert
+        coVerify(exactly = 1) { deleteQueryFromMoviesHistoryUseCase(query) }
+        coVerify(exactly = 1) { deleteQueryFromTVShowHistoryUseCase(query) }
+        assertThat(searchViewModel.recentSearchState.value).isEqualTo(listOf("movie1", "tvshow1"))
+    }
+
+    @Test
+    fun `clearSearchHistory calls clear use cases and reloads recent searches`() = runTest {
+        // Arrange
+        coEvery { clearMoviesSearchHistoryUseCase() } just Runs
+        coEvery { clearTvShowSearchHistoryUseCase() } just Runs
+        coEvery { recentMoviesHistoryUseCase() } returns listOf("movie1")
+        coEvery { recentTvShowHistoryUseCase() } returns listOf("tvshow1")
+
+        // Act
+        searchViewModel.clearSearchHistory()
+        advanceUntilIdle()
+
+        // Assert
+        coVerify(exactly = 1) { clearMoviesSearchHistoryUseCase() }
+        coVerify(exactly = 1) { clearTvShowSearchHistoryUseCase() }
+        assertThat(searchViewModel.recentSearchState.value).isEqualTo(listOf("movie1", "tvshow1"))
+    }
+
+    @Test
+    fun `updateRecentSearchClearedWithError updates state with error message, sets loading and dialog visibility`() =
+        runTest {
+            // Arrange
+            val errorMessage = "Clear error"
+            val errorUiState = ErrorUiState(errorMessage)
+
+            // Act
+            searchViewModel.updateRecentSearchClearedWithError(errorUiState)
+            advanceUntilIdle()
+
+            // Assert
+            val state = searchViewModel.state.value
+            assertThat(state.errorMessage).isEqualTo(errorMessage)
+            assertThat(state.isLoading).isFalse()
+            assertThat(state.isDialogVisible).isFalse()
+        }
+
+    @Test
+    fun `defaultGenreUiStates includes All genre selected by default`() {
+        // Arrange
+        val genres = emptyList<Genre>()
+
+        // Act
+        val result = searchViewModel.defaultGenreUiStates(genres)
+
+        // Assert
+        val allGenre = result.first()
+        assertThat(allGenre.id).isEqualTo(-1)
+        assertThat(allGenre.name).isEqualTo("All")
+        assertThat(allGenre.isSelected).isTrue()
+    }
+
+    @Test
+    fun `defaultGenreUiStates maps genres correctly with isSelected false`() {
+        // Arrange
+        val genres = listOf(
+            Genre(id = 1, name = "Action"),
+        )
+
+        // Act
+        val result = searchViewModel.defaultGenreUiStates(genres)
+        val mappedGenres = result.drop(1)
+
+        // Assert
+        assertThat(mappedGenres[0].id).isEqualTo(1)
+        assertThat(mappedGenres[0].name).isEqualTo("Action")
+        assertThat(mappedGenres[0].isSelected).isFalse()
+    }
+
+    @Test
+    fun `onSearchActionClicked should call onSearchQueryChanged with current search query`() =
+        runTest {
+            // Arrange
+            val searchQuery = TextFieldValue("test search query")
+            searchViewModel.onSearchQueryChanged(searchQuery)
+
+            // Act
+            searchViewModel.onSearchActionClicked()
+            advanceUntilIdle()
+
+            // Assert
+            assertEquals(searchQuery, searchViewModel.state.value.searchQuery)
+        }
+
+    companion object {
+        val EFFECTS = mutableListOf<SearchScreenEffect>()
+
+        val RECENT_MOVIES_SEARCHES = listOf("movie1", "movie2")
+        val RECENT_TV_SHOW_SEARCHES = listOf("movie2", "tvshow1")
+    }
+}
