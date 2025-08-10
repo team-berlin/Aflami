@@ -433,7 +433,13 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onCreateNewFavouriteListClicked() {
-        TODO("Not yet implemented")
+        updateState { screenState ->
+            screenState.copy(
+                createNewListDialog = screenState.createNewListDialog.copy(
+
+                )
+            )
+        }
     }
 
     override fun onCancelAddingToFavouriteClicked() =
