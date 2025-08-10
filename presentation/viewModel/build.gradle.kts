@@ -42,7 +42,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
 
-    testImplementation ("app.cash.turbine:turbine:1.1.0")
+
+    testImplementation("app.cash.turbine:turbine:1.1.0")
     val paging_version = "3.3.6"
     implementation("androidx.paging:paging-runtime:$paging_version")
 
