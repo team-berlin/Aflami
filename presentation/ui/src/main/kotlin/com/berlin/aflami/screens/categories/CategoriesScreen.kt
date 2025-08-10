@@ -170,12 +170,12 @@ private fun ResultGrid(
     onCategoryCardClicked: (Long, MediaType) -> Unit,
     mediaType: MediaType,
 ){
-    Box(modifier = modifier.fillMaxSize()) {
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier
+                .fillMaxSize(),
             columns = Adaptive(minSize = 160.dp),
             contentPadding = PaddingValues(
-                start = 16.dp, end = 16.dp, top = 8.dp
+                start = 16.dp, end = 16.dp, top = 8.dp, bottom = 56.dp
             ),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -199,4 +199,3 @@ private fun ResultGrid(
             }
         }
     }
-}

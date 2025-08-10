@@ -34,7 +34,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaByCategoryDestination
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.screens.search.search.Chips
@@ -80,7 +79,7 @@ fun MediaByCategoryScreen(
     ) {
         MediaByCategoryContent(
             movies,
-        state = state, listener = viewModel
+            state = state, listener = viewModel
         )
     }
 }
@@ -98,6 +97,7 @@ private fun categoriesReceiveEffect(
                         movieId = effect.mediaId,
                     )
                 )
+
                 MediaType.TV_SHOW -> navController.navigate(
                     TVShowDetailsDestination(
                         tvShowId = effect.mediaId,
@@ -125,8 +125,7 @@ fun MediaByCategoryContent(
                 .padding(vertical = 8.dp), title = {
                 Text(
                     text = if (state.mediaType == MediaType.MOVIE) stringResource(R.string.movies)
-                        else stringResource(R.string.tv_shows)
-                    ,
+                    else stringResource(R.string.tv_shows),
                     style = Theme.textStyle.title.large,
                     color = Theme.color.textColors.title,
                 )
@@ -159,7 +158,7 @@ fun MediaByCategoryContent(
                     onCategoryCardClicked = listener::onCategoryCardClicked,
                     onMediaCardClicked = listener::onMediaCardClicked,
                     mediaType = MediaType.TV_SHOW,
-                    mediaList =tvShows,
+                    mediaList = tvShows,
                 )
             }
         }
@@ -172,7 +171,7 @@ private fun MediaByCategoryResultGrid(
     modifier: Modifier = Modifier,
     onCategoryCardClicked: (Long) -> Unit,
     mediaType: MediaType,
-    mediaList: LazyPagingItems<MediaUiState> ,
+    mediaList: LazyPagingItems<MediaUiState>,
     onMediaCardClicked: (Long, MediaType) -> Unit,
 ) {
     Row(modifier = modifier.fillMaxSize()) {
@@ -199,21 +198,22 @@ private fun MediaByCategoryResultGrid(
         ) {
             items(count = mediaList.itemCount) { index ->
                 val media = mediaList[index]
-                if (media!=null){
-                MediaCard(
-                    modifier = Modifier.height(196.dp),
-                    mediaImg = media.poster,
-                    title = media.title ,
-                    typeOfMedia = media.mediaType.name ,
-                    date = media.releaseYear,
-                    rating = media.rating ,
-                    onClick = {
-                        onMediaCardClicked(
-                            media.id, media.mediaType
-                        )
-                    }
-                )
-            }}
+                if (media != null) {
+                    MediaCard(
+                        modifier = Modifier.height(196.dp),
+                        mediaImg = media.poster,
+                        title = media.title,
+                        typeOfMedia = media.mediaType.name,
+                        date = media.releaseYear,
+                        rating = media.rating,
+                        onClick = {
+                            onMediaCardClicked(
+                                media.id, media.mediaType
+                            )
+                        }
+                    )
+                }
+            }
         }
     }
 }
@@ -225,7 +225,8 @@ private fun GenreChipsColumn(
     mediaType: MediaType,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn (modifier,
+    LazyColumn(
+        modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
@@ -235,8 +236,7 @@ private fun GenreChipsColumn(
             Chips(
                 title = genre.name,
                 icon = if (mediaType == MediaType.MOVIE) painterResource(getMovieCategoryIcon(genre.id))
-                else painterResource(getTvShowCategoryIcon(genre.id))
-                ,
+                else painterResource(getTvShowCategoryIcon(genre.id)),
                 isSelected = genre.isSelected,
                 onClick = { onGenreClick(genre.id.toLong()) }
             )
