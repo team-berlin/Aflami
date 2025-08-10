@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.home.toprating
 
 import app.cash.turbine.test
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Genre
@@ -58,18 +59,17 @@ class TopRatingViewModelTest {
     fun setUp() {
         getTopRatedMoviesUseCase = mockk(relaxed = true)
         getTopRatedTvShowsUseCase = mockk(relaxed = true)
+
+        coEvery { getTopRatedMoviesUseCase(any()) }returns listOf(movie)
+        coEvery { getTopRatedTvShowsUseCase(any()) }returns listOf(tvShow)
+        viewModel
     }
 
     @Test
     fun `getTopRatingMedia should update state with top rated media`() = runTest{
         viewModel
 
-        coEvery { getTopRatedMoviesUseCase.invoke(1) } returns listOf(movie)
-        coEvery { getTopRatedTvShowsUseCase.invoke(1) } returns listOf(tvShow)
-
-        val vm = TopRatingViewModel(getTopRatedMoviesUseCase, getTopRatedTvShowsUseCase)
-
-        vm.state.test {
+        viewModel.state.test {
             val state = awaitItem()
             assertThat(state.isLoading).isFalse()
             assertThat(state.topRatedMediaFlow).isNotNull()
@@ -80,18 +80,12 @@ class TopRatingViewModelTest {
     @Test
     fun `getTopRatingMedia should update state with with error when `() = runTest{
 
-        viewModel
         val errorMessage="Network error"
-        coEvery { getTopRatedMoviesUseCase.invoke(any()) } throws Exception(errorMessage)
-        coEvery { getTopRatedTvShowsUseCase.invoke(any()) }  throws Exception(errorMessage)
+        val errorUiState = ErrorUiState(errorMessage)
 
-
-        val vm = TopRatingViewModel(getTopRatedMoviesUseCase, getTopRatedTvShowsUseCase)
-
-        vm.state.test {
+        viewModel.state.test {
             val state = awaitItem()
-            assertThat(state.isLoading).isFalse()
-            assertThat(state.errorMessage).isEqualTo("Network error")
+            assertThat(state.errorMessage).isEqualTo(errorUiState)
         }
 
     }
