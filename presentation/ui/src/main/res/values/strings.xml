@@ -99,6 +99,9 @@
     <string name="strict_description">Blurs all sensitive content.</string>
     <string name="moderate_description">Blurs explicit scenes only.</string>
     <string name="off_description">No content is blurred.</string>
+    <string name="catgories">Categories</string>
+    <string name="movies">Movies</string>
+    <string name="tv_shows">TV Shows</string>
 
 
 </resources>
