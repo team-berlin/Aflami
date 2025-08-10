@@ -91,4 +91,6 @@ abstract class RepositoryModule {
     abstract fun bindRatedMediaRepository(
         impl: RatedMediaRepositoryImp
     ): RatedMediaRepository
+
+
 }

@@ -1,7 +1,11 @@
 package com.berlin.aflami.di
 
 import android.content.Context
+import com.berlin.local.dataStore.SettingsPreferencesDataStore
+import com.berlin.safeimageviewer.NetworkConnectivityObserver
 import com.berlin.safeimageviewer.FireBaseModelManager
+import com.berlin.safeimageviewer.NetworkNetworkConnectivityObserverImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,15 +15,24 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object MlModule {
+abstract class MlModule {
+
+    @Binds
+    @Singleton
+    abstract fun provideNetworkConnectivityObserver(
+     imbl: NetworkNetworkConnectivityObserverImpl
+    ): NetworkConnectivityObserver
+}
+@Module
+@InstallIn(SingletonComponent::class)
+object ModelManagerModule {
 
     @Provides
     @Singleton
-    fun provideFireBaseModelManager(
-        @ApplicationContext context: Context
+    fun provideModelManager(
+        networkConnectivityObserver: NetworkConnectivityObserver,
+        settingsPreferencesDataStore: SettingsPreferencesDataStore
     ): FireBaseModelManager {
-        val sharedPreferences = context.getSharedPreferences("ml_prefs", Context.MODE_PRIVATE)
-        return FireBaseModelManager(prefs = sharedPreferences)
+        return FireBaseModelManager(networkConnectivityObserver,settingsPreferencesDataStore)
     }
-
 }

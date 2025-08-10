@@ -35,7 +35,6 @@ fun WatchHistoryRatingSection(
             image = painterResource(R.drawable.my_rating), // ⏰ (or use painter if using actual image)
             modifier = Modifier.weight(1f)
         ){
-            onWatchHistoryClick()
         }
     }
 }

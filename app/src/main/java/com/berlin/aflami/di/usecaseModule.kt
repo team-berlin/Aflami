@@ -41,8 +41,10 @@ import usecase.movie.SearchByActorNameUseCase
 import usecase.movie.SearchMoviesByCountryUseCase
 import usecase.onboarding.GetFirstEntryUseCase
 import usecase.onboarding.SaveFirstEntryUseCase
+import usecase.profile.GetContentRestrictionUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
+import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
@@ -235,6 +237,10 @@ object UseCaseModule {
         GetThemeUseCase(repository)
 
     @Provides
+    fun provideGetContentRestrictionUseCase(repository: SettingsRepository): GetContentRestrictionUseCase =
+        GetContentRestrictionUseCase(repository)
+
+    @Provides
     fun provideSetLanguageUseCase(repository: SettingsRepository): SetLanguageUseCase =
         SetLanguageUseCase(repository)
 
@@ -242,7 +248,9 @@ object UseCaseModule {
     fun provideSetThemeUseCase(repository: SettingsRepository): SetThemeUseCase =
         SetThemeUseCase(repository)
 
-
+    @Provides
+    fun provideSetContentRestrictionUseCase(repository: SettingsRepository): SetContentRestrictionUseCase =
+        SetContentRestrictionUseCase(repository)
 
 
     @Provides

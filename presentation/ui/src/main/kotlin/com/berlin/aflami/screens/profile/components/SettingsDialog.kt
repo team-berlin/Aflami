@@ -3,10 +3,10 @@ package com.berlin.aflami.screens.profile.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,8 +20,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,10 +40,13 @@ fun SettingsDialog(
     title: Int = com.berlin.ui.R.string.settings,
     onFirstOptionClick: () -> Unit = {},
     onSecondOptionClick: () -> Unit = {},
+    onThirdOptionClick: () -> Unit = {},
     firstOptionTitleRes: Int? = com.berlin.ui.R.string.setting_dialog_change_password,
-    secondOptionTitleRes: Int? = com.berlin.ui.R.string.setting_dialog_logout_quote,
+    secondOptionTitleRes: Int? = com.berlin.ui.R.string.setting_dialog_content_restriction,
+    thirdOptionTitleRes: Int? = com.berlin.ui.R.string.setting_dialog_logout_quote,
     firstOptionIconRes: Int? = R.drawable.ic_change_password,
-    secondOptionIconRes: Int? = R.drawable.ic_tired_face,
+    secondOptionIconRes: Int? = R.drawable.security,
+    thirdOptionIconRes: Int? = R.drawable.ic_tired_face,
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Box(
@@ -60,7 +63,6 @@ fun SettingsDialog(
                 Row(
                     Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -68,17 +70,20 @@ fun SettingsDialog(
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title,
                     )
+                    Spacer(modifier = Modifier.weight(1f))
+
                     IconButton(
                         onClick = onDismiss,
                         modifier = Modifier.background(
                             Theme.color.surfaceHigh,
-                            shape = RoundedCornerShape(12.dp)
-                        )
+                            shape = RoundedCornerShape(12.dp),
+                        ),
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = null,
-                            tint = Theme.color.textColors.title
+                            tint = Theme.color.textColors.title,
+                            modifier = Modifier.padding(0.dp)
                         )
                     }
                 }
@@ -93,7 +98,8 @@ fun SettingsDialog(
                             .clickable { onFirstOptionClick() }
                     ) {
                         Row(
-                            modifier = Modifier.padding(vertical = 8.dp),
+                            modifier = Modifier
+                                .padding(vertical = 8.dp, horizontal = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
@@ -140,9 +146,11 @@ fun SettingsDialog(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable { onSecondOptionClick() }
                     ) {
                         Row(
-                            modifier = Modifier.padding(vertical = 8.dp),
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
@@ -174,16 +182,63 @@ fun SettingsDialog(
 
                             Spacer(modifier = Modifier.weight(1f))
 
-                            TextButton(
-                                onClick = onSecondOptionClick,
-                                contentPadding = PaddingValues(0.dp)
-                            ){
-                                Text(
-                                    text = stringResource(id = com.berlin.ui.R.string.setting_dialog_logout),
-                                    style = Theme.textStyle.label.medium,
-                                    color = Theme.color.primary,
+                            Icon(
+                                painter = painterResource(id = com.berlin.ui.R.drawable.navigate),
+                                contentDescription = null,
+                                tint = Theme.color.textColors.hint
+                            )
+
+                        }
+                    }
+                }
+                if (thirdOptionIconRes != null && thirdOptionTitleRes != null) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        Theme.color.surfaceHigh,
+                                        shape = RoundedCornerShape(12.dp),
+                                    )
+                                    .border(
+                                        width = 1.dp,
+                                        color = Theme.color.stroke,
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                                    .padding(10.dp),
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(24.dp),
+                                    painter = painterResource(id = thirdOptionIconRes),
+                                    contentDescription = null,
+                                    tint = Theme.color.textColors.hint
                                 )
                             }
+                            Text(
+                                text = stringResource(id = thirdOptionTitleRes),
+                                style = Theme.textStyle.title.small,
+                                color = Theme.color.textColors.body,
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            Text(
+                                modifier = Modifier.clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) { onThirdOptionClick() },
+                                text = stringResource(id = com.berlin.ui.R.string.setting_dialog_logout),
+                                style = Theme.textStyle.label.medium,
+                                color = Theme.color.primary,
+                            )
+
                         }
                     }
                 }

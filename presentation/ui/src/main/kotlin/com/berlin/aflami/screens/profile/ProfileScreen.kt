@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.profile
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,8 +20,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
+import com.berlin.aflami.screens.RequiredLoggedInPlaceholder
+import com.berlin.aflami.screens.profile.components.ContentRestrictionDialog
 import com.berlin.aflami.screens.profile.components.OptionsDialog
 import com.berlin.aflami.screens.profile.components.ProfileSection
 import com.berlin.aflami.screens.profile.components.SettingSection
@@ -41,7 +45,14 @@ fun ProfileScreen(
 ) {
     val profileScreenState by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
+    if (profileScreenState.isLoggedIn) {
+        ProfileContent(profileScreenState, viewModel)
+    } else {
+        RequiredLoggedInPlaceholder() {
+            navController.navigate(LoginDestination)
+        }
 
+    }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
             WatchHistoryonReceiveEffect(navController = navController, effect = newEffect)
@@ -67,9 +78,17 @@ private fun WatchHistoryonReceiveEffect(
             navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
         }
 
-        ProfileScreenEffect.RefreshActivity -> {}
+        ProfileScreenEffect.RefreshActivity -> {
+            (navController.context as? ComponentActivity)?.recreate()
+        }
+
         ProfileScreenEffect.NavigateToLoginScreen -> {
-            navController.navigate(route = LoginDestination)
+            navController.navigate(route = LoginDestination) {
+                popUpTo(NavigationBarDestinations.HomeScreen) {
+                    inclusive = true
+                }
+            }
+
         }
     }
 }
@@ -93,7 +112,8 @@ private fun ProfileContent(
                 isFirstOptionSelected = profileScreenState.isDarkThemeSelected,
                 isSecondOptionSelected = profileScreenState.isLightThemeSelected,
                 onFirstOptionClick = { profileScreenInteractionListener.onDarkThemeSelected() },
-                onSecondOptionClick = { profileScreenInteractionListener.onLightThemeSelected() }
+                onSecondOptionClick = { profileScreenInteractionListener.onLightThemeSelected() },
+                isThemeDialog = true
             )
         }
 
@@ -109,7 +129,8 @@ private fun ProfileContent(
                 isFirstOptionSelected = profileScreenState.isEnglishSelected,
                 isSecondOptionSelected = profileScreenState.isArabicSelected,
                 onFirstOptionClick = { profileScreenInteractionListener.onEnglishSelected() },
-                onSecondOptionClick = { profileScreenInteractionListener.onArabicSelected() }
+                onSecondOptionClick = { profileScreenInteractionListener.onArabicSelected() },
+                isThemeDialog = false
             )
 
         }
@@ -118,8 +139,34 @@ private fun ProfileContent(
             SettingsDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
                 onFirstOptionClick = { profileScreenInteractionListener.onChangePasswordClicked() },
-                onSecondOptionClick = { profileScreenInteractionListener.onLogoutClicked() },
+                onSecondOptionClick = { profileScreenInteractionListener.onContentRestrictionClicked() },
+                onThirdOptionClick = { profileScreenInteractionListener.onLogoutClicked() },
             )
+        }
+
+        ProfileDialogType.CONTENT_RESTRICTION -> {
+            ContentRestrictionDialog(
+                onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
+                title = R.string.setting_dialog_content_restriction,
+                firstOptionTitleRes = R.string.strict,
+                secondOptionTitleRes = R.string.moderate,
+                thirdOptionTitleRes = R.string.off,
+                isFirstOptionSelected = profileScreenState.isStrictSelected,
+                isSecondOptionSelected = profileScreenState.isModeratedSelected,
+                isThirdOptionSelected = profileScreenState.isOffSelected,
+                onFirstOptionClick = { profileScreenInteractionListener.onStrictSelected() },
+                onSecondOptionClick = { profileScreenInteractionListener.onModerateSelected() },
+                onThirdOptionClick = { profileScreenInteractionListener.onOffRestrictionSelected() },
+                onSaveClick = { profileScreenInteractionListener.onSaveContentRestriction() },
+                firstOptionIconRes = com.berlin.designsystem.R.drawable.english,
+                secondOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
+                thirdOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
+                firstOptionSubTitleIdRes = R.string.strict_description,
+                secondOptionSubTitleIdRes = R.string.moderate_description,
+                thirdOptionSubTitleIdRes = R.string.off_description
+            )
+
+
         }
 
         else -> Unit
@@ -131,7 +178,6 @@ private fun ProfileContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
-
     )
     {
         ProfileSection(userAvatar = "", userName = "", painterResource(R.drawable.profile_cover))

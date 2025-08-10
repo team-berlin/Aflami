@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.profile
 
 import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
+import com.berlin.entity.ContentRestriction
 
 
 data class ProfileUiState(
@@ -19,9 +20,15 @@ data class ProfileUiState(
     val isLightThemeSelected: Boolean = false,
     val isEnglishSelected: Boolean = false,
     val isArabicSelected: Boolean = true,
+    val isLoggedIn: Boolean = false,
+    val isStrictSelected: Boolean = true,
+    val isModeratedSelected: Boolean = false,
+    val isOffSelected: Boolean = false,
+    val selectedRestriction: String = ContentRestriction.STRICT.name,
+    val contentRestrictionPercentage: Int = 100
 
 
 )
 
-enum class ProfileDialogType { NONE, LANGUAGE, THEME, SETTINGS }
+enum class ProfileDialogType { NONE, LANGUAGE, THEME, SETTINGS, CONTENT_RESTRICTION }
 

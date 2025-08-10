@@ -79,6 +79,7 @@
     <string name="setting_dialog_change_password">Change password</string>
     <string name="setting_dialog_logout">Logout</string>
     <string name="setting_dialog_logout_quote">Tired to watching?</string>
+    <string name="setting_dialog_content_restriction">Content Restriction</string>
     <string name="movies_that_feel_you">Movies That Feel You</string>
     <string name="page1_descerption">This isn’t just a movie app — it’s a mood experience. Tap your vibe and let the story begin.</string>
     <string name="build_your_watchlist_show_love">Build Your Watchlist, show love</string>
@@ -90,4 +91,14 @@
     <string name="skip">Skip</string>
     <string name="watch__history">Watch history</string>
     <string name="no_result_found">No result found</string>
+    <string name="Please_login">Please login to access your account details and other features!</string>
+    <string name="save">Save</string>
+    <string name="strict">Strict</string>
+    <string name="moderate">Moderate</string>
+    <string name="off">Off</string>
+    <string name="strict_description">Blurs all sensitive content.</string>
+    <string name="moderate_description">Blurs explicit scenes only.</string>
+    <string name="off_description">No content is blurred.</string>
+
+
 </resources>

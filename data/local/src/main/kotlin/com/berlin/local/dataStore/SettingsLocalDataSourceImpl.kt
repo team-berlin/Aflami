@@ -16,6 +16,11 @@ class SettingsLocalDataSourceImpl @Inject constructor(
 
 
     override suspend fun getLanguage(): Flow<String?> = preferences.getLanguage()
+    override suspend fun setContentRestriction(contentRestrictionLevel: String) =
+        preferences.setContentRestriction(contentRestrictionLevel)
+
+    override suspend fun getContentRestriction(): Flow<String?> =
+        preferences.getContentRestriction()
 }
 
 
