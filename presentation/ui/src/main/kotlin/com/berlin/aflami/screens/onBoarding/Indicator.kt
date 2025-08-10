@@ -12,19 +12,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.Theme
 
 @Composable
-fun BottomPageIndicator(
+fun Indicator(
     modifier: Modifier = Modifier,
     pageNumber: Int,
     pageCount: Int,
 ) {
+
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+
+    val spacing = 4.dp
+    val totalSpacing = spacing * (pageCount - 1)
+    val availableWidth = screenWidth - totalSpacing
+    val indicatorWidth: Dp = (availableWidth / pageCount)
+
+
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(spacing)
     ) {
         repeat(pageCount) { page ->
             val targetColor = when {
@@ -40,7 +52,7 @@ fun BottomPageIndicator(
 
             Box(
                 modifier = Modifier
-                    .size(width = 48.dp, height = 6.dp)
+                    .size(width = indicatorWidth, height = 6.dp)
                     .clip(RoundedCornerShape(100.dp))
                     .background(color = animatedColor)
                     .border(
@@ -54,10 +66,10 @@ fun BottomPageIndicator(
 }
 
 @Composable
-@Preview
-private fun BottomPageIndicatorPreview() {
-    BottomPageIndicator(
-        pageNumber = 1,
-        pageCount = 3,
+@Preview(showSystemUi = true)
+private fun IndicatorPreview() {
+    Indicator(
+        pageNumber = 5,
+        pageCount = 15,
     )
 }

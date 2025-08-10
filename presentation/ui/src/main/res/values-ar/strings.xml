@@ -100,6 +100,7 @@
     <string name="strict_description">إخفاء جميع المحتوى الحساس.</string>
     <string name="moderate_description">إخفاء المشاهد الصريحة فقط.</string>
     <string name="off_description">عدم إخفاء المحتوى.</string>
+    <string name="guess_the_character">Guess the character</string>
 
 
 </resources>

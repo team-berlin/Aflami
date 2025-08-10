@@ -107,7 +107,7 @@ fun CircleRevealPager(
                     .padding(start = 12.dp, end = 12.dp, bottom = 96.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
-                BottomPageIndicator(
+                Indicator(
                     modifier = Modifier.padding(bottom = 24.dp),
                     pageNumber = pagerState.currentPage,
                     pageCount = pagerState.pageCount,
