@@ -12,7 +12,6 @@ import repository.RatingRepository
 import repository.TVShowRepository
 import repository.SettingsRepository
 import repository.TVShowDetailsRepository
-import repository.TVShowRepository
 import repository.UserRepository
 import usecase.auth.GetLoginStatus
 import usecase.auth.GetLoginUseCase

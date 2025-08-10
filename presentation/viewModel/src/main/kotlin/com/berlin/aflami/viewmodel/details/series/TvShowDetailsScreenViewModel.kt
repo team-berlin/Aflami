@@ -11,7 +11,6 @@ import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
 import com.berlin.aflami.viewmodel.details.common.NO_REVIEWS
 import com.berlin.aflami.viewmodel.details.common.NO_SEASON
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
-import com.berlin.aflami.viewmodel.details.common.TVShowDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.toggle
 import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.mapper.parseRuntime
@@ -407,12 +406,12 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     override fun onSubmitRateClicked(rate: Int) {
-        val movieId = _state.value.selectedRatingMediaId?.toInt() ?: return
+        val tvShowId = _state.value.selectedRatingMediaId?.toInt() ?: return
 
         viewModelScope.launch {
             tryToCall(
                 call = {
-                    rateTvShowUseCase(movieId, rating = rate.toDouble())
+                    rateTvShowUseCase(tvShowId, rating = rate.toDouble())
                 },
                 onSuccess = { result ->
                     updateState {

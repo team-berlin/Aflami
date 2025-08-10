@@ -18,10 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -47,8 +45,8 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.Descript
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.MovieTabSection
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
-import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
+import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
+import com.berlin.aflami.viewmodel.details.movie.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
@@ -57,7 +55,6 @@ import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
-import kotlinx.coroutines.delay
 
 @Composable
 fun MovieDetailsScreen(
@@ -204,7 +201,7 @@ private fun onReceiveMovieDetailsEffect(
 @Composable
 fun MovieDetailsContent(
     state: MovieDetailsUiState,
-    listener: MediaInteractionListener,
+    listener: MediaDetailsScreenInteractionListener,
     isDescriptionExpanded: Boolean,
     onToggleDescriptionExpand: () -> Unit,
     movieDetailsTabs: MovieDetailsTabs,
@@ -299,7 +296,7 @@ fun MovieDetailsContent(
             optionContainerColor = Theme.color.surfaceHigh,
             containerColor = Color.Unspecified,
         )
-        if (state.showRatingDialog && state.selectedRatingMediaId != null) {
+        if (state.showRatingDialog && state.selectedRatingMovieId != null) {
             RateDialog(
                 onDismiss = { listener.onCancelRatingClicked() },
                 onRate = { rating -> listener.onSubmitRateClicked(rating) }

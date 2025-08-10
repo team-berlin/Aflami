@@ -21,7 +21,6 @@ import repository.RatingRepository
 import repository.TVShowRepository
 import repository.SettingsRepository
 import repository.TVShowDetailsRepository
-import repository.TVShowRepository
 import repository.UserRepository
 import javax.inject.Singleton
 
