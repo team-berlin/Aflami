@@ -32,7 +32,7 @@ class MovieRepositoryImpl @Inject constructor(
 
         return recentlyWatchedLocalDataSource.getRecentlyWatchedMovie(page = page).map {
             it.toDomain()
-        }.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } } ?:emptyList()
+        }.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
 
     }
 

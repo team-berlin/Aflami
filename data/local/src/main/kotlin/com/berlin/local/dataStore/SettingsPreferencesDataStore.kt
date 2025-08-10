@@ -53,9 +53,8 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
 
     fun getContentRestriction(): Flow<String?> {
         return context.dataStore.data.map { prefs ->
-            prefs[App_CONTENT_RESTRICTION] ?: "50"
+            prefs[App_CONTENT_RESTRICTION] ?: "STRICT"
         }
     }
-
 }
 
