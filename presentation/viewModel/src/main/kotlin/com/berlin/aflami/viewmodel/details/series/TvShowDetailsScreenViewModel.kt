@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.common.NO_COMPANY_PRODUCTION
 import com.berlin.aflami.viewmodel.details.common.NO_GALLERY
 import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
@@ -14,7 +13,6 @@ import com.berlin.aflami.viewmodel.details.common.NO_SEASON
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
 import com.berlin.aflami.viewmodel.details.common.TVShowDetailsArgs
 import com.berlin.aflami.viewmodel.details.common.toggle
-import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.mapper.parseRuntime
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
@@ -30,7 +28,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import usecase.tvshow.GetTVShowVideos
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.GetSeasonEpisodesUseCase
 import usecase.tvshow.GetSimilarTVShowsUseCase
@@ -38,6 +35,7 @@ import usecase.tvshow.GetTVShowCastUseCase
 import usecase.tvshow.GetTVShowDetailsUseCase
 import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
+import usecase.tvshow.GetTVShowVideos
 import javax.inject.Inject
 
 @HiltViewModel
@@ -191,7 +189,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                     content = TVShowTabContent.Season(
                         seasonToEpisodesMap = seasons
                     )
-                ), ,
+                ),
             )
         }
     }
@@ -220,7 +218,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 screenState.copy(
                     rowSection = TVShowRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_MORE_MEDIA)
-                    ), ,
+                    )
                 )
             }
         } else {
@@ -230,7 +228,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         content = TVShowTabContent.MoreLikeThis(
                             items = moreLikeThisTVShowList
                         )
-                    ), ,
+                    ),
                 )
             }
         }
@@ -259,7 +257,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 showDetailsUiState.copy(
                     rowSection = TVShowRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_REVIEWS)
-                    ), ,
+                    )
                 )
             }
         } else {
@@ -269,7 +267,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         content = TVShowTabContent.Reviews(
                             reviews = reviewResult
                         )
-                    ), ,
+                    )
                 )
             }
         }
@@ -300,7 +298,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         UiText.Resource(
                             NO_GALLERY
                         )
-                    ), ,
+                    )
                 )
             }
         } else {
@@ -310,7 +308,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         content = TVShowTabContent.Gallery(
                             images = backdrops
                         )
-                    ), ,
+                    )
                 )
             }
         }
@@ -333,7 +331,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                     content = TVShowTabContent.CompanyProduction(
                         companyProductionStates = companyProductionUiState
                     )
-                ), ,
+                )
             )
         }
     }
@@ -343,7 +341,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             screenState.copy(
                 rowSection = TVShowRowSectionUiState.NoDataFound(
                     UiText.Resource(NO_COMPANY_PRODUCTION)
-                ), ,
+                )
             )
         }
     }
@@ -363,13 +361,13 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     override fun onReadMoreDescriptionClicked() = updateState { screenState ->
         screenState.copy(
-            isDescriptionExpanded = !screenState.isDescriptionExpanded, ,
+            isDescriptionExpanded = !screenState.isDescriptionExpanded
         )
     }
 
     override fun onReadMoreReviewClicked(reviewId: String) = updateState { screenState ->
         screenState.copy(
-            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId), ,
+            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId)
         )
     }
 
@@ -417,20 +415,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         }
     }
 
-    override fun onAddMediaToFavouriteListClicked(
-        favouriteListId: Int,
-        mediaId: Long,
-    ) {
-        checkLoginThen {
-            updateState {
-                it.copy(
-                    showAddToListDialog = true,
-                    selectedAddToListMediaId = mediaId,
-                    selectedFavouriteListId = favouriteListId,
-                )
-            }
-        }
-    }
 
     override fun onAddMediaToFavouriteListClicked(
         mediaId: Long,
@@ -485,7 +469,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             screenState.copy(
                 tvShowDetailsTabsUiState = screenState.tvShowDetailsTabsUiState.copy(
                     tab = tvShowDetailsTabs, isSelected = true
-                ), ,
+                )
             )
         }
     }
@@ -495,6 +479,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             screenState.copy()
         }
     }
+
     private fun updateRowSectionStateToError(error: Int) {
         updateState { screenState ->
             screenState.copy(
@@ -509,7 +494,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         Log.e("WOWTEST", "Error: ${errorState.message}")
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message, ,
+                errorMessage = errorState.message
             )
         }
     }

@@ -25,9 +25,9 @@ class ProfileViewModel @Inject constructor(
     val setThemeUseCase: SetThemeUseCase,
     val getLoginStatus: GetLoginStatus,
     val setContentRestrictionUseCase: SetContentRestrictionUseCase,
-    val getContentRestrictionUseCase: GetContentRestrictionUseCase
+    val getContentRestrictionUseCase: GetContentRestrictionUseCase,
 
-) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
+    ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
 
     init {
@@ -93,8 +93,10 @@ class ProfileViewModel @Inject constructor(
 
     private fun checkLoginStatus() {
         viewModelScope.launch {
-            val loggedIn = getLoginStatus()
-            updateState { it.copy(isLoggedIn = loggedIn) }
+            getLoginStatus().collect { loggedIn ->
+
+                updateState { it.copy(isLoggedIn = loggedIn) }
+            }
         }
     }
 

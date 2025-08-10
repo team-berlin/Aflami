@@ -100,7 +100,7 @@ fun AddToListDialog(
                                     itemCount = favouriteList.numberOfFavouriteMovies,
                                     isSelected = addToListUiState.selectedListId == favouriteList.listId,
                                     onSelectItem = {
-                                        onSelectedListChange(addToListUiState.selectedListId!!)
+                                        onSelectedListChange(favouriteList.listId!!)
                                     })
                             }
                         }

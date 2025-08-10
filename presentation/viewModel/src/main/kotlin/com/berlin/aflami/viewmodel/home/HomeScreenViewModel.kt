@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.home
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PAGE_SIZE
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -41,7 +40,7 @@ class HomeScreenViewModel @Inject constructor(
     private val getTopRatedSeriesUseCase: GetTopRatedTVShowUseCase,
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<HomeScreenState, HomeScreenEffect>(HomeScreenState()),
     HomeScreenInteractionListener {
 
@@ -273,7 +272,14 @@ class HomeScreenViewModel @Inject constructor(
 
     //region onGetNowClicked implementation
     override fun onGetNowClicked(userMood: UserMood) {
-        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(openMovieDialog = true, selectedMood = UserMoodUiState(userMood))) }
+        updateState {
+            it.copy(
+                moodPickerUiState = it.moodPickerUiState.copy(
+                    openMovieDialog = true,
+                    selectedMood = UserMoodUiState(userMood)
+                )
+            )
+        }
         tryToCall(
             call = {
                 getMoviesByMoodUseCase(userMood.moodGenres.toGenreIds()).map { movie -> movie.toMovieUiState() }
@@ -326,9 +332,8 @@ class HomeScreenViewModel @Inject constructor(
             screenState.copy(
                 selectedGenres = newGenreId,
 
-                    movieGenres = selected,
-                    isLoading = false
-                ),
+                movieGenres = selected,
+                isLoading = false
             )
         }
         getUpComingMoviesByGenre()
@@ -372,7 +377,7 @@ class HomeScreenViewModel @Inject constructor(
     }
     //endregion
 
-     fun loadGenresMovies() {
+    fun loadGenresMovies() {
         tryToCall(
             call = {
                 val movieGenres = getMoviesByGenreUseCase()
@@ -392,7 +397,7 @@ class HomeScreenViewModel @Inject constructor(
         )
     }
 
-     fun loadGenresTVShow() {
+    fun loadGenresTVShow() {
         tryToCall(
             call = {
                 val tvShowsGenre = getTVShowGenresUseCase()

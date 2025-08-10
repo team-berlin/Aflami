@@ -198,7 +198,7 @@ private fun ListsContent(
                                     .size(156.dp, 147.dp)
                                     .clickable {
                                         interactionListener.onClickListCard(
-                                            it.listId, it.listTitle
+                                            it.listId!!, it.listTitle
                                         )
                                     })
                         }

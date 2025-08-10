@@ -1,13 +1,6 @@
 package com.berlin.aflami.di
 
 import dagger.Module
-import usecase.movie.GetMoviesByMoodUseCase
-import usecase.profile.GetContentRestrictionUseCase
-import usecase.profile.GetLanguageUseCase
-import usecase.profile.GetThemeUseCase
-import usecase.profile.SetContentRestrictionUseCase
-import usecase.profile.SetLanguageUseCase
-import usecase.profile.SetThemeUseCase
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
@@ -15,12 +8,23 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
+import repository.SettingsRepository
 import repository.TVShowDetailsRepository
 import repository.TVShowRepository
+import repository.UserFavouriteListRepository
+import repository.UserRepository
 import usecase.auth.GetLoginStatus
 import usecase.auth.GetLoginUseCase
+import usecase.auth.GetUserProfileUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
+import usecase.favouritelist.AddMovieToFavouriteListUseCase
+import usecase.favouritelist.CreateNewFavouriteListUseCase
+import usecase.favouritelist.DeleteMovieFromUserFavouriteList
+import usecase.favouritelist.DeleteUserFavouriteListUseCase
+import usecase.favouritelist.EditListTitleUseCase
+import usecase.favouritelist.GetAllFavouriteListsUseCase
+import usecase.favouritelist.GetFavouriteListItemsUseCase
 import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.ClearMoviesSearchHistoryUseCase
@@ -43,6 +47,12 @@ import usecase.movie.SearchByActorNameUseCase
 import usecase.movie.SearchMoviesByCountryUseCase
 import usecase.onboarding.GetFirstEntryUseCase
 import usecase.onboarding.SaveFirstEntryUseCase
+import usecase.profile.GetContentRestrictionUseCase
+import usecase.profile.GetLanguageUseCase
+import usecase.profile.GetThemeUseCase
+import usecase.profile.SetContentRestrictionUseCase
+import usecase.profile.SetLanguageUseCase
+import usecase.profile.SetThemeUseCase
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.ContinueWatchingTVShowUseCase
 import usecase.tvshow.GetPopularTVShowsUseCase
@@ -209,7 +219,7 @@ object UseCaseModule {
 
     @Provides
     fun provideGetUserProfileUseCase(
-        repository: UserRepository
+        repository: UserRepository,
     ): GetUserProfileUseCase = GetUserProfileUseCase(repository)
 
     @Provides
