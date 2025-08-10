@@ -11,6 +11,7 @@ import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
+import com.berlin.repository.datasource.remote.dto.account.AccountDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
@@ -166,6 +167,11 @@ interface ApiService {
     suspend fun getMovieVideos(
         @Path(ApiConstants.MOVIE_ID) movieId: Long,
     ): Response<VideosResponse>
+
+    @GET("account")
+    suspend fun getUserProfile(
+        @Query(ApiConstants.SESSION_ID) sessionId: String
+    ): Response<AccountDto>
 
     @POST(ApiConstants.LIST)
     suspend fun createNewFavouriteList(

@@ -461,7 +461,7 @@ private fun SearchScreenContent(
 
 
 @Composable
-private fun ErrorContent() {
+fun ErrorContent() {
     NoDataContainer(
         modifier = Modifier.fillMaxSize(),
         image = painterResource(com.berlin.ui.R.drawable.no_search_result),

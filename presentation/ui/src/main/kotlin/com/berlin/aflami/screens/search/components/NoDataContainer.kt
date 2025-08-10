@@ -24,7 +24,7 @@ fun NoDataContainer(
     modifier: Modifier = Modifier,
     image: Painter,
     titleId: Int,
-    messageId: Int
+    messageId: Int?=null
 ) {
     Column(
         modifier = modifier.padding(horizontal = 24.dp),
@@ -43,12 +43,14 @@ fun NoDataContainer(
             color = Theme.color.textColors.title,
             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
         )
-        Text(
-            text = stringResource(messageId),
-            style = Theme.textStyle.body.small,
-            color = Theme.color.textColors.body,
-            textAlign = TextAlign.Center
-        )
+        if (messageId != null) {
+            Text(
+                text = stringResource(messageId),
+                style = Theme.textStyle.body.small,
+                color = Theme.color.textColors.body,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 

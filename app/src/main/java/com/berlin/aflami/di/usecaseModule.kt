@@ -1,6 +1,13 @@
 package com.berlin.aflami.di
 
 import dagger.Module
+import usecase.movie.GetMoviesByMoodUseCase
+import usecase.profile.GetContentRestrictionUseCase
+import usecase.profile.GetLanguageUseCase
+import usecase.profile.GetThemeUseCase
+import usecase.profile.SetContentRestrictionUseCase
+import usecase.profile.SetLanguageUseCase
+import usecase.profile.SetThemeUseCase
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
@@ -10,18 +17,10 @@ import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.TVShowDetailsRepository
 import repository.TVShowRepository
-import repository.UserFavouriteListRepository
 import usecase.auth.GetLoginStatus
 import usecase.auth.GetLoginUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
-import usecase.favouritelist.AddMovieToFavouriteListUseCase
-import usecase.favouritelist.CreateNewFavouriteListUseCase
-import usecase.favouritelist.DeleteMovieFromUserFavouriteList
-import usecase.favouritelist.DeleteUserFavouriteListUseCase
-import usecase.favouritelist.EditListTitleUseCase
-import usecase.favouritelist.GetAllFavouriteListsUseCase
-import usecase.favouritelist.GetFavouriteListItemsUseCase
 import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.ClearMoviesSearchHistoryUseCase
@@ -209,12 +208,41 @@ object UseCaseModule {
         GetTopRatedMoviesUseCase(repository)
 
     @Provides
+    fun provideGetUserProfileUseCase(
+        repository: UserRepository
+    ): GetUserProfileUseCase = GetUserProfileUseCase(repository)
+
+    @Provides
     fun provideGetAppEntryUseCase(repository: AppEntryRepository): SaveFirstEntryUseCase =
         SaveFirstEntryUseCase(repository)
 
     @Provides
     fun provideGetFirstEntryUseCase(repository: AppEntryRepository): GetFirstEntryUseCase =
         GetFirstEntryUseCase(repository)
+
+    @Provides
+    fun provideGetLanguageUseCase(repository: SettingsRepository): GetLanguageUseCase =
+        GetLanguageUseCase(repository)
+
+    @Provides
+    fun provideGetThemeUseCase(repository: SettingsRepository): GetThemeUseCase =
+        GetThemeUseCase(repository)
+
+    @Provides
+    fun provideGetContentRestrictionUseCase(repository: SettingsRepository): GetContentRestrictionUseCase =
+        GetContentRestrictionUseCase(repository)
+
+    @Provides
+    fun provideSetLanguageUseCase(repository: SettingsRepository): SetLanguageUseCase =
+        SetLanguageUseCase(repository)
+
+    @Provides
+    fun provideSetThemeUseCase(repository: SettingsRepository): SetThemeUseCase =
+        SetThemeUseCase(repository)
+
+    @Provides
+    fun provideSetContentRestrictionUseCase(repository: SettingsRepository): SetContentRestrictionUseCase =
+        SetContentRestrictionUseCase(repository)
 
     @Provides
     fun provideCreateNewFavouriteListUseCase(userFavouriteListRepository: UserFavouriteListRepository) =

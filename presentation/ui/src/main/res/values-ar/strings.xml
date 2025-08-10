@@ -59,8 +59,19 @@
     <string name="read_less">قراءة اقل</string>
     <string name="read_more">قراءة المزيد</string>
     <string name="retry">إعادة المحاولة</string>
-    <string name="apply">اضافه</string>
+    <string name="apply">تطبيق</string>
     <string name="clear">مسح</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="language">اللغة</string>
+    <string name="app_theme">ثيم التطبيق</string>
+    <string name="settings">الاعدادات</string>
+    <string name="dark">داكن</string>
+    <string name="light">فاتح</string>
+    <string name="eng">الانجليزية</string>
+    <string name="ar">العربية</string>
+    <string name="v1_1">الاصدار1.1</string>
+    <string name="watch_history">سجل المشاهدات</string>
+    <string name="my_rating">تقيماتي</string>
     <string name="movies_that_feel_you">أفلام تلامس مشاعرك</string>
     <string name="page1_descerption">ده مش مجرد تطبيق أفلام — ده تجربة مزاجية. اختر إحساسك ودَع القصة تبدأ.</string>
     <string name="build_your_watchlist_show_love">أنشئ قائمتك المفضلة وعبّر عن حبك للأفلام</string>
@@ -90,6 +101,25 @@
         <item quantity="many">%d عنصراً</item>
         <item quantity="other">%d عنصر</item>
     </plurals>
+
+    //profile
+    <string name="language_dialog_english">الانجليزية</string>
+    <string name="language_dialog_arabic">العربية</string>
+    <string name="language_dialog_warning">سوف يتم مهاجمتك من قبل مجموعة من الألوان الزاهية!</string>
+    <string name="setting_dialog_change_password">تغيير كلمة المرور</string>
+    <string name="setting_dialog_content_restriction">تقييد المحتوى</string>
+    <string name="setting_dialog_logout">تسجيل الخروج</string>
+    <string name="setting_dialog_logout_quote">تعبت من المشاهدة ؟</string>
+    <string name="watch__history">سجل المشاهدات</string>
+    <string name="no_result_found">لا يوجد نتائج</string>
+    <string name="Please_login">الرجاء تسجيل الدخول للوصول الى بيانات حساب </string>
+    <string name="save">حفظ</string>
+    <string name="strict">صارم</string>
+    <string name="moderate">معتدل</string>
+    <string name="off">غلق</string>
+    <string name="strict_description">إخفاء جميع المحتوى الحساس.</string>
+    <string name="moderate_description">إخفاء المشاهد الصريحة فقط.</string>
+    <string name="off_description">عدم إخفاء المحتوى.</string>
 
 
 </resources>

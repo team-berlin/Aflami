@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -220,7 +221,9 @@ private fun SearchByCountryContent(
                 filteredCountries = state.filteredCountries,
                 onCountryNameChanged = listener::onCountryNameChanged,
                 onCountryClick = {
-                    listener.onCountryClicked(countryName = state.countryName.text)
+                        selectedCountry ->
+                    listener.onCountryNameChanged(TextFieldValue(selectedCountry))
+                    listener.onCountryClicked(countryName = selectedCountry)
                 }
             )
         }

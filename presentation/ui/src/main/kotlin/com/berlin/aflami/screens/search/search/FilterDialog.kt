@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -126,8 +127,8 @@ fun FilterDialog(
                     )
                     LazyRow(
                         modifier = Modifier
-                            .height(96.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp),
                         contentPadding = PaddingValues(horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -230,7 +231,7 @@ fun Chips(
 
         Text(
             modifier = Modifier
-                .height(32.dp)
+                .wrapContentHeight()
                 .let {
                     if (!isSingleWord) it.width(56.dp) else it
                 },
@@ -255,9 +256,14 @@ fun RatingBar(
     ) {
         for (i in 1..10) {
             Icon(
-                painter = painterResource(R.drawable.star),
+                painter = painterResource(
+                    id = if (i <= currentRating)
+                        R.drawable.ic_star_filled
+                    else
+                        R.drawable.ic_star_outline
+                ),
                 contentDescription = null,
-                tint = if (i <= currentRating) Theme.color.statusColors.yellowAccent else Theme.color.surfaceHigh,
+                tint = Theme.color.statusColors.yellowAccent,
                 modifier = Modifier
                     .size(24.dp)
                     .clickable(

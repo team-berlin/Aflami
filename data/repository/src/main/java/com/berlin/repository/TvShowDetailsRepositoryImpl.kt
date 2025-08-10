@@ -7,16 +7,22 @@ import com.berlin.entity.MediaImage
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.Video
+import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
+import com.berlin.repository.mapper.toTVShowGenreEntity
+import com.berlin.repository.util.Constants
 import repository.TVShowDetailsRepository
 import javax.inject.Inject
 
+
 class TvShowDetailsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource
+    private val recentlyWatchedLocalDataSource: RecentlyWatchedLocalDataSource,
+    private val genreLocalDataSource: GenreLocalDataSource
 ) : TVShowDetailsRepository {
     override suspend fun getTVShowDetails(tvShowId: Long): TVShow {
 
@@ -100,17 +106,26 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTVShowsGenres(): List<Genre> {
-        return remoteDataSource.getTVGenres().genres.map { it.toDomain() }
-    }
+        val cachedGenres = genreLocalDataSource.getCachedTVGenres()
+        if (!isExpiredOrEmpty(cachedGenres)) {
+            return cachedGenres.map { it.toDomain() }
+        }
 
+        val remoteGenres = remoteDataSource.getTVGenres().genres
+        val genreEntities = remoteGenres.map { it.toTVShowGenreEntity() }
+        genreLocalDataSource.cacheTVGenres(genreEntities)
+        return remoteGenres.map { it.toDomain() }
+    }
     override suspend fun getTVShowVideos(seriesId: Long): List<Video> {
         return remoteDataSource.getTVShowVideos(seriesId).results?.mapNotNull {
             it?.toDomain()
         } ?: emptyList()
     }
 
-//    private fun isExpiredOrEmpty(list: List<GenreEntity>): Boolean {
-//        return list.isEmpty() || list.any { Instant.now().toEpochMilli() - it.time > Constants.CACHE_TIMEOUT }
-//    }
+    private fun isExpiredOrEmpty(list: List<TVShowGenreEntity>): Boolean {
+        return list.isEmpty() || list.any {
+            System.currentTimeMillis() - it.time > Constants.CACHE_TIMEOUT
+        }
+    }
 
 }

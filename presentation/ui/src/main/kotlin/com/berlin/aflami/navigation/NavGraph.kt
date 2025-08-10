@@ -30,6 +30,7 @@ import com.berlin.aflami.navigation.routes.searchScreenRoute
 import com.berlin.aflami.navigation.routes.topRatingMedia
 import com.berlin.aflami.navigation.routes.tvShowDetailsRoute
 import com.berlin.aflami.navigation.routes.videoWebView
+import com.berlin.aflami.navigation.routes.watchHistory
 import com.berlin.aflami.navigation.routes.watchedMedia
 import com.berlin.aflami.navigation.routes.webView
 
@@ -47,6 +48,7 @@ import com.berlin.aflami.navigation.routes.webView
 @Composable
 fun AflamiNavGraph(
     modifier: Modifier = Modifier,
+    selectedLanguage: String,
     isLoggedIn: Boolean,
     isFirsTime: Boolean,
     navController: NavHostController,
@@ -66,8 +68,10 @@ fun AflamiNavGraph(
                 isLoggedIn -> NavigationBarDestinations.HomeScreen
                 else -> LoginDestination
             },
+
             enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None }
+            exitTransition = { ExitTransition.None },
+
         ) {
             loginNavigationGraph()
             bottomNavigationBarGraph()
@@ -130,6 +134,7 @@ fun NavGraphBuilder.bottomNavigationBarGraph() {
     profileRoute()
     categoriesRoute()
     gamesRoute()
+    watchHistory()
 }
 
 fun NavGraphBuilder.searchNavigationGraph() {

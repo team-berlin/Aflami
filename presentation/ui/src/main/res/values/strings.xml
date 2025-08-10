@@ -60,6 +60,26 @@
     <string name="retry">Retry</string>
     <string name="apply">Apply</string>
     <string name="clear">Clear</string>
+    <string name="profile">Profile</string>
+    <string name="language">Language</string>
+    <string name="app_theme">App Theme</string>
+    <string name="settings">Settings</string>
+    <string name="dark">Dark</string>
+    <string name="light">Light</string>
+    <string name="eng">ENG</string>
+    <string name="ar">AR</string>
+    <string name="v1_1">v1.1</string>
+    <string name="watch_history">Watch history</string>
+    <string name="my_rating">My rating</string>
+
+    //profile
+    <string name="language_dialog_english">English</string>
+    <string name="language_dialog_arabic">Arabic</string>
+    <string name="language_dialog_warning">You will be attacked by a group of bright colors!</string>
+    <string name="setting_dialog_change_password">Change password</string>
+    <string name="setting_dialog_logout">Logout</string>
+    <string name="setting_dialog_logout_quote">Tired to watching?</string>
+    <string name="setting_dialog_content_restriction">Content Restriction</string>
     <string name="no_saved_items_here">No Saved Items Here!</string>
     <string name="you_can_add_items_to_your_list_by_searching_for_them_in_the_app">You can add items to your list by searching for them in the app.</string>
     <string name="delete_list">Delete List</string>
@@ -85,4 +105,16 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
     </plurals>
+    <string name="watch__history">Watch history</string>
+    <string name="no_result_found">No result found</string>
+    <string name="Please_login">Please login to access your account details and other features!</string>
+    <string name="save">Save</string>
+    <string name="strict">Strict</string>
+    <string name="moderate">Moderate</string>
+    <string name="off">Off</string>
+    <string name="strict_description">Blurs all sensitive content.</string>
+    <string name="moderate_description">Blurs explicit scenes only.</string>
+    <string name="off_description">No content is blurred.</string>
+
+
 </resources>
