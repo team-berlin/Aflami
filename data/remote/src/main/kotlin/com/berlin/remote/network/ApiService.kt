@@ -1,15 +1,15 @@
 package com.berlin.remote.network
 
-import com.berlin.repository.datasource.remote.response.BaseResponse
-import com.berlin.repository.datasource.remote.response.GenreResponse
-import com.berlin.repository.datasource.remote.response.MediaCastResponse
-import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.account.AccountDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
+import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
+import com.berlin.repository.datasource.remote.response.BaseResponse
+import com.berlin.repository.datasource.remote.response.GenreResponse
+import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -60,20 +60,17 @@ interface ApiService {
 
     @GET(ApiConstants.SEARCH_BY_ACTOR)
     suspend fun searchMoviesByActor(
-        @Query(ApiConstants.QUERY) actorName: String,
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.QUERY) actorName: String, @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<PersonDto>>
 
     @GET(ApiConstants.SEARCH_MOVIE)
     suspend fun searchMovies(
-        @Query(ApiConstants.QUERY) query: String,
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.QUERY) query: String, @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.SEARCH_TV)
     suspend fun searchTVShows(
-        @Query(ApiConstants.QUERY) query: String,
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.QUERY) query: String, @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<TVShowDetailsDto>>
 
     @GET(ApiConstants.SERIES_DETAILS)
@@ -110,16 +107,15 @@ interface ApiService {
 
     @GET(ApiConstants.DISCOVER_MOVIE)
     suspend fun getUpcomingMovies(
-        @Query(ApiConstants.WITH_GENRES)  selectedGenres: Int? = null,
+        @Query(ApiConstants.WITH_GENRES) selectedGenres: Int? = null,
 
         @Query(ApiConstants.QUERY_SORT_BY) sortBy: String = ApiConstants.SORT_BY_POPULARITY_DESC,
         @Query(ApiConstants.QUERY_INCLUDE_ADULT) includeAdult: Boolean = ApiConstants.INCLUDE_ADULT_DEFAULT,
         @Query(ApiConstants.QUERY_INCLUDE_VIDEO) includeVideo: Boolean = ApiConstants.INCLUDE_VIDEO_DEFAULT,
-        @Query(ApiConstants.QUERY_WITH_RELEASE_TYPE) releaseType: String =ApiConstants. RELEASE_TYPE_THEATRICAL_AND_LIMITED,
-        @Query(ApiConstants.RELEASE_DATE_GTE)  releaseDateRangeStart: String=DEFAULT_GTE,
-        @Query(ApiConstants.RELEASE_DATE_LTE)  releaseDateRangeEnd: String= DEFAULT_LTE
-    )
-    : Response<BaseResponse<MovieDetailsDto>>
+        @Query(ApiConstants.QUERY_WITH_RELEASE_TYPE) releaseType: String = ApiConstants.RELEASE_TYPE_THEATRICAL_AND_LIMITED,
+        @Query(ApiConstants.RELEASE_DATE_GTE) releaseDateRangeStart: String = DEFAULT_GTE,
+        @Query(ApiConstants.RELEASE_DATE_LTE) releaseDateRangeEnd: String = DEFAULT_LTE
+    ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.POPULAR_MOVIES)
     suspend fun popularMovies(): Response<BaseResponse<MovieDetailsDto>>
@@ -156,14 +152,29 @@ interface ApiService {
     suspend fun getUserProfile(
         @Query(ApiConstants.SESSION_ID) sessionId: String
     ): Response<AccountDto>
+
+
+    @GET(ApiConstants.DISCOVER_MOVIE)
+    suspend fun getMoviesByCategory(
+        @Query(ApiConstants.WITH_GENRES) selectedCategory: Long? = null,
+        @Query(ApiConstants.PAGE) page: Int
+        ): Response<BaseResponse<MovieDetailsDto>>
+
+    @GET(ApiConstants.DISCOVER_SERIES)
+    suspend fun getTVShowsByCategory(
+        @Query(ApiConstants.WITH_GENRES) selectedCategory: Long? = null,
+        @Query(ApiConstants.PAGE) page: Int
+    ): Response<BaseResponse<TVShowDetailsDto>>
 }
 
-val DEFAULT_GTE: String = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    .date
-    .plus(1, DateTimeUnit.DAY)
-    .toString()
+val DEFAULT_GTE: String =
+    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.plus(
+            1,
+            DateTimeUnit.DAY
+        ).toString()
 
-val DEFAULT_LTE: String = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    .date
-    .plus(21, DateTimeUnit.DAY)
-    .toString()
+val DEFAULT_LTE: String =
+    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.plus(
+            21,
+            DateTimeUnit.DAY
+        ).toString()

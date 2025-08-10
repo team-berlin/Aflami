@@ -19,6 +19,7 @@ import com.berlin.aflami.navigation.routes.gamesRoute
 import com.berlin.aflami.navigation.routes.homeScreenRoute
 import com.berlin.aflami.navigation.routes.listsRoute
 import com.berlin.aflami.navigation.routes.loginRoute
+import com.berlin.aflami.navigation.routes.mediaByCategoryRoute
 import com.berlin.aflami.navigation.routes.movieDetailsRoute
 import com.berlin.aflami.navigation.routes.onBoarding
 import com.berlin.aflami.navigation.routes.profileRoute
@@ -75,6 +76,7 @@ fun AflamiNavGraph(
             bottomNavigationBarGraph()
             homeNavigationGraph()
             detailsNavigationGraph()
+            categoryNavigationGraph()
         }
     }
 
@@ -146,4 +148,8 @@ fun NavGraphBuilder.detailsNavigationGraph() {
     movieDetailsRoute()
     castDetailsScreen()
     videoWebView()
+}
+
+fun NavGraphBuilder.categoryNavigationGraph() {
+    mediaByCategoryRoute()
 }
