@@ -6,6 +6,8 @@ import com.berlin.aflami.viewmodel.mapper.toActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import usecase.movie.GetMovieCastUseCase
 import usecase.tvshow.GetTVShowCastUseCase
 import javax.inject.Inject
@@ -14,8 +16,9 @@ import javax.inject.Inject
 class CastViewModelScreen @Inject constructor(
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getSeriesCastUseCase: GetTVShowCastUseCase,
+    private val dispatcher: CoroutineDispatcher= Dispatchers.IO,
     castDetailsArgs: CastDetailsArgs,
-) : BaseViewModel<CastScreenState, CastDetailsScreenEffect>(
+    ) : BaseViewModel<CastScreenState, CastDetailsScreenEffect>(
     CastScreenState()
 ), CastDetailsScreenListener {
 
@@ -42,7 +45,8 @@ class CastViewModelScreen @Inject constructor(
                 }
             },
             onSuccess = ::updateScreenWithMediaActors,
-            onError = ::updateScreenStateToError
+            onError = ::updateScreenStateToError,
+            dispatcher=dispatcher
         )
     }
 
