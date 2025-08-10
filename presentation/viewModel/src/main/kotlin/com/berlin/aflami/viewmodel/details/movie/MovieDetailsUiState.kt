@@ -1,11 +1,10 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 import androidx.annotation.StringRes
-import androidx.compose.ui.graphics.painter.Painter
 import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
+import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
-import kotlinx.datetime.LocalDate
 
 data class MovieDetailsUiState(
     val isFavorite: Boolean = false,
@@ -22,10 +21,9 @@ data class MovieDetailsUiState(
     val movieDetailsTabsUiState: MovieDetailsTabsUiState = MovieDetailsTabsUiState(),
     val showLoginDialog:Boolean = false,
     val showRatingDialog: Boolean = false,
-    val showAddToListDialog: Boolean = false,
+    val addToListDialog: AddToListSheetState = AddToListSheetState(),
     val selectedRatingMediaId: Long? = null,
-    val selectedAddToListMediaId: Long? = null,
-    val selectedFavouriteListId: Int? = null
+    val movieId: Long = 0,
 )
 
 

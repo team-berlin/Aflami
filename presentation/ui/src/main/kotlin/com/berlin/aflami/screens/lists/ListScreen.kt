@@ -38,6 +38,7 @@ import com.berlin.aflami.navigation.ListDetailsDestination
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
+import com.berlin.aflami.screens.listdetails.component.EditListDialog
 import com.berlin.aflami.screens.lists.component.ListCard
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.search.components.NoDataContainer
@@ -91,19 +92,20 @@ private fun ListsContent(
                 onDismiss = interactionListener::onCancelCreatingNewListClicked,
             )
         }
-        //Edit List Dialog
-//        AnimatedVisibility(
-//            enter = fadeIn(),
-//            exit = fadeOut(),
-//            visible = listScreenState.editListSheetState.isEditNewListDialogVisible
-//        ) {
-//            CreateNewListDialog(
-//                listName = TextFieldValue(listScreenState.createNewListSheetState.newListTitle),
-//                onListNameChanged = { interactionListener.onOldListTitleChanged(it.text) },
-//                onCreateListClick = interactionListener::onSaveOldListTitleToNewTitleClicked,
-//                onDismiss = interactionListener::onCancelEditingListClicked,
-//            )
-//        }
+//        Edit List Dialog
+        AnimatedVisibility(
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = listScreenState.editListSheetState.isEditNewListDialogVisible
+        ) {
+            EditListDialog(
+                listId = listScreenState.editListSheetState.requiredListIdToEdit!!,
+                listName = listScreenState.createNewListSheetState.newListTitle,
+                onListNameChanged = { interactionListener.onOldListTitleChanged(it) },
+                onSaveClick = interactionListener::onSaveOldListTitleToNewTitleClicked,
+                onDismiss = interactionListener::onCancelEditingListClicked,
+            )
+        }
         AnimatedVisibility(
             enter = fadeIn(), exit = fadeOut(), visible = listScreenState.isScreenLoading
         ) {

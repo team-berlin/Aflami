@@ -98,7 +98,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                     screenState.copy(
                         posters = tvShowPosters,
                         tvShowUiState = tvShowUiState,
-                        isScreenLoading = false
                     )
                 }
                 onSeasonsClicked(
@@ -146,7 +145,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 castList = castUiStateList,
-                isScreenLoading = false
             )
         }
     }
@@ -193,7 +191,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                     content = TVShowTabContent.Season(
                         seasonToEpisodesMap = seasons
                     )
-                ),
+                ), ,
             )
         }
     }
@@ -222,7 +220,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 screenState.copy(
                     rowSection = TVShowRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_MORE_MEDIA)
-                    ),
+                    ), ,
                 )
             }
         } else {
@@ -232,7 +230,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         content = TVShowTabContent.MoreLikeThis(
                             items = moreLikeThisTVShowList
                         )
-                    ),
+                    ), ,
                 )
             }
         }
@@ -261,7 +259,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 showDetailsUiState.copy(
                     rowSection = TVShowRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_REVIEWS)
-                    ),
+                    ), ,
                 )
             }
         } else {
@@ -271,8 +269,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         content = TVShowTabContent.Reviews(
                             reviews = reviewResult
                         )
-                    ),
-                    isScreenLoading = false,
+                    ), ,
                 )
             }
         }
@@ -303,7 +300,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         UiText.Resource(
                             NO_GALLERY
                         )
-                    ),
+                    ), ,
                 )
             }
         } else {
@@ -313,7 +310,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         content = TVShowTabContent.Gallery(
                             images = backdrops
                         )
-                    ),
+                    ), ,
                 )
             }
         }
@@ -336,7 +333,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                     content = TVShowTabContent.CompanyProduction(
                         companyProductionStates = companyProductionUiState
                     )
-                ),
+                ), ,
             )
         }
     }
@@ -346,7 +343,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             screenState.copy(
                 rowSection = TVShowRowSectionUiState.NoDataFound(
                     UiText.Resource(NO_COMPANY_PRODUCTION)
-                ),
+                ), ,
             )
         }
     }
@@ -356,15 +353,23 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     override fun onPlayClicked(videoUrl: String) =
         sendNewEffect(TvShowDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
 
+    override fun onAddMovieToFavouriteClicked() {
+        updateState { showDetailsUiState ->
+            showDetailsUiState.copy(
+                sorryNotSupportedFeatureForTvShowVisible = true
+            )
+        }
+    }
+
     override fun onReadMoreDescriptionClicked() = updateState { screenState ->
         screenState.copy(
-            isDescriptionExpanded = !screenState.isDescriptionExpanded,
+            isDescriptionExpanded = !screenState.isDescriptionExpanded, ,
         )
     }
 
     override fun onReadMoreReviewClicked(reviewId: String) = updateState { screenState ->
         screenState.copy(
-            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId),
+            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId), ,
         )
     }
 
@@ -386,7 +391,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             updateState {
                 it.copy(
                     showRatingDialog = true,
-                    selectedRatingMediaId = tvShowId
+                    selectedRatingMediaId = tvShowId,
                 )
             }
         }
@@ -402,19 +407,13 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         val mediaId = _state.value.selectedRatingMediaId ?: return
         //TODO: Handle the actual rating submission here, e.g., call usecase.submitRating(mediaId, rating)
         _state.update {
-            it.copy(
-                showRatingDialog = false,
-                selectedRatingMediaId = null
-            )
+            it.copy()
         }
     }
 
     override fun onCancelRatingClicked() {
         updateState {
-            it.copy(
-                showRatingDialog = false,
-                selectedRatingMediaId = null
-            )
+            it.copy()
         }
     }
 
@@ -426,20 +425,23 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             updateState {
                 it.copy(
                     showAddToListDialog = true,
+                    selectedAddToListMediaId = mediaId,
                     selectedFavouriteListId = favouriteListId,
-                    selectedAddToListMediaId = mediaId
                 )
             }
         }
     }
 
+    override fun onAddMediaToFavouriteListClicked(
+        mediaId: Long,
+        favouriteListId: Int,
+    ) {
+        TODO("Not yet implemented")
+    }
+
     override fun onSelectFavouriteList(favouriteListId: Int) {
         updateState {
-            it.copy(
-                showAddToListDialog = false,
-                selectedAddToListMediaId = null,
-                selectedFavouriteListId = null
-            )
+            it.copy()
         }
     }
 
@@ -483,16 +485,14 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             screenState.copy(
                 tvShowDetailsTabsUiState = screenState.tvShowDetailsTabsUiState.copy(
                     tab = tvShowDetailsTabs, isSelected = true
-                ),
+                ), ,
             )
         }
     }
 
     private fun updateRowSectionToLoading() {
         updateState { screenState ->
-            screenState.copy(
-                rowSection = TVShowRowSectionUiState.Loading,
-            )
+            screenState.copy()
         }
     }
     private fun updateRowSectionStateToError(error: Int) {
@@ -501,7 +501,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 rowSection = TVShowRowSectionUiState.NoDataFound(
                     UiText.Resource(error)
                 ),
-                isScreenLoading = false
             )
         }
     }
@@ -510,7 +509,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         Log.e("WOWTEST", "Error: ${errorState.message}")
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message,
+                errorMessage = errorState.message, ,
             )
         }
     }

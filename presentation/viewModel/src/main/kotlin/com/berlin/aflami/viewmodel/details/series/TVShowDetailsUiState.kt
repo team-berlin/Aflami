@@ -16,12 +16,13 @@ data class TVShowDetailsUiState(
     val isScreenLoading: Boolean = false,
     val errorMessage: String? = null,
     val tvShowDetailsTabsUiState: TVShowDetailsTabsUiState = TVShowDetailsTabsUiState(),
-    val showLoginDialog:Boolean = false,
+    val showLoginDialog: Boolean = false,
     val showRatingDialog: Boolean = false,
     val showAddToListDialog: Boolean = false,
     val selectedRatingMediaId: Long? = null,
     val selectedAddToListMediaId: Long? = null,
-    val selectedFavouriteListId: Int? = null
+    val selectedFavouriteListId: Int? = null,
+    val sorryNotSupportedFeatureForTvShowVisible: Boolean = false,
 )
 
 data class TVShowDetailsTabsUiState(

@@ -1,16 +1,20 @@
 package com.berlin.aflami.screens.listdetails.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -25,61 +29,91 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.IconButton
 import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.lists.component.Dialog
-import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.shareduistate.UserListUiState
+import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
 import com.berlin.ui.R
 
 @Composable
 fun AddToListDialog(
     modifier: Modifier = Modifier,
-    favouriteLists: List<UserListUiState> = emptyList(),
-    selectedList: UserListUiState? = null,
-    onSelectedListChange: (UserListUiState) -> Unit = {},
-    onAddToSelectedList: (Long) -> Unit = {},
+    movieId: Long,
+    onSelectedListChange: (favouriteListID: Int) -> Unit,
+    onAddToSelectedList: (movieId: Long, listId: Int) -> Unit,
     onCreateNewList: () -> Unit = {},
     onDismiss: () -> Unit = {},
+    addToListUiState: AddToListSheetState,
 ) {
     Dialog(
         onDismiss = onDismiss,
         modifier = modifier,
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-            modifier = Modifier.padding(12.dp),
-        ) {
-            DialogHeaderSection(
-                onDismiss = onDismiss,
-            )
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(320.dp)
-                    .nestedScroll(rememberNestedScrollInteropConnection()),
+
+        Box {
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = addToListUiState.isLoading
             ) {
-                items(favouriteLists) {
-                    SelectionListItem(
-                        listName = it.name,
-                        itemCount = it.itemCount,
-                        isSelected = selectedList == it,
-                        onSelectItem = {
-                            onSelectedListChange(it)
-                        })
+                CircularProgressIndicator(
+                    modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
+                )
+            }
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = addToListUiState.errorMessage != null
+            ) {
+                NoInternetConnectionPlaceholder()
+            }
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = addToListUiState.isLoading.not()
+            ) {
+                val favouriteLists = addToListUiState.favouriteLists.collectAsLazyPagingItems()
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    modifier = Modifier.padding(12.dp),
+                ) {
+                    DialogHeaderSection(
+                        onDismiss = onDismiss,
+                    )
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(320.dp)
+                            .nestedScroll(rememberNestedScrollInteropConnection()),
+                    ) {
+                        items(favouriteLists.itemCount) { index ->
+                            favouriteLists[index].let { favouriteList ->
+                                SelectionListItem(
+                                    listName = favouriteList!!.listTitle,
+                                    itemCount = favouriteList.numberOfFavouriteMovies,
+                                    isSelected = addToListUiState.selectedListId == favouriteList.listId,
+                                    onSelectItem = {
+                                        onSelectedListChange(addToListUiState.selectedListId!!)
+                                    })
+                            }
+                        }
+                    }
+                    ActionButtonsSection(
+                        movieId = movieId,
+                        selectedListId = addToListUiState.selectedListId,
+                        onAddToSelectedList = onAddToSelectedList,
+                        onCreateNewList = onCreateNewList,
+                        modifier = Modifier.padding(bottom = 12.dp),
+                    )
                 }
             }
-            ActionButtonsSection(
-                selectedList = selectedList,
-                onAddToSelectedList = onAddToSelectedList,
-                onCreateNewList = onCreateNewList,
-                modifier = Modifier.padding(bottom = 12.dp),
-            )
         }
     }
 }
@@ -162,8 +196,9 @@ private fun SelectionListItem(
 
 @Composable
 private fun ActionButtonsSection(
-    selectedList: UserListUiState?,
-    onAddToSelectedList: (Long) -> Unit,
+    movieId: Long? = null,
+    selectedListId: Int? = null,
+    onAddToSelectedList: (movieId: Long, listId: Int) -> Unit,
     onCreateNewList: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -172,14 +207,24 @@ private fun ActionButtonsSection(
         modifier = modifier,
     ) {
         PrimaryButton(
-            onClick = { onAddToSelectedList(selectedList?.id!!) },
+            onClick = {
+                onAddToSelectedList(
+                    movieId ?: throw IllegalStateException(
+                        "no Movie Id found"
+                    ), selectedListId ?: throw IllegalStateException(
+                        "no list selected"
+                    )
+                )
+            },
             modifier = modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            containerColor = Theme.color.primary
+            containerColor = Theme.color.primary,
         ) {
             Text(
-                "Add", style = Theme.textStyle.label.large, color = Theme.color.textColors.onPrimary,
+                "Add",
+                style = Theme.textStyle.label.large,
+                color = Theme.color.textColors.onPrimary,
             )
         }
 
@@ -199,13 +244,13 @@ private fun ActionButtonsSection(
         }
     }
 }
-
-@Preview
-@Composable
-private fun PreviewAddToListDialog() {
-    AflamiTheme {
-        AddToListDialog(
-            favouriteLists = emptyList(),
-        )
-    }
-}
+//
+//@Preview
+//@Composable
+//private fun PreviewAddToListDialog() {
+//    AflamiTheme {
+//        AddToListDialog(
+//            favouriteLists = emptyList(),
+//        )
+//    }
+//}

@@ -10,4 +10,5 @@ interface UserFavouriteListRepository {
     suspend fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long)
     suspend fun createNewFavouriteList(title: String)
     suspend fun editListTitle(listId: Int, newListTitle: String)
+    suspend fun addMovieToFavouriteList(movieId: Long, listId: Int)
 }

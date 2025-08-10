@@ -12,6 +12,7 @@ interface MediaInteractionListener :
 
     fun onBackClicked()
     fun onPlayClicked(videoUrl: String)
+    fun onAddMovieToFavouriteClicked()
     fun onReadMoreDescriptionClicked()
     fun onReadMoreReviewClicked(reviewId: String)
     fun onShowCastClicked(mediaId: Long)

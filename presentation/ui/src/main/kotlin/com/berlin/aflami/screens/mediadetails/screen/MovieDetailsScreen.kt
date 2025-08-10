@@ -35,7 +35,7 @@ import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
-import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
+import com.berlin.aflami.screens.listdetails.component.AddToListDialog
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.MovieBackdropPager
 import com.berlin.aflami.screens.mediadetails.components.RateDialog
@@ -47,8 +47,8 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
 import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
-import com.berlin.aflami.viewmodel.details.movie.MovieDetailsUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
+import com.berlin.aflami.viewmodel.details.movie.MovieDetailsUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsViewModel
 import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
@@ -70,8 +70,6 @@ fun MovieDetailsScreen(
             )
         }
     }
-
-
 
     AnimatedVisibility(
         enter = fadeIn(),
@@ -113,21 +111,26 @@ fun MovieDetailsScreen(
         visible = uiState.showLoginDialog
     ) {
         LoginRequiredDialog(
-        onLoginClick = {
-            viewModel.onLoginButtonClicked()
-        },
-        onDismiss = { },
-        title = stringResource(com.berlin.ui.R.string.login_required),
-        description = stringResource(com.berlin.ui.R.string.login_required_warning)
-    )
+            onLoginClick = {
+                viewModel.onLoginButtonClicked()
+            },
+            onDismiss = { },
+            title = stringResource(com.berlin.ui.R.string.login_required),
+            description = stringResource(com.berlin.ui.R.string.login_required_warning)
+        )
     }
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = uiState.showAddToListDialog
+        visible = uiState.addToListDialog.isAddToListDialogVisible
     ) {
-        CreateNewListDialog(
-
+        AddToListDialog(
+            movieId = uiState.movieId,
+            addToListUiState = uiState.addToListDialog,
+            onSelectedListChange = viewModel::onSelectFavouriteList,
+            onAddToSelectedList = viewModel::onAddMediaToFavouriteListClicked,
+            onCreateNewList = viewModel::onCreateNewFavouriteListClicked,
+            onDismiss = viewModel::onCancelAddingToFavouriteClicked,
         )
     }
 }
@@ -138,6 +141,7 @@ private fun onReceiveMovieDetailsEffect(
     mediaDetailsScreenEffect: MovieDetailsScreenEffect,
 ) {
     when (mediaDetailsScreenEffect) {
+
         is MovieDetailsScreenEffect.NavigateToShowAllCastScreen -> {
             navController.navigate(
                 CastDestination(
@@ -165,17 +169,23 @@ private fun onReceiveMovieDetailsEffect(
                     mediaDetailsScreenEffect.movieId
                 )
             ) {
-                popUpTo(MovieDetailsDestination(movieId = mediaDetailsScreenEffect.movieId)){
+                popUpTo(MovieDetailsDestination(movieId = mediaDetailsScreenEffect.movieId)) {
                     inclusive = true
 
                 }
             }
         }
 
-        is MovieDetailsScreenEffect.ShowLoginDialog -> {}
         MovieDetailsScreenEffect.NavigateToLogin -> {
             navController.navigate(
                 LoginDestination
+            )
+        }
+
+        is MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar -> {
+            Log.d(
+                "khairy",
+                "add to favourite final state = ${mediaDetailsScreenEffect.isAddedSuccessfully}"
             )
         }
     }
@@ -257,7 +267,7 @@ fun MovieDetailsContent(
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
                     onMovieCardClicked = { mediaId ->
-                        Log.e("click","click")
+                        Log.e("click", "click")
                         listener.onMediaCardClicked(mediaId)
                     },
                 )
@@ -273,7 +283,7 @@ fun MovieDetailsContent(
             lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             onFirstOptionClicked = { listener.onRateIconClicked(state.movieUiState.id) },
             onLastOptionClicked = {
-                listener.onAddMediaToFavouriteListClicked(0, state.movieUiState.id)
+                listener.onAddMovieToFavouriteClicked()
             },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
