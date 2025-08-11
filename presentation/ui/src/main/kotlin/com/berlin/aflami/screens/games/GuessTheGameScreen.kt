@@ -41,10 +41,10 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 
 data class Question(
-    val imageRes: Painter,
+    val imageRes: Int,
     val questionCount:Int,
     val questionAnswers: Pair<Int,List<String>>,
-    val selectAnswer: String?=null,
+    var selectAnswer: String?=null,
     val correctAnswer:String,
     val timer: Int
 )
@@ -52,23 +52,22 @@ data class Question(
 @Composable
 fun GuessTheGameScreen() {
 
-    GuessTheGameContent(
-        questionUiState = Question(
-            imageRes = painterResource(R.drawable.profile_avatar),
-            questionCount = 5,
-            questionAnswers = Pair(5,listOf("The Green Mile", "Avatar", "Inception", "Titanic")),
-            selectAnswer = "The Green Mile",
-            correctAnswer = "The Green ",
-            timer = 10
-        )
-    )
+    GuessTheGameContent()
 
 }
 
 @Composable
 fun GuessTheGameContent(
-    questionUiState: Question
 ) {
+
+    var questionUiState by remember { mutableStateOf(Question(
+            imageRes = R.drawable.profile_avatar,
+            questionCount = 5,
+            questionAnswers = Pair(5,listOf("The Green Mile", "Avatar", "Inception", "Titanic")),
+            selectAnswer = null,
+            correctAnswer = "Avatar",
+            timer = 10
+    )) }
 
     Box(
         modifier = Modifier
@@ -130,7 +129,7 @@ fun GuessTheGameContent(
             CharacterCard(
                 modifier = Modifier.padding(top = 4.dp),
 //                guessedText = "The green mile",
-                imageRes = questionUiState.imageRes,
+                imageRes = painterResource( questionUiState.imageRes),
                 blurAmount = 20f,
                 onHintClicked = {},
                 showHintBar = true,
@@ -144,16 +143,21 @@ fun GuessTheGameContent(
                     SelectionItem(
                         guessName = answer,
                         isSelected = when {
-                            !showResult -> {
-                                if (answer == questionUiState.selectAnswer) true else null
-                            }
+                            !showResult -> if (answer == questionUiState.selectAnswer) true else null
 
-                            else -> {
-                                if (answer == questionUiState.correctAnswer) true else false
+                            else -> when {
+                                answer == questionUiState.correctAnswer -> true
+                                answer == questionUiState.selectAnswer -> false
+                                else -> null
                             }
                         },
                         onSelectItem = {
-                        },
+                            if (!showResult) {
+                                questionUiState = questionUiState.copy(
+                                    selectAnswer = answer
+                                )
+                            }
+                        }
                     )
                 }
             }
