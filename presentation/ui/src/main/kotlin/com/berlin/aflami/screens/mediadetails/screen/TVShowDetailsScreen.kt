@@ -85,7 +85,7 @@ fun TvShowDetailsScreen(
         visible = uiState.isNotSupportedFeatureDialogVisible
     ) {
         NotSupportedFeatureDialog(
-            description = stringResource(R.string.not_supported_feature),
+            description = stringResource(com.berlin.ui.R.string.not_supported_feature),
             onDismiss = { viewModel.onCancelAddingToFavouriteClicked() }
         )
     }
