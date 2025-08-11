@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -68,82 +68,80 @@ private fun ListDetailsContent(
     modifier: Modifier = Modifier,
 ) {
     val movies = listDetailsScreenState.listItems.collectAsLazyPagingItems()
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Theme.color.surface)
-            .navigationBarsPadding()
-    ) {
-        DefaultBar(
-            title = listDetailsScreenState.listTitle,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, 8.dp),
-            firstOption = painterResource(R.drawable.edit),
-            lastOption = painterResource(R.drawable.delete),
-            onFirstOptionClicked = { listener.onRenameClicked(listDetailsScreenState.listId!!) },
-            onLastOptionClicked = { listener.onDeleteIconClicked(listDetailsScreenState.listId!!) },
-        )
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = listDetailsScreenState.isScreenLoading || movies.loadState.refresh is LoadState.Loading
+    Box {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(Theme.color.surface)
+                .navigationBarsPadding()
+                .statusBarsPadding()
         ) {
-            CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
-            )
-        }
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = movies.loadState.refresh is LoadState.Error
-        ) {
-            NoInternetConnectionPlaceholder()
-        }
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading
-        ) {
-            Log.d(
-                "khairy",
-                "no data because result = ${movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading}"
-            )
-            NoDataContainer(
+            DefaultBar(
+                title = listDetailsScreenState.listTitle,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center),
-                image = painterResource(R.drawable.no_items_found),
-                R.string.no_saved_items_here,
-                R.string.you_can_add_items_to_your_list_by_searching_for_them_in_the_app
-            )
-        }
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = movies.itemCount != 0 && movies.loadState.refresh is LoadState.NotLoading
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Theme.color.surface)
-                    .statusBarsPadding()
-                    .navigationBarsPadding()
-            ) {
-                AnimatedVisibility(
-                    enter = fadeIn(), exit = fadeOut(), visible = movies.itemCount > 0
-                ) {
-                    MoviesListItem(
-                        movies = movies,
-                        listId = listDetailsScreenState.listId
-                            ?: throw IllegalArgumentException("no list if found!"),
-                        modifier = Modifier.fillMaxSize(),
-                        onClickMovie = listener::onMovieCardClicked,
-                        onClickDislikeItem = listener::onRemoveMovieClicked
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .statusBarsPadding(),
+                firstOption = painterResource(R.drawable.edit),
+                lastOption = painterResource(R.drawable.delete),
+                onFirstOptionClicked = {
+                    listener.onRenameClicked(
+                        listDetailsScreenState.listId!!,
+                        listDetailsScreenState.listTitle
                     )
-                }
+                },
+                onLastOptionClicked = { listener.onDeleteIconClicked(listDetailsScreenState.listId!!) },
+                onNavigateBackClicked = listener::onBackClicked
+            )
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = listDetailsScreenState.isScreenLoading || movies.loadState.refresh is LoadState.Loading
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
+                )
+            }
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = movies.loadState.refresh is LoadState.Error
+            ) {
+                NoInternetConnectionPlaceholder()
+            }
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading
+            ) {
+                Log.d(
+                    "khairy",
+                    "no data because result = ${movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading}"
+                )
+                NoDataContainer(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.CenterHorizontally),
+                    image = painterResource(R.drawable.no_items_found),
+                    R.string.no_saved_items_here,
+                    R.string.you_can_add_items_to_your_list_by_searching_for_them_in_the_app
+                )
+            }
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = movies.itemCount != 0 && movies.loadState.refresh is LoadState.NotLoading
+            ) {
+                MoviesListItem(
+                    movies = movies,
+                    listId = listDetailsScreenState.listId
+                        ?: throw IllegalArgumentException("no list if found!"),
+                    onClickMovie = listener::onMovieCardClicked,
+                    onClickDislikeItem = listener::onRemoveMovieClicked
+                )
             }
         }
+
     }
     AnimatedVisibility(
         visible = listDetailsScreenState.showDeleteListDialog, enter = fadeIn(), exit = fadeOut()
@@ -180,6 +178,7 @@ private fun onReceiveNewEffect(effect: ListDetailsScreenEffect, navController: N
                 route = ListsScreenWithArgs(
                     showEditSheet = true,
                     requiredToEditListId = effect.listId,
+                    listTitle = effect.listTitle
                 )
             ) {
                 popUpTo<NavigationBarDestinations.ListsScreenNoArgs> {

@@ -126,6 +126,12 @@
     <string name="movie_added_failed">فشل الإضافة للقائمة</string>
     <string name="not_supported_feature">عذراً، هذة الميزة متاحة للأفلام فقط</string>
     <string name="movie_already_exists">تمت إضافة الفيلم مرة مسبقا لهذه القائمة</string>
+    <string name="edit_list_title">تعديل القائمة</string>
+    <string name="save_button">حفظ</string>
+    <string name="list_edit_successfully">تم تعديل القائمة بنجاح</string>
+    <string name="list_deleted_successfully">تم مسح القائمة بنجاح</string>
+    <string name="list_failed_to_edit">هذه الخاصية غير مدعومة بعد</string>
+    <string name="list_failed_to_deleted">خدث خطأ أثناء مسح القائمة</string>
 
 
 </resources>

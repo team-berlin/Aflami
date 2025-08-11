@@ -2,7 +2,7 @@ package com.berlin.aflami.viewmodel.listDetails
 
 interface ListDetailsScreenInteractionListener {
     fun onBackClicked()
-    fun onRenameClicked(listId: Int)
+    fun onRenameClicked(listId: Int, listTitle: String)
     fun onDeleteIconClicked(listId: Int)
     fun onDeleteDialogDismiss()
     fun onDeleteConfirmed(listId: Int)

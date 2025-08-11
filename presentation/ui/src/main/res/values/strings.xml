@@ -116,11 +116,17 @@
     <string name="moderate_description">Blurs explicit scenes only.</string>
     <string name="off_description">No content is blurred.</string>
     <string name="new_list_created">New List Added Successfully</string>
+    <string name="create_new_list_failed">Failed To Create New List</string>
     <string name="movie_added_success">Added To List Successfully</string>
     <string name="movie_added_failed">Failed To Add To List</string>
-    <string name="create_new_list_failed">Failed To Create New List</string>
     <string name="not_supported_feature">Sorry, this feature is available for movies only</string>
     <string name="movie_already_exists">Movie Already Exists In This List</string>
+    <string name="edit_list_title">Edit List</string>
+    <string name="save_button">Save</string>
+    <string name="list_edit_successfully">List Edited Successfully</string>
+    <string name="list_failed_to_edit">Not Supported Feature Yet</string>
+    <string name="list_deleted_successfully">List Deleted successfully</string>
+    <string name="list_failed_to_deleted">Failed To Delete List</string>
 
 
 </resources>

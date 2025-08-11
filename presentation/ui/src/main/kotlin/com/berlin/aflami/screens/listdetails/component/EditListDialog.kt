@@ -35,7 +35,7 @@ fun EditListDialog(
             modifier = Modifier.padding(12.dp),
         ) {
             DialogTitleBar(
-                titleResource = R.string.create_new_list, onDismiss = onDismiss
+                titleResource = R.string.edit_list_title, onDismiss = onDismiss
             )
             TextField(
                 text = TextFieldValue(listName),
@@ -52,7 +52,7 @@ fun EditListDialog(
                 containerColor = Theme.color.primary,
             ) {
                 Text(
-                    stringResource(R.string.create),
+                    stringResource(R.string.save_button),
                     style = Theme.textStyle.label.large, color = Theme.color.textColors.onPrimary
                 )
             }

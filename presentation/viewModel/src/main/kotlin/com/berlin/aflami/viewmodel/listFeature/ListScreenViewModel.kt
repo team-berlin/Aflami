@@ -34,6 +34,8 @@ class ListScreenViewModel @Inject constructor(
     val shouldShowEditSheet = favouriteListArgs.shouldShowEditSheet
     val requiredListIdToEdit = favouriteListArgs.requiredListIdToEdit
     val shouldShowDeleteSnackBar = favouriteListArgs.shouldShowDeleteSnackBar
+    val requiredListTitleToEdit = favouriteListArgs.requiredListTitleToEdit
+
     val isListDeletedSuccessfully = favouriteListArgs.isListDeletedSuccessfully
 
     val isLoggedIn: StateFlow<Boolean?> = getIsUserLoggedInUseCase().stateIn(
@@ -46,8 +48,10 @@ class ListScreenViewModel @Inject constructor(
             updateState { screenState ->
                 screenState.copy(
                     editListSheetState = screenState.editListSheetState.copy(
-                        isSaveButtonEnabled = true, requiredListIdToEdit = requiredListIdToEdit,
-                        isEditNewListDialogVisible = true
+                        isSaveButtonEnabled = false,
+                        requiredListIdToEdit = requiredListIdToEdit,
+                        isEditNewListDialogVisible = true,
+                        currentListTitle = requiredListTitleToEdit!!
                     )
                 )
             }
@@ -100,7 +104,7 @@ class ListScreenViewModel @Inject constructor(
     private fun getAllFavouriteListsAsFlow(): Flow<PagingData<FavouriteListItemUiState>> = Pager(
         config = defaultPageConfigurations(), pagingSourceFactory = {
             AllFavouriteListsPagingSource(getAllFavouriteListsUseCase)
-        }).flow
+        }).flow.cachedIn(viewModelScope)
 
     private fun updateScreenStateWithUserFavouriteLists(userFavouriteLists: Flow<PagingData<FavouriteListItemUiState>>) {
         updateState { screenState ->
@@ -189,6 +193,7 @@ class ListScreenViewModel @Inject constructor(
                 resetCreateNewListSheetState()
             },
             onSuccess = {
+                getAllUserFavouriteLists()
                 updateState { screenState ->
                     screenState.copy(
                         snackBar = screenState.snackBar.copy(
@@ -213,6 +218,18 @@ class ListScreenViewModel @Inject constructor(
         )
     }
 
+    override fun dismissSnackBar() {
+        updateState { screenState ->
+            screenState.copy(
+                snackBar = screenState.snackBar.copy(
+                    isVisible = false,
+                    isOperationSucceeded = false,
+                    snackBarStatus = null
+                )
+            )
+        }
+    }
+
     private fun resetCreateNewListSheetState() {
         updateState { screenState ->
             screenState.copy(
@@ -229,6 +246,7 @@ class ListScreenViewModel @Inject constructor(
         screenState.copy(
             editListSheetState = screenState.editListSheetState.copy(
                 isEditNewListDialogVisible = false,
+                isSaveButtonEnabled = false
             )
         )
     }
@@ -238,6 +256,7 @@ class ListScreenViewModel @Inject constructor(
     }
 
     override fun onSaveOldListTitleToNewTitleClicked(listId: Int, editedListTitle: String) {
+        onCancelEditingListClicked()
         tryToCall(
             call = { editListTitleUseCase(listId = listId, newListTitle = editedListTitle) },
             onSuccess = {
@@ -263,6 +282,4 @@ class ListScreenViewModel @Inject constructor(
                 }
             })
     }
-
-
 }

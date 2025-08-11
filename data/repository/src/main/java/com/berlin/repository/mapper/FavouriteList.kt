@@ -17,7 +17,7 @@ fun FavouriteListItem.toMovie(): Movie {
         title = title!!,
         rating = voteAverage!!,
         releaseDate = releaseDate!!,
-        posterURL = posterPath!!,
+        posterURL = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
         description = overview!!,
         genres = genreIds?.map { it.toDomainGenre() }!!,
         isFavourite = true,

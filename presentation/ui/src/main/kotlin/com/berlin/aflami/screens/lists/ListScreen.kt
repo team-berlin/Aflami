@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -34,6 +36,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
+import com.berlin.aflami.component.SnackBar
+import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.navigation.ListDetailsDestination
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
@@ -43,6 +47,7 @@ import com.berlin.aflami.screens.lists.component.ListCard
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.search.components.NoDataContainer
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.details.movie.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.listFeature.ListScreenEffect
 import com.berlin.aflami.viewmodel.listFeature.ListScreenInteractionListener
 import com.berlin.aflami.viewmodel.listFeature.ListScreenState
@@ -80,6 +85,86 @@ private fun ListsContent(
             .background(Theme.color.surface)
             .navigationBarsPadding()
     ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 40.dp)
+                .zIndex(10f)
+        ) {
+            when (listScreenState.snackBar.snackBarStatus) {
+                SNACK_BAR_STATUS.LIST_RENAMED -> {
+                    if (listScreenState.snackBar.isOperationSucceeded) {
+                        SnackBar(
+                            isVisible = listScreenState.snackBar.isVisible,
+                            status = SnackBarStatus.SUCCESS,
+                            text = stringResource(com.berlin.ui.R.string.list_edit_successfully),
+                            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            onDismiss = {
+                                interactionListener.dismissSnackBar()
+                            })
+                    } else {
+                        SnackBar(
+                            isVisible = listScreenState.snackBar.isVisible,
+                            status = SnackBarStatus.ERROR,
+                            text = stringResource(
+                                com.berlin.ui.R.string.list_failed_to_edit
+                            ),
+                            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            onDismiss = {
+                                interactionListener.dismissSnackBar()
+                            })
+                    }
+                }
+
+                SNACK_BAR_STATUS.LIST_DELETED ->
+                    if (listScreenState.snackBar.isOperationSucceeded) {
+                        SnackBar(
+                            isVisible = listScreenState.snackBar.isVisible,
+                            status = SnackBarStatus.SUCCESS,
+                            text = stringResource(com.berlin.ui.R.string.list_deleted_successfully),
+                            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            onDismiss = { interactionListener.dismissSnackBar() })
+                    } else {
+                        SnackBar(
+                            isVisible = listScreenState.snackBar.isVisible,
+                            status = SnackBarStatus.ERROR,
+                            text = stringResource(com.berlin.ui.R.string.list_failed_to_deleted),
+                            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            onDismiss = {
+                                interactionListener.dismissSnackBar()
+                            })
+                    }
+
+                SNACK_BAR_STATUS.CREATE_NEW_LIST -> {
+                    if (listScreenState.snackBar.isOperationSucceeded) {
+                        SnackBar(
+                            isVisible = listScreenState.snackBar.isVisible,
+                            status = SnackBarStatus.SUCCESS,
+                            text = stringResource(com.berlin.ui.R.string.new_list_created),
+                            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            onDismiss = { interactionListener.dismissSnackBar() })
+                    } else {
+                        SnackBar(
+                            isVisible = listScreenState.snackBar.isVisible,
+                            status = SnackBarStatus.ERROR,
+                            text = stringResource(com.berlin.ui.R.string.create_new_list_failed),
+                            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            onDismiss = {
+                                interactionListener.dismissSnackBar()
+                            })
+                    }
+                }
+
+                SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST -> {}
+                null -> {}
+            }
+        }
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
@@ -92,7 +177,6 @@ private fun ListsContent(
                 onDismiss = interactionListener::onCancelCreatingNewListClicked,
             )
         }
-//        Edit List Dialog
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
@@ -100,7 +184,7 @@ private fun ListsContent(
         ) {
             EditListDialog(
                 listId = listScreenState.editListSheetState.requiredListIdToEdit!!,
-                listName = listScreenState.createNewListSheetState.newListTitle,
+                listName = listScreenState.editListSheetState.currentListTitle,
                 onListNameChanged = { interactionListener.onOldListTitleChanged(it) },
                 onSaveClick = interactionListener::onSaveOldListTitleToNewTitleClicked,
                 onDismiss = interactionListener::onCancelEditingListClicked,

@@ -10,6 +10,9 @@ sealed interface ListDetailsScreenEffect {
     data class NavigateBackAndShowDeleteListStatusSnackBar(val isListDeletedSuccessfully: Boolean) :
         ListDetailsScreenEffect
 
-    data class NavigateToAllListsScreenAndShowEditListSheet(val listId: Int) :
+    data class NavigateToAllListsScreenAndShowEditListSheet(
+        val listId: Int,
+        val listTitle: String,
+    ) :
         ListDetailsScreenEffect
 }

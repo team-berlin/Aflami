@@ -1,8 +1,10 @@
 package com.berlin.aflami.viewmodel.listDetails
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
@@ -63,7 +65,7 @@ class ListDetailsScreenViewModel @Inject constructor(
                     getAllFavouriteListItemsUseCase = getAllFavouriteListItemsUseCase,
                     favouriteListId = favouriteListId
                 )
-            }).flow
+            }).flow.cachedIn(viewModelScope)
 
     private fun updateScreenStateToLoading() =
         updateState { screenState -> screenState.copy(isScreenLoading = true) }
@@ -79,8 +81,13 @@ class ListDetailsScreenViewModel @Inject constructor(
     //region renameAndDeleteListInteraction interactionListeners
     override fun onBackClicked() = sendNewEffect(ListDetailsScreenEffect.NavigateBack)
 
-    override fun onRenameClicked(listId: Int) =
-        sendNewEffect(ListDetailsScreenEffect.NavigateToAllListsScreenAndShowEditListSheet(listId))
+    override fun onRenameClicked(listId: Int, listTitle: String) =
+        sendNewEffect(
+            ListDetailsScreenEffect.NavigateToAllListsScreenAndShowEditListSheet(
+                listId,
+                listTitle = listTitle
+            )
+        )
 
     override fun onDeleteIconClicked(listId: Int) =
         updateState { screenState -> screenState.copy(showDeleteListDialog = true) }
@@ -108,9 +115,13 @@ class ListDetailsScreenViewModel @Inject constructor(
     override fun onRemoveMovieClicked(listId: Int, movieId: Long) {
         tryToCall(
             call = { deleteMovieFromUserFavouriteList(listId = listId, movieId = movieId) },
-            onSuccess = { ListDetailsScreenEffect.ShowDeleteMovieFromListSucceededSnackBar },
+            onSuccess = {
+                getAllFavoriteListItems(favouriteListId = favouriteListId)
+                ListDetailsScreenEffect.ShowDeleteMovieFromListSucceededSnackBar
+            },
             onError = { sendNewEffect(ListDetailsScreenEffect.ShowDeleteMovieFromListFailedSnackBar) },
         )
     }
+
 
 }

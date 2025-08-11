@@ -77,6 +77,7 @@ data class ListDetailsDestination(val listId: Int, val listTitle: String)
 @Serializable
 data class ListsScreenWithArgs(
     val showEditSheet: Boolean? = null,
+    val listTitle: String? = null,
     val requiredToEditListId: Int? = null,
     val showDeletedSnackBar: Boolean? = null,
     val isListDeletedSuccessfully: Boolean? = null,
