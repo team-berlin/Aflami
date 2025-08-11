@@ -215,14 +215,14 @@ fun MovieDetailsContent(
                     if (state.snackBar.isOperationSucceeded) {
                         SnackBar(
                             status = SnackBarStatus.SUCCESS,
-                            text = stringResource(R.string.movie_added_success),
+                            text = stringResource(com.berlin.ui.R.string.movie_added_success),
                             iconPainter = painterResource(id = R.drawable.success),
                             modifier = Modifier.align(Alignment.TopCenter),
                             onDismiss = { null })
                     } else {
                         SnackBar(
                             status = SnackBarStatus.ERROR,
-                            text = stringResource(R.string.movie_added_failed),
+                            text = stringResource(com.berlin.ui.R.string.movie_added_failed),
                             iconPainter = painterResource(id = R.drawable.error),
                             modifier = Modifier.align(Alignment.TopCenter),
                             onDismiss = { null })
@@ -239,7 +239,7 @@ fun MovieDetailsContent(
                 } else {
                     SnackBar(
                         status = SnackBarStatus.ERROR,
-                        text = stringResource(R.string.create_new_list_failed),
+                        text = stringResource(com.berlin.ui.R.string.create_new_list_failed),
                         iconPainter = painterResource(id = R.drawable.error),
                         modifier = Modifier.align(Alignment.TopCenter),
                         onDismiss = { null })

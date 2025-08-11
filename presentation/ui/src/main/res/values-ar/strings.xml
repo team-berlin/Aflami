@@ -120,7 +120,11 @@
     <string name="strict_description">إخفاء جميع المحتوى الحساس.</string>
     <string name="moderate_description">إخفاء المشاهد الصريحة فقط.</string>
     <string name="off_description">عدم إخفاء المحتوى.</string>
-    <string name="new_list_created">New List Added Successfully</string>
+    <string name="new_list_created">تم إنشاء قائمة جديده بنجاح</string>
+    <string name="create_new_list_failed">فشل إنشاء قائمة جديدة</string>
+    <string name="movie_added_success"> تمت إضافة للقائمة</string>
+    <string name="movie_added_failed">فشل الإضافة للقائمة</string>
+    <string name="not_supported_feature">عذراً، هذة الميزة متاحة للأفلام فقط</string>
 
 
 </resources>

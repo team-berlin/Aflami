@@ -116,8 +116,10 @@
     <string name="moderate_description">Blurs explicit scenes only.</string>
     <string name="off_description">No content is blurred.</string>
     <string name="new_list_created">New List Added Successfully</string>
+    <string name="movie_added_success">Added To List Successfully</string>
+    <string name="movie_added_failed">Failed To Add To List</string>
     <string name="create_new_list_failed">Failed To Create New List</string>
-    <string name="not_supported_feature">Sorry, this feature in supported to movies only</string>
+    <string name="not_supported_feature">Sorry, this feature is available for movies only</string>
 
 
 </resources>

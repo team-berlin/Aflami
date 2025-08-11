@@ -45,7 +45,7 @@ fun SnackBar(
     iconPainter: Painter,
     modifier: Modifier = Modifier,
     durationMillis: Long = 2000,
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit = {},
 ) {
     var visible by rememberSaveable { mutableStateOf(true) }
     LaunchedEffect(Unit) {
