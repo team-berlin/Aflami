@@ -354,7 +354,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     override fun onAddMovieToFavouriteClicked() {
         updateState { showDetailsUiState ->
             showDetailsUiState.copy(
-                sorryNotSupportedFeatureForTvShowVisible = true
+                isNotSupportedFeatureDialogVisible = true
             )
         }
     }
@@ -434,7 +434,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     override fun onCancelAddingToFavouriteClicked() {
-        TODO("Not yet implemented")
+        updateState { screenState -> screenState.copy(isNotSupportedFeatureDialogVisible = false) }
     }
 
     override fun onUpdateNewListTitle(newListTitle: String) {

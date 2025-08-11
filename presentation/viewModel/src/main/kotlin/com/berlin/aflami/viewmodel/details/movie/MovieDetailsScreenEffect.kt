@@ -9,10 +9,7 @@ sealed interface MovieDetailsScreenEffect {
         MovieDetailsScreenEffect
 
     data class ShowRatingDialog(val movieId: Long) : MovieDetailsScreenEffect
-    data class ShowAddToFavoriteListDialog(
-        val favouriteListId: Int,
-        val movieId: Int,
-    ) : MovieDetailsScreenEffect
+
 
     data object NavigateToLogin : MovieDetailsScreenEffect
 //    data class ShowAddToFavouriteSnackBar(val isAddedSuccessfully: Boolean) :

@@ -117,6 +117,7 @@
     <string name="off_description">No content is blurred.</string>
     <string name="new_list_created">New List Added Successfully</string>
     <string name="create_new_list_failed">Failed To Create New List</string>
+    <string name="not_supported_feature">Sorry, this feature in supported to movies only</string>
 
 
 </resources>

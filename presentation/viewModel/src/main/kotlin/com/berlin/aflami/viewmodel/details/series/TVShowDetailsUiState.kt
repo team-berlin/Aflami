@@ -22,7 +22,7 @@ data class TVShowDetailsUiState(
     val selectedRatingMediaId: Long? = null,
     val selectedAddToListMediaId: Long? = null,
     val selectedFavouriteListId: Int? = null,
-    val sorryNotSupportedFeatureForTvShowVisible: Boolean = false,
+    val isNotSupportedFeatureDialogVisible: Boolean = false,
 )
 
 data class TVShowDetailsTabsUiState(

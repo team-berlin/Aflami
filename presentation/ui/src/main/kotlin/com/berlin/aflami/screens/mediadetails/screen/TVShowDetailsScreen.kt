@@ -36,6 +36,7 @@ import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
+import com.berlin.aflami.screens.mediadetails.components.NotSupportedFeatureDialog
 import com.berlin.aflami.screens.mediadetails.components.RateDialog
 import com.berlin.aflami.screens.mediadetails.components.TVShowBackdropPager
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
@@ -76,6 +77,16 @@ fun TvShowDetailsScreen(
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
             text = stringResource(com.berlin.ui.R.string.loading)
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.isNotSupportedFeatureDialogVisible
+    ) {
+        NotSupportedFeatureDialog(
+            description = stringResource(R.string.not_supported_feature),
+            onDismiss = { viewModel.onCancelAddingToFavouriteClicked() }
         )
     }
     AnimatedVisibility(
@@ -121,7 +132,7 @@ fun TvShowDetailsScreen(
 
 private fun onReceiveTVShowDetailsEffect(
     navController: NavController,
-    tvShowDetailsScreenEffect: TvShowDetailsScreenEffect
+    tvShowDetailsScreenEffect: TvShowDetailsScreenEffect,
 ) {
     when (tvShowDetailsScreenEffect) {
         is TvShowDetailsScreenEffect.NavigateToShowAllCastScreen -> {
@@ -151,7 +162,7 @@ private fun onReceiveTVShowDetailsEffect(
                     tvShowDetailsScreenEffect.tvShowId
                 )
             ) {
-                popUpTo(MovieDetailsDestination(movieId = tvShowDetailsScreenEffect.tvShowId)){
+                popUpTo(MovieDetailsDestination(movieId = tvShowDetailsScreenEffect.tvShowId)) {
                     inclusive = true
                 }
 

@@ -54,6 +54,7 @@ import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsViewModel
+import com.berlin.aflami.viewmodel.details.movie.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -69,21 +70,17 @@ fun MovieDetailsScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
             onReceiveMovieDetailsEffect(
-                navController = navController,
-                mediaDetailsScreenEffect = newEffect
+                navController = navController, mediaDetailsScreenEffect = newEffect
             )
         }
     }
 
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = uiState.isScreenLoading
+        enter = fadeIn(), exit = fadeOut(), visible = uiState.isScreenLoading
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(com.berlin.ui.R.string.loading)
+            modifier = Modifier.fillMaxSize(), text = stringResource(com.berlin.ui.R.string.loading)
         )
     }
     AnimatedVisibility(
@@ -92,9 +89,7 @@ fun MovieDetailsScreen(
         NoInternetConnectionPlaceholder()
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = !uiState.isScreenLoading
+        enter = fadeIn(), exit = fadeOut(), visible = !uiState.isScreenLoading
     ) {
         MovieDetailsContent(
             state = uiState,
@@ -111,9 +106,7 @@ fun MovieDetailsScreen(
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = uiState.showLoginDialog
+        enter = fadeIn(), exit = fadeOut(), visible = uiState.showLoginDialog
     ) {
         LoginRequiredDialog(
             onLoginClick = {
@@ -150,8 +143,7 @@ private fun onReceiveMovieDetailsEffect(
         is MovieDetailsScreenEffect.NavigateToShowAllCastScreen -> {
             navController.navigate(
                 CastDestination(
-                    mediaDetailsScreenEffect.movieId,
-                    MediaType.MOVIE
+                    mediaDetailsScreenEffect.movieId, MediaType.MOVIE
                 )
             )
         }
@@ -185,44 +177,7 @@ private fun onReceiveMovieDetailsEffect(
                 LoginDestination
             )
         }
-
-
-        if (mediaDetailsScreenEffect.isAddedSuccessfully) {
-            SnackBar(
-                status = SnackBarStatus.SUCCESS,
-                text = stringResource(R.string.movie_added_success),
-                iconPainter = painterResource(id = R.drawable.success),
-                modifier = Modifier.align(Alignment.Top)
-            )
-        } else {
-            SnackBar(
-                status = SnackBarStatus.SUCCESS,
-                text = stringResource(R.string.movie_added_failed),
-                iconPainter = painterResource(id = R.drawable.error),
-                modifier = Modifier.align(Alignment.Top)
-            )
-        }
-
     }
-
-    is MovieDetailsScreenEffect.ShowCreateNewListSnackBar -> {
-        if (mediaDetailsScreenEffect.isListCreatedSuccessfully) {
-            SnackBar(
-                status = SnackBarStatus.SUCCESS,
-                text = stringResource(com.berlin.ui.R.string.new_list_created),
-                iconPainter = painterResource(id = R.drawable.success),
-                modifier = Modifier.align(Alignment.Top)
-            )
-        } else {
-            SnackBar(
-                status = SnackBarStatus.SUCCESS,
-                text = stringResource(R.string.create_new_list_failed),
-                iconPainter = painterResource(id = R.drawable.error),
-                modifier = Modifier.align(Alignment.Top)
-            )
-        }
-    }
-}
 }
 
 @Composable
@@ -255,18 +210,48 @@ fun MovieDetailsContent(
         AnimatedVisibility(
             state.snackBar.isVisible
         ) {
-            SnackBar(
-                status = SnackBarStatus.SUCCESS,
-                text = stringResource(R.string.movie_added_success),
-                iconPainter = painterResource(id = R.drawable.success),
-                modifier = Modifier.align(Alignment.Top)
-            )
+            when (state.snackBar.snackBarStatus) {
+                SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST -> {
+                    if (state.snackBar.isOperationSucceeded) {
+                        SnackBar(
+                            status = SnackBarStatus.SUCCESS,
+                            text = stringResource(R.string.movie_added_success),
+                            iconPainter = painterResource(id = R.drawable.success),
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            onDismiss = { null })
+                    } else {
+                        SnackBar(
+                            status = SnackBarStatus.ERROR,
+                            text = stringResource(R.string.movie_added_failed),
+                            iconPainter = painterResource(id = R.drawable.error),
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            onDismiss = { null })
+                    }
+                }
+
+                SNACK_BAR_STATUS.CREATE_NEW_LIST -> if (state.snackBar.isOperationSucceeded) {
+                    SnackBar(
+                        status = SnackBarStatus.SUCCESS,
+                        text = stringResource(com.berlin.ui.R.string.new_list_created),
+                        iconPainter = painterResource(id = R.drawable.success),
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        onDismiss = { null })
+                } else {
+                    SnackBar(
+                        status = SnackBarStatus.ERROR,
+                        text = stringResource(R.string.create_new_list_failed),
+                        iconPainter = painterResource(id = R.drawable.error),
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        onDismiss = { null })
+                }
+
+                null -> TODO()
+            }
         }
         LazyColumn(modifier = Modifier.zIndex(0f), state = listState) {
             item {
                 MovieBackdropPager(
-                    state = state,
-                    onPlayClick = { listener.onPlayClicked(state.videoUrl) })
+                    state = state, onPlayClick = { listener.onPlayClicked(state.videoUrl) })
             }
 
             item {
@@ -283,15 +268,15 @@ fun MovieDetailsContent(
             }
             item {
                 DescriptionSection(
-                    state.movieUiState.description, isExpanded = isDescriptionExpanded,
+                    state.movieUiState.description,
+                    isExpanded = isDescriptionExpanded,
                     onToggleExpand = onToggleDescriptionExpand
                 )
             }
             item {
                 CastSection(
                     cast = state.castList,
-                    onShowAllClicked = { listener.onShowCastClicked(state.movieUiState.id) }
-                )
+                    onShowAllClicked = { listener.onShowCastClicked(state.movieUiState.id) })
             }
             item {
                 HorizontalDivider(
@@ -336,8 +321,7 @@ fun MovieDetailsContent(
         if (state.showRatingDialog && state.selectedRatingMediaId != null) {
             RateDialog(
                 onDismiss = { listener.onCancelRatingClicked() },
-                onRate = { rating -> listener.onSubmitRateClicked(rating) }
-            )
+                onRate = { rating -> listener.onSubmitRateClicked(rating) })
         }
 
     }

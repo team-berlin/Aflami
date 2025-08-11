@@ -423,7 +423,6 @@ class MovieDetailsViewModel @Inject constructor(
                     ),
                 )
             }
-            sendNewEffect(MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar(false))
         }
 
         )
