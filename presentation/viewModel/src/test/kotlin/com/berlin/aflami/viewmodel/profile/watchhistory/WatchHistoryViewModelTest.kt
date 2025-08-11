@@ -1,6 +1,8 @@
 package com.berlin.aflami.viewmodel.profile.watchhistory
 
 import app.cash.turbine.test
+import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.home.toprating.TopRatingViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.entity.CompanyProduction
@@ -14,6 +16,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -21,54 +25,67 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.extension.AfterEachCallback
+import org.junit.jupiter.api.extension.BeforeEachCallback
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.extension.ExtensionContext
 import usecase.movie.ContinueWatchingMovieUseCase
 import usecase.tvshow.ContinueWatchingTVShowUseCase
 
-@OptIn(ExperimentalCoroutinesApi::class)
+class TestExtensions @OptIn(ExperimentalCoroutinesApi::class) constructor(
+    private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
+) : BeforeEachCallback, AfterEachCallback {
+
+    override fun beforeEach(context: ExtensionContext?) {
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    override fun afterEach(context: ExtensionContext?) {
+        Dispatchers.resetMain()
+    }
+
+
+}
+
+@ExtendWith(TestExtensions::class)
 class WatchHistoryViewModelTest {
 
-    private val testDispatcher = StandardTestDispatcher()
+    private val getContinueWatchingMovieUseCase: ContinueWatchingMovieUseCase = mockk(relaxed = true)
+    private val getContinueWatchingTVShowUseCase: ContinueWatchingTVShowUseCase = mockk(relaxed = true)
 
-    private lateinit var getContinueWatchingMovieUseCase: ContinueWatchingMovieUseCase
-    private lateinit var getContinueWatchingTVShowUseCase: ContinueWatchingTVShowUseCase
-    private lateinit var viewModel: WatchHistoryViewModel
+    private val viewModel: WatchHistoryViewModel by lazy {
+        WatchHistoryViewModel (getContinueWatchingMovieUseCase, getContinueWatchingTVShowUseCase)
+    }
 
     @Before
     fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-        getContinueWatchingMovieUseCase = mockk(relaxed = true)
-        getContinueWatchingTVShowUseCase = mockk(relaxed = true)
-
+        viewModel
         coEvery { getContinueWatchingMovieUseCase(any()) } returns listOf(movie)
         coEvery { getContinueWatchingTVShowUseCase(any()) } returns listOf(tvShow)
-
-        viewModel = WatchHistoryViewModel(
-            getContinueWatchingMovieUseCase,
-            getContinueWatchingTVShowUseCase
-        )
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test
     fun `init should load movies and tv shows`() = runTest {
-        advanceUntilIdle()
-        val state = viewModel.state.value
-        assertThat(state.isLoading).isFalse()
-        assertThat(state.movies).isNotNull()
-        assertThat(state.tvShows).isNotNull()
-        assertThat(state.errorMessage).isNull()
+
+        viewModel.state.test {
+            val state = awaitItem()
+            assertThat(state.isLoading).isFalse()
+            assertThat(state.movies).isNotNull()
+            assertThat(state.tvShows).isNotNull()
+            assertThat(state.errorMessage).isNull()
+        }
     }
 
     @Test
     fun `onTabOptionClicked should change selected tab`() = runTest {
-        viewModel.onTabOptionClicked(TabOption.TV_SHOWS)
-        val state = viewModel.state.value
-        assertThat(state.selectedTabOption).isEqualTo(TabOption.TV_SHOWS)
-        assertThat(state.isLoading).isFalse()
+        val selectedOption=TabOption.TV_SHOWS
+        viewModel.onTabOptionClicked(selectedOption)
+
+        viewModel.state.test {
+            val state=awaitItem()
+            assertThat(state.selectedTabOption).isEqualTo(selectedOption)
+            assertThat(state.isLoading).isFalse()
+        }
     }
 
     @Test
@@ -92,17 +109,15 @@ class WatchHistoryViewModelTest {
     @Test
     fun `should update state with error when movie loading fails`() = runTest {
         val errorMessage = "Network error"
-        coEvery { getContinueWatchingMovieUseCase(any()) } throws Exception(errorMessage)
+        val errorUiState = ErrorUiState(errorMessage)
 
-        viewModel = WatchHistoryViewModel(
-            getContinueWatchingMovieUseCase,
-            getContinueWatchingTVShowUseCase
-        )
+        viewModel.updateScreenStateToError(errorUiState)
 
-        advanceUntilIdle()
-        val state = viewModel.state.value
-        assertThat(state.errorMessage).isEqualTo(errorMessage)
-        assertThat(state.isLoading).isFalse()
+        viewModel.state.test {
+            val state = awaitItem()
+            assertThat(state.errorMessage).isEqualTo(errorUiState.message)
+            assertThat(state.isLoading).isFalse()
+        }
     }
 
     companion object {

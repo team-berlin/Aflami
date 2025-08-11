@@ -16,7 +16,6 @@ import javax.inject.Inject
 class CastViewModelScreen @Inject constructor(
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getSeriesCastUseCase: GetTVShowCastUseCase,
-    private val dispatcher: CoroutineDispatcher= Dispatchers.IO,
     castDetailsArgs: CastDetailsArgs,
     ) : BaseViewModel<CastScreenState, CastDetailsScreenEffect>(
     CastScreenState()
@@ -46,7 +45,6 @@ class CastViewModelScreen @Inject constructor(
             },
             onSuccess = ::updateScreenWithMediaActors,
             onError = ::updateScreenStateToError,
-            dispatcher=dispatcher
         )
     }
 
@@ -68,7 +66,7 @@ class CastViewModelScreen @Inject constructor(
         }
     }
 
-    private fun updateScreenStateToError(errorUiState: ErrorUiState) {
+    fun updateScreenStateToError(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
                 isScreenLoading = false,

@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.home.continueWatching
 
 import app.cash.turbine.test
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingScreenEffect
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -10,12 +11,14 @@ import com.berlin.entity.Movie
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -49,8 +52,8 @@ class TestExtensions @OptIn(ExperimentalCoroutinesApi::class) constructor(
 @ExtendWith(TestExtensions::class)
 class ContinueWatchingMediaViewModelTest {
 
-    private lateinit var getContinueWatchingMoviesUseCase: ContinueWatchingMovieUseCase
-    private lateinit var getContinueWatchingTVShowsUseCase: ContinueWatchingTVShowUseCase
+    private val getContinueWatchingMoviesUseCase: ContinueWatchingMovieUseCase=mockk(relaxed = true)
+    private val getContinueWatchingTVShowsUseCase: ContinueWatchingTVShowUseCase=mockk(relaxed = true)
 
     private val viewModel: ContinueWatchingMediaViewModel by lazy {
        ContinueWatchingMediaViewModel (getContinueWatchingMoviesUseCase, getContinueWatchingTVShowsUseCase)
@@ -58,34 +61,54 @@ class ContinueWatchingMediaViewModelTest {
 
     @Before
     fun setUp() {
-        getContinueWatchingMoviesUseCase = mockk(relaxed = true)
-        getContinueWatchingTVShowsUseCase = mockk(relaxed = true)
+
+        viewModel
+        coEvery { getContinueWatchingMoviesUseCase.invoke(1) } returns listOf(movie)
+        coEvery { getContinueWatchingTVShowsUseCase.invoke(1) } returns listOf(tvShow)
+    }
+
+
+    @Test
+    fun `init should load movies and tv shows`() = runTest {
+        viewModel.state.test {
+            val state = awaitItem()
+            assertThat(state.isLoading).isFalse()
+            assertThat(state.continueWatchingMediaFlow).isNotNull()
+            assertThat(state.errorMessage).isNull()
+        }
     }
 
     @Test
-    fun `getTopRatingMedia should update state with top rated media`() = runTest {
+    fun `getContinueWatchingMedia should update state with media`() = runTest {
 
-
-        coEvery { getContinueWatchingMoviesUseCase.invoke(1) } returns listOf(movie)
-        coEvery { getContinueWatchingTVShowsUseCase.invoke(1) } returns listOf(tvShow)
-
-        val vm = ContinueWatchingMediaViewModel( getContinueWatchingMoviesUseCase,getContinueWatchingTVShowsUseCase)
-
-        vm.state.test {
+        viewModel.state.test {
             val state = awaitItem()
-            Truth.assertThat(state.isLoading).isFalse()
-            Truth.assertThat(state.continueWatchingMediaFlow).isNotNull()
+            assertThat(state.isLoading).isFalse()
+            assertThat(state.continueWatchingMediaFlow).isNotNull()
 
         }
 
     }
 
     @Test
+    fun `should update state with error when movie loading fails`() = runTest{
+
+        val errorMessage="Network error"
+        val errorUiState = ErrorUiState(errorMessage)
+
+        viewModel.updateScreenStateToError(errorUiState)
+        viewModel.state.test {
+            val state = awaitItem()
+            assertThat(state.errorMessage).isEqualTo(errorUiState.message)
+        }
+
+    }
+
+    @Test
     fun `onBackClicked should send NavigateBack effect`() = runTest {
-        viewModel
         viewModel.effect.test {
             viewModel.onBackClicked()
-            Truth.assertThat(awaitItem()).isEqualTo(ContinueWatchingScreenEffect.NavigateBack)
+            assertThat(awaitItem()).isEqualTo(ContinueWatchingScreenEffect.NavigateBack)
         }
     }
 
@@ -96,7 +119,7 @@ class ContinueWatchingMediaViewModelTest {
 
         viewModel.effect.test {
             viewModel.onMediaCardClicked(mediaId, mediaType)
-            Truth.assertThat(awaitItem()).isEqualTo(
+            assertThat(awaitItem()).isEqualTo(
                 ContinueWatchingScreenEffect.NavigateToDetailsScreen(
                     mediaId,
                     mediaType

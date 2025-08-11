@@ -81,7 +81,7 @@ class WatchHistoryViewModel @Inject constructor(
         }
 
 
-    private fun updateScreenStateToError(errorUiState: ErrorUiState) =
+   fun updateScreenStateToError(errorUiState: ErrorUiState) =
         updateState { screenState ->
             screenState.copy(
                 errorMessage = errorUiState.message,

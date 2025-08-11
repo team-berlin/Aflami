@@ -26,6 +26,7 @@ import io.mockk.coEvery
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.Flow
@@ -48,8 +49,8 @@ class TestExtensions @OptIn(ExperimentalCoroutinesApi::class) constructor(
 
 @ExtendWith(TestExtensions::class)
 class TopRatingViewModelTest {
-    private lateinit var getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase
-    private lateinit var getTopRatedTvShowsUseCase: GetTopRatedTVShowUseCase
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase= mockk(relaxed = true)
+    private val getTopRatedTvShowsUseCase: GetTopRatedTVShowUseCase = mockk(relaxed = true)
 
     private val viewModel: TopRatingViewModel by lazy {
         TopRatingViewModel(getTopRatedMoviesUseCase, getTopRatedTvShowsUseCase)
@@ -57,17 +58,23 @@ class TopRatingViewModelTest {
 
     @Before
     fun setUp() {
-        getTopRatedMoviesUseCase = mockk(relaxed = true)
-        getTopRatedTvShowsUseCase = mockk(relaxed = true)
+        viewModel
 
         coEvery { getTopRatedMoviesUseCase(any()) }returns listOf(movie)
         coEvery { getTopRatedTvShowsUseCase(any()) }returns listOf(tvShow)
-        viewModel
+    }
+    @Test
+    fun `init should load movies and tv shows`() = runTest {
+        viewModel.state.test {
+            val state = awaitItem()
+            assertThat(state.isLoading).isFalse()
+            assertThat(state.topRatedMediaFlow).isNotNull()
+            assertThat(state.errorMessage).isNull()
+        }
     }
 
     @Test
     fun `getTopRatingMedia should update state with top rated media`() = runTest{
-        viewModel
 
         viewModel.state.test {
             val state = awaitItem()
@@ -78,21 +85,21 @@ class TopRatingViewModelTest {
 
     }
     @Test
-    fun `getTopRatingMedia should update state with with error when `() = runTest{
+    fun `should update state with error when movie loading fails `() = runTest{
 
         val errorMessage="Network error"
         val errorUiState = ErrorUiState(errorMessage)
 
+        viewModel.updateScreenStateWithError(errorUiState)
         viewModel.state.test {
             val state = awaitItem()
-            assertThat(state.errorMessage).isEqualTo(errorUiState)
+            assertThat(state.errorMessage).isEqualTo(errorUiState.message)
         }
 
     }
 
     @Test
     fun `onBackClicked should send NavigateBack effect`() = runTest{
-        viewModel
         viewModel.effect.test {
             viewModel.onBackClicked()
             assertThat(awaitItem()).isEqualTo(TopRatingScreenEffect.NavigateBack)
