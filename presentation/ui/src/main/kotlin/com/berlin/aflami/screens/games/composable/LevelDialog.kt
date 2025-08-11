@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.ThemeAndLocalePreviews
+import com.berlin.aflami.component.buttons.ButtonState
+import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.ui.theme.Theme
 
 @Composable
@@ -124,20 +126,20 @@ fun LevelDialog(
                     visible = selectedIndex != null,
                     enter = fadeIn(
                         animationSpec = tween(
-                            durationMillis = 500,
+                            durationMillis = 300,
                         )
                     ) + expandVertically(
                         animationSpec = tween(
-                            durationMillis = 500,
+                            durationMillis = 300,
                         )
                     ),
                     exit = fadeOut(
                         animationSpec = tween(
-                            durationMillis = 500,
+                            durationMillis = 300,
                         )
                     ) + shrinkVertically(
                         animationSpec = tween(
-                            durationMillis = 500,
+                            durationMillis = 300,
                         )
                     )
 
@@ -166,33 +168,31 @@ fun LevelDialog(
                     }
                 }
 
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(
-                            brush = if (selectedIndex != null) {
-                                Brush.linearGradient(
-                                    Theme.color.gradientColors.primaryGradient,
-                                    end = Offset(0f, Float.POSITIVE_INFINITY)
-                                )
-                            } else {
-                                SolidColor(Theme.color.disable)
-                            },
+                if (selectedIndex != null) {
+                    PrimaryButton(
+                        onClick = {},
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = stringResource(com.berlin.ui.R.string.lets_start),
+                            style = Theme.textStyle.label.large,
+                            color = Theme.color.textColors.onPrimary,
                         )
-                        .clickable(enabled = selectedIndex != null) { },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 4.dp),
-                        text = stringResource(com.berlin.ui.R.string.lets_start),
-                        color = if (selectedIndex != null) {
-                            Theme.color.textColors.onPrimary
-                        } else {
-                            Theme.color.stroke
-                        },
-                        style = Theme.textStyle.label.large,
-                    )
+                    }
+                } else {
+                    PrimaryButton(
+                        onClick = {},
+                        state = ButtonState.DISABLED,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = stringResource(com.berlin.ui.R.string.lets_start),
+                            style = Theme.textStyle.label.large,
+                            color = Theme.color.stroke
+                        )
+                    }
                 }
             }
         }
