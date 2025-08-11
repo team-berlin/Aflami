@@ -80,7 +80,7 @@ fun ResultScreen(modifier: Modifier = Modifier) {
                 ResultPointesBox(
                     modifier.weight(1f),
                     title = stringResource(R.string.points_achieved),
-                    pointCount = "110 $pteUnit.",
+                    pointCount = "110 $pteUnit",
                     image = painterResource(R.drawable.my_rating),
                 )
 

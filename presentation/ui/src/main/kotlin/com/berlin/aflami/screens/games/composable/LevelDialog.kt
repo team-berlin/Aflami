@@ -204,7 +204,7 @@ fun LevelDialog(
 @PreviewLightDark
 @Composable
 private fun LevelDialogPreview() {
-    AflamiTheme{
+    AflamiTheme {
         LevelDialog(
             onDismiss = {}
         )
