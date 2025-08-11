@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginStatus
 import usecase.favouritelist.AddMovieToFavouriteListUseCase
+import usecase.favouritelist.CreateNewFavouriteListUseCase
 import usecase.favouritelist.GetAllFavouriteListsUseCase
 import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
@@ -53,6 +54,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val getIsUserLoggedInUseCase: GetLoginStatus,
     private val getAllFavouriteListsUseCase: GetAllFavouriteListsUseCase,
     private val addMovieToFavouriteListsUseCase: AddMovieToFavouriteListUseCase,
+    private val createNewFavouriteListUseCase: CreateNewFavouriteListUseCase,
     movieDetailsArgs: MovieDetailsArgs,
 ) : BaseViewModel<MovieDetailsUiState, MovieDetailsScreenEffect>(
     MovieDetailsUiState()
@@ -64,7 +66,7 @@ class MovieDetailsViewModel @Inject constructor(
     init {
         updateState {
             it.copy(
-                movieUiState = it.movieUiState.copy(id = movieId), isScreenLoading = false
+                movieUiState = it.movieUiState.copy(id = movieId),
             )
         }
         isMovieHasVideo(movieId = movieId)
@@ -97,7 +99,7 @@ class MovieDetailsViewModel @Inject constructor(
             }, onSuccess = { (movieUiState, moviePosters) ->
                 updateState { screenState ->
                     screenState.copy(
-                        posters = moviePosters, movieUiState = movieUiState, isScreenLoading = false
+                        posters = moviePosters, movieUiState = movieUiState,
                     )
                 }
                 saveMovieToContinueWatching(
@@ -139,7 +141,7 @@ class MovieDetailsViewModel @Inject constructor(
     private fun updateScreenWithNewActors(castUiStateList: List<ActorUiState>) {
         updateState { screenState ->
             screenState.copy(
-                castList = castUiStateList, isScreenLoading = false
+                castList = castUiStateList,
             )
         }
     }
@@ -170,7 +172,7 @@ class MovieDetailsViewModel @Inject constructor(
                 screenState.copy(
                     rowSection = MoviesRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_MORE_MEDIA)
-                    ), isScreenLoading = false
+                    ),
                 )
             }
         } else {
@@ -180,7 +182,7 @@ class MovieDetailsViewModel @Inject constructor(
                         content = MoviesTabContent.MoreLikeThis(
                             moreMoviesLikeThis = moreLikeThisMovieList
                         )
-                    ), isScreenLoading = false
+                    ),
                 )
             }
         }
@@ -205,7 +207,7 @@ class MovieDetailsViewModel @Inject constructor(
                 showDetailsUiState.copy(
                     rowSection = MoviesRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_REVIEWS)
-                    ), isScreenLoading = false
+                    ),
                 )
             }
         } else {
@@ -215,7 +217,7 @@ class MovieDetailsViewModel @Inject constructor(
                         content = MoviesTabContent.Reviews(
                             movieReviews = reviewResult
                         )
-                    ), isScreenLoading = false
+                    ),
                 )
             }
         }
@@ -242,7 +244,7 @@ class MovieDetailsViewModel @Inject constructor(
                         UiText.Resource(
                             NO_GALLERY
                         )
-                    ), isScreenLoading = false
+                    ),
                 )
             }
         } else {
@@ -252,7 +254,7 @@ class MovieDetailsViewModel @Inject constructor(
                         content = MoviesTabContent.Gallery(
                             images = backdrops
                         )
-                    ), isScreenLoading = false
+                    ),
                 )
             }
         }
@@ -275,7 +277,7 @@ class MovieDetailsViewModel @Inject constructor(
                     content = MoviesTabContent.CompanyProduction(
                         companyProductionsList = companyProductionUiState
                     )
-                ), isScreenLoading = false
+                ),
             )
         }
     }
@@ -285,7 +287,7 @@ class MovieDetailsViewModel @Inject constructor(
             screenState.copy(
                 rowSection = MoviesRowSectionUiState.NoDataFound(
                     UiText.Resource(NO_COMPANY_PRODUCTION)
-                ), isScreenLoading = false
+                ),
             )
         }
     }
@@ -301,7 +303,7 @@ class MovieDetailsViewModel @Inject constructor(
                 screenState.copy(
                     addToListDialog = screenState.addToListDialog.copy(
                         isLoading = true, isAddToListDialogVisible = true
-                    )
+                    ),
                 )
             }
             tryToCall(call = {
@@ -314,7 +316,7 @@ class MovieDetailsViewModel @Inject constructor(
                     screenState.copy(
                         addToListDialog = screenState.addToListDialog.copy(
                             isLoading = false, favouriteLists = it, isAddButtonEnabled = false
-                        )
+                        ),
                     )
                 }
             }, onError = {
@@ -322,7 +324,7 @@ class MovieDetailsViewModel @Inject constructor(
                     screenState.copy(
                         addToListDialog = screenState.addToListDialog.copy(
                             isLoading = false, errorMessage = it.message
-                        )
+                        ),
                     )
                 }
             })
@@ -331,14 +333,13 @@ class MovieDetailsViewModel @Inject constructor(
 
     override fun onReadMoreDescriptionClicked() = updateState { screenState ->
         screenState.copy(
-            isDescriptionExpanded = !screenState.isDescriptionExpanded, isScreenLoading = false
+            isDescriptionExpanded = !screenState.isDescriptionExpanded,
         )
     }
 
     override fun onReadMoreReviewClicked(reviewId: String) = updateState { screenState ->
         screenState.copy(
             expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId),
-            isScreenLoading = false
         )
     }
 
@@ -355,7 +356,7 @@ class MovieDetailsViewModel @Inject constructor(
         checkLoginThen {
             updateState {
                 it.copy(
-                    showRatingDialog = true, selectedRatingMediaId = movieId
+                    showRatingDialog = true, selectedRatingMediaId = movieId,
                 )
             }
         }
@@ -370,17 +371,13 @@ class MovieDetailsViewModel @Inject constructor(
         val mediaId = _state.value.selectedRatingMediaId ?: return
         //TODO: Handle the actual rating submission here, e.g., call usecase.submitRating(mediaId, rating)
         _state.update {
-            it.copy(
-                showRatingDialog = false, selectedRatingMediaId = null
-            )
+            it.copy()
         }
     }
 
     override fun onCancelRatingClicked() {
         updateState {
-            it.copy(
-                showRatingDialog = false, selectedRatingMediaId = null
-            )
+            it.copy()
         }
     }
 
@@ -389,7 +386,12 @@ class MovieDetailsViewModel @Inject constructor(
         favouriteListId: Int,
     ) {
         tryToCall(
-            call = { addMovieToFavouriteListsUseCase(movieId = movieId, listId = favouriteListId) },
+            call = {
+                addMovieToFavouriteListsUseCase(
+                    movieId = movieId,
+                    listId = favouriteListId
+                )
+            },
             onSuccess = {
                 updateState { screenState ->
                     screenState.copy(
@@ -399,11 +401,12 @@ class MovieDetailsViewModel @Inject constructor(
                             isAddToListDialogVisible = false,
                             isAddButtonEnabled = false,
                             selectedListId = null
-                        )
+                        ),
                     )
                 }
                 sendNewEffect(MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar(true))
-            }, onError = {
+            },
+            onError = {
                 updateState { screenState ->
                     screenState.copy(
                         addToListDialog = screenState.addToListDialog.copy(
@@ -412,7 +415,7 @@ class MovieDetailsViewModel @Inject constructor(
                             selectedListId = null,
                             isAddToListDialogVisible = false,
                             isAddButtonEnabled = false
-                        )
+                        ),
                     )
                 }
                 sendNewEffect(MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar(false))
@@ -427,7 +430,7 @@ class MovieDetailsViewModel @Inject constructor(
             it.copy(
                 addToListDialog = it.addToListDialog.copy(
                     selectedListId = favouriteListId,
-                )
+                ),
             )
         }
     }
@@ -435,34 +438,70 @@ class MovieDetailsViewModel @Inject constructor(
     override fun onCreateNewFavouriteListClicked() {
         updateState { screenState ->
             screenState.copy(
-            )
-        }
-    }
-
-    override fun onCancelAddingToFavouriteClicked() =
-        updateState { screenState ->
-            screenState.copy(
-                addToListDialog = screenState.addToListDialog.copy(
-                    isLoading = false,
-                    errorMessage = null,
-                    isAddToListDialogVisible = false,
-                    selectedListId = null,
-                    favouriteLists = emptyFlow(),
-                    isAddButtonEnabled = false
+                createNewListDialog = screenState.createNewListDialog.copy(
+                    isCreateNewListDialogVisible = true,
                 )
             )
         }
+    }
+
+    override fun onCancelAddingToFavouriteClicked() = updateState { screenState ->
+        screenState.copy(
+            addToListDialog = screenState.addToListDialog.copy(
+                isLoading = false,
+                errorMessage = null,
+                isAddToListDialogVisible = false,
+                selectedListId = null,
+                favouriteLists = emptyFlow(),
+                isAddButtonEnabled = false
+            ),
+        )
+    }
 
     override fun onUpdateNewListTitle(newListTitle: String) {
-        TODO("Not yet implemented")
+        updateState { screenState ->
+            screenState.copy(
+                createNewListDialog = screenState.createNewListDialog.copy(newListTitle = newListTitle)
+            )
+        }
     }
 
     override fun onCreateNewListClicked(listTitle: String) {
-        TODO("Not yet implemented")
+        tryToCall(call = {
+            resetCreateNewListUiState()
+            createNewFavouriteListUseCase(listTitle)
+        }, onSuccess = { createdListId ->
+            sendNewEffect(MovieDetailsScreenEffect.ShowCreateNewListSnackBar(true))
+            tryToCall(
+                call = {
+                    addMovieToFavouriteListsUseCase(movieId = movieId, listId = createdListId)
+                },
+                onSuccess = {
+                    sendNewEffect(MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar(true))
+                },
+                onError = {
+                    sendNewEffect(MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar(false))
+                }
+            )
+        }, onError = {
+            sendNewEffect(MovieDetailsScreenEffect.ShowCreateNewListSnackBar(false))
+        })
     }
 
     override fun onCancelCreatingNewListClicked() {
-        TODO("Not yet implemented")
+        resetCreateNewListUiState()
+    }
+
+    private fun resetCreateNewListUiState() {
+        updateState { screenState ->
+            screenState.copy(
+                createNewListDialog = screenState.createNewListDialog.copy(
+                    isCreateNewListDialogVisible = false,
+                    isCreateNewListButtonEnabled = false,
+                    newListTitle = ""
+                )
+            )
+        }
     }
 
     fun toggleMovieDetailsTab(
@@ -484,16 +523,14 @@ class MovieDetailsViewModel @Inject constructor(
             screenState.copy(
                 movieDetailsTabsUiState = screenState.movieDetailsTabsUiState.copy(
                     tab = movieDetailsTabs, isSelected = true
-                ), isScreenLoading = false
+                ),
             )
         }
     }
 
     private fun updateRowSectionToLoading() {
         updateState { screenState ->
-            screenState.copy(
-                rowSection = MoviesRowSectionUiState.Loading,
-            )
+            screenState.copy()
         }
     }
 
@@ -502,7 +539,7 @@ class MovieDetailsViewModel @Inject constructor(
             screenState.copy(
                 rowSection = MoviesRowSectionUiState.NoDataFound(
                     UiText.Resource(error)
-                ), isScreenLoading = false
+                ),
             )
         }
     }
@@ -510,7 +547,7 @@ class MovieDetailsViewModel @Inject constructor(
     private fun updateScreenStateToError(errorState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message, isScreenLoading = false
+                errorMessage = errorState.message,
             )
         }
     }

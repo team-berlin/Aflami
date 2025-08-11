@@ -205,8 +205,8 @@ class RetrofitRemoteDataSource @Inject constructor(
         }
     }
 
-    override suspend fun createNewFavouriteList(title: String) {
-        wrapApiResponse {
+    override suspend fun createNewFavouriteList(title: String): Int {
+        return wrapApiResponse {
             Log.d("khairy", "try to createNewFavouriteList called $title")
             apiService.createNewFavouriteList(
                 sessionId = authenticationLocalDataSource.getUserSessionId()
@@ -219,7 +219,7 @@ class RetrofitRemoteDataSource @Inject constructor(
             )
         }.also {
             Log.d("khairy", "createNewFavouriteList return $it")
-        }
+        }.listId
     }
 
     override suspend fun editListTitle(listId: Int, newListTitle: String) {

@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.details.movie
 import androidx.annotation.StringRes
 import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
+import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 
@@ -19,11 +20,12 @@ data class MovieDetailsUiState(
     val isScreenLoading: Boolean = false,
     val errorMessage: String? = null,
     val movieDetailsTabsUiState: MovieDetailsTabsUiState = MovieDetailsTabsUiState(),
-    val showLoginDialog:Boolean = false,
+    val showLoginDialog: Boolean = false,
     val showRatingDialog: Boolean = false,
     val addToListDialog: AddToListSheetState = AddToListSheetState(),
     val selectedRatingMediaId: Long? = null,
     val movieId: Long = 0,
+    val createNewListDialog: CreateNewListUiState = CreateNewListUiState(),
 )
 
 
