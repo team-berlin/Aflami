@@ -94,30 +94,27 @@ fun ContentRestrictionDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                if (firstOptionIconRes != null && firstOptionTitleRes != null) {
+                if (firstOptionTitleRes != null) {
                     SelectionButton(
                         selected = isFirstOptionSelected,
                         onClick = onFirstOptionClick,
-                        iconId = firstOptionIconRes,
                         selectionTitleId = firstOptionTitleRes,
                         subTitleId = firstOptionSubTitleIdRes
                     )
                 }
-                if (secondOptionIconRes != null && secondOptionTitleRes != null) {
+                if (secondOptionTitleRes != null) {
                     SelectionButton(
                         selected = isSecondOptionSelected,
                         onClick = onSecondOptionClick,
-                        iconId = secondOptionIconRes,
                         selectionTitleId = secondOptionTitleRes,
                         subTitleId = secondOptionSubTitleIdRes
                     )
                 }
 
-                if (thirdOptionIconRes != null && thirdOptionTitleRes != null) {
+                if (thirdOptionTitleRes != null) {
                     SelectionButton(
                         selected = isThirdOptionSelected,
                         onClick = onThirdOptionClick,
-                        iconId = thirdOptionIconRes,
                         selectionTitleId = thirdOptionTitleRes,
                         subTitleId = thirdOptionSubTitleIdRes
                     )
