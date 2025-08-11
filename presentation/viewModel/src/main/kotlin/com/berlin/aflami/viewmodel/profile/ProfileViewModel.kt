@@ -197,7 +197,8 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 isStrictSelected = true,
                 isModeratedSelected = false,
-                isOffSelected = false
+                isOffSelected = false,
+                selectedRestriction = ContentRestriction.STRICT.name
             )
         }
     }
@@ -207,7 +208,8 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 isStrictSelected = false,
                 isModeratedSelected = true,
-                isOffSelected = false
+                isOffSelected = false,
+                selectedRestriction = ContentRestriction.MODERATE.name
             )
         }
     }
@@ -217,7 +219,8 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 isStrictSelected = false,
                 isModeratedSelected = false,
-                isOffSelected = true
+                isOffSelected = true,
+                selectedRestriction = ContentRestriction.OFF.name
             )
         }
     }
