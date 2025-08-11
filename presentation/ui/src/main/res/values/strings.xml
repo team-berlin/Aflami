@@ -100,8 +100,8 @@
     <string name="moderate_description">Blurs explicit scenes only.</string>
     <string name="off_description">No content is blurred.</string>
 
-    <string name="choose_difficulty_level">اختر مستوى الصعوبة</string>
-    <string name="lets_start">لنبدأ</string>
+    <string name="choose_difficulty_level">Choose Difficulty Level</string>
+    <string name="lets_start">Let’s start</string>
 
 
     <string name="easy">Easy</string>
@@ -111,6 +111,8 @@
     <string name="level_easy">5 question, 45sec and 5 point per question.</string>
     <string name="level_medium">10 question, 30sec and 10 point per question.</string>
     <string name="level_hard">20 question, 10sec and 20 point per question.</string>
+
+    <string name="guess_character">Guess the character</string>
 
 
 </resources>

@@ -101,8 +101,8 @@
     <string name="moderate_description">إخفاء المشاهد الصريحة فقط.</string>
     <string name="off_description">عدم إخفاء المحتوى.</string>
 
-    <string name="choose_difficulty_level">Choose Difficulty Level</string>
-    <string name="lets_start">Let’s start</string>
+    <string name="choose_difficulty_level">اختر مستوى الصعوبة</string>
+    <string name="lets_start">لنبدأ</string>
 
     <string name="easy">سهل</string>
     <string name="medium">متوسط</string>
@@ -111,5 +111,8 @@
     <string name="level_easy">٥ أسئلة، ٤٥ ثانية و ٥ نقاط لكل سؤال.</string>
     <string name="level_medium">١٠ أسئلة، ٣٠ ثانية و ١٠ نقاط لكل سؤال.</string>
     <string name="level_hard">٢٠ سؤالاً، ١٠ ثواني و ٢٠ نقطة لكل سؤال.</string>
+
+    <string name="guess_character">خمن الشخصية</string>
+
 
 </resources>
