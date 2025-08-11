@@ -46,7 +46,8 @@ class ListScreenViewModel @Inject constructor(
             updateState { screenState ->
                 screenState.copy(
                     editListSheetState = screenState.editListSheetState.copy(
-                        isSaveButtonEnabled = true, requiredListIdToEdit = requiredListIdToEdit
+                        isSaveButtonEnabled = true, requiredListIdToEdit = requiredListIdToEdit,
+                        isEditNewListDialogVisible = true
                     )
                 )
             }
@@ -181,6 +182,7 @@ class ListScreenViewModel @Inject constructor(
         tryToCall(
             call = {
                 createNewFavouriteListUseCase(listTitle)
+                resetCreateNewListSheetState()
             },
             onSuccess = {
                 sendNewEffect(
@@ -197,6 +199,18 @@ class ListScreenViewModel @Inject constructor(
                 )
             },
         )
+    }
+
+    private fun resetCreateNewListSheetState() {
+        updateState { screenState ->
+            screenState.copy(
+                createNewListSheetState = screenState.createNewListSheetState.copy(
+                    newListTitle = "",
+                    isCreateNewListDialogVisible = false,
+                    isCreateNewListButtonEnabled = false
+                )
+            )
+        }
     }
 
     override fun onCancelEditingListClicked() = updateState { screenState ->

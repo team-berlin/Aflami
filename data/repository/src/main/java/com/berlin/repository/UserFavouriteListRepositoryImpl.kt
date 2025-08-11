@@ -41,7 +41,7 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
     override suspend fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long) =
         remoteDataSource.deleteMovieFromUserFavouriteList(listId = listId, movieId = movieId)
 
-    override suspend fun createNewFavouriteList(title: String) =
+    override suspend fun createNewFavouriteList(title: String): Int =
         remoteDataSource.createNewFavouriteList(title = title)
 
     override suspend fun editListTitle(listId: Int, newListTitle: String) =
