@@ -6,9 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AddMovieToListDto(
     @SerialName("status_code")
-    val statusCode: Int,
+    val statusCode: Int? = null,
     @SerialName("status_message")
-    val statusMessage: String,
+    val statusMessage: String? = null,
     @SerialName("success")
-    val success: Boolean,
+    val success: Boolean? = null,
 )

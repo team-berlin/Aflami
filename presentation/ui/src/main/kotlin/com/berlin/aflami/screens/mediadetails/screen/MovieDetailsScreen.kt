@@ -86,6 +86,7 @@ fun MovieDetailsScreen(
     AnimatedVisibility(
         visible = uiState.errorMessage != null
     ) {
+        Log.d("khairy", "error message is ${uiState.errorMessage}")
         NoInternetConnectionPlaceholder()
     }
     AnimatedVisibility(

@@ -7,7 +7,7 @@ import com.berlin.repository.datasource.remote.dto.FavouriteListItem
 
 fun FavouriteListDto.toDomain(): FavouriteList {
     return FavouriteList(
-        listId = listId!!, listTitle = listTitle!!, numberOfFavouriteMovies = favoriteCount!!
+        listId = listId!!, listTitle = listTitle!!, numberOfFavouriteMovies = itemCount!!
     )
 }
 

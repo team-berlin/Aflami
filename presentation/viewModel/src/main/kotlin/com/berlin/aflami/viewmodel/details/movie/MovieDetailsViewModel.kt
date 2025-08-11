@@ -99,7 +99,7 @@ class MovieDetailsViewModel @Inject constructor(
             }, onSuccess = { (movieUiState, moviePosters) ->
                 updateState { screenState ->
                     screenState.copy(
-                        posters = moviePosters, movieUiState = movieUiState,
+                        posters = moviePosters, movieUiState = movieUiState, isScreenLoading = false
                     )
                 }
                 saveMovieToContinueWatching(
@@ -579,7 +579,7 @@ class MovieDetailsViewModel @Inject constructor(
     private fun updateScreenStateToError(errorState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message,
+                errorMessage = errorState.message, isScreenLoading = false
             )
         }
     }

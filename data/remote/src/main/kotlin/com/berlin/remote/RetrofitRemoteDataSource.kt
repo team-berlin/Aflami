@@ -13,7 +13,7 @@ import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.request.ListRequest
-import com.berlin.repository.datasource.remote.dto.request.RemoveMovieFromListRequest
+import com.berlin.repository.datasource.remote.dto.request.MovieListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
@@ -200,7 +200,7 @@ class RetrofitRemoteDataSource @Inject constructor(
                 listId = listId,
                 sessionId = authenticationLocalDataSource.getUserSessionId()
                     ?: throw IllegalStateException("userSessionID == null"),
-                removeMovieFromListRequest = RemoveMovieFromListRequest(movieId = movieId)
+                movieListRequest = MovieListRequest(movieId = movieId)
             )
         }
     }
@@ -240,8 +240,14 @@ class RetrofitRemoteDataSource @Inject constructor(
                 listId = listId,
                 sessionId = authenticationLocalDataSource.getUserSessionId()
                     ?: throw IllegalStateException("userSessionID == null"),
-                movieId = movieId.toInt()
-            )
+                addMovieToListRequest = MovieListRequest(movieId = movieId)
+            ).also {
+                Log.d(
+                    "khairy",
+                    "add movie to favourite list returned " +
+                            "${it.body()} and message = ${it.message()} isSuccessfull = ${it.isSuccessful}  error body = ${it.errorBody()}"
+                )
+            }
         }
     }
 }
