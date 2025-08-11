@@ -232,4 +232,16 @@ class RetrofitRemoteDataSource @Inject constructor(
             )
         }
     }
+
+    override suspend fun addMovieToFavouriteList(listId: Int, movieId: Long) {
+        wrapApiResponse {
+            Log.d("AddMovieToFavouriteListUseCase", "listId = $listId, movieId = $movieId")
+            apiService.addMovieToList(
+                listId = listId,
+                sessionId = authenticationLocalDataSource.getUserSessionId()
+                    ?: throw IllegalStateException("userSessionID == null"),
+                movieId = movieId.toInt()
+            )
+        }
+    }
 }

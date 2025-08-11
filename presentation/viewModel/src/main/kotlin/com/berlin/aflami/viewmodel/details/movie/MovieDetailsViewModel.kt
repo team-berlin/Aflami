@@ -435,9 +435,6 @@ class MovieDetailsViewModel @Inject constructor(
     override fun onCreateNewFavouriteListClicked() {
         updateState { screenState ->
             screenState.copy(
-                createNewListDialog = screenState.createNewListDialog.copy(
-
-                )
             )
         }
     }

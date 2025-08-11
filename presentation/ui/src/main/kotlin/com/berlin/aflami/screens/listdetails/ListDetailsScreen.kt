@@ -197,12 +197,3 @@ private fun onReceiveNewEffect(effect: ListDetailsScreenEffect, navController: N
         ListDetailsScreenEffect.ShowDeleteMovieFromListSucceededSnackBar -> TODO()
     }
 }
-//@Preview
-//@Composable
-//private fun PreviewListDetailsContent() {
-//    AflamiTheme {
-//        ListDetailsContent(
-//            state = ListDetailsScreenState(),
-//        )
-//    }
-//}

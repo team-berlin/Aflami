@@ -54,4 +54,5 @@ interface RemoteDataSource {
     suspend fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long)
     suspend fun createNewFavouriteList(title: String)
     suspend fun editListTitle(listId: Int, newListTitle: String)
+    suspend fun addMovieToFavouriteList(listId: Int, movieId: Long)
 }

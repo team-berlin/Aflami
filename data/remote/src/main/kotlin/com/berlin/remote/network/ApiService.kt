@@ -3,9 +3,11 @@ package com.berlin.remote.network
 import com.berlin.remote.network.ApiConstants.ACCOUNT_ID
 import com.berlin.remote.network.ApiConstants.LIST_ID
 import com.berlin.remote.network.ApiConstants.LIST_LISTID
+import com.berlin.remote.network.ApiConstants.MOVIE_ID
 import com.berlin.remote.network.ApiConstants.PAGE
 import com.berlin.remote.network.ApiConstants.SESSION_ID
 import com.berlin.remote.network.ApiConstants.USER_LISTS
+import com.berlin.repository.datasource.remote.dto.AddMovieToListDto
 import com.berlin.repository.datasource.remote.dto.CreateListResponse
 import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
@@ -31,6 +33,8 @@ import kotlinx.datetime.toLocalDateTime
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -202,7 +206,7 @@ interface ApiService {
     suspend fun getUserLists(
         @Path(ACCOUNT_ID) accountId: Int,
         @Query(SESSION_ID) sessionId: String,
-        @Query("page") page: Int, // ← ADD THIS
+        @Query(PAGE) page: Int, // ← ADD THIS
     ): Response<FavouriteListResponse>
 
     @PUT(LIST_LISTID)
@@ -212,6 +216,12 @@ interface ApiService {
         @Body listRequest: ListRequest,
     ): Response<CreateListResponse>
 
+    @POST(ApiConstants.ADD_MOVIE_TO_LIST)
+    suspend fun addMovieToList(
+        @Path(LIST_ID) listId: Int,
+        @Query(SESSION_ID) sessionId: String,
+        @Field(MOVIE_ID) movieId: Int,
+    ): Response<AddMovieToListDto>
 }
 
 val DEFAULT_GTE: String = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

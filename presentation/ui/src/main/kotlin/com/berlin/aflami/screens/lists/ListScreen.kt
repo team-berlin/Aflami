@@ -167,17 +167,6 @@ private fun ListsContent(
                     lastOption = painterResource(R.drawable.add),
                     onLastOptionClicked = interactionListener::onClickAddList,
                 )
-//                AnimatedContent(
-//                    modifier = Modifier.fillMaxSize(),
-//                    targetState = Triple(
-//                        listScreenState.isScreenLoading,
-//                        listScreenState.errorMessage,
-//                        listScreenState.favouriteList
-//                    ),
-//                    transitionSpec = {
-//                        fadeIn(tween(700)) togetherWith fadeOut(tween(700))
-//                    },
-//                ) { (isLoading, errorState, favouriteList) ->
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxSize(),
                     columns = GridCells.Adaptive(minSize = 156.dp),
@@ -228,40 +217,3 @@ private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavContr
         }
     }
 }
-
-//@Preview
-//@Composable
-//private fun PreviewListsContent() {
-//    AflamiTheme {
-//        ListsContent(
-//            listScreenState = ListScreenState(
-//                isScreenLoading = false, favouriteList = listOf(
-//                    FavouriteListItemUiState(
-//                        listId = 1,
-//                        listTitle = "My Favourite Movies",
-//                        numberOfFavouriteMovies = 10
-//                    ), FavouriteListItemUiState(
-//                        listId = 2,
-//                        listTitle = "My Favourite TV Shows",
-//                        numberOfFavouriteMovies = 5
-//                    )
-//                )
-//            ), interactionListener = object : ListScreenInteractionListener {
-//                override fun onBackClicked() {}
-//                override fun onListNameChange(newListTitle: TextFieldValue) {}
-//                override fun onLoginClicked() {}
-//                override fun onClickAddList() {}
-//                override fun onCreateNewListClicked() {}
-//                override fun onClickListCard(listId: Int, listName: String) {}
-//                override fun onUpdateNewListTitle(newListTitle: String) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//                override fun onCreateNewListClicked(listTitle: String) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//                override fun onCancelCreatingNewListClicked() {}
-//            })
-//    }
-//}

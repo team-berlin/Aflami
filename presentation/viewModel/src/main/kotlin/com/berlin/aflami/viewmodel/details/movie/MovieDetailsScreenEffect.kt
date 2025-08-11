@@ -18,4 +18,5 @@ sealed interface MovieDetailsScreenEffect {
     data class ShowAddToFavouriteSnackBar(val isAddedSuccessfully: Boolean) :
         MovieDetailsScreenEffect
 
+
 }
