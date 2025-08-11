@@ -353,6 +353,8 @@ fun MovieDetailsContent(
                         })
                 }
 
+                SNACK_BAR_STATUS.LIST_DELETED -> {}
+                SNACK_BAR_STATUS.LIST_RENAMED -> {}
                 null -> {}
             }
         }
