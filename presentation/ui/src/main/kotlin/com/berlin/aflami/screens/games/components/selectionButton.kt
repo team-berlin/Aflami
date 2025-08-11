@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.Theme
@@ -25,10 +24,24 @@ fun SelectionItem(
     guessName: String,
     modifier: Modifier = Modifier,
     isSelected:Boolean?=null,
-    checkBgColor: Color=Theme.color.surfaceHigh,
-    borderCheck: Color=Theme.color.stroke,
     onSelectItem: () -> Unit = {},
 ) {
+
+    val checkBgColor = when (isSelected) {
+        true -> Theme.color.statusColors.greenVariant
+        false -> Theme.color.statusColors.redVariant
+        null -> Theme.color.surface
+    }
+    val borderCheck = when (isSelected) {
+        true -> Theme.color.statusColors.greenAccent
+        false -> Theme.color.statusColors.redAccent
+        null -> Theme.color.stroke
+    }
+    val icon = when (isSelected) {
+        true -> R.drawable.check_mark
+        false -> R.drawable.wrong_check
+        null -> R.drawable.radio_button
+    }
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -49,15 +62,10 @@ fun SelectionItem(
             style = Theme.textStyle.label.large,
             color = Theme.color.textColors.body,
         )
-        val icon = when (isSelected) {
-            true -> R.drawable.check_mark
-            false -> R.drawable.wrong_check
-            null -> R.drawable.radio_button
-        }
         Icon(
             painter = painterResource(icon),
             contentDescription = null,
-            tint = borderCheck ,
+            tint = if(isSelected==null)Theme.color.surfaceHigh else borderCheck ,
             modifier = Modifier.border(1.dp,borderCheck, RoundedCornerShape(100.dp))
         )
     }

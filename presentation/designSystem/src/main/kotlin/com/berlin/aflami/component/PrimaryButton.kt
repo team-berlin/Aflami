@@ -34,7 +34,7 @@ fun PrimaryButton(
                 brush = gradientColor
             )
             .clickable(onClick = onClick)
-            .padding(vertical = 8.dp, horizontal = 24.dp),
+            .padding( horizontal = 24.dp),
         contentAlignment = Alignment.Center
     ) {
         Row(

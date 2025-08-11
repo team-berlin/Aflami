@@ -100,6 +100,7 @@
     <string name="moderate_description">Blurs explicit scenes only.</string>
     <string name="off_description">No content is blurred.</string>
     <string name="guess_the_character">Guess the character</string>
+    <string name="next">Next</string>
 
 
 </resources>
