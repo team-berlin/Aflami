@@ -34,9 +34,7 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteUserFavouriteList(listId: Int) =
-        remoteDataSource.deleteUserFavouriteList(listId = listId).also {
-            Log.d("Khairy", "deleted list from remote is successful where id of deleted= $listId")
-        }
+        remoteDataSource.deleteUserFavouriteList(listId = listId)
 
     override suspend fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long) =
         remoteDataSource.deleteMovieFromUserFavouriteList(listId = listId, movieId = movieId)

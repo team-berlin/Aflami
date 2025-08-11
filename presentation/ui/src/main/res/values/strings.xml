@@ -120,6 +120,7 @@
     <string name="movie_added_failed">Failed To Add To List</string>
     <string name="create_new_list_failed">Failed To Create New List</string>
     <string name="not_supported_feature">Sorry, this feature is available for movies only</string>
+    <string name="movie_already_exists">Movie Already Exists In This List</string>
 
 
 </resources>

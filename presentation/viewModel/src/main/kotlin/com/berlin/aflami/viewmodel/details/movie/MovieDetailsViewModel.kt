@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -351,6 +352,9 @@ class MovieDetailsViewModel @Inject constructor(
         sendNewEffect(MovieDetailsScreenEffect.NavigateToMovieDetailsScreen(movieId))
 
     override fun onLoginButtonClicked() = sendNewEffect(MovieDetailsScreenEffect.NavigateToLogin)
+    override fun dismissSnackBar() {
+        updateState { it.copy(snackBar = it.snackBar.copy(isVisible = false)) }
+    }
 
     override fun onRateIconClicked(movieId: Long) {
         checkLoginThen {
@@ -406,13 +410,15 @@ class MovieDetailsViewModel @Inject constructor(
                     ),
                 )
             }
-        }, onError = {
+        }, onError = { errorUiState ->
+            Log.d("khairy", "error uiState is $errorUiState")
             updateState { screenState ->
                 screenState.copy(
                     snackBar = SnackBarUiState(
                         isVisible = true,
                         snackBarStatus = SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST,
-                        isOperationSucceeded = false
+                        isOperationSucceeded = false,
+                        errorUiState = errorUiState
                     ),
                     addToListDialog = screenState.addToListDialog.copy(
                         isLoading = false,
@@ -440,6 +446,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onCreateNewFavouriteListClicked() {
+        onCancelAddingToFavouriteClicked()
         updateState { screenState ->
             screenState.copy(
                 createNewListDialog = screenState.createNewListDialog.copy(

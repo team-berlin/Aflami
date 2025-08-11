@@ -61,6 +61,7 @@ fun SnackBar(
     ) {
         Box(
             modifier = modifier
+                .fillMaxWidth()
                 .dropShadow(
                     shape = RoundedCornerShape(16.dp),
                     alpha = 0.12f,

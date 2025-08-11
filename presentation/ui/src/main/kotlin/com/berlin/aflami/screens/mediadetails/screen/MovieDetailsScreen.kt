@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,6 +41,7 @@ import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.listdetails.component.AddToListDialog
+import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.MovieBackdropPager
 import com.berlin.aflami.screens.mediadetails.components.RateDialog
@@ -48,6 +50,7 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.Descript
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.MovieTabSection
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.MovieAlreadyExistInList
 import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
 import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
@@ -116,6 +119,18 @@ fun MovieDetailsScreen(
             onDismiss = { },
             title = stringResource(com.berlin.ui.R.string.login_required),
             description = stringResource(com.berlin.ui.R.string.login_required_warning)
+        )
+    }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.createNewListDialog.isCreateNewListDialogVisible
+    ) {
+        CreateNewListDialog(
+            listName = TextFieldValue(uiState.createNewListDialog.newListTitle),
+            onListNameChanged = viewModel::onUpdateNewListTitle,
+            onCreateListClick = viewModel::onCreateNewListClicked,
+            onDismiss = viewModel::onCancelCreatingNewListClicked,
         )
     }
     AnimatedVisibility(
@@ -208,47 +223,6 @@ fun MovieDetailsContent(
             .fillMaxSize()
             .background(Theme.color.surface)
     ) {
-        AnimatedVisibility(
-            state.snackBar.isVisible
-        ) {
-            when (state.snackBar.snackBarStatus) {
-                SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST -> {
-                    if (state.snackBar.isOperationSucceeded) {
-                        SnackBar(
-                            status = SnackBarStatus.SUCCESS,
-                            text = stringResource(com.berlin.ui.R.string.movie_added_success),
-                            iconPainter = painterResource(id = R.drawable.success),
-                            modifier = Modifier.align(Alignment.TopCenter),
-                            onDismiss = { null })
-                    } else {
-                        SnackBar(
-                            status = SnackBarStatus.ERROR,
-                            text = stringResource(com.berlin.ui.R.string.movie_added_failed),
-                            iconPainter = painterResource(id = R.drawable.error),
-                            modifier = Modifier.align(Alignment.TopCenter),
-                            onDismiss = { null })
-                    }
-                }
-
-                SNACK_BAR_STATUS.CREATE_NEW_LIST -> if (state.snackBar.isOperationSucceeded) {
-                    SnackBar(
-                        status = SnackBarStatus.SUCCESS,
-                        text = stringResource(com.berlin.ui.R.string.new_list_created),
-                        iconPainter = painterResource(id = R.drawable.success),
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        onDismiss = { null })
-                } else {
-                    SnackBar(
-                        status = SnackBarStatus.ERROR,
-                        text = stringResource(com.berlin.ui.R.string.create_new_list_failed),
-                        iconPainter = painterResource(id = R.drawable.error),
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        onDismiss = { null })
-                }
-
-                null -> TODO()
-            }
-        }
         LazyColumn(modifier = Modifier.zIndex(0f), state = listState) {
             item {
                 MovieBackdropPager(
@@ -323,6 +297,67 @@ fun MovieDetailsContent(
             RateDialog(
                 onDismiss = { listener.onCancelRatingClicked() },
                 onRate = { rating -> listener.onSubmitRateClicked(rating) })
+        }
+        AnimatedVisibility(
+            state.snackBar.isVisible
+        ) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 40.dp)
+                    .zIndex(10f)
+            ) {
+                when (state.snackBar.snackBarStatus) {
+                    SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST -> {
+                        if (state.snackBar.isOperationSucceeded) {
+                            SnackBar(
+                                status = SnackBarStatus.SUCCESS,
+                                text = stringResource(com.berlin.ui.R.string.movie_added_success),
+                                iconPainter = painterResource(id = R.drawable.success),
+                                modifier = Modifier.align(Alignment.TopCenter),
+                                onDismiss = {
+                                    listener.dismissSnackBar()
+                                })
+                        } else {
+                            val errorMessage =
+                                if (state.snackBar.errorUiState is MovieAlreadyExistInList)
+                                    stringResource(
+                                        com.berlin.ui.R.string.movie_already_exists
+                                    ) else stringResource(
+                                    com.berlin.ui.R.string.movie_added_failed
+                                )
+                            SnackBar(
+                                status = SnackBarStatus.ERROR,
+                                text = errorMessage,
+                                iconPainter = painterResource(id = R.drawable.error),
+                                modifier = Modifier.align(Alignment.TopCenter),
+                                onDismiss = {
+                                    listener.dismissSnackBar()
+                                })
+                        }
+                    }
+
+                    SNACK_BAR_STATUS.CREATE_NEW_LIST -> if (state.snackBar.isOperationSucceeded) {
+                        SnackBar(
+                            status = SnackBarStatus.SUCCESS,
+                            text = stringResource(com.berlin.ui.R.string.new_list_created),
+                            iconPainter = painterResource(id = R.drawable.success),
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            onDismiss = { null })
+                    } else {
+                        SnackBar(
+                            status = SnackBarStatus.ERROR,
+                            text = stringResource(com.berlin.ui.R.string.create_new_list_failed),
+                            iconPainter = painterResource(id = R.drawable.error),
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            onDismiss = {
+                                listener.dismissSnackBar()
+                            })
+                    }
+
+                    null -> TODO()
+                }
+            }
         }
 
     }
