@@ -11,5 +11,4 @@ class MediaByCategoryArgs @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) {
     val categoryId: Long? = savedStateHandle.get<Long>(CATEGORY_ID)
-    val mediaType: MediaType? = savedStateHandle.get<MediaType>(MEDIA_TYPE)
 }

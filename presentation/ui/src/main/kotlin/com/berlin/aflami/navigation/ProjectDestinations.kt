@@ -53,7 +53,10 @@ data class MovieDetailsDestination(val movieId: Long)
 data class TVShowDetailsDestination(val tvShowId: Long)
 
 @Serializable
-data class MediaByCategoryDestination(val categoryId: Long, val mediaType: MediaType)
+data class MoviesByCategoryDestination(val categoryId: Long)
+
+@Serializable
+data class TVShowsByCategoryDestination(val categoryId: Long)
 
 @Serializable
 data class CastDestination(val mediaId: Long, val mediaType: MediaType)

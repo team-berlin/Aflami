@@ -5,7 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,12 +30,13 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TabBar
 import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TopBar
-import com.berlin.aflami.navigation.MediaByCategoryDestination
+import com.berlin.aflami.navigation.MoviesByCategoryDestination
+import com.berlin.aflami.navigation.TVShowsByCategoryDestination
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.categories.CategoriesInteractionListener
-import com.berlin.aflami.viewmodel.categories.CategoriesScreenEffect
-import com.berlin.aflami.viewmodel.categories.CategoriesScreenUiState
-import com.berlin.aflami.viewmodel.categories.CategoriesScreenViewModel
+import com.berlin.aflami.viewmodel.categories.categories.CategoriesInteractionListener
+import com.berlin.aflami.viewmodel.categories.categories.CategoriesScreenEffect
+import com.berlin.aflami.viewmodel.categories.categories.CategoriesScreenUiState
+import com.berlin.aflami.viewmodel.categories.categories.CategoriesScreenViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.aflami.viewmodel.shareduistate.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -82,11 +82,22 @@ fun CategoryScreen(
 private fun categoriesReceiveEffect(navController: NavController, effect: CategoriesScreenEffect) {
     when (effect) {
         is CategoriesScreenEffect.NavigateToMediaScreen -> {
-            navController.navigate(
-                MediaByCategoryDestination(
-                    categoryId = effect.mediaId, mediaType = effect.mediaType
-                )
-            )
+            when(effect.mediaType){
+                MediaType.MOVIE -> {
+                    navController.navigate(
+                        MoviesByCategoryDestination(
+                            categoryId = effect.mediaId,
+                        )
+                    )
+                }
+                MediaType.TV_SHOW -> {
+                    navController.navigate(
+                        TVShowsByCategoryDestination(
+                            categoryId = effect.mediaId,
+                        )
+                    )
+                }
+            }
         }
     }
 }

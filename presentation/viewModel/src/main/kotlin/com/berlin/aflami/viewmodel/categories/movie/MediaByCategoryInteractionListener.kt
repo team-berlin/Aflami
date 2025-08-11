@@ -4,6 +4,7 @@ import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 
 interface MediaByCategoryInteractionListener {
-    fun onMediaCardClicked(mediaId: Long, mediaType: MediaType)
+    fun onBackClicked()
+    fun onMediaCardClicked(mediaId: Long)
     fun onCategoryCardClicked(category: Long)
 }

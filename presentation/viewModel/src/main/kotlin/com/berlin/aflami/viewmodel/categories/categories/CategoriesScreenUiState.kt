@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.categories
+package com.berlin.aflami.viewmodel.categories.categories
 
 import androidx.compose.runtime.Immutable
 import com.berlin.aflami.viewmodel.shareduistate.GenreUiState

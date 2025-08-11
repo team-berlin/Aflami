@@ -1,10 +1,13 @@
 package com.berlin.aflami.screens.categories
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,12 +21,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,83 +42,68 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
-import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.screens.search.search.Chips
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryInteractionListener
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryScreenEffect
-import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryScreenViewModel
-import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryUiState
+import com.berlin.aflami.viewmodel.categories.movie.MoviesByCategoryScreenViewModel
+import com.berlin.aflami.viewmodel.categories.movie.MoviesByCategoryUiState
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.ui.R
 
 
 @Composable
-fun MediaByCategoryScreen(
-    viewModel: MediaByCategoryScreenViewModel = hiltViewModel(),
+fun MoviesByCategoryScreen(
+    viewModel: MoviesByCategoryScreenViewModel = hiltViewModel(),
 ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
-            categoriesReceiveEffect(navController = navController, effect = newEffect)
+            moviesByCategoryReceiveEffect(navController = navController, effect = newEffect)
         }
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = state.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = state.isLoading
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(R.string.loading)
+            modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
     val movies = state.moviesPagingDataFlow.collectAsLazyPagingItems()
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = !state.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = !state.isLoading
     ) {
         MediaByCategoryContent(
-            movies,
-            state = state, listener = viewModel
+            movies, state = state, listener = viewModel
         )
     }
 }
 
-private fun categoriesReceiveEffect(
-    navController: NavController,
-    effect: MediaByCategoryScreenEffect
+private fun moviesByCategoryReceiveEffect(
+    navController: NavController, effect: MediaByCategoryScreenEffect
 ) {
     when (effect) {
         MediaByCategoryScreenEffect.NavigateBack -> navController.popBackStack()
         is MediaByCategoryScreenEffect.NavigateToMediaDetails -> {
-            when (effect.mediaType) {
-                MediaType.MOVIE -> navController.navigate(
-                    MovieDetailsDestination(
-                        movieId = effect.mediaId,
-                    )
+            navController.navigate(
+                MovieDetailsDestination(
+                    movieId = effect.mediaId,
                 )
+            )
 
-                MediaType.TV_SHOW -> navController.navigate(
-                    TVShowDetailsDestination(
-                        tvShowId = effect.mediaId,
-                    )
-                )
-            }
         }
     }
 }
 
 @Composable
 fun MediaByCategoryContent(
-    movies: LazyPagingItems<MediaUiState>,
-    state: MediaByCategoryUiState,
+    movies: LazyPagingItems<MovieUiState>,
+    state: MoviesByCategoryUiState,
     listener: MediaByCategoryInteractionListener,
 ) {
     Column(
@@ -124,44 +116,43 @@ fun MediaByCategoryContent(
                 .statusBarsPadding()
                 .padding(vertical = 8.dp), title = {
                 Text(
-                    text = if (state.mediaType == MediaType.MOVIE) stringResource(R.string.movies)
-                    else stringResource(R.string.tv_shows),
+                    text = stringResource(R.string.movies),
                     style = Theme.textStyle.title.large,
                     color = Theme.color.textColors.title,
                 )
+            }, leadingIcon = {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Theme.color.surfaceHigh)
+                        .clickable {
+                            listener.onBackClicked()
+                        }
+                        .padding(10.dp), contentAlignment = Alignment.Center) {
+                    Icon(
+                        painter = painterResource(R.drawable.arrow_left),
+                        contentDescription = stringResource(R.string.arrow_back),
+                        tint = Theme.color.textColors.title
+                    )
+                }
             }
         )
 
         when {
             state.isLoading -> {
                 CircularProgressIndicator(
-                    modifier = Modifier.fillMaxSize(),
-                    text = stringResource(R.string.loading)
+                    modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
                 )
             }
         }
-        when (state.mediaType) {
-            MediaType.MOVIE -> {
-                MediaByCategoryResultGrid(
-                    categories = state.moviesGenres,
-                    onCategoryCardClicked = listener::onCategoryCardClicked,
-                    onMediaCardClicked = listener::onMediaCardClicked,
-                    mediaType = MediaType.MOVIE,
-                    mediaList = movies
-                )
-            }
 
-            MediaType.TV_SHOW -> {
-                val tvShows = state.tvShowsPagingDataFlow.collectAsLazyPagingItems()
-                MediaByCategoryResultGrid(
-                    categories = state.tvShowGenres,
-                    onCategoryCardClicked = listener::onCategoryCardClicked,
-                    onMediaCardClicked = listener::onMediaCardClicked,
-                    mediaType = MediaType.TV_SHOW,
-                    mediaList = tvShows,
-                )
-            }
-        }
+        MediaByCategoryResultGrid(
+            categories = state.moviesGenres,
+            onCategoryCardClicked = listener::onCategoryCardClicked,
+            onMediaCardClicked = listener::onMediaCardClicked,
+            mediaList = movies
+        )
+
     }
 }
 
@@ -170,9 +161,8 @@ private fun MediaByCategoryResultGrid(
     categories: List<GenreUiState>,
     modifier: Modifier = Modifier,
     onCategoryCardClicked: (Long) -> Unit,
-    mediaType: MediaType,
-    mediaList: LazyPagingItems<MediaUiState>,
-    onMediaCardClicked: (Long, MediaType) -> Unit,
+    mediaList: LazyPagingItems<MovieUiState>,
+    onMediaCardClicked: (Long) -> Unit,
 ) {
     Row(modifier = modifier.fillMaxSize()) {
         GenreChipsColumn(
@@ -184,7 +174,6 @@ private fun MediaByCategoryResultGrid(
                 .width(102.dp)
                 .fillMaxHeight()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-            mediaType = mediaType
         )
 
         LazyVerticalGrid(
@@ -201,17 +190,16 @@ private fun MediaByCategoryResultGrid(
                 if (media != null) {
                     MediaCard(
                         modifier = Modifier.height(196.dp),
-                        mediaImg = media.poster,
+                        mediaImg = media.posterUrl,
                         title = media.title,
-                        typeOfMedia = media.mediaType.name,
-                        date = media.releaseYear,
+                        typeOfMedia = MediaType.MOVIE.name,
+                        date = media.releaseDate,
                         rating = media.rating,
                         onClick = {
                             onMediaCardClicked(
-                                media.id, media.mediaType
+                                media.id
                             )
-                        }
-                    )
+                        })
                 }
             }
         }
@@ -222,24 +210,18 @@ private fun MediaByCategoryResultGrid(
 private fun GenreChipsColumn(
     genres: List<GenreUiState>,
     onGenreClick: (Long) -> Unit,
-    mediaType: MediaType,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier, verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
-            items = genres,
-            key = { it.id }
-        ) { genre ->
+            items = genres, key = { it.id }) { genre ->
             Chips(
                 title = genre.name,
-                icon = if (mediaType == MediaType.MOVIE) painterResource(getMovieCategoryIcon(genre.id))
-                else painterResource(getTvShowCategoryIcon(genre.id)),
+                icon = painterResource(getMovieCategoryIcon(genre.id)),
                 isSelected = genre.isSelected,
-                onClick = { onGenreClick(genre.id.toLong()) }
-            )
+                onClick = { onGenreClick(genre.id.toLong()) })
         }
     }
 }

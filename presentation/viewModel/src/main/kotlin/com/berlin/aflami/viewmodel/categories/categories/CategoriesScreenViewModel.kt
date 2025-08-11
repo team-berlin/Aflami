@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.categories
+package com.berlin.aflami.viewmodel.categories.categories
 
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
