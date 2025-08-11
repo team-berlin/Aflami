@@ -268,7 +268,7 @@ fun TvShowDetailsContent(
             lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             onFirstOptionClicked = { listener.onRateIconClicked(state.tvShowUiState.id) },
             onLastOptionClicked = {
-                listener.onAddMediaToFavouriteListClicked(0, 0)
+                listener.onAddMediaToFavouriteButtomClicked(0, 0)
             },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,

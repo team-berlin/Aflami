@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.emptyFlow
 
 @Immutable
 data class AddToListSheetState(
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val selectedListId: Int? = null,
     val favouriteLists: Flow<PagingData<FavouriteListItemUiState>> = emptyFlow(),
     val isAddToListDialogVisible: Boolean = false,

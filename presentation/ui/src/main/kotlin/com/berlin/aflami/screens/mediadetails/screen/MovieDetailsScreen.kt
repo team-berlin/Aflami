@@ -142,7 +142,7 @@ fun MovieDetailsScreen(
             movieId = uiState.movieUiState.id,
             addToListUiState = uiState.addToListDialog,
             onSelectedListChange = viewModel::onSelectFavouriteList,
-            onAddToSelectedList = viewModel::onAddMediaToFavouriteListClicked,
+            onAddToSelectedList = viewModel::onAddMediaToFavouriteButtomClicked,
             onCreateNewList = viewModel::onCreateNewFavouriteListClicked,
             onDismiss = viewModel::onCancelAddingToFavouriteClicked,
         )

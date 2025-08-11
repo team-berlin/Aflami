@@ -421,7 +421,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
 
-    override fun onAddMediaToFavouriteListClicked(
+    override fun onAddMediaToFavouriteButtomClicked(
         mediaId: Long,
         favouriteListId: Int,
     ) {

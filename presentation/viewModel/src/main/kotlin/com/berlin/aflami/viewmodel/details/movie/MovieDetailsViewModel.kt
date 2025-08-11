@@ -303,7 +303,7 @@ class MovieDetailsViewModel @Inject constructor(
             updateState { screenState ->
                 screenState.copy(
                     addToListDialog = screenState.addToListDialog.copy(
-                        isLoading = true, isAddToListDialogVisible = true
+                        isLoading = true, isAddToListDialogVisible = true, errorMessage = null
                     ),
                 )
             }
@@ -316,7 +316,10 @@ class MovieDetailsViewModel @Inject constructor(
                 updateState { screenState ->
                     screenState.copy(
                         addToListDialog = screenState.addToListDialog.copy(
-                            isLoading = false, favouriteLists = it, isAddButtonEnabled = true
+                            isLoading = false,
+                            favouriteLists = it,
+                            isAddButtonEnabled = false,
+                            errorMessage = null
                         ),
                     )
                 }
@@ -324,7 +327,7 @@ class MovieDetailsViewModel @Inject constructor(
                 updateState { screenState ->
                     screenState.copy(
                         addToListDialog = screenState.addToListDialog.copy(
-                            isLoading = false, errorMessage = it.message
+                            isLoading = false, errorMessage = it.message, isAddButtonEnabled = false
                         ),
                     )
                 }
@@ -385,7 +388,7 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    override fun onAddMediaToFavouriteListClicked(
+    override fun onAddMediaToFavouriteButtomClicked(
         movieId: Long,
         favouriteListId: Int,
     ) {
@@ -430,7 +433,6 @@ class MovieDetailsViewModel @Inject constructor(
                 )
             }
         }
-
         )
 
     }
