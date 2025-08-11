@@ -240,8 +240,28 @@ class ListScreenViewModel @Inject constructor(
     override fun onSaveOldListTitleToNewTitleClicked(listId: Int, editedListTitle: String) {
         tryToCall(
             call = { editListTitleUseCase(listId = listId, newListTitle = editedListTitle) },
-            onSuccess = {},
-            onError = {})
+            onSuccess = {
+                updateState { screenState ->
+                    screenState.copy(
+                        snackBar = screenState.snackBar.copy(
+                            isVisible = true,
+                            isOperationSucceeded = true,
+                            snackBarStatus = SNACK_BAR_STATUS.LIST_RENAMED
+                        )
+                    )
+                }
+            },
+            onError = {
+                updateState { screenState ->
+                    screenState.copy(
+                        snackBar = screenState.snackBar.copy(
+                            isVisible = true,
+                            isOperationSucceeded = false,
+                            snackBarStatus = SNACK_BAR_STATUS.LIST_RENAMED
+                        )
+                    )
+                }
+            })
     }
 
 
