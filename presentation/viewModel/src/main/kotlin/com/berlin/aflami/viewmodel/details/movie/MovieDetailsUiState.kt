@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Immutable
 import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListUiState
@@ -24,9 +25,21 @@ data class MovieDetailsUiState(
     val showRatingDialog: Boolean = false,
     val addToListDialog: AddToListSheetState = AddToListSheetState(),
     val selectedRatingMediaId: Long? = null,
-    val movieId: Long = 0,
     val createNewListDialog: CreateNewListUiState = CreateNewListUiState(),
+    val snackBar: SnackBarUiState = SnackBarUiState(),
 )
+
+@Immutable
+data class SnackBarUiState(
+    val isVisible: Boolean = false,
+    val isOperationSucceeded: Boolean = false,
+    val snackBarStatus: SNACK_BAR_STATUS? = null,
+)
+
+enum class SNACK_BAR_STATUS {
+    ADD_MOVIE_TO_LIST,
+    CREATE_NEW_LIST,
+}
 
 
 data class MovieDetailsTabsUiState(

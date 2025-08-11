@@ -36,7 +36,7 @@ fun SnackBar(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .dropShadow(
                 shape = RoundedCornerShape(16.dp),
                 alpha = 0.12f,

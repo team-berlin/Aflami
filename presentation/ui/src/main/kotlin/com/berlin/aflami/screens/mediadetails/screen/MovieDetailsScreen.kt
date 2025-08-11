@@ -19,17 +19,21 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
+import com.berlin.aflami.component.SnackBar
+import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.navigation.CastDestination
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.MovieDetailsDestination
@@ -70,6 +74,7 @@ fun MovieDetailsScreen(
             )
         }
     }
+
 
     AnimatedVisibility(
         enter = fadeIn(),
@@ -125,7 +130,7 @@ fun MovieDetailsScreen(
         visible = uiState.addToListDialog.isAddToListDialogVisible
     ) {
         AddToListDialog(
-            movieId = uiState.movieId,
+            movieId = uiState.movieUiState.id,
             addToListUiState = uiState.addToListDialog,
             onSelectedListChange = viewModel::onSelectFavouriteList,
             onAddToSelectedList = viewModel::onAddMediaToFavouriteListClicked,
@@ -161,7 +166,6 @@ private fun onReceiveMovieDetailsEffect(
             )
         }
 
-        is MovieDetailsScreenEffect.ShowAddToFavoriteListDialog -> {}
         is MovieDetailsScreenEffect.ShowRatingDialog -> {}
         is MovieDetailsScreenEffect.NavigateToMovieDetailsScreen -> {
             navController.navigate(
@@ -182,13 +186,43 @@ private fun onReceiveMovieDetailsEffect(
             )
         }
 
-        is MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar -> {
-            Log.d(
-                "khairy",
-                "add to favourite final state = ${mediaDetailsScreenEffect.isAddedSuccessfully}"
+
+        if (mediaDetailsScreenEffect.isAddedSuccessfully) {
+            SnackBar(
+                status = SnackBarStatus.SUCCESS,
+                text = stringResource(R.string.movie_added_success),
+                iconPainter = painterResource(id = R.drawable.success),
+                modifier = Modifier.align(Alignment.Top)
+            )
+        } else {
+            SnackBar(
+                status = SnackBarStatus.SUCCESS,
+                text = stringResource(R.string.movie_added_failed),
+                iconPainter = painterResource(id = R.drawable.error),
+                modifier = Modifier.align(Alignment.Top)
+            )
+        }
+
+    }
+
+    is MovieDetailsScreenEffect.ShowCreateNewListSnackBar -> {
+        if (mediaDetailsScreenEffect.isListCreatedSuccessfully) {
+            SnackBar(
+                status = SnackBarStatus.SUCCESS,
+                text = stringResource(com.berlin.ui.R.string.new_list_created),
+                iconPainter = painterResource(id = R.drawable.success),
+                modifier = Modifier.align(Alignment.Top)
+            )
+        } else {
+            SnackBar(
+                status = SnackBarStatus.SUCCESS,
+                text = stringResource(R.string.create_new_list_failed),
+                iconPainter = painterResource(id = R.drawable.error),
+                modifier = Modifier.align(Alignment.Top)
             )
         }
     }
+}
 }
 
 @Composable
@@ -217,9 +251,18 @@ fun MovieDetailsContent(
         Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
-
     ) {
-        LazyColumn(state = listState) {
+        AnimatedVisibility(
+            state.snackBar.isVisible
+        ) {
+            SnackBar(
+                status = SnackBarStatus.SUCCESS,
+                text = stringResource(R.string.movie_added_success),
+                iconPainter = painterResource(id = R.drawable.success),
+                modifier = Modifier.align(Alignment.Top)
+            )
+        }
+        LazyColumn(modifier = Modifier.zIndex(0f), state = listState) {
             item {
                 MovieBackdropPager(
                     state = state,
@@ -277,7 +320,8 @@ fun MovieDetailsContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appBarBgColor)
-                .statusBarsPadding(),
+                .statusBarsPadding()
+                .zIndex(1f),
 
             firstOption = painterResource(R.drawable.ic_rounded_star),
             lastOption = painterResource(R.drawable.ic_rounded_add_heart),

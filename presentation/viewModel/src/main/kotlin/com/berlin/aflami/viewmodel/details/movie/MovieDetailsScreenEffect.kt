@@ -15,11 +15,11 @@ sealed interface MovieDetailsScreenEffect {
     ) : MovieDetailsScreenEffect
 
     data object NavigateToLogin : MovieDetailsScreenEffect
-    data class ShowAddToFavouriteSnackBar(val isAddedSuccessfully: Boolean) :
-        MovieDetailsScreenEffect
-
-    data class ShowCreateNewListSnackBar(val isListCreatedSuccessfully: Boolean) :
-        MovieDetailsScreenEffect
+//    data class ShowAddToFavouriteSnackBar(val isAddedSuccessfully: Boolean) :
+//        MovieDetailsScreenEffect
+//
+//    data class ShowCreateNewListSnackBar(val isListCreatedSuccessfully: Boolean) :
+//        MovieDetailsScreenEffect
 
 
 }

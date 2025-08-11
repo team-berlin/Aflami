@@ -92,5 +92,8 @@
     <string name="war_politics"><![CDATA[حرب و سياسة]]></string>
     <string name="kids">أطفال</string>
     <string name="item_count">%1$d عنصر</string>
+    <string name="movie_added_success">Added To List Successfully</string>
+    <string name="movie_added_failed">Failed To Add To List</string>
+    <string name="create_new_list_failed">Failed To Create New List</string>
 
 </resources>

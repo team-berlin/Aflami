@@ -315,7 +315,7 @@ class MovieDetailsViewModel @Inject constructor(
                 updateState { screenState ->
                     screenState.copy(
                         addToListDialog = screenState.addToListDialog.copy(
-                            isLoading = false, favouriteLists = it, isAddButtonEnabled = false
+                            isLoading = false, favouriteLists = it, isAddButtonEnabled = true
                         ),
                     )
                 }
@@ -385,41 +385,46 @@ class MovieDetailsViewModel @Inject constructor(
         movieId: Long,
         favouriteListId: Int,
     ) {
-        tryToCall(
-            call = {
-                addMovieToFavouriteListsUseCase(
-                    movieId = movieId,
-                    listId = favouriteListId
+        tryToCall(call = {
+            addMovieToFavouriteListsUseCase(
+                movieId = movieId, listId = favouriteListId
+            )
+        }, onSuccess = {
+            updateState { screenState ->
+                screenState.copy(
+                    snackBar = SnackBarUiState(
+                        isVisible = true,
+                        snackBarStatus = SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST,
+                        isOperationSucceeded = true
+                    ),
+                    addToListDialog = screenState.addToListDialog.copy(
+                        isLoading = false,
+                        errorMessage = null,
+                        isAddToListDialogVisible = false,
+                        isAddButtonEnabled = false,
+                        selectedListId = null
+                    ),
                 )
-            },
-            onSuccess = {
-                updateState { screenState ->
-                    screenState.copy(
-                        addToListDialog = screenState.addToListDialog.copy(
-                            isLoading = false,
-                            errorMessage = null,
-                            isAddToListDialogVisible = false,
-                            isAddButtonEnabled = false,
-                            selectedListId = null
-                        ),
-                    )
-                }
-                sendNewEffect(MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar(true))
-            },
-            onError = {
-                updateState { screenState ->
-                    screenState.copy(
-                        addToListDialog = screenState.addToListDialog.copy(
-                            isLoading = false,
-                            errorMessage = null,
-                            selectedListId = null,
-                            isAddToListDialogVisible = false,
-                            isAddButtonEnabled = false
-                        ),
-                    )
-                }
-                sendNewEffect(MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar(false))
             }
+        }, onError = {
+            updateState { screenState ->
+                screenState.copy(
+                    snackBar = SnackBarUiState(
+                        isVisible = true,
+                        snackBarStatus = SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST,
+                        isOperationSucceeded = false
+                    ),
+                    addToListDialog = screenState.addToListDialog.copy(
+                        isLoading = false,
+                        errorMessage = null,
+                        selectedListId = null,
+                        isAddToListDialogVisible = false,
+                        isAddButtonEnabled = false
+                    ),
+                )
+            }
+            sendNewEffect(MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar(false))
+        }
 
         )
 
@@ -471,20 +476,48 @@ class MovieDetailsViewModel @Inject constructor(
             resetCreateNewListUiState()
             createNewFavouriteListUseCase(listTitle)
         }, onSuccess = { createdListId ->
-            sendNewEffect(MovieDetailsScreenEffect.ShowCreateNewListSnackBar(true))
-            tryToCall(
-                call = {
-                    addMovieToFavouriteListsUseCase(movieId = movieId, listId = createdListId)
-                },
-                onSuccess = {
-                    sendNewEffect(MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar(true))
-                },
-                onError = {
-                    sendNewEffect(MovieDetailsScreenEffect.ShowAddToFavouriteSnackBar(false))
+            updateState { screenState ->
+                screenState.copy(
+                    snackBar = SnackBarUiState(
+                        isVisible = true,
+                        snackBarStatus = SNACK_BAR_STATUS.CREATE_NEW_LIST,
+                        isOperationSucceeded = true
+                    )
+                )
+            }
+            tryToCall(call = {
+                addMovieToFavouriteListsUseCase(movieId = movieId, listId = createdListId)
+            }, onSuccess = {
+                updateState { screenState ->
+                    screenState.copy(
+                        snackBar = SnackBarUiState(
+                            isVisible = true,
+                            snackBarStatus = SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST,
+                            isOperationSucceeded = true
+                        )
+                    )
                 }
-            )
+            }, onError = {
+                updateState { screenState ->
+                    screenState.copy(
+                        snackBar = SnackBarUiState(
+                            isVisible = true,
+                            snackBarStatus = SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST,
+                            isOperationSucceeded = false
+                        )
+                    )
+                }
+            })
         }, onError = {
-            sendNewEffect(MovieDetailsScreenEffect.ShowCreateNewListSnackBar(false))
+            updateState { screenState ->
+                screenState.copy(
+                    snackBar = SnackBarUiState(
+                        isVisible = true,
+                        snackBarStatus = SNACK_BAR_STATUS.CREATE_NEW_LIST,
+                        isOperationSucceeded = false
+                    )
+                )
+            }
         })
     }
 

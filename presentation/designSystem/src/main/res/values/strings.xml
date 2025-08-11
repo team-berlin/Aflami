@@ -93,5 +93,8 @@
     <string name="talk">Talk Shows</string>
     <string name="war_politics"><![CDATA[War & Politics]]></string>
     <string name="item_count">%1$d item</string>
+    <string name="movie_added_success">Added To List Successfully</string>
+    <string name="movie_added_failed">Failed To Add To List</string>
+    <string name="create_new_list_failed">Failed To Create New List</string>
 
 </resources>
