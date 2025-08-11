@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.details.movie
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListUiState
@@ -33,6 +34,7 @@ data class MovieDetailsUiState(
 data class SnackBarUiState(
     val isVisible: Boolean = false,
     val isOperationSucceeded: Boolean = false,
+    val errorUiState: ErrorUiState = ErrorUiState(),
     val snackBarStatus: SNACK_BAR_STATUS? = null,
 )
 

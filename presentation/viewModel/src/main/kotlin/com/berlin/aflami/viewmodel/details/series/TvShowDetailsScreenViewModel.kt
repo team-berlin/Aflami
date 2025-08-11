@@ -383,6 +383,11 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         sendNewEffect(TvShowDetailsScreenEffect.NavigateToLogin)
     }
 
+    override fun dismissSnackBar() {
+
+
+    }
+
 
     override fun onRateIconClicked(tvShowId: Long) {
         checkLoginThen {

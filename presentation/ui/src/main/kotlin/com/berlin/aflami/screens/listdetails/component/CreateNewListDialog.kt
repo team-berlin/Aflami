@@ -22,7 +22,7 @@ import com.berlin.ui.R
 fun CreateNewListDialog(
     modifier: Modifier = Modifier,
     listName: TextFieldValue = TextFieldValue(""),
-    onListNameChanged: (TextFieldValue) -> Unit = {},
+    onListNameChanged: (String) -> Unit = {},
     onCreateListClick: (String) -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
@@ -39,7 +39,7 @@ fun CreateNewListDialog(
             )
             TextField(
                 text = listName,
-                onValueChange = onListNameChanged,
+                onValueChange = { onListNameChanged(it.text) },
                 hintText = stringResource(R.string.my_favorite),
                 leadingIcon = R.drawable.nav_lists,
             )

@@ -125,6 +125,7 @@
     <string name="movie_added_success"> تمت إضافة للقائمة</string>
     <string name="movie_added_failed">فشل الإضافة للقائمة</string>
     <string name="not_supported_feature">عذراً، هذة الميزة متاحة للأفلام فقط</string>
+    <string name="movie_already_exists">تمت إضافة الفيلم مرة مسبقا لهذه القائمة</string>
 
 
 </resources>

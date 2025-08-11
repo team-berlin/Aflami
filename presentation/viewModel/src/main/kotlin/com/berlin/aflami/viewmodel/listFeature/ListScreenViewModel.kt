@@ -1,7 +1,6 @@
 package com.berlin.aflami.viewmodel.listFeature
 
 import android.util.Log
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
@@ -122,11 +121,11 @@ class ListScreenViewModel @Inject constructor(
     //region ListScreenInteractionListener sendNewEffects
     override fun onBackClicked() = sendNewEffect(ListScreenEffect.NavigateBack)
 
-    override fun onListNameChange(newListTitle: TextFieldValue) {
+    override fun onListNameChange(newListTitle: String) {
         updateState { screenState ->
             screenState.copy(
                 createNewListSheetState = screenState.createNewListSheetState.copy(
-                    newListTitle = newListTitle.text
+                    newListTitle = newListTitle
                 )
             )
         }

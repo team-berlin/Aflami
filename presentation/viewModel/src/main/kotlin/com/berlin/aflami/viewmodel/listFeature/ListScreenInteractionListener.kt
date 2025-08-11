@@ -1,13 +1,12 @@
 package com.berlin.aflami.viewmodel.listFeature
 
-import androidx.compose.ui.text.input.TextFieldValue
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListInteractionListener
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.editList.EditListInteractionListener
 
 interface ListScreenInteractionListener : CreateNewListInteractionListener,
     EditListInteractionListener {
     fun onBackClicked()
-    fun onListNameChange(newListTitle: TextFieldValue)
+    fun onListNameChange(newListTitle: String)
     fun onLoginClicked()
     fun onClickAddList()
     fun onClickListCard(listId: Int, listName: String)
