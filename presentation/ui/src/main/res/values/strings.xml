@@ -114,5 +114,16 @@
 
     <string name="guess_character">Guess the character</string>
 
+    <string name="game_finished">You finished the GAME!</string>
+    <string name="points_achieved">Points Achieved</string>
+    <string name="total_time">Total time</string>
+    <string name="point_count_sec">Sec.</string>
+    <string name="points_unit_pte">Pts.</string>
+    <string name="back_to_menu">Back to menu</string>
+    <string name="play_again">Play again</string>
+
+
+
+
 
 </resources>

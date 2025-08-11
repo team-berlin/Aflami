@@ -114,5 +114,16 @@
 
     <string name="guess_character">خمن الشخصية</string>
 
+    <string name="game_finished">لقد انتهيت من اللعبة!</string>
+    <string name="points_achieved">النقاط المحققة</string>
+    <string name="total_time">الوقت الكلي</string>
+    <string name="point_count_sec">ثانية</string>
+    <string name="points_unit_pte">نقاط</string>
+    <string name="back_to_menu">العودة إلى القائمة</string>
+    <string name="play_again">إعادة اللعب</string>
+
+
+
+
 
 </resources>
