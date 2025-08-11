@@ -206,14 +206,14 @@ private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavContr
             ListDetailsDestination(listId = effect.listId, listTitle = effect.listTitle)
         )
 
-        is ListScreenEffect.ShowCreateNewListStatusSnackBar -> {
-
-        }
-
-        is ListScreenEffect.ShowEditListStatusSnackBar -> {}
+//        is ListScreenEffect.ShowCreateNewListStatusSnackBar -> {
+//
+//        }
+//
+//        is ListScreenEffect.ShowEditListStatusSnackBar -> {}
         ListScreenEffect.NavigateToLoginScreen -> navController.navigate(route = LoginDestination)
-        is ListScreenEffect.ShowListDeletedSnackBar -> {
-
-        }
+//        is ListScreenEffect.ShowListDeletedSnackBar -> {
+//
+//        }
     }
 }

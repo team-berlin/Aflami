@@ -1,7 +1,6 @@
 package com.berlin.remote
 
 import android.util.Log
-import com.berlin.exception.AlreadyExistsException
 import com.berlin.remote.network.ApiService
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
@@ -237,14 +236,12 @@ class RetrofitRemoteDataSource @Inject constructor(
     override suspend fun addMovieToFavouriteList(listId: Int, movieId: Long) {
         wrapApiResponse {
             Log.d("AddMovieToFavouriteListUseCase", "listId = $listId, movieId = $movieId")
-            val response = apiService.addMovieToList(
+            apiService.addMovieToList(
                 listId = listId,
                 sessionId = authenticationLocalDataSource.getUserSessionId()
                     ?: throw IllegalStateException("userSessionID == null"),
                 addMovieToListRequest = MovieListRequest(movieId = movieId)
             )
-            if (response.body()?.statusCode == 8) throw AlreadyExistsException("Movie already exists")
-            response
         }
     }
 }

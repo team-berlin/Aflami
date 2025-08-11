@@ -309,6 +309,7 @@ fun MovieDetailsContent(
                 SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST -> {
                     if (state.snackBar.isOperationSucceeded) {
                         SnackBar(
+                            isVisible = state.snackBar.isVisible,
                             status = SnackBarStatus.SUCCESS,
                             text = stringResource(com.berlin.ui.R.string.movie_added_success),
                             iconPainter = painterResource(id = R.drawable.success),
@@ -325,6 +326,7 @@ fun MovieDetailsContent(
                                 com.berlin.ui.R.string.movie_added_failed
                             )
                         SnackBar(
+                            isVisible = state.snackBar.isVisible,
                             status = SnackBarStatus.ERROR,
                             text = errorMessage,
                             iconPainter = painterResource(id = R.drawable.error),
@@ -337,13 +339,15 @@ fun MovieDetailsContent(
 
                 SNACK_BAR_STATUS.CREATE_NEW_LIST -> if (state.snackBar.isOperationSucceeded) {
                     SnackBar(
+                        isVisible = state.snackBar.isVisible,
                         status = SnackBarStatus.SUCCESS,
                         text = stringResource(com.berlin.ui.R.string.new_list_created),
                         iconPainter = painterResource(id = R.drawable.success),
                         modifier = Modifier.align(Alignment.TopCenter),
-                        onDismiss = { null })
+                        onDismiss = { listener.dismissSnackBar() })
                 } else {
                     SnackBar(
+                        isVisible = state.snackBar.isVisible,
                         status = SnackBarStatus.ERROR,
                         text = stringResource(com.berlin.ui.R.string.create_new_list_failed),
                         iconPainter = painterResource(id = R.drawable.error),
