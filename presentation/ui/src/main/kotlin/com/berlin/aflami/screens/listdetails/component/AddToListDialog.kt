@@ -55,7 +55,6 @@ fun AddToListDialog(
         onDismiss = onDismiss,
         modifier = modifier,
     ) {
-
         Box {
             AnimatedVisibility(
                 enter = fadeIn(),
@@ -63,7 +62,10 @@ fun AddToListDialog(
                 visible = addToListUiState.isLoading
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.Center),
+                    text = stringResource(R.string.loading)
                 )
             }
             AnimatedVisibility(

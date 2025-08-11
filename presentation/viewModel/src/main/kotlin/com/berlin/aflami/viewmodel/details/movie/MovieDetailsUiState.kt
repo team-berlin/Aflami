@@ -41,6 +41,8 @@ data class SnackBarUiState(
 enum class SNACK_BAR_STATUS {
     ADD_MOVIE_TO_LIST,
     CREATE_NEW_LIST,
+    LIST_DELETED,
+    LIST_RENAMED,
 }
 
 

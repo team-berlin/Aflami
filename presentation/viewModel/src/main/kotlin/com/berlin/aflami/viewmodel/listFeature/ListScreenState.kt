@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.listFeature
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.paging.PagingData
+import com.berlin.aflami.viewmodel.details.movie.SnackBarUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.FavouriteListItemUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.editList.EditListSheetState
@@ -19,4 +20,5 @@ data class ListScreenState(
     val editListSheetState: EditListSheetState = EditListSheetState(),
     val isScreenLoading: Boolean = true,
     val errorMessage: String = "",
+    val snackBar: SnackBarUiState = SnackBarUiState(),
 )

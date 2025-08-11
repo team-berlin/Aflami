@@ -298,67 +298,65 @@ fun MovieDetailsContent(
                 onDismiss = { listener.onCancelRatingClicked() },
                 onRate = { rating -> listener.onSubmitRateClicked(rating) })
         }
-        AnimatedVisibility(
-            state.snackBar.isVisible
-        ) {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 40.dp)
-                    .zIndex(10f)
-            ) {
-                when (state.snackBar.snackBarStatus) {
-                    SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST -> {
-                        if (state.snackBar.isOperationSucceeded) {
-                            SnackBar(
-                                status = SnackBarStatus.SUCCESS,
-                                text = stringResource(com.berlin.ui.R.string.movie_added_success),
-                                iconPainter = painterResource(id = R.drawable.success),
-                                modifier = Modifier.align(Alignment.TopCenter),
-                                onDismiss = {
-                                    listener.dismissSnackBar()
-                                })
-                        } else {
-                            val errorMessage =
-                                if (state.snackBar.errorUiState is MovieAlreadyExistInList)
-                                    stringResource(
-                                        com.berlin.ui.R.string.movie_already_exists
-                                    ) else stringResource(
-                                    com.berlin.ui.R.string.movie_added_failed
-                                )
-                            SnackBar(
-                                status = SnackBarStatus.ERROR,
-                                text = errorMessage,
-                                iconPainter = painterResource(id = R.drawable.error),
-                                modifier = Modifier.align(Alignment.TopCenter),
-                                onDismiss = {
-                                    listener.dismissSnackBar()
-                                })
-                        }
-                    }
 
-                    SNACK_BAR_STATUS.CREATE_NEW_LIST -> if (state.snackBar.isOperationSucceeded) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 40.dp)
+                .zIndex(10f)
+        ) {
+            when (state.snackBar.snackBarStatus) {
+                SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST -> {
+                    if (state.snackBar.isOperationSucceeded) {
                         SnackBar(
                             status = SnackBarStatus.SUCCESS,
-                            text = stringResource(com.berlin.ui.R.string.new_list_created),
+                            text = stringResource(com.berlin.ui.R.string.movie_added_success),
                             iconPainter = painterResource(id = R.drawable.success),
                             modifier = Modifier.align(Alignment.TopCenter),
-                            onDismiss = { null })
+                            onDismiss = {
+                                listener.dismissSnackBar()
+                            })
                     } else {
+                        val errorMessage =
+                            if (state.snackBar.errorUiState is MovieAlreadyExistInList)
+                                stringResource(
+                                    com.berlin.ui.R.string.movie_already_exists
+                                ) else stringResource(
+                                com.berlin.ui.R.string.movie_added_failed
+                            )
                         SnackBar(
                             status = SnackBarStatus.ERROR,
-                            text = stringResource(com.berlin.ui.R.string.create_new_list_failed),
+                            text = errorMessage,
                             iconPainter = painterResource(id = R.drawable.error),
                             modifier = Modifier.align(Alignment.TopCenter),
                             onDismiss = {
                                 listener.dismissSnackBar()
                             })
                     }
-
-                    null -> TODO()
                 }
+
+                SNACK_BAR_STATUS.CREATE_NEW_LIST -> if (state.snackBar.isOperationSucceeded) {
+                    SnackBar(
+                        status = SnackBarStatus.SUCCESS,
+                        text = stringResource(com.berlin.ui.R.string.new_list_created),
+                        iconPainter = painterResource(id = R.drawable.success),
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        onDismiss = { null })
+                } else {
+                    SnackBar(
+                        status = SnackBarStatus.ERROR,
+                        text = stringResource(com.berlin.ui.R.string.create_new_list_failed),
+                        iconPainter = painterResource(id = R.drawable.error),
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        onDismiss = {
+                            listener.dismissSnackBar()
+                        })
+                }
+
+                null -> {}
             }
         }
+
 
     }
 

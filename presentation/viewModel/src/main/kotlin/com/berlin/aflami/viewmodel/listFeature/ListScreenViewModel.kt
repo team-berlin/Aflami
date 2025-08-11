@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.details.movie.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.FavouriteListItemUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -56,11 +57,15 @@ class ListScreenViewModel @Inject constructor(
                 "Khairy",
                 "showDeleteSheet ??? $shouldShowDeleteSnackBar and isDeleted = $isListDeletedSuccessfully"
             )
-            sendNewEffect(
-                ListScreenEffect.ShowListDeletedSnackBar(
-                    isListDeletedSuccessfully!!
+            updateState { screenState ->
+                screenState.copy(
+                    snackBar = screenState.snackBar.copy(
+                        isVisible = true,
+                        isOperationSucceeded = isListDeletedSuccessfully!!,
+                        snackBarStatus = SNACK_BAR_STATUS.LIST_DELETED
+                    )
                 )
-            )
+            }
         }
         observeLoginStatus()
     }
@@ -184,18 +189,26 @@ class ListScreenViewModel @Inject constructor(
                 resetCreateNewListSheetState()
             },
             onSuccess = {
-                sendNewEffect(
-                    ListScreenEffect.ShowCreateNewListStatusSnackBar(
-                        isListCreatedSuccessfully = true
+                updateState { screenState ->
+                    screenState.copy(
+                        snackBar = screenState.snackBar.copy(
+                            isVisible = true,
+                            isOperationSucceeded = true,
+                            snackBarStatus = SNACK_BAR_STATUS.CREATE_NEW_LIST
+                        )
                     )
-                )
+                }
             },
             onError = {
-                sendNewEffect(
-                    ListScreenEffect.ShowCreateNewListStatusSnackBar(
-                        isListCreatedSuccessfully = false
+                updateState { screenState ->
+                    screenState.copy(
+                        snackBar = screenState.snackBar.copy(
+                            isVisible = true,
+                            isOperationSucceeded = false,
+                            snackBarStatus = SNACK_BAR_STATUS.CREATE_NEW_LIST
+                        )
                     )
-                )
+                }
             },
         )
     }
