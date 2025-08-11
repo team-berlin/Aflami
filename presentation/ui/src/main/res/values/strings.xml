@@ -102,5 +102,30 @@
     <string name="guess_the_character">Guess the character</string>
     <string name="next">Next</string>
 
+    <string name="choose_difficulty_level">Choose Difficulty Level</string>
+    <string name="lets_start">Let’s start</string>
+
+
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+
+    <string name="level_easy">5 question, 45sec and 5 point per question.</string>
+    <string name="level_medium">10 question, 30sec and 10 point per question.</string>
+    <string name="level_hard">20 question, 10sec and 20 point per question.</string>
+
+    <string name="guess_character">Guess the character</string>
+
+    <string name="game_finished">You finished the GAME!</string>
+    <string name="points_achieved">Points Achieved</string>
+    <string name="total_time">Total time</string>
+    <string name="point_count_sec">Sec.</string>
+    <string name="points_unit_pte">Pts.</string>
+    <string name="back_to_menu">Back to menu</string>
+    <string name="play_again">Play again</string>
+
+
+
+
 
 </resources>
