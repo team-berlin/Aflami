@@ -186,7 +186,7 @@ private fun ProfileContent(
         HorizontalDivider(thickness = 1.dp, color = Theme.color.stroke)
         Spacer(modifier = Modifier.height(24.dp))
         SettingSection(
-            isLanguageEN = profileScreenState.isLanguageEN,
+            isLanguageEN = profileScreenState.selectedLanguage == "EN",
             isDarkThemeEnabled = profileScreenState.isDarkThemeEnabled,
             onThemeClick = { profileScreenInteractionListener.onAppThemeClick() },
             onLanguageClick = { profileScreenInteractionListener.onLanguageClick() },

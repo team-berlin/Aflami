@@ -15,6 +15,7 @@ import usecase.profile.GetThemeUseCase
 import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,15 +57,14 @@ class ProfileViewModel @Inject constructor(
 
     private fun collectLanguage() {
         viewModelScope.launch {
-            getLanguageUseCase().collect { language ->
-                val appLanguage = language ?: AppLanguage.AR.name
+            getLanguageUseCase().collect { currentLanguage ->
+                val appLanguage = currentLanguage ?: Locale.getDefault().language.uppercase()
 
                 updateState {
                     it.copy(
                         selectedLanguage = appLanguage,
-                        isArabicSelected = language == AppLanguage.AR.name,
-                        isEnglishSelected = language == AppLanguage.EN.name,
-                        isLanguageEN = language == AppLanguage.EN.name
+                        isArabicSelected = appLanguage == AppLanguage.AR.name,
+                        isEnglishSelected = appLanguage == AppLanguage.EN.name,
                     )
                 }
             }
@@ -150,7 +150,6 @@ class ProfileViewModel @Inject constructor(
                 isEnglishSelected = false,
                 isArabicSelected = true,
                 selectedLanguage = AppLanguage.AR.name,
-                isLanguageEN = false,
             )
         }
     }
@@ -161,7 +160,6 @@ class ProfileViewModel @Inject constructor(
                 isEnglishSelected = true,
                 isArabicSelected = false,
                 selectedLanguage = AppLanguage.EN.name,
-                isLanguageEN = true,
             )
         }
     }
