@@ -291,7 +291,7 @@ private fun ResultPointesBox(
 
 @PreviewLightDark
 @Composable
-fun ResultScreenPreview() {
+private fun ResultScreenPreview() {
     AflamiTheme {
         ResultScreen()
     }
