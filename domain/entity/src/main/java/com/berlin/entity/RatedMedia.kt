@@ -5,5 +5,6 @@ data class RatedMedia(
     val title: String,
     val posterUrl: String?,
     val userRating: Double,
-    val voteAverage: Double
+    val voteAverage: Double,
+    val mediaType: String?
 )

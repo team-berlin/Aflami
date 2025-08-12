@@ -166,14 +166,16 @@ interface ApiService {
     suspend fun getRatedMovies(
         @Path(ApiConstants.ACCOUNT_ID) accountId: String,
         @Query(ApiConstants.SESSION_ID) sessionId: String,
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.PAGE) page: Int,
+        @Query(ApiConstants.QUERY_SORT_BY) sortBy: String = ApiConstants.ARRANGE_DESCENDING
     ): Response<BaseResponse<RatedMediaDto>>
 
     @GET(ApiConstants.RATED_TV_SHOWS)
     suspend fun getRatedTVShows(
         @Path(ApiConstants.ACCOUNT_ID) accountId: String,
         @Query(ApiConstants.SESSION_ID) sessionId: String,
-        @Query(ApiConstants.PAGE) page: Int
+        @Query(ApiConstants.PAGE) page: Int,
+        @Query(ApiConstants.QUERY_SORT_BY) sortBy: String = ApiConstants.ARRANGE_DESCENDING
     ): Response<BaseResponse<RatedMediaDto>>
 
     @POST(ApiConstants.RATE_MOVIE)
