@@ -19,12 +19,13 @@ class SearchByCountryUseCaseTest {
     @Test
     fun `should call getMoviesByCountry in repository when invoke is called`() = runTest {
         // Arrange
-        coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
+        coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns MOVIES
 
         //Act
-        searchMoviesByCountryUseCase(QUERY, PAGE)
+        val result = searchMoviesByCountryUseCase(QUERY, PAGE)
 
         // Assert
+        assertThat(result).isEqualTo(MOVIES)
         coVerify { movieRepository.getMoviesByCountry(QUERY, PAGE) }
     }
 
@@ -51,7 +52,7 @@ class SearchByCountryUseCaseTest {
             val result = searchMoviesByCountryUseCase.invoke(QUERY, PAGE)
 
             // Assert
-            assertThat(result).containsExactlyElementsIn(MOVIES)
+            assertThat(result).isEqualTo(MOVIES)
         }
 
     @Test

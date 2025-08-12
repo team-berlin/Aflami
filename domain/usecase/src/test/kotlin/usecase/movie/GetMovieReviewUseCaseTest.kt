@@ -1,6 +1,7 @@
 package usecase.movie
 
 import com.berlin.entity.Review
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -8,6 +9,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
+import usecase.movie.GetMovieGenresUseCaseTest.Companion.GENRES
+import kotlin.collections.emptyList
 
 class GetMovieReviewUseCaseTest {
     private val movieDetailsRepository: MovieDetailsRepository = mockk()
@@ -20,9 +23,10 @@ class GetMovieReviewUseCaseTest {
         coEvery { movieDetailsRepository.getMovieReviews(MOVIE_ID) } returns getMovieReview()
 
         // Act
-        getMovieReviewUseCase.invoke(MOVIE_ID)
+        val result = getMovieReviewUseCase.invoke(MOVIE_ID)
 
         // Assert
+        assertThat(result).isEqualTo(getMovieReview())
         coVerify(exactly = 1) { movieDetailsRepository.getMovieReviews(MOVIE_ID) }
     }
 
@@ -32,9 +36,10 @@ class GetMovieReviewUseCaseTest {
         coEvery { movieDetailsRepository.getMovieReviews(MOVIE_ID) } returns emptyList()
 
         // Act
-        getMovieReviewUseCase(MOVIE_ID)
+        val result = getMovieReviewUseCase(MOVIE_ID)
 
         // Assert
+        assertThat(result).isEmpty()
         coVerify(exactly = 1) { movieDetailsRepository.getMovieReviews(MOVIE_ID) }
 
     }

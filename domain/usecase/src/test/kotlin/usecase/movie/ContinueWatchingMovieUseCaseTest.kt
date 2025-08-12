@@ -1,6 +1,7 @@
 package usecase.movie
 
 import com.berlin.entity.Movie
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -22,9 +23,10 @@ class ContinueWatchingMovieUseCaseTest {
         coEvery { movieRepository.getContinueWatchingMovies(PAGE) } returns movies
 
         // Act
-        continueWatchingMovieUseCase(PAGE)
+        val result = continueWatchingMovieUseCase(PAGE)
 
         // Assert
+        assertThat(result).isEqualTo(movies)
         coVerify(exactly = 1) {
             movieRepository.getContinueWatchingMovies(PAGE)
         }
@@ -34,7 +36,7 @@ class ContinueWatchingMovieUseCaseTest {
     fun `should throw exception when repository fails to get continue watching movies`() = runTest {
         // Arrange
         coEvery { movieRepository.getContinueWatchingMovies(PAGE) } throws
-                Exception(DB_ERROR)
+                Exception()
 
         // Act
         assertThrows<Exception> {

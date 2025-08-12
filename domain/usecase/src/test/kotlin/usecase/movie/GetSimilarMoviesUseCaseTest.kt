@@ -1,17 +1,14 @@
 package usecase.movie
 
 import com.berlin.entity.Movie
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
-import usecase.movie.GetSearchMoviesUseCaseTest.Companion.PAGE
-import usecase.movie.GetSearchMoviesUseCaseTest.Companion.QUERY
 
 class GetSimilarMoviesUseCaseTest {
     private val movieDetailsRepository: MovieDetailsRepository = mockk()
@@ -26,9 +23,10 @@ class GetSimilarMoviesUseCaseTest {
         } returns getSimilarMovie()
 
         // Act
-        getSimilarMoviesUseCase.invoke(MOVIE_ID)
+        val result = getSimilarMoviesUseCase.invoke(MOVIE_ID)
 
         // Assert
+        assertThat(result).isEqualTo(getSimilarMovie())
         coVerify(exactly = 1) { movieDetailsRepository.getSimilarMovies(MOVIE_ID) }
     }
 

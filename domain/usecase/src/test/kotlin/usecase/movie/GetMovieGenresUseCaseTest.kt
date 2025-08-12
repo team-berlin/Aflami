@@ -1,6 +1,7 @@
 package usecase.movie
 
 import com.berlin.entity.Genre
+import com.google.common.truth.Truth.assertThat
 import io.mockk.mockk
 import repository.MovieDetailsRepository
 import io.mockk.coEvery
@@ -20,9 +21,10 @@ class GetMovieGenresUseCaseTest {
         coEvery { movieDetailsRepository.getMovieGenres() } returns GENRES
 
         //Act
-        getMovieGenresUseCase()
+        val result = getMovieGenresUseCase()
 
         // Assert
+        assertThat(result).isEqualTo(GENRES)
         coVerify(exactly = 1) { movieDetailsRepository.getMovieGenres() }
     }
 

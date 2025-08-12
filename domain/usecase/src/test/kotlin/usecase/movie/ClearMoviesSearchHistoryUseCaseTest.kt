@@ -1,5 +1,6 @@
 package usecase.movie
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -10,7 +11,7 @@ import repository.MovieRepository
 
 class ClearMoviesSearchHistoryUseCaseTest {
 
-    private val movieRepository: MovieRepository = mockk(relaxed = true)
+    private val movieRepository: MovieRepository = mockk()
     private val clearMoviesSearchHistoryUseCase: ClearMoviesSearchHistoryUseCase =
         ClearMoviesSearchHistoryUseCase(movieRepository)
 
@@ -20,9 +21,10 @@ class ClearMoviesSearchHistoryUseCaseTest {
         coEvery { movieRepository.clearMovieSearchHistory() } returns Unit
 
         // Act
-        clearMoviesSearchHistoryUseCase()
+        val result = clearMoviesSearchHistoryUseCase()
 
         // Assert
+        assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) {
             movieRepository.clearMovieSearchHistory()
         }

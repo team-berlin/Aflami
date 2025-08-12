@@ -1,13 +1,12 @@
 package usecase.movie
 
 import com.berlin.entity.Movie
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
 
@@ -23,9 +22,10 @@ class GetPopularMoviesUseCaseTest {
         coEvery { movieRepository.getPopularMovies() } returns movies
 
         //Act
-        getPopularMoviesUseCase()
+        val result = getPopularMoviesUseCase()
 
         // Assert
+        assertThat(result).isEqualTo(movies)
         coVerify(exactly = 1) { movieRepository.getPopularMovies() }
     }
 

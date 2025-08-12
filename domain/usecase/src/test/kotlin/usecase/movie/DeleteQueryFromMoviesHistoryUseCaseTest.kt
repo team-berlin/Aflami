@@ -1,5 +1,6 @@
 package usecase.movie
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -21,9 +22,10 @@ class DeleteQueryFromMoviesHistoryUseCaseTest {
         coEvery { movieRepository.deleteMovieQueryFromHistory(QUERY) } returns Unit
 
         // Act
-        deleteQueryFromMoviesHistoryUseCase(QUERY)
+        val result = deleteQueryFromMoviesHistoryUseCase(QUERY)
 
         // Assert
+        assertThat(result).isEqualTo(Unit)
         coVerify { movieRepository.deleteMovieQueryFromHistory(QUERY) }
     }
 

@@ -1,6 +1,7 @@
 package usecase.movie
 
 import com.berlin.entity.MediaImage
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -21,9 +22,10 @@ class GetMovieGalleryUseCaseTest {
         coEvery { movieDetailsRepository.getMovieImages(MOVIE_ID) } returns POSTER
 
         //Act
-        getMovieGalleryUseCase(MOVIE_ID)
+        val result = getMovieGalleryUseCase(MOVIE_ID)
 
         // Assert
+        assertThat(result).isEqualTo(POSTER)
         coVerify(exactly = 1) { movieDetailsRepository.getMovieImages(MOVIE_ID) }
     }
 

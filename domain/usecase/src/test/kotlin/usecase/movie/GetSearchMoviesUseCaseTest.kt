@@ -22,9 +22,10 @@ class GetSearchMoviesUseCaseTest {
         coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } returns movies
 
         // Act
-        getSearchMoviesUseCase(QUERY, PAGE)
+        val result = getSearchMoviesUseCase(QUERY, PAGE)
 
         // Assert
+        assertThat(result).isEqualTo(movies)
         coVerify(exactly = 1) { movieRepository.getMovieByKeyWord(QUERY, PAGE) }
     }
 
@@ -34,9 +35,10 @@ class GetSearchMoviesUseCaseTest {
         coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } returns emptyList()
 
         // Act
-        getSearchMoviesUseCase(QUERY, PAGE)
+        val result = getSearchMoviesUseCase(QUERY, PAGE)
 
         // Assert
+        assertThat(result).isEmpty()
         coVerify(exactly = 1) { movieRepository.getMovieByKeyWord(QUERY, PAGE) }
     }
 

@@ -1,6 +1,7 @@
 package usecase.movie
 
 import com.berlin.entity.Actor
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -20,9 +21,10 @@ class GetMovieCastUseCaseTest {
         coEvery { movieDetailsRepository.getMovieActors(MOVIE_ID) } returns actors
 
         // Act
-        getMovieCastUseCase(MOVIE_ID)
+        val result = getMovieCastUseCase(MOVIE_ID)
 
         // Assert
+        assertThat(result).isEqualTo(actors)
         coVerify(exactly = 1) {
             movieDetailsRepository.getMovieActors(MOVIE_ID)
         }

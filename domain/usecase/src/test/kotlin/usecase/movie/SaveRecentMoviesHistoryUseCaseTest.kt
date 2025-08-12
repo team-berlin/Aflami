@@ -1,5 +1,6 @@
 package usecase.movie
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -8,6 +9,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
+import usecase.movie.GetUpComingMoviesUseCaseTest.Companion.MOVIES
 
 class SaveRecentMoviesHistoryUseCaseTest {
 
@@ -22,9 +24,10 @@ class SaveRecentMoviesHistoryUseCaseTest {
         coEvery { movieRepository.saveRecentMoviesHistory(QUERY) } returns Unit
 
         // Act
-        saveRecentMoviesHistoryUseCase(QUERY)
+        val result = saveRecentMoviesHistoryUseCase(QUERY)
 
         // Assert
+        assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) { movieRepository.saveRecentMoviesHistory(QUERY) }
     }
 
