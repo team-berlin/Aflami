@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.game
+package com.berlin.aflami.viewmodel.quizgame
 
 data class GameScreenUiState(
     val selectedGameType: GameType,
