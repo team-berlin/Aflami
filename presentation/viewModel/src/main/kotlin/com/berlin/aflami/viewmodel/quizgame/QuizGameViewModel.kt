@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.quizgame
 
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.mapper.toActorUiState
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.GenreUiState
@@ -31,6 +32,8 @@ class QuizGameViewModel @Inject constructor(
 ), QuizGameInteractionListener {
     private val mediaList = MutableStateFlow<List<MediaUiState>>(emptyList())
     private val mediaGenre = MutableStateFlow<List<GenreUiState>>(emptyList())
+    private val movieIds = MutableStateFlow<List<Long>>(emptyList())
+    private val tvShowIds = MutableStateFlow<List<Long>>(emptyList())
     private val mediaCast = MutableStateFlow<List<ActorUiState>>(emptyList())
 
     init {
@@ -124,6 +127,8 @@ class QuizGameViewModel @Inject constructor(
         val tvShow = getTVShowGameUseCase()
         val movieList = movie.map { it.toMediaUiState() }
         val tvShowList = tvShow.map { it.toMediaUiState() }
+        movieIds.value = movieList.map { it.id }.shuffled()
+         tvShowIds.value = tvShowList.map { it.id }.shuffled()
         mediaList.value = interleaveMoviesAndTvShowsEqually(movieList, tvShowList)
 
     }
@@ -135,18 +140,46 @@ class QuizGameViewModel @Inject constructor(
         val movieGenreList = movieGenre.map { it.toGenreUiState() }
         val tvShowGenreList = tvShowGenre.map { it.toGenreUiState() }
         mediaGenre.value = (movieGenreList + tvShowGenreList).shuffled().take(20)
-
     }
-//
-//    private suspend fun getCast(mediaId: Long) {
-//        updateScreenStateToLoading()
-//        val movieCast = getMovieCastUseCase()
-//        val tvShowCast = getTVShowCastUseCase()
-//        val movieCastList = movieCast.map { it.toActorUiState() }
-//        val tvShowCastList = tvShowCast.map { it.toActorUiState() }
-//        mediaCast.value = (movieCastList + tvShowCastList).shuffled()
-//    }
 
+    private suspend fun getCast() {
+        updateScreenStateToLoading()
+        try {
+            if (movieIds.value.isEmpty() && tvShowIds.value.isEmpty()) return
+
+            val accumulatedCasts = mutableListOf<ActorUiState>()
+            var movieIndex = 0
+            var tvShowIndex = 0
+
+            while (accumulatedCasts.size < 20 && (movieIndex < movieIds.value.size || tvShowIndex < tvShowIds.value.size)) {
+                if (movieIndex < movieIds.value.size) {
+                    val movieCast = getMovieCastUseCase(movieIds.value[movieIndex]).map { it.toActorUiState() }
+                    accumulatedCasts.addAll(movieCast)
+                    movieIndex++
+                }
+                if (tvShowIndex < tvShowIds.value.size&& accumulatedCasts.size < 20) {
+                    val tvShowCast = getTVShowCastUseCase(tvShowIds.value[tvShowIndex]).map { it.toActorUiState() }
+                    accumulatedCasts.addAll(tvShowCast)
+                    tvShowIndex++
+                }
+            }
+            mediaCast.value = interleaveCastsEqually(accumulatedCasts).take(20).shuffled()
+        } finally {
+            updateState { it.copy(loading = false) }
+        }
+    }
+
+    private fun interleaveCastsEqually(casts: List<ActorUiState>): List<ActorUiState> {
+        val arrangedList = mutableListOf<ActorUiState>()
+        val movieCasts = casts.filterIndexed { index, _ -> index % 2 == 0 }
+        val tvShowCasts = casts.filterIndexed { index, _ -> index % 2 != 0 }
+        val maxSize = minOf(movieCasts.size, tvShowCasts.size, 10)
+        repeat(maxSize) { counter ->
+            if (counter < movieCasts.size) arrangedList.add(movieCasts[counter])
+            if (counter < tvShowCasts.size) arrangedList.add(tvShowCasts[counter])
+        }
+        return arrangedList
+    }
     private fun interleaveMoviesAndTvShowsEqually(
         movies: List<MediaUiState>,
         tvShows: List<MediaUiState>,
