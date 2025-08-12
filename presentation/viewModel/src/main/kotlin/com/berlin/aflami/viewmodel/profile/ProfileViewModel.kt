@@ -49,6 +49,10 @@ class ProfileViewModel @Inject constructor(
                 tempSelectedTheme = it.selectedTheme,
                 isDarkThemeSelected = it.selectedTheme == AppTheme.DARK.name,
                 isLightThemeSelected = it.selectedTheme == AppTheme.LIGHT.name,
+                tempSelectedRestriction = it.selectedRestriction,
+                isStrictSelected = it.selectedRestriction == ContentRestriction.STRICT.name,
+                isModeratedSelected = it.selectedRestriction == ContentRestriction.MODERATE.name,
+                isOffSelected = it.selectedRestriction == ContentRestriction.OFF.name,
             )
         }
     }
@@ -158,7 +162,7 @@ class ProfileViewModel @Inject constructor(
                 isStrictSelected = true,
                 isModeratedSelected = false,
                 isOffSelected = false,
-                selectedRestriction = ContentRestriction.STRICT.name
+                tempSelectedRestriction = ContentRestriction.STRICT.name
             )
         }
     }
@@ -169,7 +173,7 @@ class ProfileViewModel @Inject constructor(
                 isStrictSelected = false,
                 isModeratedSelected = true,
                 isOffSelected = false,
-                selectedRestriction = ContentRestriction.MODERATE.name
+                tempSelectedRestriction = ContentRestriction.MODERATE.name
             )
         }
     }
@@ -180,21 +184,21 @@ class ProfileViewModel @Inject constructor(
                 isStrictSelected = false,
                 isModeratedSelected = false,
                 isOffSelected = true,
-                selectedRestriction = ContentRestriction.OFF.name
+                tempSelectedRestriction = ContentRestriction.OFF.name
             )
         }
     }
 
     override fun onSaveContentRestriction() {
         viewModelScope.launch {
-            val selectRestriction = ContentRestriction.valueOf(state.value.selectedRestriction)
+            val selectRestriction = ContentRestriction.valueOf(state.value.tempSelectedRestriction)
             val percentage = getContentRestrictionPercentage(selectRestriction.name)
             Log.d("FireBaseModelManager", "onSaveContentRestriction: ${selectRestriction.name}")
             setContentRestrictionUseCase(selectRestriction)
             Log.d("FireBaseModelManager", "onSaveContentRestriction: ${selectRestriction.name}")
             updateState {
                 it.copy(
-                    selectedRestriction = selectRestriction.name,
+                    selectedRestriction = it.tempSelectedRestriction,
                     contentRestrictionPercentage = percentage,
                     activeDialog = ProfileDialogType.NONE,
                 )
