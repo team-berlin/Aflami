@@ -37,4 +37,6 @@ interface RemoteDataSource {
     suspend fun getMoviesByMoodIds(moodIds: List<Int>): BaseResponse<MovieDetailsDto>
     suspend fun getMovieVideos(movieId: Long): VideosResponse
     suspend fun getTVShowVideos(seriesId: Long): VideosResponse
+    suspend fun getMovieGame(): BaseResponse<MovieDetailsDto>
+    suspend fun getTVShow():BaseResponse<TVShowDetailsDto>
 }

@@ -156,6 +156,12 @@ interface ApiService {
     suspend fun getUserProfile(
         @Query(ApiConstants.SESSION_ID) sessionId: String
     ): Response<AccountDto>
+
+    @GET(ApiConstants.MOVIE)
+    suspend fun getMovieGame(): Response<BaseResponse<MovieDetailsDto>>
+
+    @GET(ApiConstants.TV_SHOW)
+    suspend fun getTVShowGame(): Response<BaseResponse<TVShowDetailsDto>>
 }
 
 val DEFAULT_GTE: String = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

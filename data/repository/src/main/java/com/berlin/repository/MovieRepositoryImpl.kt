@@ -156,7 +156,9 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMovieGame(): List<Movie> {
-        TODO("Not yet implemented")
+        return remoteDataSource.getMovieGame().results?.map {
+            it.toDomain()
+        }?: emptyList()
     }
 
     private fun isExpiredOrEmpty(list: List<MovieHomeEntity>): Boolean {

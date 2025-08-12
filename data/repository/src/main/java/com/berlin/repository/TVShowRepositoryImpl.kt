@@ -107,7 +107,9 @@ class TVShowRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTVShowGame(): List<TVShow> {
-        TODO("Not yet implemented")
+       return remoteDataSource.getTVShow().results?.map {
+            it.toDomain()
+        }?: emptyList()
     }
 
     private fun isExpiredOrEmpty(list: List<TVShowHomeEntity>): Boolean {
