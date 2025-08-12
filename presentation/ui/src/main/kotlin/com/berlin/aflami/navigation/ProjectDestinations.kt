@@ -71,6 +71,12 @@ object SearchByActorDestination
 object WatchHistoryDestination
 
 @Serializable
+object GuessGameDestination
+
+@Serializable
+object GameResultDestination
+
+@Serializable
 data class ListDetailsDestination(val listId: Int)
 
 @Serializable

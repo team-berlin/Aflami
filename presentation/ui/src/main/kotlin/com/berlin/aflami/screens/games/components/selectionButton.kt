@@ -63,7 +63,8 @@ fun SelectionItem(
             style = Theme.textStyle.label.large,
             color = Theme.color.textColors.body,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            maxLines = 1
         )
         Icon(
             painter = painterResource(icon),

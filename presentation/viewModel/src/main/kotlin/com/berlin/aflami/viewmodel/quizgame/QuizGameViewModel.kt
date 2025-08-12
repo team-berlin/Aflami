@@ -2,6 +2,8 @@ package com.berlin.aflami.viewmodel.quizgame
 
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.game.GameLevel
+import com.berlin.aflami.viewmodel.game.GameType
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
@@ -26,7 +28,8 @@ class QuizGameViewModel @Inject constructor(
     private val getMovieGenresUseCase: GetMovieGenresUseCase,
     private val getTVGenresUseCase: GetTVShowGenresUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
-    private val getTVShowCastUseCase: GetTVShowCastUseCase
+    private val getTVShowCastUseCase: GetTVShowCastUseCase,
+    guessGameScreenArgs: GuessGameScreenArgs
 ) : BaseViewModel<QuizGameUiState, QuizGameEffect>(
     QuizGameUiState()
 ), QuizGameInteractionListener {
@@ -36,10 +39,14 @@ class QuizGameViewModel @Inject constructor(
     private val tvShowIds = MutableStateFlow<List<Long>>(emptyList())
     private val mediaCast = MutableStateFlow<List<ActorUiState>>(emptyList())
 
+    val timer=guessGameScreenArgs.timer?:0
+    val gameType=guessGameScreenArgs.gameType?:GameType.GENRE
+    val numberOfQuestion=guessGameScreenArgs.numberOfPoint?:0
+    val numberOfPoints=guessGameScreenArgs.numberOfPoint?:0
+
     init {
         viewModelScope.launch {
             mediaGame()
-            getMediaByPoster()
         }
     }
 
@@ -68,7 +75,7 @@ class QuizGameViewModel @Inject constructor(
             )
 
         }
-        updateState { it.copy(questions = questions, loading = false) }
+        updateState { it.copy(questions = questions, loading = false,type = QuestionType.Image,gameTypeName = gameType, time = timer) }
     }
 
     //question-> media name
@@ -89,7 +96,7 @@ class QuizGameViewModel @Inject constructor(
                 correctAnswer = media.title
             )
         }
-        updateState { it.copy(questions = questions, loading = false) }
+        updateState { it.copy(questions = questions, loading = false,type = QuestionType.Text,gameTypeName = gameType, time = timer) }
     }
 
     //question-> media name
@@ -117,7 +124,7 @@ class QuizGameViewModel @Inject constructor(
                 correctAnswer = correctAnswer
             )
         }
-        updateState { it.copy(questions = questions, loading = false) }
+        updateState { it.copy(questions = questions, loading = false, type = QuestionType.Text,gameTypeName = gameType, time = timer) }
     }
 
 
@@ -139,7 +146,7 @@ class QuizGameViewModel @Inject constructor(
         val tvShowGenre = getTVGenresUseCase()
         val movieGenreList = movieGenre.map { it.toGenreUiState() }
         val tvShowGenreList = tvShowGenre.map { it.toGenreUiState() }
-        mediaGenre.value = (movieGenreList + tvShowGenreList).shuffled().take(20)
+        mediaGenre.value = (movieGenreList + tvShowGenreList).shuffled().take(numberOfQuestion)
     }
 
     private suspend fun getCast() {
@@ -186,8 +193,7 @@ class QuizGameViewModel @Inject constructor(
     ): List<MediaUiState> {
         val arrangedList = mutableListOf<MediaUiState>()
 
-        //TODO() question count
-        repeat(20) { counter ->
+        repeat(numberOfQuestion) { counter ->
             with(arrangedList) {
                 add(movies[counter])
                 add(tvShows[counter])
@@ -216,7 +222,7 @@ class QuizGameViewModel @Inject constructor(
             it.copy(
                 selectedAnswer = answer,
                 isAnswerCorrect = it.selectedAnswer == it.questions[it.currentQuestionIndex].correctAnswer,
-                totalPoint = if (checkAnswer) it.totalPoint + 5 else it.totalPoint - 5
+                totalPoint = if (checkAnswer) it.totalPoint + numberOfPoints else it.totalPoint - numberOfPoints
             )
         }
     }
