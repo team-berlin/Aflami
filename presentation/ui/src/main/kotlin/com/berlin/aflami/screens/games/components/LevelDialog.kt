@@ -1,4 +1,4 @@
-package com.berlin.aflami.screens.games.composable
+package com.berlin.aflami.screens.games.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,22 +28,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.berlin.aflami.component.GenersChip
-import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.component.buttons.ButtonState
 import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.ui.R
 
 @Composable
 fun LevelDialog(
@@ -52,16 +46,16 @@ fun LevelDialog(
     modifier: Modifier = Modifier
 ) {
     val genres = listOf(
-        stringResource(com.berlin.ui.R.string.easy),
-        stringResource(com.berlin.ui.R.string.medium),
-        stringResource(com.berlin.ui.R.string.hard),
+        stringResource(R.string.easy),
+        stringResource(R.string.medium),
+        stringResource(R.string.hard),
     )
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
 
     val details = when (selectedIndex) {
-        0 -> stringResource(com.berlin.ui.R.string.level_easy)
-        1 -> stringResource(com.berlin.ui.R.string.level_medium)
-        2 -> stringResource(com.berlin.ui.R.string.level_hard)
+        0 -> stringResource(R.string.level_easy)
+        1 -> stringResource(R.string.level_medium)
+        2 -> stringResource(R.string.level_hard)
         else -> ""
     }
 
@@ -86,7 +80,7 @@ fun LevelDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(com.berlin.ui.R.string.choose_difficulty_level),
+                        text = stringResource(R.string.choose_difficulty_level),
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title,
                     )
@@ -158,7 +152,7 @@ fun LevelDialog(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Icon(
-                            painter = painterResource(id = com.berlin.ui.R.drawable.idea),
+                            painter = painterResource(id = R.drawable.idea),
                             contentDescription = null,
                             tint = Theme.color.statusColors.yellowAccent
                         )
@@ -177,7 +171,7 @@ fun LevelDialog(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = stringResource(com.berlin.ui.R.string.lets_start),
+                            text = stringResource(R.string.lets_start),
                             style = Theme.textStyle.label.large,
                             color = Theme.color.textColors.onPrimary,
                         )
@@ -190,7 +184,7 @@ fun LevelDialog(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = stringResource(com.berlin.ui.R.string.lets_start),
+                            text = stringResource(R.string.lets_start),
                             style = Theme.textStyle.label.large,
                             color = Theme.color.stroke
                         )
