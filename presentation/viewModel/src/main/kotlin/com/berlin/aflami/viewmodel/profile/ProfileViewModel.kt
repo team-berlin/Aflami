@@ -40,7 +40,17 @@ class ProfileViewModel @Inject constructor(
 
 
     override fun onDialogDismissed() {
-        updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+        updateState {
+            it.copy(
+                activeDialog = ProfileDialogType.NONE,
+                tempSelectedLanguage = it.selectedLanguage,
+                isArabicSelected = it.selectedLanguage == AppLanguage.AR.name,
+                isEnglishSelected = it.selectedLanguage == AppLanguage.EN.name,
+                tempSelectedTheme = it.selectedTheme,
+                isDarkThemeSelected = it.selectedTheme == AppTheme.DARK.name,
+                isLightThemeSelected = it.selectedTheme == AppTheme.LIGHT.name,
+            )
+        }
     }
     override fun onWatchHistoryClick() {
         sendNewEffect(ProfileScreenEffect.NavigateToWatchHistoryScreen)
@@ -68,7 +78,7 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 isDarkThemeSelected = true,
                 isLightThemeSelected = false,
-                selectedTheme = AppTheme.DARK.name,
+                tempSelectedTheme = AppTheme.DARK.name,
 
                 )
         }
@@ -80,16 +90,21 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 isDarkThemeSelected = false,
                 isLightThemeSelected = true,
-                selectedTheme = AppTheme.LIGHT.name,
+                tempSelectedTheme = AppTheme.LIGHT.name,
             )
         }
 
     }
     override fun onApplyThemeOption() {
         viewModelScope.launch {
-            val selectedTheme = AppTheme.valueOf(state.value.selectedTheme)
+            val selectedTheme = AppTheme.valueOf(state.value.tempSelectedTheme)
             setThemeUseCase(selectedTheme)
-            updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+            updateState {
+                it.copy(
+                    activeDialog = ProfileDialogType.NONE,
+                    selectedTheme = it.tempSelectedTheme,
+                )
+            }
         }
     }
 
@@ -98,7 +113,7 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 isEnglishSelected = false,
                 isArabicSelected = true,
-                selectedLanguage = AppLanguage.AR.name,
+                tempSelectedLanguage = AppLanguage.AR.name,
             )
         }
     }
@@ -108,16 +123,21 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 isEnglishSelected = true,
                 isArabicSelected = false,
-                selectedLanguage = AppLanguage.EN.name,
+                tempSelectedLanguage = AppLanguage.EN.name,
             )
         }
     }
 
     override fun onApplyLanguageOption() {
         viewModelScope.launch {
-            val selectedLanguage = AppLanguage.valueOf(state.value.selectedLanguage)
+            val selectedLanguage = AppLanguage.valueOf(state.value.tempSelectedLanguage)
             setLanguageUseCase(selectedLanguage)
-            updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+            updateState {
+                it.copy(
+                    selectedLanguage = it.tempSelectedLanguage,
+                    activeDialog = ProfileDialogType.NONE
+                )
+            }
             sendNewEffect(ProfileScreenEffect.RefreshActivity)
         }
     }

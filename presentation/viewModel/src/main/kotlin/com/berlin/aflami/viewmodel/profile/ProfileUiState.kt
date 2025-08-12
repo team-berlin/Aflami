@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.profile
 
+import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import com.berlin.entity.ContentRestriction
 import java.util.Locale
@@ -11,13 +12,15 @@ data class ProfileUiState(
     val userName: String = "",
     val userPoints: Int = 0,
     val selectedTheme: String = AppTheme.DARK.name,
-    val isDarkThemeEnabled: Boolean = true,
-    val isDarkThemeSelected: Boolean = true,
-    val isLightThemeSelected: Boolean = false,
+    val tempSelectedTheme: String = selectedTheme,
+    val isDarkThemeEnabled: Boolean = AppTheme.DARK.name == selectedTheme,
+    val isDarkThemeSelected: Boolean = AppTheme.DARK.name == selectedTheme,
+    val isLightThemeSelected: Boolean = AppTheme.LIGHT.name == selectedTheme,
     val selectedLanguage: String = Locale.getDefault().language.uppercase(),
-    val isEnglishEnabled: Boolean = false,
-    val isEnglishSelected: Boolean = false,
-    val isArabicSelected: Boolean = false,
+    val tempSelectedLanguage: String = selectedLanguage,
+    val isEnglishEnabled: Boolean = selectedLanguage == AppLanguage.EN.name,
+    val isEnglishSelected: Boolean = selectedLanguage == AppLanguage.EN.name,
+    val isArabicSelected: Boolean = selectedLanguage == AppLanguage.AR.name,
     val activeDialog: ProfileDialogType = ProfileDialogType.NONE,
     val isLoggedIn: Boolean = false,
     val isStrictSelected: Boolean = true,
