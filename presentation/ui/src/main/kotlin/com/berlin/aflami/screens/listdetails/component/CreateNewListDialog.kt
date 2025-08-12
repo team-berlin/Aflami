@@ -5,10 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,10 +41,27 @@ fun CreateNewListDialog(
             DialogTitleBar(
                 titleResource = R.string.create_new_list, onDismiss = onDismiss
             )
+            val keyboardController = LocalSoftwareKeyboardController.current
             TextField(
                 text = listName,
-                onValueChange = { onListNameChanged(it.text) },
+                onValueChange = { newValue ->
+                    onListNameChanged(
+                        newValue.text.trim()
+                    )
+                },
+                isEnabled = true,
+                maxLines = 1,
                 hintText = stringResource(R.string.my_favorite),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { keyboardController?.hide() },
+                    onSearch = {
+                        onCreateListClick(
+                            listName.text.trim()
+                        )
+                    }),
                 leadingIcon = R.drawable.nav_lists,
             )
 

@@ -127,6 +127,7 @@
     <string name="list_failed_to_edit">Not Supported Feature Yet</string>
     <string name="list_deleted_successfully">List Deleted successfully</string>
     <string name="list_failed_to_deleted">Failed To Delete List</string>
+    <string name="add_to_list">Add to List</string>
 
 
 </resources>

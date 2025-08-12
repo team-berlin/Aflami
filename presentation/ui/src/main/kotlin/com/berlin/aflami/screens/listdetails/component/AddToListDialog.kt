@@ -61,7 +61,6 @@ fun AddToListDialog(
         AnimatedVisibility(
             enter = fadeIn(), exit = fadeOut(), visible = addToListUiState.isLoading
         ) {
-            Log.d("khairy", "isLoading = ${addToListUiState.isLoading}")
             CircularProgressIndicator(
                 modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
             )
@@ -69,7 +68,6 @@ fun AddToListDialog(
         AnimatedVisibility(
             enter = fadeIn(), exit = fadeOut(), visible = addToListUiState.errorMessage != null
         ) {
-            Log.d("khairy", "errorMessage = ${addToListUiState.errorMessage}")
             Box(Modifier.fillMaxSize()) {
                 NoInternetConnectionPlaceholder(modifier = Modifier.fillMaxSize())
             }
@@ -125,7 +123,7 @@ private fun DialogHeaderSection(onDismiss: () -> Unit) {
         modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
-            text = "Add to List",
+            text = stringResource(R.string.add_to_list),
             style = Theme.textStyle.title.large,
             color = Theme.color.textColors.title,
         )
@@ -211,11 +209,11 @@ private fun ActionButtonsSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
-            .background(
+                .background(
                     brush = (if (isEnabled)
                         darkPurpleLinearGradient
                     else
-                        Brush.linearGradient(listOf(Theme.color.disable,Theme.color.disable))),
+                        Brush.linearGradient(listOf(Theme.color.disable, Theme.color.disable))),
                     shape = RoundedCornerShape(12.dp)
                 )
                 .clickable(enabled = isEnabled) {
