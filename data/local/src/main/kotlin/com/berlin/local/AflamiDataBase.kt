@@ -13,6 +13,7 @@ import com.berlin.local.dao.HomeMovieDao
 import com.berlin.local.dao.HomeTVShowDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
+import com.berlin.local.dao.UserPointsDao
 import com.berlin.local.dao.UserProfileDao
 import com.berlin.repository.datasource.Converters
 import com.berlin.repository.datasource.local.dto.AppEntryEntity
@@ -25,6 +26,7 @@ import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
 import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
+import com.berlin.repository.datasource.local.dto.UserPointsEntity
 import com.berlin.repository.datasource.local.dto.UserProfileEntity
 
 @TypeConverters(Converters::class)
@@ -40,9 +42,10 @@ import com.berlin.repository.datasource.local.dto.UserProfileEntity
         MoviesGenreEntity::class,
         MovieHomeEntity::class,
         TVShowHomeEntity::class,
-        UserProfileEntity::class
+        UserProfileEntity::class,
+       UserPointsEntity::class
 
-    ], version =2 , exportSchema = false
+    ], version =3 , exportSchema = false
 )
 abstract class AflamiDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
@@ -54,6 +57,7 @@ abstract class AflamiDatabase : RoomDatabase() {
     abstract fun homeMovieDao(): HomeMovieDao
     abstract fun homeTVShowDao(): HomeTVShowDao
     abstract fun userProfileDao(): UserProfileDao
+    abstract fun userPointsDao(): UserPointsDao
 
 
     companion object {
