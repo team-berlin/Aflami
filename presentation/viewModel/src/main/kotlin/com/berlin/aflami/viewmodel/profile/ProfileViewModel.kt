@@ -9,6 +9,7 @@ import com.berlin.entity.ContentRestriction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginStatus
+import usecase.profile.ClearUserProfileUseCase
 import usecase.profile.GetContentRestrictionUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
@@ -29,7 +30,8 @@ class ProfileViewModel @Inject constructor(
     val setContentRestrictionUseCase: SetContentRestrictionUseCase,
     val getContentRestrictionUseCase: GetContentRestrictionUseCase,
     private val observeUserProfileUseCase: ObserveUserProfileUseCase,
-    private val refreshUserProfileUseCase: RefreshUserProfileUseCase
+    private val refreshUserProfileUseCase: RefreshUserProfileUseCase,
+    private val clearUserProfileUseCase: ClearUserProfileUseCase
 
 ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
@@ -270,6 +272,12 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    override fun onLogoutClicked() = sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
+    override fun onLogoutClicked() {
+        viewModelScope.launch {
+            clearUserProfileUseCase()
+            updateState { it.copy(isLoggedIn = false) }
+        }
+        sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
+    }
 
 }
