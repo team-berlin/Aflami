@@ -6,6 +6,8 @@ data class QuizGameUiState(
     val questions: List<Question> = emptyList(),
     val type: QuestionType=QuestionType.Image,
     val selectedAnswer:String="",
+    val isAnswerCorrect:Boolean?=null,
+    val imageBlur:Int=0,
     val currentQuestionIndex: Int=0,
     val isFinished: Boolean=false,
     val time:Int=0,

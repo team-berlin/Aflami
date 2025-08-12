@@ -19,17 +19,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -43,11 +37,11 @@ import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.authentication.CirclesBackground
 import com.berlin.aflami.screens.games.components.CountdownCircularProgress
 import com.berlin.aflami.screens.games.components.SelectionItem
-import com.berlin.aflami.screens.home.WatchedMediaContent
 import com.berlin.aflami.screens.onBoarding.Indicator
 import com.berlin.aflami.ui.color.ExtraColors.gameBackgroundGradient
 import com.berlin.aflami.ui.color.ExtraColors.primaryGredient
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.quizgame.QuizGameInteractionListener
 import com.berlin.aflami.viewmodel.quizgame.QuizGameUiState
 import com.berlin.aflami.viewmodel.quizgame.QuizGameViewModel
 import com.berlin.ui.R
@@ -75,7 +69,8 @@ fun GuessTheGameScreen(
         visible = !questionUiState.loading
     ) {
         GuessTheGameContent(
-            questionUiState
+            questionUiState,
+            viewModel
         )
     }
 
@@ -84,13 +79,9 @@ fun GuessTheGameScreen(
 
 @Composable
 fun GuessTheGameContent(
-    questionUiState:QuizGameUiState
+    state:QuizGameUiState,
+    listener:QuizGameInteractionListener
 ) {
-    var currentIndex by remember { mutableIntStateOf(0) }
-    val questions = questionUiState.questions
-
-    if (questions.isNotEmpty()) {
-        val currentQuestion = questions[currentIndex]
 
         Box(
         modifier = Modifier
@@ -134,15 +125,15 @@ fun GuessTheGameContent(
                     trailingIcon = {
                         CountdownCircularProgress(
 //                    totalTimePerSecond =currentQuestion.time,
-                            totalTimePerSecond = 10,
+                            totalTimePerSecond = 45,
 
                             )
                     })
                 Indicator(
                     modifier = Modifier.fillMaxWidth()
                         .padding(vertical = 20.dp, horizontal = 16.dp),
-                    pageNumber =currentIndex+1,
-                    pageCount = questions.size,
+                    pageNumber =state.currentQuestionIndex,
+                    pageCount = state.questions.size,
                 )
             }
             Column(
@@ -156,7 +147,7 @@ fun GuessTheGameContent(
                 CharacterCard(
                     modifier = Modifier.padding(top = 4.dp),
 //                guessedText = "The green mile",
-                    imageRes = rememberAsyncImagePainter(currentQuestion.question),
+                    imageUrl = state.questions[state.currentQuestionIndex].question,
                     blurAmount = 8f,
                     onHintClicked = {},
                     showHintBar = true,
@@ -164,18 +155,12 @@ fun GuessTheGameContent(
                     hintIcon = com.berlin.designsystem.R.drawable.hint_star,
                 )
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    currentQuestion.options.forEach { answer ->
+                    state.questions[state.currentQuestionIndex].options.forEach { answer ->
                         SelectionItem(
                             guessName = answer,
-                            isSelected = when {
-                                questionUiState.selectedAnswer == answer ->
-                                    answer == currentQuestion.correctAnswer
-                                answer == currentQuestion.correctAnswer -> true
-                                questionUiState.selectedAnswer !=answer -> false
-                                else -> null
-                            },
+                            isSelected =if(state.selectedAnswer.isEmpty())null else answer==state.questions[state.currentQuestionIndex].correctAnswer,
                             onSelectItem = {
-
+                                listener.answerClicked(answer)
                             }
                         )
                     }
@@ -185,11 +170,7 @@ fun GuessTheGameContent(
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = {
-                        if (currentIndex < questions.lastIndex) {
-                            currentIndex++
-                        } else {
-                            // navigate result screen
-                        }
+                        listener.nextQuestionClicked()
                     },
                     gradientColor = primaryGredient
                 ) {
@@ -202,6 +183,4 @@ fun GuessTheGameContent(
                 }
             }
         }
-
-    }
 }

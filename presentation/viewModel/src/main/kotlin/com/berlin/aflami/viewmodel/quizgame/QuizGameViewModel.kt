@@ -1,16 +1,13 @@
 package com.berlin.aflami.viewmodel.quizgame
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
-import com.berlin.aflami.viewmodel.mapper.toActorUiState
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.toGenreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import usecase.movie.GetMovieCastUseCase
@@ -31,16 +28,17 @@ class QuizGameViewModel @Inject constructor(
     private val getTVShowCastUseCase: GetTVShowCastUseCase
 ) : BaseViewModel<QuizGameUiState, QuizGameEffect>(
     QuizGameUiState()
-) {
+), QuizGameInteractionListener {
     private val mediaList = MutableStateFlow<List<MediaUiState>>(emptyList())
     private val mediaGenre = MutableStateFlow<List<GenreUiState>>(emptyList())
     private val mediaCast = MutableStateFlow<List<ActorUiState>>(emptyList())
 
     init {
-        mediaGame()
+        viewModelScope.launch {
+            mediaGame()
+            getMediaByPoster()
+        }
     }
-
-
 
     private fun getMediaByCharacter() {
 
@@ -49,10 +47,8 @@ class QuizGameViewModel @Inject constructor(
 
     //question-> poster
     // answer-> media name
-     fun getMediaByPoster() {
+    fun getMediaByPoster() {
         val mediaItems = mediaList.value
-        Log.e("meddiaa",mediaItems.toString())
-
         if (mediaItems.isEmpty()) return
         val questions = mediaItems.map { media ->
             val wrongOptions = mediaItems.asSequence()
@@ -61,7 +57,6 @@ class QuizGameViewModel @Inject constructor(
                 .take(3)
                 .toList()
             val allOptions = (wrongOptions + media.title).shuffled()
-            Log.e("Posterrr",allOptions.toString())
 
             Question(
                 question = media.poster,
@@ -123,42 +118,33 @@ class QuizGameViewModel @Inject constructor(
     }
 
 
-    private fun mediaGame() {
+    private suspend fun mediaGame() {
         updateScreenStateToLoading()
-        viewModelScope.launch {
-            val movie = async { getMovieGameUseCase() }
-            val tvShow = async { getTVShowGameUseCase() }
-            val movieList = movie.await().map { it.toMediaUiState() }
-            val tvShowList = tvShow.await().map { it.toMediaUiState() }
-            mediaList.value = interleaveMoviesAndTvShowsEqually(movieList, tvShowList)
-            Log.e("mediaaaa",mediaList.value.toString())
-            getMediaByPoster()
+        val movie = getMovieGameUseCase()
+        val tvShow = getTVShowGameUseCase()
+        val movieList = movie.map { it.toMediaUiState() }
+        val tvShowList = tvShow.map { it.toMediaUiState() }
+        mediaList.value = interleaveMoviesAndTvShowsEqually(movieList, tvShowList)
 
-
-        }
     }
 
-    private fun genreGame() {
+    private suspend fun genreGame() {
         updateScreenStateToLoading()
-        viewModelScope.launch {
-            val movieGenre = async { (getMovieGenresUseCase()) }
-            val tvShowGenre = async { getTVGenresUseCase() }
-            val movieGenreList = movieGenre.await().map { it.toGenreUiState() }
-            val tvShowGenreList = tvShowGenre.await().map { it.toGenreUiState() }
-            mediaGenre.value = (movieGenreList + tvShowGenreList).shuffled().take(20)
+        val movieGenre = (getMovieGenresUseCase())
+        val tvShowGenre = getTVGenresUseCase()
+        val movieGenreList = movieGenre.map { it.toGenreUiState() }
+        val tvShowGenreList = tvShowGenre.map { it.toGenreUiState() }
+        mediaGenre.value = (movieGenreList + tvShowGenreList).shuffled().take(20)
 
-        }
     }
-
-//    private fun getCast(){
+//
+//    private suspend fun getCast(mediaId: Long) {
 //        updateScreenStateToLoading()
-//        viewModelScope.launch {
-//            val movieCast = async { getMovieCastUseCase() }
-//            val tvShowCast = async { getTVShowCastUseCase() }
-//            val movieCastList = movieCast.await().map { it.toActorUiState() }
-//            val tvShowCastList = tvShowCast.await().map { it.toActorUiState() }
-//            mediaCast.value = (movieCastList + tvShowCastList).shuffled()
-//        }
+//        val movieCast = getMovieCastUseCase()
+//        val tvShowCast = getTVShowCastUseCase()
+//        val movieCastList = movieCast.map { it.toActorUiState() }
+//        val tvShowCastList = tvShowCast.map { it.toActorUiState() }
+//        mediaCast.value = (movieCastList + tvShowCastList).shuffled()
 //    }
 
     private fun interleaveMoviesAndTvShowsEqually(
@@ -179,6 +165,44 @@ class QuizGameViewModel @Inject constructor(
 
     private fun updateScreenStateToLoading() =
         updateState { screenState -> screenState.copy(loading = true) }
+
+    override fun nextQuestionClicked() {
+        updateState {
+            it.copy(currentQuestionIndex = if (it.currentQuestionIndex < it.questions.size) it.currentQuestionIndex + 1 else it.currentQuestionIndex)
+        }
+    }
+
+    override fun answerClicked(answer: String) {
+        updateState {
+            val checkAnswer =
+                it.selectedAnswer == it.questions[it.currentQuestionIndex].correctAnswer
+            it.copy(
+                selectedAnswer = answer,
+                isAnswerCorrect = it.selectedAnswer == it.questions[it.currentQuestionIndex].correctAnswer,
+                totalPoint = if (checkAnswer) it.totalPoint + 5 else it.totalPoint - 5
+            )
+        }
+    }
+
+    override fun hintClicked() {
+        updateState {
+            if (it.totalPoint >= 10) {
+                it.copy(
+                    enableHint = true,
+                    totalPoint = it.totalPoint - 10 ,
+                    imageBlur = it.imageBlur-3,
+//                    questions = it.questions[it.currentQuestionIndex].copy(
+//                        options =
+//                    )
+                )
+            }
+            else{
+                it.copy(
+                    enableHint = false,
+                )
+            }
+        }
+    }
 
 
 }
