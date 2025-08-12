@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
@@ -61,6 +62,8 @@ fun SelectionItem(
             text = guessName,
             style = Theme.textStyle.label.large,
             color = Theme.color.textColors.body,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
         )
         Icon(
             painter = painterResource(icon),

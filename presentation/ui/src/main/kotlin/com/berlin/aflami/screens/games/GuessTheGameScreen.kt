@@ -158,12 +158,20 @@ fun GuessTheGameContent(
                     state.questions[state.currentQuestionIndex].options.forEach { answer ->
                         SelectionItem(
                             guessName = answer,
-                            isSelected =if(state.selectedAnswer.isEmpty())null else answer==state.questions[state.currentQuestionIndex].correctAnswer,
+                            isSelected = when {
+                                state.selectedAnswer.isEmpty() -> null
+                                answer == state.selectedAnswer ->
+                                    answer == state.questions[state.currentQuestionIndex].correctAnswer
+                                else -> null
+                            },
                             onSelectItem = {
-                                listener.answerClicked(answer)
+                                if(state.selectedAnswer.isEmpty()) {
+                                    listener.answerClicked(answer)
+                                }
                             }
                         )
                     }
+
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 PrimaryButton(

@@ -168,7 +168,11 @@ class QuizGameViewModel @Inject constructor(
 
     override fun nextQuestionClicked() {
         updateState {
-            it.copy(currentQuestionIndex = if (it.currentQuestionIndex < it.questions.size) it.currentQuestionIndex + 1 else it.currentQuestionIndex)
+            it.copy(
+                currentQuestionIndex =
+                    if (it.currentQuestionIndex < it.questions.size) it.currentQuestionIndex + 1 else it.currentQuestionIndex,
+                selectedAnswer = ""
+                )
         }
     }
 
