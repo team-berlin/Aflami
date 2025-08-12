@@ -84,6 +84,8 @@ private fun ListDetailsContent(
                     .statusBarsPadding(),
                 firstOption = painterResource(R.drawable.edit),
                 lastOption = painterResource(R.drawable.delete),
+                lastOptionIconTint = Theme.color.statusColors.redAccent,
+                optionContainerColor = Theme.color.surfaceHigh,
                 onFirstOptionClicked = {
                     listener.onRenameClicked(
                         listDetailsScreenState.listId!!,
@@ -124,7 +126,6 @@ private fun ListDetailsContent(
                         .align(Alignment.CenterHorizontally),
                     image = painterResource(R.drawable.no_items_found),
                     R.string.no_saved_items_here,
-                    R.string.you_can_add_items_to_your_list_by_searching_for_them_in_the_app
                 )
             }
             AnimatedVisibility(

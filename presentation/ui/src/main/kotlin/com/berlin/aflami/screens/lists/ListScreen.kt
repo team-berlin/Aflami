@@ -251,6 +251,7 @@ private fun ListsContent(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     showNavigateBackButton = false,
                     lastOption = painterResource(R.drawable.add),
+                    optionContainerColor = Theme.color.surfaceHigh,
                     onLastOptionClicked = interactionListener::onClickAddList,
                 )
                 LazyVerticalGrid(

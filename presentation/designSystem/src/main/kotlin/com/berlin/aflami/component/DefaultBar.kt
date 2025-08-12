@@ -24,6 +24,8 @@ fun DefaultBar(
     lastOption: Painter? = null,
     lastOptionContentDescription: String? = null,
     containerColor: Color = Color.Unspecified,
+    firstOptionIconTint: Color = Theme.color.textColors.body,
+    lastOptionIconTint: Color =  Theme.color.textColors.body,
     optionContainerColor: Color = Theme.color.primaryVariant,
     onFirstOptionClicked: () -> Unit = {},
     onLastOptionClicked: () -> Unit = {},
@@ -57,7 +59,7 @@ fun DefaultBar(
                     painter = painter,
                     contentDescription = firstOptionContentDescription,
                     containerColor = optionContainerColor,
-                    tint = Theme.color.textColors.body,
+                    tint = firstOptionIconTint,
                     paddingValues = PaddingValues(8.dp),
                     withBorder = true,
                     onClick = onFirstOptionClicked
@@ -70,7 +72,7 @@ fun DefaultBar(
                     painter = painter,
                     contentDescription = lastOptionContentDescription,
                     containerColor = optionContainerColor,
-                    tint = Theme.color.textColors.body,
+                    tint = lastOptionIconTint,
                     paddingValues = PaddingValues(8.dp),
                     withBorder = true,
                     onClick = onLastOptionClicked
