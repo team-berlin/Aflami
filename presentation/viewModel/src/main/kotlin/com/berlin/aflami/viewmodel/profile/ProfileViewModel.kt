@@ -224,6 +224,7 @@ class ProfileViewModel @Inject constructor(
                         selectedLanguage = appLanguage,
                         isArabicSelected = appLanguage == AppLanguage.AR.name,
                         isEnglishSelected = appLanguage == AppLanguage.EN.name,
+                        isEnglishEnabled = appLanguage == AppLanguage.EN.name,
                     )
                 }
             }

@@ -39,15 +39,15 @@ fun SettingSection(
             SettingsItem(
                 icon = painterResource(R.drawable.language),
                 title = stringResource(R.string.language),
-                subtitle = if (isLanguageEN) stringResource(R.string.eng) else stringResource(R.string.ar),
+                subtitle = if (isLanguageEN) stringResource(R.string.eng)
+                else stringResource(R.string.ar),
                 onClick = onLanguageClick
             )
             SettingsItem(
                 icon = painterResource(R.drawable.app_theme),
                 title = stringResource(R.string.app_theme),
-                subtitle = if (isDarkThemeEnabled) stringResource(R.string.dark) else stringResource(
-                    R.string.light
-                ),
+                subtitle = if (isDarkThemeEnabled) stringResource(R.string.dark)
+                else stringResource(R.string.light),
                 onClick = onThemeClick
             )
             SettingsItem(
