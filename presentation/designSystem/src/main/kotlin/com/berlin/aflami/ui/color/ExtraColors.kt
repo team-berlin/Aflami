@@ -65,6 +65,39 @@ object ExtraColors {
         ),
 
     )
+    val guessMovieByCharacterGradient = Brush.linearGradient(
+        listOf(Color(0x80D85895),
+            Color(0x05FFFFFF)
+        )
+    )
+
+    val guessMovieByPosterGradient =
+        Brush.linearGradient(
+            listOf(Color(0x802BA3D9), Color(0x05FFFFFF))
+        )
+    val guessMovieByReleaseGradient =
+        Brush.linearGradient(
+            listOf(Color(0x800A203A), Color(0x05FFFFFF))
+        )
+    val guessMovieByGenreGradient =
+        Brush.linearGradient(
+            listOf(Color(0x80E5A02E), Color(0x05FFFFFF))
+        )
+    val borderActionGameGard =
+        Brush.linearGradient(
+            listOf(
+                Color(0x14FFFFFF),
+                Color(0x3DFFFFFF)
+            )
+        )
+    val shadowGuessMovieByCharacter=Color(0x1FD85895)
+    val shadowGuessMovieByByPoster=Color(0x1F2BA3D9)
+
+    val shadowGuessMovieRelease=Color( 0x800A203A)
+
+    val shadowGuessMovieByGenre=Color(0x1EE5A02E)
+
+    val diagonalStripe = Color(0x00EFF9FE)
 
 
 }
