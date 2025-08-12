@@ -103,6 +103,7 @@
     <string name="catgories">التصنيفات</string>
     <string name="movies">الافلام</string>
     <string name="tv_shows">البرامج التليفزيونية</string>
+    <string name="no_items_found">لا يوجد محتويات لهذا التصنيف</string>
 
 
 </resources>

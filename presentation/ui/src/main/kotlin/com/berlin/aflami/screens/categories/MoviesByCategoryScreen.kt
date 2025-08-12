@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,12 +16,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -28,6 +31,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,18 +41,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
+import com.berlin.aflami.screens.search.getMovieGenreIcon
 import com.berlin.aflami.screens.search.search.Chips
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryInteractionListener
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryScreenEffect
 import com.berlin.aflami.viewmodel.categories.movie.MoviesByCategoryScreenViewModel
 import com.berlin.aflami.viewmodel.categories.movie.MoviesByCategoryUiState
+import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState.Loading
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
@@ -67,16 +75,17 @@ fun MoviesByCategoryScreen(
         }
     }
 
+    val movies = state.moviesPagingDataFlow.collectAsLazyPagingItems()
+
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = state.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = state.isScreenLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
-    val movies = state.moviesPagingDataFlow.collectAsLazyPagingItems()
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = !state.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = !state.isScreenLoading
     ) {
         MediaByCategoryContent(
             movies, state = state, listener = viewModel
@@ -138,21 +147,12 @@ fun MediaByCategoryContent(
             }
         )
 
-        when {
-            state.isLoading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
-                )
-            }
-        }
-
         MediaByCategoryResultGrid(
             categories = state.moviesGenres,
             onCategoryCardClicked = listener::onCategoryCardClicked,
+            mediaList = movies,
             onMediaCardClicked = listener::onMediaCardClicked,
-            mediaList = movies
         )
-
     }
 }
 
@@ -163,19 +163,24 @@ private fun MediaByCategoryResultGrid(
     onCategoryCardClicked: (Long) -> Unit,
     mediaList: LazyPagingItems<MovieUiState>,
     onMediaCardClicked: (Long) -> Unit,
-) {
-    Row(modifier = modifier.fillMaxSize()) {
-        GenreChipsColumn(
-            genres = categories,
-            onGenreClick = {
-                onCategoryCardClicked(it)
-            },
-            modifier = Modifier
-                .width(102.dp)
-                .fillMaxHeight()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-        )
-
+) {   Row(
+    modifier = modifier
+        .fillMaxSize()
+        .background(Theme.color.surface)
+)
+{
+    GenreChipsColumn(
+        genres = categories,
+        onGenreClick = {
+            onCategoryCardClicked(it)
+        },
+        modifier = Modifier
+            .width(102.dp)
+            .fillMaxHeight()
+            .padding(horizontal = 16.dp),
+    )
+    Box(Modifier.fillMaxSize())
+    {
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
@@ -185,7 +190,7 @@ private fun MediaByCategoryResultGrid(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(count = mediaList.itemCount) { index ->
+            items(mediaList.itemCount) { index ->
                 val media = mediaList[index]
                 if (media != null) {
                     MediaCard(
@@ -195,16 +200,37 @@ private fun MediaByCategoryResultGrid(
                         typeOfMedia = MediaType.MOVIE.name,
                         date = media.releaseDate,
                         rating = media.rating,
-                        onClick = {
-                            onMediaCardClicked(
-                                media.id
-                            )
-                        })
+                        onClick = { onMediaCardClicked(media.id) }
+                    )
                 }
+            }
+        }
+        val isEmpty by remember(
+            mediaList.itemCount,
+            mediaList.loadState.refresh
+        ) {
+            mutableStateOf(
+                mediaList.itemCount == 0 &&
+                        mediaList.loadState.refresh !is LoadState.Loading &&
+                        mediaList.loadState.refresh !is LoadState.Error
+            )
+        }
+        when {
+            mediaList.loadState.refresh is LoadState.Loading -> CircularProgressIndicator(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.Center),
+                text = stringResource(R.string.loading)
+            )
+
+            isEmpty -> {
+                NoItemsFound()
             }
         }
     }
 }
+}
+
 
 @Composable
 private fun GenreChipsColumn(
@@ -212,16 +238,31 @@ private fun GenreChipsColumn(
     onGenreClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
+    val selectedIndex = genres.indexOfFirst { it.isSelected }.coerceAtLeast(0)
+
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(selectedIndex) {
+        listState.animateScrollToItem(selectedIndex)
+    }
     LazyColumn(
-        modifier, verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier,
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
-            items = genres, key = { it.id }) { genre ->
-            Chips(
-                title = genre.name,
-                icon = painterResource(getMovieCategoryIcon(genre.id)),
-                isSelected = genre.isSelected,
-                onClick = { onGenreClick(genre.id.toLong()) })
+            items = genres,
+            key = { it.id }
+        ) { genre ->
+            Box(Modifier.size(height = 96.dp, width = 70.dp)) {
+                Chips(
+                    title = genre.name,
+                    icon = painterResource(getMovieGenreIcon(genre.id)),
+                    isSelected = genre.isSelected,
+                    onClick = { onGenreClick(genre.id.toLong()) }
+                )
+            }
         }
     }
 }

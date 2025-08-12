@@ -79,7 +79,7 @@ class TVShowByCategoryScreenViewModel @Inject constructor(
         )
     }
 
-    private fun updateScreenStateWithTvVShows(topRatingMediaFlow: Flow<PagingData<TVShowUiState>>) {
+    fun updateScreenStateWithTvVShows(topRatingMediaFlow: Flow<PagingData<TVShowUiState>>) {
         updateState {
             it.copy(
                 tvShowsPagingDataFlow = topRatingMediaFlow,
@@ -120,7 +120,7 @@ class TVShowByCategoryScreenViewModel @Inject constructor(
         )
     }
 
-    private fun updateScreenWithNewTVShowGenres(tVShowGenres: List<GenreUiState>) {
+    fun updateScreenWithNewTVShowGenres(tVShowGenres: List<GenreUiState>) {
         updateState { state ->
             state.copy(
                 tvShowGenres = tVShowGenres
@@ -128,7 +128,7 @@ class TVShowByCategoryScreenViewModel @Inject constructor(
         }
     }
 
-    private fun updateScreenStateToError(errorUiState: ErrorUiState) {
+    fun updateScreenStateToError(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
                 errorMessage = errorUiState.message,
@@ -137,12 +137,13 @@ class TVShowByCategoryScreenViewModel @Inject constructor(
         }
     }
 
-    private fun updateScreenStateToLoading() = updateState { it.copy(isLoading = true) }
+    fun updateScreenStateToLoading() = updateState { it.copy(isLoading = true) }
 
     override fun onCategoryCardClicked(catgoryId: Long) {
         updateState { state ->
             state.copy(
                 selectedCategoryId = catgoryId,
+                isLoading = true,
                 tvShowGenres = state.tvShowGenres.map { genre ->
                     if (genre.id.toLong() == catgoryId) {
                         genre.copy(isSelected = true)
@@ -150,8 +151,7 @@ class TVShowByCategoryScreenViewModel @Inject constructor(
                         genre.copy(isSelected = false)
                     }
                 },
-
-                )
+            )
         }
     }
 }

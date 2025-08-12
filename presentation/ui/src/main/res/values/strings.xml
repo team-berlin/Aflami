@@ -102,6 +102,7 @@
     <string name="catgories">Categories</string>
     <string name="movies">Movies</string>
     <string name="tv_shows">TV Shows</string>
+    <string name="no_items_found">No items for this genre!</string>
 
 
 </resources>

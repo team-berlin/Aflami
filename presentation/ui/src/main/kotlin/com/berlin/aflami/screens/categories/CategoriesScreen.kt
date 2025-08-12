@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.categories
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -11,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.grid.GridCells.*
+import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
@@ -47,7 +48,7 @@ import com.berlin.ui.R
 fun CategoryScreen(
     viewModel: CategoriesScreenViewModel = hiltViewModel(),
 
-) {
+    ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsState()
 
@@ -82,7 +83,7 @@ fun CategoryScreen(
 private fun categoriesReceiveEffect(navController: NavController, effect: CategoriesScreenEffect) {
     when (effect) {
         is CategoriesScreenEffect.NavigateToMediaScreen -> {
-            when(effect.mediaType){
+            when (effect.mediaType) {
                 MediaType.MOVIE -> {
                     navController.navigate(
                         MoviesByCategoryDestination(
@@ -90,6 +91,7 @@ private fun categoriesReceiveEffect(navController: NavController, effect: Catego
                         )
                     )
                 }
+
                 MediaType.TV_SHOW -> {
                     navController.navigate(
                         TVShowsByCategoryDestination(
@@ -164,6 +166,7 @@ fun CategoriesContent(
             }
 
             TabOption.TV_SHOWS -> {
+                Log.d("WOWTEST", "CategoriesContent: ${state.tvShowGenres}")
                 ResultGrid(
                     categories = state.tvShowGenres,
                     onCategoryCardClicked = listener::onCategoryCardClicked,
@@ -174,39 +177,39 @@ fun CategoriesContent(
     }
 
 }
+
 @Composable
 private fun ResultGrid(
     categories: List<GenreUiState>,
     modifier: Modifier = Modifier,
     onCategoryCardClicked: (Long, MediaType) -> Unit,
     mediaType: MediaType,
-){
-        LazyVerticalGrid(
-            modifier = modifier
-                .fillMaxSize(),
-            columns = Adaptive(minSize = 160.dp),
-            contentPadding = PaddingValues(
-                start = 16.dp, end = 16.dp, top = 8.dp, bottom = 56.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(
-                items = categories,
-            ) { genre ->
-                CategoryCard(
-                    modifier = Modifier.height(71.dp),
-                    onClick = {
-                        onCategoryCardClicked(
-                             genre.id.toLong(),
-                             mediaType
-                        )
-                    },
-                    text = genre.name.replace(Regex("[ &]"), "\n"),
-                    image = if (mediaType == MediaType.MOVIE) painterResource(getMovieCategoryIcon(genre.id))
-                            else painterResource(getTvShowCategoryIcon(genre.id))
-                    ,
-                )
-            }
+) {
+    LazyVerticalGrid(
+        modifier = modifier
+            .fillMaxSize(),
+        columns = Adaptive(minSize = 160.dp),
+        contentPadding = PaddingValues(
+            start = 16.dp, end = 16.dp, top = 8.dp, bottom = 56.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(
+            items = categories,
+        ) { genre ->
+            CategoryCard(
+                modifier = Modifier.height(71.dp),
+                onClick = {
+                    onCategoryCardClicked(
+                        genre.id.toLong(),
+                        mediaType
+                    )
+                },
+                text = genre.name.replace(Regex("\\s*&\\s*|\\s+"), " &\n"),
+                image = if (mediaType == MediaType.MOVIE) painterResource(getMovieCategoryIcon(genre.id))
+                else painterResource(getTvShowCategoryIcon(genre.id)),
+            )
         }
     }
+}

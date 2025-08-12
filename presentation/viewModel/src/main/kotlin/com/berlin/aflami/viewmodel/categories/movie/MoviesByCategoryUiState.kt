@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.emptyFlow
 
 @Immutable
 data class MoviesByCategoryUiState(
-    val isLoading: Boolean = true,
+    val isScreenLoading: Boolean = true,
     val errorMessage: String? = null,
     val moviesGenres: List<GenreUiState> = emptyList(),
     val moviesPagingDataFlow: Flow<PagingData<MovieUiState>> = emptyFlow(),

@@ -32,7 +32,6 @@ class MoviesByCategoryScreenViewModel @Inject constructor(
     private val categoryId = mediaByCategoriesArgs.categoryId ?: 0
 
     init {
-        Log.d("WOWTEST", "init: $categoryId")
         updateState { screenState ->
             screenState.copy(
                 selectedCategoryId = categoryId,
@@ -63,7 +62,7 @@ class MoviesByCategoryScreenViewModel @Inject constructor(
     )
 
     private fun getMoviesByCategory() {
-        updateScreenStateToLoading()
+
         tryToCall(
             call = {
                 getMoviesByCategoryAsFlow(
@@ -86,10 +85,11 @@ class MoviesByCategoryScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenStateWithMovies(topRatingMediaFlow: Flow<PagingData<MovieUiState>>) {
+
         updateState {
             it.copy(
                 moviesPagingDataFlow = topRatingMediaFlow,
-                isLoading = false,
+                isScreenLoading = false,
             )
         }
     }
@@ -98,7 +98,6 @@ class MoviesByCategoryScreenViewModel @Inject constructor(
         tryToCall(
             call = {
             val movieGenres = getMoviesGenreUseCase()
-
             val genres = movieGenres.map { genre ->
                 GenreUiState(
                     id = genre.id,
@@ -114,28 +113,29 @@ class MoviesByCategoryScreenViewModel @Inject constructor(
         )
     }
 
-    private fun updateScreenWithNewMovieGenres(movieGenres: List<GenreUiState>) {
+    fun updateScreenWithNewMovieGenres(movieGenres: List<GenreUiState>) {
         updateState { state ->
             state.copy(
-                moviesGenres = movieGenres, isLoading = false
+                moviesGenres = movieGenres, isScreenLoading = false
             )
         }
     }
 
-    private fun updateScreenStateToError(errorUiState: ErrorUiState) {
+    fun updateScreenStateToError(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorUiState.message, isLoading = false
+                errorMessage = errorUiState.message, isScreenLoading = false
             )
         }
     }
 
-    private fun updateScreenStateToLoading() = updateState { it.copy(isLoading = true) }
+    fun updateScreenStateToLoading() = updateState { it.copy(isScreenLoading = true) }
 
     override fun onCategoryCardClicked(catgoryId: Long) {
         updateState { state ->
             state.copy(
-                selectedCategoryId = catgoryId, moviesGenres = state.moviesGenres.map { genre ->
+                selectedCategoryId = catgoryId,
+                moviesGenres = state.moviesGenres.map { genre ->
                     if (genre.id.toLong() == catgoryId) {
                         genre.copy(isSelected = true)
                     } else {

@@ -7,6 +7,8 @@ import com.berlin.aflami.viewmodel.shareduistate.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.toGenreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import usecase.movie.GetMovieGenresUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
 import javax.inject.Inject
@@ -15,15 +17,14 @@ import javax.inject.Inject
 class CategoriesScreenViewModel @Inject constructor(
     private val getMovieGenresUseCase: GetMovieGenresUseCase,
     private val getTVShowGenresUseCase: GetTVShowGenresUseCase,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 
     ) : BaseViewModel<CategoriesScreenUiState, CategoriesScreenEffect>(
     CategoriesScreenUiState()
 ), CategoriesInteractionListener {
 
-
     override fun onCategoryCardClicked(mediaId: Long, mediaType: MediaType) =
         sendNewEffect(CategoriesScreenEffect.NavigateToMediaScreen(mediaId, mediaType))
-
 
     init {
         getMovieGenres()
@@ -36,7 +37,8 @@ class CategoriesScreenViewModel @Inject constructor(
         tryToCall(
             call = { getMovieGenresUseCase().map { it.toGenreUiState() } },
             onSuccess = ::updateScreenStateWithMovieGenres,
-            onError = ::updateScreenStateToError
+            onError = ::updateScreenStateToError,
+            dispatcher= dispatcher
         )
     }
 
@@ -45,7 +47,8 @@ class CategoriesScreenViewModel @Inject constructor(
         tryToCall(
             call = { getTVShowGenresUseCase().map { it.toGenreUiState() } },
             onSuccess = ::updateScreenStateWithTvGenres,
-            onError = ::updateScreenStateToError
+            onError = ::updateScreenStateToError,
+            dispatcher= dispatcher
         )
     }
 
@@ -59,7 +62,6 @@ class CategoriesScreenViewModel @Inject constructor(
             screenState.copy(tvShowGenres = tvShowCategories, isLoading = false)
         }
 
-
     private fun updateScreenStateToError(errorUiState: ErrorUiState) =
         updateState { screenState ->
             screenState.copy(
@@ -70,7 +72,6 @@ class CategoriesScreenViewModel @Inject constructor(
 
     private fun updateScreenStateToLoading() =
         updateState { screenState -> screenState.copy(isLoading = true) }
-
 
     override fun onTabOptionClicked(tabOption: TabOption) {
         updateState {
