@@ -13,9 +13,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -51,11 +48,10 @@ fun ProfileScreen(
 ) {
     val profileScreenState by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
-    var counter by rememberSaveable { mutableIntStateOf(0) }
     if (profileScreenState.isLoggedIn) {
         ProfileContent(profileScreenState, viewModel)
     } else {
-        RequiredLoggedInPlaceholder(onAvatarClick = { counter++ }) {
+        RequiredLoggedInPlaceholder() {
             navController.navigate(LoginDestination)
         }
     }
@@ -63,9 +59,6 @@ fun ProfileScreen(
         viewModel.effect.collect { newEffect ->
             watchHistoryReceiveEffect(navController = navController, effect = newEffect)
         }
-    }
-    if (counter == 7) {
-        ProfileContent(profileScreenState, viewModel)
     }
 }
 
