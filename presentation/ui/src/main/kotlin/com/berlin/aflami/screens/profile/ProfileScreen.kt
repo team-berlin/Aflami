@@ -13,6 +13,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -48,24 +51,25 @@ fun ProfileScreen(
 ) {
     val profileScreenState by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
+    var counter by rememberSaveable { mutableIntStateOf(0) }
     if (profileScreenState.isLoggedIn) {
         ProfileContent(profileScreenState, viewModel)
     } else {
-        RequiredLoggedInPlaceholder() {
+        RequiredLoggedInPlaceholder(onAvatarClick = { counter++ }) {
             navController.navigate(LoginDestination)
         }
-
     }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
-            WatchHistoryonReceiveEffect(navController = navController, effect = newEffect)
+            watchHistoryReceiveEffect(navController = navController, effect = newEffect)
         }
     }
-    ProfileContent(profileScreenState, viewModel)
-
+    if (counter == 7) {
+        ProfileContent(profileScreenState, viewModel)
+    }
 }
 
-private fun WatchHistoryonReceiveEffect(
+private fun watchHistoryReceiveEffect(
     navController: NavController,
     effect: ProfileScreenEffect
 ) {
@@ -192,7 +196,8 @@ private fun ProfileContent(
             userName = "",
             if (profileScreenState.isDarkThemeEnabled)
                 painterResource(R.drawable.profile_cover_night)
-            else painterResource(R.drawable.profile_cover)
+            else painterResource(R.drawable.profile_cover),
+
         )
         Spacer(modifier = Modifier.height(24.dp))
         WatchHistoryRatingSection {

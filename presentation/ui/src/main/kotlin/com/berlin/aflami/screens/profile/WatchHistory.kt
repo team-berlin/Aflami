@@ -58,7 +58,7 @@ fun WatchHistory(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
-            WatchHistoryonReceiveEffect(navController = navController, effect = newEffect)
+            watchHistoryReceiveEffect(navController = navController, effect = newEffect)
         }
     }
 
@@ -84,7 +84,10 @@ fun WatchHistory(
     }
 }
 
-private fun WatchHistoryonReceiveEffect(navController: NavController, effect: WatchHistoryScreenEffect) {
+private fun watchHistoryReceiveEffect(
+    navController: NavController,
+    effect: WatchHistoryScreenEffect
+) {
     when (effect) {
         WatchHistoryScreenEffect.NavigateBack -> {
             navController.popBackStack()

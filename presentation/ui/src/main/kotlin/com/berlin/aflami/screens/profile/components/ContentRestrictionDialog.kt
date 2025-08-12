@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.berlin.aflami.component.SelectionButton
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -53,7 +54,12 @@ fun ContentRestrictionDialog(
     secondOptionSubTitleIdRes: Int? = null,
     thirdOptionSubTitleIdRes: Int? = null,
 ) {
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
         Box(
             modifier = modifier
                 .background(Theme.color.surface, RoundedCornerShape(24.dp))
