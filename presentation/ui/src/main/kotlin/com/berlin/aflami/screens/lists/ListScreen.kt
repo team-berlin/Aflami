@@ -41,11 +41,12 @@ import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.navigation.ListDetailsDestination
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.listdetails.component.CreateNewListDialog
 import com.berlin.aflami.screens.listdetails.component.EditListDialog
 import com.berlin.aflami.screens.lists.component.ListCard
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
-import com.berlin.aflami.screens.search.components.NoDataContainer
+import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.movie.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.listFeature.ListScreenEffect
@@ -97,7 +98,7 @@ private fun ListsContent(
                         SnackBar(
                             isVisible = listScreenState.snackBar.isVisible,
                             status = SnackBarStatus.SUCCESS,
-                            text = stringResource(com.berlin.ui.R.string.list_edit_successfully),
+                            text = stringResource(R.string.list_edit_successfully),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
                             modifier = Modifier.align(Alignment.TopCenter),
                             onDismiss = {
@@ -108,7 +109,7 @@ private fun ListsContent(
                             isVisible = listScreenState.snackBar.isVisible,
                             status = SnackBarStatus.ERROR,
                             text = stringResource(
-                                com.berlin.ui.R.string.list_failed_to_edit
+                                R.string.list_failed_to_edit
                             ),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
                             modifier = Modifier.align(Alignment.TopCenter),
@@ -191,13 +192,20 @@ private fun ListsContent(
             )
         }
         AnimatedVisibility(
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = listScreenState.errorMessage != null
+        ) {
+            NoInternetConnectionPlaceholder(
+                onClick = interactionListener::onClickRetryFetchList
+            )
+        }
+        AnimatedVisibility(
             enter = fadeIn(), exit = fadeOut(), visible = listScreenState.isScreenLoading
         ) {
             CircularProgressIndicator(
                 modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
-            ).also {
-                Log.d("Khairy", "loading and showing progressBar composeable ....")
-            }
+            )
         }
         AnimatedVisibility(
             enter = fadeIn(),
@@ -213,15 +221,9 @@ private fun ListsContent(
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
-            visible = ((favouriteLists.loadState.refresh !is LoadState.Loading && listScreenState.isUserLoggedIn == true) && !listScreenState.isScreenLoading),
+            visible = (favouriteLists.loadState.refresh !is LoadState.Loading && listScreenState.isUserLoggedIn == true) && favouriteLists.itemCount == 0 && !listScreenState.isScreenLoading && listScreenState.errorMessage == null,
         ) {
-            val result =
-                ((favouriteLists.itemCount == 0 && listScreenState.isUserLoggedIn == true) && !listScreenState.isScreenLoading)
-            Log.d(
-                "khairy",
-                "no data because result = $result ${favouriteLists.itemCount == 0} && ${listScreenState.isUserLoggedIn == true} && ${!listScreenState.isScreenLoading}"
-            )
-            NoDataContainer(
+            CountryTourExploring(
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.Center),
@@ -289,15 +291,6 @@ private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavContr
         is ListScreenEffect.NavigateToSeeAllListScreen -> navController.navigate(
             ListDetailsDestination(listId = effect.listId, listTitle = effect.listTitle)
         )
-
-//        is ListScreenEffect.ShowCreateNewListStatusSnackBar -> {
-//
-//        }
-//
-//        is ListScreenEffect.ShowEditListStatusSnackBar -> {}
         ListScreenEffect.NavigateToLoginScreen -> navController.navigate(route = LoginDestination)
-//        is ListScreenEffect.ShowListDeletedSnackBar -> {
-//
-//        }
     }
 }

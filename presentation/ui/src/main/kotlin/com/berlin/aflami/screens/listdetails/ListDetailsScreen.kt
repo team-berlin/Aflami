@@ -33,7 +33,7 @@ import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.listdetails.component.DeleteListDialog
 import com.berlin.aflami.screens.listdetails.component.MoviesListItem
-import com.berlin.aflami.screens.search.components.NoDataContainer
+import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.listDetails.ListDetailsScreenEffect
 import com.berlin.aflami.viewmodel.listDetails.ListDetailsScreenInteractionListener
@@ -118,7 +118,7 @@ private fun ListDetailsContent(
                     "khairy",
                     "no data because result = ${movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading}"
                 )
-                NoDataContainer(
+                CountryTourExploring(
                     modifier = Modifier
                         .fillMaxSize()
                         .align(Alignment.CenterHorizontally),

@@ -230,6 +230,11 @@ class ListScreenViewModel @Inject constructor(
         }
     }
 
+    override fun onClickRetryFetchList() {
+        Log.d("Khairy", "retry fetching lists")
+        getAllUserFavouriteLists()
+    }
+
     private fun resetCreateNewListSheetState() {
         updateState { screenState ->
             screenState.copy(

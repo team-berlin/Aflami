@@ -11,4 +11,5 @@ interface ListScreenInteractionListener : CreateNewListInteractionListener,
     fun onClickAddList()
     fun onClickListCard(listId: Int, listName: String)
     fun dismissSnackBar()
+    fun onClickRetryFetchList()
 }

@@ -90,6 +90,8 @@ fun TvShowDetailsScreen(
         )
     }
     AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
         visible = uiState.errorMessage != null
     ) {
         NoInternetConnectionPlaceholder()
