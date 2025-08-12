@@ -12,6 +12,8 @@ import usecase.auth.GetLoginStatus
 import usecase.profile.GetContentRestrictionUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
+import usecase.profile.ObserveUserProfileUseCase
+import usecase.profile.RefreshUserProfileUseCase
 import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
@@ -25,7 +27,9 @@ class ProfileViewModel @Inject constructor(
     val setThemeUseCase: SetThemeUseCase,
     val getLoginStatus: GetLoginStatus,
     val setContentRestrictionUseCase: SetContentRestrictionUseCase,
-    val getContentRestrictionUseCase: GetContentRestrictionUseCase
+    val getContentRestrictionUseCase: GetContentRestrictionUseCase,
+    private val observeUserProfileUseCase: ObserveUserProfileUseCase,
+    private val refreshUserProfileUseCase: RefreshUserProfileUseCase
 
 ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
@@ -33,8 +37,24 @@ class ProfileViewModel @Inject constructor(
     init {
         collectTheme()
         collectLanguage()
+        collectUserProfile()
         collectContentRestriction()
         checkLoginStatus()
+    }
+
+    private fun collectUserProfile() {
+        viewModelScope.launch {
+            observeUserProfileUseCase()
+                .collect { user ->
+                    updateState { s ->
+                        s.copy(
+                            userAvatarUrl = user?.avatarUrl?.takeIf { it.isNotBlank() },
+                            userName = user?.username.orEmpty(),
+                            isLoggedIn = user != null
+                        )
+                    }
+                }
+        }
     }
 
     private fun collectTheme() {

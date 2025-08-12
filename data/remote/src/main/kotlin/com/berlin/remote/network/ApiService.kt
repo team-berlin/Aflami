@@ -7,7 +7,7 @@ import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
-import com.berlin.repository.datasource.remote.dto.account.AccountDto
+import com.berlin.repository.datasource.remote.dto.account.UserProfileDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.rating.RatedMediaDto
@@ -160,7 +160,7 @@ interface ApiService {
     @GET("account")
     suspend fun getUserProfile(
         @Query(ApiConstants.SESSION_ID) sessionId: String
-    ): Response<AccountDto>
+    ): Response<UserProfileDto>
 
     @GET(ApiConstants.RATED_MOVIES)
     suspend fun getRatedMovies(

@@ -2,7 +2,7 @@ package repository
 
 import com.berlin.entity.RatingResult
 
-interface RatingActionRepository {
+interface RatingRepository {
     suspend fun rateMovie(movieId: Int, rating: Double): RatingResult
     suspend fun rateTvShow(tvId: Int, rating: Double): RatingResult
 }

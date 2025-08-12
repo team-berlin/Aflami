@@ -180,7 +180,7 @@ private fun ProfileContent(
             .background(Theme.color.surface)
     )
     {
-        ProfileSection(userAvatar = "", userName = "", painterResource(R.drawable.profile_cover))
+        ProfileSection(userAvatar = profileScreenState.userAvatarUrl?:"", userName = profileScreenState.userName, painterResource(R.drawable.profile_cover))
         Spacer(modifier = Modifier.height(24.dp))
         WatchHistoryRatingSection {
             profileScreenInteractionListener.onWatchHistoryClick()

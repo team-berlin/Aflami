@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import repository.UserProfileRepository
+import usecase.profile.GetUserProfileUseCase
 
 class GetUserProfileUseCaseTest {
 
@@ -31,16 +32,14 @@ class GetUserProfileUseCaseTest {
             name = "John Doe",
             includeAdult = false,
             avatarUrl = "https://image.tmdb.org/t/p/original/abc.jpg",
-            countryCodeIso6391 = "",
-            countryCodeIso31661 = ""
         )
-        coEvery { repository.getUserProfile(sessionId) } returns expectedUser
+        coEvery { repository.getUserProfile() } returns expectedUser
 
         // When
-        val result = useCase(sessionId)
+        val result = useCase()
 
         // Then
         assertThat(result).isEqualTo(expectedUser)
-        coVerify(exactly = 1) { repository.getUserProfile(sessionId) }
+        coVerify(exactly = 1) { repository.getUserProfile() }
     }
 }

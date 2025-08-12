@@ -1,37 +1,45 @@
 package com.berlin.repository
 
 import com.berlin.entity.UserProfile
-import com.berlin.repository.datasource.local.UserLocalDataSource
+import com.berlin.repository.datasource.local.UserProfileLocalDataSource
 import com.berlin.repository.datasource.remote.UserRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import repository.UserProfileRepository
 import javax.inject.Inject
 
 class UserProfileRepositoryImpl @Inject constructor(
     private val userRemoteDataSource: UserRemoteDataSource,
-    private val userLocalDataSource: UserLocalDataSource
+    private val userProfileLocalDataSource: UserProfileLocalDataSource
 ) : UserProfileRepository {
-    override suspend fun getUserProfile(sessionId: String): UserProfile {
-        val dto = userRemoteDataSource.getUserProfile(sessionId)
-        val user = dto.toDomain()
-        saveUserLocally(user)
-        return user
+    override suspend fun getUserProfile(): UserProfile {
+        val dto = userRemoteDataSource.getUserProfile()
+        val entity = dto.toEntity(now = System.currentTimeMillis())
+        userProfileLocalDataSource.upsert(entity)
+        return entity.toDomain()
     }
 
     override suspend fun saveUserLocally(userProfile: UserProfile) {
-        userLocalDataSource.saveUser(userProfile.toEntity())
+        userProfileLocalDataSource.upsert(userProfile
+            .toEntity(now = System.currentTimeMillis())
+        )
     }
 
     override suspend fun getUserLocally(): UserProfile? {
-        return userLocalDataSource.getUser()?.toDomain()
+        return userProfileLocalDataSource.get()?.toDomain()
     }
 
+    override fun observeUser(): Flow<UserProfile?> =
+        userProfileLocalDataSource.observe().map { it?.toDomain() }
+
     override suspend fun refreshUserProfile() {
-        TODO("Not yet implemented")
+        val dto = userRemoteDataSource.getUserProfile()
+        userProfileLocalDataSource.upsert(dto.toEntity(System.currentTimeMillis()))
     }
 
     override suspend fun clearLocalUser() {
-        userLocalDataSource.clear()
+        userProfileLocalDataSource.clear()
     }
 }

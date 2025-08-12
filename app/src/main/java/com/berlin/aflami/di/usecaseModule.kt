@@ -8,14 +8,14 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.RatingActionRepository
+import repository.RatingRepository
 import repository.TVShowRepository
 import repository.SettingsRepository
 import repository.TVShowDetailsRepository
 import repository.UserProfileRepository
 import usecase.auth.GetLoginStatus
 import usecase.auth.GetLoginUseCase
-import usecase.auth.GetUserProfileUseCase
+import usecase.profile.GetUserProfileUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
 import usecase.mediadetails.GetMovieVideos
@@ -226,7 +226,7 @@ object UseCaseModule {
         GetFirstEntryUseCase(repository)
 
     @Provides
-    fun provideRateMovieUseCase(repository: RatingActionRepository): RateMovieUseCase =
+    fun provideRateMovieUseCase(repository: RatingRepository): RateMovieUseCase =
         RateMovieUseCase(repository)
     @Provides
     fun provideGetLanguageUseCase(repository: SettingsRepository): GetLanguageUseCase =
@@ -254,7 +254,7 @@ object UseCaseModule {
 
 
     @Provides
-    fun provideRateTvShowUseCase(repository: RatingActionRepository): RateTvShowUseCase =
+    fun provideRateTvShowUseCase(repository: RatingRepository): RateTvShowUseCase =
         RateTvShowUseCase(repository)
 
 }
