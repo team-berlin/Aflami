@@ -57,7 +57,7 @@ fun SettingSection(
                 onClick = onSettingsClick
             )
         }
-        Spacer(modifier = Modifier.height(82.dp))
+        Spacer(modifier = Modifier.height(100.dp))
 
         Text(
             text = stringResource(R.string.v1_1),
@@ -65,7 +65,7 @@ fun SettingSection(
             color = Theme.color.textColors.hint,
             modifier = Modifier .padding(bottom = 12.dp)
         )
-        Spacer(modifier = Modifier.height(82.dp))
+        Spacer(modifier = Modifier.height(60.dp))
 
 
     }

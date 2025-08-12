@@ -181,7 +181,13 @@ private fun ProfileContent(
             .verticalScroll(rememberScrollState())
     )
     {
-        ProfileSection(userAvatar = "", userName = "", painterResource(R.drawable.profile_cover))
+        ProfileSection(
+            userAvatar = "",
+            userName = "",
+            if (profileScreenState.isDarkThemeEnabled)
+                painterResource(R.drawable.profile_cover_night)
+            else painterResource(R.drawable.profile_cover)
+        )
         Spacer(modifier = Modifier.height(24.dp))
         WatchHistoryRatingSection {
             profileScreenInteractionListener.onWatchHistoryClick()

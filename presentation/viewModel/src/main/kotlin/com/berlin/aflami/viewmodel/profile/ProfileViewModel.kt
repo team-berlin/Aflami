@@ -125,7 +125,6 @@ class ProfileViewModel @Inject constructor(
                 isDarkThemeSelected = true,
                 isLightThemeSelected = false,
                 selectedTheme = AppTheme.DARK.name,
-                isDarkThemeEnabled = true,
 
                 )
         }
@@ -138,7 +137,6 @@ class ProfileViewModel @Inject constructor(
                 isDarkThemeSelected = false,
                 isLightThemeSelected = true,
                 selectedTheme = AppTheme.LIGHT.name,
-                isDarkThemeEnabled = false,
             )
         }
 
