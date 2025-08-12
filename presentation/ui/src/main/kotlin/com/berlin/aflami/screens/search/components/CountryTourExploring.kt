@@ -20,7 +20,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 
 @Composable
-fun NoDataContainer(
+fun CountryTourExploring(
     modifier: Modifier = Modifier,
     image: Painter,
     titleId: Int,
@@ -57,7 +57,7 @@ fun NoDataContainer(
 @Preview(showBackground = true)
 @Composable
 private fun CountryTourExploringPreview() {
-    NoDataContainer(
+    CountryTourExploring(
         modifier = Modifier,
         painterResource(R.drawable.world_tour),
         R.string.world_tour,
@@ -69,7 +69,7 @@ private fun CountryTourExploringPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun NoResultPreview() {
-    NoDataContainer(
+    CountryTourExploring(
         modifier = Modifier,
         painterResource(R.drawable.no_search_result),
         R.string.no_search_result,
@@ -80,7 +80,7 @@ private fun NoResultPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun NoInternetPreview() {
-    NoDataContainer(
+    CountryTourExploring(
         modifier = Modifier,
         painterResource(R.drawable.no_internet_placeholder),
         R.string.offline_title,

@@ -38,7 +38,7 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
-import com.berlin.aflami.screens.search.components.NoDataContainer
+import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorInteractionListener
@@ -212,7 +212,7 @@ private fun SearchByActorNameContent(
 
 @Composable
 private fun ErrorContent() {
-    NoDataContainer(
+    CountryTourExploring(
         modifier = Modifier.fillMaxSize(),
         image = painterResource(R.drawable.no_search_result),
         titleId = R.string.no_search_result,
@@ -222,7 +222,7 @@ private fun ErrorContent() {
 
 @Composable
 private fun InitContent() {
-    NoDataContainer(
+    CountryTourExploring(
         modifier = Modifier.fillMaxSize(),
         image = painterResource(R.drawable.find_by_actor),
         titleId = R.string.find_by_actor,
