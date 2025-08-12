@@ -27,6 +27,7 @@ import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.RequiredLoggedInPlaceholder
 import com.berlin.aflami.screens.profile.components.ContentRestrictionDialog
+import com.berlin.aflami.screens.profile.components.LogoutDialog
 import com.berlin.aflami.screens.profile.components.OptionsDialog
 import com.berlin.aflami.screens.profile.components.ProfileSection
 import com.berlin.aflami.screens.profile.components.SettingSection
@@ -165,10 +166,15 @@ private fun ProfileContent(
                 secondOptionSubTitleIdRes = R.string.moderate_description,
                 thirdOptionSubTitleIdRes = R.string.off_description
             )
-
-
         }
 
+        ProfileDialogType.LOGOUT -> {
+            LogoutDialog(
+                onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
+                title = R.string.setting_dialog_logout,
+                onLogoutClick = { profileScreenInteractionListener.onSaveContentRestriction() },
+            )
+        }
         else -> Unit
     }
 

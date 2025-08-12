@@ -99,6 +99,8 @@
     <string name="strict_description">Blurs all sensitive content.</string>
     <string name="moderate_description">Blurs explicit scenes only.</string>
     <string name="off_description">No content is blurred.</string>
+    <string name="sure_to_continue">Are you sure to continue? </string>
+    <string name="logout_msg">If you\'re tired of us, just know we\'re not, we will be here.</string>
 
 
 </resources>

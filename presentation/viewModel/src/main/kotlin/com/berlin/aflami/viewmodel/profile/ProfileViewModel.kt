@@ -150,7 +150,8 @@ class ProfileViewModel @Inject constructor(
 
     override fun onChangePasswordClicked() =
         sendNewEffect(ProfileScreenEffect.NavigateToChangePasswordScreen)
-    override fun onLogoutClicked() = sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
+    override fun onLogoutClicked() =
+        updateState { it.copy(activeDialog = ProfileDialogType.LOGOUT) }
 
     override fun onContentRestrictionClicked() {
         updateState { it.copy(activeDialog = ProfileDialogType.CONTENT_RESTRICTION) }

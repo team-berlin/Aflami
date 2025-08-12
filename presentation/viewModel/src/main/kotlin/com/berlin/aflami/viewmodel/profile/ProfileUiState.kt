@@ -34,5 +34,5 @@ data class ProfileUiState(
 
     )
 
-enum class ProfileDialogType { NONE, LANGUAGE, THEME, SETTINGS, CONTENT_RESTRICTION }
+enum class ProfileDialogType { NONE, LANGUAGE, THEME, SETTINGS, CONTENT_RESTRICTION, LOGOUT }
 

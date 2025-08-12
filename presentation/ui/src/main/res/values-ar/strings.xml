@@ -100,6 +100,8 @@
     <string name="strict_description">إخفاء جميع المحتوى الحساس.</string>
     <string name="moderate_description">إخفاء المشاهد الصريحة فقط.</string>
     <string name="off_description">عدم إخفاء المحتوى.</string>
+    <string name="sure_to_continue">أأنت متأكد من رغبتك في المتابعة؟</string>
+    <string name="logout_msg"> فإن مللت منا، فاعلم أننا باقون هنا في انتظارك.</string>
 
 
 </resources>
