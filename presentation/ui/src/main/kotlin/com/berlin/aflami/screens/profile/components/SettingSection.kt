@@ -2,7 +2,9 @@ package com.berlin.aflami.screens.profile.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,6 +57,7 @@ fun SettingSection(
                 onClick = onSettingsClick
             )
         }
+        Spacer(modifier = Modifier.height(82.dp))
 
         Text(
             text = stringResource(R.string.v1_1),
@@ -62,6 +65,8 @@ fun SettingSection(
             color = Theme.color.textColors.hint,
             modifier = Modifier .padding(bottom = 12.dp)
         )
+        Spacer(modifier = Modifier.height(82.dp))
+
 
     }
 
