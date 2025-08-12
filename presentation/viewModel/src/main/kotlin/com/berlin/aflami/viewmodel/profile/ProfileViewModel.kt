@@ -38,66 +38,10 @@ class ProfileViewModel @Inject constructor(
         checkLoginStatus()
     }
 
-    private fun collectTheme() {
-        viewModelScope.launch {
-            getThemeUseCase().collect { theme ->
-                val appTheme = theme ?: AppTheme.DARK.name
 
-                updateState {
-                    it.copy(
-                        selectedTheme = appTheme,
-                        isDarkThemeSelected = theme == AppTheme.DARK.name,
-                        isLightThemeSelected = theme == AppTheme.LIGHT.name,
-                        isDarkThemeEnabled = theme == AppTheme.DARK.name
-                    )
-                }
-            }
-        }
+    override fun onDialogDismissed() {
+        updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
     }
-
-    private fun collectLanguage() {
-        viewModelScope.launch {
-            getLanguageUseCase().collect { currentLanguage ->
-                val appLanguage = currentLanguage ?: Locale.getDefault().language.uppercase()
-
-                updateState {
-                    it.copy(
-                        selectedLanguage = appLanguage,
-                        isArabicSelected = appLanguage == AppLanguage.AR.name,
-                        isEnglishSelected = appLanguage == AppLanguage.EN.name,
-                    )
-                }
-            }
-        }
-    }
-
-    private fun collectContentRestriction() {
-        viewModelScope.launch {
-            getContentRestrictionUseCase().collect { contentRestriction ->
-                val appContentRestriction = contentRestriction ?: ContentRestriction.STRICT.name
-                val percentage = getContentRestrictionPercentage(appContentRestriction)
-
-                updateState {
-                    it.copy(
-                        selectedRestriction = appContentRestriction,
-                        isStrictSelected = contentRestriction == ContentRestriction.STRICT.name,
-                        isModeratedSelected = contentRestriction == ContentRestriction.MODERATE.name,
-                        isOffSelected = contentRestriction == ContentRestriction.OFF.name,
-                        contentRestrictionPercentage = percentage
-                    )
-                }
-
-            }
-        }
-    }
-
-    private fun checkLoginStatus() {
-        viewModelScope.launch {
-            val loggedIn = getLoginStatus()
-            updateState { it.copy(isLoggedIn = loggedIn) }
-        }
-    }
-
     override fun onWatchHistoryClick() {
         sendNewEffect(ProfileScreenEffect.NavigateToWatchHistoryScreen)
     }
@@ -141,6 +85,13 @@ class ProfileViewModel @Inject constructor(
         }
 
     }
+    override fun onApplyThemeOption() {
+        viewModelScope.launch {
+            val selectedTheme = AppTheme.valueOf(state.value.selectedTheme)
+            setThemeUseCase(selectedTheme)
+            updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
+        }
+    }
 
     override fun onArabicSelected() {
         updateState {
@@ -162,14 +113,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    override fun onApplyThemeOption() {
-        viewModelScope.launch {
-            val selectedTheme = AppTheme.valueOf(state.value.selectedTheme)
-            setThemeUseCase(selectedTheme)
-            updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
-        }
-    }
-
     override fun onApplyLanguageOption() {
         viewModelScope.launch {
             val selectedLanguage = AppLanguage.valueOf(state.value.selectedLanguage)
@@ -179,12 +122,11 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    override fun onDialogDismissed() {
-        updateState { it.copy(activeDialog = ProfileDialogType.NONE) }
-    }
+
 
     override fun onChangePasswordClicked() =
         sendNewEffect(ProfileScreenEffect.NavigateToChangePasswordScreen)
+    override fun onLogoutClicked() = sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
 
     override fun onContentRestrictionClicked() {
         updateState { it.copy(activeDialog = ProfileDialogType.CONTENT_RESTRICTION) }
@@ -248,7 +190,65 @@ class ProfileViewModel @Inject constructor(
             else -> 100
         }
     }
+    private fun checkLoginStatus() {
+        viewModelScope.launch {
+            val loggedIn = getLoginStatus()
+            updateState { it.copy(isLoggedIn = loggedIn) }
+        }
+    }
 
-    override fun onLogoutClicked() = sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
+    private fun collectTheme() {
+        viewModelScope.launch {
+            getThemeUseCase().collect { theme ->
+                val appTheme = theme ?: AppTheme.DARK.name
+
+                updateState {
+                    it.copy(
+                        selectedTheme = appTheme,
+                        isDarkThemeSelected = theme == AppTheme.DARK.name,
+                        isLightThemeSelected = theme == AppTheme.LIGHT.name,
+                        isDarkThemeEnabled = theme == AppTheme.DARK.name
+                    )
+                }
+            }
+        }
+    }
+
+    private fun collectLanguage() {
+        viewModelScope.launch {
+            getLanguageUseCase().collect { currentLanguage ->
+                val appLanguage = currentLanguage ?: Locale.getDefault().language.uppercase()
+
+                updateState {
+                    it.copy(
+                        selectedLanguage = appLanguage,
+                        isArabicSelected = appLanguage == AppLanguage.AR.name,
+                        isEnglishSelected = appLanguage == AppLanguage.EN.name,
+                    )
+                }
+            }
+        }
+    }
+
+    private fun collectContentRestriction() {
+        viewModelScope.launch {
+            getContentRestrictionUseCase().collect { contentRestriction ->
+                val appContentRestriction = contentRestriction ?: ContentRestriction.STRICT.name
+                val percentage = getContentRestrictionPercentage(appContentRestriction)
+
+                updateState {
+                    it.copy(
+                        selectedRestriction = appContentRestriction,
+                        isStrictSelected = contentRestriction == ContentRestriction.STRICT.name,
+                        isModeratedSelected = contentRestriction == ContentRestriction.MODERATE.name,
+                        isOffSelected = contentRestriction == ContentRestriction.OFF.name,
+                        contentRestrictionPercentage = percentage
+                    )
+                }
+
+            }
+        }
+    }
+
 
 }
