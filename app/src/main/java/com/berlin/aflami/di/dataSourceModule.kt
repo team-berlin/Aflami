@@ -4,6 +4,7 @@ import com.berlin.local.dataStore.SettingsLocalDataSourceImpl
 import com.berlin.local.datasource.AppEntryLocalDataSourceImpl
 import com.berlin.local.datasource.AuthenticationLocalDataSourceImpl
 import com.berlin.local.datasource.CategoriesPreferencesDataSourceImpl
+import com.berlin.local.datasource.GameLocalDataSourceImpl
 import com.berlin.local.datasource.GenreLocalDataSourceImpl
 import com.berlin.local.datasource.HomeLocalDataSourceImp
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
@@ -16,6 +17,7 @@ import com.berlin.remote.UserRemoteDataSourceImpl
 import com.berlin.repository.datasource.local.AppEntryLocalDataSource
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
+import com.berlin.repository.datasource.local.GameLocalDataSource
 import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
@@ -113,4 +115,10 @@ abstract class DataSourceModule {
     abstract fun bindSettingsLocalDataSource(
         impl: SettingsLocalDataSourceImpl
     ): SettingsLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindGameLocalDataSource(
+        impl: GameLocalDataSourceImpl
+    ): GameLocalDataSource
 }

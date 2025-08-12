@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -12,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.games.components.GameCard
@@ -19,11 +22,15 @@ import com.berlin.aflami.screens.games.components.PointScore
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.quizgame.GameType
+import com.berlin.aflami.viewmodel.game.GameInteractionListener
+import com.berlin.aflami.viewmodel.game.GameLevel
+import com.berlin.aflami.viewmodel.game.GameScreenState
+import com.berlin.aflami.viewmodel.game.GameType
+import com.berlin.aflami.viewmodel.game.GameViewModel
 import com.berlin.ui.R
 
 data class GameCardData(
-    val gameType:GameType?=null,
+    val gameType: GameType?,
     val title: String,
     val description: String,
     val points: Int,
@@ -36,12 +43,23 @@ data class GameCardData(
 )
 
 @Composable
-fun GamesScreen() {
-    GamesContent()
+fun GamesScreen(
+    viewModel: GameViewModel = hiltViewModel()
+) {
+
+    GamesContent(
+        modifier = Modifier.statusBarsPadding(),
+        gameState = viewModel.state.collectAsStateWithLifecycle().value,
+        gameInteractionListener = viewModel
+    )
 }
 
 @Composable
-fun GamesContent() {
+fun GamesContent(
+    modifier: Modifier = Modifier,
+    gameState: GameScreenState,
+    gameInteractionListener: GameInteractionListener,
+) {
     val gameCards = listOf(
         GameCardData(
             title = "Guess the Character",
@@ -52,6 +70,7 @@ fun GamesContent() {
             shadowColor = ExtraColors.shadowGuessMovieByCharacter,
             circleShadowColor = Theme.color.primaryVariant,
             avatarPainter = painterResource(R.drawable.avatar),
+            gameType = GameType.CHARACTER,
             backgroundColor = Theme.color.primaryVariant
         ),
         GameCardData(
@@ -59,6 +78,7 @@ fun GamesContent() {
             description = "Match the poster with the right title!",
             points = 400,
             isLocked = false,
+            gameType = GameType.POSTER,
             borderGradient = ExtraColors.guessMovieByPosterGradient,
             shadowColor = ExtraColors.shadowGuessMovieByByPoster,
             circleShadowColor = Theme.color.statusColors.blueCard,
@@ -69,6 +89,7 @@ fun GamesContent() {
             title = "When Was It Released?",
             description = "Pick the right release year.",
             points = 400,
+            gameType = GameType.RELEASE,
             isLocked = true,
             borderGradient = ExtraColors.guessMovieByReleaseGradient,
             shadowColor = ExtraColors.shadowGuessMovieRelease,
@@ -80,6 +101,7 @@ fun GamesContent() {
             title = "Which Genre?",
             description = "Which one is the real action movie?",
             points = 400,
+            gameType = GameType.GENRE,
             isLocked = true,
             borderGradient = ExtraColors.guessMovieByGenreGradient,
             shadowColor = ExtraColors.shadowGuessMovieByGenre,
@@ -133,6 +155,27 @@ fun GamesContent() {
 @ThemeAndLocalePreviews
 fun GamesContentPreview() {
     AflamiTheme {
-        GamesContent()
+        GamesContent(
+            modifier = Modifier.statusBarsPadding(),
+            gameState = GameScreenState(),
+            gameInteractionListener = object : GameInteractionListener {
+                override fun onGameInfoClicked(gameType: GameType) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onGameLevelClicked(gameLevel: GameLevel) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onShowLevelDialog() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onDismissLevelDialog() {
+                    TODO("Not yet implemented")
+                }
+
+            }
+        )
     }
 }
