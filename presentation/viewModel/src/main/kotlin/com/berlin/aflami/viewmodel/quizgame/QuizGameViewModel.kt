@@ -51,7 +51,24 @@ class QuizGameViewModel @Inject constructor(
     }
 
     private fun getMediaByCharacter() {
+        val mediaItem = mediaCast.value
+        if (mediaItem.isEmpty()) return
+        val questions = mediaItem.map { media ->
+            val wrongOptions = mediaItem.asSequence()
+                .filter { it.mediaId != media.mediaId }
+                .map { it.name }
+                .take(3)
+                .toList()
+            val allOptions = (wrongOptions + media.name).shuffled()
 
+            Question(
+                question = media.poster,
+                options = allOptions,
+                correctAnswer = media.name
+            )
+
+        }
+        updateState { it.copy(questions = questions, loading = false) }
 
     }
 
@@ -170,23 +187,13 @@ class QuizGameViewModel @Inject constructor(
                     tvShowIndex++
                 }
             }
-            mediaCast.value = interleaveCastsEqually(accumulatedCasts).take(20).shuffled()
+            mediaCast.value = accumulatedCasts.shuffled()
         } finally {
             updateState { it.copy(loading = false) }
         }
     }
 
-    private fun interleaveCastsEqually(casts: List<ActorUiState>): List<ActorUiState> {
-        val arrangedList = mutableListOf<ActorUiState>()
-        val movieCasts = casts.filterIndexed { index, _ -> index % 2 == 0 }
-        val tvShowCasts = casts.filterIndexed { index, _ -> index % 2 != 0 }
-        val maxSize = minOf(movieCasts.size, tvShowCasts.size, 10)
-        repeat(maxSize) { counter ->
-            if (counter < movieCasts.size) arrangedList.add(movieCasts[counter])
-            if (counter < tvShowCasts.size) arrangedList.add(tvShowCasts[counter])
-        }
-        return arrangedList
-    }
+
     private fun interleaveMoviesAndTvShowsEqually(
         movies: List<MediaUiState>,
         tvShows: List<MediaUiState>,
