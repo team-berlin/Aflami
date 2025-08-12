@@ -1,5 +1,6 @@
 package usecase.auth
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -19,9 +20,10 @@ class GetLoginUseCaseTest {
         coEvery { authenticationRepository.login(USERNAME, PASSWORD) } returns Unit
 
         // Act
-        getLoginUseCase(USERNAME, PASSWORD)
+        val result = getLoginUseCase(USERNAME, PASSWORD)
 
         // Assert
+        assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) { authenticationRepository.login(USERNAME, PASSWORD) }
     }
 

@@ -1,6 +1,7 @@
 package usecase.auth
 
 import com.berlin.entity.UserProfile
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -19,9 +20,10 @@ class GetUserProfileUseCaseTest {
         coEvery { userRepository.getUserProfile(SESSION_ID) } returns EXPECTED_USER
 
         // Act
-        getUserProfileUseCase(SESSION_ID)
+        val result = getUserProfileUseCase(SESSION_ID)
 
         // Assert
+        assertThat(result).isEqualTo(EXPECTED_USER)
         coVerify(exactly = 1) { userRepository.getUserProfile(SESSION_ID) }
     }
 

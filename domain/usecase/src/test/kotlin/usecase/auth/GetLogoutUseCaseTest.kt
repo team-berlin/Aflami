@@ -1,5 +1,6 @@
 package usecase.auth
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -19,9 +20,10 @@ class GetLogoutUseCaseTest {
         coEvery { authenticationRepository.logout() } returns Unit
 
         // Act
-        getLogoutUseCase()
+        val result = getLogoutUseCase()
 
         // Assert
+        assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) { authenticationRepository.logout() }
     }
 

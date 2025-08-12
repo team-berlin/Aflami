@@ -1,5 +1,6 @@
 package usecase.auth
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -19,9 +20,10 @@ class GetLoginStatusTest {
         coEvery { authenticationRepository.isLoggedIn() } returns true
 
         // Act
-        getLoginStatusUseCase()
+        val result = getLoginStatusUseCase()
 
         // Assert
+        assertThat(result).isTrue()
         coVerify(exactly = 1) { authenticationRepository.isLoggedIn() }
     }
 
@@ -31,9 +33,10 @@ class GetLoginStatusTest {
         coEvery { authenticationRepository.isLoggedIn() } returns false
 
         // Act
-        getLoginStatusUseCase()
+        val result = getLoginStatusUseCase()
 
         // Assert
+        assertThat(result).isFalse()
         coVerify(exactly = 1) { authenticationRepository.isLoggedIn() }
     }
 
