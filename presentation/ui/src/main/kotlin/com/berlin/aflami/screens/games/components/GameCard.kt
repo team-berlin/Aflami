@@ -145,7 +145,7 @@ fun GameCard(
                                 color = Theme.color.textColors.title
                             )
                             Icon(
-                                painter = painterResource(R.drawable.play_circle),
+                                painter = painterResource(R.drawable.play_game),
                                 tint = Theme.color.textColors.title,
                                 contentDescription = "Star",
                                 modifier = Modifier.size(12.dp)
