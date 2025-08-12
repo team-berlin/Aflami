@@ -194,7 +194,7 @@ private fun ListsContent(
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
-            visible = listScreenState.errorMessage != null
+            visible = (favouriteLists.loadState.refresh !is LoadState.Loading && listScreenState.isUserLoggedIn == true) && favouriteLists.itemCount == 0 && !listScreenState.isScreenLoading && listScreenState.errorMessage != null,
         ) {
             NoInternetConnectionPlaceholder(
                 onClick = interactionListener::onClickRetryFetchList
