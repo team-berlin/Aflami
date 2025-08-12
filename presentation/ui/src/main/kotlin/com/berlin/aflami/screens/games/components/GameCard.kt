@@ -47,7 +47,6 @@ fun GameCard(
     borderGradient: Brush,
     shadowColor: Color,
     circleShadowColor: Color,
-    diagonalStripePainter: Painter,
     avatarPainter: Painter
 ) {
     Box(
@@ -145,7 +144,7 @@ fun GameCard(
                                 color = Theme.color.textColors.title
                             )
                             Icon(
-                                painter = painterResource(R.drawable.play_circle),
+                                painter = painterResource(R.drawable.play_game),
                                 tint = Theme.color.textColors.title,
                                 contentDescription = "Star",
                                 modifier = Modifier.size(12.dp)
@@ -180,12 +179,12 @@ fun GameCard(
                 ) {
                     Image(
                         modifier = Modifier.scale(-1f),
-                        painter = diagonalStripePainter,
+                        painter =painterResource( com.berlin.designsystem.R.drawable.diagonal_stripe),
                         contentDescription = null,
                     )
                     Image(
                         modifier = Modifier.scale(3f),
-                        painter = diagonalStripePainter,
+                        painter = painterResource( com.berlin.designsystem.R.drawable.diagonal_stripe),
                         contentDescription = null,
                     )
 
@@ -215,10 +214,9 @@ fun GameCardPreview() {
                 onClick = {},
                 borderGradient = ExtraColors.guessMovieByGenreGradient,
                 shadowColor = ExtraColors.shadowGuessMovieByGenre,
-                circleShadowColor = Theme.color.statusColors.yellowAccent,
-                diagonalStripePainter = painterResource(id = com.berlin.designsystem.R.drawable.diagonal_stripe),
+                circleShadowColor = Theme.color.statusColors.navyCard,
                 avatarPainter = painterResource(R.drawable.avatar),
-                backgroundColor = TODO()
+                backgroundColor = Theme.color.statusColors.navyCard
             )
             GameCard(
                 title = "Guess the Character",
@@ -228,11 +226,9 @@ fun GameCardPreview() {
                 onClick = {},
                 borderGradient = ExtraColors.guessMovieByGenreGradient,
                 shadowColor = ExtraColors.shadowGuessMovieByGenre,
-                circleShadowColor = Theme.color.statusColors.yellowAccent,
-                diagonalStripePainter = painterResource(id = com.berlin.designsystem.R.drawable.diagonal_stripe),
+                circleShadowColor = Theme.color.statusColors.navyCard,
                 avatarPainter = painterResource(R.drawable.avatar),
-                modifier = TODO(),
-                backgroundColor = TODO()
+                backgroundColor =Theme.color.statusColors.navyCard
             )
             GameCard(
                 title = "Guess the Character",
@@ -242,11 +238,9 @@ fun GameCardPreview() {
                 onClick = {},
                 borderGradient = ExtraColors.guessMovieByGenreGradient,
                 shadowColor = ExtraColors.shadowGuessMovieByGenre,
-                circleShadowColor = Theme.color.statusColors.yellowAccent,
-                diagonalStripePainter = painterResource(id = com.berlin.designsystem.R.drawable.diagonal_stripe),
+                circleShadowColor = Theme.color.statusColors.navyCard,
                 avatarPainter = painterResource(R.drawable.avatar),
-                modifier = TODO(),
-                backgroundColor = TODO()
+                backgroundColor = Theme.color.statusColors.navyCard
             )
             GameCard(
                 title = "Guess the Character",
@@ -256,11 +250,9 @@ fun GameCardPreview() {
                 onClick = {},
                 borderGradient = ExtraColors.guessMovieByGenreGradient,
                 shadowColor = ExtraColors.shadowGuessMovieByGenre,
-                circleShadowColor = Theme.color.statusColors.yellowAccent,
-                diagonalStripePainter = painterResource(id = com.berlin.designsystem.R.drawable.diagonal_stripe),
+                circleShadowColor = Theme.color.statusColors.navyCard,
                 avatarPainter = painterResource(R.drawable.avatar),
-                modifier = TODO(),
-                backgroundColor = TODO()
+                backgroundColor = Theme.color.statusColors.navyCard
             )
         }
 
