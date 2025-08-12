@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -20,7 +19,7 @@ import com.berlin.aflami.screens.games.components.PointScore
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.game.GameType
+import com.berlin.aflami.viewmodel.quizgame.GameType
 import com.berlin.ui.R
 
 data class GameCardData(
