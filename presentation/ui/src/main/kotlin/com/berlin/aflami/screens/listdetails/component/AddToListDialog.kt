@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -38,6 +39,7 @@ import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.lists.component.Dialog
+import com.berlin.aflami.ui.color.ExtraColors.darkPurpleLinearGradient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
 import com.berlin.ui.R
@@ -204,25 +206,30 @@ private fun ActionButtonsSection(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier,
     ) {
-        PrimaryButton(
-            onClick = {
-                onAddToSelectedList(
-                    movieId ?: throw IllegalStateException(
-                        "no Movie Id found"
-                    ), selectedListId ?: throw IllegalStateException(
-                        "no list selected"
-                    )
-                )
-            },
-            modifier = modifier
+        val isEnabled = selectedListId != null
+        Box(
+            modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            containerColor = Theme.color.primary,
-        ) {
+                .height(56.dp)
+            .background(
+                    brush = (if (isEnabled)
+                        darkPurpleLinearGradient
+                    else
+                        Brush.linearGradient(listOf(Theme.color.disable,Theme.color.disable))),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .clickable(enabled = isEnabled) {
+                    onAddToSelectedList(
+                        movieId ?: throw IllegalStateException("no Movie Id found"),
+                        selectedListId ?: throw IllegalStateException("no list selected")
+                    )
+                },
+            contentAlignment = Alignment.Center,
+        ){
             Text(
                 "Add",
                 style = Theme.textStyle.label.large,
-                color = Theme.color.textColors.onPrimary,
+                color = if (isEnabled) Theme.color.textColors.onPrimary else Theme.color.stroke,
             )
         }
 
@@ -242,13 +249,3 @@ private fun ActionButtonsSection(
         }
     }
 }
-//
-//@Preview
-//@Composable
-//private fun PreviewAddToListDialog() {
-//    AflamiTheme {
-//        AddToListDialog(
-//            favouriteLists = emptyList(),
-//        )
-//    }
-//}
