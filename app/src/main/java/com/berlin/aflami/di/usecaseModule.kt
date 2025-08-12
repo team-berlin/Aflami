@@ -25,6 +25,7 @@ import usecase.movie.DeleteQueryFromMoviesHistoryUseCase
 import usecase.movie.GetMovieCastUseCase
 import usecase.movie.GetMovieDetailsUseCase
 import usecase.movie.GetMovieGalleryUseCase
+import usecase.movie.GetMovieGameUseCase
 import usecase.movie.GetMovieGenresUseCase
 import usecase.movie.GetMovieReviewUseCase
 import usecase.movie.GetMoviesByMoodUseCase
@@ -54,6 +55,7 @@ import usecase.tvshow.GetSimilarTVShowsUseCase
 import usecase.tvshow.GetTVShowCastUseCase
 import usecase.tvshow.GetTVShowDetailsUseCase
 import usecase.tvshow.GetTVShowGalleryUseCase
+import usecase.tvshow.GetTVShowGameUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
 import usecase.tvshow.GetTVShowVideos
@@ -245,6 +247,14 @@ object UseCaseModule {
     @Provides
     fun provideSetContentRestrictionUseCase(repository: SettingsRepository): SetContentRestrictionUseCase =
         SetContentRestrictionUseCase(repository)
+
+    @Provides
+    fun provideAllMovieUseCase(repository: MovieRepository): GetMovieGameUseCase =
+        GetMovieGameUseCase(repository)
+
+    @Provides
+    fun provideAllTVShowUseCase(repository: TVShowRepository): GetTVShowGameUseCase =
+        GetTVShowGameUseCase(repository)
 
 
 
