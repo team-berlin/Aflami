@@ -99,5 +99,10 @@ object ExtraColors {
 
     val diagonalStripe = Color(0x00EFF9FE)
 
+    val gameBackgroundGradient=Brush.verticalGradient(
+        listOf(Color(0x3DD95997),Color(0x00D85895)),
+
+        )
+
 
 }

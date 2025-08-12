@@ -100,6 +100,32 @@
     <string name="strict_description">إخفاء جميع المحتوى الحساس.</string>
     <string name="moderate_description">إخفاء المشاهد الصريحة فقط.</string>
     <string name="off_description">عدم إخفاء المحتوى.</string>
+    <string name="guess_the_character">خمن الشخصية</string>
+    <string name="next">التالي</string>
+
+    <string name="choose_difficulty_level">اختر مستوى الصعوبة</string>
+    <string name="lets_start">لنبدأ</string>
+
+    <string name="easy">سهل</string>
+    <string name="medium">متوسط</string>
+    <string name="hard">صعب</string>
+
+    <string name="level_easy">٥ أسئلة، ٤٥ ثانية و ٥ نقاط لكل سؤال.</string>
+    <string name="level_medium">١٠ أسئلة، ٣٠ ثانية و ١٠ نقاط لكل سؤال.</string>
+    <string name="level_hard">٢٠ سؤالاً، ١٠ ثواني و ٢٠ نقطة لكل سؤال.</string>
+
+    <string name="guess_character">خمن الشخصية</string>
+
+    <string name="game_finished">لقد انتهيت من اللعبة!</string>
+    <string name="points_achieved">النقاط المحققة</string>
+    <string name="total_time">الوقت الكلي</string>
+    <string name="point_count_sec">ثانية</string>
+    <string name="points_unit_pte">نقاط</string>
+    <string name="back_to_menu">العودة إلى القائمة</string>
+    <string name="play_again">إعادة اللعب</string>
+
+
+
 
 
 </resources>
