@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -99,6 +101,7 @@ private fun ProfileContent(
     profileScreenInteractionListener: ProfileInteractionListener,
 ) {
 
+
     when (profileScreenState.activeDialog) {
         ProfileDialogType.THEME -> {
             OptionsDialog(
@@ -175,6 +178,7 @@ private fun ProfileContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
+            .verticalScroll(rememberScrollState())
     )
     {
         ProfileSection(userAvatar = "", userName = "", painterResource(R.drawable.profile_cover))
