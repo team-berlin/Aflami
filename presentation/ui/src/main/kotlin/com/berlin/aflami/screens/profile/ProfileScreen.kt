@@ -144,7 +144,7 @@ private fun ProfileContent(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
                 onFirstOptionClick = { profileScreenInteractionListener.onChangePasswordClicked() },
                 onSecondOptionClick = { profileScreenInteractionListener.onContentRestrictionClicked() },
-                onThirdOptionClick = { profileScreenInteractionListener.onLogoutClicked() },
+                onThirdOptionClick = { profileScreenInteractionListener.onSettingsLogoutClicked() },
             )
         }
 
@@ -172,7 +172,7 @@ private fun ProfileContent(
             LogoutDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
                 title = R.string.setting_dialog_logout,
-                onLogoutClick = { profileScreenInteractionListener.onSaveContentRestriction() },
+                onLogoutClick = { profileScreenInteractionListener.onDialogLogoutClicked() },
             )
         }
         else -> Unit
