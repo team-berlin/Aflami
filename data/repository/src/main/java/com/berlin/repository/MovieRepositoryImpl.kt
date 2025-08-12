@@ -155,6 +155,10 @@ class MovieRepositoryImpl @Inject constructor(
         recentHistoryLocalDataSource.clearSearchHistory()
     }
 
+    override suspend fun getMovieGame(): List<Movie> {
+        TODO("Not yet implemented")
+    }
+
     private fun isExpiredOrEmpty(list: List<MovieHomeEntity>): Boolean {
         return list.isEmpty() || list.any {
             System.currentTimeMillis() - it.addedAt > Constants.HOME_CACHE_TIMEOUT_MILLIS

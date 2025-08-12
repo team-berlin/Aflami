@@ -27,4 +27,9 @@ interface MovieRepository {
     suspend fun deleteMovieQueryFromHistory(query: String)
     suspend fun clearMovieSearchHistory()
     //endregion
+
+    //regin Game
+    suspend fun getMovieGame():List<Movie>
+    //endregion
+
 }
