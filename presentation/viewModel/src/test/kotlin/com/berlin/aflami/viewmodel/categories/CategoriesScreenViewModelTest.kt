@@ -7,6 +7,7 @@ import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.toGenreUiState
 import com.berlin.entity.Genre
+import com.berlin.exception.NotFoundException
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -28,9 +29,7 @@ import usecase.tvshow.GetTVShowGenresUseCase
 class CategoriesScreenViewModelTest {
     private val getMovieGenresUseCase: GetMovieGenresUseCase = mockk()
     private val getTVShowGenresUseCase: GetTVShowGenresUseCase = mockk()
-
     private lateinit var viewModel: CategoriesScreenViewModel
-
     private val testDispatcher = StandardTestDispatcher()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -70,19 +69,17 @@ class CategoriesScreenViewModelTest {
 
     @Test
     fun `init should handle error when loading movie genres`() = runTest {
-        coEvery { getMovieGenresUseCase() } throws RuntimeException("Boom")
+        coEvery { getMovieGenresUseCase() } throws NotFoundException("Not Found")
         coEvery { getTVShowGenresUseCase() } returns emptyList()
 
         viewModel = CategoriesScreenViewModel(
-            getMovieGenresUseCase,
-            getTVShowGenresUseCase,
-            testDispatcher
+            getMovieGenresUseCase, getTVShowGenresUseCase, testDispatcher
         )
 
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.state.value
-        assertEquals("Boom", state.errorMessage)
+        assertEquals("Not Found", state.errorMessage)
         assertFalse(state.isLoading)
     }
 
@@ -92,25 +89,18 @@ class CategoriesScreenViewModelTest {
         coEvery { getTVShowGenresUseCase() } returns emptyList()
 
         viewModel = CategoriesScreenViewModel(
-            getMovieGenresUseCase,
-            getTVShowGenresUseCase,
-            testDispatcher
+            getMovieGenresUseCase, getTVShowGenresUseCase, testDispatcher
         )
-
 
         viewModel.onCategoryCardClicked(42, MediaType.MOVIE)
 
         viewModel.effect.test {
             assertEquals(
                 CategoriesScreenEffect.NavigateToMediaScreen(
-                    42,
-                    MediaType.MOVIE
-
-                ),
-                awaitItem()
+                    42, MediaType.MOVIE
+                ), awaitItem()
             )
         }
-
     }
 
     @Test
@@ -119,9 +109,7 @@ class CategoriesScreenViewModelTest {
         coEvery { getTVShowGenresUseCase() } returns emptyList()
 
         viewModel = CategoriesScreenViewModel(
-            getMovieGenresUseCase,
-            getTVShowGenresUseCase,
-            testDispatcher
+            getMovieGenresUseCase, getTVShowGenresUseCase, testDispatcher
         )
 
         val tabOption = TabOption.MOVIES

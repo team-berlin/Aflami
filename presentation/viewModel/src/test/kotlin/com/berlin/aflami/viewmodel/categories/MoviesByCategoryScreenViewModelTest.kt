@@ -1,13 +1,11 @@
 package com.berlin.aflami.viewmodel.categories
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.paging.PagingData
 import app.cash.turbine.test
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryArgs
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryScreenEffect
 import com.berlin.aflami.viewmodel.categories.movie.MoviesByCategoryScreenViewModel
 import com.berlin.aflami.viewmodel.search.GenreUiState
-import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.entity.Genre
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -39,7 +37,7 @@ class MoviesByCategoryScreenViewModelTest {
     )
 
     private lateinit var viewModel: MoviesByCategoryScreenViewModel
-    private  var mediaByCategoryArg=MediaByCategoryArgs(
+    private var mediaByCategoryArg = MediaByCategoryArgs(
         fakeHandle
     )
 
@@ -48,7 +46,7 @@ class MoviesByCategoryScreenViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        viewModel= MoviesByCategoryScreenViewModel(
+        viewModel = MoviesByCategoryScreenViewModel(
             getMovieByGenresUseCase,
             getMoviesGenreUseCase,
             testDispatcher,
@@ -94,7 +92,7 @@ class MoviesByCategoryScreenViewModelTest {
         viewModel.state.test {
             val newState = awaitItem()
             assertEquals(2, newState.moviesGenres.size)
-            assertTrue(newState.moviesGenres.first().isSelected) // categoryId = 10
+            assertTrue(newState.moviesGenres.first().isSelected)
         }
     }
 
@@ -105,11 +103,10 @@ class MoviesByCategoryScreenViewModelTest {
             GenreUiState(id = 2, name = "Drama", isSelected = false)
         )
 
-        // Seed initial genres using public function
         viewModel.updateScreenWithNewMovieGenres(uiGenres)
 
         viewModel.state.test {
-            skipItems(1) // skip the seeded state emission
+            skipItems(1)
             viewModel.onCategoryCardClicked(2)
             val updated = awaitItem()
             assertEquals(2, updated.selectedCategoryId)
@@ -120,7 +117,7 @@ class MoviesByCategoryScreenViewModelTest {
 
     @Test
     fun `getMoviesByCategory updates state with PagingData`() = runTest {
-        coEvery { getMovieByGenresUseCase(any(),any()) } returns listOf()
+        coEvery { getMovieByGenresUseCase(any(), any()) } returns listOf()
 
         viewModel.state.test {
             skipItems(1)

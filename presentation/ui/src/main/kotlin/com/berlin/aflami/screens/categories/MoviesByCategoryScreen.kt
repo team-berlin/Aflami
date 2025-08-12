@@ -222,7 +222,6 @@ private fun MediaByCategoryResultGrid(
                     .align(Alignment.Center),
                 text = stringResource(R.string.loading)
             )
-
             isEmpty -> {
                 NoItemsFound()
             }

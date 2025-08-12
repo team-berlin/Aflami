@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.categories
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -59,20 +58,15 @@ fun CategoryScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = state.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = state.isLoading
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(R.string.loading)
+            modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = !state.isLoading
+        enter = fadeIn(), exit = fadeOut(), visible = !state.isLoading
     ) {
         CategoriesContent(
             state = state, listener = viewModel
@@ -123,8 +117,7 @@ fun CategoriesContent(
                     style = Theme.textStyle.title.large,
                     color = Theme.color.textColors.title,
                 )
-            }
-        )
+            })
 
         TabBar(
             selectedTabIndex = state.selectedTabOption.index,
@@ -151,8 +144,7 @@ fun CategoriesContent(
         when {
             state.isLoading -> {
                 CircularProgressIndicator(
-                    modifier = Modifier.fillMaxSize(),
-                    text = stringResource(R.string.loading)
+                    modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
                 )
             }
         }
@@ -166,7 +158,6 @@ fun CategoriesContent(
             }
 
             TabOption.TV_SHOWS -> {
-                Log.d("WOWTEST", "CategoriesContent: ${state.tvShowGenres}")
                 ResultGrid(
                     categories = state.tvShowGenres,
                     onCategoryCardClicked = listener::onCategoryCardClicked,
@@ -186,8 +177,7 @@ private fun ResultGrid(
     mediaType: MediaType,
 ) {
     LazyVerticalGrid(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         columns = Adaptive(minSize = 160.dp),
         contentPadding = PaddingValues(
             start = 16.dp, end = 16.dp, top = 8.dp, bottom = 56.dp
@@ -202,8 +192,7 @@ private fun ResultGrid(
                 modifier = Modifier.height(71.dp),
                 onClick = {
                     onCategoryCardClicked(
-                        genre.id.toLong(),
-                        mediaType
+                        genre.id.toLong(), mediaType
                     )
                 },
                 text = genre.name.replace(Regex("\\s*&\\s*|\\s+"), " &\n"),
