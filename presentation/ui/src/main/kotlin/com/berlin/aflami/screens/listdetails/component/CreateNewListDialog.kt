@@ -26,8 +26,8 @@ import com.berlin.ui.R
 fun CreateNewListDialog(
     modifier: Modifier = Modifier,
     listName: TextFieldValue = TextFieldValue(""),
-    onListNameChanged: (String) -> Unit = {},
-    onCreateListClick: (String) -> Unit = {},
+    onListNameChanged: (TextFieldValue) -> Unit = {},
+    onCreateListClick: (TextFieldValue) -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
     Dialog(
@@ -45,9 +45,7 @@ fun CreateNewListDialog(
             TextField(
                 text = listName,
                 onValueChange = { newValue ->
-                    onListNameChanged(
-                        newValue.text.trim()
-                    )
+                    onListNameChanged(newValue)
                 },
                 isEnabled = true,
                 maxLines = 1,
@@ -57,16 +55,14 @@ fun CreateNewListDialog(
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = { keyboardController?.hide() },
-                    onSearch = {
-                        onCreateListClick(
-                            listName.text.trim()
-                        )
-                    }),
+                ),
                 leadingIcon = R.drawable.nav_lists,
             )
 
             PrimaryButton(
-                onClick = { onCreateListClick(listName.text) },
+                onClick = {
+                    onCreateListClick(listName)
+                },
                 modifier = modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -84,5 +80,10 @@ fun CreateNewListDialog(
 @Preview
 @Composable
 private fun PreviewCreateNewListDialog() {
-    CreateNewListDialog()
+//    CreateNewListDialog(
+//        listName = "My Favorite",
+//        onListNameChanged = {},
+//        onCreateListClick = {},
+//        onDismiss = {},
+//    )
 }

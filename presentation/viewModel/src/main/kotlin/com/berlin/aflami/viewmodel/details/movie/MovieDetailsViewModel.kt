@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.details.movie
 
 
 import android.util.Log
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -471,7 +472,7 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
-    override fun onUpdateNewListTitle(newListTitle: String) {
+    override fun onUpdateNewListTitle(newListTitle: TextFieldValue) {
         updateState { screenState ->
             screenState.copy(
                 createNewListDialog = screenState.createNewListDialog.copy(newListTitle = newListTitle)
@@ -479,10 +480,10 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    override fun onCreateNewListClicked(listTitle: String) {
+    override fun onCreateNewListClicked(listTitle: TextFieldValue) {
         tryToCall(call = {
             resetCreateNewListUiState()
-            createNewFavouriteListUseCase(listTitle)
+            createNewFavouriteListUseCase(listTitle.text)
         }, onSuccess = { createdListId ->
             updateState { screenState ->
                 screenState.copy(
@@ -539,7 +540,7 @@ class MovieDetailsViewModel @Inject constructor(
                 createNewListDialog = screenState.createNewListDialog.copy(
                     isCreateNewListDialogVisible = false,
                     isCreateNewListButtonEnabled = false,
-                    newListTitle = ""
+                    newListTitle = TextFieldValue("")
                 )
             )
         }

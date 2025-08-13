@@ -1,12 +1,13 @@
 package com.berlin.aflami.viewmodel.reusableinteractionlistener.list.editList
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.text.input.TextFieldValue
 
 @Immutable
 data class EditListSheetState(
     val isEditNewListDialogVisible: Boolean = false,
     val requiredListIdToEdit: Int? = null,
-    val currentListTitle: String = "",
+    val currentListTitle:TextFieldValue = TextFieldValue(""),
     val isSaveButtonEnabled: Boolean = false,
     val errorMessage: String = "",
 )

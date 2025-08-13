@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.details.series
 
 import android.util.Log
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -442,11 +443,11 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         updateState { screenState -> screenState.copy(isNotSupportedFeatureDialogVisible = false) }
     }
 
-    override fun onUpdateNewListTitle(newListTitle: String) {
+    override fun onUpdateNewListTitle(newListTitle: TextFieldValue) {
         TODO("Not yet implemented")
     }
 
-    override fun onCreateNewListClicked(listTitle: String) {
+    override fun onCreateNewListClicked(listTitle: TextFieldValue) {
         TODO("Not yet implemented")
     }
 

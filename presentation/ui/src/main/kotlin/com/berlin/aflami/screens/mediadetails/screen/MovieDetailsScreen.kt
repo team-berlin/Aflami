@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -127,7 +126,7 @@ fun MovieDetailsScreen(
         visible = uiState.createNewListDialog.isCreateNewListDialogVisible
     ) {
         CreateNewListDialog(
-            listName = TextFieldValue(uiState.createNewListDialog.newListTitle),
+            listName = uiState.createNewListDialog.newListTitle,
             onListNameChanged = viewModel::onUpdateNewListTitle,
             onCreateListClick = viewModel::onCreateNewListClicked,
             onDismiss = viewModel::onCancelCreatingNewListClicked,

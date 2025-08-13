@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.listFeature
 
 import android.util.Log
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
@@ -44,23 +45,19 @@ class ListScreenViewModel @Inject constructor(
 
     init {
         shouldShowEditSheet?.let {
-            Log.d("Khairy", "showEditSheet ??? $shouldShowEditSheet and id = $requiredListIdToEdit")
             updateState { screenState ->
                 screenState.copy(
                     editListSheetState = screenState.editListSheetState.copy(
                         isSaveButtonEnabled = false,
                         requiredListIdToEdit = requiredListIdToEdit,
                         isEditNewListDialogVisible = true,
-                        currentListTitle = requiredListTitleToEdit!!
+                        currentListTitle = requiredListTitleToEdit?.let { TextFieldValue(it) }
+                            ?: TextFieldValue("")
                     )
                 )
             }
         }
         shouldShowDeleteSnackBar?.let {
-            Log.d(
-                "Khairy",
-                "showDeleteSheet ??? $shouldShowDeleteSnackBar and isDeleted = $isListDeletedSuccessfully"
-            )
             updateState { screenState ->
                 screenState.copy(
                     snackBar = screenState.snackBar.copy(
@@ -77,7 +74,6 @@ class ListScreenViewModel @Inject constructor(
     private fun observeLoginStatus() {
         viewModelScope.launch {
             isLoggedIn.collect { loggedIn ->
-                Log.d("Khairy", "is user logged in ??? $loggedIn")
                 updateState { screenState ->
                     if (loggedIn == true) getAllUserFavouriteLists()
                     screenState.copy(
@@ -93,7 +89,6 @@ class ListScreenViewModel @Inject constructor(
     //region getUserFavouriteLists
     private fun getAllUserFavouriteLists() {
         updateState { screenState -> screenState.copy(isScreenLoading = true) }
-        Log.d("khairy", "getting all user fav lists ")
         tryToCall(
             call = { getAllFavouriteListsAsFlow().cachedIn(viewModelScope) },
             onSuccess = ::updateScreenStateWithUserFavouriteLists,
@@ -111,8 +106,6 @@ class ListScreenViewModel @Inject constructor(
             screenState.copy(
                 favouriteList = userFavouriteLists, isScreenLoading = false
             )
-        }.also {
-            Log.d("khairy", "update screen state with new list $userFavouriteLists")
         }
     }
 
@@ -121,8 +114,6 @@ class ListScreenViewModel @Inject constructor(
             screenState.copy(
                 errorMessage = errorUiState.message, isScreenLoading = false
             )
-        }.also {
-            Log.d("khairy", "failed $errorUiState")
         }
     }
     //endregion
@@ -130,7 +121,7 @@ class ListScreenViewModel @Inject constructor(
     //region ListScreenInteractionListener sendNewEffects
     override fun onBackClicked() = sendNewEffect(ListScreenEffect.NavigateBack)
 
-    override fun onListNameChange(newListTitle: String) {
+    override fun onListNameChange(newListTitle: TextFieldValue) {
         updateState { screenState ->
             screenState.copy(
                 createNewListSheetState = screenState.createNewListSheetState.copy(
@@ -152,15 +143,6 @@ class ListScreenViewModel @Inject constructor(
         }
     }
 
-//    override fun onCreateNewListClicked() =
-//        updateState { screenState ->
-//            screenState.copy(
-//                createNewListSheetState = screenState.createNewListSheetState.copy(
-//                    isCreateNewListDialogVisible = true
-//                )
-//            )
-//        }
-
     override fun onClickListCard(listId: Int, listName: String) =
         sendNewEffect(ListScreenEffect.NavigateToSeeAllListScreen(listId, listName))
 
@@ -168,7 +150,7 @@ class ListScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 createNewListSheetState = screenState.createNewListSheetState.copy(
-                    newListTitle = "",
+                    newListTitle = TextFieldValue(""),
                     isCreateNewListButtonEnabled = false,
                     isCreateNewListDialogVisible = false
                 )
@@ -178,7 +160,7 @@ class ListScreenViewModel @Inject constructor(
 
     //endregion
 
-    override fun onUpdateNewListTitle(newListTitle: String) = updateState { screenState ->
+    override fun onUpdateNewListTitle(newListTitle: TextFieldValue) = updateState { screenState ->
         screenState.copy(
             createNewListSheetState = screenState.createNewListSheetState.copy(
                 newListTitle = newListTitle
@@ -186,10 +168,10 @@ class ListScreenViewModel @Inject constructor(
         )
     }
 
-    override fun onCreateNewListClicked(listTitle: String) {
+    override fun onCreateNewListClicked(listTitle: TextFieldValue) {
         tryToCall(
             call = {
-                createNewFavouriteListUseCase(listTitle)
+                createNewFavouriteListUseCase(listTitle.text)
                 resetCreateNewListSheetState()
             },
             onSuccess = {
@@ -239,7 +221,7 @@ class ListScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 createNewListSheetState = screenState.createNewListSheetState.copy(
-                    newListTitle = "",
+                    newListTitle = TextFieldValue(""),
                     isCreateNewListDialogVisible = false,
                     isCreateNewListButtonEnabled = false
                 )
@@ -257,13 +239,19 @@ class ListScreenViewModel @Inject constructor(
     }
 
     override fun onOldListTitleChanged(editedListTitle: String) = updateState { screenState ->
-        screenState.copy(editListSheetState = screenState.editListSheetState.copy(currentListTitle = editedListTitle))
+        screenState.copy(
+            editListSheetState = screenState.editListSheetState.copy(
+                currentListTitle = TextFieldValue(
+                    editedListTitle
+                )
+            )
+        )
     }
 
-    override fun onSaveOldListTitleToNewTitleClicked(listId: Int, editedListTitle: String) {
+    override fun onSaveOldListTitleToNewTitleClicked(listId: Int, editedListTitle: TextFieldValue) {
         onCancelEditingListClicked()
         tryToCall(
-            call = { editListTitleUseCase(listId = listId, newListTitle = editedListTitle) },
+            call = { editListTitleUseCase(listId = listId, newListTitle = editedListTitle.text) },
             onSuccess = {
                 updateState { screenState ->
                     screenState.copy(

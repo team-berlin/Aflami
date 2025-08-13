@@ -25,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -172,7 +171,7 @@ private fun ListsContent(
             visible = listScreenState.createNewListSheetState.isCreateNewListDialogVisible
         ) {
             CreateNewListDialog(
-                listName = TextFieldValue(listScreenState.createNewListSheetState.newListTitle),
+                listName = listScreenState.createNewListSheetState.newListTitle,
                 onListNameChanged = interactionListener::onListNameChange,
                 onCreateListClick = interactionListener::onCreateNewListClicked,
                 onDismiss = interactionListener::onCancelCreatingNewListClicked,
@@ -186,7 +185,9 @@ private fun ListsContent(
             EditListDialog(
                 listId = listScreenState.editListSheetState.requiredListIdToEdit!!,
                 listName = listScreenState.editListSheetState.currentListTitle,
-                onListNameChanged = { interactionListener.onOldListTitleChanged(it) },
+                onListNameChanged = { interactionListener.onOldListTitleChanged(
+                    it.text
+                ) },
                 onSaveClick = interactionListener::onSaveOldListTitleToNewTitleClicked,
                 onDismiss = interactionListener::onCancelEditingListClicked,
             )
