@@ -37,6 +37,7 @@ import com.berlin.aflami.component.CharacterCard
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.authentication.CirclesBackground
 import com.berlin.aflami.screens.games.components.CountdownCircularProgress
 import com.berlin.aflami.screens.games.components.Score
@@ -47,6 +48,7 @@ import com.berlin.aflami.ui.color.ExtraColors.primaryGredient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.game.GameType
 import com.berlin.aflami.viewmodel.quizgame.QuestionType
+import com.berlin.aflami.viewmodel.quizgame.QuizGameEffect
 import com.berlin.aflami.viewmodel.quizgame.QuizGameInteractionListener
 import com.berlin.aflami.viewmodel.quizgame.QuizGameUiState
 import com.berlin.aflami.viewmodel.quizgame.QuizGameViewModel
@@ -58,6 +60,19 @@ fun GuessTheGameScreen(
     viewModel: QuizGameViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val navController=Theme.navController
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect{
+            when(it){
+                QuizGameEffect.CloseGameClicked -> {
+                    navController.navigate(
+                        NavigationBarDestinations.GamesScreen
+                    )
+                }
+            }
+        }
+    }
 
     var showScore by remember { mutableStateOf(false) }
 
@@ -136,13 +151,17 @@ fun GuessTheGameContent(
                         Icon(
                             painter = painterResource(R.drawable.cancel_01),
                             contentDescription = stringResource(R.string.arrow_back),
-                            tint = Theme.color.textColors.title
+                            tint = Theme.color.textColors.title,
+                            modifier = Modifier.clickable {
+                                listener.closeGameClicked()
+                            }
+
                         )
                     }
                 },
                 trailingIcon = {
                     CountdownCircularProgress(
-                    totalTimePerSecond =state.time,
+                    totalTimePerSecond =20,
 
                         )
                 })
@@ -238,7 +257,7 @@ fun GuessTheGameContent(
                 .align(Alignment.Center)
         ) {
             Score(
-                score ="5",
+                score ="",
                 scoreColor = Theme.color.statusColors.greenAccent,
                 backgroundColor = Theme.color.statusColors.greenVariant
             )

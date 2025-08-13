@@ -29,15 +29,26 @@ class GameViewModel @Inject constructor(
         )
     }
 
-    override fun onGameInfoClicked(gameType: GameType) =
-        updateState { it.copy(selectedGameType = gameType) }
-
-    override fun onGameLevelClicked(gameLevel: GameLevel) =
-        updateState { it.copy(selectedLevel = gameLevel) }
+    override fun onGameInfoClicked(
+        gameType:String,
+        numberOfQuestion: Int,
+        numberOfPoint: Int,
+        time: Int
+    ) {
+        sendNewEffect(
+            GameEffect.NavigateToGuessGameScreen(
+                gameType = gameType,
+                numberOfQuestion = numberOfQuestion,
+                numberOfPoint =numberOfPoint,
+                time = time
+            )
+        )
+    }
 
     override fun onShowLevelDialog() =
         updateState { it.copy(showDialog = true) }
 
     override fun onDismissLevelDialog() =
         updateState { it.copy(showDialog = false) }
+
 }

@@ -10,20 +10,26 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.navigation.GuessGameDestination
 import com.berlin.aflami.screens.games.components.GameCard
+import com.berlin.aflami.screens.games.components.LevelDialog
 import com.berlin.aflami.screens.games.components.PointScore
 import com.berlin.aflami.ui.color.ExtraColors
-import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.game.GameEffect
 import com.berlin.aflami.viewmodel.game.GameInteractionListener
-import com.berlin.aflami.viewmodel.game.GameLevel
 import com.berlin.aflami.viewmodel.game.GameScreenState
 import com.berlin.aflami.viewmodel.game.GameType
 import com.berlin.aflami.viewmodel.game.GameViewModel
@@ -35,28 +41,46 @@ data class GameCardData(
     val description: String,
     val points: Int,
     val isLocked: Boolean,
-    val borderGradient: androidx.compose.ui.graphics.Brush,
-    val shadowColor: androidx.compose.ui.graphics.Color,
-    val circleShadowColor: androidx.compose.ui.graphics.Color,
-    val avatarPainter: androidx.compose.ui.graphics.painter.Painter,
-    val backgroundColor: androidx.compose.ui.graphics.Color
+    val borderGradient: Brush,
+    val shadowColor: Color,
+    val circleShadowColor: Color,
+    val avatarPainter: Painter,
+    val backgroundColor: Color
 )
 
 @Composable
 fun GamesScreen(
     viewModel: GameViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val navController = Theme.navController
 
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is GameEffect.NavigateToGuessGameScreen -> {
+                    navController.navigate(
+                        GuessGameDestination(
+                            gameType = effect.gameType,
+                            numberOfQuestion = effect.numberOfQuestion,
+                            numberOfPoint = effect.numberOfPoint,
+                            time = effect.time
+                        )
+                    )
+                }
+
+                is GameEffect.ShowError -> {}
+            }
+        }
+    }
     GamesContent(
-        modifier = Modifier.statusBarsPadding(),
-        gameState = viewModel.state.collectAsStateWithLifecycle().value,
+        gameState = state,
         gameInteractionListener = viewModel
     )
 }
 
 @Composable
 fun GamesContent(
-    modifier: Modifier = Modifier,
     gameState: GameScreenState,
     gameInteractionListener: GameInteractionListener,
 ) {
@@ -69,7 +93,7 @@ fun GamesContent(
             borderGradient = ExtraColors.guessMovieByCharacterGradient,
             shadowColor = ExtraColors.shadowGuessMovieByCharacter,
             circleShadowColor = Theme.color.primaryVariant,
-            avatarPainter = painterResource(R.drawable.avatar),
+            avatarPainter = painterResource(R.drawable.game_clown),
             gameType = GameType.CHARACTER,
             backgroundColor = Theme.color.primaryVariant
         ),
@@ -94,7 +118,7 @@ fun GamesContent(
             borderGradient = ExtraColors.guessMovieByReleaseGradient,
             shadowColor = ExtraColors.shadowGuessMovieRelease,
             circleShadowColor = Theme.color.statusColors.navyCard,
-            avatarPainter = painterResource(R.drawable.avatar),
+            avatarPainter = painterResource(R.drawable.game_release_date),
             backgroundColor = Theme.color.statusColors.navyCard
         ),
         GameCardData(
@@ -106,7 +130,7 @@ fun GamesContent(
             borderGradient = ExtraColors.guessMovieByGenreGradient,
             shadowColor = ExtraColors.shadowGuessMovieByGenre,
             circleShadowColor = Theme.color.statusColors.yellowCard,
-            avatarPainter = painterResource(R.drawable.avatar),
+            avatarPainter = painterResource(R.drawable.genre),
             backgroundColor = Theme.color.statusColors.yellowCard
         )
     )
@@ -115,16 +139,18 @@ fun GamesContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
+            .statusBarsPadding()
+            .padding(top = 13.dp)
     ) {
         TopBar(
             title = {
                 Text(
-                    text = "Let’s play",
+                    text = stringResource(R.string.let_s_play),
                     style = Theme.textStyle.title.large,
                     color = Theme.color.textColors.title
                 )
             },
-            trailingIcon = { PointScore(300) }
+            trailingIcon = { PointScore(gameState.points) }
         )
         Column(
             modifier = Modifier
@@ -139,7 +165,9 @@ fun GamesContent(
                     description = card.description,
                     points = card.points,
                     isLocked = card.isLocked,
-                    onClick = {},
+                    onClick = {
+                        gameInteractionListener.onShowLevelDialog()
+                    },
                     borderGradient = card.borderGradient,
                     shadowColor = card.shadowColor,
                     circleShadowColor = card.circleShadowColor,
@@ -147,35 +175,19 @@ fun GamesContent(
                     backgroundColor = card.backgroundColor
                 )
             }
-        }
-    }
-}
-
-@Composable
-@ThemeAndLocalePreviews
-fun GamesContentPreview() {
-    AflamiTheme {
-        GamesContent(
-            modifier = Modifier.statusBarsPadding(),
-            gameState = GameScreenState(),
-            gameInteractionListener = object : GameInteractionListener {
-                override fun onGameInfoClicked(gameType: GameType) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onGameLevelClicked(gameLevel: GameLevel) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onShowLevelDialog() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onDismissLevelDialog() {
-                    TODO("Not yet implemented")
-                }
-
+            if (gameState.showDialog) {
+                LevelDialog(
+                    onDismiss = { gameInteractionListener.onDismissLevelDialog() },
+                    onClick = {
+                        gameInteractionListener.onGameInfoClicked(
+                            gameType = gameState.selectedGameType?.name ?: GameType.GENRE.name,
+                            numberOfQuestion = gameState.selectedLevel?.numberOfQuestions ?: 0,
+                            numberOfPoint = gameState.selectedLevel?.points ?: 0,
+                            time = gameState.selectedLevel?.time ?: 0
+                        )
+                    }
+                )
             }
-        )
+        }
     }
 }

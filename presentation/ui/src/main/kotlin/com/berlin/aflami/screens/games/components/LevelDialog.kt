@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.games.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -43,6 +44,7 @@ import com.berlin.ui.R
 @Composable
 fun LevelDialog(
     onDismiss: () -> Unit,
+    onClick:()->Unit,
     modifier: Modifier = Modifier
 ) {
     val genres = listOf(
@@ -166,7 +168,9 @@ fun LevelDialog(
 
                 if (selectedIndex != null) {
                     PrimaryButton(
-                        onClick = {},
+                        onClick = {
+                            onClick()
+                        },
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -200,7 +204,8 @@ fun LevelDialog(
 private fun LevelDialogPreview() {
     AflamiTheme {
         LevelDialog(
-            onDismiss = {}
+            onDismiss = {},
+            onClick = {}
         )
     }
 }

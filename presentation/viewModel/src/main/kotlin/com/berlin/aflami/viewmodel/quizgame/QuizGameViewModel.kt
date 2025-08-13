@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.quizgame
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.game.GameLevel
@@ -39,14 +40,16 @@ class QuizGameViewModel @Inject constructor(
     private val tvShowIds = MutableStateFlow<List<Long>>(emptyList())
     private val mediaCast = MutableStateFlow<List<ActorUiState>>(emptyList())
 
-    val timer=guessGameScreenArgs.timer?:0
-    val gameType=guessGameScreenArgs.gameType?:GameType.GENRE
-    val numberOfQuestion=guessGameScreenArgs.numberOfPoint?:0
-    val numberOfPoints=guessGameScreenArgs.numberOfPoint?:0
+    private val timer=guessGameScreenArgs.timer?:0
+    private val gameType=guessGameScreenArgs.gameType?:GameType.GENRE
+    private val numberOfQuestion=guessGameScreenArgs.numberOfPoint?:0
+    private val numberOfPoints=guessGameScreenArgs.numberOfPoint?:0
 
     init {
         viewModelScope.launch {
             mediaGame()
+            getMediaByPoster()
+
         }
     }
 
@@ -92,7 +95,7 @@ class QuizGameViewModel @Inject constructor(
             )
 
         }
-        updateState { it.copy(questions = questions, loading = false,type = QuestionType.Image,gameTypeName = gameType, time = timer) }
+        updateState { it.copy(questions = questions, loading = false) }
     }
 
     //question-> media name
@@ -200,7 +203,7 @@ class QuizGameViewModel @Inject constructor(
     ): List<MediaUiState> {
         val arrangedList = mutableListOf<MediaUiState>()
 
-        repeat(numberOfQuestion) { counter ->
+        repeat(5) { counter ->
             with(arrangedList) {
                 add(movies[counter])
                 add(tvShows[counter])
@@ -252,6 +255,11 @@ class QuizGameViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    override fun closeGameClicked() {
+        sendNewEffect(QuizGameEffect.CloseGameClicked)
+
     }
 
 
