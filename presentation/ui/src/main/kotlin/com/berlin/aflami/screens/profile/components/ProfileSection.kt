@@ -66,7 +66,7 @@ fun ProfileSection(
                     style = Theme.textStyle.title.large,
                     color = Theme.color.textColors.title,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 13.dp)
+                        .padding(horizontal = 16.dp, vertical = 56.dp)
                         .align(Alignment.TopStart)
                 )
             }

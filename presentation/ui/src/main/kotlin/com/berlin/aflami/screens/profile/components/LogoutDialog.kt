@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.profile.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,38 +22,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.berlin.aflami.component.SelectionButton
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.designsystem.R
 
 @Composable
-fun ContentRestrictionDialog(
+fun LogoutDialog(
     modifier: Modifier = Modifier,
-    onSaveClick: () -> Unit,
+    onLogoutClick: () -> Unit,
     onDismiss: () -> Unit,
-    onFirstOptionClick: () -> Unit = {},
-    onSecondOptionClick: () -> Unit = {},
-    onThirdOptionClick: () -> Unit = {},
-    isFirstOptionSelected: Boolean = false,
-    isSecondOptionSelected: Boolean = false,
-    isThirdOptionSelected: Boolean = false,
     title: Int,
-    firstOptionTitleRes: Int? = null,
-    secondOptionTitleRes: Int? = null,
-    thirdOptionTitleRes: Int? = null,
-    firstOptionIconRes: Int? = null,
-    secondOptionIconRes: Int? = null,
-    thirdOptionIconRes: Int? = null,
-    firstOptionSubTitleIdRes: Int? = null,
-    secondOptionSubTitleIdRes: Int? = null,
-    thirdOptionSubTitleIdRes: Int? = null,
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -89,7 +74,8 @@ fun ContentRestrictionDialog(
                             Theme.color.surfaceHigh,
                             shape = RoundedCornerShape(12.dp)
                         )
-                    ) {
+                    )
+                    {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = null,
@@ -99,51 +85,51 @@ fun ContentRestrictionDialog(
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                ) {
+                    Image(
+                        painter = painterResource(com.berlin.ui.R.drawable.yellow_sign),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .widthIn(max = 78.dp),
+                    )
+                }
+                Text(
+                    text = stringResource(com.berlin.ui.R.string.sure_to_continue),
+                    style = Theme.textStyle.title.small,
+                    color = Theme.color.textColors.body,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    lineHeight = 24.sp
+                )
+                Text(
+                    text = stringResource(com.berlin.ui.R.string.logout_msg),
+                    style = Theme.textStyle.title.small,
+                    color = Theme.color.textColors.body,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .padding(bottom = 24.dp),
+                    lineHeight = 24.sp
 
-                if (firstOptionTitleRes != null) {
-                    SelectionButton(
-                        selected = isFirstOptionSelected,
-                        onClick = onFirstOptionClick,
-                        selectionTitleId = firstOptionTitleRes,
-                        subTitleId = firstOptionSubTitleIdRes
-                    )
-                }
-                if (secondOptionTitleRes != null) {
-                    SelectionButton(
-                        selected = isSecondOptionSelected,
-                        onClick = onSecondOptionClick,
-                        selectionTitleId = secondOptionTitleRes,
-                        subTitleId = secondOptionSubTitleIdRes
-                    )
-                }
-
-                if (thirdOptionTitleRes != null) {
-                    SelectionButton(
-                        selected = isThirdOptionSelected,
-                        onClick = onThirdOptionClick,
-                        selectionTitleId = thirdOptionTitleRes,
-                        subTitleId = thirdOptionSubTitleIdRes
-                    )
-                }
+                )
 
                 Box(
                     Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
                         .background(
-                            brush = Brush
-                                .linearGradient(
-                                    Theme.color.gradientColors.primaryGradient,
-                                    end = Offset(0f, Float.POSITIVE_INFINITY)
-                                )
+                            color = Theme.color.primaryVariant
                         )
-                        .clickable { onSaveClick() },
+                        .clickable { onLogoutClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         modifier = Modifier.padding(vertical = 16.dp, horizontal = 4.dp),
-                        text = stringResource(com.berlin.ui.R.string.save),
-                        color = Theme.color.textColors.onPrimary,
+                        text = stringResource(com.berlin.ui.R.string.setting_dialog_logout),
+                        color = Theme.color.statusColors.redAccent,
                         style = Theme.textStyle.label.large,
                     )
                 }
@@ -154,14 +140,11 @@ fun ContentRestrictionDialog(
 
 @Composable
 @Preview
-fun ContentRestrictionDialogPreview() {
-    ContentRestrictionDialog(
+fun LogoutDialogPreview() {
+    LogoutDialog(
         title = com.berlin.ui.R.string.app_theme,
-        firstOptionTitleRes = com.berlin.ui.R.string.dark,
-        secondOptionTitleRes = com.berlin.ui.R.string.light,
-        firstOptionIconRes = R.drawable.dark,
-        secondOptionIconRes = R.drawable.light,
-        onSaveClick = {},
+
+        onLogoutClick = {},
         onDismiss = {}
     )
 }
