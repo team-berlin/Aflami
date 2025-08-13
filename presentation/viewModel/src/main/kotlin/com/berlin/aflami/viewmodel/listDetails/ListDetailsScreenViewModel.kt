@@ -19,6 +19,7 @@ class ListDetailsScreenViewModel @Inject constructor(
     private val getAllFavouriteListItemsUseCase: GetFavouriteListItemsUseCase,
     private val deleteMovieFromUserFavouriteList: DeleteMovieFromUserFavouriteList,
     private val deleteUserFavouriteListUseCase: DeleteUserFavouriteListUseCase,
+    private val favouriteMoviesPagingSourceFactory: FavouriteMoviesPagingSource.Factory,
     favouriteListDetailsArgs: FavouriteListDetailsArgs,
 ) : BaseViewModel<ListDetailsScreenState, ListDetailsScreenEffect>(
     ListDetailsScreenState()
@@ -60,10 +61,7 @@ class ListDetailsScreenViewModel @Inject constructor(
     private fun getFavouriteListMoviesAsFlow(favouriteListId: Int): Flow<PagingData<MovieUiState>> =
         Pager(
             config = defaultPageConfigurations(), pagingSourceFactory = {
-                FavouriteMoviesPagingSource(
-                    getAllFavouriteListItemsUseCase = getAllFavouriteListItemsUseCase,
-                    favouriteListId = favouriteListId
-                )
+                favouriteMoviesPagingSourceFactory.create(favouriteListId)
             }).flow.cachedIn(viewModelScope)
 
     private fun updateScreenStateToLoading() =

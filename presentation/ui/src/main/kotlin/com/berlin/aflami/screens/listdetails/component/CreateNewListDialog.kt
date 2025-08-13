@@ -24,6 +24,7 @@ import com.berlin.ui.R
 @Composable
 fun CreateNewListDialog(
     modifier: Modifier = Modifier,
+    isCreateButtonEnabled: Boolean = false,
     listName: TextFieldValue = TextFieldValue(""),
     onListNameChanged: (TextFieldValue) -> Unit = {},
     onCreateListClick: (TextFieldValue) -> Unit = {},
@@ -66,10 +67,12 @@ fun CreateNewListDialog(
                     .fillMaxWidth()
                     .height(56.dp),
                 containerColor = Theme.color.primary,
+                isEnabled = listName.text.isNotBlank()
             ) {
                 Text(
                     stringResource(R.string.create),
-                    style = Theme.textStyle.label.large, color = Theme.color.textColors.onPrimary
+                    style = Theme.textStyle.label.large,
+                    color = if (listName.text.isNotBlank()) Theme.color.textColors.onPrimary else Theme.color.stroke,
                 )
             }
         }

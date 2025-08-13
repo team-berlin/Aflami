@@ -56,59 +56,70 @@ fun AddToListDialog(
         onDismiss = onDismiss,
         modifier = modifier,
     ) {
-        AnimatedVisibility(
-            enter = fadeIn(), exit = fadeOut(), visible = addToListUiState.isLoading
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
-            )
-        }
-        AnimatedVisibility(
-            enter = fadeIn(), exit = fadeOut(), visible = addToListUiState.errorMessage != null
-        ) {
-            Box(Modifier.fillMaxSize()) {
-                NoInternetConnectionPlaceholder(modifier = Modifier.fillMaxSize())
-            }
-        }
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = !addToListUiState.isLoading && addToListUiState.errorMessage == null
-        ) {
-            val favouriteLists = addToListUiState.favouriteLists.collectAsLazyPagingItems()
-            Column(
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                modifier = Modifier.padding(12.dp),
+        Box() {
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = addToListUiState.isLoading && addToListUiState.errorMessage.isNullOrEmpty()
             ) {
-                DialogHeaderSection(
-                    onDismiss = onDismiss,
-                )
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                CircularProgressIndicator(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(320.dp)
-                        .nestedScroll(rememberNestedScrollInteropConnection()),
+                        .fillMaxSize()
+                        .align(Alignment.Center),
+                    text = stringResource(R.string.loading)
+                )
+            }
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = addToListUiState.errorMessage != null && addToListUiState.isLoading.not()
+            ) {
+                NoInternetConnectionPlaceholder(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.Center)
+                )
+            }
+            AnimatedVisibility(
+                enter = fadeIn(),
+                exit = fadeOut(),
+                visible = addToListUiState.isLoading.not() && addToListUiState.errorMessage == null
+            ) {
+                val favouriteLists = addToListUiState.favouriteLists.collectAsLazyPagingItems()
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    modifier = Modifier.padding(12.dp),
                 ) {
-                    items(favouriteLists.itemCount) { index ->
-                        favouriteLists[index].let { favouriteList ->
-                            SelectionListItem(
-                                listName = favouriteList!!.listTitle,
-                                itemCount = favouriteList.numberOfFavouriteMovies,
-                                isSelected = addToListUiState.selectedListId == favouriteList.listId,
-                                onSelectItem = {
-                                    onSelectedListChange(favouriteList.listId!!)
-                                })
+                    DialogHeaderSection(
+                        onDismiss = onDismiss,
+                    )
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(320.dp)
+                            .nestedScroll(rememberNestedScrollInteropConnection()),
+                    ) {
+                        items(favouriteLists.itemCount) { index ->
+                            favouriteLists[index].let { favouriteList ->
+                                SelectionListItem(
+                                    listName = favouriteList!!.listTitle,
+                                    itemCount = favouriteList.numberOfFavouriteMovies,
+                                    isSelected = addToListUiState.selectedListId == favouriteList.listId,
+                                    onSelectItem = {
+                                        onSelectedListChange(favouriteList.listId!!)
+                                    })
+                            }
                         }
                     }
+                    ActionButtonsSection(
+                        movieId = movieId,
+                        selectedListId = addToListUiState.selectedListId,
+                        onAddToSelectedList = onAddToSelectedList,
+                        onCreateNewList = onCreateNewList,
+                        modifier = Modifier.padding(bottom = 12.dp),
+                    )
                 }
-                ActionButtonsSection(
-                    movieId = movieId,
-                    selectedListId = addToListUiState.selectedListId,
-                    onAddToSelectedList = onAddToSelectedList,
-                    onCreateNewList = onCreateNewList,
-                    modifier = Modifier.padding(bottom = 12.dp),
-                )
             }
         }
     }
@@ -219,7 +230,7 @@ private fun ActionButtonsSection(
                     )
                 },
             contentAlignment = Alignment.Center,
-        ){
+        ) {
             Text(
                 stringResource(R.string.add),
                 style = Theme.textStyle.label.large,
