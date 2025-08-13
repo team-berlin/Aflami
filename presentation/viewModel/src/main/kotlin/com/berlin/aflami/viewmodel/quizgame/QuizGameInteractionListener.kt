@@ -5,4 +5,5 @@ interface QuizGameInteractionListener {
     fun answerClicked(answer: String)
     fun hintClicked()
     fun closeGameClicked()
+    fun navigateToResult()
 }

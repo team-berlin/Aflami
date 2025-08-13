@@ -78,7 +78,6 @@ fun GamesScreen(
         gameInteractionListener = viewModel
     )
 }
-
 @Composable
 fun GamesContent(
     gameState: GameScreenState,
@@ -166,6 +165,7 @@ fun GamesContent(
                     points = card.points,
                     isLocked = card.isLocked,
                     onClick = {
+                        card.gameType?.let { gameInteractionListener.onSelectGameType(it) }
                         gameInteractionListener.onShowLevelDialog()
                     },
                     borderGradient = card.borderGradient,
@@ -175,9 +175,13 @@ fun GamesContent(
                     backgroundColor = card.backgroundColor
                 )
             }
+
             if (gameState.showDialog) {
                 LevelDialog(
                     onDismiss = { gameInteractionListener.onDismissLevelDialog() },
+                    onLevelSelected = { levelIndex ->
+                        gameInteractionListener.onSelectLevel(levelIndex)
+                    },
                     onClick = {
                         gameInteractionListener.onGameInfoClicked(
                             gameType = gameState.selectedGameType?.name ?: GameType.GENRE.name,
@@ -191,3 +195,4 @@ fun GamesContent(
         }
     }
 }
+

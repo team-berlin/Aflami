@@ -1,13 +1,12 @@
 package com.berlin.aflami.viewmodel.quizgame
 
 import androidx.lifecycle.SavedStateHandle
-import com.berlin.aflami.viewmodel.game.GameType
 import javax.inject.Inject
 
 class GuessGameScreenArgs @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) {
-    val gameType:GameType?= savedStateHandle.get<GameType>(GAME_TYPE)
+    val gameType:String?= savedStateHandle.get<String>(GAME_TYPE)
     val numberOfQuestion:Int?= savedStateHandle.get<Int>(NUMBER_OF_QUESTION)
     val numberOfPoint:Int?=savedStateHandle.get<Int>(NUMBER_OF_POINT)
     val timer:Int?=savedStateHandle.get<Int>(TIMER)

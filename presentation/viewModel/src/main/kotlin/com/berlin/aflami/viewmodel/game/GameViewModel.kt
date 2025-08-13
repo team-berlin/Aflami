@@ -7,7 +7,7 @@ import usecase.game.GetPointsUseCase
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
-    private val getPointsUseCase: GetPointsUseCase
+    private val getPointsUseCase: GetPointsUseCase,
 ) : BaseViewModel<GameScreenState, GameEffect>(GameScreenState()), GameInteractionListener {
 
     init {
@@ -16,12 +16,12 @@ class GameViewModel @Inject constructor(
 
     private fun loadData() {
         val levels = listOf(
-            GameLevel(10, 100, GameLevelType.EASY, 30),
-            GameLevel(10, 100, GameLevelType.MEDIUM, 30),
-            GameLevel(10, 100, GameLevelType.HARD, 30)
+            GameLevel(5, 5, GameLevelType.EASY, 45),
+            GameLevel(10, 10, GameLevelType.MEDIUM, 30),
+            GameLevel(20, 20, GameLevelType.HARD, 10)
         )
         tryToCall(
-            call = { getPointsUseCase(1) },// Replace 1 with the user's ID
+            call = { getPointsUseCase(1) }, // Replace 1 with the user's ID
             onSuccess = { points ->
                 updateState { it.copy(points = points, gameLevel = levels) }
             },
@@ -29,8 +29,17 @@ class GameViewModel @Inject constructor(
         )
     }
 
+    override fun onSelectGameType(gameType: GameType) {
+        updateState { it.copy(selectedGameType = gameType) }
+    }
+
+    override fun onSelectLevel(levelIndex: Int) {
+        val level = state.value.gameLevel.getOrNull(levelIndex)
+        updateState { it.copy(selectedLevel = level) }
+    }
+
     override fun onGameInfoClicked(
-        gameType:String,
+        gameType: String,
         numberOfQuestion: Int,
         numberOfPoint: Int,
         time: Int
@@ -39,7 +48,7 @@ class GameViewModel @Inject constructor(
             GameEffect.NavigateToGuessGameScreen(
                 gameType = gameType,
                 numberOfQuestion = numberOfQuestion,
-                numberOfPoint =numberOfPoint,
+                numberOfPoint = numberOfPoint,
                 time = time
             )
         )
@@ -50,5 +59,4 @@ class GameViewModel @Inject constructor(
 
     override fun onDismissLevelDialog() =
         updateState { it.copy(showDialog = false) }
-
 }

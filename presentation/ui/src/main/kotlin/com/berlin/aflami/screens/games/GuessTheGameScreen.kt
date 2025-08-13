@@ -37,7 +37,9 @@ import com.berlin.aflami.component.CharacterCard
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.component.TopBar
+import com.berlin.aflami.navigation.GameResultDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.authentication.CirclesBackground
 import com.berlin.aflami.screens.games.components.CountdownCircularProgress
 import com.berlin.aflami.screens.games.components.Score
@@ -68,6 +70,12 @@ fun GuessTheGameScreen(
                 QuizGameEffect.CloseGameClicked -> {
                     navController.navigate(
                         NavigationBarDestinations.GamesScreen
+                    )
+                }
+
+                QuizGameEffect.NavigateToResult -> {
+                    navController.navigate(
+                       GameResultDestination
                     )
                 }
             }
@@ -133,7 +141,7 @@ fun GuessTheGameContent(
                 modifier = Modifier.zIndex(1f),
                 title = {
                     Text(
-                        text = state.gameTypeName.name,
+                        text = state.gameTypeName.type,
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title
                     )
@@ -161,7 +169,7 @@ fun GuessTheGameContent(
                 },
                 trailingIcon = {
                     CountdownCircularProgress(
-                    totalTimePerSecond =20,
+                    totalTimePerSecond =state.time,
 
                         )
                 })
@@ -236,7 +244,8 @@ fun GuessTheGameContent(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onClick = {
-                    listener.nextQuestionClicked()
+                    if(state.currentQuestionIndex<state.questions.size-1) listener.nextQuestionClicked()
+                    else listener.navigateToResult()
                 },
                 gradientColor = primaryGredient
             ) {

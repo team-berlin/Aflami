@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.games.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -44,7 +43,8 @@ import com.berlin.ui.R
 @Composable
 fun LevelDialog(
     onDismiss: () -> Unit,
-    onClick:()->Unit,
+    onLevelSelected: (Int) -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val genres = listOf(
@@ -61,23 +61,19 @@ fun LevelDialog(
         else -> ""
     }
 
-    Dialog(
-        onDismissRequest = onDismiss
-    ) {
+    Dialog(onDismissRequest = onDismiss) {
         Box(
             modifier = modifier
                 .background(Theme.color.surface, shape = RoundedCornerShape(16.dp))
                 .padding(12.dp)
         ) {
             Column(
-                Modifier
-                    .widthIn(min = 328.dp, max = 360.dp),
+                Modifier.widthIn(min = 328.dp, max = 360.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Row(
-                    Modifier
-                        .fillMaxWidth(),
+                    Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -90,10 +86,7 @@ fun LevelDialog(
                         onClick = onDismiss,
                         modifier = Modifier
                             .size(40.dp)
-                            .background(
-                                Theme.color.surfaceHigh,
-                                shape = RoundedCornerShape(12.dp)
-                            )
+                            .background(Theme.color.surfaceHigh, shape = RoundedCornerShape(12.dp))
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
@@ -115,6 +108,7 @@ fun LevelDialog(
                             isClickable = true,
                             onClick = {
                                 selectedIndex = if (isSelected) null else index
+                                selectedIndex?.let { onLevelSelected(it) }
                             }
                         )
                     }
@@ -122,33 +116,13 @@ fun LevelDialog(
 
                 AnimatedVisibility(
                     visible = selectedIndex != null,
-                    enter = fadeIn(
-                        animationSpec = tween(
-                            durationMillis = 300,
-                        )
-                    ) + expandVertically(
-                        animationSpec = tween(
-                            durationMillis = 300,
-                        )
-                    ),
-                    exit = fadeOut(
-                        animationSpec = tween(
-                            durationMillis = 300,
-                        )
-                    ) + shrinkVertically(
-                        animationSpec = tween(
-                            durationMillis = 300,
-                        )
-                    )
-
+                    enter = fadeIn(tween(300)) + expandVertically(tween(300)),
+                    exit = fadeOut(tween(300)) + shrinkVertically(tween(300))
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(
-                                Theme.color.surfaceHigh,
-                                shape = RoundedCornerShape(12.dp)
-                            )
+                            .background(Theme.color.surfaceHigh, shape = RoundedCornerShape(12.dp))
                             .padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -166,38 +140,26 @@ fun LevelDialog(
                     }
                 }
 
-                if (selectedIndex != null) {
-                    PrimaryButton(
-                        onClick = {
-                            onClick()
-                        },
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.lets_start),
-                            style = Theme.textStyle.label.large,
-                            color = Theme.color.textColors.onPrimary,
-                        )
-                    }
-                } else {
-                    PrimaryButton(
-                        onClick = {},
-                        state = ButtonState.DISABLED,
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.lets_start),
-                            style = Theme.textStyle.label.large,
-                            color = Theme.color.stroke
-                        )
-                    }
+                PrimaryButton(
+                    onClick = { if (selectedIndex != null) onClick() },
+                    state = if (selectedIndex != null) ButtonState.IDLE else ButtonState.DISABLED,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.lets_start),
+                        style = Theme.textStyle.label.large,
+                        color = if (selectedIndex != null)
+                            Theme.color.textColors.onPrimary
+                        else
+                            Theme.color.stroke
+                    )
                 }
             }
         }
     }
 }
+
 
 @PreviewLightDark
 @Composable
@@ -205,7 +167,8 @@ private fun LevelDialogPreview() {
     AflamiTheme {
         LevelDialog(
             onDismiss = {},
-            onClick = {}
+            onClick = {},
+            onLevelSelected = {}
         )
     }
 }

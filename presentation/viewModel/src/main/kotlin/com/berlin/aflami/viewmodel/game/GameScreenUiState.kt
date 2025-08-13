@@ -16,11 +16,11 @@ data class GameLevel(
     val time: Int
 )
 
-enum class GameType {
-    CHARACTER,
-    POSTER,
-    RELEASE,
-    GENRE
+enum class GameType (val type:String){
+    CHARACTER("Guess the Character"),
+    POSTER("Guess by Poster"),
+    RELEASE("When is released?"),
+    GENRE("Which genre?")
 }
 
 enum class GameLevelType {

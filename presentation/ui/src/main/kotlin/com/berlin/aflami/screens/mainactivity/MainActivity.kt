@@ -57,20 +57,18 @@ class MainActivity : ComponentActivity() {
             AflamiTheme(isDarkTheme = isDarkTheme) {
                 val mainState by mainActivityViewModel.state.collectAsState()
 
-//                if (!mainState.isLoading) {
-//                    AflamiNavGraph(
-//                        navController = Theme.navController,
-//                        isLoggedIn = mainState.isLoggedIn,
-//                        isFirsTime = mainState.isFirstEntry,
-//                        selectedLanguage = profileState.selectedLanguage,
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .background(Theme.color.surface)
-//                            .navigationBarsPadding()
-//                    )
-//                }
-
-                GuessTheGameScreen()
+                if (!mainState.isLoading) {
+                    AflamiNavGraph(
+                        navController = Theme.navController,
+                        isLoggedIn = mainState.isLoggedIn,
+                        isFirsTime = mainState.isFirstEntry,
+                        selectedLanguage = profileState.selectedLanguage,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Theme.color.surface)
+                            .navigationBarsPadding()
+                    )
+                }
             }
         }
     }
