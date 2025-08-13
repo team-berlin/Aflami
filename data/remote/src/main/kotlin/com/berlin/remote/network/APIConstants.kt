@@ -51,6 +51,7 @@ object ApiConstants {
     const val POPULAR_TV_SHOWS = "tv/popular"
     const val TOP_RATED_SERIES = "tv/top_rated"
     const val TV_VIDEO_DETAILS = "tv/{$SERIES_ID}/videos"
+    const val DISCOVER_SERIES = "discover/tv"
 
     // Authentication endpoints
     const val NEW_TOKEN_ENDPOINT = "authentication/token/new"

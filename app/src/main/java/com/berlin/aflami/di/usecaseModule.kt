@@ -14,6 +14,8 @@ import repository.SettingsRepository
 import repository.TVShowDetailsRepository
 import repository.UserProfileRepository
 import usecase.auth.GetLoginStatus
+import repository.UserRepository
+import usecase.auth.GetLoginStatusUseCase
 import usecase.auth.GetLoginUseCase
 import usecase.profile.GetUserProfileUseCase
 import usecase.auth.GetValidatePasswordUseCase
@@ -201,8 +203,8 @@ object UseCaseModule {
         GetLoginUseCase(repository)
 
     @Provides
-    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLoginStatus =
-        GetLoginStatus(repository)
+    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLoginStatusUseCase =
+        GetLoginStatusUseCase(repository)
 
     @Provides
     fun provideGetTopRatedSeriesUseCase(repository: TVShowRepository): GetTopRatedTVShowUseCase =

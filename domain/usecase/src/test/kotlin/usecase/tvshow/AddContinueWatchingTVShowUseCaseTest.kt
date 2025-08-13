@@ -1,6 +1,7 @@
 package usecase.tvshow
 
 import com.berlin.entity.TVShow
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -13,37 +14,43 @@ import usecase.movie.AddContinueWatchingMovieUseCaseTest.Companion.DB_ERROR
 
 class AddContinueWatchingTVShowUseCaseTest {
 
-    private val repository: TVShowRepository = mockk(relaxed = true)
-    private lateinit var addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase
-
-    @Before
-    fun setup() {
-        addContinueWatchingTVShowUseCase = AddContinueWatchingTVShowUseCase(repository)
-    }
+    private val tvShowRepository: TVShowRepository = mockk()
+    private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase =
+        AddContinueWatchingTVShowUseCase(tvShowRepository)
 
     @Test
     fun `should call addContinueWatchingMovie once with correct movie`() = runTest {
-        addContinueWatchingTVShowUseCase(TV_SHOW)
+        // Arrange
+        coEvery { tvShowRepository.addContinueWatchingTVShow(TV_SHOW) } returns Unit
 
+        // Act
+        val result = addContinueWatchingTVShowUseCase(TV_SHOW)
+
+        // Assert
+        assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) {
-            repository.addContinueWatchingTVShow(TV_SHOW)
+            tvShowRepository.addContinueWatchingTVShow(TV_SHOW)
         }
     }
 
     @Test
     fun `should throw exception when repository fails`() = runTest {
-        coEvery { repository.addContinueWatchingTVShow(TV_SHOW) } throws Exception(DB_ERROR)
+        // Arrange
+        coEvery { tvShowRepository.addContinueWatchingTVShow(TV_SHOW) } throws
+                Exception(DB_ERROR)
 
-        assertThrows<Exception> {
-            addContinueWatchingTVShowUseCase(TV_SHOW)
-        }
+        // Act
+        val exception = assertThrows<Exception> { addContinueWatchingTVShowUseCase(TV_SHOW) }
 
+        // Assert
+        assertThat(exception.message).isEqualTo(DB_ERROR)
         coVerify(exactly = 1) {
-            repository.addContinueWatchingTVShow(TV_SHOW)
+            tvShowRepository.addContinueWatchingTVShow(TV_SHOW)
         }
     }
 
     companion object {
+        const val DB_ERROR = "DB error"
         val TV_SHOW = TVShow(
             id = 90L,
             title = "TV Show",
@@ -57,9 +64,8 @@ class AddContinueWatchingTVShowUseCaseTest {
             hasVideo = false,
             companyProductions = emptyList(),
             originCountry = "PS",
-            seasons = emptyList(),
             galleryUrl = emptyList(),
-            reviews = emptyList()
+            numberOfSeasons = 2,
         )
     }
 }

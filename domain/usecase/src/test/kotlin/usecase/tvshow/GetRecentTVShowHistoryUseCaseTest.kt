@@ -13,33 +13,37 @@ import repository.TVShowRepository
 class GetRecentTVShowHistoryUseCaseTest {
 
     private val tvShowRepository: TVShowRepository = mockk()
-    private lateinit var getRecentTVShowHistoryUseCase: GetRecentTVShowHistoryUseCase
-
-    @Before
-    fun setUp() {
-        getRecentTVShowHistoryUseCase = GetRecentTVShowHistoryUseCase(tvShowRepository)
-    }
+    private val getRecentTVShowHistoryUseCase: GetRecentTVShowHistoryUseCase =
+        GetRecentTVShowHistoryUseCase(tvShowRepository)
 
     @Test
     fun `should return list of recent TV show search queries when calling repository`() = runTest {
+        // Arrange
         coEvery { tvShowRepository.getRecentTVShowsSearchQueries() } returns RECENT_QUERIES
 
-        val callResult = getRecentTVShowHistoryUseCase()
+        // Act
+        val result = getRecentTVShowHistoryUseCase()
 
-        assertThat(callResult).isEqualTo(RECENT_QUERIES)
+        // Assert
+        assertThat(result).isEqualTo(RECENT_QUERIES)
         coVerify(exactly = 1) { tvShowRepository.getRecentTVShowsSearchQueries() }
     }
 
     @Test
     fun `should throw exception if repository throws exception`() = runTest {
-        coEvery { tvShowRepository.getRecentTVShowsSearchQueries() } throws Exception()
+        // Arrange
+        coEvery { tvShowRepository.getRecentTVShowsSearchQueries() } throws Exception(EXCEPTION)
 
-        assertThrows<Exception> {
-            getRecentTVShowHistoryUseCase()
-        }
+        // Act
+        val exception = assertThrows<Exception> { getRecentTVShowHistoryUseCase() }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
+        coVerify(exactly = 1) { tvShowRepository.getRecentTVShowsSearchQueries() }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get recent history"
         val RECENT_QUERIES = listOf("Breaking Bad", "The Office")
     }
 }

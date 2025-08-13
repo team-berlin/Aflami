@@ -1,15 +1,11 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
-import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
-import com.berlin.aflami.viewmodel.details.common.MovieDetailsArgs
-import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
-import com.berlin.aflami.viewmodel.details.common.MoviesTabContent
+import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
 import com.berlin.aflami.viewmodel.details.common.NO_COMPANY_PRODUCTION
 import com.berlin.aflami.viewmodel.details.common.NO_GALLERY
 import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
@@ -27,7 +23,7 @@ import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatus
+import usecase.auth.GetLoginStatusUseCase
 import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.GetMovieCastUseCase
@@ -45,14 +41,14 @@ class MovieDetailsViewModel @Inject constructor(
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
     private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
     private val movieReviewUseCase: GetMovieReviewUseCase,
-    private val getLoginStatusUseCase: GetLoginStatus,
+    private val getLoginStatusUseCase: GetLoginStatusUseCase,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val getMovieVideos: GetMovieVideos,
     private val rateMovieUseCase: RateMovieUseCase,
     movieDetailsArgs: MovieDetailsArgs,
 ) : BaseViewModel<MovieDetailsUiState, MovieDetailsScreenEffect>(
     MovieDetailsUiState()
-), MediaInteractionListener {
+), MediaDetailsScreenInteractionListener {
 
 
     private val movieId = movieDetailsArgs.movieId ?: 0
@@ -127,11 +123,11 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
-    private fun showSnackBar(message: String) {
-        updateState { it.copy(snackBarMessage = message) }
+    private fun showSnackBar(message: String, isSuccess: Boolean) {
+        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
         viewModelScope.launch {
             delay(3000)
-            updateState { it.copy(snackBarMessage = null) }
+            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
         }
     }
 
@@ -255,7 +251,7 @@ class MovieDetailsViewModel @Inject constructor(
             call = {
                 getMovieGalleryUseCase(mediaId).backdrops
             },
-            onSuccess = ::updateMediaGallerySectionWithNewImages,
+            onSuccess = ::updateMovieGallerySectionWithNewImages,
             onError = {
                 updateRowSectionStateToError(
                     NO_GALLERY
@@ -264,7 +260,7 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
-    private fun updateMediaGallerySectionWithNewImages(backdrops: List<String>) {
+    private fun updateMovieGallerySectionWithNewImages(backdrops: List<String>) {
         if (backdrops.isEmpty()) {
             updateState {
                 it.copy(
@@ -365,7 +361,7 @@ class MovieDetailsViewModel @Inject constructor(
             updateState {
                 it.copy(
                     showRatingDialog = true,
-                    selectedRatingMediaId = id
+                    selectedRatingMovieId = id
                 )
             }
         }
@@ -376,38 +372,32 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     override fun onSubmitRateClicked(rate: Int) {
-        val movieId = _state.value.selectedRatingMediaId?.toInt() ?: return
+        val movieId = _state.value.selectedRatingMovieId?.toInt() ?: return
 
         viewModelScope.launch {
-            updateState { it.copy(isScreenLoading = true) }
-
             tryToCall(
                 call = {
                     rateMovieUseCase(movieId, rating = rate.toDouble())
                 },
                 onSuccess = { result ->
-                    showSnackBar("Successfully submitted rating.")
                     updateState {
                         it.copy(
                             showRatingDialog = false,
-                            selectedRatingMediaId = null,
-                            isScreenLoading = false
+                            selectedRatingMovieId = null,
                         )
                     }
+                    showSnackBar("Successfully submitted rating.", isSuccess = true)
                 },
                 onError = {
                     stateError ->
-                    Log.d("SubmitRateInViewmodel", "onSubmitRateClicked: $stateError")
-
-                    showSnackBar("Failed to submit rating.")
                     updateState {
                         it.copy(
                             showRatingDialog = false,
-                            selectedRatingMediaId = null,
-                            isScreenLoading = false,
+                            selectedRatingMovieId = null,
                             errorMessage = stateError.message
                         )
                     }
+                    showSnackBar("Failed to submit rating.", isSuccess = false)
                 }
             )
         }
@@ -417,7 +407,7 @@ class MovieDetailsViewModel @Inject constructor(
         updateState {
             it.copy(
                 showRatingDialog = false,
-                selectedRatingMediaId = null
+                selectedRatingMovieId = null
             )
         }
     }
@@ -431,7 +421,7 @@ class MovieDetailsViewModel @Inject constructor(
                 it.copy(
                     showAddToListDialog = true,
                     selectedFavouriteListId = favouriteListId,
-                    selectedAddToListMediaId = mediaId
+                    selectedAddToListMovieId = mediaId
                 )
             }
         }
@@ -441,7 +431,7 @@ class MovieDetailsViewModel @Inject constructor(
         updateState {
             it.copy(
                 showAddToListDialog = false,
-                selectedAddToListMediaId = null,
+                selectedAddToListMovieId = null,
                 selectedFavouriteListId = null
             )
         }

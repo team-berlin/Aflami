@@ -1,30 +1,53 @@
 package usecase.movie
 
+import com.google.common.truth.Truth.assertThat
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
+import usecase.movie.AddContinueWatchingMovieUseCaseTest.Companion.DB_ERROR
 
 class DeleteQueryFromMoviesHistoryUseCaseTest {
+    private val movieRepository: MovieRepository = mockk()
+    private val deleteQueryFromMoviesHistoryUseCase: DeleteQueryFromMoviesHistoryUseCase =
+        DeleteQueryFromMoviesHistoryUseCase(movieRepository)
 
-    private val repository: MovieRepository = mockk(relaxed = true)
-    private lateinit var deleteQueryFromMoviesHistoryUseCase: DeleteQueryFromMoviesHistoryUseCase
 
-    @Before
-    fun setUp() {
-        deleteQueryFromMoviesHistoryUseCase = DeleteQueryFromMoviesHistoryUseCase(repository)
+    @Test
+    fun `should call deleteQueryFromHistory on repository when invoked`() = runTest {
+        // Arrange
+        coEvery { movieRepository.deleteMovieQueryFromHistory(QUERY) } returns Unit
+
+        // Act
+        val result = deleteQueryFromMoviesHistoryUseCase(QUERY)
+
+        // Assert
+        assertThat(result).isEqualTo(Unit)
+        coVerify { movieRepository.deleteMovieQueryFromHistory(QUERY) }
     }
 
     @Test
-    fun `invoke should call deleteQueryFromHistory on repository`() = runTest {
-        deleteQueryFromMoviesHistoryUseCase(QUERY)
+    fun `should throw exception when repository fails to delete query from history`() = runTest {
+        // Arrange
+        coEvery { movieRepository.deleteMovieQueryFromHistory(QUERY) } throws
+                Exception(DB_ERROR)
 
-        coVerify { repository.deleteMovieQueryFromHistory(QUERY) }
+        // Act
+        val exception = assertThrows<Exception> {
+            deleteQueryFromMoviesHistoryUseCase(QUERY)
+        }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(DB_ERROR)
+        coVerify(exactly = 1) {
+            movieRepository.deleteMovieQueryFromHistory(QUERY)
+        }
     }
 
-    companion object{
+    companion object {
         const val QUERY = "Matrix"
     }
 }

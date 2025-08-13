@@ -6,7 +6,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
@@ -14,33 +13,39 @@ import repository.MovieRepository
 class GetTopRatedMoviesUseCaseTest {
 
     private val movieRepository: MovieRepository = mockk()
-    private lateinit var getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase
-
-    @Before
-    fun setUp() {
-        getTopRatedMoviesUseCase = GetTopRatedMoviesUseCase(movieRepository)
-    }
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase =
+        GetTopRatedMoviesUseCase(movieRepository)
 
     @Test
     fun `should return list of movies when calling repository`() = runTest {
+        // Arrange
         coEvery { movieRepository.getTopRatedMovies(PAGE) } returns MOVIES
 
-        val callResult = getTopRatedMoviesUseCase(PAGE)
+        // Act
+        val result = getTopRatedMoviesUseCase(PAGE)
 
-        assertThat(callResult).isEqualTo(MOVIES)
+        // Assert
+        assertThat(result).isEqualTo(MOVIES)
         coVerify(exactly = 1) { movieRepository.getTopRatedMovies(PAGE) }
     }
 
     @Test
     fun `should throw exception if movieRepository throws exception`() = runTest {
-        coEvery { movieRepository.getTopRatedMovies(PAGE) } throws Exception()
+        // Arrange
+        coEvery { movieRepository.getTopRatedMovies(PAGE) } throws Exception(ERROR_MESSAGE)
 
-        assertThrows<Exception> {
+        // Act
+        val exception = assertThrows<Exception> {
             getTopRatedMoviesUseCase(PAGE)
         }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
+        coVerify(exactly = 1) { movieRepository.getTopRatedMovies(PAGE) }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to get top rated movie"
         const val PAGE = 1
         val MOVIES = listOf(
             Movie(
@@ -56,7 +61,9 @@ class GetTopRatedMoviesUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             ),
             Movie(
                 id = 24L,
@@ -71,7 +78,9 @@ class GetTopRatedMoviesUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             )
         )
     }

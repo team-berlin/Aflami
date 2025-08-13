@@ -20,6 +20,7 @@ import com.berlin.aflami.navigation.routes.homeScreenRoute
 import com.berlin.aflami.navigation.routes.listsRoute
 import com.berlin.aflami.navigation.routes.loginRoute
 import com.berlin.aflami.navigation.routes.movieDetailsRoute
+import com.berlin.aflami.navigation.routes.moviesByCategoryRoute
 import com.berlin.aflami.navigation.routes.myRating
 import com.berlin.aflami.navigation.routes.onBoarding
 import com.berlin.aflami.navigation.routes.profileRoute
@@ -27,6 +28,7 @@ import com.berlin.aflami.navigation.routes.searchByActorNameRoute
 import com.berlin.aflami.navigation.routes.searchByCountryRoute
 import com.berlin.aflami.navigation.routes.searchScreenRoute
 import com.berlin.aflami.navigation.routes.topRatingMedia
+import com.berlin.aflami.navigation.routes.tvShowByCategoryRoute
 import com.berlin.aflami.navigation.routes.tvShowDetailsRoute
 import com.berlin.aflami.navigation.routes.videoWebView
 import com.berlin.aflami.navigation.routes.watchHistory
@@ -76,6 +78,7 @@ fun AflamiNavGraph(
             bottomNavigationBarGraph()
             homeNavigationGraph()
             detailsNavigationGraph()
+            categoryNavigationGraph()
         }
     }
 
@@ -148,4 +151,9 @@ fun NavGraphBuilder.detailsNavigationGraph() {
     movieDetailsRoute()
     castDetailsScreen()
     videoWebView()
+}
+
+fun NavGraphBuilder.categoryNavigationGraph() {
+    moviesByCategoryRoute()
+    tvShowByCategoryRoute()
 }

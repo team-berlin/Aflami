@@ -145,6 +145,22 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse { apiService.getTVShowVideos(seriesId) }
     }
 
+    override suspend fun getTvShowsByCategory(
+        tvShowId: Long,
+        page: Int
+    ): BaseResponse<TVShowDetailsDto> {
+        require(tvShowId > 0) { "Invalid seriesId: $tvShowId" }
+        return wrapApiResponse { apiService.getTVShowsByCategory(tvShowId,page) }
+    }
+
+    override suspend fun getMoviesByCategory(
+        tvShowId: Long,
+        page: Int
+    ): BaseResponse<MovieDetailsDto> {
+        require(tvShowId > 0) { "Invalid movieId: $tvShowId" }
+        return wrapApiResponse { apiService.getMoviesByCategory(tvShowId,page) }
+    }
+
     override suspend fun postRateMovie(
         movieId: Int,
         rating: SubmitRatingRequestDto

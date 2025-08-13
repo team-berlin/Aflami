@@ -15,7 +15,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import usecase.SearchByActorNameUseCase
+import usecase.movie.SearchByActorNameUseCase
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)

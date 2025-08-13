@@ -40,7 +40,7 @@
     <string name="create_account">إنشاء حساب</string>
     <string name="logo">شعار</string>
     <string name="login_error_message">كلمة المرور أو اسم المستخدم غير صحيح</string>
-    <string name="loading">جاري التحميل...</string>
+    <string name="loading">جاري التحميل…</string>
 
     <string name="offline_title">عذرًا! يبدو أنك غير متصل بالإنترنت.</string>
     <string name="check_connection_title">تحقق من اتصالك وحاول مرة أخرى، سنكون بانتظارك مع أفلامك والفشار.</string>
@@ -100,6 +100,16 @@
     <string name="strict_description">إخفاء جميع المحتوى الحساس.</string>
     <string name="moderate_description">إخفاء المشاهد الصريحة فقط.</string>
     <string name="off_description">عدم إخفاء المحتوى.</string>
+    <string name="sure_to_continue">أأنت متأكد من رغبتك في المتابعة؟</string>
+    <string name="logout_msg"> فإن مللت منا، فاعلم أننا باقون هنا في انتظارك.</string>
+
+    <string name="rate_it">قيّم</string>
+    <string name="select_how_much_you_like_it">حدد كم تقيّم</string>
+    <string name="submit">تأكيد</string>
+    <string name="catgories">التصنيفات</string>
+    <string name="movies">الافلام</string>
+    <string name="tv_shows">البرامج التليفزيونية</string>
+    <string name="no_items_found">لا يوجد محتويات لهذا التصنيف</string>
 
 
 </resources>

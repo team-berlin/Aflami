@@ -45,7 +45,7 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.Descript
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.TVShowTabSection
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
+import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsTabs
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsUiState
 import com.berlin.aflami.viewmodel.details.series.TvShowDetailsScreenEffect
@@ -68,19 +68,6 @@ fun TvShowDetailsScreen(
                 tvShowDetailsScreenEffect = newEffect
             )
         }
-    }
-
-    AnimatedVisibility(
-        visible = uiState.snackBarMessage != null,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        SnackBar(
-            status = SnackBarStatus.SUCCESS,
-            modifier = Modifier.fillMaxWidth(),
-            text = uiState.snackBarMessage.orEmpty(),
-            iconPainter = painterResource(id = R.drawable.success)
-        )
     }
 
     AnimatedVisibility(
@@ -117,6 +104,32 @@ fun TvShowDetailsScreen(
             },
         )
     }
+
+    AnimatedVisibility(
+        visible = uiState.snackBarMessage != null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        val status =
+            when(uiState.isSnackBarStatusSuccess){
+                true -> SnackBarStatus.SUCCESS
+                false -> SnackBarStatus.ERROR
+                else -> SnackBarStatus.ERROR
+            }
+        val icon = when (status) {
+            SnackBarStatus.SUCCESS -> painterResource(id = R.drawable.success)
+            SnackBarStatus.ERROR -> painterResource(id = R.drawable.error)
+        }
+        Box(Modifier.statusBarsPadding()) {
+            SnackBar(
+                status = status,
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                text = uiState.snackBarMessage.orEmpty(),
+                iconPainter = icon
+            )
+        }
+    }
+
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
@@ -184,7 +197,7 @@ private fun onReceiveTVShowDetailsEffect(
 @Composable
 fun TvShowDetailsContent(
     state: TVShowDetailsUiState,
-    listener: MediaInteractionListener,
+    listener: MediaDetailsScreenInteractionListener,
     isDescriptionExpanded: Boolean,
     onToggleDescriptionExpand: () -> Unit,
     movieDetailsTabs: TVShowDetailsTabs,
