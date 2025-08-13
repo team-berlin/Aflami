@@ -20,6 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.MyRatingDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
@@ -67,7 +68,11 @@ private fun WatchHistoryonReceiveEffect(
     effect: ProfileScreenEffect
 ) {
     when (effect) {
-        ProfileScreenEffect.NavigateToMyRatingScreen -> {}
+        ProfileScreenEffect.NavigateToMyRatingScreen -> {
+            navController.navigate(
+                MyRatingDestination
+            )
+        }
         ProfileScreenEffect.NavigateToWatchHistoryScreen -> {
             navController.navigate(
                 WatchHistoryDestination
@@ -182,9 +187,10 @@ private fun ProfileContent(
     {
         ProfileSection(userAvatar = profileScreenState.userAvatarUrl?:"", userName = profileScreenState.userName, painterResource(R.drawable.profile_cover))
         Spacer(modifier = Modifier.height(24.dp))
-        WatchHistoryRatingSection {
-            profileScreenInteractionListener.onWatchHistoryClick()
-        }
+        WatchHistoryRatingSection(
+            onWatchHistoryClick = {profileScreenInteractionListener.onWatchHistoryClick()},
+            onMyRatingClick = {profileScreenInteractionListener.onMyRatingClick()}
+        )
         Spacer(modifier = Modifier.height(24.dp))
         HorizontalDivider(thickness = 1.dp, color = Theme.color.stroke)
         Spacer(modifier = Modifier.height(24.dp))

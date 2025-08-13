@@ -1,10 +1,9 @@
 package com.berlin.entity
 
-data class RatedMedia(
+data class RatedMovie(
     val id: Long,
     val title: String,
     val posterUrl: String?,
     val userRating: Double,
-    val voteAverage: Double,
-    val mediaType: String?
+    val voteAverage: Double
 )

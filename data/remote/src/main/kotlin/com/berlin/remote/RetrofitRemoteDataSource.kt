@@ -2,6 +2,7 @@ package com.berlin.remote
 
 import com.berlin.remote.network.ApiService
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
+import com.berlin.repository.datasource.local.UserProfileLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 class RetrofitRemoteDataSource @Inject constructor(
     private val apiService: ApiService,
-    private val authenticationLocalDataSource: AuthenticationLocalDataSource
+    private val authenticationLocalDataSource: AuthenticationLocalDataSource,
+    private val userProfileLocalDataSource: UserProfileLocalDataSource
 ) : RemoteDataSource {
     override suspend fun getSimilarMovies(movieId: Long): BaseResponse<MovieDetailsDto> {
         require(movieId > 0) { "Invalid movieId: $movieId" }
@@ -169,15 +171,20 @@ class RetrofitRemoteDataSource @Inject constructor(
     override suspend fun getRatedMovies(page: Int): BaseResponse<RatedMediaDto> {
         val sessionId = authenticationLocalDataSource.getUserSessionId()?:
         throw IllegalStateException("Session ID is missing. User might not be logged in.")
+        val accountId = userProfileLocalDataSource.get()?.id ?:
+        throw IllegalStateException("Account ID not cached. User might not be logged in.")
         return wrapApiResponse {
-            apiService.getRatedMovies(TODO("Add Account Id"), sessionId, page)
+            apiService.getRatedMovies(accountId.toString(), sessionId, page)
         }
     }
 
     override suspend fun getRatedTVShows(page: Int): BaseResponse<RatedMediaDto> {
-        val sessionId = authenticationLocalDataSource.getUserSessionId()?: throw IllegalStateException("Session ID is missing. User might not be logged in.")
+        val sessionId = authenticationLocalDataSource.getUserSessionId()?:
+        throw IllegalStateException("Session ID is missing. User might not be logged in.")
+        val accountId = userProfileLocalDataSource.get()?.id ?:
+        throw IllegalStateException("Account ID not cached. User might not be logged in.")
         return wrapApiResponse {
-            apiService.getRatedTVShows(TODO("Add Account Id"), sessionId, page)
+            apiService.getRatedTVShows(accountId.toString(), sessionId, page)
         }
     }
 }

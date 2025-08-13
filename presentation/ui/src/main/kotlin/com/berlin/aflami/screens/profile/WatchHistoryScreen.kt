@@ -50,7 +50,7 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
 
 @Composable
-fun WatchHistory(
+fun WatchHistoryScreen(
     viewModel: WatchHistoryViewModel = hiltViewModel(),
 ) {
     val navController = Theme.navController
@@ -58,7 +58,7 @@ fun WatchHistory(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
-            WatchHistoryonReceiveEffect(navController = navController, effect = newEffect)
+            watchHistoryOnReceiveEffect(navController = navController, effect = newEffect)
         }
     }
 
@@ -84,7 +84,7 @@ fun WatchHistory(
     }
 }
 
-private fun WatchHistoryonReceiveEffect(navController: NavController, effect: WatchHistoryScreenEffect) {
+private fun watchHistoryOnReceiveEffect(navController: NavController, effect: WatchHistoryScreenEffect) {
     when (effect) {
         WatchHistoryScreenEffect.NavigateBack -> {
             navController.popBackStack()
