@@ -168,10 +168,9 @@ fun GuessTheGameContent(
                     }
                 },
                 trailingIcon = {
-                    CountdownCircularProgress(
-                    totalTimePerSecond =state.time,
-
-                        )
+                    CountdownCircularProgress(totalTimePerSecond =state.time){
+                        listener.navigateToResult()
+                    }
                 })
             Indicator(
                 modifier = Modifier

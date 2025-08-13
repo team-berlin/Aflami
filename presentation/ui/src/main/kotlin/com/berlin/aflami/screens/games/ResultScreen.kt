@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -56,7 +57,7 @@ fun ResultScreen(modifier: Modifier = Modifier) {
                     colors = Theme.color.gradientColors.streakGradient
                 )
             )
-            .navigationBarsPadding()
+            .statusBarsPadding()
             .padding(top = 8.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
     ) {
         CirclesBackground()
