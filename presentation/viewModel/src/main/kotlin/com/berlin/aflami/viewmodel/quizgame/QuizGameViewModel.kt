@@ -54,7 +54,6 @@ class QuizGameViewModel @Inject constructor(
                     getCast()
                     getMediaByCharacter()
                 }
-
                 GameType.POSTER.name -> getMediaByPoster()
                 GameType.RELEASE.name -> getMediaByReleaseDate()
                 GameType.GENRE.name -> {
@@ -69,7 +68,9 @@ class QuizGameViewModel @Inject constructor(
 
 
     private fun getMediaByCharacter() {
-        val mediaItem = mediaCast.value
+        val mediaItem = mediaCast.value.take(numberOfQuestion)
+        Log.e("mediaItem", mediaItem.size.toString())
+
         if (mediaItem.isEmpty()) return
         val questions = mediaItem.map { media ->
             val wrongOptions = mediaItem.asSequence()
@@ -78,13 +79,11 @@ class QuizGameViewModel @Inject constructor(
                 .take(3)
                 .toList()
             val allOptions = (wrongOptions + media.name).shuffled()
-
             Question(
                 question = media.poster,
                 options = allOptions,
                 correctAnswer = media.name
             )
-
         }
         updateState {
             it.copy(
@@ -95,7 +94,7 @@ class QuizGameViewModel @Inject constructor(
                 time = timer
             )
         }
-
+        Log.e("questions", questions.toString())
     }
 
     //question-> poster
@@ -134,19 +133,28 @@ class QuizGameViewModel @Inject constructor(
     private fun getMediaByReleaseDate() {
         val mediaItems = mediaList.value
         if (mediaItems.isEmpty()) return
+
         val questions = mediaItems.map { media ->
-            val wrongOptions = mediaItems.asSequence()
-                .filter { it.id != media.id }
-                .map { it.title }
+            val correctYear = media.releaseYear
+
+            val wrongOptions = mediaItems
+                .asSequence()
+                .map { it.releaseYear }
+                .filter { it != correctYear }
+                .distinct()
+                .shuffled()
                 .take(3)
                 .toList()
-            val allOptions = (wrongOptions + media.title).shuffled()
+
+            val allOptions = (wrongOptions + correctYear).shuffled()
+
             Question(
-                question = media.releaseYear,
+                question = media.title,
                 options = allOptions,
-                correctAnswer = media.title
+                correctAnswer = correctYear
             )
         }
+
         updateState {
             it.copy(
                 questions = questions,
@@ -158,11 +166,14 @@ class QuizGameViewModel @Inject constructor(
         }
     }
 
+
     //question-> media name
     // answer -> genre
     private fun getMediaByGenres() {
         val mediaItems = mediaList.value
         val genreItems = mediaGenre.value
+        Log.e("o",mediaItems.size.toString())
+        Log.e("t",genreItems.size.toString())
 
         if (mediaItems.isEmpty() || genreItems.isEmpty()) return
         val questions = mediaItems.map { media ->
@@ -214,9 +225,13 @@ class QuizGameViewModel @Inject constructor(
         val tvShowGenre = getTVGenresUseCase()
         val movieGenreList = movieGenre.map { it.toGenreUiState() }
         val tvShowGenreList = tvShowGenre.map { it.toGenreUiState() }
-        mediaGenre.value = (movieGenreList + tvShowGenreList).shuffled().take(numberOfQuestion)
-    }
+        Log.e("movieGenreList",movieGenreList.size.toString())
+        Log.e("tvShowGenreList",tvShowGenreList.size.toString())
 
+        mediaGenre.value = (movieGenreList + tvShowGenreList)
+        Log.e("mediaGenre",mediaGenre.value.toString())
+
+    }
     private suspend fun getCast() {
         updateScreenStateToLoading()
         try {
@@ -226,16 +241,26 @@ class QuizGameViewModel @Inject constructor(
             var movieIndex = 0
             var tvShowIndex = 0
 
-            while (accumulatedCasts.size < numberOfQuestion && (movieIndex < movieIds.value.size || tvShowIndex < tvShowIds.value.size)) {
+            while (accumulatedCasts.size < 20 &&
+                (movieIndex < movieIds.value.size || tvShowIndex < tvShowIds.value.size)
+            ) {
                 if (movieIndex < movieIds.value.size) {
-                    val movieCast =
-                        getMovieCastUseCase(movieIds.value[movieIndex]).map { it.toActorUiState() }
+                    val movieCast = getMovieCastUseCase(movieIds.value[movieIndex])
+                        .map { it.toActorUiState() }
+                        .filter { actor ->
+                            !actor.poster.isNullOrBlank() &&
+                                    actor.poster != "https://image.tmdb.org/t/p/w500"
+                        }
                     accumulatedCasts.addAll(movieCast)
                     movieIndex++
                 }
-                if (tvShowIndex < tvShowIds.value.size && accumulatedCasts.size < numberOfQuestion) {
-                    val tvShowCast =
-                        getTVShowCastUseCase(tvShowIds.value[tvShowIndex]).map { it.toActorUiState() }
+                if (tvShowIndex < tvShowIds.value.size && accumulatedCasts.size < 20) {
+                    val tvShowCast = getTVShowCastUseCase(tvShowIds.value[tvShowIndex])
+                        .map { it.toActorUiState() }
+                        .filter { actor ->
+                            !actor.poster.isNullOrBlank() &&
+                                    actor.poster != "https://image.tmdb.org/t/p/w500"
+                        }
                     accumulatedCasts.addAll(tvShowCast)
                     tvShowIndex++
                 }
@@ -245,7 +270,6 @@ class QuizGameViewModel @Inject constructor(
             updateState { it.copy(loading = false) }
         }
     }
-
 
     private fun interleaveMoviesAndTvShowsEqually(
         movies: List<MediaUiState>,
