@@ -6,7 +6,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
@@ -14,33 +13,38 @@ import repository.MovieRepository
 class GetUpComingMoviesUseCaseTest {
 
     private val movieRepository: MovieRepository = mockk()
-    private lateinit var getUpComingMoviesUseCase: GetUpComingMoviesUseCase
+    private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase =
+        GetUpComingMoviesUseCase(movieRepository)
 
-    @Before
-    fun setUp() {
-        getUpComingMoviesUseCase = GetUpComingMoviesUseCase(movieRepository)
-    }
 
     @Test
     fun `should return list of movies when calling repository`() = runTest {
-        coEvery { movieRepository.getUpComingMovies(selectedGenres) } returns MOVIES
+        // Arrange
+        coEvery { movieRepository.getUpComingMovies() } returns MOVIES
 
-        val callResult = getUpComingMoviesUseCase(state.value.selectedGenres)
+        // Act
+        val result = getUpComingMoviesUseCase()
 
-        assertThat(callResult).isEqualTo(MOVIES)
-        coVerify(exactly = 1) { movieRepository.getUpComingMovies(selectedGenres) }
+        // Assert
+        assertThat(result).isEqualTo(MOVIES)
+        coVerify(exactly = 1) { movieRepository.getUpComingMovies() }
     }
 
     @Test
     fun `should throw exception if movieRepository throws exception`() = runTest {
-        coEvery { movieRepository.getUpComingMovies(selectedGenres) } throws Exception()
+        // Arrange
+        coEvery { movieRepository.getUpComingMovies() } throws Exception(ERROR_MESSAGE)
 
-        assertThrows<Exception> {
-            getUpComingMoviesUseCase(state.value.selectedGenres)
-        }
+        // Act
+        val exception = assertThrows<Exception> { getUpComingMoviesUseCase() }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
+        coVerify(exactly = 1) { movieRepository.getUpComingMovies() }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to get up coming movie"
         val MOVIES = listOf(
             Movie(
                 id = 90L,
@@ -55,7 +59,9 @@ class GetUpComingMoviesUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             ),
             Movie(
                 id = 24L,
@@ -70,7 +76,9 @@ class GetUpComingMoviesUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             )
         )
     }

@@ -3,16 +3,14 @@ package com.berlin.aflami.viewmodel.profile
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
-import com.berlin.entity.ContentRestriction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatus
-import usecase.profile.GetContentRestrictionUseCase
+import usecase.auth.GetLoginStatusUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
-import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
 import javax.inject.Inject
@@ -23,11 +21,8 @@ class ProfileViewModel @Inject constructor(
     val getThemeUseCase: GetThemeUseCase,
     val setLanguageUseCase: SetLanguageUseCase,
     val setThemeUseCase: SetThemeUseCase,
-    val getLoginStatus: GetLoginStatus,
-    val setContentRestrictionUseCase: SetContentRestrictionUseCase,
-    val getContentRestrictionUseCase: GetContentRestrictionUseCase
-
-) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
+    val getLoginStatus: GetLoginStatusUseCase,
+    ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
 
     init {

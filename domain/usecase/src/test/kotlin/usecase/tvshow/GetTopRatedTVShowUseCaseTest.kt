@@ -14,33 +14,40 @@ import repository.TVShowRepository
 class GetTopRatedTVShowUseCaseTest {
 
     private val tvShowRepository: TVShowRepository = mockk()
-    private lateinit var getTopRatedTVShowUseCase: GetTopRatedTVShowUseCase
+    private val getTopRatedTVShowUseCase: GetTopRatedTVShowUseCase =
+        GetTopRatedTVShowUseCase(tvShowRepository)
 
-    @Before
-    fun setUp() {
-        getTopRatedTVShowUseCase = GetTopRatedTVShowUseCase(tvShowRepository)
-    }
 
     @Test
     fun `should return list of TV shows when calling repository`() = runTest {
+        // Arrange
         coEvery { tvShowRepository.getTopRatedTVShows(PAGE) } returns TV_SHOWS
 
-        val callResult = getTopRatedTVShowUseCase(PAGE)
+        // Act
+        val result = getTopRatedTVShowUseCase(PAGE)
 
-        assertThat(callResult).isEqualTo(TV_SHOWS)
+        // Assert
+        assertThat(result).isEqualTo(TV_SHOWS)
         coVerify(exactly = 1) { tvShowRepository.getTopRatedTVShows(PAGE) }
     }
 
     @Test
     fun `should throw exception if tvShowRepository throws exception`() = runTest {
-        coEvery { tvShowRepository.getTopRatedTVShows(PAGE) } throws Exception()
+        // Arrange
+        coEvery { tvShowRepository.getTopRatedTVShows(PAGE) } throws Exception(EXCEPTION)
 
-        assertThrows<Exception> {
+        // Act
+        val exception = assertThrows<Exception> {
             getTopRatedTVShowUseCase(PAGE)
         }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
+        coVerify(exactly = 1) { tvShowRepository.getTopRatedTVShows(PAGE) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get top rated tv show"
         const val PAGE = 1
         val TV_SHOWS = listOf(
             TVShow(
@@ -56,9 +63,8 @@ class GetTopRatedTVShowUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                seasons = emptyList(),
                 galleryUrl = emptyList(),
-                reviews = emptyList()
+                numberOfSeasons = 2,
             ),
             TVShow(
                 id = 90L,
@@ -73,9 +79,8 @@ class GetTopRatedTVShowUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                seasons = emptyList(),
                 galleryUrl = emptyList(),
-                reviews = emptyList()
+                numberOfSeasons = 2,
             )
         )
     }
