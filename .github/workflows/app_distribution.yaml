@@ -60,6 +60,8 @@ jobs:
             git tag "$new_tag"
       
             if git push origin "$new_tag"; then
+              echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
+              echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
               break
             else
               git fetch --tags
