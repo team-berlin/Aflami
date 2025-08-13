@@ -17,7 +17,7 @@ class AddContinueWatchingMovieUseCaseTest {
 
 
     @Test
-    fun `should call addContinueWatchingMovie once with correct movie`() = runTest {
+    fun `should call addContinueWatchingMovie once when movie is correct`() = runTest {
         // Arrange
         coEvery { movieRepository.addContinueWatchingMovie(TEST_MOVIE) } returns Unit
 
@@ -38,11 +38,12 @@ class AddContinueWatchingMovieUseCaseTest {
                 Exception(DB_ERROR)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             addContinueWatchingMovieUseCase(TEST_MOVIE)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(DB_ERROR)
         coVerify(exactly = 1) {
             movieRepository.addContinueWatchingMovie(TEST_MOVIE)
         }

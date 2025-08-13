@@ -17,7 +17,7 @@ class DeleteQueryFromMoviesHistoryUseCaseTest {
 
 
     @Test
-    fun `invoke should call deleteQueryFromHistory on repository`() = runTest {
+    fun `should call deleteQueryFromHistory on repository when invoked`() = runTest {
         // Arrange
         coEvery { movieRepository.deleteMovieQueryFromHistory(QUERY) } returns Unit
 
@@ -36,11 +36,12 @@ class DeleteQueryFromMoviesHistoryUseCaseTest {
                 Exception(DB_ERROR)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             deleteQueryFromMoviesHistoryUseCase(QUERY)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(DB_ERROR)
         coVerify(exactly = 1) {
             movieRepository.deleteMovieQueryFromHistory(QUERY)
         }

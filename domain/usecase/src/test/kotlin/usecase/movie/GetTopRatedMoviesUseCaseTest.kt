@@ -32,18 +32,20 @@ class GetTopRatedMoviesUseCaseTest {
     @Test
     fun `should throw exception if movieRepository throws exception`() = runTest {
         // Arrange
-        coEvery { movieRepository.getTopRatedMovies(PAGE) } throws Exception()
+        coEvery { movieRepository.getTopRatedMovies(PAGE) } throws Exception(ERROR_MESSAGE)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             getTopRatedMoviesUseCase(PAGE)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) { movieRepository.getTopRatedMovies(PAGE) }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to get top rated movie"
         const val PAGE = 1
         val MOVIES = listOf(
             Movie(

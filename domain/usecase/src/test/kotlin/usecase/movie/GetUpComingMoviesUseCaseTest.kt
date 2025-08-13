@@ -33,16 +33,18 @@ class GetUpComingMoviesUseCaseTest {
     @Test
     fun `should throw exception if movieRepository throws exception`() = runTest {
         // Arrange
-        coEvery { movieRepository.getUpComingMovies() } throws Exception()
+        coEvery { movieRepository.getUpComingMovies() } throws Exception(ERROR_MESSAGE)
 
         // Act
-        assertThrows<Exception> { getUpComingMoviesUseCase() }
+        val exception = assertThrows<Exception> { getUpComingMoviesUseCase() }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) { movieRepository.getUpComingMovies() }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to get up coming movie"
         val MOVIES = listOf(
             Movie(
                 id = 90L,

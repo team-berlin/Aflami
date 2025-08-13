@@ -16,9 +16,10 @@ class SearchByActorNameUseCaseTest {
         SearchByActorNameUseCase(movieRepository)
 
     @Test
-    fun `When search by valid actor name and no media found, then return empty list`() = runTest {
+    fun `should return empty list when searching by valid actor name and no media found`() = runTest {
         // Arrange
-        coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns emptyList()
+        coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns
+                emptyList()
 
         // Act
         val result = searchByActorNameUseCase.invoke(ACTOR_NAME, PAGE)
@@ -28,7 +29,7 @@ class SearchByActorNameUseCaseTest {
     }
 
     @Test
-    fun `When search by valid actor name, then return list of media related to actor`() = runTest {
+    fun `should return list of media related to actor when searching by valid actor name`() = runTest {
         // Arrange
         coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns MOVIES
 
@@ -40,9 +41,10 @@ class SearchByActorNameUseCaseTest {
     }
 
     @Test
-    fun `When search by invalid actor name, then return empty list`() = runTest {
+    fun `should return empty list when searching by invalid actor name`() = runTest {
         // Arrange
-        coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns emptyList()
+        coEvery { movieRepository.getMoviesByActorName(ACTOR_NAME, PAGE) } returns
+                emptyList()
 
         // Act
         val result = searchByActorNameUseCase.invoke(ACTOR_NAME, PAGE)

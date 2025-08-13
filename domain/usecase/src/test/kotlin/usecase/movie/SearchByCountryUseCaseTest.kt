@@ -6,7 +6,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import repository.MovieRepository
 
@@ -30,9 +29,9 @@ class SearchByCountryUseCaseTest {
     }
 
     @Test
-    fun `When search by valid country name and movies not found, then return empty list`() =
+    fun `should return empty list when searching by valid country name and no movies found`() =
         runTest {
-            // Arraneg
+            // Arrange
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
 
             // Act
@@ -43,7 +42,7 @@ class SearchByCountryUseCaseTest {
         }
 
     @Test
-    fun `When search by valid country name, then return list of movies relate to country`() =
+    fun `should return list of movies related to country when searching by valid country name`() =
         runTest {
             // Arrange
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns MOVIES
@@ -56,7 +55,7 @@ class SearchByCountryUseCaseTest {
         }
 
     @Test
-    fun `When search by invalid country name, then return list of movies relate to country`() =
+    fun `should return empty list when searching by invalid country name`() =
         runTest {
             // Arrange
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()

@@ -32,18 +32,20 @@ class GetMovieGalleryUseCaseTest {
     @Test
     fun `should throw exception if movieRepository throws exception`() = runTest {
         // Arrange
-        coEvery { movieDetailsRepository.getMovieImages(MOVIE_ID) } throws Exception()
+        coEvery { movieDetailsRepository.getMovieImages(MOVIE_ID) } throws Exception(ERROR_MESSAGE)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             getMovieGalleryUseCase(MOVIE_ID)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) { movieDetailsRepository.getMovieImages(MOVIE_ID) }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to get movie images"
         const val MOVIE_ID = 50L
         val POSTER = MediaImage(
             backdrops = listOf(

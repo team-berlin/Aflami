@@ -29,8 +29,8 @@ class GetSearchMoviesUseCaseTest {
         coVerify(exactly = 1) { movieRepository.getMovieByKeyWord(QUERY, PAGE) }
     }
 
-    @Test
-    fun `should return empty list when repository returns nothing`() = runTest {
+    @Test 
+    fun `should return empty list when movie is not found`() = runTest {
         // Arrange
         coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } returns emptyList()
 
@@ -45,12 +45,14 @@ class GetSearchMoviesUseCaseTest {
     @Test
     fun `should throw exception when repository throws`() = runTest {
         // Arrange
-        coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } throws Exception(EXCEPTION)
+        coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } throws
+                Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> { getSearchMoviesUseCase(QUERY, PAGE) }
+        val exception = assertThrows<Exception> { getSearchMoviesUseCase(QUERY, PAGE) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { movieRepository.getMovieByKeyWord(QUERY, PAGE) }
     }
 

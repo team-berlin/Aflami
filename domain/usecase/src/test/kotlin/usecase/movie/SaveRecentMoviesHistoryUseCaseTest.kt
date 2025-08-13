@@ -13,13 +13,13 @@ import usecase.movie.GetUpComingMoviesUseCaseTest.Companion.MOVIES
 
 class SaveRecentMoviesHistoryUseCaseTest {
 
-    private val movieRepository: MovieRepository = mockk(relaxed = true)
+    private val movieRepository: MovieRepository = mockk()
     private val saveRecentMoviesHistoryUseCase: SaveRecentMoviesHistoryUseCase =
         SaveRecentMoviesHistoryUseCase(movieRepository)
 
 
     @Test
-    fun `should call repository to save recent movie query`() = runTest {
+    fun `should call repository to save recent movie query when invoked`() = runTest {
         // Arrange
         coEvery { movieRepository.saveRecentMoviesHistory(QUERY) } returns Unit
 
@@ -34,16 +34,19 @@ class SaveRecentMoviesHistoryUseCaseTest {
     @Test
     fun `should throw exception if repository throws exception`() = runTest {
         // Arrange
-        coEvery { movieRepository.saveRecentMoviesHistory(QUERY) } throws Exception()
+        coEvery { movieRepository.saveRecentMoviesHistory(QUERY) } throws
+                Exception(ERROR_MESSAGE)
 
         // Act
-        assertThrows<Exception> { saveRecentMoviesHistoryUseCase(QUERY) }
+        val exception = assertThrows<Exception> { saveRecentMoviesHistoryUseCase(QUERY) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) { movieRepository.saveRecentMoviesHistory(QUERY) }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to movie history"
         const val QUERY = "Inception"
     }
 }

@@ -33,14 +33,16 @@ class GetMovieCastUseCaseTest {
     @Test
     fun `should throw exception when repository fails to get actors`() = runTest {
         // Arrange
-        coEvery { movieDetailsRepository.getMovieActors(MOVIE_ID) } throws Exception(FAILED_ACTORS)
+        coEvery { movieDetailsRepository.getMovieActors(MOVIE_ID) } throws
+                Exception(FAILED_ACTORS)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             getMovieCastUseCase(MOVIE_ID)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(FAILED_ACTORS)
         coVerify(exactly = 1) {
             movieDetailsRepository.getMovieActors(MOVIE_ID)
         }

@@ -34,9 +34,10 @@ class GetRecentMoviesHistoryUseCaseTest {
         coEvery { movieRepository.getRecentMoviesSearchQueries() } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> { getRecentMoviesHistoryUseCase() }
+        val exception = assertThrows<Exception> { getRecentMoviesHistoryUseCase() }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { movieRepository.getRecentMoviesSearchQueries() }
     }
 

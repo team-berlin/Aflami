@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
+import usecase.movie.GetMovieGenresUseCaseTest.Companion.ERROR_MESSAGE
 
 class GetPopularMoviesUseCaseTest {
 
@@ -35,9 +36,10 @@ class GetPopularMoviesUseCaseTest {
         coEvery { movieRepository.getPopularMovies() } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> { getPopularMoviesUseCase() }
+        val exception = assertThrows<Exception> { getPopularMoviesUseCase() }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { movieRepository.getPopularMovies() }
     }
 

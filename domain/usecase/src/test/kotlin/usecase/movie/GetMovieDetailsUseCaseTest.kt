@@ -9,7 +9,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
-import usecase.movie.GetMovieCastUseCaseTest.Companion.actors
 
 class GetMovieDetailsUseCaseTest {
 
@@ -34,20 +33,22 @@ class GetMovieDetailsUseCaseTest {
     @Test
     fun `should throw exception when repository throws exception`() = runTest {
         // Arrange
-        coEvery { movieDetailsRepository.getMovieDetails(movie.id) } throws Exception()
+        coEvery { movieDetailsRepository.getMovieDetails(movie.id) } throws Exception(ERROR_MESSAGE)
 
         //Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             getMovieDetailsUseCase(movie.id)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) {
             movieDetailsRepository.getMovieDetails(movie.id)
         }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to get movie details"
         val movie = Movie(
             id = 90L,
             title = "Test Movie",

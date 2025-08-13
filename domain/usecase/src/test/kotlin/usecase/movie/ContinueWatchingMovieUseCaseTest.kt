@@ -18,7 +18,7 @@ class ContinueWatchingMovieUseCaseTest {
         ContinueWatchingMovieUseCase(movieRepository)
 
     @Test
-    fun `should return list of continue watching movies`() = runTest {
+    fun `should return list of continue watching movies when invoked`() = runTest {
         // Arrange
         coEvery { movieRepository.getContinueWatchingMovies(PAGE) } returns movies
 
@@ -36,20 +36,22 @@ class ContinueWatchingMovieUseCaseTest {
     fun `should throw exception when repository fails to get continue watching movies`() = runTest {
         // Arrange
         coEvery { movieRepository.getContinueWatchingMovies(PAGE) } throws
-                Exception()
+                Exception(ERROR_MESSAGE)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             continueWatchingMovieUseCase(PAGE)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) {
             movieRepository.getContinueWatchingMovies(PAGE)
         }
     }
 
     companion object {
+         const val ERROR_MESSAGE = "Failed to get continue watching movies"
         const val PAGE = 1
         val movies = listOf(
             Movie(

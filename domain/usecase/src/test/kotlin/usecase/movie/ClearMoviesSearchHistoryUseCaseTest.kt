@@ -33,15 +33,15 @@ class ClearMoviesSearchHistoryUseCaseTest {
     @Test
     fun `should throw exception when repository fails to clear search history`() = runTest {
         // Arrange
-        coEvery { movieRepository.clearMovieSearchHistory() } throws
-                Exception(DB_ERROR)
+        coEvery { movieRepository.clearMovieSearchHistory() } throws Exception(DB_ERROR)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             clearMoviesSearchHistoryUseCase()
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(DB_ERROR)
         coVerify(exactly = 1) {
             movieRepository.clearMovieSearchHistory()
         }

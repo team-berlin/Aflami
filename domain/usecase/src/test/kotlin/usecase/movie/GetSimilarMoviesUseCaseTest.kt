@@ -20,13 +20,13 @@ class GetSimilarMoviesUseCaseTest {
         // Arrange
         coEvery {
             movieDetailsRepository.getSimilarMovies(MOVIE_ID)
-        } returns getSimilarMovie()
+        } returns MOVIES
 
         // Act
         val result = getSimilarMoviesUseCase.invoke(MOVIE_ID)
 
         // Assert
-        assertThat(result).isEqualTo(getSimilarMovie())
+        assertThat(result).isEqualTo(MOVIES)
         coVerify(exactly = 1) { movieDetailsRepository.getSimilarMovies(MOVIE_ID) }
     }
 
@@ -46,50 +46,60 @@ class GetSimilarMoviesUseCaseTest {
     }
 
     @Test
-    fun `should throw exception if movieDetailsRepository throw exception `() = runTest {
+    fun `should throw exception if movieDetailsRepository throw exception`() = runTest {
         // Arrange
         coEvery {
-            movieDetailsRepository.getSimilarMovies(
-                MOVIE_ID,
-            )
-        } throws Exception()
+            movieDetailsRepository.getSimilarMovies(MOVIE_ID,)
+        } throws Exception(ERROR_MESSAGE)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             getSimilarMoviesUseCase(MOVIE_ID)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) { movieDetailsRepository.getSimilarMovies(MOVIE_ID) }
     }
 
-    private fun getSimilarMovie(): List<Movie> {
-        val movieList = mutableListOf<Movie>()
-        for (i in 0..5) {
-            movieList.add(
-                Movie(
-                    id = 90L,
-                    title = "Test Movie",
-                    rating = 7.9,
-                    releaseDate = "1/12/2001",
-                    posterURL = "/test.jpg",
-                    screenShot = "/test.jpg",
-                    description = "This is the test movie",
-                    genres = emptyList(),
-                    duration = 3,
-                    hasVideo = false,
-                    companyProductions = emptyList(),
-                    originCountry = "PS",
-                    galleryUrl = emptyList(),
-                    reviews = emptyList(),
-                    isFavourite = false,
-                )
-            )
-        }
-        return movieList
-    }
-
     companion object {
+        val MOVIES = listOf(
+            Movie(
+                id = 90L,
+                title = "Test Movie",
+                rating = 7.9,
+                releaseDate = "1/12/2020",
+                posterURL = "/test.jpg",
+                screenShot = "/test.jpg",
+                description = "This is the test movie",
+                genres = emptyList(),
+                duration = 3,
+                hasVideo = false,
+                companyProductions = emptyList(),
+                originCountry = "PS",
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false
+            ),
+            Movie(
+                id = 24L,
+                title = "Test Movie two",
+                rating = 9.7,
+                releaseDate = "1/12/2021",
+                posterURL = "/test.jpg",
+                screenShot = "/test.jpg",
+                description = "This is the test movie",
+                genres = emptyList(),
+                duration = 3,
+                hasVideo = false,
+                companyProductions = emptyList(),
+                originCountry = "PS",
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
+            )
+        )
+        const val ERROR_MESSAGE = "Failed to get movie details"
         const val MOVIE_ID = 0L
     }
 }
