@@ -47,9 +47,10 @@ class GetLoginStatusTest {
         coEvery { authenticationRepository.isLoggedIn() } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> { getLoginStatusUseCase() }
+        val exception = assertThrows<Exception> { getLoginStatusUseCase() }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { authenticationRepository.isLoggedIn() }
     }
 
