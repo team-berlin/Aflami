@@ -1,10 +1,10 @@
 package usecase.tvshow
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TVShowRepository
@@ -12,30 +12,38 @@ import repository.TVShowRepository
 class SaveRecentTVShowsHistoryUseCaseTest {
 
     private val tvShowRepository: TVShowRepository = mockk(relaxed = true)
-    private lateinit var saveRecentTVShowsHistoryUseCase: SaveRecentTVShowsHistoryUseCase
+    private val saveRecentTVShowsHistoryUseCase: SaveRecentTVShowsHistoryUseCase =
+        SaveRecentTVShowsHistoryUseCase(tvShowRepository)
 
-    @Before
-    fun setUp() {
-        saveRecentTVShowsHistoryUseCase = SaveRecentTVShowsHistoryUseCase(tvShowRepository)
-    }
 
     @Test
     fun `should call repository to save recent TV show query`() = runTest {
-        saveRecentTVShowsHistoryUseCase(QUERY)
+        // Arrange
+        coEvery { tvShowRepository.saveRecentTVShowsHistory(QUERY) } returns Unit
 
+        // Act
+        val result = saveRecentTVShowsHistoryUseCase(QUERY)
+
+        // Assert
+        assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) { tvShowRepository.saveRecentTVShowsHistory(QUERY) }
     }
 
     @Test
     fun `should throw exception if repository throws exception`() = runTest {
-        coEvery { tvShowRepository.saveRecentTVShowsHistory(QUERY) } throws Exception()
+        // Arrange
+        coEvery { tvShowRepository.saveRecentTVShowsHistory(QUERY) } throws Exception(EXCEPTION)
 
-        assertThrows<Exception> {
-            saveRecentTVShowsHistoryUseCase(QUERY)
-        }
+        // Act
+        val exception = assertThrows<Exception> { saveRecentTVShowsHistoryUseCase(QUERY) }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
+        coVerify(exactly = 1) { tvShowRepository.saveRecentTVShowsHistory(QUERY) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to save recent tv show history"
         const val QUERY = "Breaking Bad"
     }
 }

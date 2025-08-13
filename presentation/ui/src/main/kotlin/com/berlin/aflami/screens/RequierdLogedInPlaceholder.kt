@@ -3,6 +3,7 @@ package com.berlin.aflami.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,6 +31,7 @@ import com.berlin.ui.R
 @Composable
 fun RequiredLoggedInPlaceholder(
     modifier: Modifier = Modifier,
+    onAvatarClick: () -> Unit = {},
     enable: Boolean = true,
     onClick: () -> Unit = {},
 ) {
@@ -56,7 +58,8 @@ fun RequiredLoggedInPlaceholder(
                     color = Theme.color.stroke,
                     shape = RoundedCornerShape(24.dp)
                 )
-                .clip(RoundedCornerShape(24.dp)),
+                .clip(RoundedCornerShape(24.dp))
+                .clickable { onAvatarClick() },
             contentScale = ContentScale.FillHeight,
 
             )

@@ -1,9 +1,10 @@
 package com.berlin.aflami.di
 
 import androidx.lifecycle.SavedStateHandle
+import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryArgs
 import com.berlin.aflami.viewmodel.details.cast.CastDetailsArgs
-import com.berlin.aflami.viewmodel.details.common.MovieDetailsArgs
-import com.berlin.aflami.viewmodel.details.common.TVShowDetailsArgs
+import com.berlin.aflami.viewmodel.details.movie.MovieDetailsArgs
+import com.berlin.aflami.viewmodel.details.series.TVShowDetailsArgs
 import com.berlin.aflami.viewmodel.listDetails.FavouriteListDetailsArgs
 import com.berlin.aflami.viewmodel.list.FavouriteListArgs
 import dagger.Module
@@ -37,5 +38,9 @@ object ViewModel {
     @Provides
     fun provideFavouriteListArgs(savedStateHandle: SavedStateHandle): FavouriteListArgs {
         return FavouriteListArgs(savedStateHandle)
+    }
+    @Provides
+    fun mediaByCategoryArgs(savedStateHandle: SavedStateHandle): MediaByCategoryArgs
+    {        return MediaByCategoryArgs(savedStateHandle)
     }
 }

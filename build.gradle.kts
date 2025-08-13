@@ -16,6 +16,9 @@ plugins {
 subprojects {
     configurations.all {
         resolutionStrategy {
+
+            force("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.7.0")
+
             force("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.7.0")
 
             force("androidx.compose.compiler:compiler:2.0.21")

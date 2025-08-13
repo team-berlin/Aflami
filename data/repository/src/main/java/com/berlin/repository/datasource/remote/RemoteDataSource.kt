@@ -11,7 +11,14 @@ import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
+import com.berlin.repository.datasource.remote.dto.rating.RatedMediaDto
+import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
+import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
+import com.berlin.repository.datasource.remote.response.BaseResponse
+import com.berlin.repository.datasource.remote.response.GenreResponse
+import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
+import com.berlin.repository.datasource.remote.response.rating.SubmitRatingResponse
 
 interface RemoteDataSource {
     suspend fun getSimilarMovies(movieId: Long): BaseResponse<MovieDetailsDto>
@@ -43,6 +50,12 @@ interface RemoteDataSource {
     suspend fun getMoviesByMoodIds(moodIds: List<Int>): BaseResponse<MovieDetailsDto>
     suspend fun getMovieVideos(movieId: Long): VideosResponse
     suspend fun getTVShowVideos(seriesId: Long): VideosResponse
+    suspend fun getTvShowsByCategory(tvShowId: Long, page: Int): BaseResponse<TVShowDetailsDto>
+    suspend fun getMoviesByCategory(tvShowId: Long, page: Int): BaseResponse<MovieDetailsDto>
+    suspend fun postRateMovie(movieId: Int, rating: SubmitRatingRequestDto): SubmitRatingResponse
+    suspend fun postRateTvShow(tvId: Int, rating: SubmitRatingRequestDto): SubmitRatingResponse
+    suspend fun getRatedMovies(page: Int): BaseResponse<RatedMediaDto>
+    suspend fun getRatedTVShows(page: Int): BaseResponse<RatedMediaDto>
 
     suspend fun getUserFavouriteLists(page: Int): List<FavouriteListDto>
     suspend fun getUserFavouriteListItems(

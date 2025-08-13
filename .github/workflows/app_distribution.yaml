@@ -17,7 +17,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0  
+          fetch-tags: true 
+        
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
@@ -31,32 +34,43 @@ jobs:
       - name: Restore keys.properties
         run: |
           echo "${{ secrets.API_KEYS_FILE }}" > local.properties
-      - name: Fetch all tags
-        run: git fetch --tags
-
-      - name: Determine new version tag
+          
+      - name: Determine new version tag (safe for parallel runs)
         id: tagger
         run: |
+          set -e
           branch="${GITHUB_REF#refs/heads/}"
-          echo "Current branch: $branch"
-
-          latest=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.9.0")
-          echo "Latest tag: $latest"
-
-          IFS='.' read -r major minor patch <<< "${latest#v}"
-
-          if [[ "$branch" == "main" || "$branch" == "develop" ]]; then
-            minor=$((minor + 1))
-            patch=0
-          else
-            patch=$((patch + 1))
-          fi
-
-          new_tag="v$major.$minor.$patch"
-          echo "New tag: $new_tag"
-
-          echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
-          echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
+      
+          git fetch --tags
+      
+          while true; do
+            latest=$(git tag --sort=-v:refname | head -n 1 || echo "v1.15.0")
+            IFS='.' read -r major minor patch <<< "${latest#v}"
+          
+            if [[ "$branch" == "main" || "$branch" == "develop" ]]; then
+              minor=$((minor + 1))
+              patch=0
+            else
+              patch=$((patch + 1))
+            fi
+          
+            new_tag="v$major.$minor.$patch"
+          
+            if git rev-parse "$new_tag" >/dev/null 2>&1; then
+              patch=$((patch + 1))
+              new_tag="v$major.$minor.$patch"
+            fi
+          
+            git tag "$new_tag"
+            if git push origin "$new_tag"; then
+              echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
+              echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
+              break
+            else
+              git fetch --tags
+              git tag -d "$new_tag" 2>/dev/null || true
+            fi
+          done
 
       - name: Restore firebase_release_key
         run: |
@@ -76,32 +90,42 @@ jobs:
           mv app/build/outputs/apk/release/app-release.apk app-${{ env.NEW_TAG }}.apk
 
 
-      - name: Create and push Git tag
+      - name: Determine new version tag (safe for parallel runs)
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git tag ${{ env.NEW_TAG }}
-          git push origin ${{ env.NEW_TAG }}
-          
+          set -e
+          branch="${GITHUB_REF#refs/heads/}"
 
-      - name: Set Firebase tester group
-        id: tester_group
-        run: |
-          if [[ "$GITHUB_REF_NAME" == "main" || "$GITHUB_REF_NAME" == "develop" ]]; then
-            echo "group=${{ secrets.TESTERS_BETA }}" >> "$GITHUB_OUTPUT"
+          git fetch --tags
+
+          latest=$(git tag --sort=-v:refname | head -n 1 || echo "v1.10.0")
+          IFS='.' read -r major minor patch <<< "${latest#v}"
+
+          if [[ "$branch" == "main" || "$branch" == "develop" ]]; then
+            minor=$((minor + 1))
+            patch=0
           else
-            echo "group=${{ secrets.TESTERS_BETA }}" >> "$GITHUB_OUTPUT"
+            patch=$((patch + 1))
           fi
 
-      - name: Set Release Note
-        id: release_notes
-        run: |
-          if [[ "$GITHUB_REF_NAME" == "main" || "$GITHUB_REF_NAME" == "develop" ]]; then
-            echo "notes=${{ secrets.MAIN_RELEASE_NOTES }}" >> "$GITHUB_OUTPUT"
-          else
-            BRANCH_NAME="${GITHUB_REF_NAME##*/}"
-            echo "notes=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
-          fi          
+          while true; do
+            new_tag="v$major.$minor.$patch"
+
+            if git rev-parse "$new_tag" >/dev/null 2>&1; then
+              # Tag exists → bump patch and try again
+              patch=$((patch + 1))
+              continue
+            fi
+
+            # Tag doesn't exist → create & push
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag "$new_tag"
+            git push origin "$new_tag"
+
+            echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
+            echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
+            break
+          done
 
 
       - name: Upload APK using Firebase CLI

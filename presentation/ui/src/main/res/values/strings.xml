@@ -129,6 +129,16 @@
     <string name="list_failed_to_deleted">Failed To Delete List</string>
     <string name="add_to_list">Add to List</string>
     <string name="add">Add</string>
+    <string name="catgories">Categories</string>
+    <string name="movies">Movies</string>
+    <string name="tv_shows">TV Shows</string>
+    <string name="no_items_found">No items for this genre!</string>
+    <string name="sure_to_continue">Are you sure to continue? </string>
+    <string name="logout_msg">If you\'re tired of us, just know we\'re not, we will be here.</string>
+
+    <string name="rate_it">Rate it</string>
+    <string name="select_how_much_you_like_it">Select how much you like it</string>
+    <string name="submit">Submit</string>
 
 
 </resources>

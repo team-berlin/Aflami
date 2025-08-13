@@ -50,8 +50,8 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOve
 import com.berlin.aflami.screens.mediadetails.components.screensections.MovieTabSection
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.base.MovieAlreadyExistInList
-import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
-import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
+import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
+import com.berlin.aflami.viewmodel.details.movie.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsUiState
@@ -72,7 +72,7 @@ fun MovieDetailsScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
             onReceiveMovieDetailsEffect(
-                navController = navController, mediaDetailsScreenEffect = newEffect
+                navController = navController, mediaDetailsScreenEffect = newEffect,
             )
         }
     }
@@ -91,6 +91,7 @@ fun MovieDetailsScreen(
         Log.d("khairy", "error message is ${uiState.errorMessage}")
         NoInternetConnectionPlaceholder()
     }
+
     AnimatedVisibility(
         enter = fadeIn(), exit = fadeOut(), visible = !uiState.isScreenLoading
     ) {
@@ -108,6 +109,32 @@ fun MovieDetailsScreen(
             },
         )
     }
+
+    AnimatedVisibility(
+        visible = uiState.snackBarMessage != null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        val status =
+            when(uiState.isSnackBarStatusSuccess){
+                true -> SnackBarStatus.SUCCESS
+                false -> SnackBarStatus.ERROR
+                else -> SnackBarStatus.ERROR
+            }
+        val icon = when (status) {
+            SnackBarStatus.SUCCESS -> painterResource(id = R.drawable.success)
+            SnackBarStatus.ERROR -> painterResource(id = R.drawable.error)
+        }
+        Box(Modifier.statusBarsPadding()) {
+            SnackBar(
+                status = status,
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                text = uiState.snackBarMessage.orEmpty(),
+                iconPainter = icon
+            )
+        }
+    }
+
     AnimatedVisibility(
         enter = fadeIn(), exit = fadeOut(), visible = uiState.showLoginDialog
     ) {
@@ -115,7 +142,7 @@ fun MovieDetailsScreen(
             onLoginClick = {
                 viewModel.onLoginButtonClicked()
             },
-            onDismiss = { },
+            onDismiss = {viewModel.onLoginDialogDismissed() },
             title = stringResource(com.berlin.ui.R.string.login_required),
             description = stringResource(com.berlin.ui.R.string.login_required_warning)
         )
@@ -198,7 +225,7 @@ private fun onReceiveMovieDetailsEffect(
 @Composable
 fun MovieDetailsContent(
     state: MovieDetailsUiState,
-    listener: MediaInteractionListener,
+    listener: MediaDetailsScreenInteractionListener,
     isDescriptionExpanded: Boolean,
     onToggleDescriptionExpand: () -> Unit,
     movieDetailsTabs: MovieDetailsTabs,
@@ -292,7 +319,7 @@ fun MovieDetailsContent(
             optionContainerColor = Theme.color.surfaceHigh,
             containerColor = Color.Unspecified,
         )
-        if (state.showRatingDialog && state.selectedRatingMediaId != null) {
+        if (state.showRatingDialog && state.selectedRatingMovieId != null) {
             RateDialog(
                 onDismiss = { listener.onCancelRatingClicked() },
                 onRate = { rating -> listener.onSubmitRateClicked(rating) })

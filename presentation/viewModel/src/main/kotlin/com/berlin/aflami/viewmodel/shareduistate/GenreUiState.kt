@@ -5,11 +5,12 @@ import com.berlin.entity.Genre
 
 @Immutable
 data class GenreUiState(
-    val id: Int? = null,
-    val name: String? = null,
+    val id: Int ,
+    val name: String,
 )
 fun Genre.toGenreUiState() = GenreUiState(id, name)
+
 fun GenreUiState.toDomain() = Genre(
-    id = id ?: 0,
-    name = name ?: ""
+    id = id,
+    name = name
 )

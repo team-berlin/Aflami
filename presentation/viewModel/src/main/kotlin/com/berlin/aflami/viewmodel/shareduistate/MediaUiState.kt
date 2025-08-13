@@ -6,7 +6,7 @@ import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
 @Immutable
 data class MediaUiState(
     val id: Long = 0L,
-    val mediaType: MediaType?,
+    val mediaType: MediaType = MediaType.MOVIE,
     val title: String = "",
     val rating: String = "",
     val releaseYear: String = "",

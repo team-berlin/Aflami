@@ -27,11 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.berlin.aflami.ui.color.ExtraColors.darkPurpleLinearGradient
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.ui.R
 
 @Composable
 fun RateDialog(
@@ -62,7 +64,7 @@ fun RateDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Rate it",
+                        text = stringResource(R.string.rate_it),
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title,
                     )
@@ -73,7 +75,7 @@ fun RateDialog(
                 Spacer(Modifier.height(12.dp))
 
                 Text(
-                    text = "Select how much you like it",
+                    text = stringResource(R.string.select_how_much_you_like_it),
                     style = Theme.textStyle.body.medium,
                     color = Theme.color.textColors.body,
                 )
@@ -114,7 +116,12 @@ fun RateDialog(
                             brush = (if (isEnabled)
                                 darkPurpleLinearGradient
                             else
-                                Brush.linearGradient(listOf(Theme.color.disable,Theme.color.disable))),
+                                Brush.linearGradient(
+                                    listOf(
+                                        Theme.color.disable,
+                                        Theme.color.disable
+                                    )
+                                )),
                             shape = RoundedCornerShape(12.dp)
                         )
                         .clickable(enabled = isEnabled) {
@@ -123,7 +130,7 @@ fun RateDialog(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = "Submit",
+                        text = stringResource(R.string.submit),
                         color = if (isEnabled) Theme.color.textColors.onPrimary else Theme.color.stroke,
                         style = Theme.textStyle.label.large,
                     )
