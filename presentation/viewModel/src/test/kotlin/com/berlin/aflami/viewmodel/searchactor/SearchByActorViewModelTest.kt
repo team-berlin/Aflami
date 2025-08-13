@@ -1,20 +1,17 @@
 package com.berlin.aflami.viewmodel.search_by_actor
 
-import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
+import app.cash.turbine.test
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenEffect
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -30,7 +27,6 @@ import usecase.movie.SearchByActorNameUseCase
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class SearchByActorViewModelTest {
-
     private val searchByActorNameUseCase: SearchByActorNameUseCase = mockk()
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var viewModel: SearchByActorViewModel
@@ -38,74 +34,47 @@ class SearchByActorViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-
-        mockkStatic(Dispatchers::class)
-        every { Dispatchers.IO } returns testDispatcher
-
         viewModel = SearchByActorViewModel(searchByActorNameUseCase)
-
-        mockkStatic(Log::class)
-        every { Log.e(any(), any()) } returns 0
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        unmockkAll()
     }
 
     @Test
-    fun `onBackClicked should send NavigatedBack effect`() = runTest {
-        // Arrange
-        val job = launch(testDispatcher) {
-            viewModel.effect.collect { EFFECTS.add(it) }
+    fun `should update state when actor name is changed`() = runTest {
+
+        viewModel.onActorNameChanged(TextFieldValue(ACTOR_NAME))
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertThat(state.actorName.text).isEqualTo(ACTOR_NAME)
+    }
+
+    @Test
+    fun `should emit NavigatedBack effect when onBackClicked called`() = runTest {
+        viewModel.effect.test {
+            viewModel.onBackClicked()
+            assertThat(awaitItem()).isEqualTo(SearchByActorScreenEffect.NavigatedBack)
+            cancelAndIgnoreRemainingEvents()
         }
-
-        // Act
-        viewModel.onBackClicked()
-        advanceUntilIdle()
-
-        // Assert
-        assertThat(EFFECTS).contains(SearchByActorScreenEffect.NavigatedBack)
-        job.cancel()
     }
 
     @Test
-    fun `onMediaCardClicked should send NavigatedToMediaDetailsScreen effect`() = runTest {
-        // Arrange
-        val job = launch(testDispatcher) {
-            viewModel.effect.collect { effect ->
-                effect.let { EFFECTS.add(it) }
-            }
+    fun `should emit NavigatedToMediaDetailsScreen effect when media card is clicked`() = runTest {
+        val mediaType = MediaType.MOVIE
+        viewModel.effect.test {
+            viewModel.onMediaCardClicked(42L, mediaType)
+            assertThat(awaitItem()).isEqualTo(
+                SearchByActorScreenEffect.NavigatedToMediaDetailsScreen(42L, mediaType)
+            )
+            cancelAndIgnoreRemainingEvents()
         }
-
-        // Act
-        viewModel.onMediaCardClicked(MOVIE_ID, MEDIA_TYPE)
-        advanceUntilIdle()
-
-        // Assert
-        assertThat(EFFECTS).contains(
-            SearchByActorScreenEffect.NavigatedToMediaDetailsScreen(MOVIE_ID, MEDIA_TYPE)
-        )
-        job.cancel()
     }
 
     @Test
-    fun `onActorNameChanged should update actorName in state`() = runTest {
-        // Arrange
-        val actorName = TextFieldValue("Tom Hanks")
-
-        // Act
-        viewModel.onActorNameChanged(actorName)
-        advanceUntilIdle()
-
-        // Assert
-        val currentState = viewModel.state.first()
-        assertThat(currentState.actorName).isEqualTo(actorName)
-    }
-
-    @Test
-    fun `updateScreenStateWithError updates state with error message and isLoading false`() =
+    fun `should update state when screen state is updated with error`() =
         runTest {
             // Arrange
             val errorUiState = ErrorUiState(message = ERROR_MESSAGE)
@@ -130,9 +99,6 @@ class SearchByActorViewModelTest {
     }
 
     companion object {
-        const val MOVIE_ID = 123L
-        val MEDIA_TYPE = MediaType.MOVIE
-        val EFFECTS = mutableListOf<SearchByActorScreenEffect>()
         const val ERROR_MESSAGE = "Error to fetch actor"
         const val ACTOR_NAME = "Tom Hanks"
     }
