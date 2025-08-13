@@ -214,7 +214,7 @@ class QuizGameViewModel @Inject constructor(
         val tvShowList = tvShow.map { it.toMediaUiState() }
         movieIds.value = movieList.map { it.id }.shuffled()
         tvShowIds.value = tvShowList.map { it.id }.shuffled()
-        mediaList.value = interleaveMoviesAndTvShowsEqually(movieList, tvShowList)
+        mediaList.value = (movieList+tvShowList).shuffled().take(numberOfQuestion)
 
 
     }
@@ -269,22 +269,6 @@ class QuizGameViewModel @Inject constructor(
         } finally {
             updateState { it.copy(loading = false) }
         }
-    }
-
-    private fun interleaveMoviesAndTvShowsEqually(
-        movies: List<MediaUiState>,
-        tvShows: List<MediaUiState>,
-    ): List<MediaUiState> {
-        val arrangedList = mutableListOf<MediaUiState>()
-
-        val totalRepeats = numberOfQuestion / 2
-        repeat(totalRepeats) { counter ->
-            with(arrangedList) {
-                add(movies[counter])
-                add(tvShows[counter])
-            }
-        }
-        return arrangedList
     }
 
     private fun updateScreenStateToLoading() =

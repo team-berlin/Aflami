@@ -73,14 +73,14 @@ object WatchHistoryDestination
 
 @Serializable
 class GuessGameDestination(
-    val gameType: String,
-    val numberOfQuestion: Int,
-    val numberOfPoint: Int,
-    val time: Int
+    val gameType: String?=null,
+    val numberOfQuestion: Int?=null,
+    val numberOfPoint: Int?=null,
+    val time: Int?=null
 )
 
 @Serializable
-object GameResultDestination
+class GameResultDestination(val finalResult:Int,val remainingTime:Int )
 
 @Serializable
 data class ListDetailsDestination(val listId: Int)

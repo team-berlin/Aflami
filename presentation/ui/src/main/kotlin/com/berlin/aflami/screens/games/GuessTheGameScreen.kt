@@ -75,7 +75,10 @@ fun GuessTheGameScreen(
 
                 QuizGameEffect.NavigateToResult -> {
                     navController.navigate(
-                       GameResultDestination
+                       GameResultDestination(
+                           finalResult = state.totalPoint,
+                           remainingTime = state.time
+                       )
                     )
                 }
             }

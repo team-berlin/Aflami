@@ -77,7 +77,7 @@ fun NoPointDialog(
                 )
 
                 PrimaryButton(
-                    onClick = {},
+                    onClick = {onDismiss()},
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {

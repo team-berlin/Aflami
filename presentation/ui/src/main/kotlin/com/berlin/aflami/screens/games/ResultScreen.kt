@@ -39,15 +39,23 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
 import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.navigation.GuessGameDestination
+import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.authentication.CirclesBackground
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.quizgame.FinalResultNavArgs
 import com.berlin.ui.R
 
 @Composable
 fun ResultScreen(modifier: Modifier = Modifier) {
+    val navController=Theme.navController
+//    val totalPoint=finalResultNavArgs.totalPoint
+//    val remainingTime=finalResultNavArgs.remainingTime
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -66,7 +74,7 @@ fun ResultScreen(modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            ResultHeader()
+            ResultHeader(navController=navController)
 
             ResultBox()
 
@@ -96,7 +104,11 @@ fun ResultScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.weight(1f))
 
             PrimaryButton(
-                {},
+                {
+                    navController.navigate(
+                        NavigationBarDestinations.GamesScreen
+                    )
+                },
                 shape = RoundedCornerShape(16.dp),
                 modifier = modifier
                     .fillMaxWidth()
@@ -109,7 +121,11 @@ fun ResultScreen(modifier: Modifier = Modifier) {
             }
 
             SecondaryButton(
-                {}, shape = RoundedCornerShape(16.dp),
+                {
+                    navController.navigate(
+                        GuessGameDestination()
+                    )
+                }, shape = RoundedCornerShape(16.dp),
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
@@ -125,7 +141,10 @@ fun ResultScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ResultHeader(modifier: Modifier = Modifier) {
+private fun ResultHeader(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
     Row(
         modifier
             .fillMaxWidth()
@@ -134,7 +153,11 @@ private fun ResultHeader(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = {},
+            onClick = {
+                navController.navigate(
+                    NavigationBarDestinations.GamesScreen
+                )
+            },
             modifier = Modifier
                 .background(
                     Theme.color.surfaceHigh,
@@ -287,13 +310,5 @@ private fun ResultPointesBox(
                 modifier = Modifier.padding(bottom = 8.dp),
             )
         }
-    }
-}
-
-@PreviewLightDark
-@Composable
-private fun ResultScreenPreview() {
-    AflamiTheme {
-        ResultScreen()
     }
 }
