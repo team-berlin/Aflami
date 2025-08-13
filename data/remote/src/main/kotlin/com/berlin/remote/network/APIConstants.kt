@@ -8,6 +8,7 @@ object ApiConstants {
     const val WITH_GENRES = "with_genres"
     const val MOVIE_ID = "movie_id"
     const val SERIES_ID = "series_id"
+    const val ACCOUNT_ID = "account_id"
     const val SEASON_NUMBER = "season_number"
     const val RELEASE_DATE_GTE = "release_date.gte"
     const val RELEASE_DATE_LTE = "release_date.lte"
@@ -65,8 +66,13 @@ object ApiConstants {
     const val INCLUDE_ADULT_DEFAULT = false
     const val INCLUDE_VIDEO_DEFAULT = false
     const val RELEASE_TYPE_THEATRICAL_AND_LIMITED = "2|3"
+    const val ARRANGE_DESCENDING = "created_at.desc"
+
 
     // Rating endpoints
     const val RATE_MOVIE = "movie/{$MOVIE_ID}/rating"
     const val RATE_TV_SHOW = "tv/{$SERIES_ID}/rating"
+    const val RATED_MOVIES = "account/{$ACCOUNT_ID}/rated/movies"
+    const val RATED_TV_SHOWS = "account/{$ACCOUNT_ID}/rated/tv"
+
 }

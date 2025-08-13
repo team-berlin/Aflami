@@ -11,10 +11,11 @@ import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
-import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toTVShowGenreEntity
 import com.berlin.repository.util.Constants
+import com.berlin.repository.util.MediaUrls
+import com.berlin.repository.util.tmdbImageUrl
 import repository.TVShowDetailsRepository
 import javax.inject.Inject
 
@@ -49,10 +50,10 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
             val imagesResponse = remoteDataSource.getTVImagesById(id)
 
             val backdrops = imagesResponse.backdrops
-                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+                ?.mapNotNull { it.filePath?.let { path -> tmdbImageUrl(path = path,MediaUrls.TmdbImageSize.W500)} }
 
             val posters = imagesResponse.posters
-                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+                ?.mapNotNull { it.filePath?.let { path -> tmdbImageUrl(path = path,MediaUrls.TmdbImageSize.W500) } }
 
             MediaImage(backdrops = backdrops.orEmpty(), posters = posters.orEmpty())
         } catch (e: Exception) {

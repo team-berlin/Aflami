@@ -1,4 +1,4 @@
-package com.berlin.repository.datasource.remote.response
+package com.berlin.repository.datasource.remote.response.rating
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
