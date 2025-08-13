@@ -15,6 +15,7 @@ import com.berlin.ui.R
 fun WatchHistoryRatingSection(
     modifier: Modifier = Modifier,
     onWatchHistoryClick: () -> Unit,
+    onMyRatingClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -35,6 +36,7 @@ fun WatchHistoryRatingSection(
             image = painterResource(R.drawable.my_rating), // ⏰ (or use painter if using actual image)
             modifier = Modifier.weight(1f)
         ){
+            onMyRatingClick()
         }
     }
 }

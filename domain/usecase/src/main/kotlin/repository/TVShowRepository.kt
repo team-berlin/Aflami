@@ -24,4 +24,5 @@ interface TVShowRepository {
     suspend fun getTVShowGame():List<TVShow>
     //endregion
 
+    suspend fun getTVShowsByCategory(genreId: Long, page: Int):List<TVShow>
 }

@@ -26,6 +26,7 @@ interface MovieRepository {
     suspend fun saveRecentMoviesHistory(query: String)
     suspend fun deleteMovieQueryFromHistory(query: String)
     suspend fun clearMovieSearchHistory()
+    suspend fun getMoviesByCategory(genreId: Long, page: Int): List<Movie>
     //endregion
 
     //regin Game

@@ -106,6 +106,13 @@ class TVShowRepositoryImpl @Inject constructor(
         recentHistoryLocalDataSource.clearSearchHistory()
     }
 
+    override suspend fun getTVShowsByCategory(
+        genreId: Long,
+        page: Int
+    ): List<TVShow> {
+       return remoteDataSource.getTvShowsByCategory(genreId, page).results?.map { it.toDomain() }.orEmpty()
+    }
+
     override suspend fun getTVShowGame(): List<TVShow> {
        return remoteDataSource.getTVShow().results?.map {
             it.toDomain()

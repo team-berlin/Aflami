@@ -6,51 +6,49 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
 
 class GetMovieDetailsUseCaseTest {
 
-    private val repository = mockk<MovieDetailsRepository>()
-    private lateinit var getMovieDetailsUseCase: GetMovieDetailsUseCase
+    private val movieDetailsRepository: MovieDetailsRepository = mockk()
+    private val getMovieDetailsUseCase: GetMovieDetailsUseCase =
+        GetMovieDetailsUseCase(movieDetailsRepository)
 
-    @Before
-    fun setUp() {
-        getMovieDetailsUseCase = GetMovieDetailsUseCase(repository)
-    }
 
     @Test
     fun `should return movie details when repository returns data`() = runTest {
-        coEvery { repository.getMovieDetails( movie.id) } returns movie
+        // Arrange
+        coEvery { movieDetailsRepository.getMovieDetails(movie.id) } returns movie
 
-        val result = getMovieDetailsUseCase( movie.id)
-
-        assertThat(result).isEqualTo(movie)
-        coVerify(exactly = 1) { repository.getMovieDetails(movie.id) }
-    }
-
-    @Test
-    fun `should return null when movie not found`() = runTest {
-        coEvery { repository.getMovieDetails(movie.id) } returns null
-
+        //Act
         val result = getMovieDetailsUseCase(movie.id)
 
-        assertThat(result).isNull()
-        coVerify(exactly = 1) { repository.getMovieDetails( movie.id) }
+        // Assert
+        assertThat(result).isEqualTo(movie)
+        coVerify(exactly = 1) { movieDetailsRepository.getMovieDetails(movie.id) }
     }
-
+    
     @Test
     fun `should throw exception when repository throws exception`() = runTest {
-        coEvery { repository.getMovieDetails(movie.id) } throws Exception()
+        // Arrange
+        coEvery { movieDetailsRepository.getMovieDetails(movie.id) } throws Exception(ERROR_MESSAGE)
 
-        assertThrows<Exception> {
+        //Act
+        val exception = assertThrows<Exception> {
             getMovieDetailsUseCase(movie.id)
+        }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
+        coVerify(exactly = 1) {
+            movieDetailsRepository.getMovieDetails(movie.id)
         }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to get movie details"
         val movie = Movie(
             id = 90L,
             title = "Test Movie",
@@ -64,7 +62,9 @@ class GetMovieDetailsUseCaseTest {
             hasVideo = false,
             companyProductions = emptyList(),
             originCountry = "PS",
-            galleryUrl = emptyList()
+            galleryUrl = emptyList(),
+            reviews = emptyList(),
+            isFavourite = false,
         )
     }
 }

@@ -1,6 +1,5 @@
 package com.berlin.repository.mapper
 
-import android.util.Log
 import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Genre
 import com.berlin.entity.Movie
@@ -10,6 +9,8 @@ import com.berlin.repository.datasource.local.dto.MovieEntity
 import com.berlin.repository.datasource.remote.dto.GenreDto
 import com.berlin.repository.datasource.remote.dto.ProductionCompanyDto
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
+import com.berlin.repository.util.MediaUrls
+import com.berlin.repository.util.tmdbImageUrl
 
 
 fun MovieDetailsDto.toDomain(
@@ -20,10 +21,10 @@ fun MovieDetailsDto.toDomain(
         id = this.id?.toLong() ?: 0L,
         title = this.title.orEmpty(),
         rating = (this.voteAverage ?: 0.0),
-        releaseDate = this.releaseDate ?: "10-12-2014",
+        releaseDate = this.releaseDate.orEmpty(),
         genres = this.genres?.map { it.toDomain() } ?: genresId?.map { it.toDomainGenre() }
         ?: emptyList(),
-        posterURL = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        posterURL = tmdbImageUrl(posterPath, MediaUrls.TmdbImageSize.W500).orEmpty(),
         screenShot = this.backdropPath ?: "",
         description = this.overview ?: "Description not available",
         duration = this.runtime ?: 0,
@@ -107,10 +108,7 @@ fun MovieEntity.toDomain(): Movie {
 
  fun ProductionCompanyDto.toDomain() = CompanyProduction(
     id = this.id ?: 0,
-    name = this.name.orEmpty(),
-    posterURL = this.logoPath?.let { "$POSTER_PREFIX$it" } ?: "",
+    name = this.name ?: "",
+    posterURL = tmdbImageUrl(this.logoPath, MediaUrls.TmdbImageSize.W185) ?: "",
     originCountry = this.originCountry?:"",
 )
-
-const val POSTER_PREFIX = "https://image.tmdb.org/t/p/w500"
-const val BACKDROP_PREFIX = "https://image.tmdb.org/t/p/original"

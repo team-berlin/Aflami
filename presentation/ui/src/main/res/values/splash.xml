@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.SplashScreen.ComposeSplash" parent="Theme.SplashScreen.IconBackground">
         <item name="windowSplashScreenBackground">@color/background_color</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/aflami_splash_icon</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/animated_splash</item>
         <item name="windowSplashScreenIconBackgroundColor">@color/background_color</item>
         <item name="postSplashScreenTheme">@style/Theme.NewAflami</item>
     </style>

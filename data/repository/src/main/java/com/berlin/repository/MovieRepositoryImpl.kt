@@ -1,5 +1,6 @@
 package com.berlin.repository
 
+import android.util.Log
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
@@ -153,6 +154,12 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun clearMovieSearchHistory() {
         recentHistoryLocalDataSource.clearSearchHistory()
+    }
+    override suspend fun getMoviesByCategory(
+        genreId: Long,
+        page: Int
+    ): List<Movie> {
+        return remoteDataSource.getMoviesByCategory(genreId, page).results?.map { it.toDomain() }.orEmpty()
     }
 
     override suspend fun getMovieGame(): List<Movie> {

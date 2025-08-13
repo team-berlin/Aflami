@@ -5,4 +5,6 @@ interface AddToFavouriteInteractionListener {
     fun onSelectFavouriteList(favouriteListId: Int)
     fun onCreateNewFavouriteListClicked()
     fun onCancelAddingToFavouriteClicked()
+
+
 }

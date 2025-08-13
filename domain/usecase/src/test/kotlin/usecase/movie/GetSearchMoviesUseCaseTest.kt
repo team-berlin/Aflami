@@ -12,47 +12,48 @@ import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
 
 class GetSearchMoviesUseCaseTest {
-    private val searchRepository: MovieRepository = mockk()
-    private lateinit var getSearchMoviesUseCase: GetSearchMoviesUseCase
-
-    @Before
-    fun setUp() {
-        getSearchMoviesUseCase = GetSearchMoviesUseCase(searchRepository)
-    }
+    private val movieRepository: MovieRepository = mockk()
+    private val getSearchMoviesUseCase: GetSearchMoviesUseCase =
+        GetSearchMoviesUseCase(movieRepository)
 
     @Test
     fun `should return movies when repository returns result`() = runTest {
-        coEvery { searchRepository.getMovieByKeyWord(QUERY, PAGE) } returns movies
+        // Arrange
+        coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } returns movies
 
-        // When
+        // Act
         val result = getSearchMoviesUseCase(QUERY, PAGE)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(movies)
-        coVerify(exactly = 1) { searchRepository.getMovieByKeyWord(QUERY, PAGE) }
+        coVerify(exactly = 1) { movieRepository.getMovieByKeyWord(QUERY, PAGE) }
     }
 
-    @Test
-    fun `should return empty list when repository returns nothing`() = runTest {
-        coEvery { searchRepository.getMovieByKeyWord(QUERY, PAGE) } returns emptyList()
+    @Test 
+    fun `should return empty list when movie is not found`() = runTest {
+        // Arrange
+        coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } returns emptyList()
 
+        // Act
         val result = getSearchMoviesUseCase(QUERY, PAGE)
 
+        // Assert
         assertThat(result).isEmpty()
-        coVerify(exactly = 1) { searchRepository.getMovieByKeyWord(QUERY, PAGE) }
+        coVerify(exactly = 1) { movieRepository.getMovieByKeyWord(QUERY, PAGE) }
     }
 
     @Test
     fun `should throw exception when repository throws`() = runTest {
+        // Arrange
+        coEvery { movieRepository.getMovieByKeyWord(QUERY, PAGE) } throws
+                Exception(EXCEPTION)
 
-        coEvery { searchRepository.getMovieByKeyWord(QUERY, PAGE) } throws Exception(EXCEPTION)
+        // Act
+        val exception = assertThrows<Exception> { getSearchMoviesUseCase(QUERY, PAGE) }
 
-        val thrown = assertThrows<Exception> {
-            getSearchMoviesUseCase(QUERY, PAGE)
-        }
-
-        assertThat(thrown).hasMessageThat().isEqualTo(EXCEPTION)
-        coVerify(exactly = 1) { searchRepository.getMovieByKeyWord(QUERY, PAGE) }
+        // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
+        coVerify(exactly = 1) { movieRepository.getMovieByKeyWord(QUERY, PAGE) }
     }
 
     companion object {
@@ -70,7 +71,9 @@ class GetSearchMoviesUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             ),
             Movie(
                 id = 24L,
@@ -85,7 +88,9 @@ class GetSearchMoviesUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             )
         )
         const val PAGE = 1

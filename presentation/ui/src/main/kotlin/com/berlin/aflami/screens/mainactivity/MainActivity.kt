@@ -2,6 +2,7 @@ package com.berlin.aflami.screens.mainactivity
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.graphics.drawable.Animatable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -37,6 +38,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
+
+        splashScreen.setOnExitAnimationListener { splashView ->
+            (splashView.iconView as? Animatable)?.start()
+            splashView.iconView.animate()
+                .alpha(0.5f)
+                .setDuration(3000)
+                .withEndAction { splashView.remove() }
+                .start()
+        }
         splashScreen.setKeepOnScreenCondition {
             mainActivityViewModel.state.value.isLoading
         }

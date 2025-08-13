@@ -11,10 +11,11 @@ import com.berlin.repository.datasource.local.GenreLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
-import com.berlin.repository.mapper.POSTER_PREFIX
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toMoviesGenreEntity
 import com.berlin.repository.util.Constants
+import com.berlin.repository.util.MediaUrls
+import com.berlin.repository.util.tmdbImageUrl
 import repository.MovieDetailsRepository
 import java.time.Instant
 import javax.inject.Inject
@@ -30,10 +31,13 @@ class MovieDetailsRepositoryImpl @Inject constructor(
             val imagesResponse = remoteDataSource.getMovieImages(movieId)
 
             val backdrops = imagesResponse.backdrops
-                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+                ?.mapNotNull {
+                    it.filePath?.let { path -> tmdbImageUrl(path = path, size = MediaUrls.TmdbImageSize.W500) }
+                }
 
             val posters = imagesResponse.posters
-                ?.mapNotNull { it.filePath?.let { path -> POSTER_PREFIX + path } }
+                ?.mapNotNull { it.filePath?.let { path -> tmdbImageUrl(path = path,MediaUrls.TmdbImageSize.W500) }
+                }
             recentlyWatchedLocalDataSource
             MediaImage(backdrops = backdrops.orEmpty(), posters = posters.orEmpty())
         } catch (e: Exception) {
@@ -41,8 +45,9 @@ class MovieDetailsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMovieDetails(id: Long): Movie{
-        val review=remoteDataSource.getMovieReviews(id).results?.map { it.toDomain() }?:emptyList()
+    override suspend fun getMovieDetails(id: Long): Movie {
+        val review =
+            remoteDataSource.getMovieReviews(id).results?.map { it.toDomain() } ?: emptyList()
         return try {
             remoteDataSource.getMovieDetails(id).toDomain(review)
         } catch (exception: AflamiException) {
@@ -59,11 +64,17 @@ class MovieDetailsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSimilarMovies(movieId: Long): List<Movie> {
-        val review=remoteDataSource.getMovieReviews(movieId).results?.map { it.toDomain() }?:emptyList()
-        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference().associate { it.categoryId to it.count }
+        val review =
+            remoteDataSource.getMovieReviews(movieId).results?.map { it.toDomain() } ?: emptyList()
+        val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference()
+            .associate { it.categoryId to it.count }
         return remoteDataSource.getSimilarMovies(movieId).results?.mapNotNull { movieDto ->
             movieDto.toDomain(review)
-        }?.sortedByDescending { movie-> movie.genres.sumOf { genre-> genreScoresMap[genre.id]?:0 } }
+        }?.sortedByDescending { movie ->
+            movie.genres.sumOf { genre ->
+                genreScoresMap[genre.id] ?: 0
+            }
+        }
             ?: emptyList()
     }
 
@@ -71,7 +82,6 @@ class MovieDetailsRepositoryImpl @Inject constructor(
         return remoteDataSource.getMovieReviews(movieId).results?.filterNotNull()
             ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
     }
-
 
 
     override suspend fun getMovieGenres(): List<Genre> {
@@ -94,6 +104,8 @@ class MovieDetailsRepositoryImpl @Inject constructor(
     }
 
     private fun isExpiredOrEmpty(list: List<MoviesGenreEntity>): Boolean {
-        return list.isEmpty() || list.any { Instant.now().toEpochMilli() - it.time >Constants.CACHE_TIMEOUT }
+        return list.isEmpty() || list.any {
+            Instant.now().toEpochMilli() - it.time > Constants.CACHE_TIMEOUT
+        }
     }
 }

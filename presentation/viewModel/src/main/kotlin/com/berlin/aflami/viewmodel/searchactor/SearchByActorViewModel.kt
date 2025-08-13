@@ -64,7 +64,7 @@ class SearchByActorViewModel @Inject constructor(
         )
     }
 
-    private fun getActorMediaContributionsAsFlow(actorName: String): Flow<PagingData<MediaUiState>> =
+    fun getActorMediaContributionsAsFlow(actorName: String): Flow<PagingData<MediaUiState>> =
         Pager(
             config = defaultPageConfigurations(),
             pagingSourceFactory = {
@@ -86,7 +86,7 @@ class SearchByActorViewModel @Inject constructor(
             )
         }
 
-    private fun updateScreenStateWithError(errorUiState: ErrorUiState) {
+    fun updateScreenStateWithError(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
                 errorMessage = errorUiState.message,

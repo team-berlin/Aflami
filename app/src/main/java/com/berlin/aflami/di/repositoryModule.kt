@@ -4,10 +4,12 @@ import com.berlin.repository.AuthenticationRepositoryImpl
 import com.berlin.repository.GameRepositoryImpl
 import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
+import com.berlin.repository.RatingRepositoryImpl
+import com.berlin.repository.RatedMediaRepositoryImp
 import com.berlin.repository.SettingsRepositoryImpl
 import com.berlin.repository.TVShowRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
-import com.berlin.repository.UserRepositoryImpl
+import com.berlin.repository.UserProfileRepositoryImpl
 import com.berlin.repository.datasource.AppEntryRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -18,10 +20,12 @@ import repository.AuthenticationRepository
 import repository.GameRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.SettingsRepository
-import repository.TVShowDetailsRepository
+import repository.RatingRepository
 import repository.TVShowRepository
-import repository.UserRepository
+import repository.SettingsRepository
+import repository.RatedMediaRepository
+import repository.TVShowDetailsRepository
+import repository.UserProfileRepository
 import javax.inject.Singleton
 
 @Module
@@ -63,8 +67,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindUserRepository(
-        impl: UserRepositoryImpl
-    ): UserRepository
+        impl: UserProfileRepositoryImpl
+    ): UserProfileRepository
 
     @Binds
     @Singleton
@@ -77,6 +81,18 @@ abstract class RepositoryModule {
     abstract fun bindSettingsRepository(
         impl: SettingsRepositoryImpl
     ): SettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRatingRepository(
+        impl: RatingRepositoryImpl
+    ): RatingRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRatedMediaRepository(
+        impl: RatedMediaRepositoryImp
+    ): RatedMediaRepository
 
     @Binds
     @Singleton

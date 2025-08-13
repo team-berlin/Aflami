@@ -8,13 +8,14 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
+import repository.RatingRepository
+import repository.TVShowRepository
 import repository.SettingsRepository
 import repository.TVShowDetailsRepository
-import repository.TVShowRepository
-import repository.UserRepository
-import usecase.auth.GetLoginStatus
+import repository.UserProfileRepository
+import usecase.auth.GetLoginStatusUseCase
 import usecase.auth.GetLoginUseCase
-import usecase.auth.GetUserProfileUseCase
+import usecase.profile.GetUserProfileUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
 import usecase.mediadetails.GetMovieVideos
@@ -35,6 +36,7 @@ import usecase.movie.GetSearchMoviesUseCase
 import usecase.movie.GetSimilarMoviesUseCase
 import usecase.movie.GetTopRatedMoviesUseCase
 import usecase.movie.GetUpComingMoviesUseCase
+import usecase.movie.RateMovieUseCase
 import usecase.movie.SaveRecentMoviesHistoryUseCase
 import usecase.movie.SearchByActorNameUseCase
 import usecase.movie.SearchMoviesByCountryUseCase
@@ -60,6 +62,7 @@ import usecase.tvshow.GetTVShowGenresUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
 import usecase.tvshow.GetTVShowVideos
 import usecase.tvshow.GetTopRatedTVShowUseCase
+import usecase.tvshow.RateTvShowUseCase
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -200,8 +203,8 @@ object UseCaseModule {
         GetLoginUseCase(repository)
 
     @Provides
-    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLoginStatus =
-        GetLoginStatus(repository)
+    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLoginStatusUseCase =
+        GetLoginStatusUseCase(repository)
 
     @Provides
     fun provideGetTopRatedSeriesUseCase(repository: TVShowRepository): GetTopRatedTVShowUseCase =
@@ -213,7 +216,7 @@ object UseCaseModule {
 
     @Provides
     fun provideGetUserProfileUseCase(
-        repository: UserRepository
+        repository: UserProfileRepository
     ): GetUserProfileUseCase = GetUserProfileUseCase(repository)
 
     @Provides
@@ -224,6 +227,9 @@ object UseCaseModule {
     fun provideGetFirstEntryUseCase(repository: AppEntryRepository):GetFirstEntryUseCase =
         GetFirstEntryUseCase(repository)
 
+    @Provides
+    fun provideRateMovieUseCase(repository: RatingRepository): RateMovieUseCase =
+        RateMovieUseCase(repository)
     @Provides
     fun provideGetLanguageUseCase(repository: SettingsRepository): GetLanguageUseCase =
         GetLanguageUseCase(repository)
@@ -257,5 +263,8 @@ object UseCaseModule {
         GetTVShowGameUseCase(repository)
 
 
+    @Provides
+    fun provideRateTvShowUseCase(repository: RatingRepository): RateTvShowUseCase =
+        RateTvShowUseCase(repository)
 
 }
