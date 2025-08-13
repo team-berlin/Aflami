@@ -25,7 +25,8 @@ dependencies {
 
     implementation(libs.javax.inject)
     implementation("androidx.datastore:datastore-preferences:1.1.7")
-
+    implementation ("androidx.work:work-runtime-ktx:2.10.3")
+    implementation ("androidx.hilt:hilt-work:1.2.0")
 
 
     implementation(project(":data:repository"))

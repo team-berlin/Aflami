@@ -18,4 +18,7 @@ interface HomeMovieDao {
     @Query("DELETE FROM Movie_Home WHERE sectionHome = :sectionHome")
     suspend fun clearHomeScreenMovies(sectionHome: SectionHome)
 
+    @Query("DELETE FROM Movie_Home")
+    suspend fun clearAllMovies()
+
 }
