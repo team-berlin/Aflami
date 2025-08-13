@@ -23,25 +23,28 @@ class GetTVShowCastUseCaseTest {
         coEvery { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) } returns ACTORS
 
         // Act
-        getTVShowCastUseCase(SERIES_ID)
+        val result = getTVShowCastUseCase(SERIES_ID)
 
         // Assert
+        assertThat(result).isEqualTo(ACTORS)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) } throws Exception()
+        coEvery { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> { getTVShowCastUseCase(SERIES_ID) }
+        val exception = assertThrows<Exception> { getTVShowCastUseCase(SERIES_ID) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get tv show cast"
         const val SERIES_ID = 123L
         val ACTORS = listOf(
             Actor(id = 1, name = "Ahmed", posterURL = ""),

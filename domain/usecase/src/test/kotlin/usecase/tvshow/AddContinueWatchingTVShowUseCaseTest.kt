@@ -1,6 +1,7 @@
 package usecase.tvshow
 
 import com.berlin.entity.TVShow
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -23,9 +24,10 @@ class AddContinueWatchingTVShowUseCaseTest {
         coEvery { tvShowRepository.addContinueWatchingTVShow(TV_SHOW) } returns Unit
 
         // Act
-        addContinueWatchingTVShowUseCase(TV_SHOW)
+        val result = addContinueWatchingTVShowUseCase(TV_SHOW)
 
         // Assert
+        assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) {
             tvShowRepository.addContinueWatchingTVShow(TV_SHOW)
         }
@@ -35,18 +37,20 @@ class AddContinueWatchingTVShowUseCaseTest {
     fun `should throw exception when repository fails`() = runTest {
         // Arrange
         coEvery { tvShowRepository.addContinueWatchingTVShow(TV_SHOW) } throws
-                Exception()
+                Exception(DB_ERROR)
 
         // Act
-        assertThrows<Exception> { addContinueWatchingTVShowUseCase(TV_SHOW) }
+        val exception = assertThrows<Exception> { addContinueWatchingTVShowUseCase(TV_SHOW) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(DB_ERROR)
         coVerify(exactly = 1) {
             tvShowRepository.addContinueWatchingTVShow(TV_SHOW)
         }
     }
 
     companion object {
+        const val DB_ERROR = "DB error"
         val TV_SHOW = TVShow(
             id = 90L,
             title = "TV Show",

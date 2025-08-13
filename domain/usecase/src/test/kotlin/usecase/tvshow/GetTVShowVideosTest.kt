@@ -1,6 +1,7 @@
 package usecase.tvshow
 
 import com.berlin.entity.Video
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -19,25 +20,28 @@ class GetTVShowVideosTest {
         coEvery { tvShowDetailsRepository.getTVShowVideos(TV_SHOW_ID) } returns VIDEOS
 
         // Act
-        getTVShowVideos(TV_SHOW_ID)
+        val result = getTVShowVideos(TV_SHOW_ID)
 
         // Assert
+        assertThat(result).isEqualTo(VIDEOS)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowVideos(TV_SHOW_ID) }
     }
 
     @Test
     fun `should throw exception when repository fails`() = runTest {
         // Arrange
-        coEvery { tvShowDetailsRepository.getTVShowVideos(TV_SHOW_ID) } throws Exception()
+        coEvery { tvShowDetailsRepository.getTVShowVideos(TV_SHOW_ID) } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> { getTVShowVideos(TV_SHOW_ID) }
+        val exception = assertThrows<Exception> { getTVShowVideos(TV_SHOW_ID) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowVideos(TV_SHOW_ID) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get tv show videos"
         const val TV_SHOW_ID = 123L
         val VIDEOS = listOf(
             Video(

@@ -23,27 +23,28 @@ class ContinueWatchingTVShowUseCaseTest {
         coEvery { tvShowRepository.getContinueWatchingTVShows(PAGE) } returns TV_SHOW
 
         // Act
-        continueWatchingTVShowUseCase(PAGE)
+        val result = continueWatchingTVShowUseCase(PAGE)
 
         // Assert
+        assertThat(result).isEqualTo(TV_SHOW)
         coVerify(exactly = 1) { tvShowRepository.getContinueWatchingTVShows(PAGE) }
     }
 
     @Test
     fun `should throw exception if tvShowRepository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowRepository.getContinueWatchingTVShows(PAGE) } throws Exception()
+        coEvery { tvShowRepository.getContinueWatchingTVShows(PAGE) } throws Exception(ERROR_MESSAGE)
 
         // Act
-        assertThrows<Exception> {
-            continueWatchingTVShowUseCase(PAGE)
-        }
+        val exception = assertThrows<Exception> { continueWatchingTVShowUseCase(PAGE) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) { tvShowRepository.getContinueWatchingTVShows(PAGE) }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to get continue watching tv show"
         const val PAGE = 1
         val TV_SHOW = listOf(
             TVShow(

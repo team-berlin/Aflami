@@ -24,27 +24,28 @@ class GetTVShowDetailsUseCaseTest {
         coEvery { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) } returns TV_SHOW_DETAILS
 
         // Act
-        getTVShowDetailsUseCase(TV_SHOW_ID)
+        val result = getTVShowDetailsUseCase(TV_SHOW_ID)
 
         // Assert
+        assertThat(result).isEqualTo(TV_SHOW_DETAILS)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) } throws Exception()
+        coEvery { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> {
-            getTVShowDetailsUseCase(TV_SHOW_ID)
-        }
+        val exception = assertThrows<Exception> { getTVShowDetailsUseCase(TV_SHOW_ID) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get tv show details"
         const val TV_SHOW_ID = 123L
         val TV_SHOW_DETAILS = TVShow(
             id = 90L,

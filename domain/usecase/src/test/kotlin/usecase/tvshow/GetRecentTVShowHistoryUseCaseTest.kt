@@ -22,27 +22,28 @@ class GetRecentTVShowHistoryUseCaseTest {
         coEvery { tvShowRepository.getRecentTVShowsSearchQueries() } returns RECENT_QUERIES
 
         // Act
-        getRecentTVShowHistoryUseCase()
+        val result = getRecentTVShowHistoryUseCase()
 
         // Assert
+        assertThat(result).isEqualTo(RECENT_QUERIES)
         coVerify(exactly = 1) { tvShowRepository.getRecentTVShowsSearchQueries() }
     }
 
     @Test
     fun `should throw exception if repository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowRepository.getRecentTVShowsSearchQueries() } throws Exception()
+        coEvery { tvShowRepository.getRecentTVShowsSearchQueries() } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> {
-            getRecentTVShowHistoryUseCase()
-        }
+        val exception = assertThrows<Exception> { getRecentTVShowHistoryUseCase() }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowRepository.getRecentTVShowsSearchQueries() }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get recent history"
         val RECENT_QUERIES = listOf("Breaking Bad", "The Office")
     }
 }

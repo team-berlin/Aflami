@@ -23,27 +23,30 @@ class GetSimilarTVShowsUseCaseTest {
         coEvery { tvShowDetailsRepository.getTVShowsSimilar(TV_SHOW_ID) } returns TV_SHOWS
 
         // Act
-        getSimilarTVShowsUseCase(TV_SHOW_ID)
+        val result = getSimilarTVShowsUseCase(TV_SHOW_ID)
 
         // Assert
+        assertThat(result).isEqualTo(TV_SHOWS)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsSimilar(TV_SHOW_ID) }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowDetailsRepository.getTVShowsSimilar(TV_SHOW_ID) } throws Exception()
+        coEvery { tvShowDetailsRepository.getTVShowsSimilar(TV_SHOW_ID) } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             getSimilarTVShowsUseCase(TV_SHOW_ID)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsSimilar(TV_SHOW_ID) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get similar tv show"
         const val TV_SHOW_ID = 101L
         val TV_SHOWS = listOf(
             TVShow(

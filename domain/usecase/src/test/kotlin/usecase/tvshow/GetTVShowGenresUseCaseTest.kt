@@ -23,25 +23,28 @@ class GetTVShowGenresUseCaseTest {
         coEvery { tvShowDetailsRepository.getTVShowsGenres() } returns GENRES
 
         // Act
-        getTVShowGenresUseCase()
+        val result = getTVShowGenresUseCase()
 
         // Assert
+        assertThat(result).isEqualTo(GENRES)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsGenres() }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowDetailsRepository.getTVShowsGenres() } throws Exception()
+        coEvery { tvShowDetailsRepository.getTVShowsGenres() } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> { getTVShowGenresUseCase() }
+        val exception = assertThrows<Exception> { getTVShowGenresUseCase() }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsGenres() }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get genres tv show"
         val GENRES = listOf(
             Genre(id = 1, name = "Drama"),
             Genre(id = 2, name = "Comedy")

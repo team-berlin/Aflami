@@ -1,6 +1,7 @@
 package usecase.tvshow
 
 import com.berlin.entity.MediaImage
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -21,25 +22,28 @@ class GetTVShowGalleryUseCaseTest {
         coEvery { tvShowDetailsRepository.getTVShowsImages(TV_SHOW_ID) } returns POSTER
 
         // Act
-        getTVShowGalleryUseCase(TV_SHOW_ID)
+        val result = getTVShowGalleryUseCase(TV_SHOW_ID)
 
         // Assert
+        assertThat(result).isEqualTo(POSTER)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsImages(TV_SHOW_ID) }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowDetailsRepository.getTVShowsImages(TV_SHOW_ID) } throws Exception()
+        coEvery { tvShowDetailsRepository.getTVShowsImages(TV_SHOW_ID) } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> { getTVShowGalleryUseCase(TV_SHOW_ID) }
+        val exception = assertThrows<Exception> { getTVShowGalleryUseCase(TV_SHOW_ID) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsImages(TV_SHOW_ID) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get tv show gallery"
         const val TV_SHOW_ID = 321L
         val POSTER = MediaImage(
             backdrops = listOf(

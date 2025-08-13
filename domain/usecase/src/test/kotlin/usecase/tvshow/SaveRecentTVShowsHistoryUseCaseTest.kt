@@ -1,10 +1,10 @@
 package usecase.tvshow
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TVShowRepository
@@ -22,25 +22,28 @@ class SaveRecentTVShowsHistoryUseCaseTest {
         coEvery { tvShowRepository.saveRecentTVShowsHistory(QUERY) } returns Unit
 
         // Act
-        saveRecentTVShowsHistoryUseCase(QUERY)
+        val result = saveRecentTVShowsHistoryUseCase(QUERY)
 
         // Assert
+        assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) { tvShowRepository.saveRecentTVShowsHistory(QUERY) }
     }
 
     @Test
     fun `should throw exception if repository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowRepository.saveRecentTVShowsHistory(QUERY) } throws Exception()
+        coEvery { tvShowRepository.saveRecentTVShowsHistory(QUERY) } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> { saveRecentTVShowsHistoryUseCase(QUERY) }
+        val exception = assertThrows<Exception> { saveRecentTVShowsHistoryUseCase(QUERY) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowRepository.saveRecentTVShowsHistory(QUERY) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to save recent tv show history"
         const val QUERY = "Breaking Bad"
     }
 }

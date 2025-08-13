@@ -1,5 +1,6 @@
 package usecase.profile
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -21,9 +22,10 @@ class GetLanguageUseCaseTest {
         coEvery { settingsRepository.getLanguage() } returns flowOf(LANGUAGE)
 
         // Act
-        getLanguageUseCase().first()
+        val result = getLanguageUseCase().first()
 
         // Assert
+        assertThat(result).isEqualTo(LANGUAGE)
         coVerify(exactly = 1) { settingsRepository.getLanguage() }
     }
 
@@ -33,9 +35,10 @@ class GetLanguageUseCaseTest {
         coEvery { settingsRepository.getLanguage() } returns flowOf(null)
 
         // Act
-        getLanguageUseCase().first()
+        val result = getLanguageUseCase().first()
 
         // Assert
+        assertThat(result).isNull()
         coVerify(exactly = 1) { settingsRepository.getLanguage() }
     }
 
@@ -43,16 +46,18 @@ class GetLanguageUseCaseTest {
     fun `should throw exception when repository throws exception`() = runTest {
         // Arrange
 
-        coEvery { settingsRepository.getLanguage() } throws Exception()
+        coEvery { settingsRepository.getLanguage() } throws Exception(ERROR_MESSAGE)
 
         // Act
-        assertThrows<Exception> { getLanguageUseCase() }
+        val exception = assertThrows<Exception> { getLanguageUseCase() }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) { settingsRepository.getLanguage() }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to get language"
         const val LANGUAGE = "en"
     }
 }

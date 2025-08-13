@@ -24,27 +24,30 @@ class GetTopRatedTVShowUseCaseTest {
         coEvery { tvShowRepository.getTopRatedTVShows(PAGE) } returns TV_SHOWS
 
         // Act
-        getTopRatedTVShowUseCase(PAGE)
+        val result = getTopRatedTVShowUseCase(PAGE)
 
         // Assert
+        assertThat(result).isEqualTo(TV_SHOWS)
         coVerify(exactly = 1) { tvShowRepository.getTopRatedTVShows(PAGE) }
     }
 
     @Test
     fun `should throw exception if tvShowRepository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowRepository.getTopRatedTVShows(PAGE) } throws Exception()
+        coEvery { tvShowRepository.getTopRatedTVShows(PAGE) } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             getTopRatedTVShowUseCase(PAGE)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowRepository.getTopRatedTVShows(PAGE) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get top rated tv show"
         const val PAGE = 1
         val TV_SHOWS = listOf(
             TVShow(

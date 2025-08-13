@@ -23,27 +23,28 @@ class GetSearchTVShowsUseCaseTest {
         coEvery { tvShowRepository.searchTVShow(QUERY, PAGE) } returns TV_SHOWS
 
         // Act
-        getSearchTVShowsUseCase(QUERY, PAGE)
+        val result = getSearchTVShowsUseCase(QUERY, PAGE)
 
         // Assert
+        assertThat(result).isEqualTo(TV_SHOWS)
         coVerify(exactly = 1) { tvShowRepository.searchTVShow(QUERY, PAGE) }
     }
 
     @Test
     fun `should throw exception if tvShowRepository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowRepository.searchTVShow(QUERY, PAGE) } throws Exception()
+        coEvery { tvShowRepository.searchTVShow(QUERY, PAGE) } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> {
-            getSearchTVShowsUseCase(QUERY, PAGE)
-        }
+        val exception = assertThrows<Exception> { getSearchTVShowsUseCase(QUERY, PAGE) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowRepository.searchTVShow(QUERY, PAGE) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get search"
         const val QUERY = "Stranger Things"
         const val PAGE = 1
         val TV_SHOWS = listOf(

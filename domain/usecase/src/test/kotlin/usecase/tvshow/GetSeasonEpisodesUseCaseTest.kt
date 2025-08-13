@@ -25,12 +25,13 @@ class GetSeasonEpisodeUseCaseTest {
             tvShowDetailsRepository.getSeasonEpisodes(
                 TV_SHOW_ID, TV_SHOW_NUMBER
             )
-        } returns getFakeEpisodes()
+        } returns EPISODE
 
         // Act
-        getSeasonEpisodesUseCase(TV_SHOW_ID, TV_SHOW_NUMBER)
+        val result = getSeasonEpisodesUseCase(TV_SHOW_ID, TV_SHOW_NUMBER)
 
         // Assert
+        assertThat(result).isEqualTo(EPISODE)
         coVerify(exactly = 1) {
             tvShowDetailsRepository.getSeasonEpisodes(
                 TV_SHOW_ID,
@@ -43,15 +44,14 @@ class GetSeasonEpisodeUseCaseTest {
     fun `should return empty list when no episodes found`() = runTest {
         // Arrange
         coEvery {
-            tvShowDetailsRepository.getSeasonEpisodes(
-                TV_SHOW_ID, TV_SHOW_NUMBER
-            )
+            tvShowDetailsRepository.getSeasonEpisodes(TV_SHOW_ID, TV_SHOW_NUMBER)
         } returns emptyList()
 
         // Act
-        getSeasonEpisodesUseCase(TV_SHOW_ID, TV_SHOW_NUMBER)
+        val result = getSeasonEpisodesUseCase(TV_SHOW_ID, TV_SHOW_NUMBER)
 
         // Assert
+        assertThat(result).isEmpty()
         coVerify(exactly = 1) {
             tvShowDetailsRepository.getSeasonEpisodes(
                 TV_SHOW_ID,
@@ -65,14 +65,15 @@ class GetSeasonEpisodeUseCaseTest {
         // Arrange
         coEvery {
             tvShowDetailsRepository.getSeasonEpisodes(TV_SHOW_ID, TV_SHOW_NUMBER)
-        } throws Exception()
+        } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             getSeasonEpisodesUseCase(TV_SHOW_ID, TV_SHOW_NUMBER)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) {
             tvShowDetailsRepository.getSeasonEpisodes(
                 TV_SHOW_ID,
@@ -82,25 +83,22 @@ class GetSeasonEpisodeUseCaseTest {
     }
 
     companion object {
+        const val EXCEPTION = "Error to get season"
+        val EPISODE = listOf(
+            Episode(
+                airDate = "2020-0$2-01",
+                episodeNumber = 2,
+                episodeType = "",
+                episodeId = 9L,
+                name = "Episode ",
+                description = "Overview of episode ",
+                duration = 5,
+                tvShowId = 26,
+                stillPath = "",
+                rating = 7.3
+            )
+        )
         const val TV_SHOW_ID = 1L
         const val TV_SHOW_NUMBER = 4
-    }
-
-
-    private fun getFakeEpisodes(): List<Episode> {
-        return (1..5).map { i ->
-            Episode(
-                airDate = "2020-0$i-01",
-                episodeNumber = i,
-                episodeType = "$i",
-                episodeId = i.toLong(),
-                name = "Episode $i",
-                description = "Overview of episode $i",
-                duration = i,
-                tvShowId = i,
-                stillPath = "",
-                rating = i.toDouble()
-            )
-        }
     }
 }

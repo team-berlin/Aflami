@@ -80,7 +80,6 @@ class GetPopularMoviesUseCaseTest {
                 isFavourite = false,
             )
         )
-        const val EXCEPTION = "Network error"
+        const val EXCEPTION = "Error to get popular movie"
     }
-
 }

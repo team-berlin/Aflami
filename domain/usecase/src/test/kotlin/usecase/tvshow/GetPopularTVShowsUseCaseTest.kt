@@ -1,6 +1,7 @@
 package usecase.tvshow
 
 import com.berlin.entity.TVShow
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -21,27 +22,28 @@ class GetPopularTVShowsUseCaseTest {
         coEvery { tvShowRepository.getPopularTVShows() } returns TV_SHOWS
 
         // Act
-        getPopularTVShowsUseCase()
+        val result = getPopularTVShowsUseCase()
 
         // Assert
+        assertThat(result).isEqualTo(TV_SHOWS)
         coVerify(exactly = 1) { tvShowRepository.getPopularTVShows() }
     }
 
     @Test
     fun `should throw exception if tvShowRepository throws exception`() = runTest {
         // Arrange
-        coEvery { tvShowRepository.getPopularTVShows() } throws Exception()
+        coEvery { tvShowRepository.getPopularTVShows() } throws Exception(EXCEPTION)
 
         // Atc
-        assertThrows<Exception> {
-            getPopularTVShowsUseCase()
-        }
+        val exception = assertThrows<Exception> { getPopularTVShowsUseCase() }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { tvShowRepository.getPopularTVShows() }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get popular tv show"
         val TV_SHOWS = listOf(
             TVShow(
                 id = 90L,
