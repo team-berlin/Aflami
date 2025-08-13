@@ -13,8 +13,6 @@ import repository.TVShowRepository
 import repository.SettingsRepository
 import repository.TVShowDetailsRepository
 import repository.UserProfileRepository
-import usecase.auth.GetLoginStatus
-import repository.UserRepository
 import usecase.auth.GetLoginStatusUseCase
 import usecase.auth.GetLoginUseCase
 import usecase.profile.GetUserProfileUseCase

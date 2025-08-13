@@ -9,7 +9,6 @@ import com.berlin.entity.AppTheme
 import com.berlin.entity.ContentRestriction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatus
 import usecase.profile.ClearUserProfileUseCase
 import usecase.auth.GetLoginStatusUseCase
 import usecase.profile.GetContentRestrictionUseCase

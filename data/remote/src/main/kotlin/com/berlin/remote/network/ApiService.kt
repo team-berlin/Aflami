@@ -11,9 +11,7 @@ import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
-import com.berlin.repository.datasource.remote.response.SubmitRatingResponse
 import com.berlin.repository.datasource.remote.dto.rating.RatedMediaDto
-import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
 import com.berlin.repository.datasource.remote.response.rating.SubmitRatingResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import kotlinx.datetime.Clock
@@ -189,7 +187,6 @@ interface ApiService {
         @Query(ApiConstants.SESSION_ID) sessionId: String,
         @Body rating: SubmitRatingRequestDto
     ): Response<SubmitRatingResponse>
-    ): Response<AccountDto>
 
 
     @GET(ApiConstants.DISCOVER_MOVIE)
@@ -204,19 +201,6 @@ interface ApiService {
         @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<TVShowDetailsDto>>
 
-    @POST(ApiConstants.RATE_MOVIE)
-    suspend fun rateMovie(
-        @Path(ApiConstants.MOVIE_ID) movieId: Int,
-        @Query(ApiConstants.SESSION_ID) sessionId: String,
-        @Body rating: SubmitRatingRequestDto
-    ): Response<SubmitRatingResponse>
-
-    @POST(ApiConstants.RATE_TV_SHOW)
-    suspend fun rateTvShow(
-        @Path(ApiConstants.SERIES_ID) tvId: Int,
-        @Query(ApiConstants.SESSION_ID) sessionId: String,
-        @Body rating: SubmitRatingRequestDto
-    ): Response<SubmitRatingResponse>
 }
 
 val DEFAULT_GTE: String =

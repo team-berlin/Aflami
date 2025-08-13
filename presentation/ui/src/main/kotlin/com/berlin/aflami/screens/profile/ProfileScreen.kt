@@ -167,7 +167,7 @@ private fun ProfileContent(
                 secondOptionSubTitleIdRes = R.string.moderate_description,
                 thirdOptionSubTitleIdRes = R.string.off_description
             )
-            }
+        }
         ProfileDialogType.LOGOUT -> {
             LogoutDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },

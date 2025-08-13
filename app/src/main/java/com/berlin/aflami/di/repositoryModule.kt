@@ -5,7 +5,6 @@ import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
 import com.berlin.repository.RatingRepositoryImpl
 import com.berlin.repository.RatedMediaRepositoryImp
-import com.berlin.repository.RatingRepositoryImpl
 import com.berlin.repository.SettingsRepositoryImpl
 import com.berlin.repository.TVShowRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
@@ -23,12 +22,8 @@ import repository.RatingRepository
 import repository.TVShowRepository
 import repository.SettingsRepository
 import repository.RatedMediaRepository
-import repository.RatingRepository
-import repository.TVShowRepository
 import repository.TVShowDetailsRepository
 import repository.UserProfileRepository
-import repository.TVShowDetailsRepository
-import repository.UserRepository
 import javax.inject.Singleton
 
 @Module
