@@ -9,7 +9,7 @@ import com.berlin.local.datasource.HomeLocalDataSourceImp
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
 import com.berlin.local.datasource.RecentlyWatchedLocalDataSourceImpl
 import com.berlin.local.datasource.SearchLocalDataSourceImpl
-import com.berlin.local.datasource.UserLocalDataSourceImp
+import com.berlin.local.datasource.UserProfileLocalDataSourceImp
 import com.berlin.remote.AuthenticationRemoteDataSourceImpl
 import com.berlin.remote.RetrofitRemoteDataSource
 import com.berlin.remote.UserRemoteDataSourceImpl
@@ -21,7 +21,7 @@ import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.SearchLocalDataSource
-import com.berlin.repository.datasource.local.UserLocalDataSource
+import com.berlin.repository.datasource.local.UserProfileLocalDataSource
 import com.berlin.repository.datasource.local.dataStore.SettingsLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
@@ -87,8 +87,8 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindUserLocalDataSource(
-        impl: UserLocalDataSourceImp
-    ): UserLocalDataSource
+        impl: UserProfileLocalDataSourceImp
+    ): UserProfileLocalDataSource
 
     @Binds
     @Singleton

@@ -9,10 +9,13 @@ import com.berlin.entity.AppTheme
 import com.berlin.entity.ContentRestriction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import usecase.profile.ClearUserProfileUseCase
 import usecase.auth.GetLoginStatusUseCase
 import usecase.profile.GetContentRestrictionUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
+import usecase.profile.ObserveUserProfileUseCase
+import usecase.profile.RefreshUserProfileUseCase
 import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
@@ -26,14 +29,19 @@ class ProfileViewModel @Inject constructor(
     val setLanguageUseCase: SetLanguageUseCase,
     val setThemeUseCase: SetThemeUseCase,
     val getLoginStatus: GetLoginStatusUseCase,
+    val setContentRestrictionUseCase: SetContentRestrictionUseCase,
     val getContentRestrictionUseCase: GetContentRestrictionUseCase,
-    val setContentRestrictionUseCase:SetContentRestrictionUseCase
-    ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
+    private val observeUserProfileUseCase: ObserveUserProfileUseCase,
+    private val refreshUserProfileUseCase: RefreshUserProfileUseCase,
+    private val clearUserProfileUseCase: ClearUserProfileUseCase
+
+) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
 
     init {
         collectTheme()
         collectLanguage()
+        collectUserProfile()
         collectContentRestriction()
         checkLoginStatus()
     }
@@ -97,8 +105,8 @@ class ProfileViewModel @Inject constructor(
                 tempSelectedTheme = AppTheme.LIGHT.name,
             )
         }
-
     }
+
     override fun onApplyThemeOption() {
         viewModelScope.launch {
             val selectedTheme = AppTheme.valueOf(state.value.tempSelectedTheme)
@@ -154,6 +162,10 @@ class ProfileViewModel @Inject constructor(
         updateState { it.copy(activeDialog = ProfileDialogType.LOGOUT) }
 
     override fun onDialogLogoutClicked() {
+        viewModelScope.launch {
+            clearUserProfileUseCase()
+            updateState { it.copy(isLoggedIn = false) }
+        }
         sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
     }
 
@@ -247,7 +259,6 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             getLanguageUseCase().collect { currentLanguage ->
                 val appLanguage = currentLanguage ?: Locale.getDefault().language.uppercase()
-
                 updateState {
                     it.copy(
                         selectedLanguage = appLanguage,
@@ -277,6 +288,21 @@ class ProfileViewModel @Inject constructor(
                 }
 
             }
+        }
+    }
+
+    private fun collectUserProfile() {
+        viewModelScope.launch {
+            observeUserProfileUseCase()
+                .collect { user ->
+                    updateState { s ->
+                        s.copy(
+                            userAvatarUrl = user?.avatarUrl?.takeIf { it.isNotBlank() },
+                            userName = user?.username.orEmpty(),
+                            isLoggedIn = user != null
+                        )
+                    }
+                }
         }
     }
 

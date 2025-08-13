@@ -21,6 +21,7 @@ import com.berlin.aflami.navigation.routes.listsRoute
 import com.berlin.aflami.navigation.routes.loginRoute
 import com.berlin.aflami.navigation.routes.movieDetailsRoute
 import com.berlin.aflami.navigation.routes.moviesByCategoryRoute
+import com.berlin.aflami.navigation.routes.myRating
 import com.berlin.aflami.navigation.routes.onBoarding
 import com.berlin.aflami.navigation.routes.profileRoute
 import com.berlin.aflami.navigation.routes.searchByActorNameRoute
@@ -124,6 +125,7 @@ fun NavGraphBuilder.bottomNavigationBarGraph() {
     categoriesRoute()
     gamesRoute()
     watchHistory()
+    myRating()
 }
 
 fun NavGraphBuilder.searchNavigationGraph() {

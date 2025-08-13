@@ -28,5 +28,4 @@ class RatingRepositoryImpl @Inject constructor(
         val response = remoteDataSource.postRateTvShow(tvId, request)
         return response.toDomain()
     }
-
 }

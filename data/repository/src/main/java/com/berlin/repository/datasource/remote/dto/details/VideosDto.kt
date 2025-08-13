@@ -45,8 +45,4 @@ data class VideoDto(
 
 	@SerialName("key")
 	val key: String? = null
-){
-	init {
-
-	}
-}
+)

@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.navigation.LoginDestination
+import com.berlin.aflami.navigation.MyRatingDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
@@ -67,7 +68,11 @@ private fun watchHistoryReceiveEffect(
     effect: ProfileScreenEffect
 ) {
     when (effect) {
-        ProfileScreenEffect.NavigateToMyRatingScreen -> {}
+        ProfileScreenEffect.NavigateToMyRatingScreen -> {
+            navController.navigate(
+                MyRatingDestination
+            )
+        }
         ProfileScreenEffect.NavigateToWatchHistoryScreen -> {
             navController.navigate(
                 WatchHistoryDestination
@@ -98,7 +103,6 @@ private fun ProfileContent(
     profileScreenState: ProfileUiState,
     profileScreenInteractionListener: ProfileInteractionListener,
 ) {
-
 
     when (profileScreenState.activeDialog) {
         ProfileDialogType.THEME -> {
@@ -164,7 +168,6 @@ private fun ProfileContent(
                 thirdOptionSubTitleIdRes = R.string.off_description
             )
         }
-
         ProfileDialogType.LOGOUT -> {
             LogoutDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
@@ -185,17 +188,18 @@ private fun ProfileContent(
     )
     {
         ProfileSection(
-            userAvatar = "",
-            userName = "",
+            userAvatar = profileScreenState.userAvatarUrl?:"",
+            userName = profileScreenState.userName,
             if (profileScreenState.isDarkThemeEnabled)
                 painterResource(R.drawable.profile_cover_night)
             else painterResource(R.drawable.profile_cover),
 
         )
         Spacer(modifier = Modifier.height(24.dp))
-        WatchHistoryRatingSection {
-            profileScreenInteractionListener.onWatchHistoryClick()
-        }
+        WatchHistoryRatingSection(
+            onWatchHistoryClick = {profileScreenInteractionListener.onWatchHistoryClick()},
+            onMyRatingClick = {profileScreenInteractionListener.onMyRatingClick()}
+        )
         Spacer(modifier = Modifier.height(24.dp))
         HorizontalDivider(thickness = 1.dp, color = Theme.color.stroke)
         Spacer(modifier = Modifier.height(24.dp))
