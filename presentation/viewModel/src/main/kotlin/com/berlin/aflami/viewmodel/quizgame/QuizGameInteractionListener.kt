@@ -6,4 +6,5 @@ interface QuizGameInteractionListener {
     fun hintClicked()
     fun closeGameClicked()
     fun navigateToResult()
+    fun onDismissLevelDialog()
 }

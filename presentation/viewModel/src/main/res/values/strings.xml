@@ -5,5 +5,14 @@
     <string name="there_is_no_season">There is no season!</string>
     <string name="there_is_no_more_media">There is no more media!</string>
     <string name="there_is_no_gallery">There is no gallery!</string>
-    <string name="unknown_error" >Unknown Error</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="game_guess_character_title">Guess the Character</string>
+
+    <string name="game_guess_poster_title">Guess the Movie by Poster</string>
+
+    <string name="game_release_title">When Was It Released?</string>
+
+    <string name="game_genre_title">Which Genre?</string>
+
+
 </resources>

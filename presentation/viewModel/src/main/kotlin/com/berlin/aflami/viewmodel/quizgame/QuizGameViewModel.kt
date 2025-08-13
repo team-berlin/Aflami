@@ -48,31 +48,35 @@ class QuizGameViewModel @Inject constructor(
     private val mediaCast = MutableStateFlow<List<ActorUiState>>(emptyList())
 
     private val timer = guessGameScreenArgs.timer ?: 0
-    private val gameType = guessGameScreenArgs.gameType ?: ""
+    private val gameType = guessGameScreenArgs.gameType ?: GameType.POSTER
     private val numberOfQuestion = guessGameScreenArgs.numberOfQuestion ?: 0
     private val numberOfPoints = guessGameScreenArgs.numberOfPoint ?: 0
 
     init {
+        updateState {
+            it.copy(
+                numberOfPoint=numberOfPoints
+            )
+        }
         collectUserProfile()
         viewModelScope.launch {
             mediaGame()
-            when (gameType.uppercase()) {
-                GameType.CHARACTER.name -> {
-                    getCast()
-                    getMediaByCharacter()
-                }
-                GameType.POSTER.name -> getMediaByPoster()
-                GameType.RELEASE.name -> getMediaByReleaseDate()
-                GameType.GENRE.name -> {
-                    genreGame()
-                    getMediaByGenres()
-                }
-
-                else -> getMediaByCharacter()
-            }
+//            when (gameType.uppercase()) {
+//                GameType.CHARACTER.name -> {
+//                    getCast()
+//                    getMediaByCharacter()
+//                }
+//                GameType.POSTER.name -> getMediaByPoster()
+//                GameType.RELEASE.name -> getMediaByReleaseDate()
+//                GameType.GENRE.name -> {
+//                    genreGame()
+//                    getMediaByGenres()
+//                }
+//
+//                else -> getMediaByCharacter()
+//            }
         }
     }
-
 
     private fun getMediaByCharacter() {
         val mediaItem = mediaCast.value.take(numberOfQuestion)
@@ -97,7 +101,7 @@ class QuizGameViewModel @Inject constructor(
                 questions = questions,
                 loading = false,
                 type = QuestionType.Image,
-                gameTypeName = GameType.valueOf(gameType),
+                gameTypeName = gameType,
                 time = timer
             )
         }
@@ -129,7 +133,7 @@ class QuizGameViewModel @Inject constructor(
                 questions = questions,
                 loading = false,
                 type = QuestionType.Image,
-                gameTypeName = GameType.valueOf(gameType),
+                gameTypeName = gameType,
                 time = timer
             )
         }
@@ -167,7 +171,7 @@ class QuizGameViewModel @Inject constructor(
                 questions = questions,
                 loading = false,
                 type = QuestionType.Text,
-                gameTypeName = GameType.valueOf(gameType),
+                gameTypeName = gameType,
                 time = timer
             )
         }
@@ -206,7 +210,7 @@ class QuizGameViewModel @Inject constructor(
                 questions = questions,
                 loading = false,
                 type = QuestionType.Text,
-                gameTypeName = GameType.valueOf(gameType),
+                gameTypeName = gameType,
                 time = timer
             )
         }
@@ -224,7 +228,7 @@ class QuizGameViewModel @Inject constructor(
                 movieIds.value = movieList.map { it.id }.shuffled()
                 tvShowIds.value = tvShowList.map { it.id }.shuffled()
                 mediaList.value = (movieList+tvShowList).shuffled().take(numberOfQuestion)
-                Log.e("movieList",mediaList.toString())
+                getMediaByPoster()
             },
             onSuccess = {
                 updateState {
@@ -329,7 +333,9 @@ class QuizGameViewModel @Inject constructor(
             it.copy(
                 selectedAnswer = answer,
                 isAnswerCorrect = it.selectedAnswer == it.questions[it.currentQuestionIndex].correctAnswer,
-                totalPoint = if (checkAnswer) it.totalPoint + numberOfPoints else it.totalPoint - numberOfPoints
+                totalPoint = if (checkAnswer) it.totalPoint + numberOfPoints else it.totalPoint - numberOfPoints,
+                totalResult =if (checkAnswer) it.totalResult + numberOfPoints else it.totalResult - numberOfPoints ,
+                imageBlur = if (checkAnswer) 0f else it.imageBlur
             )
         }
         }
@@ -341,7 +347,7 @@ class QuizGameViewModel @Inject constructor(
                     QuestionType.Image -> state.copy(
                         enableHint = true,
                         totalPoint = state.totalPoint - 10,
-                        imageBlur = state.imageBlur - 3
+                        imageBlur = state.imageBlur - 3f
                     )
                     QuestionType.Text -> {
                         val currentQuestion = state.questions[state.currentQuestionIndex]
@@ -365,11 +371,15 @@ class QuizGameViewModel @Inject constructor(
                 }
             } else {
                 state.copy(
-                    enableHint = false
+                    showDialog = true
                 )
             }
         }
     }
+
+    override fun onDismissLevelDialog() =
+        updateState { it.copy(showDialog = false) }
+
 
     override fun closeGameClicked() {
         sendNewEffect(QuizGameEffect.CloseGameClicked)

@@ -50,7 +50,7 @@ import com.berlin.ui.R
 @Composable
 fun ResultScreen(
     totalTime: Int,
-    gameType: String,
+    gameType: GameType,
     numberOfQuestion: Int,
     numberOfPoints: Int,
     totalPoint: Int,
@@ -77,7 +77,7 @@ fun ResultScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            ResultHeader(navController = navController, gameType = GameType.valueOf(gameType))
+            ResultHeader(navController = navController, gameType = gameType)
 
             ResultBox(
                 totalPoint = totalPoint,
@@ -185,7 +185,7 @@ private fun ResultHeader(
             )
         }
         Text(
-            text = gameType.type,
+            text = stringResource( gameType.type),
             style = Theme.textStyle.title.large,
             color = Theme.color.textColors.title,
         )

@@ -3,11 +3,9 @@ package com.berlin.aflami.viewmodel.game
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatusUseCase
 import usecase.game.GetPointsUseCase
-import usecase.profile.GetUserProfileUseCase
 import usecase.profile.ObserveUserProfileUseCase
 
 @HiltViewModel
@@ -49,7 +47,7 @@ class GameViewModel @Inject constructor(
     }
 
     override fun onGameInfoClicked(
-        gameType: String,
+        gameType: GameType,
         numberOfQuestion: Int,
         numberOfPoint: Int,
         time: Int

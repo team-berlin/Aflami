@@ -138,7 +138,19 @@
     <string name="not_enough_points">النقاط غير كافية</string>
     <string name="not_enough_points_for_hint">عذراً، ليس لديك نقاط كافية للحصول على تلميح</string>
     <string name="ok">تمام</string>
-    <string name="oops_you_lose_the_game">Oops, you lose the GAME!</string>
+    <string name="oops_you_lose_the_game"> لقد خسرت اللعبة!</string>
+    <string name="game_guess_character_title">خمن الشخصية</string>
+    <string name="game_guess_character_desc">هل تستطيع معرفة من هي هذه الشخصية؟</string>
+
+    <string name="game_guess_poster_title">خمن الفيلم من الملصق</string>
+    <string name="game_guess_poster_desc">طابق الملصق مع العنوان الصحيح!</string>
+
+    <string name="game_release_title">متى تم إصداره؟</string>
+    <string name="game_release_desc">اختر سنة الإصدار الصحيحة.</string>
+
+    <string name="game_genre_title">أي نوع؟</string>
+    <string name="game_genre_desc">أي واحد هو فيلم الأكشن الحقيقي؟</string>
+
 
 
 </resources>

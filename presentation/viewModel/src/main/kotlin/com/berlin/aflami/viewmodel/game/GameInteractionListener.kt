@@ -5,7 +5,7 @@ interface GameInteractionListener {
     fun onSelectLevel(levelIndex: Int)
 
     fun onGameInfoClicked(
-        gameType: String,
+        gameType: GameType,
         numberOfQuestion: Int,
         numberOfPoint: Int,
         time: Int

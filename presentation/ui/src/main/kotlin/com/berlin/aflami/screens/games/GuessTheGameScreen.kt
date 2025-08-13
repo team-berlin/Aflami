@@ -42,6 +42,7 @@ import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.authentication.CirclesBackground
 import com.berlin.aflami.screens.games.components.CountdownCircularProgress
+import com.berlin.aflami.screens.games.components.NoPointDialog
 import com.berlin.aflami.screens.games.components.Score
 import com.berlin.aflami.screens.games.components.SelectionItem
 import com.berlin.aflami.screens.onBoarding.Indicator
@@ -77,10 +78,10 @@ fun GuessTheGameScreen(
                     navController.navigate(
                        GameResultDestination(
                            totalTime =state.time ,
-                           gameType = state.gameTypeName.type,
+                           gameType = state.gameTypeName,
                            numberOfQuestion =state.questions.size ,
-                           numberOfPoints = state.totalPoint ,
-                           totalPoint = state.totalPoint,
+                           numberOfPoints = state.numberOfPoint ,
+                           totalPoint = state.totalResult,
                            time = state.time
                        )
                     )
@@ -91,12 +92,10 @@ fun GuessTheGameScreen(
 
     var showScore by remember { mutableStateOf(false) }
 
-    LaunchedEffect(state.isAnswerCorrect) {
-        if (state.isAnswerCorrect == true) {
+    LaunchedEffect(state.selectedAnswer) {
             showScore = true
             delay(3000)
             showScore = false
-        }
     }
     AnimatedVisibility(
         enter = fadeIn(),
@@ -155,7 +154,7 @@ fun GuessTheGameContent(
                 modifier = Modifier.zIndex(1f),
                 title = {
                     Text(
-                        text = state.gameTypeName.type,
+                        text = stringResource( state.gameTypeName.type),
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title
                     )
@@ -202,17 +201,31 @@ fun GuessTheGameContent(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            AnimatedVisibility(
+                visible = showScore,
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Score(
+                    score = "${state.numberOfPoint}",
+                    scoreColor = if(state.isAnswerCorrect == true)
+                        Theme.color.statusColors.greenAccent
+                    else
+                        Theme.color.statusColors.redAccent,
+                    backgroundColor = if(state.isAnswerCorrect == true)
+                        Theme.color.statusColors.greenVariant
+                    else
+                        Theme.color.statusColors.redVariant
+                )
+            }
+
             if(state.type==QuestionType.Image) {
                 CharacterCard(
                     modifier = Modifier.padding(top = 4.dp),
                     imageUrl = state.questions[state.currentQuestionIndex].question,
                     blurAmount = state.imageBlur,
-                    onHintClicked = { listener.hintClicked()
-//                        if (state.enableHint) {
-//                        { }
-//                    } else {
-//                        {}
-                    },
+                    onHintClicked = { listener.hintClicked()},
                     showHintBar = true,
                     hintText = "hint? 10 Pts.",
                     hintIcon = com.berlin.designsystem.R.drawable.hint_star,
@@ -222,15 +235,16 @@ fun GuessTheGameContent(
                 CharacterCard(
                     modifier = Modifier.padding(top = 4.dp),
                     guessedText = state.questions[state.currentQuestionIndex].question,
-                    onHintClicked = { listener.hintClicked()
-//                        if (state.enableHint) {
-//                        { listener.hintClicked() }
-//                    } else {
-//                        {}
-                    },
+                    onHintClicked = {listener.hintClicked()},
                     showHintBar = true,
                     hintText = "hint? 10 Pts.",
                     hintIcon = com.berlin.designsystem.R.drawable.hint_star,
+                )
+            }
+
+            if (state.showDialog) {
+                NoPointDialog(
+                    onDismiss = { listener.onDismissLevelDialog() }
                 )
             }
 
@@ -272,19 +286,6 @@ fun GuessTheGameContent(
                 )
             }
 
-        }
-        AnimatedVisibility(
-            visible = showScore,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier
-                .align(Alignment.Center)
-        ) {
-            Score(
-                score ="",
-                scoreColor = Theme.color.statusColors.greenAccent,
-                backgroundColor = Theme.color.statusColors.greenVariant
-            )
         }
     }
 }

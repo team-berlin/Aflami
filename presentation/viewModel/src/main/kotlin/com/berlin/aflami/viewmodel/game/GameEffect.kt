@@ -4,7 +4,7 @@ import com.berlin.exception.AflamiException
 
 sealed class GameEffect {
     data class NavigateToGuessGameScreen(
-        val gameType: String,
+        val gameType: GameType,
         val numberOfQuestion: Int,
         val numberOfPoint: Int,
         val time: Int

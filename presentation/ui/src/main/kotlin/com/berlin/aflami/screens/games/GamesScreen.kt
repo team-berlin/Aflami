@@ -85,8 +85,8 @@ fun GamesContent(
 ) {
     val gameCards = listOf(
         GameCardData(
-            title = "Guess the Character",
-            description = "Can you tell who this character?",
+            title = stringResource(R.string.game_guess_character_title),
+            description = stringResource(R.string.game_guess_character_desc),
             points = 400,
             isLocked = false,
             borderGradient = ExtraColors.guessMovieByCharacterGradient,
@@ -97,8 +97,8 @@ fun GamesContent(
             backgroundColor = Theme.color.primaryVariant
         ),
         GameCardData(
-            title = "Guess the Movie by Poster",
-            description = "Match the poster with the right title!",
+            title = stringResource(R.string.game_guess_poster_title),
+            description = stringResource(R.string.game_guess_poster_desc),
             points = 400,
             isLocked = false,
             gameType = GameType.POSTER,
@@ -109,8 +109,8 @@ fun GamesContent(
             backgroundColor = Theme.color.statusColors.blueCard
         ),
         GameCardData(
-            title = "When Was It Released?",
-            description = "Pick the right release year.",
+            title = stringResource(R.string.game_release_title),
+            description = stringResource(R.string.game_release_desc),
             points = 400,
             gameType = GameType.RELEASE,
             isLocked = false,
@@ -121,8 +121,8 @@ fun GamesContent(
             backgroundColor = Theme.color.statusColors.navyCard
         ),
         GameCardData(
-            title = "Which Genre?",
-            description = "Which one is the real action movie?",
+            title = stringResource(R.string.game_genre_title),
+            description = stringResource(R.string.game_genre_desc),
             points = 400,
             gameType = GameType.GENRE,
             isLocked = false,
@@ -158,12 +158,12 @@ fun GamesContent(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            gameCards.forEach { card ->
+            gameCards.forEachIndexed  { index ,card->
                 GameCard(
                     title = card.title,
                     description = card.description,
                     points = card.points,
-                    isLocked = card.isLocked,
+                    isLocked = index >= 2 &&gameState.points<400,
                     onClick = {
                         card.gameType?.let { gameInteractionListener.onSelectGameType(it) }
                         gameInteractionListener.onShowLevelDialog()
@@ -184,7 +184,7 @@ fun GamesContent(
                     },
                     onClick = {
                         gameInteractionListener.onGameInfoClicked(
-                            gameType = gameState.selectedGameType?.name ?: GameType.GENRE.name,
+                            gameType = gameState.selectedGameType?: GameType.GENRE,
                             numberOfQuestion = gameState.selectedLevel?.numberOfQuestions ?: 0,
                             numberOfPoint = gameState.selectedLevel?.points ?: 0,
                             time = gameState.selectedLevel?.time ?: 0

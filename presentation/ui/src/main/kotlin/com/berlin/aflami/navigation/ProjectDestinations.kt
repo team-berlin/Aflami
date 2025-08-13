@@ -79,7 +79,7 @@ object WatchHistoryDestination
 
 @Serializable
 class GuessGameDestination(
-    val gameType: String,
+    val gameType: GameType,
     val numberOfQuestion: Int,
     val numberOfPoint: Int,
     val time: Int
@@ -88,7 +88,7 @@ class GuessGameDestination(
 @Serializable
 class GameResultDestination(
     val totalTime:Int,
-    val gameType :String,
+    val gameType :GameType,
     val numberOfQuestion :Int,
     val numberOfPoints :Int,
     val totalPoint :Int,

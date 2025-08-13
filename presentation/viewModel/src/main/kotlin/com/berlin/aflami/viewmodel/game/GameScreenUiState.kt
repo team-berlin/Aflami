@@ -1,5 +1,7 @@
 package com.berlin.aflami.viewmodel.game
 
+import com.berlin.viewModel.R
+
 data class GameScreenState(
     val selectedGameType: GameType? = null,
     val selectedLevel: GameLevel? = null,
@@ -16,11 +18,11 @@ data class GameLevel(
     val time: Int
 )
 
-enum class GameType (val type:String){
-    CHARACTER("Guess the Character"),
-    POSTER("Guess by Poster"),
-    RELEASE("When is released?"),
-    GENRE("Which genre?")
+enum class GameType (val type:Int){
+    CHARACTER(R.string.game_guess_character_title),
+    POSTER(R.string.game_guess_poster_title),
+    RELEASE(R.string.game_release_title),
+    GENRE(R.string.game_genre_title)
 }
 
 enum class GameLevelType {
