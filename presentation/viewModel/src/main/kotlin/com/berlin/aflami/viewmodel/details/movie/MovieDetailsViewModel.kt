@@ -23,7 +23,7 @@ import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatus
+import usecase.auth.GetLoginStatusUseCase
 import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.GetMovieCastUseCase
@@ -41,7 +41,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
     private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
     private val movieReviewUseCase: GetMovieReviewUseCase,
-    private val getLoginStatusUseCase: GetLoginStatus,
+    private val getLoginStatusUseCase: GetLoginStatusUseCase,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val getMovieVideos: GetMovieVideos,
     private val rateMovieUseCase: RateMovieUseCase,

@@ -6,11 +6,14 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
+import com.berlin.entity.ContentRestriction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginStatusUseCase
+import usecase.profile.GetContentRestrictionUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
+import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
 import java.util.Locale
@@ -23,6 +26,8 @@ class ProfileViewModel @Inject constructor(
     val setLanguageUseCase: SetLanguageUseCase,
     val setThemeUseCase: SetThemeUseCase,
     val getLoginStatus: GetLoginStatusUseCase,
+    val getContentRestrictionUseCase: GetContentRestrictionUseCase,
+    val setContentRestrictionUseCase:SetContentRestrictionUseCase
     ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
 

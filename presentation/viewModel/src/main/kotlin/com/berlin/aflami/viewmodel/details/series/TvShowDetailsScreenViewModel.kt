@@ -25,7 +25,7 @@ import com.berlin.entity.TVShow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatus
+import usecase.auth.GetLoginStatusUseCase
 import usecase.tvshow.GetTVShowVideos
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.GetSeasonEpisodesUseCase
@@ -43,7 +43,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
     private val getTVShowGalleryUseCase: GetTVShowGalleryUseCase,
     private val getSimilarTVShowsUseCase: GetSimilarTVShowsUseCase,
-    private val getLoginStatusUseCase: GetLoginStatus,
+    private val getLoginStatusUseCase: GetLoginStatusUseCase,
     private val tvShowReviewUseCase: GetTVShowReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
