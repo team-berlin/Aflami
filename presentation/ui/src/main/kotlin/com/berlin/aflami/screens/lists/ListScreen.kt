@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.lists
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -48,10 +47,10 @@ import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.movie.SNACK_BAR_STATUS
-import com.berlin.aflami.viewmodel.listFeature.ListScreenEffect
-import com.berlin.aflami.viewmodel.listFeature.ListScreenInteractionListener
-import com.berlin.aflami.viewmodel.listFeature.ListScreenState
-import com.berlin.aflami.viewmodel.listFeature.ListScreenViewModel
+import com.berlin.aflami.viewmodel.list.ListScreenEffect
+import com.berlin.aflami.viewmodel.list.ListScreenInteractionListener
+import com.berlin.aflami.viewmodel.list.ListScreenState
+import com.berlin.aflami.viewmodel.list.ListScreenViewModel
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.FavouriteListItemUiState
 import com.berlin.ui.R
 
@@ -238,7 +237,6 @@ private fun ListsContent(
             exit = fadeOut(),
             visible = favouriteLists.itemCount != 0 && listScreenState.isUserLoggedIn == true
         ) {
-            Log.d("khairy", "item count = ${favouriteLists.itemCount}")
             Column(
                 modifier = modifier
                     .fillMaxSize()

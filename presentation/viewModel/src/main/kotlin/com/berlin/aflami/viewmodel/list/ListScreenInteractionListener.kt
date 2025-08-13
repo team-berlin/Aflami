@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.listFeature
+package com.berlin.aflami.viewmodel.list
 
 import androidx.compose.ui.text.input.TextFieldValue
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListInteractionListener

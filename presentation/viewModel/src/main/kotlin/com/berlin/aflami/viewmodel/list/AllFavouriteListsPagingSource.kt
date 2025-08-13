@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.listFeature
+package com.berlin.aflami.viewmodel.list
 
 import android.util.Log
 import com.berlin.aflami.viewmodel.base.BasePagingSource
@@ -12,7 +12,6 @@ class AllFavouriteListsPagingSource(
 
     override suspend fun fetchData(page: Int): List<FavouriteListItemUiState> {
         return getAllFavouriteListsUseCase.invoke(pageNumber = page).map { favouriteList ->
-            Log.d("khairy", "favouriteList = $favouriteList")
             favouriteList.toFavourListItemUiState()
         }
     }

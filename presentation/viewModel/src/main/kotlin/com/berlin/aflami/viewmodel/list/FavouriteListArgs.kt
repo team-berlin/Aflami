@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.listFeature
+package com.berlin.aflami.viewmodel.list
 
 import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.util.IS_LIST_DELETED_SUCCESSFULLY

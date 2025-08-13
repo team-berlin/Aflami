@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.listdetails
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -46,7 +45,6 @@ import kotlinx.coroutines.flow.collectLatest
 fun ListDetailsScreen(
     listDetailsViewModel: ListDetailsScreenViewModel = hiltViewModel(),
 ) {
-
     val listDetailsScreenState by listDetailsViewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
     LaunchedEffect(Unit) {
@@ -58,7 +56,6 @@ fun ListDetailsScreen(
     ListDetailsContent(
         listDetailsScreenState = listDetailsScreenState, listener = listDetailsViewModel
     )
-
 }
 
 @Composable
@@ -116,10 +113,6 @@ private fun ListDetailsContent(
                 exit = fadeOut(),
                 visible = movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading
             ) {
-                Log.d(
-                    "khairy",
-                    "no data because result = ${movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading}"
-                )
                 CountryTourExploring(
                     modifier = Modifier
                         .fillMaxSize()
@@ -159,8 +152,6 @@ private fun onReceiveNewEffect(effect: ListDetailsScreenEffect, navController: N
     when (effect) {
         ListDetailsScreenEffect.NavigateBack -> navController.popBackStack()
         is ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar -> {
-            Log.d("Khairy", "navigating to ListScreen to show deleted list snack bar")
-
             navController.navigate(
                 route = ListsScreenWithArgs(
                     showDeletedSnackBar = true,
@@ -193,7 +184,7 @@ private fun onReceiveNewEffect(effect: ListDetailsScreenEffect, navController: N
             navController.navigate(MovieDetailsDestination(effect.movieId))
         }
 
-        ListDetailsScreenEffect.ShowDeleteMovieFromListFailedSnackBar -> TODO()
-        ListDetailsScreenEffect.ShowDeleteMovieFromListSucceededSnackBar -> TODO()
+        ListDetailsScreenEffect.ShowDeleteMovieFromListFailedSnackBar -> {}
+        ListDetailsScreenEffect.ShowDeleteMovieFromListSucceededSnackBar -> {}
     }
 }

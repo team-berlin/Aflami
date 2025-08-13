@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.listDetails
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
@@ -98,13 +97,9 @@ class ListDetailsScreenViewModel @Inject constructor(
     override fun onDeleteConfirmed(listId: Int) {
         updateState { screenState -> screenState.copy(showDeleteListDialog = false) }
         tryToCall(call = { deleteUserFavouriteListUseCase(listId = listId) }, onSuccess = {
-            sendNewEffect(ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar(true)).also {
-                Log.d("Khairy", "delete list successful and going to show snack bar")
-            }
+            sendNewEffect(ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar(true))
         }, onError = { errorUiState ->
-            sendNewEffect(ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar(false)).also {
-                Log.d("Khairy", "delete list failed error uiState is ${errorUiState}")
-            }
+            sendNewEffect(ListDetailsScreenEffect.NavigateBackAndShowDeleteListStatusSnackBar(false))
         })
     }
     //endregion

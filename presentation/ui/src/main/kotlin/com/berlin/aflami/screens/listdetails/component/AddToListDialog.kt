@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.listdetails.component
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -35,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.IconButton
-import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.lists.component.Dialog
@@ -194,11 +192,11 @@ private fun SelectionListItem(
 
 @Composable
 private fun ActionButtonsSection(
+    modifier: Modifier = Modifier,
     movieId: Long? = null,
     selectedListId: Int? = null,
     onAddToSelectedList: (movieId: Long, listId: Int) -> Unit,
     onCreateNewList: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -210,10 +208,8 @@ private fun ActionButtonsSection(
                 .fillMaxWidth()
                 .height(56.dp)
                 .background(
-                    brush = (if (isEnabled)
-                        darkPurpleLinearGradient
-                    else
-                        Brush.linearGradient(listOf(Theme.color.disable, Theme.color.disable))),
+                    brush = (if (isEnabled) darkPurpleLinearGradient
+                    else Brush.linearGradient(listOf(Theme.color.disable, Theme.color.disable))),
                     shape = RoundedCornerShape(12.dp)
                 )
                 .clickable(enabled = isEnabled) {
@@ -225,7 +221,7 @@ private fun ActionButtonsSection(
             contentAlignment = Alignment.Center,
         ){
             Text(
-                "Add",
+                stringResource(R.string.add),
                 style = Theme.textStyle.label.large,
                 color = if (isEnabled) Theme.color.textColors.onPrimary else Theme.color.stroke,
             )

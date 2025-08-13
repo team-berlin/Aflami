@@ -52,7 +52,6 @@ fun MoviesListItem(
         items(
             count = movies.itemCount, key = movies.itemKey { it.id }) { index ->
             val movie = movies[index] ?: return@items
-            Log.d("kairy", "movie ui state item $movie")
             Box {
                 Box(
                     Modifier

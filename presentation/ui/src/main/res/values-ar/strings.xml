@@ -133,6 +133,7 @@
     <string name="list_failed_to_edit">هذه الخاصية غير مدعومة بعد</string>
     <string name="list_failed_to_deleted">خدث خطأ أثناء مسح القائمة</string>
     <string name="add_to_list">ألاضافة الي قائمة</string>
+    <string name="add">اضافه</string>
 
 
 </resources>

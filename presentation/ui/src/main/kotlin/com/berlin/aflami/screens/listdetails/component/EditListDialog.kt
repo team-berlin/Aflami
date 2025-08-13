@@ -58,13 +58,6 @@ fun EditListDialog(
                 ),
                 leadingIcon = R.drawable.nav_lists,
             )
-//            TextField(
-//                text = TextFieldValue(listName),
-//                onValueChange = { onListNameChanged(it.text) },
-//                hintText = stringResource(R.string.my_favorite),
-//                leadingIcon = R.drawable.nav_lists,
-//            )
-
             PrimaryButton(
                 onClick = {
                     onSaveClick(listId,listName)

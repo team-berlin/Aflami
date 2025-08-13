@@ -15,8 +15,6 @@ class FavouriteMoviesPagingSource(
         return getAllFavouriteListItemsUseCase.invoke(
             pageNumber = page,
             favouriteListId = favouriteListId
-        ).map { movie -> movie.toMovieUiState() }.also {
-            Log.d("kairy", "fetchFavourite Movies ui states returned $it")
-        }
+        ).map { movie -> movie.toMovieUiState() }
     }
 }

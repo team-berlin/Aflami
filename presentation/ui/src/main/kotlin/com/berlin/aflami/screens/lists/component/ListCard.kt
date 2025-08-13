@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.lists.component
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +19,6 @@ import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
-
 
 @Composable
 fun ListCard(
