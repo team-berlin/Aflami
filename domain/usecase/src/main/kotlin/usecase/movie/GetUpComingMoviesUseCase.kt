@@ -2,8 +2,9 @@ package usecase.movie
 
 import com.berlin.entity.Movie
 import repository.MovieRepository
+import javax.inject.Inject
 
-class GetUpComingMoviesUseCase(
+class GetUpComingMoviesUseCase @Inject constructor(
     private val movieRepository: MovieRepository
 ) {
     suspend operator fun invoke(): List<Movie> = movieRepository.getUpComingMovies()
