@@ -1,10 +1,8 @@
 package com.berlin.aflami.screens.categories
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -55,7 +53,6 @@ import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryInteractionLi
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryScreenEffect
 import com.berlin.aflami.viewmodel.categories.movie.MoviesByCategoryScreenViewModel
 import com.berlin.aflami.viewmodel.categories.movie.MoviesByCategoryUiState
-import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState.Loading
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
