@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.quizgame
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
@@ -39,7 +40,8 @@ class QuizGameViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             mediaGame()
-            getMediaByPoster()
+            getCast()
+            getMediaByCharacter()
         }
     }
 
@@ -48,14 +50,15 @@ class QuizGameViewModel @Inject constructor(
         if (mediaItem.isEmpty()) return
         val questions = mediaItem.map { media ->
             val wrongOptions = mediaItem.asSequence()
-                .filter { it.mediaId != media.mediaId }
+                .filter { it.mediaId == media.mediaId && it.name != media.name}
                 .map { it.name }
                 .take(3)
                 .toList()
+            Log.e("nour",wrongOptions.toString())
             val allOptions = (wrongOptions + media.name).shuffled()
 
             Question(
-                question = media.poster,
+                question =media.poster,
                 options = allOptions,
                 correctAnswer = media.name
             )
