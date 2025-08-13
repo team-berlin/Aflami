@@ -11,7 +11,6 @@ data class QuizGameUiState(
     val isAnswerCorrect:Boolean?=null,
     val imageBlur:Float=0f,
     val currentQuestionIndex: Int=0,
-    val isFinished: Boolean=false,
     val time:Int=0,
     val totalPoint:Int=0,
     val remainingTime:Int=0,
