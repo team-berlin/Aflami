@@ -10,6 +10,8 @@ import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.account.AccountDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
+import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
+import com.berlin.repository.datasource.remote.response.SubmitRatingResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -17,7 +19,9 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -156,6 +160,20 @@ interface ApiService {
     suspend fun getUserProfile(
         @Query(ApiConstants.SESSION_ID) sessionId: String
     ): Response<AccountDto>
+
+    @POST(ApiConstants.RATE_MOVIE)
+    suspend fun rateMovie(
+        @Path(ApiConstants.MOVIE_ID) movieId: Int,
+        @Query(ApiConstants.SESSION_ID) sessionId: String,
+        @Body rating: SubmitRatingRequestDto
+    ): Response<SubmitRatingResponse>
+
+    @POST(ApiConstants.RATE_TV_SHOW)
+    suspend fun rateTvShow(
+        @Path(ApiConstants.SERIES_ID) tvId: Int,
+        @Query(ApiConstants.SESSION_ID) sessionId: String,
+        @Body rating: SubmitRatingRequestDto
+    ): Response<SubmitRatingResponse>
 }
 
 val DEFAULT_GTE: String = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

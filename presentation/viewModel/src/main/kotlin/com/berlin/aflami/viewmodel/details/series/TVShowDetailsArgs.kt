@@ -1,4 +1,4 @@
-package com.berlin.aflami.viewmodel.details.common
+package com.berlin.aflami.viewmodel.details.series
 
 import androidx.lifecycle.SavedStateHandle
 import com.berlin.aflami.viewmodel.util.TVSHOW_ID

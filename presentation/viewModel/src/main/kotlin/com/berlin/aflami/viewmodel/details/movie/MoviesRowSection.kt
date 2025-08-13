@@ -1,6 +1,7 @@
-package com.berlin.aflami.viewmodel.details.common
+package com.berlin.aflami.viewmodel.details.movie
 
-import com.berlin.aflami.viewmodel.details.movie.UiText
+import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
+import com.berlin.aflami.viewmodel.details.common.ReviewUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 
 sealed interface MoviesRowSectionUiState {

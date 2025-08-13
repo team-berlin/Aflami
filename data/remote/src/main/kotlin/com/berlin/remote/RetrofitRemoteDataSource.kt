@@ -1,6 +1,7 @@
 package com.berlin.remote
 
 import com.berlin.remote.network.ApiService
+import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
@@ -12,10 +13,13 @@ import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
+import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
+import com.berlin.repository.datasource.remote.response.SubmitRatingResponse
 import javax.inject.Inject
 
 class RetrofitRemoteDataSource @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val authenticationLocalDataSource: AuthenticationLocalDataSource
 ) : RemoteDataSource {
     override suspend fun getSimilarMovies(movieId: Long): BaseResponse<MovieDetailsDto> {
         require(movieId > 0) { "Invalid movieId: $movieId" }
@@ -136,5 +140,28 @@ class RetrofitRemoteDataSource @Inject constructor(
     override suspend fun getTVShowVideos(seriesId: Long): VideosResponse {
         require(seriesId > 0) { "Invalid seriesId: $seriesId" }
         return wrapApiResponse { apiService.getTVShowVideos(seriesId) }
+    }
+
+    override suspend fun postRateMovie(
+        movieId: Int,
+        rating: SubmitRatingRequestDto
+    ): SubmitRatingResponse {
+        require(movieId > 0) { "Invalid movieId: $movieId" }
+        require(rating.value in 0.5..10.0) { "Rating value must be between 0.5 and 10.0" }
+
+        return wrapApiResponse { apiService.rateMovie(movieId,
+            sessionId = authenticationLocalDataSource.getUserSessionId()?: throw IllegalStateException("Session ID is missing. User might not be logged in."), rating) }
+    }
+
+    override suspend fun postRateTvShow(
+        tvId: Int,
+        rating: SubmitRatingRequestDto
+    ): SubmitRatingResponse {
+        require(tvId > 0) { "Invalid tvId: $tvId" }
+        require(rating.value in 0.5..10.0) { "Rating value must be between 0.5 and 10.0" }
+
+        return wrapApiResponse { apiService.rateTvShow(tvId,
+            sessionId = authenticationLocalDataSource.getUserSessionId()?: throw IllegalStateException("Session ID is missing. User might not be logged in.")
+            , rating) }
     }
 }
