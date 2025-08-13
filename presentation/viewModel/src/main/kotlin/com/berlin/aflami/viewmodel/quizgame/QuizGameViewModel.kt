@@ -295,21 +295,38 @@ class QuizGameViewModel @Inject constructor(
             )
         }
     }
-
     override fun hintClicked() {
-        updateState {
-            if (it.totalPoint >= 10) {
-                it.copy(
-                    enableHint = true,
-                    totalPoint = it.totalPoint - 10,
-                    imageBlur = it.imageBlur - 3,
-//                    questions = it.questions[it.currentQuestionIndex].copy(
-//                        options =
-//                    )
-                )
+        updateState { state ->
+            if (state.totalPoint >= 10) {
+                when (state.type) {
+                    QuestionType.Image -> state.copy(
+                        enableHint = true,
+                        totalPoint = state.totalPoint - 10,
+                        imageBlur = state.imageBlur - 3
+                    )
+                    QuestionType.Text -> {
+                        val currentQuestion = state.questions[state.currentQuestionIndex]
+                        val incorrectOptions = currentQuestion.options.filter { it != currentQuestion.correctAnswer }
+                        val optionToRemove = incorrectOptions.randomOrNull()
+                        val updatedOptions = if (optionToRemove != null) {
+                            currentQuestion.options.filter { it != optionToRemove }
+                        } else {
+                            currentQuestion.options
+                        }
+                        val updatedQuestion = currentQuestion.copy(options = updatedOptions)
+                        val updatedQuestions = state.questions.toMutableList().apply {
+                            this[state.currentQuestionIndex] = updatedQuestion
+                        }
+                        state.copy(
+                            enableHint = true,
+                            totalPoint = state.totalPoint - 10,
+                            questions = updatedQuestions
+                        )
+                    }
+                }
             } else {
-                it.copy(
-                    enableHint = false,
+                state.copy(
+                    enableHint = false
                 )
             }
         }
