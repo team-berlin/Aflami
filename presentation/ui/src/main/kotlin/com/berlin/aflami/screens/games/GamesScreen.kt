@@ -105,7 +105,7 @@ fun GamesContent(
             borderGradient = ExtraColors.guessMovieByPosterGradient,
             shadowColor = ExtraColors.shadowGuessMovieByByPoster,
             circleShadowColor = Theme.color.statusColors.blueCard,
-            avatarPainter = painterResource(R.drawable.avatar),
+            avatarPainter = painterResource(R.drawable.game_poster),
             backgroundColor = Theme.color.statusColors.blueCard
         ),
         GameCardData(

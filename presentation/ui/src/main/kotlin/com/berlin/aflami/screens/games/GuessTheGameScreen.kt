@@ -94,6 +94,13 @@ fun GuessTheGameScreen(
             showScore = false
         }
     }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = state.error!=null
+    ) {
+       NoInternetConnectionPlaceholder()
+    }
 
     AnimatedVisibility(
         enter = fadeIn(),

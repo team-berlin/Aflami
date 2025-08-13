@@ -47,14 +47,20 @@ import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.authentication.CirclesBackground
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.game.GameType
 import com.berlin.aflami.viewmodel.quizgame.FinalResultNavArgs
 import com.berlin.ui.R
 
 @Composable
-fun ResultScreen(modifier: Modifier = Modifier) {
+fun ResultScreen(modifier: Modifier = Modifier,navArgs: FinalResultNavArgs) {
     val navController=Theme.navController
-//    val totalPoint=finalResultNavArgs.totalPoint
-//    val remainingTime=finalResultNavArgs.remainingTime
+     val totalTime = navArgs.totalTime ?: 0
+     val gameType = navArgs.gameType ?: ""
+     val numberOfQuestion = navArgs.numberOfQuestion ?: 0
+     val numberOfPoints = navArgs.numberOfPoint ?: 0
+    val totalPoint=navArgs.totalPoint?:0
+    val time=navArgs.timer?:0
+
 
     Box(
         modifier = modifier
@@ -74,9 +80,13 @@ fun ResultScreen(modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            ResultHeader(navController=navController)
+            ResultHeader(navController=navController, gameType = GameType.valueOf(gameType))
 
-            ResultBox()
+            ResultBox(
+               totalPoint =  totalPoint,
+               numberOfPoints =  numberOfPoints,
+               numberOfQuestion =  numberOfQuestion
+            )
 
             Row(
                 modifier = Modifier
@@ -89,14 +99,14 @@ fun ResultScreen(modifier: Modifier = Modifier) {
                 ResultPointesBox(
                     modifier.weight(1f),
                     title = stringResource(R.string.points_achieved),
-                    pointCount = "110 $pteUnit",
+                    pointCount = "$totalPoint $pteUnit",
                     image = painterResource(R.drawable.my_rating),
                 )
 
                 ResultPointesBox(
                     modifier.weight(1f),
                     title = stringResource(R.string.total_time),
-                    pointCount = "110 $secUnit",
+                    pointCount = "$totalTime $secUnit",
                     image = painterResource(R.drawable.watch_history),
                 )
             }
@@ -123,7 +133,12 @@ fun ResultScreen(modifier: Modifier = Modifier) {
             SecondaryButton(
                 {
                     navController.navigate(
-                        GuessGameDestination()
+                        GuessGameDestination(
+                            gameType = gameType,
+                            numberOfQuestion = numberOfQuestion,
+                            numberOfPoint = numberOfPoints,
+                            time = time
+                        )
                     )
                 }, shape = RoundedCornerShape(16.dp),
                 modifier = modifier
@@ -143,7 +158,8 @@ fun ResultScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun ResultHeader(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    gameType: GameType
 ) {
     Row(
         modifier
@@ -172,7 +188,7 @@ private fun ResultHeader(
             )
         }
         Text(
-            text = stringResource(R.string.guess_character),
+            text = gameType.type,
             style = Theme.textStyle.title.large,
             color = Theme.color.textColors.title,
         )
@@ -180,7 +196,13 @@ private fun ResultHeader(
 }
 
 @Composable
-private fun ResultBox(modifier: Modifier = Modifier) {
+private fun ResultBox(
+    modifier: Modifier = Modifier,
+     totalPoint:Int,
+    numberOfQuestion:Int,
+    numberOfPoints:Int
+
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -217,16 +239,30 @@ private fun ResultBox(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.prize),
-                    contentDescription = "prize",
-                    modifier = Modifier.size(130.dp)
-                )
-                Text(
-                    text = stringResource(R.string.game_finished),
-                    color = Theme.color.textColors.title,
-                    style = Theme.textStyle.title.medium
-                )
+                if (totalPoint < (numberOfPoints * numberOfQuestion)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.lose_game),
+                        contentDescription = "prize",
+                        modifier = Modifier.size(130.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.oops_you_lose_the_game),
+                        color = Theme.color.textColors.title,
+                        style = Theme.textStyle.title.medium
+                    )
+                }
+                else{
+                    Image(
+                        painter = painterResource(id = R.drawable.prize),
+                        contentDescription = "prize",
+                        modifier = Modifier.size(130.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.game_finished),
+                        color = Theme.color.textColors.title,
+                        style = Theme.textStyle.title.medium
+                    )
+                }
             }
         }
     }

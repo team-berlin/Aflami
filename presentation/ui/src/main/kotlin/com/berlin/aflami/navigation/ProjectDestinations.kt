@@ -73,10 +73,10 @@ object WatchHistoryDestination
 
 @Serializable
 class GuessGameDestination(
-    val gameType: String?=null,
-    val numberOfQuestion: Int?=null,
-    val numberOfPoint: Int?=null,
-    val time: Int?=null
+    val gameType: String,
+    val numberOfQuestion: Int,
+    val numberOfPoint: Int,
+    val time: Int
 )
 
 @Serializable

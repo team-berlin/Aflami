@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.quizgame
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.game.GameType
 import com.berlin.aflami.viewmodel.mapper.toActorUiState
 import com.berlin.aflami.viewmodel.mapper.toMediaUiState
@@ -206,31 +207,60 @@ class QuizGameViewModel @Inject constructor(
     }
 
 
-    private suspend fun mediaGame() {
+    private fun mediaGame() {
         updateScreenStateToLoading()
-        val movie = getMovieGameUseCase()
-        val tvShow = getTVShowGameUseCase()
-        val movieList = movie.map { it.toMediaUiState() }
-        val tvShowList = tvShow.map { it.toMediaUiState() }
-        movieIds.value = movieList.map { it.id }.shuffled()
-        tvShowIds.value = tvShowList.map { it.id }.shuffled()
-        mediaList.value = (movieList+tvShowList).shuffled().take(numberOfQuestion)
+        tryToCall(
+            call = {
+                val movie = getMovieGameUseCase()
+                val tvShow = getTVShowGameUseCase()
+                val movieList = movie.map { it.toMediaUiState() }
+                val tvShowList = tvShow.map { it.toMediaUiState() }
+                movieIds.value = movieList.map { it.id }.shuffled()
+                tvShowIds.value = tvShowList.map { it.id }.shuffled()
+                mediaList.value = (movieList+tvShowList).shuffled().take(numberOfQuestion)
 
+            },
+            onSuccess = {
+                updateState {
+                    it.copy(
+                        loading = false,
+                        error = ErrorUiState(
+                            message = "No internet connection"
+                        )
+                    )
+                }
+            },
+            onError = ::updateScreenStateToError,
+        )
 
     }
 
-    private suspend fun genreGame() {
+    private fun genreGame() {
         updateScreenStateToLoading()
-        val movieGenre = (getMovieGenresUseCase())
-        val tvShowGenre = getTVGenresUseCase()
-        val movieGenreList = movieGenre.map { it.toGenreUiState() }
-        val tvShowGenreList = tvShowGenre.map { it.toGenreUiState() }
-        Log.e("movieGenreList",movieGenreList.size.toString())
-        Log.e("tvShowGenreList",tvShowGenreList.size.toString())
+        tryToCall(
+            call = {
+                val movieGenre = (getMovieGenresUseCase())
+                val tvShowGenre = getTVGenresUseCase()
+                val movieGenreList = movieGenre.map { it.toGenreUiState() }
+                val tvShowGenreList = tvShowGenre.map { it.toGenreUiState() }
+                Log.e("movieGenreList",movieGenreList.size.toString())
+                Log.e("tvShowGenreList",tvShowGenreList.size.toString())
 
-        mediaGenre.value = (movieGenreList + tvShowGenreList)
-        Log.e("mediaGenre",mediaGenre.value.toString())
+                mediaGenre.value = (movieGenreList + tvShowGenreList)
+            },
+            onSuccess = {
+                updateState {
+                    it.copy(
+                        loading = false,
+                        error = ErrorUiState(
+                            message = "No internet connection"
+                        )
+                    )
+                }
 
+            },
+            onError =::updateScreenStateToError,
+        )
     }
     private suspend fun getCast() {
         updateScreenStateToLoading()
@@ -274,6 +304,14 @@ class QuizGameViewModel @Inject constructor(
     private fun updateScreenStateToLoading() =
         updateState { screenState -> screenState.copy(loading = true) }
 
+    private fun updateScreenStateToError(errorState: ErrorUiState) {
+        updateState { screenState ->
+            screenState.copy(
+                error = errorState,
+                loading = false
+            )
+        }
+    }
     override fun nextQuestionClicked() {
         updateState {
             it.copy(
@@ -341,5 +379,25 @@ class QuizGameViewModel @Inject constructor(
         sendNewEffect(QuizGameEffect.NavigateToResult)
     }
 
+
+    fun clearState(){
+        updateState {
+            it.copy(
+                questions = emptyList(),
+                type = QuestionType.Image,
+                gameTypeName = GameType.POSTER,
+                selectedAnswer = "",
+                isAnswerCorrect = false,
+                imageBlur = 0f,
+                currentQuestionIndex = 0,
+                time = 0,
+                totalPoint = 0,
+                remainingTime =0,
+                enableHint = false,
+                loading = true,
+                error = null,
+            )
+        }
+    }
 
 }

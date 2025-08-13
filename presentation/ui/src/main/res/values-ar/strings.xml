@@ -128,8 +128,7 @@
     <string name="not_enough_points">النقاط غير كافية</string>
     <string name="not_enough_points_for_hint">عذراً، ليس لديك نقاط كافية للحصول على تلميح</string>
     <string name="ok">تمام</string>
-
-
+    <string name="oops_you_lose_the_game">Oops, you lose the GAME!</string>
 
 
 </resources>
