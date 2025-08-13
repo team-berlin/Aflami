@@ -12,4 +12,5 @@ interface TVShowRepository {
     suspend fun saveRecentTVShowsHistory(query: String)
     suspend fun deleteTVShowQueryFromHistory(query: String)
     suspend fun clearTVShowSearchHistory()
+    suspend fun getTVShowsByCategory(genreId: Long, page: Int):List<TVShow>
 }

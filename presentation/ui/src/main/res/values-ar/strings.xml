@@ -106,6 +106,10 @@
     <string name="rate_it">قيّم</string>
     <string name="select_how_much_you_like_it">حدد كم تقيّم</string>
     <string name="submit">تأكيد</string>
+    <string name="catgories">التصنيفات</string>
+    <string name="movies">الافلام</string>
+    <string name="tv_shows">البرامج التليفزيونية</string>
+    <string name="no_items_found">لا يوجد محتويات لهذا التصنيف</string>
 
 
 </resources>

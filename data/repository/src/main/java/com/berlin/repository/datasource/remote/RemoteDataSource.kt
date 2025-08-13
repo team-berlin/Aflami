@@ -1,15 +1,15 @@
 package com.berlin.repository.datasource.remote
 
-import com.berlin.repository.datasource.remote.response.BaseResponse
-import com.berlin.repository.datasource.remote.response.GenreResponse
-import com.berlin.repository.datasource.remote.response.MediaCastResponse
-import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
+import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
+import com.berlin.repository.datasource.remote.response.BaseResponse
+import com.berlin.repository.datasource.remote.response.GenreResponse
+import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import com.berlin.repository.datasource.remote.response.SubmitRatingResponse
 
@@ -39,7 +39,8 @@ interface RemoteDataSource {
     suspend fun getMoviesByMoodIds(moodIds: List<Int>): BaseResponse<MovieDetailsDto>
     suspend fun getMovieVideos(movieId: Long): VideosResponse
     suspend fun getTVShowVideos(seriesId: Long): VideosResponse
-
+    suspend fun getTvShowsByCategory(tvShowId: Long, page: Int): BaseResponse<TVShowDetailsDto>
+    suspend fun getMoviesByCategory(tvShowId: Long, page: Int): BaseResponse<MovieDetailsDto>
     suspend fun postRateMovie(movieId: Int, rating: SubmitRatingRequestDto): SubmitRatingResponse
     suspend fun postRateTvShow(tvId: Int, rating: SubmitRatingRequestDto): SubmitRatingResponse
 }
