@@ -1,39 +1,45 @@
 package usecase.auth
 
-import org.junit.Before
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.*
 
 class GetValidateUsernameUseCaseTest {
-    private lateinit var validateUsernameUseCase: GetValidateUsernameUseCase
-
-    @Before
-    fun setup() {
-        validateUsernameUseCase = GetValidateUsernameUseCase()
-    }
+    private val validateUsernameUseCase: GetValidateUsernameUseCase = GetValidateUsernameUseCase()
 
     @Test
     fun `should return true when username is valid`() {
+        // Act
         val result = validateUsernameUseCase(VALID_USERNAME)
-        assertTrue(result)
+
+        // Assert
+        assertThat(result).isTrue()
     }
 
     @Test
     fun `should return false when username is empty`() {
+        // Act
         val result = validateUsernameUseCase(EMPTY_USERNAME)
-        assertFalse(result)
+
+        // Assert
+        assertThat(result).isFalse()
     }
 
     @Test
     fun `should return false when username contains percent sign`() {
+        // Act
         val result = validateUsernameUseCase(INVALID_USERNAME)
-        assertFalse(result)
+
+        // Assert
+        assertThat(result).isFalse()
     }
 
     @Test
     fun `should return true when username contains other special characters`() {
+        // Act
         val result = validateUsernameUseCase(SPECIAL_CHAR_USERNAME)
-        assertTrue(result)
+
+        // Assert
+        assertThat(result).isTrue()
     }
 
     companion object{

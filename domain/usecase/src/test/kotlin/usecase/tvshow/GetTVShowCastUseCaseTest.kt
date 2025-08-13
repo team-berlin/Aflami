@@ -14,33 +14,37 @@ import repository.TVShowDetailsRepository
 class GetTVShowCastUseCaseTest {
 
     private val tvShowDetailsRepository: TVShowDetailsRepository = mockk()
-    private lateinit var getTVShowCastUseCase: GetTVShowCastUseCase
-
-    @Before
-    fun setUp() {
-        getTVShowCastUseCase = GetTVShowCastUseCase(tvShowDetailsRepository)
-    }
+    private val getTVShowCastUseCase: GetTVShowCastUseCase =
+        GetTVShowCastUseCase(tvShowDetailsRepository)
 
     @Test
     fun `should return list of actors when calling repository`() = runTest {
-        coEvery { tvShowDetailsRepository.getTVShowActors(SERIES_ID) } returns ACTORS
+        // Arrange
+        coEvery { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) } returns ACTORS
 
-        val callResult = getTVShowCastUseCase(SERIES_ID)
+        // Act
+        val result = getTVShowCastUseCase(SERIES_ID)
 
-        assertThat(callResult).isEqualTo(ACTORS)
-        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowActors(SERIES_ID) }
+        // Assert
+        assertThat(result).isEqualTo(ACTORS)
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
-        coEvery { tvShowDetailsRepository.getTVShowActors(SERIES_ID) } throws Exception()
+        // Arrange
+        coEvery { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) } throws Exception(EXCEPTION)
 
-        assertThrows<Exception> {
-            getTVShowCastUseCase(SERIES_ID)
-        }
+        // Act
+        val exception = assertThrows<Exception> { getTVShowCastUseCase(SERIES_ID) }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowsCastDetails(SERIES_ID) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get tv show cast"
         const val SERIES_ID = 123L
         val ACTORS = listOf(
             Actor(id = 1, name = "Ahmed", posterURL = ""),

@@ -2,11 +2,12 @@ package com.berlin.aflami.navigation.routes
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.berlin.aflami.navigation.NavigationBarDestinations
-import com.berlin.aflami.screens.categories.CategoriesScreen
+import com.berlin.aflami.navigation.NavigationBarDestinations.CategoriesScreen
+import com.berlin.aflami.screens.categories.CategoryScreen
 
 fun NavGraphBuilder.categoriesRoute()=
-    composable<NavigationBarDestinations.CategoriesScreen>
+    composable<CategoriesScreen>
     {
-        CategoriesScreen()
+        CategoryScreen()
     }
+

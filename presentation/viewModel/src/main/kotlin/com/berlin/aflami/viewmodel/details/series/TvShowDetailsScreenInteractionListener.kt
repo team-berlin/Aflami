@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.details.series
 
-import com.berlin.aflami.viewmodel.details.common.MediaInteractionListener
+import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
 
-interface TvShowDetailsScreenInteractionListener : MediaInteractionListener {
+interface TvShowDetailsScreenInteractionListener : MediaDetailsScreenInteractionListener {
     fun onSeasonsClicked(tvShowId: Long, numberOfSeasons: Int)
 }

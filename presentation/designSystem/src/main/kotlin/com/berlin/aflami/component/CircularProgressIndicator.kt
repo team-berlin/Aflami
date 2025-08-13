@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
@@ -32,6 +33,7 @@ fun CircularProgressIndicator(modifier: Modifier = Modifier, text: String? = nul
             Text(
                 modifier = Modifier.padding(top = 14.dp),
                 text = it,
+                textAlign = TextAlign.Center,
                 style = Theme.textStyle.label.medium,
                 color = Theme.color.textColors.body
             )

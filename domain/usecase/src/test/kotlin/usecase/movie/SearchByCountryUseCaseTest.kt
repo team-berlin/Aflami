@@ -6,55 +6,64 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import repository.MovieRepository
 
 class SearchByCountryUseCaseTest {
     private val movieRepository: MovieRepository = mockk()
-    private lateinit var searchMoviesByCountryUseCase: SearchMoviesByCountryUseCase
+    private val searchMoviesByCountryUseCase: SearchMoviesByCountryUseCase =
+        SearchMoviesByCountryUseCase(movieRepository)
 
-    @Before
-    fun setUp() {
-        searchMoviesByCountryUseCase = SearchMoviesByCountryUseCase(movieRepository)
-    }
 
     @Test
     fun `should call getMoviesByCountry in repository when invoke is called`() = runTest {
-        coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
+        // Arrange
+        coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns MOVIES
 
-        searchMoviesByCountryUseCase(QUERY, PAGE)
+        //Act
+        val result = searchMoviesByCountryUseCase(QUERY, PAGE)
 
+        // Assert
+        assertThat(result).isEqualTo(MOVIES)
         coVerify { movieRepository.getMoviesByCountry(QUERY, PAGE) }
     }
 
     @Test
-    fun `When search by valid country name and movies not found, then return empty list`() =
+    fun `should return empty list when searching by valid country name and no movies found`() =
         runTest {
+            // Arrange
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
 
+            // Act
             val result = searchMoviesByCountryUseCase(QUERY, PAGE)
 
+            // Assert
             assertThat(result).isEmpty()
         }
 
     @Test
-    fun `When search by valid country name, then return list of movies relate to country`() =
+    fun `should return list of movies related to country when searching by valid country name`() =
         runTest {
+            // Arrange
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns MOVIES
 
+            // Act
             val result = searchMoviesByCountryUseCase.invoke(QUERY, PAGE)
 
-            assertThat(result).containsExactlyElementsIn(MOVIES)
+            // Assert
+            assertThat(result).isEqualTo(MOVIES)
         }
 
     @Test
-    fun `When search by invalid country name, then return list of movies relate to country`() =
+    fun `should return empty list when searching by invalid country name`() =
         runTest {
+            // Arrange
             coEvery { movieRepository.getMoviesByCountry(QUERY, PAGE) } returns emptyList()
 
+            // Act
             val result = searchMoviesByCountryUseCase.invoke(QUERY, PAGE)
 
+            // Assert
             assertThat(result).isEmpty()
         }
 
@@ -73,7 +82,9 @@ class SearchByCountryUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             ),
             Movie(
                 id = 24L,
@@ -88,7 +99,9 @@ class SearchByCountryUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                galleryUrl = emptyList()
+                galleryUrl = emptyList(),
+                reviews = emptyList(),
+                isFavourite = false,
             )
         )
         const val QUERY = "Inception"

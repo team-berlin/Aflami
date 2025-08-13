@@ -15,33 +15,37 @@ import repository.TVShowDetailsRepository
 class GetTVShowDetailsUseCaseTest {
 
     private val tvShowDetailsRepository: TVShowDetailsRepository = mockk()
-    private lateinit var getTVShowDetailsUseCase: GetTVShowDetailsUseCase
-
-    @Before
-    fun setUp() {
-        getTVShowDetailsUseCase = GetTVShowDetailsUseCase(tvShowDetailsRepository)
-    }
+    private val getTVShowDetailsUseCase: GetTVShowDetailsUseCase =
+        GetTVShowDetailsUseCase(tvShowDetailsRepository)
 
     @Test
     fun `should return TV show details when calling repository`() = runTest {
+        // Arrange
         coEvery { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) } returns TV_SHOW_DETAILS
 
-        val callResult = getTVShowDetailsUseCase(TV_SHOW_ID)
+        // Act
+        val result = getTVShowDetailsUseCase(TV_SHOW_ID)
 
-        assertThat(callResult).isEqualTo(TV_SHOW_DETAILS)
+        // Assert
+        assertThat(result).isEqualTo(TV_SHOW_DETAILS)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
-        coEvery { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) } throws Exception()
+        // Arrange
+        coEvery { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) } throws Exception(EXCEPTION)
 
-        assertThrows<Exception> {
-            getTVShowDetailsUseCase(TV_SHOW_ID)
-        }
+        // Act
+        val exception = assertThrows<Exception> { getTVShowDetailsUseCase(TV_SHOW_ID) }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowDetails(TV_SHOW_ID) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get tv show details"
         const val TV_SHOW_ID = 123L
         val TV_SHOW_DETAILS = TVShow(
             id = 90L,
@@ -56,9 +60,8 @@ class GetTVShowDetailsUseCaseTest {
             hasVideo = false,
             companyProductions = emptyList(),
             originCountry = "PS",
-            seasons = emptyList(),
             galleryUrl = emptyList(),
-            reviews = emptyList()
+            numberOfSeasons = 2,
         )
     }
 }

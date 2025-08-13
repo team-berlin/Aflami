@@ -16,7 +16,9 @@ enum class AppTheme {
 
 enum class AppLanguage(val code: String) {
     EN("en"),
-    AR("ar")
+    AR("ar"),
+    SYSTEM("system");
+
 }
 
 enum class ContentRestriction {
