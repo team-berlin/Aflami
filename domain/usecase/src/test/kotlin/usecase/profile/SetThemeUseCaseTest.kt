@@ -1,6 +1,7 @@
 package usecase.profile
 
 import com.berlin.entity.AppTheme
+import com.google.common.truth.Truth.assertThat
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -30,16 +31,18 @@ class SetThemeUseCaseTest {
     @Test
     fun `should throw exception when repository throws exception`() = runTest {
         // Arrange
-        coEvery { settingsRepository.setTheme(THEME) } throws Exception()
+        coEvery { settingsRepository.setTheme(THEME) } throws Exception(ERROR_MESSAGE)
 
         // Act & Assert
-        assertThrows<Exception> { setThemeUseCase(THEME) }
+        val exception = assertThrows<Exception> { setThemeUseCase(THEME) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) { settingsRepository.setTheme(THEME) }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to set theme"
         val THEME = AppTheme.DARK
     }
 }

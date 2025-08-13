@@ -1,6 +1,7 @@
 package usecase.profile
 
 import com.berlin.entity.AppLanguage
+import com.google.common.truth.Truth.assertThat
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -32,16 +33,18 @@ class SetLanguageUseCaseTest {
     @Test
     fun `should throw exception when repository throws exception`() = runTest {
         // Arrange
-        coEvery { settingsRepository.setLanguage(LANGUAGE) } throws Exception()
+        coEvery { settingsRepository.setLanguage(LANGUAGE) } throws Exception(ERROR_MESSAGE)
 
         // Act
-        assertThrows<Exception> { setLanguageUseCase(LANGUAGE) }
+        val exception = assertThrows<Exception> { setLanguageUseCase(LANGUAGE) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
         coVerify(exactly = 1) { settingsRepository.setLanguage(LANGUAGE) }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to set language"
         val LANGUAGE = AppLanguage.EN
     }
 }
