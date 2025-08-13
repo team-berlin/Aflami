@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -35,7 +34,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -45,22 +43,21 @@ import com.berlin.aflami.component.buttons.SecondaryButton
 import com.berlin.aflami.navigation.GuessGameDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.authentication.CirclesBackground
-import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.game.GameType
-import com.berlin.aflami.viewmodel.quizgame.FinalResultNavArgs
 import com.berlin.ui.R
 
 @Composable
-fun ResultScreen(modifier: Modifier = Modifier,navArgs: FinalResultNavArgs) {
-    val navController=Theme.navController
-     val totalTime = navArgs.totalTime ?: 0
-     val gameType = navArgs.gameType ?: ""
-     val numberOfQuestion = navArgs.numberOfQuestion ?: 0
-     val numberOfPoints = navArgs.numberOfPoint ?: 0
-    val totalPoint=navArgs.totalPoint?:0
-    val time=navArgs.timer?:0
-
+fun ResultScreen(
+    totalTime: Int,
+    gameType: String,
+    numberOfQuestion: Int,
+    numberOfPoints: Int,
+    totalPoint: Int,
+    time: Int,
+    modifier: Modifier=Modifier
+) {
+    val navController = Theme.navController
 
     Box(
         modifier = modifier
@@ -80,12 +77,12 @@ fun ResultScreen(modifier: Modifier = Modifier,navArgs: FinalResultNavArgs) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            ResultHeader(navController=navController, gameType = GameType.valueOf(gameType))
+            ResultHeader(navController = navController, gameType = GameType.valueOf(gameType))
 
             ResultBox(
-               totalPoint =  totalPoint,
-               numberOfPoints =  numberOfPoints,
-               numberOfQuestion =  numberOfQuestion
+                totalPoint = totalPoint,
+                numberOfPoints = numberOfPoints,
+                numberOfQuestion = numberOfQuestion
             )
 
             Row(
@@ -198,9 +195,9 @@ private fun ResultHeader(
 @Composable
 private fun ResultBox(
     modifier: Modifier = Modifier,
-     totalPoint:Int,
-    numberOfQuestion:Int,
-    numberOfPoints:Int
+    totalPoint: Int,
+    numberOfQuestion: Int,
+    numberOfPoints: Int
 
 ) {
     Box(
@@ -250,8 +247,7 @@ private fun ResultBox(
                         color = Theme.color.textColors.title,
                         style = Theme.textStyle.title.medium
                     )
-                }
-                else{
+                } else {
                     Image(
                         painter = painterResource(id = R.drawable.prize),
                         contentDescription = "prize",

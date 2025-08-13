@@ -1,17 +1,25 @@
 package com.berlin.aflami.viewmodel.game
 
+import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
+import usecase.auth.GetLoginStatusUseCase
 import usecase.game.GetPointsUseCase
+import usecase.profile.GetUserProfileUseCase
+import usecase.profile.ObserveUserProfileUseCase
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
     private val getPointsUseCase: GetPointsUseCase,
+    private val observeUserProfileUseCase: ObserveUserProfileUseCase,
 ) : BaseViewModel<GameScreenState, GameEffect>(GameScreenState()), GameInteractionListener {
 
+    private var userId=0
     init {
         loadData()
+        collectUserProfile()
     }
 
     private fun loadData() {
@@ -21,7 +29,9 @@ class GameViewModel @Inject constructor(
             GameLevel(20, 20, GameLevelType.HARD, 10)
         )
         tryToCall(
-            call = { getPointsUseCase(1) }, // Replace 1 with the user's ID
+            call = {
+                getPointsUseCase(userId)
+            },
             onSuccess = { points ->
                 updateState { it.copy(points = points, gameLevel = levels) }
             },
@@ -59,4 +69,15 @@ class GameViewModel @Inject constructor(
 
     override fun onDismissLevelDialog() =
         updateState { it.copy(showDialog = false) }
+
+    private fun collectUserProfile() {
+        viewModelScope.launch {
+            observeUserProfileUseCase()
+                .collect { user ->
+                    if (user != null) {
+                        userId=user.id
+                    }
+                }
+        }
+    }
 }

@@ -86,7 +86,14 @@ class GuessGameDestination(
 )
 
 @Serializable
-class GameResultDestination(val finalResult:Int,val remainingTime:Int )
+class GameResultDestination(
+    val totalTime:Int,
+    val gameType :String,
+    val numberOfQuestion :Int,
+    val numberOfPoints :Int,
+    val totalPoint :Int,
+    val time:Int
+)
 
 @Serializable
 object MyRatingDestination

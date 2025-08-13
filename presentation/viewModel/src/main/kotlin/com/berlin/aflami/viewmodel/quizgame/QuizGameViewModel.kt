@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.quizgame
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.game.GameType
@@ -14,10 +15,13 @@ import com.berlin.aflami.viewmodel.shareduistate.toGenreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import usecase.auth.GetLoginStatusUseCase
 import usecase.game.AddPointsUseCase
 import usecase.movie.GetMovieCastUseCase
 import usecase.movie.GetMovieGameUseCase
 import usecase.movie.GetMovieGenresUseCase
+import usecase.profile.GetUserProfileUseCase
+import usecase.profile.ObserveUserProfileUseCase
 import usecase.tvshow.GetTVShowCastUseCase
 import usecase.tvshow.GetTVShowGameUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
@@ -32,6 +36,7 @@ class QuizGameViewModel @Inject constructor(
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
     private val savePoint: AddPointsUseCase,
+    private val observeUserProfileUseCase:ObserveUserProfileUseCase,
     guessGameScreenArgs: GuessGameScreenArgs
 ) : BaseViewModel<QuizGameUiState, QuizGameEffect>(
     QuizGameUiState()
@@ -48,6 +53,7 @@ class QuizGameViewModel @Inject constructor(
     private val numberOfPoints = guessGameScreenArgs.numberOfPoint ?: 0
 
     init {
+        collectUserProfile()
         viewModelScope.launch {
             mediaGame()
             when (gameType.uppercase()) {
@@ -218,15 +224,12 @@ class QuizGameViewModel @Inject constructor(
                 movieIds.value = movieList.map { it.id }.shuffled()
                 tvShowIds.value = tvShowList.map { it.id }.shuffled()
                 mediaList.value = (movieList+tvShowList).shuffled().take(numberOfQuestion)
-
+                Log.e("movieList",mediaList.toString())
             },
             onSuccess = {
                 updateState {
                     it.copy(
-                        loading = false,
-                        error = ErrorUiState(
-                            message = "No internet connection"
-                        )
+                        loading = false
                     )
                 }
             },
@@ -251,13 +254,9 @@ class QuizGameViewModel @Inject constructor(
             onSuccess = {
                 updateState {
                     it.copy(
-                        loading = false,
-                        error = ErrorUiState(
-                            message = "No internet connection"
-                        )
+                        loading = false
                     )
                 }
-
             },
             onError =::updateScreenStateToError,
         )
@@ -323,6 +322,7 @@ class QuizGameViewModel @Inject constructor(
     }
 
     override fun answerClicked(answer: String) {
+        viewModelScope.launch {
         updateState {
             val checkAnswer =
                 it.selectedAnswer == it.questions[it.currentQuestionIndex].correctAnswer
@@ -331,6 +331,7 @@ class QuizGameViewModel @Inject constructor(
                 isAnswerCorrect = it.selectedAnswer == it.questions[it.currentQuestionIndex].correctAnswer,
                 totalPoint = if (checkAnswer) it.totalPoint + numberOfPoints else it.totalPoint - numberOfPoints
             )
+        }
         }
     }
     override fun hintClicked() {
@@ -379,25 +380,19 @@ class QuizGameViewModel @Inject constructor(
         sendNewEffect(QuizGameEffect.NavigateToResult)
     }
 
-
-    fun clearState(){
-        updateState {
-            it.copy(
-                questions = emptyList(),
-                type = QuestionType.Image,
-                gameTypeName = GameType.POSTER,
-                selectedAnswer = "",
-                isAnswerCorrect = false,
-                imageBlur = 0f,
-                currentQuestionIndex = 0,
-                time = 0,
-                totalPoint = 0,
-                remainingTime =0,
-                enableHint = false,
-                loading = true,
-                error = null,
-            )
+    private fun collectUserProfile() {
+        viewModelScope.launch {
+            observeUserProfileUseCase()
+                .collect { user ->
+                    if (user != null) {
+                        savePoint(
+                            user.id,
+                            points =state.value.totalPoint ,
+                        )
+                    }
+                }
         }
     }
+
 
 }

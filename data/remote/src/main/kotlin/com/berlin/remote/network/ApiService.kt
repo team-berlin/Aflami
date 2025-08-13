@@ -156,14 +156,13 @@ interface ApiService {
     @GET("account")
     suspend fun getUserProfile(
         @Query(ApiConstants.SESSION_ID) sessionId: String
-    ): Response<AccountDto>
+    ): Response<UserProfileDto>
 
     @GET(ApiConstants.MOVIE)
     suspend fun getMovieGame(): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.TV_SHOW)
     suspend fun getTVShowGame(): Response<BaseResponse<TVShowDetailsDto>>
-    ): Response<UserProfileDto>
 
     @GET(ApiConstants.RATED_MOVIES)
     suspend fun getRatedMovies(
