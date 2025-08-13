@@ -1,7 +1,5 @@
 package com.berlin.aflami.navigation
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.Scaffold
@@ -95,9 +93,9 @@ private fun ShowNavigationBar(
     val currentNavBarScreen = getCurrentNavBarScreen(navController)
     val context = LocalContext.current
 
-    BackHandler(enabled = currentNavBarScreen != null) {
-        (context as? Activity)?.finish()
-    }
+//    BackHandler(enabled = currentNavBarScreen != null) {
+//        (context as? Activity)?.finish()
+//    }
 
     NavBar(
         currentRoute = selectedRoute,
@@ -110,15 +108,6 @@ private fun ShowNavigationBar(
         },
     )
 }
-
-//@Composable
-//private fun getCurrentNavBarScreen(navController: NavHostController): NavigationBarDestinations? {
-//    val backStackEntry by navController.currentBackStackEntryAsState()
-//    val currentRoute: String? = backStackEntry?.destination?.route
-//    val currentNavigationBarDestinationsDestination: NavigationBarDestinations? =
-//        bottomNavBarDestinationsMap[currentRoute]
-//    return currentNavigationBarDestinationsDestination
-//}
 
 @Composable
 private fun getCurrentNavBarScreen(navController: NavHostController): NavigationBarDestinations? {
