@@ -193,10 +193,11 @@ fun GuessTheGameContent(
                     modifier = Modifier.padding(top = 4.dp),
                     imageUrl = state.questions[state.currentQuestionIndex].question,
                     blurAmount = state.imageBlur,
-                    onHintClicked = if (state.enableHint) {
-                        { listener.hintClicked() }
-                    } else {
-                        {}
+                    onHintClicked = { listener.hintClicked()
+//                        if (state.enableHint) {
+//                        { }
+//                    } else {
+//                        {}
                     },
                     showHintBar = true,
                     hintText = "hint? 10 Pts.",
@@ -207,10 +208,11 @@ fun GuessTheGameContent(
                 CharacterCard(
                     modifier = Modifier.padding(top = 4.dp),
                     guessedText = state.questions[state.currentQuestionIndex].question,
-                    onHintClicked = if (state.enableHint) {
-                        { listener.hintClicked() }
-                    } else {
-                        {}
+                    onHintClicked = { listener.hintClicked()
+//                        if (state.enableHint) {
+//                        { listener.hintClicked() }
+//                    } else {
+//                        {}
                     },
                     showHintBar = true,
                     hintText = "hint? 10 Pts.",
