@@ -125,5 +125,11 @@
     <string name="play_again">إعادة اللعب</string>
     <string name="let_s_play">هيا بنا نلعب</string>
 
+    <string name="not_enough_points">النقاط غير كافية</string>
+    <string name="not_enough_points_for_hint">عذراً، ليس لديك نقاط كافية للحصول على تلميح</string>
+    <string name="ok">تمام</string>
+
+
+
 
 </resources>

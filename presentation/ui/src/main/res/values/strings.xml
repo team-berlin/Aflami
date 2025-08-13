@@ -125,5 +125,11 @@
     <string name="play_again">Play again</string>
     <string name="let_s_play">Let’s play</string>
 
+    <string name="not_enough_points">Not enough points</string>
+    <string name="not_enough_points_for_hint">Sorry, you don’t have the enough points to have a hint</string>
+    <string name="ok">Ok</string>
+
+
+
 
 </resources>
