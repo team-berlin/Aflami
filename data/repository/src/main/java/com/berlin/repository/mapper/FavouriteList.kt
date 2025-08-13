@@ -4,6 +4,8 @@ import com.berlin.entity.FavouriteList
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.FavouriteListItem
+import com.berlin.repository.util.MediaUrls
+import com.berlin.repository.util.tmdbImageUrl
 
 fun FavouriteListDto.toDomain(): FavouriteList {
     return FavouriteList(
@@ -17,7 +19,7 @@ fun FavouriteListItem.toMovie(): Movie {
         title = title!!,
         rating = voteAverage!!,
         releaseDate = releaseDate!!,
-        posterURL = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        posterURL = tmdbImageUrl(posterPath, MediaUrls.TmdbImageSize.W500).orEmpty(),
         description = overview!!,
         genres = genreIds?.map { it.toDomainGenre() }!!,
         isFavourite = true,
@@ -30,4 +32,3 @@ fun FavouriteListItem.toMovie(): Movie {
         reviews = emptyList(),
     )
 }
-

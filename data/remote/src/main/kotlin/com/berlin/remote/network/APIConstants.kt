@@ -81,6 +81,5 @@ object ApiConstants {
     const val LIST_LISTID = "list/{list_id}"
     const val DELETE_MOVIE_FROM_LIST = "list/{list_id}/remove_item"
     const val ADD_MOVIE_TO_LIST = "list/{list_id}/add_item"
-    const val ACCOUNT_ID = "account_id"
     const val API_KEY = "api_key"
 }

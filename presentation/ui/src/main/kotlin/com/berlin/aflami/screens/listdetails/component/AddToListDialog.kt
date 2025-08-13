@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.IconButton
@@ -60,7 +61,8 @@ fun AddToListDialog(
             AnimatedVisibility(
                 enter = fadeIn(),
                 exit = fadeOut(),
-                visible = addToListUiState.isLoading && addToListUiState.errorMessage.isNullOrEmpty()
+                visible = addToListUiState.isLoading &&
+                        addToListUiState.errorMessage.isNullOrEmpty()
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier
@@ -72,18 +74,21 @@ fun AddToListDialog(
             AnimatedVisibility(
                 enter = fadeIn(),
                 exit = fadeOut(),
-                visible = addToListUiState.errorMessage != null && addToListUiState.isLoading.not()
+                visible = addToListUiState.errorMessage != null
+                        && addToListUiState.isLoading.not()
             ) {
                 NoInternetConnectionPlaceholder(
                     modifier = Modifier
                         .fillMaxSize()
                         .align(Alignment.Center)
+                        .zIndex(10f)
                 )
             }
             AnimatedVisibility(
                 enter = fadeIn(),
                 exit = fadeOut(),
-                visible = addToListUiState.isLoading.not() && addToListUiState.errorMessage == null
+                visible = addToListUiState.isLoading.not() &&
+                        addToListUiState.errorMessage == null
             ) {
                 val favouriteLists = addToListUiState.favouriteLists.collectAsLazyPagingItems()
                 Column(

@@ -4,7 +4,6 @@ import android.util.Log
 import com.berlin.remote.network.ApiService
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.UserProfileLocalDataSource
-import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.FavouriteListItem
@@ -14,24 +13,21 @@ import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
+import com.berlin.repository.datasource.remote.dto.rating.RatedMediaDto
+import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
 import com.berlin.repository.datasource.remote.dto.request.ListRequest
 import com.berlin.repository.datasource.remote.dto.request.MovieListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
-import com.berlin.repository.datasource.remote.dto.details.VideosResponse
-import com.berlin.repository.datasource.remote.dto.rating.RatedMediaDto
-import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
 import com.berlin.repository.datasource.remote.response.rating.SubmitRatingResponse
 import javax.inject.Inject
 
 class RetrofitRemoteDataSource @Inject constructor(
     private val apiService: ApiService,
     private val authenticationLocalDataSource: AuthenticationLocalDataSource,
-    private val userProfileLocalDataSource: UserProfileLocalDataSource
-    private val apiService: ApiService,
-    private val authenticationLocalDataSource: AuthenticationLocalDataSource,
+    private val userProfileLocalDataSource: UserProfileLocalDataSource,
 ) : RemoteDataSource {
 
 
@@ -253,63 +249,72 @@ class RetrofitRemoteDataSource @Inject constructor(
             )
         }
     }
-}
-
 
     override suspend fun getTvShowsByCategory(
         tvShowId: Long,
-        page: Int
+        page: Int,
     ): BaseResponse<TVShowDetailsDto> {
         require(tvShowId > 0) { "Invalid seriesId: $tvShowId" }
-        return wrapApiResponse { apiService.getTVShowsByCategory(tvShowId,page) }
+        return wrapApiResponse { apiService.getTVShowsByCategory(tvShowId, page) }
     }
 
     override suspend fun getMoviesByCategory(
         tvShowId: Long,
-        page: Int
+        page: Int,
     ): BaseResponse<MovieDetailsDto> {
         require(tvShowId > 0) { "Invalid movieId: $tvShowId" }
-        return wrapApiResponse { apiService.getMoviesByCategory(tvShowId,page) }
+        return wrapApiResponse { apiService.getMoviesByCategory(tvShowId, page) }
     }
 
     override suspend fun postRateMovie(
         movieId: Int,
-        rating: SubmitRatingRequestDto
+        rating: SubmitRatingRequestDto,
     ): SubmitRatingResponse {
         require(movieId > 0) { "Invalid movieId: $movieId" }
         require(rating.value in 0.5..10.0) { "Rating value must be between 0.5 and 10.0" }
 
-        return wrapApiResponse { apiService.rateMovie(movieId,
-            sessionId = authenticationLocalDataSource.getUserSessionId()?: throw IllegalStateException("Session ID is missing. User might not be logged in."), rating) }
+        return wrapApiResponse {
+            apiService.rateMovie(
+                movieId,
+                sessionId = authenticationLocalDataSource.getUserSessionId()
+                    ?: throw IllegalStateException("Session ID is missing. User might not be logged in."),
+                rating
+            )
+        }
     }
 
     override suspend fun postRateTvShow(
         tvId: Int,
-        rating: SubmitRatingRequestDto
+        rating: SubmitRatingRequestDto,
     ): SubmitRatingResponse {
         require(tvId > 0) { "Invalid tvId: $tvId" }
         require(rating.value in 0.5..10.0) { "Rating value must be between 0.5 and 10.0" }
 
-        return wrapApiResponse { apiService.rateTvShow(tvId,
-            sessionId = authenticationLocalDataSource.getUserSessionId()?: throw IllegalStateException("Session ID is missing. User might not be logged in.")
-            , rating) }
+        return wrapApiResponse {
+            apiService.rateTvShow(
+                tvId,
+                sessionId = authenticationLocalDataSource.getUserSessionId()
+                    ?: throw IllegalStateException("Session ID is missing. User might not be logged in."),
+                rating
+            )
+        }
     }
 
     override suspend fun getRatedMovies(page: Int): BaseResponse<RatedMediaDto> {
-        val sessionId = authenticationLocalDataSource.getUserSessionId()?:
-        throw IllegalStateException("Session ID is missing. User might not be logged in.")
-        val accountId = userProfileLocalDataSource.get()?.id ?:
-        throw IllegalStateException("Account ID not cached. User might not be logged in.")
+        val sessionId = authenticationLocalDataSource.getUserSessionId()
+            ?: throw IllegalStateException("Session ID is missing. User might not be logged in.")
+        val accountId = userProfileLocalDataSource.get()?.id
+            ?: throw IllegalStateException("Account ID not cached. User might not be logged in.")
         return wrapApiResponse {
             apiService.getRatedMovies(accountId.toString(), sessionId, page)
         }
     }
 
     override suspend fun getRatedTVShows(page: Int): BaseResponse<RatedMediaDto> {
-        val sessionId = authenticationLocalDataSource.getUserSessionId()?:
-        throw IllegalStateException("Session ID is missing. User might not be logged in.")
-        val accountId = userProfileLocalDataSource.get()?.id ?:
-        throw IllegalStateException("Account ID not cached. User might not be logged in.")
+        val sessionId = authenticationLocalDataSource.getUserSessionId()
+            ?: throw IllegalStateException("Session ID is missing. User might not be logged in.")
+        val accountId = userProfileLocalDataSource.get()?.id
+            ?: throw IllegalStateException("Account ID not cached. User might not be logged in.")
         return wrapApiResponse {
             apiService.getRatedTVShows(accountId.toString(), sessionId, page)
         }

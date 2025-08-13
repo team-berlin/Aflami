@@ -9,17 +9,12 @@ import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.RatingRepository
-import repository.TVShowRepository
 import repository.SettingsRepository
 import repository.TVShowDetailsRepository
 import repository.TVShowRepository
 import repository.UserFavouriteListRepository
-import repository.UserRepository
-import usecase.auth.GetLoginStatus
 import repository.UserProfileRepository
-import usecase.auth.GetLoginStatusUseCase
 import usecase.auth.GetLoginUseCase
-import usecase.profile.GetUserProfileUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
 import usecase.favouritelist.AddMovieToFavouriteListUseCase
@@ -55,6 +50,7 @@ import usecase.onboarding.SaveFirstEntryUseCase
 import usecase.profile.GetContentRestrictionUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
+import usecase.profile.GetUserProfileUseCase
 import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
@@ -212,10 +208,6 @@ object UseCaseModule {
         GetLoginUseCase(repository)
 
     @Provides
-    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLoginStatusUseCase =
-        GetLoginStatusUseCase(repository)
-
-    @Provides
     fun provideGetTopRatedSeriesUseCase(repository: TVShowRepository): GetTopRatedTVShowUseCase =
         GetTopRatedTVShowUseCase(repository)
 
@@ -225,7 +217,6 @@ object UseCaseModule {
 
     @Provides
     fun provideGetUserProfileUseCase(
-        repository: UserRepository,
         repository: UserProfileRepository
     ): GetUserProfileUseCase = GetUserProfileUseCase(repository)
 

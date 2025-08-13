@@ -26,8 +26,7 @@ import com.berlin.entity.TVShow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatusUseCase
-import usecase.tvshow.GetTVShowVideos
+import usecase.auth.GetLoginUseCase
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.GetSeasonEpisodesUseCase
 import usecase.tvshow.GetSimilarTVShowsUseCase
@@ -35,8 +34,8 @@ import usecase.tvshow.GetTVShowCastUseCase
 import usecase.tvshow.GetTVShowDetailsUseCase
 import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
-import usecase.tvshow.RateTvShowUseCase
 import usecase.tvshow.GetTVShowVideos
+import usecase.tvshow.RateTvShowUseCase
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,7 +44,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
     private val getTVShowGalleryUseCase: GetTVShowGalleryUseCase,
     private val getSimilarTVShowsUseCase: GetSimilarTVShowsUseCase,
-    private val getLoginStatusUseCase: GetLoginStatusUseCase,
+    private val getLoginStatusUseCase: GetLoginUseCase,
     private val tvShowReviewUseCase: GetTVShowReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
@@ -96,6 +95,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                     screenState.copy(
                         posters = tvShowPosters,
                         tvShowUiState = tvShowUiState,
+                        isScreenLoading = false
                     )
                 }
                 onSeasonsClicked(
@@ -460,7 +460,11 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         mediaId: Long,
         favouriteListId: Int,
     ) {
-        TODO("Not yet implemented")
+        updateState { showDetailsUiState ->
+            showDetailsUiState.copy(
+                isNotSupportedFeatureDialogVisible = true
+            )
+        }
     }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {
@@ -534,17 +538,16 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         Log.e("WOWTEST", "Error: ${errorState.message}")
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message
+                errorMessage = errorState.message, isScreenLoading = false
             )
         }
     }
 
     private fun checkLoginThen(actionIfLoggedIn: () -> Unit) {
         viewModelScope.launch {
-            if (getLoginStatusUseCase()) {
-                actionIfLoggedIn()
-            } else {
-                updateState { it.copy(showLoginDialog = true) }
+            getLoginStatusUseCase().collect { loggedIn ->
+                if (loggedIn) actionIfLoggedIn.invoke()
+//                updateState { it.copy(isLoggedIn = loggedIn) }
             }
         }
     }

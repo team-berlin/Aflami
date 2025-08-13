@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatus
+import usecase.auth.GetLoginUseCase
 import usecase.favouritelist.CreateNewFavouriteListUseCase
 import usecase.favouritelist.EditListTitleUseCase
 import usecase.favouritelist.GetAllFavouriteListsUseCase
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class ListScreenViewModel @Inject constructor(
     private val createNewFavouriteListUseCase: CreateNewFavouriteListUseCase,
     private val getAllFavouriteListsUseCase: GetAllFavouriteListsUseCase,
-    private val getIsUserLoggedInUseCase: GetLoginStatus,
+    private val getIsUserLoggedInUseCase: GetLoginUseCase,
     private val editListTitleUseCase: EditListTitleUseCase,
     favouriteListArgs: FavouriteListArgs,
 ) : BaseViewModel<ListScreenState, ListScreenEffect>(ListScreenState()),

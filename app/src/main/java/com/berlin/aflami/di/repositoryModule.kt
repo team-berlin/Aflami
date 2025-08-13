@@ -3,8 +3,8 @@ package com.berlin.aflami.di
 import com.berlin.repository.AuthenticationRepositoryImpl
 import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
-import com.berlin.repository.RatingRepositoryImpl
 import com.berlin.repository.RatedMediaRepositoryImp
+import com.berlin.repository.RatingRepositoryImpl
 import com.berlin.repository.SettingsRepositoryImpl
 import com.berlin.repository.TVShowRepositoryImpl
 import com.berlin.repository.TvShowDetailsRepositoryImpl
@@ -19,14 +19,12 @@ import repository.AppEntryRepository
 import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
-import repository.RatingRepository
-import repository.TVShowRepository
-import repository.SettingsRepository
 import repository.RatedMediaRepository
+import repository.RatingRepository
+import repository.SettingsRepository
 import repository.TVShowDetailsRepository
 import repository.TVShowRepository
 import repository.UserFavouriteListRepository
-import repository.UserRepository
 import repository.UserProfileRepository
 import javax.inject.Singleton
 

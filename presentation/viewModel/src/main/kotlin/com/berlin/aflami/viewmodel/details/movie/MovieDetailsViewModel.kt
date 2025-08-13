@@ -25,15 +25,13 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatus
+import usecase.auth.GetLoginUseCase
 import usecase.favouritelist.AddMovieToFavouriteListUseCase
 import usecase.favouritelist.CreateNewFavouriteListUseCase
 import usecase.favouritelist.GetAllFavouriteListsUseCase
-import usecase.auth.GetLoginStatusUseCase
 import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.GetMovieCastUseCase
@@ -51,10 +49,9 @@ class MovieDetailsViewModel @Inject constructor(
     private val getMovieGalleryUseCase: GetMovieGalleryUseCase,
     private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
     private val movieReviewUseCase: GetMovieReviewUseCase,
-    private val getLoginStatusUseCase: GetLoginStatusUseCase,
     private val addContinueWatchingMovieUseCase: AddContinueWatchingMovieUseCase,
     private val getMovieVideos: GetMovieVideos,
-    private val getIsUserLoggedInUseCase: GetLoginStatus,
+    private val getIsUserLoggedInUseCase: GetLoginUseCase,
     private val getAllFavouriteListsUseCase: GetAllFavouriteListsUseCase,
     private val addMovieToFavouriteListsUseCase: AddMovieToFavouriteListUseCase,
     private val createNewFavouriteListUseCase: CreateNewFavouriteListUseCase,
@@ -62,7 +59,7 @@ class MovieDetailsViewModel @Inject constructor(
     movieDetailsArgs: MovieDetailsArgs,
 ) : BaseViewModel<MovieDetailsUiState, MovieDetailsScreenEffect>(
     MovieDetailsUiState()
-),  MediaDetailsScreenInteractionListener {
+), MediaDetailsScreenInteractionListener {
     private val movieId = movieDetailsArgs.movieId ?: throw IllegalStateException(
         "movie id is null in movie details view model"
     )
@@ -370,6 +367,7 @@ class MovieDetailsViewModel @Inject constructor(
     override fun onLoginButtonClicked() {
         updateState { it.copy(showLoginDialog = false) }
         sendNewEffect(MovieDetailsScreenEffect.NavigateToLogin)
+    }
 
     override fun dismissSnackBar() {
         updateState { it.copy(snackBar = it.snackBar.copy(isVisible = false)) }
@@ -411,8 +409,7 @@ class MovieDetailsViewModel @Inject constructor(
                     }
                     showSnackBar("Successfully submitted rating.", isSuccess = true)
                 },
-                onError = {
-                    stateError ->
+                onError = { stateError ->
                     updateState {
                         it.copy(
                             showRatingDialog = false,

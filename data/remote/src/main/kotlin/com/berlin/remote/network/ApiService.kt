@@ -16,13 +16,8 @@ import com.berlin.repository.datasource.remote.dto.account.UserProfileDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
-import com.berlin.repository.datasource.remote.response.BaseResponse
-import com.berlin.repository.datasource.remote.response.GenreResponse
-import com.berlin.repository.datasource.remote.response.MediaCastResponse
-import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
 import com.berlin.repository.datasource.remote.dto.rating.RatedMediaDto
-import com.berlin.repository.datasource.remote.response.rating.SubmitRatingResponse
-import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
+import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
 import com.berlin.repository.datasource.remote.dto.request.ListRequest
 import com.berlin.repository.datasource.remote.dto.request.MovieListRequest
 import com.berlin.repository.datasource.remote.response.BaseResponse
@@ -31,6 +26,7 @@ import com.berlin.repository.datasource.remote.response.FavouriteListResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
+import com.berlin.repository.datasource.remote.response.rating.SubmitRatingResponse
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
@@ -38,10 +34,8 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.POST
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -177,8 +171,8 @@ interface ApiService {
 
     @GET("account")
     suspend fun getUserProfile(
-        @Query(ApiConstants.SESSION_ID) sessionId: String
-    ): Response<AccountDto>
+        @Query(ApiConstants.SESSION_ID) sessionId: String,
+    ): Response<UserProfileDto>
 
     @POST(ApiConstants.LIST)
     suspend fun createNewFavouriteList(
@@ -225,7 +219,6 @@ interface ApiService {
         @Query(SESSION_ID) sessionId: String,
         @Body addMovieToListRequest: MovieListRequest,
     ): Response<AddMovieToListDto>
-    ): Response<UserProfileDto>
 
     @GET(ApiConstants.RATED_MOVIES)
     suspend fun getRatedMovies(

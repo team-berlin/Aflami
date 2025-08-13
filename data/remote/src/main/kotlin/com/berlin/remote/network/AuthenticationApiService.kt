@@ -1,7 +1,7 @@
 package com.berlin.remote.network
 
 import com.berlin.remote.network.ApiConstants.SESSION_ID
-import com.berlin.repository.datasource.remote.dto.AccountDetailsDto
+import com.berlin.repository.datasource.remote.dto.account.UserProfileDto
 import com.berlin.repository.datasource.remote.dto.auth.LoginDto
 import com.berlin.repository.datasource.remote.dto.auth.LoginRequestDTO
 import com.berlin.repository.datasource.remote.dto.auth.RequestTokenDTO
@@ -28,5 +28,5 @@ interface AuthenticationApiService {
     @GET("account")
     suspend fun getAccountDetails(
         @Query(SESSION_ID) sessionId: String,
-    ): Response<AccountDetailsDto>
+    ): Response<UserProfileDto>
 }

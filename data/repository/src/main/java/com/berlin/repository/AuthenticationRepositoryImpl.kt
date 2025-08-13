@@ -36,7 +36,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
             val session: String =
                 createSession(it.requestToken ?: throw NotFoundException("Token not found"))
             val accountDetails = authenticationRemoteDataSource.getUserAccountDetails(session)
-            authenticationLocalDataSource.saveUserAccountId(accountDetails.accountId)
+            authenticationLocalDataSource.saveUserAccountId(accountDetails.id!!)
             Log.d("khairy", "account details = $accountDetails")
             authenticationLocalDataSource.saveUserSessionId(session)
         }

@@ -3,7 +3,6 @@ package com.berlin.aflami.viewmodel.details.movie
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import com.berlin.aflami.viewmodel.base.ErrorUiState
-import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState

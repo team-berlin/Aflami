@@ -3,14 +3,13 @@ package com.berlin.aflami.viewmodel.profile
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
-import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import com.berlin.entity.ContentRestriction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import usecase.auth.GetLoginUseCase
 import usecase.profile.ClearUserProfileUseCase
-import usecase.auth.GetLoginStatusUseCase
 import usecase.profile.GetContentRestrictionUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
@@ -28,12 +27,12 @@ class ProfileViewModel @Inject constructor(
     val getThemeUseCase: GetThemeUseCase,
     val setLanguageUseCase: SetLanguageUseCase,
     val setThemeUseCase: SetThemeUseCase,
-    val getLoginStatus: GetLoginStatusUseCase,
+    val getLoginStatus: GetLoginUseCase,
     val setContentRestrictionUseCase: SetContentRestrictionUseCase,
     val getContentRestrictionUseCase: GetContentRestrictionUseCase,
     private val observeUserProfileUseCase: ObserveUserProfileUseCase,
     private val refreshUserProfileUseCase: RefreshUserProfileUseCase,
-    private val clearUserProfileUseCase: ClearUserProfileUseCase
+    private val clearUserProfileUseCase: ClearUserProfileUseCase,
 
     ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
@@ -239,15 +238,6 @@ class ProfileViewModel @Inject constructor(
             "MODERATE" -> 50
             "OFF" -> 0
             else -> 100
-        }
-    }
-
-    private fun checkLoginStatus() {
-        viewModelScope.launch {
-            getLoginStatus().collect { loggedIn ->
-
-                updateState { it.copy(isLoggedIn = loggedIn) }
-            }
         }
     }
 

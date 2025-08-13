@@ -24,7 +24,6 @@ data class TVShowDetailsUiState(
     val selectedFavouriteListId: Int? = null,
     val snackBarMessage: String? = null,
     val isSnackBarStatusSuccess: Boolean? = null,
-    val selectedFavouriteListId: Int? = null,
     val isNotSupportedFeatureDialogVisible: Boolean = false,
 )
 

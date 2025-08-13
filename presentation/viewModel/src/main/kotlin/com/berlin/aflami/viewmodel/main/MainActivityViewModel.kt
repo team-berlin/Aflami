@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatusUseCase
+import usecase.auth.GetLoginUseCase
 import usecase.onboarding.GetFirstEntryUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val isLoggedInUseCase: GetLoginStatusUseCase,
+    private val isLoggedInUseCase: GetLoginUseCase,
     private val getFirstEntryUseCase: GetFirstEntryUseCase,
 
     ) : ViewModel() {
