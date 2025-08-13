@@ -14,33 +14,38 @@ import repository.TVShowDetailsRepository
 class GetTVShowReviewUseCaseTest {
 
     private val tvShowDetailsRepository: TVShowDetailsRepository = mockk()
-    private lateinit var getTVShowReviewUseCase: GetTVShowReviewUseCase
+    private val getTVShowReviewUseCase: GetTVShowReviewUseCase =
+        GetTVShowReviewUseCase(tvShowDetailsRepository)
 
-    @Before
-    fun setUp() {
-        getTVShowReviewUseCase = GetTVShowReviewUseCase(tvShowDetailsRepository)
-    }
 
     @Test
     fun `should return list of reviews when calling repository`() = runTest {
+        // Arrange
         coEvery { tvShowDetailsRepository.getTVShowReviews(SERIES_ID) } returns REVIEWS
 
-        val callResult = getTVShowReviewUseCase(SERIES_ID)
+        // Act
+        val result = getTVShowReviewUseCase(SERIES_ID)
 
-        assertThat(callResult).isEqualTo(REVIEWS)
+        // Assert
+        assertThat(result).isEqualTo(REVIEWS)
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowReviews(SERIES_ID) }
     }
 
     @Test
     fun `should throw exception if tvShowDetailsRepository throws exception`() = runTest {
-        coEvery { tvShowDetailsRepository.getTVShowReviews(SERIES_ID) } throws Exception()
+        // Arrange
+        coEvery { tvShowDetailsRepository.getTVShowReviews(SERIES_ID) } throws Exception(EXCEPTION)
 
-        assertThrows<Exception> {
-            getTVShowReviewUseCase(SERIES_ID)
-        }
+        // Act
+        val exception = assertThrows<Exception> { getTVShowReviewUseCase(SERIES_ID) }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
+        coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowReviews(SERIES_ID) }
     }
 
     companion object {
+        const val EXCEPTION = "Error to get tv show reviews"
         const val SERIES_ID = 555L
         val REVIEWS = listOf(
             Review(

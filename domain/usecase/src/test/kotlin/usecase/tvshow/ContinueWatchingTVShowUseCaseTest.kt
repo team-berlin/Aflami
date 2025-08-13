@@ -14,33 +14,38 @@ import repository.TVShowRepository
 class ContinueWatchingTVShowUseCaseTest {
 
     private val tvShowRepository: TVShowRepository = mockk()
-    private lateinit var continueWatchingTVShowUseCase: ContinueWatchingTVShowUseCase
-
-    @Before
-    fun setUp() {
-        continueWatchingTVShowUseCase = ContinueWatchingTVShowUseCase(tvShowRepository)
-    }
+    private val continueWatchingTVShowUseCase: ContinueWatchingTVShowUseCase =
+        ContinueWatchingTVShowUseCase(tvShowRepository)
 
     @Test
     fun `should return list of TV shows when calling repository`() = runTest {
-        coEvery { tvShowRepository.getContinueWatchingTVShows() } returns TV_SHOW
+        // Arrange
+        coEvery { tvShowRepository.getContinueWatchingTVShows(PAGE) } returns TV_SHOW
 
-        val callResult = continueWatchingTVShowUseCase()
+        // Act
+        val result = continueWatchingTVShowUseCase(PAGE)
 
-        assertThat(callResult).isEqualTo(TV_SHOW)
-        coVerify(exactly = 1) { tvShowRepository.getContinueWatchingTVShows() }
+        // Assert
+        assertThat(result).isEqualTo(TV_SHOW)
+        coVerify(exactly = 1) { tvShowRepository.getContinueWatchingTVShows(PAGE) }
     }
 
     @Test
     fun `should throw exception if tvShowRepository throws exception`() = runTest {
-        coEvery { tvShowRepository.getContinueWatchingTVShows() } throws Exception()
+        // Arrange
+        coEvery { tvShowRepository.getContinueWatchingTVShows(PAGE) } throws Exception(ERROR_MESSAGE)
 
-        assertThrows<Exception> {
-            continueWatchingTVShowUseCase()
-        }
+        // Act
+        val exception = assertThrows<Exception> { continueWatchingTVShowUseCase(PAGE) }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(ERROR_MESSAGE)
+        coVerify(exactly = 1) { tvShowRepository.getContinueWatchingTVShows(PAGE) }
     }
 
     companion object {
+        const val ERROR_MESSAGE = "Failed to get continue watching tv show"
+        const val PAGE = 1
         val TV_SHOW = listOf(
             TVShow(
                 id = 90L,
@@ -55,9 +60,8 @@ class ContinueWatchingTVShowUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                seasons = emptyList(),
                 galleryUrl = emptyList(),
-                reviews = emptyList()
+                numberOfSeasons = 2,
             ),
             TVShow(
                 id = 90L,
@@ -72,9 +76,8 @@ class ContinueWatchingTVShowUseCaseTest {
                 hasVideo = false,
                 companyProductions = emptyList(),
                 originCountry = "PS",
-                seasons = emptyList(),
                 galleryUrl = emptyList(),
-                reviews = emptyList()
+                numberOfSeasons = 2,
             )
         )
     }

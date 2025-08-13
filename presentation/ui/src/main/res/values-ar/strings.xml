@@ -100,6 +100,12 @@
     <string name="strict_description">إخفاء جميع المحتوى الحساس.</string>
     <string name="moderate_description">إخفاء المشاهد الصريحة فقط.</string>
     <string name="off_description">عدم إخفاء المحتوى.</string>
+    <string name="sure_to_continue">أأنت متأكد من رغبتك في المتابعة؟</string>
+    <string name="logout_msg"> فإن مللت منا، فاعلم أننا باقون هنا في انتظارك.</string>
+
+    <string name="rate_it">قيّم</string>
+    <string name="select_how_much_you_like_it">حدد كم تقيّم</string>
+    <string name="submit">تأكيد</string>
     <string name="catgories">التصنيفات</string>
     <string name="movies">الافلام</string>
     <string name="tv_shows">البرامج التليفزيونية</string>

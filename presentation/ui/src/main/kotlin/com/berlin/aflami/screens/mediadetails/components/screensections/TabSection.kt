@@ -31,10 +31,9 @@ import com.berlin.aflami.screens.mediadetails.components.getTVShowDetailsTabsIco
 import com.berlin.aflami.screens.mediadetails.components.movieDetailsTabsMapper
 import com.berlin.aflami.screens.mediadetails.components.tvShowDetailsTabsMapper
 import com.berlin.aflami.screens.mediadetails.screen.getDisplayMessage
-import com.berlin.aflami.screens.search.components.Loading
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.details.common.MoviesRowSectionUiState
-import com.berlin.aflami.viewmodel.details.common.MoviesTabContent
+import com.berlin.aflami.viewmodel.details.movie.MoviesRowSectionUiState
+import com.berlin.aflami.viewmodel.details.movie.MoviesTabContent
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsTabs
 import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState

@@ -1,5 +1,6 @@
 package usecase.tvshow
 
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -8,30 +9,42 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TVShowRepository
+import usecase.tvshow.AddContinueWatchingTVShowUseCaseTest.Companion.TV_SHOW
 
 class ClearTVShowSearchHistoryUseCaseTest {
 
-    private val tvShowRepository: TVShowRepository = mockk(relaxed = true)
-    private lateinit var clearTVShowSearchHistoryUseCase: ClearTVShowSearchHistoryUseCase
-
-    @Before
-    fun setUp() {
-        clearTVShowSearchHistoryUseCase = ClearTVShowSearchHistoryUseCase(tvShowRepository)
-    }
+    private val tvShowRepository: TVShowRepository = mockk()
+    private val clearTVShowSearchHistoryUseCase: ClearTVShowSearchHistoryUseCase =
+        ClearTVShowSearchHistoryUseCase(tvShowRepository)
 
     @Test
     fun `should call repository to clear TV show search history`() = runTest {
-        clearTVShowSearchHistoryUseCase()
+        // Arrange
+        coEvery { tvShowRepository.clearTVShowSearchHistory() } returns Unit
 
+        // Act
+        val result = clearTVShowSearchHistoryUseCase()
+
+        // Assert
+        assertThat(result).isEqualTo(Unit)
         coVerify(exactly = 1) { tvShowRepository.clearTVShowSearchHistory() }
     }
 
     @Test
     fun `should throw exception if repository throws exception`() = runTest {
-        coEvery { tvShowRepository.clearTVShowSearchHistory() } throws Exception()
+        // Arrange
+        coEvery { tvShowRepository.clearTVShowSearchHistory() } throws Exception(DB_ERROR)
 
-        assertThrows<Exception> {
-            clearTVShowSearchHistoryUseCase()
+        // Act
+        val exception = assertThrows<Exception> { clearTVShowSearchHistoryUseCase() }
+
+        // Assert
+        assertThat(exception.message).isEqualTo(DB_ERROR)
+        coVerify(exactly = 1) {
+            tvShowRepository.clearTVShowSearchHistory()
         }
+    }
+    companion object{
+        const val DB_ERROR = "DB error"
     }
 }

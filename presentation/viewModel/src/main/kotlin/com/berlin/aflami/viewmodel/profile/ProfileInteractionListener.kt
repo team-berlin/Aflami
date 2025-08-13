@@ -19,5 +19,6 @@ interface ProfileInteractionListener {
     fun onModerateSelected()
     fun onOffRestrictionSelected()
     fun onSaveContentRestriction()
-    fun onLogoutClicked()
+    fun onSettingsLogoutClicked()
+    fun onDialogLogoutClicked()
 }

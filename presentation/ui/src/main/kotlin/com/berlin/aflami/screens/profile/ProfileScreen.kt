@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +27,7 @@ import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.RequiredLoggedInPlaceholder
 import com.berlin.aflami.screens.profile.components.ContentRestrictionDialog
+import com.berlin.aflami.screens.profile.components.LogoutDialog
 import com.berlin.aflami.screens.profile.components.OptionsDialog
 import com.berlin.aflami.screens.profile.components.ProfileSection
 import com.berlin.aflami.screens.profile.components.SettingSection
@@ -51,18 +54,15 @@ fun ProfileScreen(
         RequiredLoggedInPlaceholder() {
             navController.navigate(LoginDestination)
         }
-
     }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
-            WatchHistoryonReceiveEffect(navController = navController, effect = newEffect)
+            watchHistoryReceiveEffect(navController = navController, effect = newEffect)
         }
     }
-    ProfileContent(profileScreenState, viewModel)
-
 }
 
-private fun WatchHistoryonReceiveEffect(
+private fun watchHistoryReceiveEffect(
     navController: NavController,
     effect: ProfileScreenEffect
 ) {
@@ -98,6 +98,7 @@ private fun ProfileContent(
     profileScreenState: ProfileUiState,
     profileScreenInteractionListener: ProfileInteractionListener,
 ) {
+
 
     when (profileScreenState.activeDialog) {
         ProfileDialogType.THEME -> {
@@ -140,7 +141,7 @@ private fun ProfileContent(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
                 onFirstOptionClick = { profileScreenInteractionListener.onChangePasswordClicked() },
                 onSecondOptionClick = { profileScreenInteractionListener.onContentRestrictionClicked() },
-                onThirdOptionClick = { profileScreenInteractionListener.onLogoutClicked() },
+                onThirdOptionClick = { profileScreenInteractionListener.onSettingsLogoutClicked() },
             )
         }
 
@@ -158,17 +159,19 @@ private fun ProfileContent(
                 onSecondOptionClick = { profileScreenInteractionListener.onModerateSelected() },
                 onThirdOptionClick = { profileScreenInteractionListener.onOffRestrictionSelected() },
                 onSaveClick = { profileScreenInteractionListener.onSaveContentRestriction() },
-                firstOptionIconRes = com.berlin.designsystem.R.drawable.english,
-                secondOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
-                thirdOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
                 firstOptionSubTitleIdRes = R.string.strict_description,
                 secondOptionSubTitleIdRes = R.string.moderate_description,
                 thirdOptionSubTitleIdRes = R.string.off_description
             )
-
-
         }
 
+        ProfileDialogType.LOGOUT -> {
+            LogoutDialog(
+                onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
+                title = R.string.setting_dialog_logout,
+                onLogoutClick = { profileScreenInteractionListener.onDialogLogoutClicked() },
+            )
+        }
         else -> Unit
     }
 
@@ -178,9 +181,17 @@ private fun ProfileContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
+            .verticalScroll(rememberScrollState())
     )
     {
-        ProfileSection(userAvatar = "", userName = "", painterResource(R.drawable.profile_cover))
+        ProfileSection(
+            userAvatar = "",
+            userName = "",
+            if (profileScreenState.isDarkThemeEnabled)
+                painterResource(R.drawable.profile_cover_night)
+            else painterResource(R.drawable.profile_cover),
+
+        )
         Spacer(modifier = Modifier.height(24.dp))
         WatchHistoryRatingSection {
             profileScreenInteractionListener.onWatchHistoryClick()
@@ -189,7 +200,7 @@ private fun ProfileContent(
         HorizontalDivider(thickness = 1.dp, color = Theme.color.stroke)
         Spacer(modifier = Modifier.height(24.dp))
         SettingSection(
-            isLanguageEN = profileScreenState.isLanguageEN,
+            isLanguageEN = profileScreenState.isEnglishEnabled,
             isDarkThemeEnabled = profileScreenState.isDarkThemeEnabled,
             onThemeClick = { profileScreenInteractionListener.onAppThemeClick() },
             onLanguageClick = { profileScreenInteractionListener.onLanguageClick() },

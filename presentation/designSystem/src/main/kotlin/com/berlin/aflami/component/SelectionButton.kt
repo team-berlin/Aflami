@@ -31,7 +31,7 @@ fun SelectionButton(
     modifier: Modifier = Modifier,
     selected: Boolean,
     onClick: () -> Unit,
-    iconId: Int,
+    iconId: Int? = null,
     selectionTitleId: Int,
     subTitleId:Int?=null
 
@@ -62,11 +62,13 @@ fun SelectionButton(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            if (iconId != null) {
             Icon(
                 painter = painterResource(iconId),
                 contentDescription = null,
                 tint = iconColor
             )
+            }
 
             Column(
                 modifier = Modifier.weight(1f)

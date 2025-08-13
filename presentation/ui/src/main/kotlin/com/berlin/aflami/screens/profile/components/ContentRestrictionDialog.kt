@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.berlin.aflami.component.SelectionButton
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -53,7 +54,12 @@ fun ContentRestrictionDialog(
     secondOptionSubTitleIdRes: Int? = null,
     thirdOptionSubTitleIdRes: Int? = null,
 ) {
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
         Box(
             modifier = modifier
                 .background(Theme.color.surface, RoundedCornerShape(24.dp))
@@ -94,30 +100,27 @@ fun ContentRestrictionDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                if (firstOptionIconRes != null && firstOptionTitleRes != null) {
+                if (firstOptionTitleRes != null) {
                     SelectionButton(
                         selected = isFirstOptionSelected,
                         onClick = onFirstOptionClick,
-                        iconId = firstOptionIconRes,
                         selectionTitleId = firstOptionTitleRes,
                         subTitleId = firstOptionSubTitleIdRes
                     )
                 }
-                if (secondOptionIconRes != null && secondOptionTitleRes != null) {
+                if (secondOptionTitleRes != null) {
                     SelectionButton(
                         selected = isSecondOptionSelected,
                         onClick = onSecondOptionClick,
-                        iconId = secondOptionIconRes,
                         selectionTitleId = secondOptionTitleRes,
                         subTitleId = secondOptionSubTitleIdRes
                     )
                 }
 
-                if (thirdOptionIconRes != null && thirdOptionTitleRes != null) {
+                if (thirdOptionTitleRes != null) {
                     SelectionButton(
                         selected = isThirdOptionSelected,
                         onClick = onThirdOptionClick,
-                        iconId = thirdOptionIconRes,
                         selectionTitleId = thirdOptionTitleRes,
                         subTitleId = thirdOptionSubTitleIdRes
                     )

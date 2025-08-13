@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.Locale
 import javax.inject.Inject
 
 private const val PREFERENCES_NAME = "settings_preferences"
@@ -40,7 +41,7 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
     }
     fun getLanguage(): Flow<String?> {
         return context.dataStore.data.map { prefs ->
-            prefs[APP_LANGUAGE] ?: "AR"
+            prefs[APP_LANGUAGE] ?: Locale.getDefault().language.uppercase()
         }
 
     }
