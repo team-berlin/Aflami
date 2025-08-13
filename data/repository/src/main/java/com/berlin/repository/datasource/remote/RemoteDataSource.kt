@@ -1,13 +1,15 @@
 package com.berlin.repository.datasource.remote
 
+import com.berlin.repository.datasource.remote.dto.FavouriteListDto
+import com.berlin.repository.datasource.remote.dto.FavouriteListItem
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.ReviewDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
+import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.dto.rating.RatedMediaDto
 import com.berlin.repository.datasource.remote.dto.rating.SubmitRatingRequestDto
-import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
@@ -29,7 +31,11 @@ interface RemoteDataSource {
     suspend fun getEpisodeSeasonTV(seriesId: Long, seasonNumber: Int): SeasonEpisodesDto
     suspend fun getMovieGenres(): GenreResponse
     suspend fun getTVGenres(): GenreResponse
-    suspend fun getMoviesByCountryName(countryName: String, page: Int): BaseResponse<MovieDetailsDto>
+    suspend fun getMoviesByCountryName(
+        countryName: String,
+        page: Int,
+    ): BaseResponse<MovieDetailsDto>
+
     suspend fun getMoviesByActorName(actorName: String, page: Int): BaseResponse<PersonDto>
     suspend fun getMoviesByKeyword(query: String, page: Int): BaseResponse<MovieDetailsDto>
     suspend fun getTVShowsByKeyword(query: String, page: Int): BaseResponse<TVShowDetailsDto>
@@ -46,4 +52,16 @@ interface RemoteDataSource {
     suspend fun postRateTvShow(tvId: Int, rating: SubmitRatingRequestDto): SubmitRatingResponse
     suspend fun getRatedMovies(page: Int): BaseResponse<RatedMediaDto>
     suspend fun getRatedTVShows(page: Int): BaseResponse<RatedMediaDto>
+
+    suspend fun getUserFavouriteLists(page: Int): List<FavouriteListDto>
+    suspend fun getUserFavouriteListItems(
+        pageNumber: Int,
+        favouriteListId: Int,
+    ): List<FavouriteListItem>
+
+    suspend fun deleteUserFavouriteList(listId: Int)
+    suspend fun deleteMovieFromUserFavouriteList(listId: Int, movieId: Long)
+    suspend fun createNewFavouriteList(title: String): Int
+    suspend fun editListTitle(listId: Int, newListTitle: String)
+    suspend fun addMovieToFavouriteList(listId: Int, movieId: Long)
 }

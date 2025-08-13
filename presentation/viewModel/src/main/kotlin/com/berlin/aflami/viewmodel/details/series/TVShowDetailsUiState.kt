@@ -16,7 +16,7 @@ data class TVShowDetailsUiState(
     val isScreenLoading: Boolean = false,
     val errorMessage: String? = null,
     val tvShowDetailsTabsUiState: TVShowDetailsTabsUiState = TVShowDetailsTabsUiState(),
-    val showLoginDialog:Boolean = false,
+    val showLoginDialog: Boolean = false,
     val showRatingDialog: Boolean = false,
     val showAddToListDialog: Boolean = false,
     val selectedRatingMediaId: Long? = null,
@@ -24,6 +24,7 @@ data class TVShowDetailsUiState(
     val selectedFavouriteListId: Int? = null,
     val snackBarMessage: String? = null,
     val isSnackBarStatusSuccess: Boolean? = null,
+    val isNotSupportedFeatureDialogVisible: Boolean = false,
 )
 
 data class TVShowDetailsTabsUiState(

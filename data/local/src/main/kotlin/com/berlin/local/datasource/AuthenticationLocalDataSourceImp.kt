@@ -29,6 +29,26 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
             .distinctUntilChanged()
     }
 
+    override suspend fun saveUserAccountId(accountId: Int): Boolean {
+        return try {
+            val encrypted = EncryptionUtils.encrypt(accountId.toString())
+            dataStore.edit { it[DataStoreKeys.USER_ACCOUNT_ID] = encrypted }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    override suspend fun getUserAccountId(): Int {
+        return try {
+            val encrypted: String = dataStore.data.first()[DataStoreKeys.USER_ACCOUNT_ID]
+                ?: throw IllegalStateException("account id not found in local storage ")
+            EncryptionUtils.decrypt(encrypted).toInt()
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
 
     override suspend fun saveUserToken(userToken: String): Boolean {
         return try {
@@ -39,7 +59,6 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
             false
         }
     }
-
 
     override suspend fun getUserToken(): String? {
         return try {
@@ -69,7 +88,6 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
         }
     }
 
-
     override suspend fun getUserSessionId(): String? {
         return try {
             val encrypted = dataStore.data.first()[DataStoreKeys.USER_SESSION_ID] ?: return null
@@ -79,7 +97,6 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
         }
     }
 
-
     override suspend fun deleteUserSessionId(): Boolean {
         return try {
             dataStore.edit { it.remove(DataStoreKeys.USER_SESSION_ID) }
@@ -88,5 +105,4 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
             false
         }
     }
-
 }

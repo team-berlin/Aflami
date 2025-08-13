@@ -17,7 +17,6 @@ class TopRatingMoviesPagingSource(
         val moviesDeferred = async {
             getTopRateMovieUseCase(page).map {
                 it.toMediaUiState(
-
                 )
             }
         }

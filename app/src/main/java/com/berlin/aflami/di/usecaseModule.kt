@@ -9,15 +9,21 @@ import repository.AuthenticationRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.RatingRepository
-import repository.TVShowRepository
 import repository.SettingsRepository
 import repository.TVShowDetailsRepository
+import repository.TVShowRepository
+import repository.UserFavouriteListRepository
 import repository.UserProfileRepository
-import usecase.auth.GetLoginStatusUseCase
 import usecase.auth.GetLoginUseCase
-import usecase.profile.GetUserProfileUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
+import usecase.favouritelist.AddMovieToFavouriteListUseCase
+import usecase.favouritelist.CreateNewFavouriteListUseCase
+import usecase.favouritelist.DeleteMovieFromUserFavouriteList
+import usecase.favouritelist.DeleteUserFavouriteListUseCase
+import usecase.favouritelist.EditListTitleUseCase
+import usecase.favouritelist.GetAllFavouriteListsUseCase
+import usecase.favouritelist.GetFavouriteListItemsUseCase
 import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.ClearMoviesSearchHistoryUseCase
@@ -44,6 +50,7 @@ import usecase.onboarding.SaveFirstEntryUseCase
 import usecase.profile.GetContentRestrictionUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
+import usecase.profile.GetUserProfileUseCase
 import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
@@ -201,10 +208,6 @@ object UseCaseModule {
         GetLoginUseCase(repository)
 
     @Provides
-    fun provideIsLoggedInUseCase(repository: AuthenticationRepository): GetLoginStatusUseCase =
-        GetLoginStatusUseCase(repository)
-
-    @Provides
     fun provideGetTopRatedSeriesUseCase(repository: TVShowRepository): GetTopRatedTVShowUseCase =
         GetTopRatedTVShowUseCase(repository)
 
@@ -218,11 +221,11 @@ object UseCaseModule {
     ): GetUserProfileUseCase = GetUserProfileUseCase(repository)
 
     @Provides
-    fun provideGetAppEntryUseCase(repository: AppEntryRepository):SaveFirstEntryUseCase =
+    fun provideGetAppEntryUseCase(repository: AppEntryRepository): SaveFirstEntryUseCase =
         SaveFirstEntryUseCase(repository)
 
     @Provides
-    fun provideGetFirstEntryUseCase(repository: AppEntryRepository):GetFirstEntryUseCase =
+    fun provideGetFirstEntryUseCase(repository: AppEntryRepository): GetFirstEntryUseCase =
         GetFirstEntryUseCase(repository)
 
     @Provides
@@ -252,9 +255,34 @@ object UseCaseModule {
     fun provideSetContentRestrictionUseCase(repository: SettingsRepository): SetContentRestrictionUseCase =
         SetContentRestrictionUseCase(repository)
 
+    @Provides
+    fun provideCreateNewFavouriteListUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        CreateNewFavouriteListUseCase(userFavouriteListRepository)
+
+    @Provides
+    fun provideDeleteMovieFromUserFavouriteList(userFavouriteListRepository: UserFavouriteListRepository) =
+        DeleteMovieFromUserFavouriteList(userFavouriteListRepository)
+
+    @Provides
+    fun provideDeleteUserFavouriteListUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        DeleteUserFavouriteListUseCase(userFavouriteListRepository)
+
+    @Provides
+    fun provideGetAllFavouriteListsUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        GetAllFavouriteListsUseCase(userFavouriteListRepository)
 
     @Provides
     fun provideRateTvShowUseCase(repository: RatingRepository): RateTvShowUseCase =
         RateTvShowUseCase(repository)
+    @Provides
+    fun provideGetFavouriteListItemsUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        GetFavouriteListItemsUseCase(userFavouriteListRepository)
 
+    @Provides
+    fun provideEditFavouriteListTitleUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        EditListTitleUseCase(userFavouriteListRepository)
+
+    @Provides
+    fun provideAddMovieToUserFavouriteListUseCase(userFavouriteListRepository: UserFavouriteListRepository) =
+        AddMovieToFavouriteListUseCase(userFavouriteListRepository)
 }

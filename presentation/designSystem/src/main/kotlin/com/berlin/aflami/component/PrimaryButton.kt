@@ -15,6 +15,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.berlin.aflami.ui.color.ExtraColors.darkPurpleLinearGradient
+import com.berlin.aflami.ui.theme.Theme
 
 @Composable
 fun PrimaryButton(
@@ -22,21 +24,24 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     containerColor: Color = Color.Magenta,
     gradientColor: Color? = null,
-    content: @Composable RowScope.() -> Unit
+    isEnabled: Boolean = true,
+    content: @Composable RowScope.() -> Unit,
 ) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .background(
-                brush = Brush.verticalGradient(
-                    colors = if (gradientColor != null)
-                        listOf(containerColor, gradientColor) else listOf(
-                        containerColor,
-                        containerColor
-                    )
-                )
+                brush = (if (isEnabled) darkPurpleLinearGradient
+                else Brush.linearGradient(listOf(Theme.color.disable, Theme.color.disable))),
+//                brush = Brush.verticalGradient(
+//                    colors = if (gradientColor != null)
+//                        listOf(containerColor, gradientColor) else listOf(
+//                        containerColor,
+//                        containerColor
+//                    )
+//                )
             )
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick, enabled = isEnabled)
             .padding(vertical = 8.dp, horizontal = 24.dp),
         contentAlignment = Alignment.Center
     ) {
