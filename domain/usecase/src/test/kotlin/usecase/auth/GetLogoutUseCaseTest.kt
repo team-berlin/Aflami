@@ -33,9 +33,10 @@ class GetLogoutUseCaseTest {
         coEvery { authenticationRepository.logout() } throws Exception(LOGOUT_FAILED)
 
         // Act
-        assertThrows<Exception> { getLogoutUseCase() }
+        val exception = assertThrows<Exception> { getLogoutUseCase() }
 
         // Assert
+        assertThat(exception.message).isEqualTo(LOGOUT_FAILED)
         coVerify(exactly = 1) { authenticationRepository.logout() }
     }
 

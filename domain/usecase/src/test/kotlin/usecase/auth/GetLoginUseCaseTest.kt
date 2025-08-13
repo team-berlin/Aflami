@@ -35,11 +35,12 @@ class GetLoginUseCaseTest {
         } throws Exception(INVALID_CREDENTIALS)
 
         // Act
-        assertThrows<Exception> {
+        val exception = assertThrows<Exception> {
             getLoginUseCase(USERNAME, PASSWORD)
         }
 
         // Assert
+        assertThat(exception.message).isEqualTo(INVALID_CREDENTIALS)
         coVerify(exactly = 1) {
             authenticationRepository.login(USERNAME, PASSWORD)
         }

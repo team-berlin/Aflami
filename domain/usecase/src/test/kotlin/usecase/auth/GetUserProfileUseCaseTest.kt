@@ -15,7 +15,7 @@ class GetUserProfileUseCaseTest {
     private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(userRepository)
 
     @Test
-    fun `invoke should return user profile from repository`() = runTest {
+    fun `should return user profile when invoked`() = runTest {
         // Arrange
         coEvery { userRepository.getUserProfile(SESSION_ID) } returns EXPECTED_USER
 
@@ -28,14 +28,15 @@ class GetUserProfileUseCaseTest {
     }
 
     @Test
-    fun `invoke should throw exception when repository fails`() = runTest {
+    fun `should throw exception when repository fails`() = runTest {
         // Arrange
         coEvery { userRepository.getUserProfile(SESSION_ID) } throws Exception(EXCEPTION)
 
         // Act
-        assertThrows<Exception> { getUserProfileUseCase(SESSION_ID) }
+        val exception = assertThrows<Exception> { getUserProfileUseCase(SESSION_ID) }
 
         // Assert
+        assertThat(exception.message).isEqualTo(EXCEPTION)
         coVerify(exactly = 1) { userRepository.getUserProfile(SESSION_ID) }
     }
 

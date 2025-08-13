@@ -18,7 +18,7 @@ class GetValidatePasswordUseCaseTest {
     @Test
     fun `should return false when password is empty`() {
         // Act
-        val result = validatePasswordUseCase(INVALID_PASSWORD)
+        val result = validatePasswordUseCase(EMPTY_PASSWORD)
 
         // Assert
         assertThat(result).isFalse()
@@ -44,7 +44,7 @@ class GetValidatePasswordUseCaseTest {
 
     companion object{
         const val VALID_PASSWORD = "1234"
-        const val INVALID_PASSWORD = ""
+        const val EMPTY_PASSWORD = ""
         const val SHORT_PASSWORD = "abc"
         const val LONG_PASSWORD = "abcdef"
     }
