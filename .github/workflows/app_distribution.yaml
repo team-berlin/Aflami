@@ -44,21 +44,24 @@ jobs:
           git fetch --tags
       
           while true; do
-            latest=$(git tag --sort=-v:refname | head -n 1 || echo "v1.10.0")
-      
+            latest=$(git tag --sort=-v:refname | head -n 1 || echo "v1.15.0")
             IFS='.' read -r major minor patch <<< "${latest#v}"
-      
+          
             if [[ "$branch" == "main" || "$branch" == "develop" ]]; then
               minor=$((minor + 1))
               patch=0
             else
               patch=$((patch + 1))
             fi
-      
+          
             new_tag="v$major.$minor.$patch"
-      
+          
+            if git rev-parse "$new_tag" >/dev/null 2>&1; then
+              patch=$((patch + 1))
+              new_tag="v$major.$minor.$patch"
+            fi
+          
             git tag "$new_tag"
-      
             if git push origin "$new_tag"; then
               echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
               echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
@@ -85,15 +88,6 @@ jobs:
       - name: Rename output with version
         run: |
           mv app/build/outputs/apk/release/app-release.apk app-${{ env.NEW_TAG }}.apk
-
-
-      - name: Create and push Git tag
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git tag ${{ env.NEW_TAG }}
-          git push origin ${{ env.NEW_TAG }}
-          
 
       - name: Set Firebase tester group
         id: tester_group

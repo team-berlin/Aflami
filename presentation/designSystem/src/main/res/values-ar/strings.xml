@@ -91,5 +91,7 @@
     <string name="talk">برامج حوارية</string>
     <string name="war_politics"><![CDATA[حرب و سياسة]]></string>
     <string name="kids">أطفال</string>
+    <string name="item_count">%1$d عنصر</string>
+    <string name="television_movie">فيلم تلفزيوني</string>
 
 </resources>

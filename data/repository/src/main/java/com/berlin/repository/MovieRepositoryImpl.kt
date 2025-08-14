@@ -1,14 +1,13 @@
 package com.berlin.repository
 
-import android.util.Log
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
-import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toPopularMovieEntity

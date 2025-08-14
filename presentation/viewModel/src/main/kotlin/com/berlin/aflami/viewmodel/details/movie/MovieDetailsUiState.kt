@@ -1,6 +1,10 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Immutable
+import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
+import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 
@@ -17,7 +21,7 @@ data class MovieDetailsUiState(
     val isScreenLoading: Boolean = false,
     val errorMessage: String? = null,
     val movieDetailsTabsUiState: MovieDetailsTabsUiState = MovieDetailsTabsUiState(),
-    val showLoginDialog:Boolean = false,
+    val showLoginDialog: Boolean = false,
     val showRatingDialog: Boolean = false,
     val showAddToListDialog: Boolean = false,
     val selectedRatingMovieId: Long? = null,
@@ -25,7 +29,26 @@ data class MovieDetailsUiState(
     val selectedFavouriteListId: Int? = null,
     val snackBarMessage: String? = null,
     val isSnackBarStatusSuccess: Boolean? = null,
-    )
+    val addToListDialog: AddToListSheetState = AddToListSheetState(),
+    val selectedRatingMediaId: Long? = null,
+    val createNewListDialog: CreateNewListUiState = CreateNewListUiState(),
+    val snackBar: SnackBarUiState = SnackBarUiState(),
+)
+
+@Immutable
+data class SnackBarUiState(
+    val isVisible: Boolean = false,
+    val isOperationSucceeded: Boolean = false,
+    val errorUiState: ErrorUiState = ErrorUiState(),
+    val snackBarStatus: SNACK_BAR_STATUS? = null,
+)
+
+enum class SNACK_BAR_STATUS {
+    ADD_MOVIE_TO_LIST,
+    CREATE_NEW_LIST,
+    LIST_DELETED,
+    LIST_RENAMED,
+}
 
 
 data class MovieDetailsTabsUiState(

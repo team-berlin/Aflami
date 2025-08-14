@@ -1,7 +1,5 @@
 package com.berlin.aflami.navigation
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.Scaffold
@@ -19,7 +17,9 @@ import com.berlin.aflami.navigation.routes.gameResult
 import com.berlin.aflami.navigation.routes.gamesRoute
 import com.berlin.aflami.navigation.routes.guessGame
 import com.berlin.aflami.navigation.routes.homeScreenRoute
+import com.berlin.aflami.navigation.routes.listsDetailsRoute
 import com.berlin.aflami.navigation.routes.listsRoute
+import com.berlin.aflami.navigation.routes.listsScreenRouteWithArgs
 import com.berlin.aflami.navigation.routes.loginRoute
 import com.berlin.aflami.navigation.routes.movieDetailsRoute
 import com.berlin.aflami.navigation.routes.moviesByCategoryRoute
@@ -95,9 +95,9 @@ private fun ShowNavigationBar(
     val currentNavBarScreen = getCurrentNavBarScreen(navController)
     val context = LocalContext.current
 
-    BackHandler(enabled = currentNavBarScreen != null) {
-        (context as? Activity)?.finish()
-    }
+//    BackHandler(enabled = currentNavBarScreen != null) {
+//        (context as? Activity)?.finish()
+//    }
 
     NavBar(
         currentRoute = selectedRoute,
@@ -114,15 +114,18 @@ private fun ShowNavigationBar(
 @Composable
 private fun getCurrentNavBarScreen(navController: NavHostController): NavigationBarDestinations? {
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute: String? = backStackEntry?.destination?.route
-    val currentNavigationBarDestinationsDestination: NavigationBarDestinations? =
-        bottomNavBarDestinationsMap[currentRoute]
-    return currentNavigationBarDestinationsDestination
+    val currentRoute = backStackEntry?.destination?.route
+
+    return bottomNavBarDestinationsMap.entries.firstOrNull { (route, _) ->
+        currentRoute?.startsWith(route!!) == true
+    }?.value
 }
 
 fun NavGraphBuilder.bottomNavigationBarGraph() {
     homeScreenRoute()
     listsRoute()
+    listsScreenRouteWithArgs()
+    listsDetailsRoute()
     profileRoute()
     categoriesRoute()
     gamesRoute()

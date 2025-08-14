@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
@@ -106,6 +107,7 @@ fun CategoriesContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .navigationBarsPadding()
             .background(Theme.color.surface)
     ) {
         TopBar(
@@ -177,10 +179,11 @@ private fun ResultGrid(
     mediaType: MediaType,
 ) {
     LazyVerticalGrid(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
+            .navigationBarsPadding(),
         columns = Adaptive(minSize = 160.dp),
         contentPadding = PaddingValues(
-            start = 16.dp, end = 16.dp, top = 8.dp, bottom = 56.dp
+            start = 16.dp, end = 16.dp, top = 8.dp, bottom = 64.dp
         ),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)

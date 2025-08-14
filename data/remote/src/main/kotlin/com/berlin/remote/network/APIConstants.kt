@@ -77,4 +77,11 @@ object ApiConstants {
     const val RATED_MOVIES = "account/{$ACCOUNT_ID}/rated/movies"
     const val RATED_TV_SHOWS = "account/{$ACCOUNT_ID}/rated/tv"
 
+    const val LIST = "list"
+    const val USER_LISTS = "account/{account_id}/lists"
+    const val LIST_ID = "list_id"
+    const val LIST_LISTID = "list/{list_id}"
+    const val DELETE_MOVIE_FROM_LIST = "list/{list_id}/remove_item"
+    const val ADD_MOVIE_TO_LIST = "list/{list_id}/add_item"
+    const val API_KEY = "api_key"
 }

@@ -105,7 +105,6 @@ fun HomeScreen(
         exit = fadeOut(),
         visible = !homeScreenState.isLoading
     ) {
-
         HomeContent(
             homeScreenState = homeScreenState, homeScreenInteractionListener = viewModel
         )
@@ -145,7 +144,7 @@ private fun onReceiveHomeScreenEffect(
             )
         }
 
-        is HomeScreenEffect.NavigateToTVShowDetailsScreen ->{
+        is HomeScreenEffect.NavigateToTVShowDetailsScreen -> {
             navController.navigate(
                 TVShowDetailsDestination(homeScreenEffect.tvShowId)
             )
@@ -161,7 +160,6 @@ private fun HomeContent(
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
-
 
 
     val appBarAlpha by remember {
@@ -363,6 +361,7 @@ private fun HomeContent(
                 }
             }
         }
+
         AnimatedVisibility(homeScreenState.moodPickerUiState.openMovieDialog) {
             with(homeScreenState.moodPickerUiState.selectedMovie) {
                 MoodPickerDialog(
@@ -382,8 +381,7 @@ private fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appBarBgColor)
-                .statusBarsPadding()
-            , onSearchClicked = {
+                .statusBarsPadding(), onSearchClicked = {
                 homeScreenInteractionListener.onSearchClicked()
             }, containerColor = Color.Unspecified
         )

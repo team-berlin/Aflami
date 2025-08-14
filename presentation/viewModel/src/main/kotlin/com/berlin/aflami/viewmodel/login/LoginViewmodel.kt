@@ -1,22 +1,23 @@
 package com.berlin.aflami.viewmodel.login
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginUseCase
-import usecase.profile.GetUserProfileUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
+import usecase.auth.LoginUseCase
+import usecase.profile.GetUserProfileUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
     val usernameValidationUseCase: GetValidateUsernameUseCase,
     val passwordValidationUseCase: GetValidatePasswordUseCase,
-    val loginUseCase: GetLoginUseCase,
+    val loginUseCase: LoginUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
 ) : BaseViewModel<LoginScreenState, LoginScreenEffect>(LoginScreenState()),
     LoginInteractionListener {
