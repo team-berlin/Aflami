@@ -9,7 +9,7 @@ import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import usecase.favouritelist.DeleteMovieFromUserFavouriteList
+import usecase.favouritelist.DeleteMovieFromUserFavouriteListUseCase
 import usecase.favouritelist.DeleteUserFavouriteListUseCase
 import usecase.favouritelist.GetFavouriteListItemsUseCase
 import javax.inject.Inject
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ListDetailsScreenViewModel @Inject constructor(
     private val getAllFavouriteListItemsUseCase: GetFavouriteListItemsUseCase,
-    private val deleteMovieFromUserFavouriteList: DeleteMovieFromUserFavouriteList,
+    private val deleteMovieFromUserFavouriteListUseCase: DeleteMovieFromUserFavouriteListUseCase,
     private val deleteUserFavouriteListUseCase: DeleteUserFavouriteListUseCase,
     private val favouriteMoviesPagingSourceFactory: FavouriteMoviesPagingSource.Factory,
     favouriteListDetailsArgs: FavouriteListDetailsArgs,
@@ -107,7 +107,7 @@ class ListDetailsScreenViewModel @Inject constructor(
 
     override fun onRemoveMovieClicked(listId: Int, movieId: Long) {
         tryToCall(
-            call = { deleteMovieFromUserFavouriteList(listId = listId, movieId = movieId) },
+            call = { deleteMovieFromUserFavouriteListUseCase(listId = listId, movieId = movieId) },
             onSuccess = {
                 getAllFavoriteListItems(favouriteListId = favouriteListId)
                 ListDetailsScreenEffect.ShowDeleteMovieFromListSucceededSnackBar
