@@ -63,7 +63,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
             UpdateLocale(profileState.selectedLanguage)
-            AflamiTheme(isDarkTheme = isDarkTheme) {
+            AflamiTheme(
+                isDarkTheme = isDarkTheme,
+                selectedLanguage = profileState.selectedLanguage
+            ) {
                 val mainState by mainActivityViewModel.state.collectAsState()
 
                 if (!mainState.isLoading) {
