@@ -242,7 +242,7 @@ fun NoItemsFound() {
         modifier = Modifier.fillMaxSize(),
     ) {
         Image(
-            painter = painterResource(com.berlin.designsystem.R.drawable.no_items_found),
+            painter = painterResource(R.drawable.no_items_found),
             contentDescription = stringResource(R.string.no_items_found),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
