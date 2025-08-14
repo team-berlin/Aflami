@@ -55,200 +55,189 @@ class QuizGameViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            handleGameType(gameType)
+//            handleGameType(gameType)
+            mediaGame()
+
         }
-    }
-
-    private fun handleCharacterGame() {
-        tryToCall(
-            call = { castGame() },
-            onSuccess = { getMediaByCharacter() },
-            onError = ::updateScreenStateToError
-        )
-    }
-
-    private fun handlePosterGame() {
-        tryToCall(
-            call = { mediaGame() },
-            onSuccess = { getMediaByPoster() },
-            onError = ::updateScreenStateToError
-        )
-    }
-
-    private fun handleReleaseGame() {
-        tryToCall(
-            call = { mediaGame() },
-            onSuccess = { getMediaByReleaseDate() },
-            onError = ::updateScreenStateToError
-        )
-    }
-
-    private fun handleGenreGame() {
-        tryToCall(
-            call = { genreGame() },
-            onSuccess = { getMediaByGenres() },
-            onError = ::updateScreenStateToError
-        )
     }
 
     private fun handleGameType(gameType: GameType) {
         when (gameType) {
             GameType.CHARACTER -> {
-                handleCharacterGame()
+                castGame()
             }
 
             GameType.POSTER -> {
-                handlePosterGame()
+                mediaGame()
             }
 
             GameType.RELEASE -> {
-                handleReleaseGame()
+                mediaGame()
             }
 
             GameType.GENRE -> {
-                handleGenreGame()
+                genreGame()
             }
         }
 
     }
 
-    private fun getMediaByCharacter() {
-        val mediaItem = state.value.cast.take(numberOfQuestion)
+    private fun getMediaByCharacter(mediCast:List<ActorUiState>) {
 
-        if (mediaItem.isEmpty()) return
-        val questions = mediaItem.map { media ->
-            val wrongOptions = mediaItem.asSequence()
-                .filter { it.mediaId == media.mediaId && it.name != media.name }
-                .map { it.name }
-                .take(3)
-                .toList()
-            val allOptions = (wrongOptions + media.name).shuffled()
-            Question(
-                question = media.poster,
-                options = allOptions,
-                correctAnswer = media.name
-            )
-        }
-        updateState {
-            it.copy(
-                questions = questions,
-                loading = false,
-                type = QuestionType.Image,
-                gameTypeName = gameType,
-                time = timer
-            )
-        }
-        Log.e("questions", questions.toString())
+        tryToCall(
+            call ={
+                mediCast.map { media ->
+                    val wrongOptions = mediCast.asSequence()
+                        .filter { it.mediaId == media.mediaId && it.name != media.name }
+                        .map { it.name }
+                        .take(3)
+                        .toList()
+                    val allOptions = (wrongOptions + media.name).shuffled()
+                    Question(
+                        question = media.poster,
+                        options = allOptions,
+                        correctAnswer = media.name
+                    )
+                }
+            } ,
+            onSuccess = {question->
+                updateState {
+                    it.copy(
+                        questions = question,
+                        loading = false,
+                        type = QuestionType.Image,
+                        gameTypeName = gameType,
+                        time = timer
+                    )
+                }
+            },
+            onError =::updateScreenStateToError ,
+        )
+
     }
 
     //question-> poster
     // answer-> media name
-    private fun getMediaByPoster() {
-        val mediaList = state.value.mediaList
-        if (mediaList.isEmpty()) return
+    private fun getMediaByPoster(mediaList: List<MediaUiState>) {
 
-        val questions = mediaList.map { currentMedia ->
-            val wrongOptions = mediaList.asSequence()
-                .filter { it.id != currentMedia.id }
-                .map { it.title }
-                .shuffled()
-                .take(3)
-                .toList()
+        tryToCall(
+            call = {
+                mediaList.map { currentMedia ->
+                    val wrongOptions = mediaList.asSequence()
+                        .filter { it.id != currentMedia.id }
+                        .map { it.title }
+                        .shuffled()
+                        .take(3)
+                        .toList()
 
-            val allOptions = (wrongOptions + currentMedia.title).shuffled()
+                    val allOptions = (wrongOptions + currentMedia.title).shuffled()
 
-            Question(
-                question = currentMedia.poster,
-                options = allOptions,
-                correctAnswer = currentMedia.title
-            )
-        }
-
-        updateState {
-            it.copy(
-                questions = questions,
-                loading = false,
-                type = QuestionType.Image,
-                gameTypeName = gameType,
-                time = timer
-            )
-        }
+                    Question(
+                        question = currentMedia.poster,
+                        options = allOptions,
+                        correctAnswer = currentMedia.title
+                    )
+                }
+            },
+            onSuccess = {questions->
+                updateState {
+                    it.copy(
+                        questions = questions,
+                        loading = false,
+                        type = QuestionType.Image,
+                        gameTypeName = gameType,
+                        time = timer
+                    )
+                }
+            },
+            onError = ::updateScreenStateToError,
+        )
     }
 
     //question-> media name
     // answer-> release date
-    private fun getMediaByReleaseDate() {
-        val mediaList = state.value.mediaList
-        if (mediaList.isEmpty()) return
+    private fun getMediaByReleaseDate(mediaList: List<MediaUiState>) {
+        tryToCall(
+            call = {
+                mediaList.map { media ->
+                    val correctYear = media.releaseYear
 
-        val questions = mediaList.map { media ->
-            val correctYear = media.releaseYear
+                    val wrongOptions = mediaList
+                        .asSequence()
+                        .map { it.releaseYear }
+                        .filter { it != correctYear }
+                        .distinct()
+                        .shuffled()
+                        .take(3)
+                        .toList()
 
-            val wrongOptions = mediaList
-                .asSequence()
-                .map { it.releaseYear }
-                .filter { it != correctYear }
-                .distinct()
-                .shuffled()
-                .take(3)
-                .toList()
+                    val allOptions = (wrongOptions + correctYear).shuffled()
 
-            val allOptions = (wrongOptions + correctYear).shuffled()
+                    Question(
+                        question = media.title,
+                        options = allOptions,
+                        correctAnswer = correctYear
+                    )
+                }
+            },
+            onSuccess ={questions->
+                updateState {
+                    it.copy(
+                        questions = questions,
+                        loading = false,
+                        type = QuestionType.Text,
+                        gameTypeName = gameType,
+                        time = timer
+                    )
+                }
+            },
+            onError = ::updateScreenStateToError,
+        )
 
-            Question(
-                question = media.title,
-                options = allOptions,
-                correctAnswer = correctYear
-            )
-        }
 
-        updateState {
-            it.copy(
-                questions = questions,
-                loading = false,
-                type = QuestionType.Text,
-                gameTypeName = gameType,
-                time = timer
-            )
-        }
     }
 
 
     //question-> media name
     // answer -> genre
-    private fun getMediaByGenres() {
+    private fun getMediaByGenres(genreItems: List<GenreUiState>) {
         val mediaList = state.value.mediaList
-        val genreItems = state.value.genreList
 
-        if (mediaList.isEmpty() || genreItems.isEmpty()) return
-        val questions = mediaList.map { media ->
-            val mediaGenres = media.genre
-                .mapNotNull { id -> genreItems.find { it.id == id }?.name }
+        tryToCall(
+            call = {
+                mediaList.map { media ->
+                    val mediaGenres = media.genre
+                        .mapNotNull { id -> genreItems.find { it.id == id }?.name }
 
-            if (mediaGenres.isEmpty()) return
-            val correctAnswer = mediaGenres.random()
-            val wrongOptions = genreItems.asSequence()
-                .filter { it.name !in mediaGenres }
-                .map { it.name }
-                .shuffled()
-                .take(3)
-                .toList()
-            val allOptions = (wrongOptions + correctAnswer).shuffled()
-            Question(
-                question = media.title,
-                options = allOptions,
-                correctAnswer = correctAnswer
-            )
-        }
-        updateState {
-            it.copy(
-                questions = questions,
-                loading = false,
-                type = QuestionType.Text,
-                gameTypeName = gameType,
-                time = timer
-            )
-        }
+                    val correctAnswer = mediaGenres.random()
+                    val wrongOptions = genreItems.asSequence()
+                        .filter { it.name !in mediaGenres }
+                        .map { it.name }
+                        .shuffled()
+                        .take(3)
+                        .toList()
+                    val allOptions = (wrongOptions + correctAnswer).shuffled()
+                    Question(
+                        question = media.title,
+                        options = allOptions,
+                        correctAnswer = correctAnswer
+                    )
+                }
+
+            },
+            onSuccess = {questions->
+                updateState {
+                    it.copy(
+                        questions = questions,
+                        loading = false,
+                        type = QuestionType.Text,
+                        gameTypeName = gameType,
+                        time = timer
+                    )
+                }
+            },
+            onError =::updateScreenStateToError,
+        )
     }
 
     private suspend fun fetchMovies(): List<MediaUiState> =
@@ -275,9 +264,10 @@ class QuizGameViewModel @Inject constructor(
                 updateState {
                     it.copy(
                         mediaList = mediaList,
-                        loading = false
                     )
                 }
+//                getMediaByPoster(mediaList)
+                getMediaByReleaseDate(mediaList)
             },
             onError = ::updateScreenStateToError,
         )
@@ -307,9 +297,9 @@ class QuizGameViewModel @Inject constructor(
                 updateState {
                     it.copy(
                         genreList = genreList,
-                        loading = false
                     )
                 }
+                getMediaByGenres(genreList)
             },
             onError = ::updateScreenStateToError,
         )
@@ -372,9 +362,9 @@ class QuizGameViewModel @Inject constructor(
                 updateState {
                     it.copy(
                         cast = castList,
-                        loading = false
                     )
                 }
+                getMediaByCharacter(castList)
             },
             onError = ::updateScreenStateToError
         )
@@ -399,7 +389,6 @@ class QuizGameViewModel @Inject constructor(
                     if (it.currentQuestionIndex < it.questions.size - 1) it.currentQuestionIndex + 1 else it.currentQuestionIndex,
                 selectedAnswer = "",
                 imageBlur = 8f,
-                time = timer,
                 totalRemainingTime = it.totalRemainingTime + (it.time - it.remainingTime)
             )
         }
