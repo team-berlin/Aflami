@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.list
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -102,14 +103,17 @@ class ListScreenViewModel @Inject constructor(
 
     private fun updateScreenStateWithUserFavouriteLists(userFavouriteLists: Flow<PagingData<FavouriteListItemUiState>>) {
         updateState { screenState ->
+            Log.d("Khairy", "Success}")
+
             screenState.copy(
-                favouriteList = userFavouriteLists, isScreenLoading = false
+                favouriteList = userFavouriteLists, isScreenLoading = false, errorMessage = null
             )
         }
     }
 
     private fun updateScreenStateWithErrorMessage(errorUiState: ErrorUiState) {
         updateState { screenState ->
+            Log.d("Khairy", "error message in viewModel = ${errorUiState.message}")
             screenState.copy(
                 errorMessage = errorUiState.message, isScreenLoading = false
             )
