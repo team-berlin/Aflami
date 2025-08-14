@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.ui.R
 
 @Composable
 fun LogoutDialog(
@@ -90,7 +91,7 @@ fun LogoutDialog(
                     modifier = Modifier.padding(horizontal = 12.dp)
                 ) {
                     Image(
-                        painter = painterResource(com.berlin.ui.R.drawable.yellow_sign),
+                        painter = painterResource(R.drawable.lose_game),
                         contentDescription = null,
                         modifier = Modifier
                             .widthIn(max = 78.dp),
