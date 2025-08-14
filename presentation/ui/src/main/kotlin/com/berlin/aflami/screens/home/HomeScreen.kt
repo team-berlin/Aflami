@@ -75,8 +75,7 @@ fun HomeScreen(
         viewModel.effect.collect { homeScreenEffect ->
             onReceiveHomeScreenEffect(navController, homeScreenEffect)
         }
-
-//        viewModel.getContinueWatchingMedia()
+        viewModel.getContinueWatchingMedia()
     }
 
     AnimatedVisibility(
