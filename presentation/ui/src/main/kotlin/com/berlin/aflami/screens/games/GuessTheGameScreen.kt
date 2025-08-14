@@ -274,6 +274,7 @@ fun GuessTheGameContent(
                     .fillMaxWidth(),
                 onClick = {
                     if(state.currentQuestionIndex<state.questions.size-1) listener.nextQuestionClicked()
+                    else listener.navigateToResult()
                 },
                 gradientColor = primaryGredient
             ) {

@@ -61,20 +61,18 @@ class QuizGameViewModel @Inject constructor(
         collectUserProfile()
         viewModelScope.launch {
             mediaGame()
-//            when (gameType.uppercase()) {
-//                GameType.CHARACTER.name -> {
-//                    getCast()
-//                    getMediaByCharacter()
-//                }
-//                GameType.POSTER.name -> getMediaByPoster()
-//                GameType.RELEASE.name -> getMediaByReleaseDate()
-//                GameType.GENRE.name -> {
-//                    genreGame()
-//                    getMediaByGenres()
-//                }
-//
-//                else -> getMediaByCharacter()
-//            }
+            when (gameType) {
+                GameType.CHARACTER-> {
+                    getCast()
+                    getMediaByCharacter()
+                }
+                GameType.POSTER -> getMediaByPoster()
+                GameType.RELEASE-> getMediaByReleaseDate()
+                GameType.GENRE -> {
+                    genreGame()
+                    getMediaByGenres()
+                }
+            }
         }
     }
 

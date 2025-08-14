@@ -142,7 +142,7 @@
     <string name="game_guess_character_title">خمن الشخصية</string>
     <string name="game_guess_character_desc">هل تستطيع معرفة من هي هذه الشخصية؟</string>
 
-    <string name="game_guess_poster_title">خمن الفيلم من الملصق</string>
+    <string name="game_guess_poster_title">خمن من الملصق</string>
     <string name="game_guess_poster_desc">طابق الملصق مع العنوان الصحيح!</string>
 
     <string name="game_release_title">متى تم إصداره؟</string>
