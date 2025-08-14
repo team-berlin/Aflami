@@ -55,8 +55,7 @@ class QuizGameViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-//            handleGameType(gameType)
-            mediaGame()
+            handleGameType(gameType)
 
         }
     }
