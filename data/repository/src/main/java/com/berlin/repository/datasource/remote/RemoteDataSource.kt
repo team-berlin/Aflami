@@ -52,6 +52,8 @@ interface RemoteDataSource {
     suspend fun postRateTvShow(tvId: Int, rating: SubmitRatingRequestDto): SubmitRatingResponse
     suspend fun getRatedMovies(page: Int): BaseResponse<RatedMediaDto>
     suspend fun getRatedTVShows(page: Int): BaseResponse<RatedMediaDto>
+    suspend fun getMovieGame(): BaseResponse<MovieDetailsDto>
+    suspend fun getTVShow():BaseResponse<TVShowDetailsDto>
 
     suspend fun getUserFavouriteLists(page: Int): List<FavouriteListDto>
     suspend fun getUserFavouriteListItems(

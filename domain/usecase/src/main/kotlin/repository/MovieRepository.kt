@@ -28,4 +28,9 @@ interface MovieRepository {
     suspend fun clearMovieSearchHistory()
     suspend fun getMoviesByCategory(genreId: Long, page: Int): List<Movie>
     //endregion
+
+    //regin Game
+    suspend fun getMovieGame():List<Movie>
+    //endregion
+
 }

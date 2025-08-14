@@ -13,7 +13,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.berlin.aflami.navigation.routes.castDetailsScreen
 import com.berlin.aflami.navigation.routes.categoriesRoute
+import com.berlin.aflami.navigation.routes.gameResult
 import com.berlin.aflami.navigation.routes.gamesRoute
+import com.berlin.aflami.navigation.routes.guessGame
 import com.berlin.aflami.navigation.routes.homeScreenRoute
 import com.berlin.aflami.navigation.routes.listsDetailsRoute
 import com.berlin.aflami.navigation.routes.listsRoute
@@ -129,6 +131,8 @@ fun NavGraphBuilder.bottomNavigationBarGraph() {
     gamesRoute()
     watchHistory()
     myRating()
+    gameResult()
+    guessGame()
 }
 
 fun NavGraphBuilder.searchNavigationGraph() {

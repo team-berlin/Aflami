@@ -55,22 +55,25 @@ fun CharacterCard(
     modifier: Modifier = Modifier,
     imageRes: Painter? = null,
     imageUrl: String? = null,
-    blurAmount: Float,
+    blurAmount: Float?=null,
     onHintClicked: () -> Unit,
     showHintBar: Boolean = true,
     hintText: String = "hint? 10 Pts.",
     imageHeight: Dp = 180.dp,
     imageWidth: Dp? = null,
+    guessedText: String? = null,
     hintSize: TextUnit = Theme.textStyle.label.small.fontSize,
     hintIcon: Int? = null,
     hintTextColor: Color = Theme.color.statusColors.yellowAccent,
     backgroundColor: Color = Theme.color.surface,
     cardElevation: CardElevation = CardDefaults.cardElevation(0.dp),
     cornerRadius: Dp = 24.dp
-){
+) {
     val clampedTextSize = hintSize.value.coerceIn(10f, 24f).sp
-    val imageCornerRadius = if(showHintBar) RoundedCornerShape(topEnd = cornerRadius,
-        topStart = cornerRadius) else RoundedCornerShape(cornerRadius)
+    val imageCornerRadius = if (showHintBar) RoundedCornerShape(
+        topEnd = cornerRadius,
+        topStart = cornerRadius
+    ) else RoundedCornerShape(cornerRadius)
     val clampedImageHeight = imageHeight.coerceIn(120.dp, 320.dp)
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
@@ -80,7 +83,7 @@ fun CharacterCard(
         shape = RoundedCornerShape(cornerRadius),
         elevation = cardElevation,
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
-    ){
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -91,38 +94,50 @@ fun CharacterCard(
                         if (imageWidth != null) Modifier.width(imageWidth)
                         else Modifier.fillMaxWidth()
                     )
-                    .blur((blurAmount * 0.2f).dp),
+                    .blur(((blurAmount ?: (0 * 0.2f))).dp),
                 contentAlignment = Alignment.Center
             ) {
                 if (imageUrl != null) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageUrl)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = stringResource(R.string.character_image),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp)
-                            .clip(imageCornerRadius)
-                            .blur(blurAmount.dp)
-                    )
-                } else if (imageRes != null){
-                    Image(
-                        painter = imageRes,
-                        contentDescription = stringResource(R.string.character_image),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp)
-                            .clip(imageCornerRadius)
-                            .blur(blurAmount.dp)
-                    )
-            }
+                    if (blurAmount != null) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imageUrl)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = stringResource(R.string.character_image),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp)
+                                .clip(imageCornerRadius)
+                                .blur(blurAmount.dp)
+                        )
+                    }
+                } else if (imageRes != null) {
+                    if (blurAmount != null) {
+                        Image(
+                            painter = imageRes,
+                            contentDescription = stringResource(R.string.character_image),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp)
+                                .clip(imageCornerRadius)
+                                .blur(blurAmount.dp)
+                        )
+                    }
+                } else {
+                    guessedText?.let {
+                        Text(
+                            text = guessedText,
+                            style = Theme.textStyle.title.large,
+                            color = Theme.color.textColors.title
+                        )
+                    }
+                }
             }
 
-            if (showHintBar){
+            if (showHintBar) {
                 Box(
                     modifier = Modifier
                         .wrapContentHeight()
@@ -135,7 +150,8 @@ fun CharacterCard(
                 ) {
                     HorizontalDiagonalRepeatResponsive(
                         icon = painterResource(id = R.drawable.diagonal_stripe),
-                        placeHolderWidth = screenWidth)
+                        placeHolderWidth = screenWidth
+                    )
                     Row(
                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -158,7 +174,7 @@ fun CharacterCard(
                         }
                     }
                 }
-        }
+            }
         }
     }
 }
@@ -168,7 +184,7 @@ fun HorizontalDiagonalRepeatResponsive(
     modifier: Modifier = Modifier,
     color: Color = Theme.color.primary,
     icon: Painter,
-    placeHolderWidth:Dp
+    placeHolderWidth: Dp
 ) {
     val itemCount = placeHolderWidth.value.toInt()
 
@@ -183,11 +199,11 @@ fun HorizontalDiagonalRepeatResponsive(
                 painter = icon,
                 contentDescription = null,
                 tint = color,
-                modifier= Modifier
+                modifier = Modifier
                     .height(32.dp)
                     .width(30.dp),
 
-            )
+                )
         }
     }
 }

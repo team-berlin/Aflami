@@ -319,4 +319,13 @@ class RetrofitRemoteDataSource @Inject constructor(
             apiService.getRatedTVShows(accountId.toString(), sessionId, page)
         }
     }
+
+    override suspend fun getMovieGame(): BaseResponse<MovieDetailsDto> {
+       return wrapApiResponse { apiService.getMovieGame() }
+    }
+
+    override suspend fun getTVShow(): BaseResponse<TVShowDetailsDto> {
+        return wrapApiResponse { apiService.getTVShowGame() }
+    }
+
 }

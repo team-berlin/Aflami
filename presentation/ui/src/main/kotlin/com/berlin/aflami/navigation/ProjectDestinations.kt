@@ -1,5 +1,6 @@
 package com.berlin.aflami.navigation
 
+import com.berlin.aflami.viewmodel.game.GameType
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import kotlinx.serialization.Serializable
 
@@ -76,6 +77,24 @@ object SearchByActorDestination
 
 @Serializable
 object WatchHistoryDestination
+
+@Serializable
+class GuessGameDestination(
+    val gameType: GameType,
+    val numberOfQuestion: Int,
+    val numberOfPoint: Int,
+    val time: Int
+)
+
+@Serializable
+class GameResultDestination(
+    val totalTime:Int,
+    val gameType :GameType,
+    val numberOfQuestion :Int,
+    val numberOfPoints :Int,
+    val totalPoint :Int,
+    val time:Int
+)
 
 @Serializable
 object MyRatingDestination

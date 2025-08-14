@@ -113,6 +113,12 @@ class TVShowRepositoryImpl @Inject constructor(
        return remoteDataSource.getTvShowsByCategory(genreId, page).results?.map { it.toDomain() }.orEmpty()
     }
 
+    override suspend fun getTVShowGame(): List<TVShow> {
+       return remoteDataSource.getTVShow().results?.map {
+            it.toDomain()
+        }?: emptyList()
+    }
+
     private fun isExpiredOrEmpty(list: List<TVShowHomeEntity>): Boolean {
         return list.isEmpty() || list.any {
             System.currentTimeMillis() - it.addedAt > Constants.HOME_CACHE_TIMEOUT_MILLIS
