@@ -3,8 +3,10 @@ package usecase.auth
 import repository.AuthenticationRepository
 import javax.inject.Inject
 
-class GetLogoutUseCase @Inject constructor(
+class GetLoginStatusUseCase @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ) {
-    suspend operator fun invoke() = authenticationRepository.logout()
+    suspend operator fun invoke(): Boolean {
+        return authenticationRepository.isLoggedIn()
+    }
 }
