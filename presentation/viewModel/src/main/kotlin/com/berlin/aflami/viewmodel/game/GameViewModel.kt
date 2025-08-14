@@ -47,7 +47,7 @@ class GameViewModel @Inject constructor(
         viewModelScope.launch { loadPointsFor(id) }
     }
 
-    private suspend fun loadPointsFor(id: Int) {
+    private fun loadPointsFor(id: Int) {
         tryToCall(
             call = { getPointsUseCase(id) },
             onSuccess = { points -> updateState { it.copy(points = points, gameLevel = levels) } },

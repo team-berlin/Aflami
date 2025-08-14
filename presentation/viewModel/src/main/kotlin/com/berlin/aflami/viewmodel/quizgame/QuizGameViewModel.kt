@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import usecase.game.AddPointsUseCase
+import usecase.game.GetPointsUseCase
 import usecase.movie.GetMovieCastUseCase
 import usecase.movie.GetMovieGameUseCase
 import usecase.movie.GetMovieGenresUseCase
@@ -33,6 +34,7 @@ class QuizGameViewModel @Inject constructor(
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
     private val savePoint: AddPointsUseCase,
+    private val getPointsUseCase: GetPointsUseCase,
     private val observeUserProfileUseCase: ObserveUserProfileUseCase,
     guessGameScreenArgs: GuessGameScreenArgs
 ) : BaseViewModel<QuizGameUiState, QuizGameEffect>(
@@ -401,9 +403,11 @@ class QuizGameViewModel @Inject constructor(
             observeUserProfileUseCase()
                 .collect { user ->
                     if (user != null) {
+                        val currentPoints = getPointsUseCase(user.id)
+                        val updatedPoints = currentPoints + state.value.totalPoint
                         savePoint(
                             user.id,
-                            points = state.value.totalPoint,
+                            points = updatedPoints
                         )
                     }
                 }
