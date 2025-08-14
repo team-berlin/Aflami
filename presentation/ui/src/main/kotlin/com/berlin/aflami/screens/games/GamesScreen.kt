@@ -163,7 +163,8 @@ fun GamesContent(
                     title = card.title,
                     description = card.description,
                     points = card.points,
-                    isLocked = index >= 2 &&gameState.points<400,
+                    isLocked = false,
+//                    isLocked = index >= 2 &&gameState.points<400,
                     onClick = {
                         card.gameType?.let { gameInteractionListener.onSelectGameType(it) }
                         gameInteractionListener.onShowLevelDialog()

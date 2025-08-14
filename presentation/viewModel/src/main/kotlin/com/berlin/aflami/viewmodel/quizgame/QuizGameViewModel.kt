@@ -2,7 +2,6 @@ package com.berlin.aflami.viewmodel.quizgame
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.game.GameType
@@ -15,12 +14,11 @@ import com.berlin.aflami.viewmodel.shareduistate.toGenreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatusUseCase
 import usecase.game.AddPointsUseCase
+import usecase.game.UpdatePointsUseCase
 import usecase.movie.GetMovieCastUseCase
 import usecase.movie.GetMovieGameUseCase
 import usecase.movie.GetMovieGenresUseCase
-import usecase.profile.GetUserProfileUseCase
 import usecase.profile.ObserveUserProfileUseCase
 import usecase.tvshow.GetTVShowCastUseCase
 import usecase.tvshow.GetTVShowGameUseCase
@@ -35,8 +33,8 @@ class QuizGameViewModel @Inject constructor(
     private val getTVGenresUseCase: GetTVShowGenresUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
-    private val savePoint: AddPointsUseCase,
-    private val observeUserProfileUseCase:ObserveUserProfileUseCase,
+    private val savePoint:AddPointsUseCase,
+    private val observeUserProfileUseCase: ObserveUserProfileUseCase,
     guessGameScreenArgs: GuessGameScreenArgs
 ) : BaseViewModel<QuizGameUiState, QuizGameEffect>(
     QuizGameUiState()
@@ -55,25 +53,25 @@ class QuizGameViewModel @Inject constructor(
     init {
         updateState {
             it.copy(
-                numberOfPoint=numberOfPoints
+                numberOfPoint = numberOfPoints
             )
         }
-        collectUserProfile()
-        viewModelScope.launch {
+//        viewModelScope.launch {
             mediaGame()
-            when (gameType) {
-                GameType.CHARACTER-> {
-                    getCast()
-                    getMediaByCharacter()
-                }
-                GameType.POSTER -> getMediaByPoster()
-                GameType.RELEASE-> getMediaByReleaseDate()
-                GameType.GENRE -> {
-                    genreGame()
-                    getMediaByGenres()
-                }
-            }
-        }
+//            when (gameType) {
+//                GameType.CHARACTER -> {
+//                    getCast()
+//                    getMediaByCharacter()
+//                }
+//
+//                GameType.POSTER -> getMediaByPoster()
+//                GameType.RELEASE -> getMediaByReleaseDate()
+//                GameType.GENRE -> {
+//                    genreGame()
+//                    getMediaByGenres()
+//                }
+//            }
+//        }
     }
 
     private fun getMediaByCharacter() {
@@ -181,8 +179,8 @@ class QuizGameViewModel @Inject constructor(
     private fun getMediaByGenres() {
         val mediaItems = mediaList.value
         val genreItems = mediaGenre.value
-        Log.e("o",mediaItems.size.toString())
-        Log.e("t",genreItems.size.toString())
+        Log.e("o", mediaItems.size.toString())
+        Log.e("t", genreItems.size.toString())
 
         if (mediaItems.isEmpty() || genreItems.isEmpty()) return
         val questions = mediaItems.map { media ->
@@ -225,7 +223,7 @@ class QuizGameViewModel @Inject constructor(
                 val tvShowList = tvShow.map { it.toMediaUiState() }
                 movieIds.value = movieList.map { it.id }.shuffled()
                 tvShowIds.value = tvShowList.map { it.id }.shuffled()
-                mediaList.value = (movieList+tvShowList).shuffled().take(numberOfQuestion)
+                mediaList.value = (movieList + tvShowList).shuffled().take(numberOfQuestion)
                 getMediaByPoster()
             },
             onSuccess = {
@@ -248,8 +246,8 @@ class QuizGameViewModel @Inject constructor(
                 val tvShowGenre = getTVGenresUseCase()
                 val movieGenreList = movieGenre.map { it.toGenreUiState() }
                 val tvShowGenreList = tvShowGenre.map { it.toGenreUiState() }
-                Log.e("movieGenreList",movieGenreList.size.toString())
-                Log.e("tvShowGenreList",tvShowGenreList.size.toString())
+                Log.e("movieGenreList", movieGenreList.size.toString())
+                Log.e("tvShowGenreList", tvShowGenreList.size.toString())
 
                 mediaGenre.value = (movieGenreList + tvShowGenreList)
             },
@@ -260,9 +258,10 @@ class QuizGameViewModel @Inject constructor(
                     )
                 }
             },
-            onError =::updateScreenStateToError,
+            onError = ::updateScreenStateToError,
         )
     }
+
     private suspend fun getCast() {
         updateScreenStateToLoading()
         try {
@@ -272,7 +271,7 @@ class QuizGameViewModel @Inject constructor(
             var movieIndex = 0
             var tvShowIndex = 0
 
-            while (accumulatedCasts.size < 20 &&
+            while (accumulatedCasts.size < numberOfQuestion &&
                 (movieIndex < movieIds.value.size || tvShowIndex < tvShowIds.value.size)
             ) {
                 if (movieIndex < movieIds.value.size) {
@@ -285,7 +284,7 @@ class QuizGameViewModel @Inject constructor(
                     accumulatedCasts.addAll(movieCast)
                     movieIndex++
                 }
-                if (tvShowIndex < tvShowIds.value.size && accumulatedCasts.size < 20) {
+                if (tvShowIndex < tvShowIds.value.size && accumulatedCasts.size < numberOfQuestion) {
                     val tvShowCast = getTVShowCastUseCase(tvShowIds.value[tvShowIndex])
                         .map { it.toActorUiState() }
                         .filter { actor ->
@@ -313,14 +312,14 @@ class QuizGameViewModel @Inject constructor(
             )
         }
     }
+
     override fun nextQuestionClicked() {
         updateState {
             it.copy(
                 currentQuestionIndex =
-                    if (it.currentQuestionIndex < it.questions.size) it.currentQuestionIndex + 1 else it.currentQuestionIndex,
+                    if (it.currentQuestionIndex < it.questions.size-1) it.currentQuestionIndex + 1 else it.currentQuestionIndex,
                 selectedAnswer = "",
                 imageBlur = 8f,
-                numberOfPoint = 0
             )
         }
     }
@@ -334,23 +333,26 @@ class QuizGameViewModel @Inject constructor(
                 state.copy(
                     selectedAnswer = answer,
                     isAnswerCorrect = isCorrect,
-                    totalPoint = if (isCorrect) state.totalPoint + numberOfPoints else  state.totalPoint,
+                    totalPoint = if (isCorrect) state.totalPoint + numberOfPoints else state.totalPoint,
                     imageBlur = if (isCorrect) 0f else state.imageBlur,
                 )
             }
         }
     }
+
     override fun hintClicked() {
         updateState { state ->
             if (state.totalPoint >= 10) {
                 when (state.type) {
                     QuestionType.Image -> state.copy(
                         totalPoint = (state.totalPoint - 10).coerceAtLeast(0),
-                        imageBlur = (state.imageBlur - 3f).coerceAtLeast(0f)
+                        imageBlur = (state.imageBlur - 3f).coerceAtLeast(0f),
                     )
+
                     QuestionType.Text -> {
                         val currentQuestion = state.questions[state.currentQuestionIndex]
-                        val incorrectOptions = currentQuestion.options.filter { it != currentQuestion.correctAnswer }
+                        val incorrectOptions =
+                            currentQuestion.options.filter { it != currentQuestion.correctAnswer }
                         val optionToRemove = incorrectOptions.randomOrNull()
                         val updatedOptions = if (optionToRemove != null) {
                             currentQuestion.options.filter { it != optionToRemove }
@@ -386,21 +388,20 @@ class QuizGameViewModel @Inject constructor(
 
     override fun navigateToResult() {
         sendNewEffect(QuizGameEffect.NavigateToResult)
-    }
 
-    private fun collectUserProfile() {
         viewModelScope.launch {
             observeUserProfileUseCase()
                 .collect { user ->
                     if (user != null) {
                         savePoint(
                             user.id,
-                            points =state.value.totalPoint ,
+                            points = state.value.totalPoint,
                         )
                     }
                 }
         }
     }
+
 
 
 }
