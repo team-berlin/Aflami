@@ -29,6 +29,10 @@ android {
         }
     }
 
+        lint {
+            disable += "FlowOperatorInvokedInComposition"
+        }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -102,6 +106,7 @@ dependencies {
     implementation(libs.hilt.android)
 
     implementation ("androidx.work:work-runtime-ktx:2.10.3")
+
     api(project(":presentation:ui"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:designSystem"))

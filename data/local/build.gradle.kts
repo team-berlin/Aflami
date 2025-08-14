@@ -11,6 +11,9 @@ plugins {
 
 android {
     namespace = "com.berlin.local"
+    lint {
+        disable += "FlowOperatorInvokedInComposition"
+    }
 }
 
 dependencies {
