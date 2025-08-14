@@ -7,5 +7,4 @@ interface QuizGameInteractionListener {
     fun closeGameClicked()
     fun navigateToResult()
     fun onDismissLevelDialog()
-    fun updateRemainingTime(remainingTime:Int)
 }
