@@ -94,7 +94,7 @@ fun GuessTheGameScreen(
 
     LaunchedEffect(state.selectedAnswer.isNotBlank()) {
             showScore = true
-            delay(3000)
+            delay(500)
             showScore = false
     }
     AnimatedVisibility(
@@ -181,8 +181,15 @@ fun GuessTheGameContent(
                     }
                 },
                 trailingIcon = {
-                    CountdownCircularProgress(totalTimePerSecond =state.time){remainingTime->
-                        listener.updateRemainingTime(remainingTime)                    }
+                    CountdownCircularProgress(
+                        totalTimePerSecond = state.time,
+                        onTimeChanged = {remainingTime->
+                            listener.updateRemainingTime(remainingTime)
+                        },
+                        onFinishedTime = {
+                            listener.nextQuestionClicked()
+                        }
+                    )
                 })
             Indicator(
                 modifier = Modifier
@@ -200,45 +207,42 @@ fun GuessTheGameContent(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            AnimatedVisibility(
-                visible = showScore,
-                enter = fadeIn(),
-                exit = fadeOut(),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+            Box(
+                contentAlignment = Alignment.Center
             ) {
-                Score(
-                    score = "${state.numberOfPoint}",
-                    scoreColor = if(state.isAnswerCorrect == true)
-                        Theme.color.statusColors.greenAccent
-                    else
-                        Theme.color.statusColors.redAccent,
-                    backgroundColor = if(state.isAnswerCorrect == true)
-                        Theme.color.statusColors.greenVariant
-                    else
-                        Theme.color.statusColors.redVariant
-                )
-            }
-
-            if(state.type==QuestionType.Image) {
-                CharacterCard(
-                    modifier = Modifier.padding(top = 4.dp),
-                    imageUrl = state.questions[state.currentQuestionIndex].question,
-                    blurAmount = state.imageBlur,
-                    onHintClicked = { listener.hintClicked()},
-                    showHintBar = true,
-                    hintText = "hint? 10 Pts.",
-                    hintIcon = com.berlin.designsystem.R.drawable.hint_star,
-                )
-            }
-            else{
-                CharacterCard(
-                    modifier = Modifier.padding(top = 4.dp),
-                    guessedText = state.questions[state.currentQuestionIndex].question,
-                    onHintClicked = {listener.hintClicked()},
-                    showHintBar = true,
-                    hintText = "hint? 10 Pts.",
-                    hintIcon = com.berlin.designsystem.R.drawable.hint_star,
-                )
+                if (state.type == QuestionType.Image) {
+                    CharacterCard(
+                        modifier = Modifier.padding(top = 4.dp),
+                        imageUrl = state.questions[state.currentQuestionIndex].question,
+                        blurAmount = state.imageBlur,
+                        onHintClicked = { listener.hintClicked() },
+                        showHintBar = true,
+                        hintText = "hint? 10 Pts.",
+                        hintIcon = com.berlin.designsystem.R.drawable.hint_star,
+                    )
+                } else {
+                    CharacterCard(
+                        modifier = Modifier.padding(top = 4.dp),
+                        guessedText = state.questions[state.currentQuestionIndex].question,
+                        onHintClicked = { listener.hintClicked() },
+                        showHintBar = true,
+                        hintText = "hint? 10 Pts.",
+                        hintIcon = com.berlin.designsystem.R.drawable.hint_star,
+                    )
+                }
+                if(showScore&&state.numberOfPoint>0){
+                    Score(
+                        score = "${state.numberOfPoint}",
+                        scoreColor = if (state.isAnswerCorrect == true)
+                            Theme.color.statusColors.greenAccent
+                        else
+                            Theme.color.statusColors.redAccent,
+                        backgroundColor = if (state.isAnswerCorrect == true)
+                            Theme.color.statusColors.greenVariant
+                        else
+                            Theme.color.statusColors.redVariant
+                    )
+                }
             }
 
             if (state.showDialog) {

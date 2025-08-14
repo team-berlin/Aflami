@@ -57,22 +57,22 @@ class QuizGameViewModel @Inject constructor(
                 numberOfPoint = numberOfPoints
             )
         }
-//        viewModelScope.launch {
+        viewModelScope.launch {
         mediaGame()
-//            when (gameType) {
-//                GameType.CHARACTER -> {
-//                    getCast()
-//                    getMediaByCharacter()
-//                }
-//
-//                GameType.POSTER -> getMediaByPoster()
-//                GameType.RELEASE -> getMediaByReleaseDate()
-//                GameType.GENRE -> {
-//                    genreGame()
-//                    getMediaByGenres()
-//                }
-//            }
-//        }
+            when (gameType) {
+                GameType.CHARACTER -> {
+                    getCast()
+                    getMediaByCharacter()
+                }
+
+                GameType.POSTER -> getMediaByPoster()
+                GameType.RELEASE -> getMediaByReleaseDate()
+                GameType.GENRE -> {
+                    genreGame()
+                    getMediaByGenres()
+                }
+            }
+        }
     }
 
     private fun getMediaByCharacter() {
@@ -321,6 +321,7 @@ class QuizGameViewModel @Inject constructor(
                     if (it.currentQuestionIndex < it.questions.size - 1) it.currentQuestionIndex + 1 else it.currentQuestionIndex,
                 selectedAnswer = "",
                 imageBlur = 8f,
+                numberOfPoint = 0,
                 totalRemainingTime = it.totalRemainingTime + (it.time - it.remainingTime)
             )
         }
