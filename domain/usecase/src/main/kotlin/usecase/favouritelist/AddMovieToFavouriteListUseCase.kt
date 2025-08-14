@@ -1,8 +1,9 @@
 package usecase.favouritelist
 
 import repository.UserFavouriteListRepository
+import javax.inject.Inject
 
-class AddMovieToFavouriteListUseCase(
+class AddMovieToFavouriteListUseCase @Inject constructor(
     private val userFavouriteListRepository: UserFavouriteListRepository,
 ) {
     suspend operator fun invoke(movieId: Long, listId: Int) =
