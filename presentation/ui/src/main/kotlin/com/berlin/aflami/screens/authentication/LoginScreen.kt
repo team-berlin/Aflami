@@ -1,6 +1,7 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -117,6 +119,9 @@ fun LoginScreen(
 fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) {
     Box(
         modifier = Modifier
+            .fillMaxSize(),
+    ) { Box(
+        modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
             .background(
@@ -156,14 +161,17 @@ fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) 
                 onCreateAccountClicked = listener::onCreateAccountClicked
             )
         }
-        AnimatedSnackBar(
-            message = stringResource(id = R.string.login_error_message),
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(alignment = Alignment.TopCenter),
-            isSnackBarVisible = uiState.isError
-        )
+
     }
+    AnimatedSnackBar(
+        message = stringResource(id = R.string.login_error_message),
+        modifier = Modifier
+            .align(Alignment.TopCenter)
+            .statusBarsPadding()
+        ,
+        isSnackBarVisible = uiState.isError
+    )
+}
 }
 
 @Composable
@@ -331,6 +339,7 @@ private fun AnimatedSnackBar(
     isSnackBarVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
+    Log.d("WOWTEST", "AnimatedSnackBar: $isSnackBarVisible")
     AnimatedVisibility(
         visible = isSnackBarVisible, enter = slideInVertically(
             initialOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
@@ -344,11 +353,14 @@ private fun AnimatedSnackBar(
             )
         ) + fadeOut()
     ) {
+        Log.d("WOWTEST", "Anioamtedvisibalityscioe: $isSnackBarVisible")
+
         SnackBar(
-            modifier = modifier,
+            isVisible = isSnackBarVisible,
             status = SnackBarStatus.ERROR,
             text = message,
-            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error)
+            modifier=modifier,
+            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
         )
     }
 }
