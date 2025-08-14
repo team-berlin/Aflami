@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.home
 
+import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PAGE_SIZE
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -14,6 +15,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import usecase.movie.ContinueWatchingMovieUseCase
 import usecase.movie.GetMovieGenresUseCase
 import usecase.movie.GetMoviesByMoodUseCase
@@ -38,18 +40,33 @@ class HomeScreenViewModel @Inject constructor(
     private val getTopRatedSeriesUseCase: GetTopRatedTVShowUseCase,
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<HomeScreenState, HomeScreenEffect>(HomeScreenState()),
     HomeScreenInteractionListener {
 
     init {
-        getPopularMedia()
-        getContinueWatchingMedia()
-        getTopRatingMovieAndTvShows()
-        loadGenresMovies()
         loadGenresTVShow()
-        getUpComingMoviesByGenre()
+        viewModelScope.launch {
+            updateState { it.copy(isLoading = true) }
+
+            val popularJob = async { getPopularMedia() }
+            val continueWatchingJob = async { getContinueWatchingMedia() }
+            val topRatedJob = async { getTopRatingMovieAndTvShows() }
+            val movieGenreJob = async { loadGenresMovies() }
+            val tvShowGenreJob = async { loadGenresTVShow() }
+            val upcomingJob = async { getUpComingMoviesByGenre() }
+
+            popularJob.await()
+            continueWatchingJob.await()
+            topRatedJob.await()
+            movieGenreJob.await()
+            tvShowGenreJob.await()
+            upcomingJob.await()
+
+            updateState { it.copy(isLoading = false) }
+        }
     }
+
 
     //region popularSection
     private fun getPopularMedia() {
@@ -143,8 +160,10 @@ class HomeScreenViewModel @Inject constructor(
     private fun updateContinueWatchingUiStateWithError(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                continueWatchingUiState = screenState.continueWatchingUiState.copy(errorMessage = errorUiState.message),
-                isLoading = false
+                continueWatchingUiState = screenState.continueWatchingUiState.copy(
+                    errorMessage = errorUiState.message,
+                    isLoading = false
+                ),
             )
         }
     }
@@ -253,7 +272,14 @@ class HomeScreenViewModel @Inject constructor(
 
     //region onGetNowClicked implementation
     override fun onGetNowClicked(userMood: UserMood) {
-        updateState { it.copy(moodPickerUiState = it.moodPickerUiState.copy(openMovieDialog = true, selectedMood = UserMoodUiState(userMood))) }
+        updateState {
+            it.copy(
+                moodPickerUiState = it.moodPickerUiState.copy(
+                    openMovieDialog = true,
+                    selectedMood = UserMoodUiState(userMood)
+                )
+            )
+        }
         tryToCall(
             call = {
                 getMoviesByMoodUseCase(userMood.moodGenres.toGenreIds()).map { movie -> movie.toMovieUiState() }
@@ -305,6 +331,7 @@ class HomeScreenViewModel @Inject constructor(
             }
             screenState.copy(
                 selectedGenres = newGenreId,
+
                 movieGenres = selected,
                 isLoading = false
             )
@@ -350,7 +377,7 @@ class HomeScreenViewModel @Inject constructor(
     }
     //endregion
 
-     fun loadGenresMovies() {
+    fun loadGenresMovies() {
         tryToCall(
             call = {
                 val movieGenres = getMoviesByGenreUseCase()
@@ -370,7 +397,7 @@ class HomeScreenViewModel @Inject constructor(
         )
     }
 
-     fun loadGenresTVShow() {
+    fun loadGenresTVShow() {
         tryToCall(
             call = {
                 val tvShowsGenre = getTVShowGenresUseCase()

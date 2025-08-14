@@ -7,52 +7,40 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import repository.UserProfileRepository
+import usecase.profile.GetUserProfileUseCase
 import org.junit.jupiter.api.assertThrows
 import repository.UserRepository
 
 class GetUserProfileUseCaseTest {
-    private val userRepository: UserRepository = mockk()
-    private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(userRepository)
 
-    @Test
-    fun `should return user profile when invoked`() = runTest {
-        // Arrange
-        coEvery { userRepository.getUserProfile(SESSION_ID) } returns EXPECTED_USER
+    private lateinit var repository: UserProfileRepository
+    private lateinit var useCase: GetUserProfileUseCase
 
-        // Act
-        val result = getUserProfileUseCase(SESSION_ID)
-
-        // Assert
-        assertThat(result).isEqualTo(EXPECTED_USER)
-        coVerify(exactly = 1) { userRepository.getUserProfile(SESSION_ID) }
+    @Before
+    fun setup() {
+        repository = mockk()
+        useCase = GetUserProfileUseCase(repository)
     }
 
     @Test
-    fun `should throw exception when repository fails`() = runTest {
-        // Arrange
-        coEvery { userRepository.getUserProfile(SESSION_ID) } throws Exception(EXCEPTION)
-
-        // Act
-        val exception = assertThrows<Exception> { getUserProfileUseCase(SESSION_ID) }
-
-        // Assert
-        assertThat(exception.message).isEqualTo(EXCEPTION)
-        coVerify(exactly = 1) { userRepository.getUserProfile(SESSION_ID) }
-    }
-
-    companion object {
-        const val SESSION_ID = "test_session_id"
-
-        var EXPECTED_USER = UserProfile(
+    fun `invoke should return user profile from repository`() = runTest {
+        // Given
+        val sessionId = "test_session_id"
+        val expectedUser = UserProfile(
             id = 123,
             username = "john_doe",
             name = "John Doe",
             includeAdult = false,
             avatarUrl = "https://image.tmdb.org/t/p/original/abc.jpg",
-            countryCodeIso6391 = "",
-            countryCodeIso31661 = ""
         )
+        coEvery { repository.getUserProfile() } returns expectedUser
 
-        const val EXCEPTION = "Error in repository"
+        // When
+        val result = useCase()
+
+        // Then
+        assertThat(result).isEqualTo(expectedUser)
+        coVerify(exactly = 1) { repository.getUserProfile() }
     }
 }

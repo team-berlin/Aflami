@@ -45,7 +45,6 @@ import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenInteractionListener
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenState
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenViewModel
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
 
 @Composable

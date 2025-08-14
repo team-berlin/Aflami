@@ -30,7 +30,7 @@ fun NoInternetConnectionPlaceholder(
 ) {
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Theme.color.surface),
         horizontalAlignment = Alignment.CenterHorizontally,

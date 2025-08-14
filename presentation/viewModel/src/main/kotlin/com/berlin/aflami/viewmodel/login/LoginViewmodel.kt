@@ -6,16 +6,18 @@ import com.berlin.aflami.viewmodel.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginUseCase
 import usecase.auth.GetValidatePasswordUseCase
 import usecase.auth.GetValidateUsernameUseCase
+import usecase.auth.LoginUseCase
+import usecase.profile.GetUserProfileUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
     val usernameValidationUseCase: GetValidateUsernameUseCase,
     val passwordValidationUseCase: GetValidatePasswordUseCase,
-    val loginUseCase: GetLoginUseCase,
+    val loginUseCase: LoginUseCase,
+    private val getUserProfileUseCase: GetUserProfileUseCase,
 ) : BaseViewModel<LoginScreenState, LoginScreenEffect>(LoginScreenState()),
     LoginInteractionListener {
 
@@ -68,8 +70,16 @@ class LoginViewmodel @Inject constructor(
                 )
             },
             onSuccess = {
-                updateState { it.copy(isLoading = false) }
-                sendNewEffect(newEffect = LoginScreenEffect.NavigateToHomeScreen)
+                tryToCall(
+                    call = { getUserProfileUseCase() },
+                    onSuccess = {
+                        updateState { it.copy(isLoading = false) }
+                        sendNewEffect(LoginScreenEffect.NavigateToHomeScreen)
+                    },
+                    onError = { e ->
+                        handleErrorState(e.message)
+                    }
+                )
             },
             onError = { handleErrorState(it.message) },
         )

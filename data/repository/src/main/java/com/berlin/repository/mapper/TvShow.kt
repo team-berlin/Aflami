@@ -1,7 +1,6 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.Episode
-import com.berlin.entity.Review
 import com.berlin.entity.Season
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
@@ -9,7 +8,7 @@ import com.berlin.repository.datasource.local.dto.TVShowEntity
 import com.berlin.repository.datasource.remote.dto.SeasonDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.details.EpisodeDto
-import com.berlin.repository.datasource.remote.dto.details.SeasonEpisodesDto
+import com.berlin.repository.util.tmdbImageUrl
 
 
 fun TVShowDetailsDto.toDomain(
@@ -20,7 +19,7 @@ fun TVShowDetailsDto.toDomain(
         id = this.id?.toLong() ?: 0L,
         title = this.name ?: "",
         rating = this.voteAverage ?: 0.0,
-        posterURL = "$POSTER_PREFIX${this.posterPath.orEmpty()}",
+        posterURL = tmdbImageUrl(this.posterPath)?:"",
         releaseDate = this.firstAirDate ?: "",
         genres = this.genres?.map{it.toDomain() }?: genresId?.map { it.toDomainGenre() }?:emptyList(),
         screenShot = this.posterPath ?: "",

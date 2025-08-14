@@ -15,14 +15,11 @@ data class UserProfileEntity(
     val name: String,
 
     @ColumnInfo(name = "avatar_url")
-    val avatarUrl: String,
+    val avatarUrl: String?,
 
     @ColumnInfo(name = "include_adult")
     val includeAdult: Boolean,
 
-    @ColumnInfo(name = "iso_3166_1")
-    val countryCodeIso31661: String,
-
-    @ColumnInfo(name = "iso_639_1")
-    val countryCodeIso6391: String
+    @ColumnInfo(name = "updated_at")
+    val updatedAt: Long
 )

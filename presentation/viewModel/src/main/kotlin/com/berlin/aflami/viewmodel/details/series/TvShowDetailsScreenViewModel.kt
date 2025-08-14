@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.details.series
 
 import android.util.Log
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -25,8 +26,7 @@ import com.berlin.entity.TVShow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import usecase.auth.GetLoginStatusUseCase
-import usecase.tvshow.GetTVShowVideos
+import usecase.auth.GetLoginUseCase
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
 import usecase.tvshow.GetSeasonEpisodesUseCase
 import usecase.tvshow.GetSimilarTVShowsUseCase
@@ -34,6 +34,7 @@ import usecase.tvshow.GetTVShowCastUseCase
 import usecase.tvshow.GetTVShowDetailsUseCase
 import usecase.tvshow.GetTVShowGalleryUseCase
 import usecase.tvshow.GetTVShowReviewUseCase
+import usecase.tvshow.GetTVShowVideos
 import usecase.tvshow.RateTvShowUseCase
 import javax.inject.Inject
 
@@ -43,7 +44,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
     private val getTVShowGalleryUseCase: GetTVShowGalleryUseCase,
     private val getSimilarTVShowsUseCase: GetSimilarTVShowsUseCase,
-    private val getLoginStatusUseCase: GetLoginStatusUseCase,
+    private val getLoginStatusUseCase: GetLoginUseCase,
     private val tvShowReviewUseCase: GetTVShowReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
@@ -142,7 +143,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 castList = castUiStateList,
-                isScreenLoading = false
             )
         }
     }
@@ -218,7 +218,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 screenState.copy(
                     rowSection = TVShowRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_MORE_MEDIA)
-                    ),
+                    )
                 )
             }
         } else {
@@ -257,7 +257,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 showDetailsUiState.copy(
                     rowSection = TVShowRowSectionUiState.NoDataFound(
                         UiText.Resource(NO_REVIEWS)
-                    ),
+                    )
                 )
             }
         } else {
@@ -267,8 +267,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         content = TVShowTabContent.Reviews(
                             reviews = reviewResult
                         )
-                    ),
-                    isScreenLoading = false,
+                    )
                 )
             }
         }
@@ -299,7 +298,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         UiText.Resource(
                             NO_GALLERY
                         )
-                    ),
+                    )
                 )
             }
         } else {
@@ -309,7 +308,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         content = TVShowTabContent.Gallery(
                             images = backdrops
                         )
-                    ),
+                    )
                 )
             }
         }
@@ -332,7 +331,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                     content = TVShowTabContent.CompanyProduction(
                         companyProductionStates = companyProductionUiState
                     )
-                ),
+                )
             )
         }
     }
@@ -351,7 +350,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             screenState.copy(
                 rowSection = TVShowRowSectionUiState.NoDataFound(
                     UiText.Resource(NO_COMPANY_PRODUCTION)
-                ),
+                )
             )
         }
     }
@@ -361,15 +360,23 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     override fun onPlayClicked(videoUrl: String) =
         sendNewEffect(TvShowDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
 
+    override fun onAddMovieToFavouriteClicked() {
+        updateState { showDetailsUiState ->
+            showDetailsUiState.copy(
+                isNotSupportedFeatureDialogVisible = true
+            )
+        }
+    }
+
     override fun onReadMoreDescriptionClicked() = updateState { screenState ->
         screenState.copy(
-            isDescriptionExpanded = !screenState.isDescriptionExpanded,
+            isDescriptionExpanded = !screenState.isDescriptionExpanded
         )
     }
 
     override fun onReadMoreReviewClicked(reviewId: String) = updateState { screenState ->
         screenState.copy(
-            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId),
+            expandedReviewIds = screenState.expandedReviewIds.toggle(reviewId)
         )
     }
 
@@ -388,6 +395,11 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     override fun onLoginDialogDismissed() {
         updateState { it.copy(showLoginDialog = false) }
     }
+    override fun dismissSnackBar() {
+
+
+    }
+
 
 
     override fun onRateIconClicked(id: Long) {
@@ -439,35 +451,25 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     override fun onCancelRatingClicked() {
         updateState {
-            it.copy(
-                showRatingDialog = false,
-                selectedRatingMediaId = null
-            )
+            it.copy()
         }
     }
 
-    override fun onAddMediaToFavouriteListClicked(
-        favouriteListId: Int,
+
+    override fun onAddMediaToFavouriteButtomClicked(
         mediaId: Long,
+        favouriteListId: Int,
     ) {
-        checkLoginThen {
-            updateState {
-                it.copy(
-                    showAddToListDialog = true,
-                    selectedFavouriteListId = favouriteListId,
-                    selectedAddToListMediaId = mediaId
-                )
-            }
+        updateState { showDetailsUiState ->
+            showDetailsUiState.copy(
+                isNotSupportedFeatureDialogVisible = true
+            )
         }
     }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {
         updateState {
-            it.copy(
-                showAddToListDialog = false,
-                selectedAddToListMediaId = null,
-                selectedFavouriteListId = null
-            )
+            it.copy()
         }
     }
 
@@ -476,14 +478,14 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     override fun onCancelAddingToFavouriteClicked() {
+        updateState { screenState -> screenState.copy(isNotSupportedFeatureDialogVisible = false) }
+    }
+
+    override fun onUpdateNewListTitle(newListTitle: TextFieldValue) {
         TODO("Not yet implemented")
     }
 
-    override fun onUpdateNewListTitle(newListTitle: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onCreateNewListClicked(listTitle: String) {
+    override fun onCreateNewListClicked(listTitle: TextFieldValue) {
         TODO("Not yet implemented")
     }
 
@@ -511,25 +513,23 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             screenState.copy(
                 tvShowDetailsTabsUiState = screenState.tvShowDetailsTabsUiState.copy(
                     tab = tvShowDetailsTabs, isSelected = true
-                ),
+                )
             )
         }
     }
 
     private fun updateRowSectionToLoading() {
         updateState { screenState ->
-            screenState.copy(
-                rowSection = TVShowRowSectionUiState.Loading,
-            )
+            screenState.copy()
         }
     }
+
     private fun updateRowSectionStateToError(error: Int) {
         updateState { screenState ->
             screenState.copy(
                 rowSection = TVShowRowSectionUiState.NoDataFound(
                     UiText.Resource(error)
                 ),
-                isScreenLoading = false
             )
         }
     }
@@ -538,17 +538,16 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         Log.e("WOWTEST", "Error: ${errorState.message}")
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message,
+                errorMessage = errorState.message, isScreenLoading = false
             )
         }
     }
 
     private fun checkLoginThen(actionIfLoggedIn: () -> Unit) {
         viewModelScope.launch {
-            if (getLoginStatusUseCase()) {
-                actionIfLoggedIn()
-            } else {
-                updateState { it.copy(showLoginDialog = true) }
+            getLoginStatusUseCase().collect { loggedIn ->
+                if (loggedIn) actionIfLoggedIn.invoke()
+//                updateState { it.copy(isLoggedIn = loggedIn) }
             }
         }
     }
