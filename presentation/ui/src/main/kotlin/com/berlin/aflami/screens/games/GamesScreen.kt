@@ -78,6 +78,7 @@ fun GamesScreen(
         gameInteractionListener = viewModel
     )
 }
+
 @Composable
 fun GamesContent(
     gameState: GameScreenState,
@@ -113,7 +114,7 @@ fun GamesContent(
             description = stringResource(R.string.game_release_desc),
             points = 400,
             gameType = GameType.RELEASE,
-            isLocked = false,
+            isLocked = gameState.points < 400,
             borderGradient = ExtraColors.guessMovieByReleaseGradient,
             shadowColor = ExtraColors.shadowGuessMovieRelease,
             circleShadowColor = Theme.color.statusColors.navyCard,
@@ -125,7 +126,7 @@ fun GamesContent(
             description = stringResource(R.string.game_genre_desc),
             points = 400,
             gameType = GameType.GENRE,
-            isLocked = false,
+            isLocked = gameState.points < 400,
             borderGradient = ExtraColors.guessMovieByGenreGradient,
             shadowColor = ExtraColors.shadowGuessMovieByGenre,
             circleShadowColor = Theme.color.statusColors.yellowCard,
@@ -158,13 +159,12 @@ fun GamesContent(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            gameCards.forEachIndexed  { index ,card->
+            gameCards.forEachIndexed { index, card ->
                 GameCard(
                     title = card.title,
                     description = card.description,
                     points = card.points,
-                    isLocked = false,
-//                    isLocked = index >= 2 &&gameState.points<400,
+                    isLocked = card.isLocked,
                     onClick = {
                         card.gameType?.let { gameInteractionListener.onSelectGameType(it) }
                         gameInteractionListener.onShowLevelDialog()
@@ -185,7 +185,7 @@ fun GamesContent(
                     },
                     onClick = {
                         gameInteractionListener.onGameInfoClicked(
-                            gameType = gameState.selectedGameType?: GameType.GENRE,
+                            gameType = gameState.selectedGameType ?: GameType.GENRE,
                             numberOfQuestion = gameState.selectedLevel?.numberOfQuestions ?: 0,
                             numberOfPoint = gameState.selectedLevel?.points ?: 0,
                             time = gameState.selectedLevel?.time ?: 0

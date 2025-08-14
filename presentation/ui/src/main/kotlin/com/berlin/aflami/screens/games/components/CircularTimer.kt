@@ -9,45 +9,28 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.Theme
-import kotlinx.coroutines.delay
 
 @Composable
 fun CountdownCircularProgress(
-    totalTimePerSecond: Int,
+    totalTime: Int,
+    currentTime: Int,
     modifier: Modifier = Modifier,
-    onFinishedTime: () -> Unit,
-    onTimeChanged: (Int) -> Unit,
 ) {
-    var currentTime by remember(totalTimePerSecond) { mutableStateOf(totalTimePerSecond) }
     val textColor by animateColorAsState(
         targetValue = when {
             currentTime <= 5 -> Theme.color.statusColors.redAccent
             else -> Theme.color.statusColors.greenAccent
         },
+        label = "text_color"
     )
-
-    LaunchedEffect(totalTimePerSecond) {
-        currentTime = totalTimePerSecond
-        while (currentTime > 0) {
-            delay(1000)
-            currentTime--
-            onTimeChanged(currentTime)
-        }
-        onFinishedTime()
-    }
 
     Box(
         modifier = modifier
@@ -64,7 +47,7 @@ fun CountdownCircularProgress(
             color = textColor
         )
         CircularProgress(
-            totalTime = totalTimePerSecond,
+            totalTime = totalTime,
             currentTime = currentTime,
             progressSize = 40.dp,
             normalColor = Theme.color.statusColors.greenAccent,
@@ -81,10 +64,13 @@ fun CircularProgress(
     normalColor: Color = Theme.color.statusColors.greenAccent,
     warningColor: Color = Theme.color.statusColors.redAccent,
 ) {
-    val progress = currentTime / totalTime.toFloat()
+    val progress = if (totalTime > 0) currentTime.toFloat() / totalTime.toFloat() else 0f
+
     val progressColor by animateColorAsState(
-        if (currentTime <= 5) warningColor else normalColor
+        targetValue = if (currentTime <= 5) warningColor else normalColor,
+        label = "progress_color"
     )
+
     CircularProgressIndicator(
         progress = { progress },
         modifier = Modifier.size(progressSize),
@@ -94,4 +80,3 @@ fun CircularProgress(
         strokeCap = StrokeCap.Round,
     )
 }
-
