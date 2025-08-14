@@ -12,6 +12,8 @@ import com.berlin.aflami.viewmodel.shareduistate.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.toGenreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import usecase.game.AddPointsUseCase
@@ -40,12 +42,6 @@ class QuizGameViewModel @Inject constructor(
 ) : BaseViewModel<QuizGameUiState, QuizGameEffect>(
     QuizGameUiState()
 ), QuizGameInteractionListener {
-    private val mediaList = MutableStateFlow<List<MediaUiState>>(emptyList())
-    private val mediaGenre = MutableStateFlow<List<GenreUiState>>(emptyList())
-    private val movieIds = MutableStateFlow<List<Long>>(emptyList())
-    private val tvShowIds = MutableStateFlow<List<Long>>(emptyList())
-    private val mediaCast = MutableStateFlow<List<ActorUiState>>(emptyList())
-
     private val timer = guessGameScreenArgs.timer ?: 0
     private val gameType = guessGameScreenArgs.gameType ?: GameType.POSTER
     private val numberOfQuestion = guessGameScreenArgs.numberOfQuestion ?: 0
@@ -54,30 +50,70 @@ class QuizGameViewModel @Inject constructor(
     init {
         updateState {
             it.copy(
-                numberOfPoint = numberOfPoints
+                numberOfPoint = numberOfPoints,
             )
         }
-        viewModelScope.launch {
-        mediaGame()
-            when (gameType) {
-                GameType.CHARACTER -> {
-                    getCast()
-                    getMediaByCharacter()
-                }
 
-                GameType.POSTER -> getMediaByPoster()
-                GameType.RELEASE -> getMediaByReleaseDate()
-                GameType.GENRE -> {
-                    genreGame()
-                    getMediaByGenres()
-                }
-            }
+        viewModelScope.launch {
+            handleGameType(gameType)
         }
     }
 
+    private fun handleCharacterGame() {
+        tryToCall(
+            call = { castGame() },
+            onSuccess = { getMediaByCharacter() },
+            onError = ::updateScreenStateToError
+        )
+    }
+
+    private fun handlePosterGame() {
+        tryToCall(
+            call = { mediaGame() },
+            onSuccess = { getMediaByPoster() },
+            onError = ::updateScreenStateToError
+        )
+    }
+
+    private fun handleReleaseGame() {
+        tryToCall(
+            call = { mediaGame() },
+            onSuccess = { getMediaByReleaseDate() },
+            onError = ::updateScreenStateToError
+        )
+    }
+
+    private fun handleGenreGame() {
+        tryToCall(
+            call = { genreGame() },
+            onSuccess = { getMediaByGenres() },
+            onError = ::updateScreenStateToError
+        )
+    }
+
+    private fun handleGameType(gameType: GameType) {
+        when (gameType) {
+            GameType.CHARACTER -> {
+                handleCharacterGame()
+            }
+
+            GameType.POSTER -> {
+                handlePosterGame()
+            }
+
+            GameType.RELEASE -> {
+                handleReleaseGame()
+            }
+
+            GameType.GENRE -> {
+                handleGenreGame()
+            }
+        }
+
+    }
+
     private fun getMediaByCharacter() {
-        val mediaItem = mediaCast.value.take(numberOfQuestion)
-        Log.e("mediaItem", mediaItem.size.toString())
+        val mediaItem = state.value.cast.take(numberOfQuestion)
 
         if (mediaItem.isEmpty()) return
         val questions = mediaItem.map { media ->
@@ -107,24 +143,27 @@ class QuizGameViewModel @Inject constructor(
 
     //question-> poster
     // answer-> media name
-    fun getMediaByPoster() {
-        val mediaItems = mediaList.value
-        if (mediaItems.isEmpty()) return
-        val questions = mediaItems.map { media ->
-            val wrongOptions = mediaItems.asSequence()
-                .filter { it.id != media.id }
+    private fun getMediaByPoster() {
+        val mediaList = state.value.mediaList
+        if (mediaList.isEmpty()) return
+
+        val questions = mediaList.map { currentMedia ->
+            val wrongOptions = mediaList.asSequence()
+                .filter { it.id != currentMedia.id }
                 .map { it.title }
+                .shuffled()
                 .take(3)
                 .toList()
-            val allOptions = (wrongOptions + media.title).shuffled()
+
+            val allOptions = (wrongOptions + currentMedia.title).shuffled()
 
             Question(
-                question = media.poster,
+                question = currentMedia.poster,
                 options = allOptions,
-                correctAnswer = media.title
+                correctAnswer = currentMedia.title
             )
-
         }
+
         updateState {
             it.copy(
                 questions = questions,
@@ -139,13 +178,13 @@ class QuizGameViewModel @Inject constructor(
     //question-> media name
     // answer-> release date
     private fun getMediaByReleaseDate() {
-        val mediaItems = mediaList.value
-        if (mediaItems.isEmpty()) return
+        val mediaList = state.value.mediaList
+        if (mediaList.isEmpty()) return
 
-        val questions = mediaItems.map { media ->
+        val questions = mediaList.map { media ->
             val correctYear = media.releaseYear
 
-            val wrongOptions = mediaItems
+            val wrongOptions = mediaList
                 .asSequence()
                 .map { it.releaseYear }
                 .filter { it != correctYear }
@@ -178,23 +217,22 @@ class QuizGameViewModel @Inject constructor(
     //question-> media name
     // answer -> genre
     private fun getMediaByGenres() {
-        val mediaItems = mediaList.value
-        val genreItems = mediaGenre.value
-        Log.e("o", mediaItems.size.toString())
-        Log.e("t", genreItems.size.toString())
+        val mediaList = state.value.mediaList
+        val genreItems = state.value.genreList
 
-        if (mediaItems.isEmpty() || genreItems.isEmpty()) return
-        val questions = mediaItems.map { media ->
+        if (mediaList.isEmpty() || genreItems.isEmpty()) return
+        val questions = mediaList.map { media ->
             val mediaGenres = media.genre
                 .mapNotNull { id -> genreItems.find { it.id == id }?.name }
 
             if (mediaGenres.isEmpty()) return
             val correctAnswer = mediaGenres.random()
-            val wrongOptions = genreItems
+            val wrongOptions = genreItems.asSequence()
                 .filter { it.name !in mediaGenres }
                 .map { it.name }
                 .shuffled()
                 .take(3)
+                .toList()
             val allOptions = (wrongOptions + correctAnswer).shuffled()
             Question(
                 question = media.title,
@@ -213,48 +251,62 @@ class QuizGameViewModel @Inject constructor(
         }
     }
 
+    private suspend fun fetchMovies(): List<MediaUiState> =
+        getMovieGameUseCase().map { it.toMediaUiState() }
+
+    private suspend fun fetchTvShows(): List<MediaUiState> =
+        getTVShowGameUseCase().map { it.toMediaUiState() }
 
     private fun mediaGame() {
         updateScreenStateToLoading()
         tryToCall(
             call = {
-                val movie = getMovieGameUseCase()
-                val tvShow = getTVShowGameUseCase()
-                val movieList = movie.map { it.toMediaUiState() }
-                val tvShowList = tvShow.map { it.toMediaUiState() }
-                movieIds.value = movieList.map { it.id }.shuffled()
-                tvShowIds.value = tvShowList.map { it.id }.shuffled()
-                mediaList.value = (movieList + tvShowList).shuffled().take(numberOfQuestion)
-                getMediaByPoster()
+                coroutineScope {
+                    val moviesDeferred = async { fetchMovies() }
+                    val tvShowsDeferred = async { fetchTvShows() }
+
+                    val movies = moviesDeferred.await()
+                    val shows = tvShowsDeferred.await()
+
+                    (movies + shows).shuffled().take(numberOfQuestion)
+                }
             },
-            onSuccess = {
+            onSuccess = { mediaList ->
                 updateState {
                     it.copy(
+                        mediaList = mediaList,
                         loading = false
                     )
                 }
             },
             onError = ::updateScreenStateToError,
         )
-
     }
+
+    private suspend fun fetchMovieGenre(): List<GenreUiState> =
+        getMovieGenresUseCase().map { it.toGenreUiState() }
+
+    private suspend fun fetchTvShowGenre(): List<GenreUiState> =
+        getTVGenresUseCase().map { it.toGenreUiState() }
 
     private fun genreGame() {
         updateScreenStateToLoading()
         tryToCall(
             call = {
-                val movieGenre = (getMovieGenresUseCase())
-                val tvShowGenre = getTVGenresUseCase()
-                val movieGenreList = movieGenre.map { it.toGenreUiState() }
-                val tvShowGenreList = tvShowGenre.map { it.toGenreUiState() }
-                Log.e("movieGenreList", movieGenreList.size.toString())
-                Log.e("tvShowGenreList", tvShowGenreList.size.toString())
+                coroutineScope {
+                    val moviesGenreDeferred = async { fetchMovieGenre() }
+                    val tvShowsGenreDeferred = async { fetchTvShowGenre() }
 
-                mediaGenre.value = (movieGenreList + tvShowGenreList)
+                    val movies = moviesGenreDeferred.await()
+                    val shows = tvShowsGenreDeferred.await()
+
+                    (movies + shows).shuffled().take(numberOfQuestion)
+                }
             },
-            onSuccess = {
+            onSuccess = { genreList ->
                 updateState {
                     it.copy(
+                        genreList = genreList,
                         loading = false
                     )
                 }
@@ -263,43 +315,69 @@ class QuizGameViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getCast() {
-        updateScreenStateToLoading()
-        try {
-            if (movieIds.value.isEmpty() && tvShowIds.value.isEmpty()) return
 
-            val accumulatedCasts = mutableListOf<ActorUiState>()
-            var movieIndex = 0
-            var tvShowIndex = 0
-
-            while (accumulatedCasts.size < numberOfQuestion &&
-                (movieIndex < movieIds.value.size || tvShowIndex < tvShowIds.value.size)
-            ) {
-                if (movieIndex < movieIds.value.size) {
-                    val movieCast = getMovieCastUseCase(movieIds.value[movieIndex])
-                        .map { it.toActorUiState() }
-                        .filter { actor ->
-                            !actor.poster.isNullOrBlank() &&
-                                    actor.poster != "https://image.tmdb.org/t/p/w500"
-                        }
-                    accumulatedCasts.addAll(movieCast)
-                    movieIndex++
-                }
-                if (tvShowIndex < tvShowIds.value.size && accumulatedCasts.size < numberOfQuestion) {
-                    val tvShowCast = getTVShowCastUseCase(tvShowIds.value[tvShowIndex])
-                        .map { it.toActorUiState() }
-                        .filter { actor ->
-                            !actor.poster.isNullOrBlank() &&
-                                    actor.poster != "https://image.tmdb.org/t/p/w500"
-                        }
-                    accumulatedCasts.addAll(tvShowCast)
-                    tvShowIndex++
-                }
+    private suspend fun fetchMovieCast(movieId: Long): List<ActorUiState> {
+        return getMovieCastUseCase(movieId)
+            .map { it.toActorUiState() }
+            .filter { actor ->
+                actor.poster.isNotBlank() &&
+                        actor.poster != "https://image.tmdb.org/t/p/w500"
             }
-            mediaCast.value = accumulatedCasts.shuffled()
-        } finally {
-            updateState { it.copy(loading = false) }
-        }
+    }
+
+    private suspend fun fetchTvShowCast(tvShowId: Long): List<ActorUiState> {
+        return getTVShowCastUseCase(tvShowId)
+            .map { it.toActorUiState() }
+            .filter { actor ->
+                actor.poster.isNotBlank() &&
+                        actor.poster != "https://image.tmdb.org/t/p/w500"
+            }
+    }
+
+    private fun castGame() {
+        updateScreenStateToLoading()
+
+        tryToCall(
+            call = {
+                val movies = fetchMovies()
+                val shows = fetchTvShows()
+
+                val movieId = movies.map { it.id }
+                val tvShow = shows.map { it.id }
+
+                if (movieId.isEmpty() && tvShow.isEmpty()) {
+                    return@tryToCall emptyList<ActorUiState>()
+                }
+
+                val accumulatedCasts = mutableListOf<ActorUiState>()
+                var movieIndex = 0
+                var tvShowIndex = 0
+
+                while (accumulatedCasts.size < numberOfQuestion &&
+                    (movieIndex < movieId.size || tvShowIndex < tvShow.size)
+                ) {
+                    if (movieIndex < movieId.size) {
+                        accumulatedCasts.addAll(fetchMovieCast(movieId[movieIndex]))
+                        movieIndex++
+                    }
+                    if (tvShowIndex < tvShow.size && accumulatedCasts.size < numberOfQuestion) {
+                        accumulatedCasts.addAll(fetchTvShowCast(tvShow[tvShowIndex]))
+                        tvShowIndex++
+                    }
+                }
+
+                accumulatedCasts.shuffled()
+            },
+            onSuccess = { castList ->
+                updateState {
+                    it.copy(
+                        cast = castList,
+                        loading = false
+                    )
+                }
+            },
+            onError = ::updateScreenStateToError
+        )
     }
 
     private fun updateScreenStateToLoading() =
@@ -321,7 +399,7 @@ class QuizGameViewModel @Inject constructor(
                     if (it.currentQuestionIndex < it.questions.size - 1) it.currentQuestionIndex + 1 else it.currentQuestionIndex,
                 selectedAnswer = "",
                 imageBlur = 8f,
-                numberOfPoint = 0,
+                time = timer,
                 totalRemainingTime = it.totalRemainingTime + (it.time - it.remainingTime)
             )
         }
@@ -349,33 +427,37 @@ class QuizGameViewModel @Inject constructor(
                 when (state.type) {
                     QuestionType.Image -> state.copy(
                         totalPoint = (state.totalPoint - 10).coerceAtLeast(0),
-                        imageBlur = (state.imageBlur - 3f).coerceAtLeast(0f),
+                        imageBlur = (state.imageBlur - 4f).coerceAtLeast(0f),
                     )
 
                     QuestionType.Text -> {
                         val currentQuestion = state.questions[state.currentQuestionIndex]
-                        val incorrectOptions =
-                            currentQuestion.options.filter { it != currentQuestion.correctAnswer }
+                        val incorrectOptions = currentQuestion.options
+                            .filter { it != currentQuestion.correctAnswer }
+
                         val optionToRemove = incorrectOptions.randomOrNull()
+
                         val updatedOptions = if (optionToRemove != null) {
                             currentQuestion.options.filter { it != optionToRemove }
                         } else {
                             currentQuestion.options
                         }
-                        val updatedQuestion = currentQuestion.copy(options = updatedOptions)
-                        val updatedQuestions = state.questions.toMutableList().apply {
-                            this[state.currentQuestionIndex] = updatedQuestion
+                        if (updatedOptions.size >= 2) {
+                            val updatedQuestion = currentQuestion.copy(options = updatedOptions)
+                            val updatedQuestions = state.questions.toMutableList().apply {
+                                this[state.currentQuestionIndex] = updatedQuestion
+                            }
+                            state.copy(
+                                totalPoint = (state.totalPoint - 10).coerceAtLeast(0),
+                                questions = updatedQuestions
+                            )
+                        } else {
+                            state
                         }
-                        state.copy(
-                            totalPoint = (state.totalPoint - 10).coerceAtLeast(0),
-                            questions = updatedQuestions
-                        )
                     }
                 }
             } else {
-                state.copy(
-                    showDialog = true
-                )
+                state.copy(showDialog = true)
             }
         }
     }
