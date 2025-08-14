@@ -200,8 +200,7 @@ class QuizGameViewModel @Inject constructor(
     //question-> media name
     // answer -> genre
     private fun getMediaByGenres(genreItems: List<GenreUiState>) {
-        val mediaList = state.value.mediaList
-
+        mediaGame()
         tryToCall(
             call = {
                 mediaList.map { media ->
@@ -265,8 +264,11 @@ class QuizGameViewModel @Inject constructor(
                         mediaList = mediaList,
                     )
                 }
-//                getMediaByPoster(mediaList)
-                getMediaByReleaseDate(mediaList)
+                when (gameType) {
+                    GameType.POSTER -> getMediaByPoster(mediaList)
+                    GameType.RELEASE -> getMediaByReleaseDate(mediaList)
+                    else -> {getMediaByGenres(mediaList)}
+                }
             },
             onError = ::updateScreenStateToError,
         )
@@ -283,13 +285,14 @@ class QuizGameViewModel @Inject constructor(
         tryToCall(
             call = {
                 coroutineScope {
+
                     val moviesGenreDeferred = async { fetchMovieGenre() }
                     val tvShowsGenreDeferred = async { fetchTvShowGenre() }
 
-                    val movies = moviesGenreDeferred.await()
-                    val shows = tvShowsGenreDeferred.await()
+                    val moviesGenre = moviesGenreDeferred.await()
+                    val showsGenre = tvShowsGenreDeferred.await()
 
-                    (movies + shows).shuffled().take(numberOfQuestion)
+                    (moviesGenre + showsGenre).shuffled().take(numberOfQuestion)
                 }
             },
             onSuccess = { genreList ->
