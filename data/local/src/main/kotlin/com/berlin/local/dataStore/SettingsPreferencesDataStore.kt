@@ -1,6 +1,7 @@
 package com.berlin.local.dataStore
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -48,12 +49,16 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
 
     suspend fun setContentRestriction(contentRestrictionLevel: String) {
         context.dataStore.edit { prefs ->
+            Log.d("WOWTEST", "setContentRestriction: ${prefs[App_CONTENT_RESTRICTION]}")
+
             prefs[App_CONTENT_RESTRICTION] = contentRestrictionLevel
         }
     }
 
     fun getContentRestriction(): Flow<String?> {
         return context.dataStore.data.map { prefs ->
+            Log.d("WOWTEST", "getContentRestriction: ${prefs[App_CONTENT_RESTRICTION]}")
+
             prefs[App_CONTENT_RESTRICTION] ?: "STRICT"
         }
     }

@@ -1,5 +1,6 @@
 package com.berlin.safeimageviewer
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
@@ -7,12 +8,14 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,12 +36,15 @@ import coil3.request.bitmapConfig
 import coil3.toBitmap
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+@SuppressLint("FlowOperatorInvokedInComposition")
 @Composable
 fun SafeImageViewer(
     model: String,
@@ -59,7 +65,12 @@ fun SafeImageViewer(
         ).modelManager()
     }
     val isModelDownloaded = remember { modelManager.isModelDownloaded.value }
-    val contentRestrictions by modelManager.contentRestriction.collectAsState(initial = STRICT_MODERATION)
+    val contentRestrictions by modelManager.contentRestriction.stateIn(
+            scope = rememberCoroutineScope(),
+            started = SharingStarted.Eagerly,
+            initialValue = STRICT_MODERATION
+        )
+        .collectAsState()
 
     var result by remember { mutableStateOf<ImageClassificationResult?>(null) }
     var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -95,11 +106,15 @@ fun SafeImageViewer(
         }
         displayBitmap?.let { bitmap ->
             val shouldBlur = if (blurCheck) {
-                result?.let { !it.isSafe || it.isFemale } == true
+                Log.d("WOWTEST", "shouldBlur: blurCheck is  ${result!!.isSafe}")
+                result?.let { !it.isSafe } == true
             } else false
+            Log.d("WOWTEST", "else false: $shouldBlur")
 
             val blurredBitmap = remember(bitmap, shouldBlur) {
+                //Log.d("WOWTEST", "shouldBlur: $shouldBlur")
                 if (shouldBlur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                    Log.d("WOWTEST", "Blurring bitmap with RenderScript")
                     blurBitmapRenderScript(context, bitmap, 25f)
                 } else bitmap
             }
@@ -113,6 +128,10 @@ fun SafeImageViewer(
                 modifier = modifier
                     .then(
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && shouldBlur) {
+                            Log.d(
+                                "WOWTEST",
+                                "if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && shouldBlur): $shouldBlur"
+                            )
                             Modifier.blur(
                                 radius = 16.dp,
                                 edgeTreatment = BlurredEdgeTreatment.Unbounded
@@ -165,19 +184,19 @@ suspend fun classifyImage(
     val bitmap = drawable.toBitmap()
     return@withContext try {
          when {
-            classifyGender(bitmap, modelManager, contentRestrictions) -> ImageClassificationResult(
-                bitmap,
-                isSafe = true,
-                isFemale = false
-            )
+//            classifyGender(bitmap, modelManager, contentRestrictions) -> ImageClassificationResult(
+//                bitmap,
+//                isSafe = true,
+//                isFemale = false
+//            )
 
-            classifyNSFW(bitmap, modelManager, contentRestrictions) -> ImageClassificationResult(
+            classifyNSFW(bitmap, modelManager, contentRestrictions) == true -> ImageClassificationResult(
                 bitmap,
                 isSafe = false,
                 isFemale = true
             )
 
-            else -> ImageClassificationResult(bitmap, isSafe = false, isFemale = false)
+            else -> ImageClassificationResult(bitmap, isSafe = true, isFemale = false)
         }
     }catch(e: Exception) {
         ImageClassificationResult(
@@ -226,12 +245,14 @@ fun classifyNSFW(
     val sexyScore = nsfwModelScore.getOrNull(4) ?: 0f
     val hentaiScore = nsfwModelScore.getOrNull(1) ?: 0f
     val inappropriateScore = pornScore + sexyScore + hentaiScore
-
+    Log.d("WOWTEST", "classifyNSFW: $contentRestrictions")
     val isSafe = when (contentRestrictions) {
+
         STRICT_MODERATION -> inappropriateScore > DEFAULT_IMAGE_MODERATION_THRESHOLD
         MODERATE_MODERATION -> inappropriateScore > STRICT_MODERATION_THRESHOLD
         else -> true
     }
+    Log.d("WOWTEST", "classifyNSFW:  isSafe: $isSafe")
     return isSafe
 }
 
