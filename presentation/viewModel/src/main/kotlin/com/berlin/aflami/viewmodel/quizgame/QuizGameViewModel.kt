@@ -320,24 +320,27 @@ class QuizGameViewModel @Inject constructor(
             it.copy(
                 currentQuestionIndex =
                     if (it.currentQuestionIndex < it.questions.size) it.currentQuestionIndex + 1 else it.currentQuestionIndex,
-                selectedAnswer = ""
+                selectedAnswer = "",
+                imageBlur = 8f,
+                numberOfPoint = 0
             )
         }
     }
 
     override fun answerClicked(answer: String) {
         viewModelScope.launch {
-        updateState {
-            val checkAnswer =
-                it.selectedAnswer == it.questions[it.currentQuestionIndex].correctAnswer
-            it.copy(
-                selectedAnswer = answer,
-                isAnswerCorrect = it.selectedAnswer == it.questions[it.currentQuestionIndex].correctAnswer,
-                totalPoint = if (checkAnswer) it.totalPoint + numberOfPoints else it.totalPoint - numberOfPoints,
-                totalResult =if (checkAnswer) it.totalResult + numberOfPoints else it.totalResult - numberOfPoints ,
-                imageBlur = if (checkAnswer) 0f else it.imageBlur
-            )
-        }
+            updateState { state ->
+                val correctAnswer = state.questions[state.currentQuestionIndex].correctAnswer
+                val isCorrect = answer == correctAnswer
+
+                state.copy(
+                    selectedAnswer = answer,
+                    isAnswerCorrect = isCorrect,
+                    totalPoint = if (isCorrect) state.totalPoint + numberOfPoints
+                    else (state.totalPoint - numberOfPoints).coerceAtLeast(0),
+                    imageBlur = if (isCorrect) 0f else state.imageBlur,
+                )
+            }
         }
     }
     override fun hintClicked() {
@@ -345,9 +348,8 @@ class QuizGameViewModel @Inject constructor(
             if (state.totalPoint >= 10) {
                 when (state.type) {
                     QuestionType.Image -> state.copy(
-                        enableHint = true,
-                        totalPoint = state.totalPoint - 10,
-                        imageBlur = state.imageBlur - 3f
+                        totalPoint = (state.totalPoint - 10).coerceAtLeast(0),
+                        imageBlur = (state.imageBlur - 3f).coerceAtLeast(0f)
                     )
                     QuestionType.Text -> {
                         val currentQuestion = state.questions[state.currentQuestionIndex]
@@ -363,8 +365,7 @@ class QuizGameViewModel @Inject constructor(
                             this[state.currentQuestionIndex] = updatedQuestion
                         }
                         state.copy(
-                            enableHint = true,
-                            totalPoint = state.totalPoint - 10,
+                            totalPoint = (state.totalPoint - 10).coerceAtLeast(0),
                             questions = updatedQuestions
                         )
                     }
