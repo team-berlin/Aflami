@@ -18,7 +18,6 @@ import usecase.profile.RefreshUserProfileUseCase
 import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -261,7 +260,8 @@ class ProfileViewModel @Inject constructor(
     private fun collectLanguage() {
         viewModelScope.launch {
             getLanguageUseCase().collect { currentLanguage ->
-                val appLanguage = currentLanguage ?: Locale.getDefault().language.uppercase()
+                val appLanguage =
+                    currentLanguage ?: AppLanguage.valueOf(state.value.selectedLanguage).name
                 updateState {
                     it.copy(
                         selectedLanguage = appLanguage,

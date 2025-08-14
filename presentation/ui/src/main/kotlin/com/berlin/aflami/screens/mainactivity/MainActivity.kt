@@ -63,7 +63,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
             UpdateLocale(profileState.selectedLanguage)
-            AflamiTheme(isDarkTheme = isDarkTheme) {
+            AflamiTheme(
+                isDarkTheme = isDarkTheme,
+                selectedLanguage = profileState.selectedLanguage
+            ) {
                 val mainState by mainActivityViewModel.state.collectAsState()
 
                 if (!mainState.isLoading) {
@@ -83,7 +86,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @SuppressLint("LocalContextConfigurationRead")
 @Composable
 fun UpdateLocale(selectedLanguage: String) {
@@ -92,7 +94,7 @@ fun UpdateLocale(selectedLanguage: String) {
         val locale = when (selectedLanguage) {
             "AR" -> Locale("ar")
             "EN" -> Locale("en")
-            else -> Locale.getDefault()
+            else -> Locale("en")
         }
         Locale.setDefault(locale)
         val config = Configuration(context.resources.configuration)
