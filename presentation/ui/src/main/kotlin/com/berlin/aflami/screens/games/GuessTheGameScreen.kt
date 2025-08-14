@@ -257,20 +257,18 @@ fun GuessTheGameContent(
 
             }
             Spacer(modifier = Modifier.weight(1f))
-            PrimaryButton(
+            com.berlin.aflami.component.buttons.PrimaryButton(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onClick = {
                     if (state.currentQuestionIndex < state.questions.size - 1) listener.nextQuestionClicked()
                     else listener.navigateToResult()
                 },
-                gradientColor = primaryGredient
             ) {
                 Text(
                     text = stringResource(R.string.next),
                     style = Theme.textStyle.label.large,
                     color = Theme.color.textColors.onPrimary,
-                    modifier = Modifier.padding(vertical = 16.dp)
                 )
             }
 
