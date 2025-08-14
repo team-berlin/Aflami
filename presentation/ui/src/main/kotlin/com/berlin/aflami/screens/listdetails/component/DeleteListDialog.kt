@@ -62,7 +62,7 @@ fun DeleteListDialog(
                 Text(
                     stringResource(R.string.delete),
                     style = Theme.textStyle.label.large,
-                    color = Theme.color.statusColors.redAccent
+                    color = Theme.color.textColors.onPrimary
                 )
             }
         }
