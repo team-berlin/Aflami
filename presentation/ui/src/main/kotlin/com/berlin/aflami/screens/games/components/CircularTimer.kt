@@ -28,7 +28,7 @@ import kotlinx.coroutines.delay
 fun CountdownCircularProgress(
     totalTimePerSecond: Int,
     modifier: Modifier = Modifier,
-    onTimeFinished: () -> Unit
+    onTimeChanged:(Int)->Unit
 
 ) {
     var currentTime by remember { mutableStateOf(totalTimePerSecond) }
@@ -43,8 +43,8 @@ fun CountdownCircularProgress(
         while (currentTime > 0) {
             delay(1000)
             currentTime--
+            onTimeChanged(currentTime)
         }
-        onTimeFinished()
 
     }
     Box(
@@ -93,11 +93,3 @@ fun CircularProgress(
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CircularTimerPreview() {
-    CountdownCircularProgress(
-        totalTimePerSecond = 45,
-        onTimeFinished = {}
-    )
-}

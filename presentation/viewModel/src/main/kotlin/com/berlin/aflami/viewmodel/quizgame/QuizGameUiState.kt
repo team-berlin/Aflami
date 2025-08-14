@@ -16,6 +16,7 @@ data class QuizGameUiState(
     val totalPoint:Int=0,
     val numberOfPoint:Int=0,
     val remainingTime:Int=0,
+    val totalRemainingTime:Int=0,
     val enableHint:Boolean=false,
     val loading:Boolean=false,
     val error:ErrorUiState?=null

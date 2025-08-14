@@ -15,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import usecase.game.AddPointsUseCase
-import usecase.game.UpdatePointsUseCase
 import usecase.movie.GetMovieCastUseCase
 import usecase.movie.GetMovieGameUseCase
 import usecase.movie.GetMovieGenresUseCase
@@ -33,7 +32,7 @@ class QuizGameViewModel @Inject constructor(
     private val getTVGenresUseCase: GetTVShowGenresUseCase,
     private val getMovieCastUseCase: GetMovieCastUseCase,
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
-    private val savePoint:AddPointsUseCase,
+    private val savePoint: AddPointsUseCase,
     private val observeUserProfileUseCase: ObserveUserProfileUseCase,
     guessGameScreenArgs: GuessGameScreenArgs
 ) : BaseViewModel<QuizGameUiState, QuizGameEffect>(
@@ -57,7 +56,7 @@ class QuizGameViewModel @Inject constructor(
             )
         }
 //        viewModelScope.launch {
-            mediaGame()
+        mediaGame()
 //            when (gameType) {
 //                GameType.CHARACTER -> {
 //                    getCast()
@@ -317,9 +316,10 @@ class QuizGameViewModel @Inject constructor(
         updateState {
             it.copy(
                 currentQuestionIndex =
-                    if (it.currentQuestionIndex < it.questions.size-1) it.currentQuestionIndex + 1 else it.currentQuestionIndex,
+                    if (it.currentQuestionIndex < it.questions.size - 1) it.currentQuestionIndex + 1 else it.currentQuestionIndex,
                 selectedAnswer = "",
                 imageBlur = 8f,
+                totalRemainingTime = it.totalRemainingTime + (it.time - it.remainingTime)
             )
         }
     }
@@ -383,8 +383,16 @@ class QuizGameViewModel @Inject constructor(
 
     override fun closeGameClicked() {
         sendNewEffect(QuizGameEffect.CloseGameClicked)
-
     }
+
+    override fun updateRemainingTime(remainingTime: Int) {
+        updateState {
+            it.copy(
+                remainingTime = remainingTime
+            )
+        }
+    }
+
 
     override fun navigateToResult() {
         sendNewEffect(QuizGameEffect.NavigateToResult)
@@ -401,7 +409,6 @@ class QuizGameViewModel @Inject constructor(
                 }
         }
     }
-
 
 
 }

@@ -81,8 +81,6 @@ fun ResultScreen(
 
             ResultBox(
                 totalPoint = totalPoint,
-                numberOfPoints = numberOfPoints,
-                numberOfQuestion = numberOfQuestion
             )
 
             Row(
@@ -196,9 +194,6 @@ private fun ResultHeader(
 private fun ResultBox(
     modifier: Modifier = Modifier,
     totalPoint: Int,
-    numberOfQuestion: Int,
-    numberOfPoints: Int
-
 ) {
     Box(
         modifier = modifier
@@ -236,7 +231,7 @@ private fun ResultBox(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (totalPoint < (numberOfPoints * numberOfQuestion)) {
+                if (totalPoint==0) {
                     Image(
                         painter = painterResource(id = R.drawable.lose_game),
                         contentDescription = "prize",

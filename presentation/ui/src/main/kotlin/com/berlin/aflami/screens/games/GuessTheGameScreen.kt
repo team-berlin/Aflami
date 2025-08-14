@@ -77,12 +77,12 @@ fun GuessTheGameScreen(
                 QuizGameEffect.NavigateToResult -> {
                     navController.navigate(
                        GameResultDestination(
-                           totalTime = state.time,
+                           totalTime = state.totalRemainingTime,
                            gameType = state.gameTypeName,
                            numberOfQuestion = state.questions.size,
                            numberOfPoints = state.numberOfPoint,
                            time = state.time,
-                           totalPoint = state.totalPoint
+                           totalPoint = state.totalPoint,
                        )
                     )
                 }
@@ -181,9 +181,8 @@ fun GuessTheGameContent(
                     }
                 },
                 trailingIcon = {
-                    CountdownCircularProgress(totalTimePerSecond =state.time){
-                        listener.nextQuestionClicked()
-                    }
+                    CountdownCircularProgress(totalTimePerSecond =state.time){remainingTime->
+                        listener.updateRemainingTime(remainingTime)                    }
                 })
             Indicator(
                 modifier = Modifier
@@ -273,6 +272,7 @@ fun GuessTheGameContent(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onClick = {
+                    listener.updateRemainingTime(state.remainingTime)
                     if(state.currentQuestionIndex<state.questions.size-1) listener.nextQuestionClicked()
                     else listener.navigateToResult()
                 },
