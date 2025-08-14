@@ -339,7 +339,6 @@ private fun AnimatedSnackBar(
     isSnackBarVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Log.d("WOWTEST", "AnimatedSnackBar: $isSnackBarVisible")
     AnimatedVisibility(
         visible = isSnackBarVisible, enter = slideInVertically(
             initialOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
@@ -353,7 +352,6 @@ private fun AnimatedSnackBar(
             )
         ) + fadeOut()
     ) {
-        Log.d("WOWTEST", "Anioamtedvisibalityscioe: $isSnackBarVisible")
 
         SnackBar(
             isVisible = isSnackBarVisible,

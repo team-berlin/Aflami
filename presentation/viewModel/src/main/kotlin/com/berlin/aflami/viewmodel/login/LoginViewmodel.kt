@@ -94,7 +94,6 @@ class LoginViewmodel @Inject constructor(
         sendNewEffect(LoginScreenEffect.NavigateToCreateAccountScreen)
 
     private fun handleErrorState(message: String) {
-        Log.d("WOWTEST", "handleErrorState: $message")
         updateState { screenState ->
             screenState.copy(
                 isError = true,
