@@ -37,7 +37,7 @@ fun MediaGridList(
             ) { index ->
                 val movie = media[index]
                 if (movie != null) {
-                    val type = movie.mediaType ?: MediaType.MOVIE
+                    val type = movie.mediaType
                     MediaCard(
                         modifier = Modifier
                             .height(222.dp),
@@ -48,9 +48,9 @@ fun MediaGridList(
                         },
                         mediaImg = movie.poster,
                         title = movie.title,
-                        typeOfMedia = when (movie.mediaType) {
-                            MediaType.TV_SHOW -> stringResource(com.berlin.designsystem.R.string.tv_shows)
-                            MediaType.MOVIE -> stringResource(R.string.movie)
+                        typeOfMedia = when (type) {
+                            MediaType.TV_SHOW -> MediaType.TV_SHOW.name
+                            MediaType.MOVIE -> MediaType.MOVIE.name
                         },
                         date = movie.releaseYear,
                         rating = movie.rating
