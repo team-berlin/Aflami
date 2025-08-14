@@ -20,6 +20,7 @@ data class QuizGameUiState(
     val currentQuestionIndex: Int=0,
     val time:Int=0,
     val totalPoint:Int=0,
+    val showScore:Boolean=false,
     val numberOfPoint:Int=0,
     val remainingTime:Int=0,
     val totalRemainingTime:Int=0,
