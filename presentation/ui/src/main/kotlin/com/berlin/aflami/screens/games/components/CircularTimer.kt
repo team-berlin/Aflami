@@ -28,11 +28,10 @@ import kotlinx.coroutines.delay
 fun CountdownCircularProgress(
     totalTimePerSecond: Int,
     modifier: Modifier = Modifier,
-    onFinishedTime:()->Unit,
-    onTimeChanged:(Int)->Unit,
-
+    onFinishedTime: () -> Unit,
+    onTimeChanged: (Int) -> Unit,
 ) {
-    var currentTime by remember { mutableStateOf(totalTimePerSecond) }
+    var currentTime by remember(totalTimePerSecond) { mutableStateOf(totalTimePerSecond) }
     val textColor by animateColorAsState(
         targetValue = when {
             currentTime <= 5 -> Theme.color.statusColors.redAccent
@@ -40,15 +39,16 @@ fun CountdownCircularProgress(
         },
     )
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(totalTimePerSecond) {
+        currentTime = totalTimePerSecond
         while (currentTime > 0) {
             delay(1000)
             currentTime--
             onTimeChanged(currentTime)
         }
         onFinishedTime()
-
     }
+
     Box(
         modifier = modifier
             .size(40.dp)
