@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.categories
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -47,6 +49,7 @@ import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.screens.search.getMovieGenreIcon
+import com.berlin.aflami.screens.search.getMovieGenreName
 import com.berlin.aflami.screens.search.search.Chips
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryInteractionListener
@@ -153,6 +156,7 @@ fun MediaByCategoryContent(
     }
 }
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 private fun MediaByCategoryResultGrid(
     categories: List<GenreUiState>,
@@ -172,7 +176,6 @@ private fun MediaByCategoryResultGrid(
             onCategoryCardClicked(it)
         },
         modifier = Modifier
-            .width(102.dp)
             .fillMaxHeight()
             .padding(horizontal = 16.dp),
     )
@@ -181,9 +184,9 @@ private fun MediaByCategoryResultGrid(
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 8.dp),
-            columns = Adaptive(minSize = 242.dp),
-            contentPadding = PaddingValues(8.dp),
+              ,
+            columns = Adaptive(minSize =242.dp),
+            contentPadding = PaddingValues(end = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -253,7 +256,7 @@ private fun GenreChipsColumn(
         ) { genre ->
             Box(Modifier.size(height = 96.dp, width = 70.dp)) {
                 Chips(
-                    title = genre.name,
+                    title = stringResource(getMovieGenreName(genre.id)),
                     icon = painterResource(getMovieGenreIcon(genre.id)),
                     isSelected = genre.isSelected,
                     onClick = { onGenreClick(genre.id.toLong()) }

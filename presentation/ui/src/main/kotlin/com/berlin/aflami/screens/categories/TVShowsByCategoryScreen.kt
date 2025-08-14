@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -179,8 +180,8 @@ private fun TvShowsByCategoryResultGrid(
                 onCategoryCardClicked(it)
             },
             modifier = Modifier
-                .width(102.dp)
                 .fillMaxHeight()
+                .navigationBarsPadding()
                 .padding(horizontal = 16.dp),
         )
         Box(Modifier.fillMaxSize())
@@ -188,9 +189,9 @@ private fun TvShowsByCategoryResultGrid(
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 8.dp),
-                columns = Adaptive(minSize = 242.dp),
-                contentPadding = PaddingValues(8.dp),
+                ,
+                columns = Adaptive(minSize =242.dp),
+                contentPadding = PaddingValues(end = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
