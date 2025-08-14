@@ -201,7 +201,7 @@ private fun TvShowsByCategoryResultGrid(
                             modifier = Modifier.height(196.dp),
                             mediaImg = media.posterUrl,
                             title = media.title,
-                            typeOfMedia = MediaType.MOVIE.name,
+                            typeOfMedia = MediaType.TV_SHOW.name,
                             date = media.releaseDate,
                             rating = media.rating,
                             onClick = { onTvShowCardClicked(media.id) }
