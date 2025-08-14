@@ -336,8 +336,7 @@ class QuizGameViewModel @Inject constructor(
                 state.copy(
                     selectedAnswer = answer,
                     isAnswerCorrect = isCorrect,
-                    totalPoint = if (isCorrect) state.totalPoint + numberOfPoints
-                    else (state.totalPoint - numberOfPoints).coerceAtLeast(0),
+                    totalPoint = if (isCorrect) state.totalPoint + numberOfPoints else  state.totalPoint,
                     imageBlur = if (isCorrect) 0f else state.imageBlur,
                 )
             }

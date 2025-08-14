@@ -92,7 +92,7 @@ fun GuessTheGameScreen(
 
     var showScore by remember { mutableStateOf(false) }
 
-    LaunchedEffect(state.selectedAnswer) {
+    LaunchedEffect(state.selectedAnswer.isNotBlank()) {
             showScore = true
             delay(3000)
             showScore = false
@@ -181,8 +181,8 @@ fun GuessTheGameContent(
                     }
                 },
                 trailingIcon = {
-                    CountdownCircularProgress(totalTimePerSecond =state.time, questionId = state.currentQuestionIndex){
-                        listener.navigateToResult()
+                    CountdownCircularProgress(totalTimePerSecond =state.time){
+                        listener.nextQuestionClicked()
                     }
                 })
             Indicator(
@@ -274,7 +274,6 @@ fun GuessTheGameContent(
                     .fillMaxWidth(),
                 onClick = {
                     if(state.currentQuestionIndex<state.questions.size-1) listener.nextQuestionClicked()
-                    else listener.navigateToResult()
                 },
                 gradientColor = primaryGredient
             ) {

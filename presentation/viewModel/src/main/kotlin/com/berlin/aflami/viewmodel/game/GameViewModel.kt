@@ -14,25 +14,43 @@ class GameViewModel @Inject constructor(
     private val observeUserProfileUseCase: ObserveUserProfileUseCase,
 ) : BaseViewModel<GameScreenState, GameEffect>(GameScreenState()), GameInteractionListener {
 
-    private var userId=0
+    private var userId: Int? = null
+
+    private val levels = listOf(
+        GameLevel(5, 5, GameLevelType.EASY, 45),
+        GameLevel(10, 10, GameLevelType.MEDIUM, 30),
+        GameLevel(20, 20, GameLevelType.HARD, 10)
+    )
+
     init {
-        loadData()
         collectUserProfile()
     }
 
-    private fun loadData() {
-        val levels = listOf(
-            GameLevel(5, 5, GameLevelType.EASY, 45),
-            GameLevel(10, 10, GameLevelType.MEDIUM, 30),
-            GameLevel(20, 20, GameLevelType.HARD, 10)
-        )
+    private fun collectUserProfile() {
+        viewModelScope.launch {
+            observeUserProfileUseCase()
+                .collect { user ->
+                    val newId = user?.id
+                    userId = newId
+                    if (newId != null) {
+                        // Fetch points now that we have a real ID
+                        loadPointsFor(newId)
+                    } else {
+                        updateState { it.copy(points = 0, gameLevel = levels) }
+                    }
+                }
+        }
+    }
+
+    fun refreshPoints() {
+        val id = userId ?: return
+        viewModelScope.launch { loadPointsFor(id) }
+    }
+
+    private suspend fun loadPointsFor(id: Int) {
         tryToCall(
-            call = {
-                getPointsUseCase(userId)
-            },
-            onSuccess = { points ->
-                updateState { it.copy(points = points, gameLevel = levels) }
-            },
+            call = { getPointsUseCase(id) },
+            onSuccess = { points -> updateState { it.copy(points = points, gameLevel = levels) } },
             onError = { updateState { it.copy(points = 0, gameLevel = levels) } }
         )
     }
@@ -62,20 +80,6 @@ class GameViewModel @Inject constructor(
         )
     }
 
-    override fun onShowLevelDialog() =
-        updateState { it.copy(showDialog = true) }
-
-    override fun onDismissLevelDialog() =
-        updateState { it.copy(showDialog = false) }
-
-    private fun collectUserProfile() {
-        viewModelScope.launch {
-            observeUserProfileUseCase()
-                .collect { user ->
-                    if (user != null) {
-                        userId=user.id
-                    }
-                }
-        }
-    }
+    override fun onShowLevelDialog() = updateState { it.copy(showDialog = true) }
+    override fun onDismissLevelDialog() = updateState { it.copy(showDialog = false) }
 }
