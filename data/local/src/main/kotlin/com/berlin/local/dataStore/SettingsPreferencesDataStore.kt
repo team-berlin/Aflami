@@ -49,16 +49,12 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
 
     suspend fun setContentRestriction(contentRestrictionLevel: String) {
         context.dataStore.edit { prefs ->
-            Log.d("WOWTEST", "setContentRestriction: ${prefs[App_CONTENT_RESTRICTION]}")
-
             prefs[App_CONTENT_RESTRICTION] = contentRestrictionLevel
         }
     }
 
     fun getContentRestriction(): Flow<String?> {
         return context.dataStore.data.map { prefs ->
-            Log.d("WOWTEST", "getContentRestriction: ${prefs[App_CONTENT_RESTRICTION]}")
-
             prefs[App_CONTENT_RESTRICTION] ?: "STRICT"
         }
     }

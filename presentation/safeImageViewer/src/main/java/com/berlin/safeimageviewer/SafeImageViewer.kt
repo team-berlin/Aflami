@@ -8,7 +8,6 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -66,10 +65,10 @@ fun SafeImageViewer(
     }
     val isModelDownloaded = remember { modelManager.isModelDownloaded.value }
     val contentRestrictions by modelManager.contentRestriction.stateIn(
-            scope = rememberCoroutineScope(),
-            started = SharingStarted.Eagerly,
-            initialValue = STRICT_MODERATION
-        )
+        scope = rememberCoroutineScope(),
+        started = SharingStarted.Eagerly,
+        initialValue = "OFF"
+    )
         .collectAsState()
 
     var result by remember { mutableStateOf<ImageClassificationResult?>(null) }
@@ -86,7 +85,7 @@ fun SafeImageViewer(
             contentScale = contentScale ?: ContentScale.Crop
         )
     } else {
-        LaunchedEffect(model, blurCheck) {
+        LaunchedEffect(blurCheck,model) {
             if (blurCheck) {
                 result = classifyImage(context, model, modelManager, contentRestrictions)
                 displayBitmap = result?.bitmap
@@ -106,15 +105,12 @@ fun SafeImageViewer(
         }
         displayBitmap?.let { bitmap ->
             val shouldBlur = if (blurCheck) {
-                Log.d("WOWTEST", "shouldBlur: blurCheck is  ${result!!.isSafe}")
                 result?.let { !it.isSafe } == true
-            } else false
-            Log.d("WOWTEST", "else false: $shouldBlur")
 
-            val blurredBitmap = remember(bitmap, shouldBlur) {
-                //Log.d("WOWTEST", "shouldBlur: $shouldBlur")
+            } else false
+
+            val blurredBitmap = remember(bitmap,shouldBlur) {
                 if (shouldBlur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                    Log.d("WOWTEST", "Blurring bitmap with RenderScript")
                     blurBitmapRenderScript(context, bitmap, 25f)
                 } else bitmap
             }
@@ -128,10 +124,6 @@ fun SafeImageViewer(
                 modifier = modifier
                     .then(
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && shouldBlur) {
-                            Log.d(
-                                "WOWTEST",
-                                "if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && shouldBlur): $shouldBlur"
-                            )
                             Modifier.blur(
                                 radius = 16.dp,
                                 edgeTreatment = BlurredEdgeTreatment.Unbounded
@@ -183,50 +175,20 @@ suspend fun classifyImage(
     val drawable = (result as? SuccessResult)?.image ?: return@withContext null
     val bitmap = drawable.toBitmap()
     return@withContext try {
-         when {
-//            classifyGender(bitmap, modelManager, contentRestrictions) -> ImageClassificationResult(
-//                bitmap,
-//                isSafe = true,
-//                isFemale = false
-//            )
-
-            classifyNSFW(bitmap, modelManager, contentRestrictions) == true -> ImageClassificationResult(
+        when (classifyNSFW(bitmap, modelManager, contentRestrictions)) {
+            true -> ImageClassificationResult(
                 bitmap,
-                isSafe = false,
-                isFemale = true
+                isSafe = true,
             )
 
-            else -> ImageClassificationResult(bitmap, isSafe = true, isFemale = false)
+            false -> ImageClassificationResult(bitmap, isSafe = false)
         }
-    }catch(e: Exception) {
+    } catch (e: Exception) {
         ImageClassificationResult(
             bitmap,
             isSafe = false,
-            isFemale = true
         )
     }
-}
-
-fun classifyGender(
-    bitmap: Bitmap,
-    modelManager: FireBaseModelManager,
-    contentRestrictions: String?
-): Boolean {
-    val genderBuffer = bitmap.toModelByteBuffer(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
-    val genderInput = TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
-    genderInput.loadBuffer(genderBuffer)
-
-    val genderOutput = TensorBuffer.createFixedSize(intArrayOf(1, 2), DataType.FLOAT32)
-
-    modelManager.genderInterpreter?.run(genderInput.buffer, genderOutput.buffer.rewind())
-    val genderModelScore = genderOutput.floatArray[1]
-
-    val isFemale = when (contentRestrictions) {
-        STRICT_MODERATION -> genderModelScore > DEFAULT_IMAGE_MODERATION_THRESHOLD
-        MODERATE_MODERATION -> genderModelScore > 0.5f
-        else -> false
-    }
-    return isFemale
 }
 
 fun classifyNSFW(
@@ -245,14 +207,11 @@ fun classifyNSFW(
     val sexyScore = nsfwModelScore.getOrNull(4) ?: 0f
     val hentaiScore = nsfwModelScore.getOrNull(1) ?: 0f
     val inappropriateScore = pornScore + sexyScore + hentaiScore
-    Log.d("WOWTEST", "classifyNSFW: $contentRestrictions")
     val isSafe = when (contentRestrictions) {
-
-        STRICT_MODERATION -> inappropriateScore > DEFAULT_IMAGE_MODERATION_THRESHOLD
-        MODERATE_MODERATION -> inappropriateScore > STRICT_MODERATION_THRESHOLD
+        STRICT_MODERATION -> inappropriateScore <= DEFAULT_IMAGE_MODERATION_THRESHOLD
+        MODERATE_MODERATION -> inappropriateScore <= STRICT_MODERATION_THRESHOLD
         else -> true
     }
-    Log.d("WOWTEST", "classifyNSFW:  isSafe: $isSafe")
     return isSafe
 }
 
@@ -294,7 +253,6 @@ fun Bitmap.toModelByteBuffer(
 data class ImageClassificationResult(
     val bitmap: Bitmap,
     val isSafe: Boolean,
-    val isFemale: Boolean
 )
 
 const val DEFAULT_IMAGE_MODERATION_THRESHOLD = 0.5f

@@ -53,15 +53,10 @@ class FireBaseModelManager @Inject constructor(
                         models[NSFW_MODEL] = loadFirebaseModel(NSFW_MODEL)
                     }
 
-                    val genderModelJob = async {
-                        models[GENDER_MODEL] = loadFirebaseModel(GENDER_MODEL)
-                    }
 
                     nsfwJob.await()
-                    genderModelJob.await()
 
                     nsfwInterpreter = Interpreter(getModel(NSFW_MODEL), Interpreter.Options())
-                    genderInterpreter = Interpreter(getModel(GENDER_MODEL), Interpreter.Options())
 
                     _isModelDownloaded.value = true
                 }
@@ -91,5 +86,5 @@ class FireBaseModelManager @Inject constructor(
 const val STRICT_MODERATION="STRICT"
 const val MODERATE_MODERATION="MODERATE"
 const val NO_RESTRICTION_MODERATION="OFF"
+
 const val NSFW_MODEL = "nsfw"
-const val GENDER_MODEL = "gender_not_quantized"
