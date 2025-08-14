@@ -535,7 +535,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenStateToError(errorState: ErrorUiState) {
-        Log.e("WOWTEST", "Error: ${errorState.message}")
         updateState { screenState ->
             screenState.copy(
                 errorMessage = errorState.message, isScreenLoading = false

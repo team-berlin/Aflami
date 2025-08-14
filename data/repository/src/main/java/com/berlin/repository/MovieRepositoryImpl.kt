@@ -161,6 +161,12 @@ class MovieRepositoryImpl @Inject constructor(
         return remoteDataSource.getMoviesByCategory(genreId, page).results?.map { it.toDomain() }.orEmpty()
     }
 
+    override suspend fun getMovieGame(): List<Movie> {
+        return remoteDataSource.getMovieGame().results?.map {
+            it.toDomain()
+        }?: emptyList()
+    }
+
     private fun isExpiredOrEmpty(list: List<MovieHomeEntity>): Boolean {
         return list.isEmpty() || list.any {
             System.currentTimeMillis() - it.addedAt > Constants.HOME_CACHE_TIMEOUT_MILLIS

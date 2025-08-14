@@ -39,7 +39,7 @@ fun DeleteListDialog(
                 titleResource = R.string.delete_list, onDismiss = onDismiss
             )
             Image(
-                painter = painterResource(R.drawable.deletealert),
+                painter = painterResource(R.drawable.lose_game),
                 contentDescription = stringResource(R.string.delete_list),
                 modifier = modifier.height(100.dp),
                 contentScale = ContentScale.FillHeight
@@ -62,7 +62,7 @@ fun DeleteListDialog(
                 Text(
                     stringResource(R.string.delete),
                     style = Theme.textStyle.label.large,
-                    color = Theme.color.statusColors.redAccent
+                    color = Theme.color.textColors.onPrimary
                 )
             }
         }

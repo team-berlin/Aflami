@@ -144,6 +144,47 @@
     <string name="movies">الافلام</string>
     <string name="tv_shows">البرامج التليفزيونية</string>
     <string name="no_items_found">لا يوجد محتويات لهذا التصنيف</string>
+    <string name="guess_the_character">خمن الشخصية</string>
+    <string name="next">التالي</string>
+
+    <string name="choose_difficulty_level">اختر مستوى الصعوبة</string>
+    <string name="lets_start">لنبدأ</string>
+
+    <string name="easy">سهل</string>
+    <string name="medium">متوسط</string>
+    <string name="hard">صعب</string>
+
+    <string name="level_easy">٥ أسئلة، ٤٥ ثانية و ٥ نقاط لكل سؤال.</string>
+    <string name="level_medium">١٠ أسئلة، ٣٠ ثانية و ١٠ نقاط لكل سؤال.</string>
+    <string name="level_hard">٢٠ سؤالاً، ١٠ ثواني و ٢٠ نقطة لكل سؤال.</string>
+
+    <string name="guess_character">خمن الشخصية</string>
+
+    <string name="game_finished">لقد انتهيت من اللعبة!</string>
+    <string name="points_achieved">النقاط المحققة</string>
+    <string name="total_time">الوقت الكلي</string>
+    <string name="point_count_sec">ثانية</string>
+    <string name="points_unit_pte">نقاط</string>
+    <string name="back_to_menu">العودة إلى القائمة</string>
+    <string name="play_again">إعادة اللعب</string>
+    <string name="let_s_play">هيا بنا نلعب</string>
+
+    <string name="not_enough_points">النقاط غير كافية</string>
+    <string name="not_enough_points_for_hint">عذراً، ليس لديك نقاط كافية للحصول على تلميح</string>
+    <string name="ok">تمام</string>
+    <string name="oops_you_lose_the_game"> لقد خسرت اللعبة!</string>
+    <string name="game_guess_character_title">خمن الشخصية</string>
+    <string name="game_guess_character_desc">هل تستطيع معرفة من هي هذه الشخصية؟</string>
+
+    <string name="game_guess_poster_title">خمن من الملصق</string>
+    <string name="game_guess_poster_desc">طابق الملصق مع العنوان الصحيح!</string>
+
+    <string name="game_release_title">متى تم إصداره؟</string>
+    <string name="game_release_desc">اختر سنة الإصدار الصحيحة.</string>
+
+    <string name="game_genre_title">أي نوع؟</string>
+    <string name="game_genre_desc">أي واحد هو فيلم الأكشن الحقيقي؟</string>
+
 
 
 </resources>

@@ -166,12 +166,14 @@ class RetrofitRemoteDataSource @Inject constructor(
 
     override suspend fun getUserFavouriteLists(page: Int): List<FavouriteListDto> {
         Log.d("Khairy", "remote DS$page")
-        return apiService.getUserLists(
-            accountId = authenticationLocalDataSource.getUserAccountId(),
-            page = page,
-            sessionId = authenticationLocalDataSource.getUserSessionId()
-                ?: throw IllegalStateException("userSessionID == null"),
-        ).body()!!.results ?: emptyList()
+        return wrapApiResponse {
+            apiService.getUserLists(
+                accountId = authenticationLocalDataSource.getUserAccountId(),
+                page = page,
+                sessionId = authenticationLocalDataSource.getUserSessionId()
+                    ?: throw IllegalStateException("userSessionID == null"),
+            )
+        }.results ?: emptyList()
     }
 
     override suspend fun getUserFavouriteListItems(
@@ -319,4 +321,13 @@ class RetrofitRemoteDataSource @Inject constructor(
             apiService.getRatedTVShows(accountId.toString(), sessionId, page)
         }
     }
+
+    override suspend fun getMovieGame(): BaseResponse<MovieDetailsDto> {
+        return wrapApiResponse { apiService.getMovieGame() }
+    }
+
+    override suspend fun getTVShow(): BaseResponse<TVShowDetailsDto> {
+        return wrapApiResponse { apiService.getTVShowGame() }
+    }
+
 }

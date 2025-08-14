@@ -9,6 +9,7 @@ import com.berlin.local.dao.HomeMovieDao
 import com.berlin.local.dao.HomeTVShowDao
 import com.berlin.local.dao.RecentHistoryDao
 import com.berlin.local.dao.SearchDao
+import com.berlin.local.dao.UserPointsDao
 import com.berlin.local.dao.UserProfileDao
 import dagger.Module
 import dagger.Provides
@@ -61,15 +62,24 @@ object DaoModule {
     fun provideAppEntryDao(db: AflamiDatabase): AppEntryDao {
         return db.appEntryDao()
     }
+
     @Provides
     @Singleton
     fun provideMovieHomeDao(db: AflamiDatabase): HomeMovieDao {
         return db.homeMovieDao()
     }
+
     @Provides
     @Singleton
     fun provideTVShowHomeDao(db: AflamiDatabase): HomeTVShowDao {
         return db.homeTVShowDao()
     }
+
+    @Provides
+    @Singleton
+    fun provideUserPointsDao(db: AflamiDatabase): UserPointsDao {
+        return db.userPointsDao()
+    }
+
 
 }
