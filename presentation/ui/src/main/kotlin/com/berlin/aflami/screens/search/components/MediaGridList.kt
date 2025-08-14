@@ -21,7 +21,7 @@ import com.berlin.ui.R
 fun MediaGridList(
     modifier: Modifier = Modifier,
     media: LazyPagingItems<MediaUiState>,
-    onMovieClick: (Long, mediaType: MediaType) -> Unit
+    onMovieClick: (Long, MediaType) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -41,8 +41,9 @@ fun MediaGridList(
                         modifier = Modifier
                             .height(222.dp),
                         onClick = {
+                            val type = movie.mediaType ?: MediaType.MOVIE
                             onMovieClick(
-                                movie.id, movie.mediaType ?: MediaType.MOVIE
+                                movie.id, type
                             )
                         },
                         mediaImg = movie.poster,
