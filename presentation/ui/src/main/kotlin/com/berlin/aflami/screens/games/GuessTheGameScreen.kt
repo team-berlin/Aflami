@@ -49,25 +49,24 @@ import com.berlin.aflami.screens.onBoarding.Indicator
 import com.berlin.aflami.ui.color.ExtraColors.gameBackgroundGradient
 import com.berlin.aflami.ui.color.ExtraColors.primaryGredient
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.game.GameType
 import com.berlin.aflami.viewmodel.quizgame.QuestionType
 import com.berlin.aflami.viewmodel.quizgame.QuizGameEffect
 import com.berlin.aflami.viewmodel.quizgame.QuizGameInteractionListener
 import com.berlin.aflami.viewmodel.quizgame.QuizGameUiState
 import com.berlin.aflami.viewmodel.quizgame.QuizGameViewModel
 import com.berlin.ui.R
-import kotlinx.coroutines.delay
+
 
 @Composable
 fun GuessTheGameScreen(
     viewModel: QuizGameViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val navController=Theme.navController
+    val navController = Theme.navController
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect{
-            when(it){
+        viewModel.effect.collect {
+            when (it) {
                 QuizGameEffect.CloseGameClicked -> {
                     navController.navigate(
                         NavigationBarDestinations.GamesScreen
@@ -76,33 +75,26 @@ fun GuessTheGameScreen(
 
                 QuizGameEffect.NavigateToResult -> {
                     navController.navigate(
-                       GameResultDestination(
-                           totalTime = state.totalRemainingTime,
-                           gameType = state.gameTypeName,
-                           numberOfQuestion = state.questions.size,
-                           numberOfPoints = state.numberOfPoint,
-                           time = state.time,
-                           totalPoint = state.totalPoint,
-                       )
+                        GameResultDestination(
+                            totalTime = state.totalRemainingTime,
+                            gameType = state.gameTypeName,
+                            numberOfQuestion = state.questions.size,
+                            numberOfPoints = state.numberOfPoint,
+                            time = state.time,
+                            totalPoint = state.totalPoint,
+                        )
                     )
                 }
             }
         }
     }
 
-    var showScore by remember { mutableStateOf(false) }
-
-    LaunchedEffect(state.selectedAnswer.isNotBlank()) {
-            showScore = true
-            delay(500)
-            showScore = false
-    }
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = state.error!=null
+        visible = state.error != null
     ) {
-       NoInternetConnectionPlaceholder()
+        NoInternetConnectionPlaceholder()
     }
 
     AnimatedVisibility(
@@ -124,7 +116,6 @@ fun GuessTheGameScreen(
         GuessTheGameContent(
             state,
             viewModel,
-            showScore
         )
     }
 
@@ -135,7 +126,6 @@ fun GuessTheGameScreen(
 fun GuessTheGameContent(
     state: QuizGameUiState,
     listener: QuizGameInteractionListener,
-    showScore: Boolean
 ) {
 
     Box(
@@ -154,7 +144,7 @@ fun GuessTheGameContent(
                 modifier = Modifier.zIndex(1f),
                 title = {
                     Text(
-                        text = stringResource( state.gameTypeName.type),
+                        text = stringResource(state.gameTypeName.type),
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title
                     )
@@ -182,13 +172,8 @@ fun GuessTheGameContent(
                 },
                 trailingIcon = {
                     CountdownCircularProgress(
-                        totalTimePerSecond = state.time,
-                        onTimeChanged = {remainingTime->
-                            listener.updateRemainingTime(remainingTime)
-                        },
-                        onFinishedTime = {
-                            listener.nextQuestionClicked()
-                        }
+                        currentTime = state.remainingTime,
+                        totalTime = state.time,
                     )
                 })
             Indicator(
@@ -230,7 +215,7 @@ fun GuessTheGameContent(
                         hintIcon = com.berlin.designsystem.R.drawable.hint_star,
                     )
                 }
-                if(showScore&&state.numberOfPoint>0){
+                if (state.showScore) {
                     Score(
                         score = "${state.numberOfPoint}",
                         scoreColor = if (state.isAnswerCorrect == true)
@@ -276,8 +261,7 @@ fun GuessTheGameContent(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onClick = {
-                    listener.updateRemainingTime(state.remainingTime)
-                    if(state.currentQuestionIndex<state.questions.size-1) listener.nextQuestionClicked()
+                    if (state.currentQuestionIndex < state.questions.size - 1) listener.nextQuestionClicked()
                     else listener.navigateToResult()
                 },
                 gradientColor = primaryGredient
