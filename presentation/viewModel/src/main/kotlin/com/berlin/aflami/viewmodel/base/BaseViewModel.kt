@@ -50,7 +50,6 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
             } catch (e: ServerException) {
                 onError(ErrorUiState(e.message.toString()))
             } catch (e: AlreadyExistsException) {
-                Log.d("khairy", "catch Already exist exception")
                 onError(MovieAlreadyExistInList(e.message.toString()))
             } catch (e: Exception) {
                 onError(ErrorUiState(e.message.toString()))

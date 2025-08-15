@@ -18,7 +18,7 @@ class MovieSearchPagingSource(
             .filter { movieUiState ->
                 val rating = convertArabicToEnglish(movieUiState.rating.replace('٫', '.'))
                     .toFloatOrNull() ?: return@filter false
-                val matchesRating = rating > selectedRating
+                val matchesRating = rating >= selectedRating
                 val matchesGenre =
                     selectedGenreId == -1 || movieUiState.genre.any { it.id == selectedGenreId }
                 matchesRating && matchesGenre

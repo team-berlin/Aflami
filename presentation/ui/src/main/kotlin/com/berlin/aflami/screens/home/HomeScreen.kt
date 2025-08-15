@@ -54,6 +54,8 @@ import com.berlin.aflami.screens.home.sections.MoodPickerSection
 import com.berlin.aflami.screens.home.sections.PosterSlider
 import com.berlin.aflami.screens.home.sections.TopRatingHomeSections
 import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
+import com.berlin.aflami.screens.search.getMovieGenreName
+import com.berlin.aflami.screens.search.getTvShowGenreName
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
 import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
@@ -281,17 +283,17 @@ private fun HomeContent(
                                                    Box(
                                                        modifier = Modifier.padding(horizontal = 4.dp)
                                                    ) {
-                                                       GenersChip(label = movieGenre.name)
+                                                       GenersChip(label = stringResource(getMovieGenreName(movieGenre.id)))
                                                    }
                                                }
                                                MediaType.TV_SHOW ->
                                                    homeScreenState.tVShowGenres.forEach {
-                                                       tVShow->
-                                                       if (tVShow.id==genreId)
+                                                       tVShowGenre->
+                                                       if (tVShowGenre.id==genreId)
                                                        Box(
                                                        modifier = Modifier.padding(horizontal = 4.dp)
                                                    ) {
-                                                       GenersChip(label = tVShow.name)
+                                                       GenersChip(label = stringResource(getTvShowGenreName(tVShowGenre.id)))
                                                    }
                                                }
                                                null -> TODO()
