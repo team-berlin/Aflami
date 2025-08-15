@@ -1,5 +1,6 @@
 package com.berlin.safeimageviewer
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
@@ -13,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,12 +35,15 @@ import coil3.request.bitmapConfig
 import coil3.toBitmap
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+@SuppressLint("FlowOperatorInvokedInComposition")
 @Composable
 fun SafeImageViewer(
     model: String,
@@ -59,7 +64,12 @@ fun SafeImageViewer(
         ).modelManager()
     }
     val isModelDownloaded = remember { modelManager.isModelDownloaded.value }
-    val contentRestrictions by modelManager.contentRestriction.collectAsState(initial = STRICT_MODERATION)
+    val contentRestrictions by modelManager.contentRestriction.stateIn(
+        scope = rememberCoroutineScope(),
+        started = SharingStarted.Eagerly,
+        initialValue = "OFF"
+    )
+        .collectAsState()
 
     var result by remember { mutableStateOf<ImageClassificationResult?>(null) }
     var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -75,7 +85,7 @@ fun SafeImageViewer(
             contentScale = contentScale ?: ContentScale.Crop
         )
     } else {
-        LaunchedEffect(model, blurCheck) {
+        LaunchedEffect(blurCheck,model) {
             if (blurCheck) {
                 result = classifyImage(context, model, modelManager, contentRestrictions)
                 displayBitmap = result?.bitmap
@@ -95,10 +105,11 @@ fun SafeImageViewer(
         }
         displayBitmap?.let { bitmap ->
             val shouldBlur = if (blurCheck) {
-                result?.let { !it.isSafe || it.isFemale } == true
+                result?.let { !it.isSafe } == true
+
             } else false
 
-            val blurredBitmap = remember(bitmap, shouldBlur) {
+            val blurredBitmap = remember(bitmap,shouldBlur) {
                 if (shouldBlur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                     blurBitmapRenderScript(context, bitmap, 25f)
                 } else bitmap
@@ -164,50 +175,20 @@ suspend fun classifyImage(
     val drawable = (result as? SuccessResult)?.image ?: return@withContext null
     val bitmap = drawable.toBitmap()
     return@withContext try {
-         when {
-            classifyGender(bitmap, modelManager, contentRestrictions) -> ImageClassificationResult(
+        when (classifyNSFW(bitmap, modelManager, contentRestrictions)) {
+            true -> ImageClassificationResult(
                 bitmap,
                 isSafe = true,
-                isFemale = false
             )
 
-            classifyNSFW(bitmap, modelManager, contentRestrictions) -> ImageClassificationResult(
-                bitmap,
-                isSafe = false,
-                isFemale = true
-            )
-
-            else -> ImageClassificationResult(bitmap, isSafe = false, isFemale = false)
+            false -> ImageClassificationResult(bitmap, isSafe = false)
         }
-    }catch(e: Exception) {
+    } catch (e: Exception) {
         ImageClassificationResult(
             bitmap,
             isSafe = false,
-            isFemale = true
         )
     }
-}
-
-fun classifyGender(
-    bitmap: Bitmap,
-    modelManager: FireBaseModelManager,
-    contentRestrictions: String?
-): Boolean {
-    val genderBuffer = bitmap.toModelByteBuffer(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
-    val genderInput = TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
-    genderInput.loadBuffer(genderBuffer)
-
-    val genderOutput = TensorBuffer.createFixedSize(intArrayOf(1, 2), DataType.FLOAT32)
-
-    modelManager.genderInterpreter?.run(genderInput.buffer, genderOutput.buffer.rewind())
-    val genderModelScore = genderOutput.floatArray[1]
-
-    val isFemale = when (contentRestrictions) {
-        STRICT_MODERATION -> genderModelScore > DEFAULT_IMAGE_MODERATION_THRESHOLD
-        MODERATE_MODERATION -> genderModelScore > 0.5f
-        else -> false
-    }
-    return isFemale
 }
 
 fun classifyNSFW(
@@ -226,10 +207,9 @@ fun classifyNSFW(
     val sexyScore = nsfwModelScore.getOrNull(4) ?: 0f
     val hentaiScore = nsfwModelScore.getOrNull(1) ?: 0f
     val inappropriateScore = pornScore + sexyScore + hentaiScore
-
     val isSafe = when (contentRestrictions) {
-        STRICT_MODERATION -> inappropriateScore > DEFAULT_IMAGE_MODERATION_THRESHOLD
-        MODERATE_MODERATION -> inappropriateScore > STRICT_MODERATION_THRESHOLD
+        STRICT_MODERATION -> inappropriateScore <= DEFAULT_IMAGE_MODERATION_THRESHOLD
+        MODERATE_MODERATION -> inappropriateScore <= STRICT_MODERATION_THRESHOLD
         else -> true
     }
     return isSafe
@@ -273,7 +253,6 @@ fun Bitmap.toModelByteBuffer(
 data class ImageClassificationResult(
     val bitmap: Bitmap,
     val isSafe: Boolean,
-    val isFemale: Boolean
 )
 
 const val DEFAULT_IMAGE_MODERATION_THRESHOLD = 0.5f

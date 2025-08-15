@@ -108,7 +108,7 @@ fun SliderCard(
         contentAlignment = Alignment.BottomCenter
     ) {
 
-        AsyncImage(
+        SafeImageViewer(
             model = posterImageUrl,
             contentDescription = "poster Image",
             contentScale = ContentScale.Crop,

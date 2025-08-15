@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.color.ExtraColors.black50
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -96,12 +95,14 @@ fun PlayButton(
 fun BlurredPosterBackground(
     imageUrl: String, modifier: Modifier = Modifier
 ) {
-    AsyncImage(
+    SafeImageViewer(
         model = imageUrl,
         contentDescription = "Blurred Poster Background",
         contentScale = ContentScale.Crop,
         modifier = modifier
             .fillMaxWidth()
-            .background(black50).blur(16.dp),
+            .background(black50)
+            .blur(16.dp),
+        blurCheck = false
     )
 }
