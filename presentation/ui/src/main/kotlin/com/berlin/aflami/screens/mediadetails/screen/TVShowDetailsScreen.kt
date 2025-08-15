@@ -74,6 +74,18 @@ fun TvShowDetailsScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
+        visible = uiState.errorMessage != null
+    ) {
+        NoInternetConnectionPlaceholder(
+            onClick = {
+                viewModel.retry()
+            }
+        )
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
         visible = uiState.isScreenLoading
     ) {
         CircularProgressIndicator(
@@ -94,14 +106,7 @@ fun TvShowDetailsScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = uiState.errorMessage != null
-    ) {
-        NoInternetConnectionPlaceholder()
-    }
-    AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = !uiState.isScreenLoading
+        visible = !uiState.isScreenLoading&&uiState.errorMessage==null
     ) {
         TvShowDetailsContent(
             state = uiState,

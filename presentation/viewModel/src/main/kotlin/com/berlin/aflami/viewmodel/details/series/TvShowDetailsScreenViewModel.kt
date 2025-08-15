@@ -59,12 +59,19 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     init {
         tvShowId
+        loadData()
+    }
+
+    private fun loadData(){
         isTVShowHasVideo(tvShowId = tvShowId)
         getTVShowActors(tvShowId = tvShowId)
         getTVShowDetails(tvShowId = tvShowId)
     }
 
     private fun isTVShowHasVideo(tvShowId: Long) {
+        updateState { screenState ->
+            screenState.copy(isScreenLoading = true, errorMessage = null)
+        }
         tryToCall(
             call = {
                 getTVShowVideos(tvShowId).videoUrl
@@ -80,7 +87,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     private fun getTVShowDetails(tvShowId: Long) {
         updateState { screenState ->
-            screenState.copy(isScreenLoading = true)
+            screenState.copy(isScreenLoading = true, errorMessage = null)
         }
         tryToCall(
             call = {
@@ -127,7 +134,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     private fun getTVShowActors(tvShowId: Long) {
         updateState { screenState ->
-            screenState.copy(isScreenLoading = true)
+            screenState.copy(isScreenLoading = true, errorMessage = null)
         }
         tryToCall(
             call = {
@@ -399,8 +406,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     }
 
-
-
     override fun onRateIconClicked(id: Long) {
         checkLoginThen {
             updateState {
@@ -549,4 +554,12 @@ class TvShowDetailsScreenViewModel @Inject constructor(
             }
         }
     }
+
+    override fun retry() {
+        updateState {
+            it.copy(errorMessage = null, isScreenLoading = true)
+        }
+        loadData()
+    }
+
 }

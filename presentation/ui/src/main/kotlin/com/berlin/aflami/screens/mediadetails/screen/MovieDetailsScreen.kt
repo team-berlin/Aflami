@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -76,6 +77,17 @@ fun MovieDetailsScreen(
         }
     }
 
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.errorMessage!=null
+    ) {
+        NoInternetConnectionPlaceholder(
+            onClick = {
+                viewModel.retry()
+            }
+        )
+    }
 
     AnimatedVisibility(
         enter = fadeIn(), exit = fadeOut(), visible = uiState.isScreenLoading
@@ -85,13 +97,7 @@ fun MovieDetailsScreen(
         )
     }
     AnimatedVisibility(
-        visible = uiState.errorMessage != null
-    ) {
-        NoInternetConnectionPlaceholder()
-    }
-
-    AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = !uiState.isScreenLoading
+        enter = fadeIn(), exit = fadeOut(), visible = !uiState.isScreenLoading&&uiState.errorMessage==null
     ) {
         MovieDetailsContent(
             state = uiState,
