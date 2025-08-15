@@ -282,7 +282,7 @@ fun LoginButtons(
         ) {
             Text(
                 stringResource(R.string.login),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.wrapContentWidth(),
                 style = Theme.textStyle.label.large.copy(
                     textAlign = TextAlign.Center
                 ),
