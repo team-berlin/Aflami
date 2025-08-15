@@ -35,8 +35,6 @@ class ProfileViewModel @Inject constructor(
 ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
 
-       private var userPoints:Int = 0
-
     init {
         collectTheme()
         collectLanguage()
@@ -297,15 +295,17 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             observeUserProfileUseCase()
                 .collect { user ->
-                    if (user != null) {
-                       userPoints= getUserScoreUseCase(user.id)
+                    val points = if (user != null) {
+                        getUserScoreUseCase(user.id)
+                    } else {
+                        0
                     }
                     updateState { s ->
                         s.copy(
                             userAvatarUrl = user?.avatarUrl?.takeIf { it.isNotBlank() },
                             userName = user?.username.orEmpty(),
                             isLoggedIn = user != null,
-                            userPoints =userPoints
+                            userPoints =points
                         )
                     }
                 }
