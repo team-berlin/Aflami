@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.berlin.aflami.component.ThemeAndLocalePreviews
@@ -75,7 +76,7 @@ fun GameCard(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "$points Pts. to unlock",
+                        text = stringResource(R.string.pts_to_unlock, points),
                         style = Theme.textStyle.label.small,
                         color = Theme.color.statusColors.yellowAccent,
                     )
@@ -139,7 +140,7 @@ fun GameCard(
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Text(
-                                text = "play now",
+                                text = stringResource(R.string.play_now),
                                 style = Theme.textStyle.label.small,
                                 color = Theme.color.textColors.title
                             )
