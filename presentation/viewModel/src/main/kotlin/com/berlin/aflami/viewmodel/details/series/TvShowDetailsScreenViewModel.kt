@@ -108,7 +108,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                     tvShowId = tvShowId,
                     numberOfSeasons = tvShowUiState.numberOfSeasons
                 )
-
                 saveTVShowToContinueWatching(
                     TVShow(
                         id = tvShowId,
