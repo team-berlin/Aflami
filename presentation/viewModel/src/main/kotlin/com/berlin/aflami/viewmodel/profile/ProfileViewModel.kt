@@ -6,14 +6,15 @@ import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import com.berlin.entity.ContentRestriction
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginUseCase
+import usecase.game.GetPointsUseCase
 import usecase.profile.ClearUserProfileUseCase
 import usecase.profile.GetContentRestrictionUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
 import usecase.profile.ObserveUserProfileUseCase
-import usecase.profile.RefreshUserProfileUseCase
 import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
@@ -29,11 +30,12 @@ class ProfileViewModel @Inject constructor(
     val setContentRestrictionUseCase: SetContentRestrictionUseCase,
     val getContentRestrictionUseCase: GetContentRestrictionUseCase,
     private val observeUserProfileUseCase: ObserveUserProfileUseCase,
-    private val refreshUserProfileUseCase: RefreshUserProfileUseCase,
     private val clearUserProfileUseCase: ClearUserProfileUseCase,
-
-    ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
+    private val getUserScoreUseCase: GetPointsUseCase,
+) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
+
+       private var userPoints:Int = 0
 
     init {
         collectTheme()
@@ -162,9 +164,9 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-
     override fun onChangePasswordClicked() =
         sendNewEffect(ProfileScreenEffect.NavigateToChangePasswordScreen)
+
     override fun onSettingsLogoutClicked() =
         updateState { it.copy(activeDialog = ProfileDialogType.LOGOUT) }
 
@@ -295,16 +297,18 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             observeUserProfileUseCase()
                 .collect { user ->
+                    if (user != null) {
+                       userPoints= getUserScoreUseCase(user.id)
+                    }
                     updateState { s ->
                         s.copy(
                             userAvatarUrl = user?.avatarUrl?.takeIf { it.isNotBlank() },
                             userName = user?.username.orEmpty(),
-                            isLoggedIn = user != null
+                            isLoggedIn = user != null,
+                            userPoints =userPoints
                         )
                     }
                 }
         }
     }
-
-
 }
