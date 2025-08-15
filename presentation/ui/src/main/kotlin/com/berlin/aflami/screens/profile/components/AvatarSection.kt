@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.Theme
@@ -65,7 +66,7 @@ fun AvatarSection(
                 .padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Text(
-                text = "$userPoints pts.",
+                text = stringResource(R.string.pts, userPoints),
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.onPrimary,
             )

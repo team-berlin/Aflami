@@ -184,7 +184,7 @@
 
     <string name="game_genre_title">أي نوع؟</string>
     <string name="game_genre_desc">أي واحد هو فيلم الأكشن الحقيقي؟</string>
-
+    <string name="pts">%1$s نقطة.</string>
 
 
 </resources>

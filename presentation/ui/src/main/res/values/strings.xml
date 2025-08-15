@@ -181,7 +181,7 @@
 
     <string name="game_genre_title">Which Genre?</string>
     <string name="game_genre_desc">Which one is the real action movie?</string>
-
+    <string name="pts">%1$s pts.</string>
 
 
 </resources>

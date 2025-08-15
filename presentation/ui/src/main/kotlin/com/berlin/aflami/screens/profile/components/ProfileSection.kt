@@ -27,6 +27,7 @@ import com.berlin.ui.R
 fun ProfileSection(
     userAvatar:String,
     userName:String,
+    userScore:Int,
     coverImage: Painter, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
@@ -77,7 +78,7 @@ fun ProfileSection(
         AvatarSection(
             userAvatar = userAvatar,
             userName = userName,
-            userPoints = 100,
+            userPoints = userScore,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(top = 150.dp)
