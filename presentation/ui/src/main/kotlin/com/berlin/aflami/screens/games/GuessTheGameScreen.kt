@@ -94,7 +94,11 @@ fun GuessTheGameScreen(
         exit = fadeOut(),
         visible = state.error != null
     ) {
-        NoInternetConnectionPlaceholder()
+        NoInternetConnectionPlaceholder(
+            onClick = {
+                viewModel.retry()
+            }
+        )
     }
 
     AnimatedVisibility(
@@ -111,7 +115,7 @@ fun GuessTheGameScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = !state.loading
+        visible = !state.loading&&state.questions.isNotEmpty()
     ) {
         GuessTheGameContent(
             state,

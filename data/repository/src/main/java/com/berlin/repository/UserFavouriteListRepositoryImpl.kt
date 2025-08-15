@@ -15,6 +15,7 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
     override suspend fun getUserFavouriteLists(pageNumber: Int): List<FavouriteList> {
         Log.d("Khairy", "fav list page = $pageNumber")
         return remoteDataSource.getUserFavouriteLists(page = pageNumber)
+            .ifEmpty { return emptyList() }
             .map { favouriteListDto ->
                 Log.d("Khairy", "repository $favouriteListDto")
                 favouriteListDto.toDomain()

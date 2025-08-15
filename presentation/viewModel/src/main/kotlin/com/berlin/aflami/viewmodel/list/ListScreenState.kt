@@ -19,6 +19,6 @@ data class ListScreenState(
     val createNewListSheetState: CreateNewListUiState = CreateNewListUiState(),
     val editListSheetState: EditListSheetState = EditListSheetState(),
     val isScreenLoading: Boolean = true,
-    val errorMessage: String? = "",
+    val errorMessage: String? = null,
     val snackBar: SnackBarUiState = SnackBarUiState(),
 )

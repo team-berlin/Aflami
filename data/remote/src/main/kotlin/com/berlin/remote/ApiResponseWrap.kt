@@ -1,5 +1,6 @@
 package com.berlin.remote
 
+import android.util.Log
 import com.berlin.exception.AlreadyExistsException
 import com.berlin.exception.ApiException
 import com.berlin.exception.NetworkException
@@ -19,6 +20,9 @@ suspend fun <T> wrapApiResponse(request: suspend () -> Response<T>): T {
             throw ApiException("API error: ${response.code()} - ${response.message()}")
         }
 
+    } catch (ioException: IOException) {
+        Log.d("Khairy", "IO Exception")
+        throw NetworkException("Network error: ${ioException.message}")
     } catch (e: UnknownHostException) {
         throw NetworkException("No internet connection: ${e.message}")
     } catch (e: IOException) {

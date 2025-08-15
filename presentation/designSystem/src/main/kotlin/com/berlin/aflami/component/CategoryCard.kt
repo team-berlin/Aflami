@@ -81,7 +81,7 @@ fun CategoryCardPreview() {
         CategoryCard(
             modifier = Modifier,
             stringResource(R.string.action),
-            painterResource(R.drawable.adventure_img)
+            painterResource(R.drawable.adventure_category)
         )
     }
 }

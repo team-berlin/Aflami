@@ -329,4 +329,18 @@ class QuizGameViewModel @Inject constructor(
         super.onCleared()
         stopTimer()
     }
+
+    override fun retry() {
+        updateState {
+            it.copy(
+                error = null,
+                loading = true
+            )
+        }
+
+        viewModelScope.launch {
+            initializeGame()
+        }
+    }
+
 }

@@ -33,7 +33,7 @@ fun SearchSuggestionHub(
             subtitle = stringResource(R.string.explore_world_cinema),
             contentDescription = stringResource(R.string.icon_cd),
             gradientBackground = darkPurpleLinearGradient,
-            painter = painterResource(R.drawable.news_img),
+            painter = painterResource(R.drawable.news_category),
             onClick = onSearchByCountryClick
         )
 
@@ -43,7 +43,7 @@ fun SearchSuggestionHub(
             subtitle = stringResource(R.string.search_by_favorite_actor),
             contentDescription = stringResource(R.string.icon_cd),
             gradientBackground = blueLinearGradient,
-            painter = painterResource(R.drawable.news_img),
+            painter = painterResource(R.drawable.news_category),
             onClick = onSearchByActorClick
         )
     }
