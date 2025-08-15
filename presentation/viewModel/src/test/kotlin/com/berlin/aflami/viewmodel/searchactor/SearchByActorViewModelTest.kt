@@ -6,7 +6,6 @@ import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenEffect
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
-import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.google.common.truth.Truth.assertThat
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers

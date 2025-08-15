@@ -66,7 +66,7 @@ fun CreateNewListDialog(
                 modifier = modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                containerColor = Theme.color.primary,
+                containerColor =Theme.color.primary,
                 isEnabled = listName.text.isNotBlank()
             ) {
                 Text(

@@ -1,27 +1,33 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
-import androidx.compose.ui.res.stringResource
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun VideoScreen(videoUrl: String) {
     var isLoading by remember { mutableStateOf(true) }
-    Log.e("Video screen",videoUrl)
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier.statusBarsPadding().fillMaxSize(),

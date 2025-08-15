@@ -58,7 +58,9 @@ import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.SearchData
 import com.berlin.aflami.screens.search.getMovieGenreIcon
+import com.berlin.aflami.screens.search.getMovieGenreName
 import com.berlin.aflami.screens.search.getTvShowGenreIcon
+import com.berlin.aflami.screens.search.getTvShowGenreName
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.FilterInteractionListener
 import com.berlin.aflami.viewmodel.search.SearchScreenEffect
@@ -443,6 +445,7 @@ private fun SearchScreenContent(
                             state = state.filterItemUiState.filterMovieSelected,
                             filterListener = filterSearch,
                             getIcon = ::getMovieGenreIcon,
+                            getGenreName = ::getMovieGenreName
                         )
                     }
 
@@ -451,6 +454,7 @@ private fun SearchScreenContent(
                             state = state.filterItemUiState.filterTvShowSelected,
                             filterListener = filterSearch,
                             getIcon = ::getTvShowGenreIcon,
+                            getGenreName = ::getTvShowGenreName
                         )
                     }
                 }

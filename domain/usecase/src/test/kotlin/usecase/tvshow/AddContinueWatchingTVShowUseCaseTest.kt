@@ -6,11 +6,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.TVShowRepository
-import usecase.movie.AddContinueWatchingMovieUseCaseTest.Companion.DB_ERROR
 
 class AddContinueWatchingTVShowUseCaseTest {
 

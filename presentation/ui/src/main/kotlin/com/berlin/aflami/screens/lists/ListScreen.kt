@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.lists
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -184,9 +185,11 @@ private fun ListsContent(
             EditListDialog(
                 listId = listScreenState.editListSheetState.requiredListIdToEdit!!,
                 listName = listScreenState.editListSheetState.currentListTitle,
-                onListNameChanged = { interactionListener.onOldListTitleChanged(
-                    it.text
-                ) },
+                onListNameChanged = {
+                    interactionListener.onOldListTitleChanged(
+                        it.text
+                    )
+                },
                 onSaveClick = interactionListener::onSaveOldListTitleToNewTitleClicked,
                 onDismiss = interactionListener::onCancelEditingListClicked,
             )
@@ -194,7 +197,7 @@ private fun ListsContent(
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
-            visible = (favouriteLists.loadState.refresh !is LoadState.Loading && listScreenState.isUserLoggedIn == true) && favouriteLists.itemCount == 0 && !listScreenState.isScreenLoading && listScreenState.errorMessage != null,
+            visible = favouriteLists.loadState.refresh !is LoadState.Loading && listScreenState.isUserLoggedIn == true && favouriteLists.loadState.refresh is LoadState.Error,
         ) {
             NoInternetConnectionPlaceholder(
                 onClick = interactionListener::onClickRetryFetchList
@@ -221,7 +224,9 @@ private fun ListsContent(
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
-            visible = (favouriteLists.loadState.refresh !is LoadState.Loading && listScreenState.isUserLoggedIn == true) && favouriteLists.itemCount == 0 && !listScreenState.isScreenLoading && listScreenState.errorMessage == null,
+            visible = (favouriteLists.loadState.refresh !is LoadState.Loading
+                    && listScreenState.isUserLoggedIn == true)
+                    && favouriteLists.loadState.refresh !is LoadState.Error,
         ) {
             CountryTourExploring(
                 modifier = Modifier
@@ -291,6 +296,7 @@ private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavContr
         is ListScreenEffect.NavigateToSeeAllListScreen -> navController.navigate(
             ListDetailsDestination(listId = effect.listId, listTitle = effect.listTitle)
         )
+
         ListScreenEffect.NavigateToLoginScreen -> navController.navigate(route = LoginDestination)
     }
 }

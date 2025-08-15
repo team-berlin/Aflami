@@ -5,11 +5,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
-import usecase.movie.GetPopularMoviesUseCaseTest.Companion.EXCEPTION
 
 class GetRecentMoviesHistoryUseCaseTest {
     private var movieRepository: MovieRepository = mockk()

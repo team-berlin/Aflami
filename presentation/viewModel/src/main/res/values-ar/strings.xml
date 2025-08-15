@@ -6,4 +6,12 @@
     <string name="there_is_no_season">لا توجد حلقات!</string>
     <string name="there_is_no_gallery">لا توجد صور!</string>
     <string name="unknown_error">خطأ غير معروف</string>
+    <string name="game_guess_character_title">خمن الشخصية</string>
+
+    <string name="game_guess_poster_title">خمن من الملصق</string>
+
+    <string name="game_release_title">متى تم إصداره؟</string>
+
+    <string name="game_genre_title">أي نوع؟</string>
+
 </resources>

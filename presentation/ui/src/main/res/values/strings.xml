@@ -139,6 +139,49 @@
     <string name="rate_it">Rate it</string>
     <string name="select_how_much_you_like_it">Select how much you like it</string>
     <string name="submit">Submit</string>
+    <string name="guess_the_character">Guess the character</string>
+    <string name="next">Next</string>
+
+    <string name="choose_difficulty_level">Choose Difficulty Level</string>
+    <string name="lets_start">Let’s start</string>
+
+
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+
+    <string name="level_easy">5 question, 45sec and 5 point per question.</string>
+    <string name="level_medium">10 question, 30sec and 10 point per question.</string>
+    <string name="level_hard">20 question, 10sec and 20 point per question.</string>
+
+    <string name="guess_character">Guess the character</string>
+
+    <string name="game_finished">You finished the GAME!</string>
+    <string name="points_achieved">Points Achieved</string>
+    <string name="total_time">Total time</string>
+    <string name="point_count_sec">Sec.</string>
+    <string name="points_unit_pte">Pts.</string>
+    <string name="back_to_menu">Back to menu</string>
+    <string name="play_again">Play again</string>
+    <string name="let_s_play">Let’s play</string>
+
+    <string name="not_enough_points">Not enough points</string>
+    <string name="not_enough_points_for_hint">Sorry, you don’t have the enough points to have a hint</string>
+    <string name="ok">Ok</string>
+    <string name="oops_you_lose_the_game">Oops, you lose the GAME!</string>
+
+    <string name="game_guess_character_title">Guess the Character</string>
+    <string name="game_guess_character_desc">Can you tell who this character?</string>
+
+    <string name="game_guess_poster_title">Guess by Poster</string>
+    <string name="game_guess_poster_desc">Match the poster with the right title!</string>
+
+    <string name="game_release_title">When Was It Released?</string>
+    <string name="game_release_desc">Pick the right release year.</string>
+
+    <string name="game_genre_title">Which Genre?</string>
+    <string name="game_genre_desc">Which one is the real action movie?</string>
+
 
 
 </resources>

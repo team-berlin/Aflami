@@ -1,9 +1,8 @@
 package com.berlin.repository.datasource.local
 
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
-import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
-
 import com.berlin.repository.datasource.local.dto.SectionHome
+import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 
 interface HomeLocalDataSource {
     suspend fun getMoviesBySection(sectionHome: SectionHome): List<MovieHomeEntity>

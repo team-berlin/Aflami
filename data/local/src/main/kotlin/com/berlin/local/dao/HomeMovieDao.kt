@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
+import com.berlin.repository.datasource.local.dto.SectionHome
 
 @Dao
 interface HomeMovieDao {

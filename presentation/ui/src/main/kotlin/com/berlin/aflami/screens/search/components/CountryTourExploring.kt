@@ -59,7 +59,7 @@ fun CountryTourExploring(
 private fun CountryTourExploringPreview() {
     CountryTourExploring(
         modifier = Modifier,
-        painterResource(R.drawable.world_tour),
+        painterResource(com.berlin.designsystem.R.drawable.news_category),
         R.string.world_tour,
         R.string.country_tour_description
 

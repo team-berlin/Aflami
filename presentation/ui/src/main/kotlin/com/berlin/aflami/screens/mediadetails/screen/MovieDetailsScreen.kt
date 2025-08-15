@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -51,11 +50,11 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.MovieTab
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.base.MovieAlreadyExistInList
 import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
-import com.berlin.aflami.viewmodel.details.movie.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsViewModel
+import com.berlin.aflami.viewmodel.details.movie.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.movie.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
@@ -88,7 +87,6 @@ fun MovieDetailsScreen(
     AnimatedVisibility(
         visible = uiState.errorMessage != null
     ) {
-        Log.d("khairy", "error message is ${uiState.errorMessage}")
         NoInternetConnectionPlaceholder()
     }
 
@@ -296,7 +294,6 @@ fun MovieDetailsContent(
                     isReviewExpanded = { id -> state.expandedReviewIds.contains(id) },
                     onToggleReviewExpand = { id -> listener.onReadMoreReviewClicked(id) },
                     onMovieCardClicked = { mediaId ->
-                        Log.e("click", "click")
                         listener.onMediaCardClicked(mediaId)
                     },
                 )

@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.details.series
 
-import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -535,7 +534,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenStateToError(errorState: ErrorUiState) {
-        Log.e("WOWTEST", "Error: ${errorState.message}")
         updateState { screenState ->
             screenState.copy(
                 errorMessage = errorState.message, isScreenLoading = false

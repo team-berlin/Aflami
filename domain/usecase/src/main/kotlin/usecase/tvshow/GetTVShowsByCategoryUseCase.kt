@@ -1,7 +1,5 @@
 package usecase.tvshow
 
-import com.berlin.entity.Movie
-import repository.MovieRepository
 import repository.TVShowRepository
 import javax.inject.Inject
 

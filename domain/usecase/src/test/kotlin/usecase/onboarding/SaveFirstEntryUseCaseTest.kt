@@ -6,7 +6,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertThrows
 import repository.AppEntryRepository
 

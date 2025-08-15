@@ -39,6 +39,7 @@ object ApiConstants {
     const val POPULAR_MOVIES = "movie/popular"
     const val DISCOVER_MOVIE = "discover/movie"
     const val TOP_RATED_MOVIES = "movie/top_rated"
+    const val MOVIE="discover/movie"
 
     // TV show endpoints
     const val SERIES_DETAILS = "tv/{$SERIES_ID}"
@@ -51,6 +52,7 @@ object ApiConstants {
     const val POPULAR_TV_SHOWS = "tv/popular"
     const val TOP_RATED_SERIES = "tv/top_rated"
     const val TV_VIDEO_DETAILS = "tv/{$SERIES_ID}/videos"
+    const val TV_SHOW="discover/tv"
     const val DISCOVER_SERIES = "discover/tv"
 
     // Authentication endpoints

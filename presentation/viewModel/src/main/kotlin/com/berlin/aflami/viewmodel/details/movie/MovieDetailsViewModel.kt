@@ -1,7 +1,6 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 
-import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -458,7 +457,6 @@ class MovieDetailsViewModel @Inject constructor(
                 )
             }
         }, onError = { errorUiState ->
-            Log.d("khairy", "error uiState is $errorUiState")
             updateState { screenState ->
                 screenState.copy(
                     snackBar = SnackBarUiState(

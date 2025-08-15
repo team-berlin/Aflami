@@ -1,6 +1,7 @@
 package com.berlin.aflami.di
 
 import com.berlin.repository.AuthenticationRepositoryImpl
+import com.berlin.repository.GameRepositoryImpl
 import com.berlin.repository.MovieDetailsRepositoryImpl
 import com.berlin.repository.MovieRepositoryImpl
 import com.berlin.repository.RatedMediaRepositoryImp
@@ -17,6 +18,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import repository.AppEntryRepository
 import repository.AuthenticationRepository
+import repository.GameRepository
 import repository.MovieDetailsRepository
 import repository.MovieRepository
 import repository.RatedMediaRepository
@@ -99,6 +101,12 @@ abstract class RepositoryModule {
     abstract fun bindRatedMediaRepository(
         impl: RatedMediaRepositoryImp
     ): RatedMediaRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindGameRepository(
+        impl: GameRepositoryImpl
+    ): GameRepository
 
 
 }

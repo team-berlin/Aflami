@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.berlin.aflami.component.Rating
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
