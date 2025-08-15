@@ -1,9 +1,12 @@
 package com.berlin.aflami.screens.mainactivity
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.drawable.Animatable
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AnticipateInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -36,21 +39,12 @@ class MainActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
 
-        splashScreen.setOnExitAnimationListener { splashView ->
-            (splashView.iconView as? Animatable)?.start()
-            splashView.iconView.animate()
-                .alpha(0.5f)
-                .setDuration(3000)
-                .withEndAction { splashView.remove() }
-                .start()
-        }
         splashScreen.setKeepOnScreenCondition {
             mainActivityViewModel.state.value.isLoading
         }
-
+        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             val profileState by profileViewModel.state.collectAsState()
