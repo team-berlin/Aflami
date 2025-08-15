@@ -38,12 +38,11 @@ class FireBaseModelManager @Inject constructor(
                 STRICT_MODERATION -> STRICT_MODERATION
                 MODERATE_MODERATION -> MODERATE_MODERATION
                 else -> NO_RESTRICTION_MODERATION
-            }.also { Log.d("WOWTEST", "FireBaseModelManager: ${it}") }
+            }
         }
         .distinctUntilChanged()
 
     internal var nsfwInterpreter: Interpreter? = null
-    internal var genderInterpreter: Interpreter? = null
     suspend fun downloadModelsOnce() {
         networkConnectivityObserver.observe().first { it == NetworkStatus.Available }
         withContext(Dispatchers.IO) {
@@ -52,10 +51,7 @@ class FireBaseModelManager @Inject constructor(
                     val nsfwJob = async {
                         models[NSFW_MODEL] = loadFirebaseModel(NSFW_MODEL)
                     }
-
-
                     nsfwJob.await()
-
                     nsfwInterpreter = Interpreter(getModel(NSFW_MODEL), Interpreter.Options())
 
                     _isModelDownloaded.value = true
@@ -71,7 +67,6 @@ class FireBaseModelManager @Inject constructor(
         return models[name]
             ?: throw IllegalStateException("Model $name not found. Please download models first.")
     }
-
     suspend fun loadFirebaseModel(name: String): MappedByteBuffer {
         val downloader = FirebaseModelDownloader.getInstance()
         val model = downloader.getModel(
