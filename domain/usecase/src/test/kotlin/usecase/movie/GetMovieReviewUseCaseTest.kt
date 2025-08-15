@@ -9,8 +9,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieDetailsRepository
-import usecase.movie.GetMovieGenresUseCaseTest.Companion.GENRES
-import kotlin.collections.emptyList
 
 class GetMovieReviewUseCaseTest {
     private val movieDetailsRepository: MovieDetailsRepository = mockk()

@@ -45,7 +45,6 @@ import com.berlin.aflami.viewmodel.searchactor.SearchByActorInteractionListener
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenEffect
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
 
 @SuppressLint("StateFlowValueCalledInComposition")

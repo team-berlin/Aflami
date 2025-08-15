@@ -29,15 +29,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
-import com.berlin.aflami.screens.search.components.Loading
+import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenEffect
 import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingMediaInteractionListener
-import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenState
 import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingMediaViewModel
+import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenEffect
+import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenState
+import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ContinueWatchingScreen(
@@ -77,9 +77,10 @@ fun ContinueWatchingScreen(
 private fun onReceiveEffect(navController: NavController, effect: ContinueWatchingScreenEffect) {
     when (effect) {
         is ContinueWatchingScreenEffect.NavigateToDetailsScreen -> {
-            navController.navigate(
-                MovieDetailsDestination(effect.mediaId)
-            )
+            when (effect.mediaType) {
+                MediaType.TV_SHOW -> navController.navigate(TVShowDetailsDestination(effect.mediaId))
+                MediaType.MOVIE -> navController.navigate(MovieDetailsDestination(effect.mediaId))
+            }
         }
 
         is ContinueWatchingScreenEffect.NavigateBack -> {
@@ -130,11 +131,11 @@ fun WatchedMediaContent(
             else -> {
                 MediaGridList(
                     media = pagedMovies,
-                    onMovieClick = listener::onMediaCardClicked,
+                    onMovieClick = { id, type ->
+                        listener.onMediaCardClicked(id, type)
+                    },
                 )
             }
         }
-
     }
-
 }

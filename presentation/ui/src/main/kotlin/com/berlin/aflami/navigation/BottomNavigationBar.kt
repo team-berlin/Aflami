@@ -37,11 +37,16 @@ enum class BottomNavigationItem(
     val route: NavigationBarDestinations,
 ) {
     Home(R.drawable.home, R.string.label_home, NavigationBarDestinations.HomeScreen),
-    Lists(R.drawable.lists, R.string.label_lists, NavigationBarDestinations.ListScreen),
-    Categories(R.drawable.categories, R.string.label_categories, NavigationBarDestinations.CategoriesScreen),
+    Lists(R.drawable.lists, R.string.label_lists, NavigationBarDestinations.ListsScreenNoArgs),
+    Categories(
+        R.drawable.categories,
+        R.string.label_categories,
+        NavigationBarDestinations.CategoriesScreen
+    ),
     Games(R.drawable.letsplay, R.string.label_lets_play, NavigationBarDestinations.GamesScreen),
     Profile(R.drawable.profile, R.string.label_profile, NavigationBarDestinations.ProfileScreen);
 }
+
 val bottomNavList = BottomNavigationItem.entries
 
 @Composable

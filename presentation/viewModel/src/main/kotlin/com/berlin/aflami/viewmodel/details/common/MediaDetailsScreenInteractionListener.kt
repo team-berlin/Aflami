@@ -12,12 +12,15 @@ interface MediaDetailsScreenInteractionListener :
 
     fun onBackClicked()
     fun onPlayClicked(videoUrl: String)
+    fun onAddMovieToFavouriteClicked()
     fun onReadMoreDescriptionClicked()
     fun onReadMoreReviewClicked(reviewId: String)
     fun onShowCastClicked(mediaId: Long)
     fun onMediaCardClicked(mediaId: Long)
     fun onLoginButtonClicked()
     fun onLoginDialogDismissed()
+    fun dismissSnackBar()
+    fun retry()
 
 }
 

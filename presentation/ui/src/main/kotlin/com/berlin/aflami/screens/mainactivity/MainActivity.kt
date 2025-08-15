@@ -2,7 +2,6 @@ package com.berlin.aflami.screens.mainactivity
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.graphics.drawable.Animatable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,21 +34,12 @@ class MainActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
 
-        splashScreen.setOnExitAnimationListener { splashView ->
-            (splashView.iconView as? Animatable)?.start()
-            splashView.iconView.animate()
-                .alpha(0.5f)
-                .setDuration(3000)
-                .withEndAction { splashView.remove() }
-                .start()
-        }
         splashScreen.setKeepOnScreenCondition {
             mainActivityViewModel.state.value.isLoading
         }
-
+        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             val profileState by profileViewModel.state.collectAsState()
@@ -63,7 +53,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
             UpdateLocale(profileState.selectedLanguage)
-            AflamiTheme(isDarkTheme = isDarkTheme) {
+            AflamiTheme(
+                isDarkTheme = isDarkTheme,
+                selectedLanguage = profileState.selectedLanguage
+            ) {
                 val mainState by mainActivityViewModel.state.collectAsState()
 
                 if (!mainState.isLoading) {
@@ -83,7 +76,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @SuppressLint("LocalContextConfigurationRead")
 @Composable
 fun UpdateLocale(selectedLanguage: String) {
@@ -92,7 +84,7 @@ fun UpdateLocale(selectedLanguage: String) {
         val locale = when (selectedLanguage) {
             "AR" -> Locale("ar")
             "EN" -> Locale("en")
-            else -> Locale.getDefault()
+            else -> Locale("en")
         }
         Locale.setDefault(locale)
         val config = Configuration(context.resources.configuration)

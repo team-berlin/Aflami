@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Theme.SplashScreen.ComposeSplash" parent="Theme.SplashScreen.IconBackground">
-        <item name="windowSplashScreenBackground">@color/background_color</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/background_color</item>
-        <item name="postSplashScreenTheme">@style/Theme.Aflami</item>
-    </style>
-</resources>

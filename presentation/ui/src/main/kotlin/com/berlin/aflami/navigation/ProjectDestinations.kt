@@ -1,5 +1,6 @@
 package com.berlin.aflami.navigation
 
+import com.berlin.aflami.viewmodel.game.GameType
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import kotlinx.serialization.Serializable
 
@@ -10,7 +11,7 @@ sealed interface NavigationBarDestinations {
     object HomeScreen : NavigationBarDestinations
 
     @Serializable
-    object ListScreen : NavigationBarDestinations
+    object ListsScreenNoArgs : NavigationBarDestinations
 
     @Serializable
     object CategoriesScreen : NavigationBarDestinations
@@ -25,7 +26,8 @@ sealed interface NavigationBarDestinations {
 
 val bottomNavBarDestinationsMap = mapOf(
     NavigationBarDestinations.HomeScreen::class.qualifiedName to NavigationBarDestinations.HomeScreen,
-    NavigationBarDestinations.ListScreen::class.qualifiedName to NavigationBarDestinations.ListScreen,
+    ListsScreenWithArgs::class.qualifiedName to NavigationBarDestinations.ListsScreenNoArgs,
+    NavigationBarDestinations.ListsScreenNoArgs::class.qualifiedName to NavigationBarDestinations.ListsScreenNoArgs,
     NavigationBarDestinations.CategoriesScreen::class.qualifiedName to NavigationBarDestinations.CategoriesScreen,
     NavigationBarDestinations.GamesScreen::class.qualifiedName to NavigationBarDestinations.GamesScreen,
     NavigationBarDestinations.ProfileScreen::class.qualifiedName to NavigationBarDestinations.ProfileScreen
@@ -77,14 +79,34 @@ object SearchByActorDestination
 object WatchHistoryDestination
 
 @Serializable
+class GuessGameDestination(
+    val gameType: GameType,
+    val numberOfQuestion: Int,
+    val numberOfPoint: Int,
+    val time: Int
+)
+
+@Serializable
+class GameResultDestination(
+    val totalTime:Int,
+    val gameType :GameType,
+    val numberOfQuestion :Int,
+    val numberOfPoints :Int,
+    val totalPoint :Int,
+    val time:Int
+)
+
+@Serializable
 object MyRatingDestination
 
 @Serializable
-data class ListDetailsDestination(val listId: Int)
+data class ListDetailsDestination(val listId: Int, val listTitle: String)
 
 @Serializable
-data class ListsScreen(
-    val showEditSheet: Boolean = false,
+data class ListsScreenWithArgs(
+    val showEditSheet: Boolean? = null,
+    val listTitle: String? = null,
     val requiredToEditListId: Int? = null,
-    val showDeletedSnackBar: Boolean? = false,
+    val showDeletedSnackBar: Boolean? = null,
+    val isListDeletedSuccessfully: Boolean? = null,
 )

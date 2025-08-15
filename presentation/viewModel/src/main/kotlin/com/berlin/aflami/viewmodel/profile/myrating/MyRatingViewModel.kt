@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.profile.myrating
 
-import android.util.Log
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.search.TabOption
@@ -67,7 +66,6 @@ class MyRatingViewModel @Inject constructor(
     private fun ratedMoviesFlow() = androidx.paging.Pager(
         config = defaultPageConfigurations(),
         pagingSourceFactory = {
-            Log.d("MyRatingVM", "Creating RatedMoviesPagingSource")
             RatedMoviesPagingSource(getRatedMoviesUseCase)
         }
     ).flow
@@ -75,7 +73,6 @@ class MyRatingViewModel @Inject constructor(
     private fun ratedTvFlow() = androidx.paging.Pager(
         config = defaultPageConfigurations(),
         pagingSourceFactory = {
-            Log.d("MyRatingVM", "Creating RatedTVShowsPagingSource")
             RatedTVShowsPagingSource(getRatedTVShowsUseCase)
         }
     ).flow

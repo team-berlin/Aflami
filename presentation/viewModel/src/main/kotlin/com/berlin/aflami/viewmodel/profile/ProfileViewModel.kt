@@ -1,25 +1,23 @@
 package com.berlin.aflami.viewmodel.profile
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
-import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import com.berlin.entity.ContentRestriction
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import usecase.auth.GetLoginUseCase
+import usecase.game.GetPointsUseCase
 import usecase.profile.ClearUserProfileUseCase
-import usecase.auth.GetLoginStatusUseCase
 import usecase.profile.GetContentRestrictionUseCase
 import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
 import usecase.profile.ObserveUserProfileUseCase
-import usecase.profile.RefreshUserProfileUseCase
 import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,13 +26,12 @@ class ProfileViewModel @Inject constructor(
     val getThemeUseCase: GetThemeUseCase,
     val setLanguageUseCase: SetLanguageUseCase,
     val setThemeUseCase: SetThemeUseCase,
-    val getLoginStatus: GetLoginStatusUseCase,
+    val getLoginStatus: GetLoginUseCase,
     val setContentRestrictionUseCase: SetContentRestrictionUseCase,
     val getContentRestrictionUseCase: GetContentRestrictionUseCase,
     private val observeUserProfileUseCase: ObserveUserProfileUseCase,
-    private val refreshUserProfileUseCase: RefreshUserProfileUseCase,
-    private val clearUserProfileUseCase: ClearUserProfileUseCase
-
+    private val clearUserProfileUseCase: ClearUserProfileUseCase,
+    private val getUserScoreUseCase: GetPointsUseCase,
 ) : BaseViewModel<ProfileUiState, ProfileScreenEffect>(ProfileUiState()),
     ProfileInteractionListener {
 
@@ -64,6 +61,16 @@ class ProfileViewModel @Inject constructor(
             )
         }
     }
+
+    private fun checkLoginStatus() {
+        viewModelScope.launch {
+            getLoginStatus().collect { loggedIn ->
+
+                updateState { it.copy(isLoggedIn = loggedIn) }
+            }
+        }
+    }
+
     override fun onWatchHistoryClick() {
         sendNewEffect(ProfileScreenEffect.NavigateToWatchHistoryScreen)
     }
@@ -155,9 +162,9 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-
     override fun onChangePasswordClicked() =
         sendNewEffect(ProfileScreenEffect.NavigateToChangePasswordScreen)
+
     override fun onSettingsLogoutClicked() =
         updateState { it.copy(activeDialog = ProfileDialogType.LOGOUT) }
 
@@ -210,9 +217,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val selectRestriction = ContentRestriction.valueOf(state.value.tempSelectedRestriction)
             val percentage = getContentRestrictionPercentage(selectRestriction.name)
-            Log.d("FireBaseModelManager", "onSaveContentRestriction: ${selectRestriction.name}")
             setContentRestrictionUseCase(selectRestriction)
-            Log.d("FireBaseModelManager", "onSaveContentRestriction: ${selectRestriction.name}")
             updateState {
                 it.copy(
                     selectedRestriction = it.tempSelectedRestriction,
@@ -229,12 +234,6 @@ class ProfileViewModel @Inject constructor(
             "MODERATE" -> 50
             "OFF" -> 0
             else -> 100
-        }
-    }
-    private fun checkLoginStatus() {
-        viewModelScope.launch {
-            val loggedIn = getLoginStatus()
-            updateState { it.copy(isLoggedIn = loggedIn) }
         }
     }
 
@@ -258,7 +257,8 @@ class ProfileViewModel @Inject constructor(
     private fun collectLanguage() {
         viewModelScope.launch {
             getLanguageUseCase().collect { currentLanguage ->
-                val appLanguage = currentLanguage ?: Locale.getDefault().language.uppercase()
+                val appLanguage =
+                    currentLanguage ?: AppLanguage.valueOf(state.value.selectedLanguage).name
                 updateState {
                     it.copy(
                         selectedLanguage = appLanguage,
@@ -295,16 +295,20 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             observeUserProfileUseCase()
                 .collect { user ->
+                    val points = if (user != null) {
+                        getUserScoreUseCase(user.id)
+                    } else {
+                        0
+                    }
                     updateState { s ->
                         s.copy(
                             userAvatarUrl = user?.avatarUrl?.takeIf { it.isNotBlank() },
                             userName = user?.username.orEmpty(),
-                            isLoggedIn = user != null
+                            isLoggedIn = user != null,
+                            userPoints =points
                         )
                     }
                 }
         }
     }
-
-
 }

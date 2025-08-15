@@ -14,4 +14,5 @@ data class MovieUiState(
     val duration: String = "",
     val originCountry: String = "",
     val hasVideo: Boolean = false,
+    val isFavourite: Boolean = false,
 )

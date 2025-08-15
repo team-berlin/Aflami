@@ -54,6 +54,8 @@ import com.berlin.aflami.screens.home.sections.MoodPickerSection
 import com.berlin.aflami.screens.home.sections.PosterSlider
 import com.berlin.aflami.screens.home.sections.TopRatingHomeSections
 import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
+import com.berlin.aflami.screens.search.getMovieGenreName
+import com.berlin.aflami.screens.search.getTvShowGenreName
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
 import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
@@ -105,7 +107,6 @@ fun HomeScreen(
         exit = fadeOut(),
         visible = !homeScreenState.isLoading
     ) {
-
         HomeContent(
             homeScreenState = homeScreenState, homeScreenInteractionListener = viewModel
         )
@@ -145,7 +146,7 @@ private fun onReceiveHomeScreenEffect(
             )
         }
 
-        is HomeScreenEffect.NavigateToTVShowDetailsScreen ->{
+        is HomeScreenEffect.NavigateToTVShowDetailsScreen -> {
             navController.navigate(
                 TVShowDetailsDestination(homeScreenEffect.tvShowId)
             )
@@ -161,7 +162,6 @@ private fun HomeContent(
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
-
 
 
     val appBarAlpha by remember {
@@ -283,17 +283,17 @@ private fun HomeContent(
                                                    Box(
                                                        modifier = Modifier.padding(horizontal = 4.dp)
                                                    ) {
-                                                       GenersChip(label = movieGenre.name)
+                                                       GenersChip(label = stringResource(getMovieGenreName(movieGenre.id)))
                                                    }
                                                }
                                                MediaType.TV_SHOW ->
                                                    homeScreenState.tVShowGenres.forEach {
-                                                       tVShow->
-                                                       if (tVShow.id==genreId)
+                                                       tVShowGenre->
+                                                       if (tVShowGenre.id==genreId)
                                                        Box(
                                                        modifier = Modifier.padding(horizontal = 4.dp)
                                                    ) {
-                                                       GenersChip(label = tVShow.name)
+                                                       GenersChip(label = stringResource(getTvShowGenreName(tVShowGenre.id)))
                                                    }
                                                }
                                                null -> TODO()
@@ -363,6 +363,7 @@ private fun HomeContent(
                 }
             }
         }
+
         AnimatedVisibility(homeScreenState.moodPickerUiState.openMovieDialog) {
             with(homeScreenState.moodPickerUiState.selectedMovie) {
                 MoodPickerDialog(
@@ -382,8 +383,7 @@ private fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appBarBgColor)
-                .statusBarsPadding()
-            , onSearchClicked = {
+                .statusBarsPadding(), onSearchClicked = {
                 homeScreenInteractionListener.onSearchClicked()
             }, containerColor = Color.Unspecified
         )

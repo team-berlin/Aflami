@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -179,8 +179,8 @@ private fun TvShowsByCategoryResultGrid(
                 onCategoryCardClicked(it)
             },
             modifier = Modifier
-                .width(102.dp)
                 .fillMaxHeight()
+                .navigationBarsPadding()
                 .padding(horizontal = 16.dp),
         )
         Box(Modifier.fillMaxSize())
@@ -188,9 +188,9 @@ private fun TvShowsByCategoryResultGrid(
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 8.dp),
-                columns = Adaptive(minSize = 242.dp),
-                contentPadding = PaddingValues(8.dp),
+                ,
+                columns = Adaptive(minSize =242.dp),
+                contentPadding = PaddingValues(end = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -201,7 +201,7 @@ private fun TvShowsByCategoryResultGrid(
                             modifier = Modifier.height(196.dp),
                             mediaImg = media.posterUrl,
                             title = media.title,
-                            typeOfMedia = MediaType.MOVIE.name,
+                            typeOfMedia = MediaType.TV_SHOW.name,
                             date = media.releaseDate,
                             rating = media.rating,
                             onClick = { onTvShowCardClicked(media.id) }
@@ -241,7 +241,7 @@ fun NoItemsFound() {
         modifier = Modifier.fillMaxSize(),
     ) {
         Image(
-            painter = painterResource(com.berlin.designsystem.R.drawable.no_items_found),
+            painter = painterResource(R.drawable.no_items_found),
             contentDescription = stringResource(R.string.no_items_found),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)

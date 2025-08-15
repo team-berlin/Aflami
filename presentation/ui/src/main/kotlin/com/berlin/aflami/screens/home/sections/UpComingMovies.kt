@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.home.sections
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.screens.search.getMovieGenreIcon
+import com.berlin.aflami.screens.search.getMovieGenreName
 import com.berlin.aflami.screens.search.search.Chips
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.GenreUiState
@@ -90,7 +90,7 @@ private fun GenreChipsRow(
             key = { it.id }
         ) { genre ->
             Chips(
-                title = genre.name,
+                title = stringResource(getMovieGenreName(genre.id)),
                 icon = painterResource(getMovieGenreIcon(genre.id)),
                 isSelected = genre.isSelected,
                 onClick = { onGenreClick(genre.id) }

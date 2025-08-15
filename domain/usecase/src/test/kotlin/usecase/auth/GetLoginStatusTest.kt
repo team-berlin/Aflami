@@ -11,8 +11,8 @@ import repository.AuthenticationRepository
 
 class GetLoginStatusTest {
     private val authenticationRepository: AuthenticationRepository = mockk()
-    private var getLoginStatusUseCase: GetLoginStatusUseCase =
-        GetLoginStatusUseCase(authenticationRepository)
+    private var getLoginStatusUseCase: GetLoginUseCase =
+        GetLoginUseCase(authenticationRepository)
 
     @Test
     fun `should return true when user is logged in`() = runTest {

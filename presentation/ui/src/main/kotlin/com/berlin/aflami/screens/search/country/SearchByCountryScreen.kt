@@ -45,7 +45,6 @@ import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenInteractionListener
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenState
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenViewModel
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.ui.R
 
 @Composable
@@ -245,7 +244,7 @@ private fun ErrorContent() {
 private fun InitContent() {
     CountryTourExploring(
         modifier = Modifier.fillMaxSize(),
-        image = painterResource(R.drawable.world_tour),
+        image = painterResource(com.berlin.designsystem.R.drawable.news_category),
         titleId = R.string.country_tour,
         messageId = R.string.country_tour_description
     )

@@ -71,8 +71,8 @@ import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.login.FormUiState
-import com.berlin.aflami.viewmodel.login.LoginScreenEffect
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
+import com.berlin.aflami.viewmodel.login.LoginScreenEffect
 import com.berlin.aflami.viewmodel.login.LoginScreenState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.ui.R
@@ -117,6 +117,9 @@ fun LoginScreen(
 fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) {
     Box(
         modifier = Modifier
+            .fillMaxSize(),
+    ) { Box(
+        modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
             .background(
@@ -156,14 +159,17 @@ fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) 
                 onCreateAccountClicked = listener::onCreateAccountClicked
             )
         }
-        AnimatedSnackBar(
-            message = stringResource(id = R.string.login_error_message),
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(alignment = Alignment.TopCenter),
-            isSnackBarVisible = uiState.isError
-        )
+
     }
+    AnimatedSnackBar(
+        message = stringResource(id = R.string.login_error_message),
+        modifier = Modifier
+            .align(Alignment.TopCenter)
+            .statusBarsPadding()
+        ,
+        isSnackBarVisible = uiState.isError
+    )
+}
 }
 
 @Composable
@@ -344,11 +350,13 @@ private fun AnimatedSnackBar(
             )
         ) + fadeOut()
     ) {
+
         SnackBar(
-            modifier = modifier,
+            isVisible = isSnackBarVisible,
             status = SnackBarStatus.ERROR,
             text = message,
-            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error)
+            modifier=modifier,
+            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
         )
     }
 }

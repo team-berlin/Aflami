@@ -81,6 +81,26 @@
     <string name="guess_play">خمن والعب!</string>
     <string name="page4_description">اختبر معلوماتك عن الأفلام مع مسابقات شيّقة. كل إجابة صحيحة تقرّبك من مغامرة الفيلم الجاية.</string>
     <string name="skip">تخطي</string>
+    <string name="no_saved_items_here">لا توجد عناصر محفوظة!</string>
+    <string name="you_can_add_items_to_your_list_by_searching_for_them_in_the_app">برجاء اضافة عناصر جديده</string>
+    <string name="delete_list">حذف القائمة</string>
+    <string name="delete_confirm">هل أنت متأكد من مواصلة الحذف؟</string>
+    <string name="delete">حذف</string>
+    <string name="create_new_list">أنشاء قائمه جديدة</string>
+    <string name="create">أنشاء</string>
+    <string name="my_favorite">My Favorite</string>
+    <string name="no_lists_yet">لا توجد قوائم بعد!</string>
+    <string name="our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love">عقلنا لا يزال فارغًا، اضغط على + وابدأ بحفظ عناصرك وعروضك المفضلة التي تحبها!</string>
+    <string name="lists">القوائم</string>
+
+    <plurals name="item_count">
+        <item quantity="zero">لا عناصر</item>
+        <item quantity="one">عنصر واحد</item>
+        <item quantity="two">عنصران</item>
+        <item quantity="few">%d عناصر</item>
+        <item quantity="many">%d عنصراً</item>
+        <item quantity="other">%d عنصر</item>
+    </plurals>
 
     //profile
     <string name="language_dialog_english">الانجليزية</string>
@@ -100,6 +120,20 @@
     <string name="strict_description">إخفاء جميع المحتوى الحساس.</string>
     <string name="moderate_description">إخفاء المشاهد الصريحة فقط.</string>
     <string name="off_description">عدم إخفاء المحتوى.</string>
+    <string name="new_list_created">تم إنشاء قائمة جديده بنجاح</string>
+    <string name="create_new_list_failed">فشل إنشاء قائمة جديدة</string>
+    <string name="movie_added_success"> تمت إضافة للقائمة</string>
+    <string name="movie_added_failed">فشل الإضافة للقائمة</string>
+    <string name="not_supported_feature">عذراً، هذة الميزة متاحة للأفلام فقط</string>
+    <string name="movie_already_exists">تمت إضافة الفيلم مرة مسبقا لهذه القائمة</string>
+    <string name="edit_list_title">تعديل القائمة</string>
+    <string name="save_button">حفظ</string>
+    <string name="list_edit_successfully">تم تعديل القائمة بنجاح</string>
+    <string name="list_deleted_successfully">تم مسح القائمة بنجاح</string>
+    <string name="list_failed_to_edit">هذه الخاصية غير مدعومة بعد</string>
+    <string name="list_failed_to_deleted">خدث خطأ أثناء مسح القائمة</string>
+    <string name="add_to_list">ألاضافة الي قائمة</string>
+    <string name="add">اضافه</string>
     <string name="sure_to_continue">أأنت متأكد من رغبتك في المتابعة؟</string>
     <string name="logout_msg"> فإن مللت منا، فاعلم أننا باقون هنا في انتظارك.</string>
 
@@ -110,6 +144,47 @@
     <string name="movies">الافلام</string>
     <string name="tv_shows">البرامج التليفزيونية</string>
     <string name="no_items_found">لا يوجد محتويات لهذا التصنيف</string>
+    <string name="guess_the_character">خمن الشخصية</string>
+    <string name="next">التالي</string>
+
+    <string name="choose_difficulty_level">اختر مستوى الصعوبة</string>
+    <string name="lets_start">لنبدأ</string>
+
+    <string name="easy">سهل</string>
+    <string name="medium">متوسط</string>
+    <string name="hard">صعب</string>
+
+    <string name="level_easy">٥ أسئلة، ٤٥ ثانية و ٥ نقاط لكل سؤال.</string>
+    <string name="level_medium">١٠ أسئلة، ٣٠ ثانية و ١٠ نقاط لكل سؤال.</string>
+    <string name="level_hard">٢٠ سؤالاً، ١٠ ثواني و ٢٠ نقطة لكل سؤال.</string>
+
+    <string name="guess_character">خمن الشخصية</string>
+
+    <string name="game_finished">لقد انتهيت من اللعبة!</string>
+    <string name="points_achieved">النقاط المحققة</string>
+    <string name="total_time">الوقت الكلي</string>
+    <string name="point_count_sec">ثانية</string>
+    <string name="points_unit_pte">نقاط</string>
+    <string name="back_to_menu">العودة إلى القائمة</string>
+    <string name="play_again">إعادة اللعب</string>
+    <string name="let_s_play">هيا بنا نلعب</string>
+
+    <string name="not_enough_points">النقاط غير كافية</string>
+    <string name="not_enough_points_for_hint">عذراً، ليس لديك نقاط كافية للحصول على تلميح</string>
+    <string name="ok">تمام</string>
+    <string name="oops_you_lose_the_game"> لقد خسرت اللعبة!</string>
+    <string name="game_guess_character_title">خمن الشخصية</string>
+    <string name="game_guess_character_desc">هل تستطيع معرفة من هي هذه الشخصية؟</string>
+
+    <string name="game_guess_poster_title">خمن من الملصق</string>
+    <string name="game_guess_poster_desc">طابق الملصق مع العنوان الصحيح!</string>
+
+    <string name="game_release_title">متى تم إصداره؟</string>
+    <string name="game_release_desc">اختر سنة الإصدار الصحيحة.</string>
+
+    <string name="game_genre_title">أي نوع؟</string>
+    <string name="game_genre_desc">أي واحد هو فيلم الأكشن الحقيقي؟</string>
+    <string name="pts">%1$s نقطة.</string>
 
 
 </resources>

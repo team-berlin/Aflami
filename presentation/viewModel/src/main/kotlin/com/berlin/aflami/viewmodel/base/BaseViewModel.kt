@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.base
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
@@ -8,6 +7,7 @@ import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.ENABLE_PLACEH
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.INITIAL_LOAD_SIZE
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PAGE_SIZE
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PREFETCH_DISTANCE
+import com.berlin.exception.AlreadyExistsException
 import com.berlin.exception.NetworkException
 import com.berlin.exception.NotFoundException
 import com.berlin.exception.ServerException
@@ -48,6 +48,8 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
                 onError(ErrorUiState(e.message.toString()))
             } catch (e: ServerException) {
                 onError(ErrorUiState(e.message.toString()))
+            } catch (e: AlreadyExistsException) {
+                onError(MovieAlreadyExistInList(e.message.toString()))
             } catch (e: Exception) {
                 onError(ErrorUiState(e.message.toString()))
             }
@@ -66,7 +68,7 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
         enablePlaceholders = enablePlaceholders
     )
 
-    protected fun updateState(updater: (SCREEN_STATE,) -> SCREEN_STATE) = _state.update(updater)
+    protected fun updateState(updater: (SCREEN_STATE) -> SCREEN_STATE) = _state.update(updater)
 
     protected fun sendNewEffect(newEffect: SCREEN_EFFECT) {
         viewModelScope.launch() {

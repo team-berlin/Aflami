@@ -80,6 +80,11 @@
     <string name="setting_dialog_logout">Logout</string>
     <string name="setting_dialog_logout_quote">Tired to watching?</string>
     <string name="setting_dialog_content_restriction">Content Restriction</string>
+    <string name="no_saved_items_here">No Saved Items Here!</string>
+    <string name="you_can_add_items_to_your_list_by_searching_for_them_in_the_app">You can add items to your list by searching for them in the app.</string>
+    <string name="delete_list">Delete List</string>
+    <string name="delete_confirm">Are you sure to continue deleting?</string>
+    <string name="delete">Delete</string>
     <string name="movies_that_feel_you">Movies That Feel You</string>
     <string name="page1_descerption">This isn’t just a movie app — it’s a mood experience. Tap your vibe and let the story begin.</string>
     <string name="build_your_watchlist_show_love">Build Your Watchlist, show love</string>
@@ -89,6 +94,17 @@
     <string name="guess_play"><![CDATA[Guess & Play!]]></string>
     <string name="page4_description">Put your film knowledge to the test with exciting quizzes. Every right guess brings you closer to the next movie adventure.</string>
     <string name="skip">Skip</string>
+    <string name="create_new_list">Create New List</string>
+    <string name="create">Create</string>
+    <string name="my_favorite">My Favorite</string>
+    <string name="no_lists_yet">No lists yet!</string>
+    <string name="our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love">Our brain is still empty, Click on + and start saving your favorite items and shows you love!</string>
+    <string name="lists">Lists</string>
+
+    <plurals name="item_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
     <string name="watch__history">Watch history</string>
     <string name="no_result_found">No result found</string>
     <string name="Please_login">Please login to access your account details and other features!</string>
@@ -99,6 +115,20 @@
     <string name="strict_description">Blurs all sensitive content.</string>
     <string name="moderate_description">Blurs explicit scenes only.</string>
     <string name="off_description">No content is blurred.</string>
+    <string name="new_list_created">New List Added Successfully</string>
+    <string name="create_new_list_failed">Failed To Create New List</string>
+    <string name="movie_added_success">Added To List Successfully</string>
+    <string name="movie_added_failed">Failed To Add To List</string>
+    <string name="not_supported_feature">Sorry, this feature is available for movies only</string>
+    <string name="movie_already_exists">Movie Already Exists In This List</string>
+    <string name="edit_list_title">Edit List</string>
+    <string name="save_button">Save</string>
+    <string name="list_edit_successfully">List Edited Successfully</string>
+    <string name="list_failed_to_edit">Not Supported Feature Yet</string>
+    <string name="list_deleted_successfully">List Deleted successfully</string>
+    <string name="list_failed_to_deleted">Failed To Delete List</string>
+    <string name="add_to_list">Add to List</string>
+    <string name="add">Add</string>
     <string name="catgories">Categories</string>
     <string name="movies">Movies</string>
     <string name="tv_shows">TV Shows</string>
@@ -109,6 +139,49 @@
     <string name="rate_it">Rate it</string>
     <string name="select_how_much_you_like_it">Select how much you like it</string>
     <string name="submit">Submit</string>
+    <string name="guess_the_character">Guess the character</string>
+    <string name="next">Next</string>
+
+    <string name="choose_difficulty_level">Choose Difficulty Level</string>
+    <string name="lets_start">Let’s start</string>
+
+
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+
+    <string name="level_easy">5 question, 45sec and 5 point per question.</string>
+    <string name="level_medium">10 question, 30sec and 10 point per question.</string>
+    <string name="level_hard">20 question, 10sec and 20 point per question.</string>
+
+    <string name="guess_character">Guess the character</string>
+
+    <string name="game_finished">You finished the GAME!</string>
+    <string name="points_achieved">Points Achieved</string>
+    <string name="total_time">Total time</string>
+    <string name="point_count_sec">Sec.</string>
+    <string name="points_unit_pte">Pts.</string>
+    <string name="back_to_menu">Back to menu</string>
+    <string name="play_again">Play again</string>
+    <string name="let_s_play">Let’s play</string>
+
+    <string name="not_enough_points">Not enough points</string>
+    <string name="not_enough_points_for_hint">Sorry, you don’t have the enough points to have a hint</string>
+    <string name="ok">Ok</string>
+    <string name="oops_you_lose_the_game">Oops, you lose the GAME!</string>
+
+    <string name="game_guess_character_title">Guess the Character</string>
+    <string name="game_guess_character_desc">Can you tell who this character?</string>
+
+    <string name="game_guess_poster_title">Guess by Poster</string>
+    <string name="game_guess_poster_desc">Match the poster with the right title!</string>
+
+    <string name="game_release_title">When Was It Released?</string>
+    <string name="game_release_desc">Pick the right release year.</string>
+
+    <string name="game_genre_title">Which Genre?</string>
+    <string name="game_genre_desc">Which one is the real action movie?</string>
+    <string name="pts">%1$s pts.</string>
 
 
 </resources>

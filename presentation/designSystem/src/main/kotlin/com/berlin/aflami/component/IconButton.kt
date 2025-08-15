@@ -1,6 +1,5 @@
 package com.berlin.aflami.component
 
-import android.health.connect.datatypes.ExerciseCompletionGoal.UnspecifiedGoal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

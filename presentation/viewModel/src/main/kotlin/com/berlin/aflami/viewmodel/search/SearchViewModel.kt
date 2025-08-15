@@ -308,7 +308,11 @@ class SearchViewModel @Inject constructor(
     }
 
     override fun onFilterButtonClicked() {
-        updateState { it.copy(isDialogVisible = true, isLoading = false) }
+        if (
+            state.value.searchQuery.text.isEmpty().not()
+        ) {
+            updateState { it.copy(isDialogVisible = true, isLoading = false) }
+        }
 
     }
 

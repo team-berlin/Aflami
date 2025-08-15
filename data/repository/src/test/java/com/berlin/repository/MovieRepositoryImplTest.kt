@@ -7,11 +7,8 @@ import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.fake.dummydata.DummyData.baseResponseMovieDetails
 import com.berlin.repository.fake.dummydata.DummyData.baseResponsePersonDto
-import com.berlin.repository.fake.dummydata.DummyData.baseResponseTVShowDetails
-import com.berlin.repository.fake.dummydata.DummyData.movieEntity
-import com.berlin.repository.fake.dummydata.DummyData.movieHomeEntityTopRated
-import com.berlin.repository.fake.dummydata.DummyData.movieHomeEntityUpcoming
 import com.berlin.repository.fake.dummydata.DummyData.mediaPreferencesList
+import com.berlin.repository.fake.dummydata.DummyData.movieEntity
 import com.berlin.repository.fake.dummydata.DummyData.movieHomeEntity
 import com.berlin.repository.fake.dummydata.DummyData.recentlyWatchedMovieEntity
 import com.berlin.repository.mapper.toDomain

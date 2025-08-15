@@ -81,8 +81,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
                 galleryImages = galleryImages,
                 hasVideo = hasVideo
             )
-        }
-            ?.sortedByDescending { tvShow ->
+        }?.sortedByDescending { tvShow ->
             tvShow.genres.sumOf { genre ->
                 genreScoresMap[genre.id] ?: 0
             }

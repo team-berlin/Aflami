@@ -38,6 +38,7 @@ import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
+import com.berlin.aflami.screens.mediadetails.components.NotSupportedFeatureDialog
 import com.berlin.aflami.screens.mediadetails.components.RateDialog
 import com.berlin.aflami.screens.mediadetails.components.TVShowBackdropPager
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
@@ -73,6 +74,18 @@ fun TvShowDetailsScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
+        visible = uiState.errorMessage != null
+    ) {
+        NoInternetConnectionPlaceholder(
+            onClick = {
+                viewModel.retry()
+            }
+        )
+    }
+
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
         visible = uiState.isScreenLoading
     ) {
         CircularProgressIndicator(
@@ -81,14 +94,19 @@ fun TvShowDetailsScreen(
         )
     }
     AnimatedVisibility(
-        visible = uiState.errorMessage != null
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = uiState.isNotSupportedFeatureDialogVisible
     ) {
-        NoInternetConnectionPlaceholder()
+        NotSupportedFeatureDialog(
+            description = stringResource(com.berlin.ui.R.string.not_supported_feature),
+            onDismiss = { viewModel.onCancelAddingToFavouriteClicked() }
+        )
     }
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = !uiState.isScreenLoading
+        visible = !uiState.isScreenLoading&&uiState.errorMessage==null
     ) {
         TvShowDetailsContent(
             state = uiState,
@@ -149,7 +167,7 @@ fun TvShowDetailsScreen(
 
 private fun onReceiveTVShowDetailsEffect(
     navController: NavController,
-    tvShowDetailsScreenEffect: TvShowDetailsScreenEffect
+    tvShowDetailsScreenEffect: TvShowDetailsScreenEffect,
 ) {
     when (tvShowDetailsScreenEffect) {
         is TvShowDetailsScreenEffect.NavigateToShowAllCastScreen -> {
@@ -179,7 +197,7 @@ private fun onReceiveTVShowDetailsEffect(
                     tvShowDetailsScreenEffect.tvShowId
                 )
             ) {
-                popUpTo(MovieDetailsDestination(movieId = tvShowDetailsScreenEffect.tvShowId)){
+                popUpTo(MovieDetailsDestination(movieId = tvShowDetailsScreenEffect.tvShowId)) {
                     inclusive = true
                 }
 
@@ -285,7 +303,7 @@ fun TvShowDetailsContent(
             lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             onFirstOptionClicked = { listener.onRateIconClicked(state.tvShowUiState.id) },
             onLastOptionClicked = {
-                listener.onAddMediaToFavouriteListClicked(0, state.tvShowUiState.id)
+                listener.onAddMediaToFavouriteButtomClicked(0, 0)
             },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,

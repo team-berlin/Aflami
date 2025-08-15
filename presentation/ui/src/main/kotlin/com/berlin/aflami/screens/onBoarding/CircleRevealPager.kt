@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,11 @@ fun CircleRevealPager(
     modifier: Modifier = Modifier,
    ) {
     var offsetY by remember { mutableFloatStateOf(0f) }
+
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val endPadding = screenWidth * 0.35f
+
     HorizontalPager(
         modifier = modifier
             .pointerInteropFilter {
@@ -107,8 +113,8 @@ fun CircleRevealPager(
                     .padding(start = 12.dp, end = 12.dp, bottom = 96.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
-                BottomPageIndicator(
-                    modifier = Modifier.padding(bottom = 24.dp),
+                Indicator(
+                    modifier = Modifier.padding( end = endPadding),
                     pageNumber = pagerState.currentPage,
                     pageCount = pagerState.pageCount,
                 )

@@ -1,8 +1,8 @@
 package com.berlin.aflami.viewmodel.categories.categories
 
 import androidx.compose.runtime.Immutable
-import com.berlin.aflami.viewmodel.shareduistate.GenreUiState
 import com.berlin.aflami.viewmodel.search.TabOption
+import com.berlin.aflami.viewmodel.shareduistate.GenreUiState
 
 @Immutable
 data class CategoriesScreenUiState (

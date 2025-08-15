@@ -32,8 +32,10 @@ class AuthenticationRepositoryImpl @Inject constructor(
     ) {
         val requestToken = requestToken()
         authenticationRemoteDataSource.login(userName, password, requestToken).also {
-            val session =
+            val session: String =
                 createSession(it.requestToken ?: throw NotFoundException("Token not found"))
+            val accountDetails = authenticationRemoteDataSource.getUserAccountDetails(session)
+            authenticationLocalDataSource.saveUserAccountId(accountDetails.id!!)
             authenticationLocalDataSource.saveUserSessionId(session)
         }
     }

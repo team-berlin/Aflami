@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.categories.movie
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
