@@ -20,6 +20,7 @@ interface MediaDetailsScreenInteractionListener :
     fun onLoginButtonClicked()
     fun onLoginDialogDismissed()
     fun dismissSnackBar()
+    fun retry()
 
 }
 

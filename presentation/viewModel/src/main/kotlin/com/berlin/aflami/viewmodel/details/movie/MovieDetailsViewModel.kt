@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -70,13 +71,19 @@ class MovieDetailsViewModel @Inject constructor(
                 movieUiState = it.movieUiState.copy(id = movieId),
             )
         }
+      loadData()
+    }
+
+    private fun loadData(){
         isMovieHasVideo(movieId = movieId)
         getMovieActors(movieId = movieId)
         getMovieDetails(movieId = movieId)
         onShowMoreMediaLikeThisClicked(mediaId = movieId)
     }
-
     private fun isMovieHasVideo(movieId: Long) {
+        updateState { screenState ->
+            screenState.copy(isScreenLoading = true, errorMessage = null)
+        }
         tryToCall(
             call = {
                 getMovieVideos(movieId).videoUrl
@@ -90,7 +97,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun getMovieDetails(movieId: Long) {
         updateState { screenState ->
-            screenState.copy(isScreenLoading = true)
+            screenState.copy(isScreenLoading = true, errorMessage = null)
         }
         tryToCall(
             call = {
@@ -137,7 +144,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun getMovieActors(movieId: Long) {
         updateState { screenState ->
-            screenState.copy(isScreenLoading = true)
+            screenState.copy(isScreenLoading = true, errorMessage = null)
         }
         tryToCall(
             call = {
@@ -643,5 +650,12 @@ class MovieDetailsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    override fun retry() {
+        updateState {
+            it.copy(errorMessage = null, isScreenLoading = true)
+        }
+        loadData()
     }
 }
