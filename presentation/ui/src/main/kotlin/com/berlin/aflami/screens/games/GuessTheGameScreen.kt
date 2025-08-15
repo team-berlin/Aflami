@@ -34,6 +34,7 @@ import com.berlin.aflami.component.CharacterCard
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.GameResultDestination
+import com.berlin.aflami.navigation.GuessGameDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.authentication.CirclesBackground
@@ -78,7 +79,11 @@ fun GuessTheGameScreen(
                             time = state.time,
                             totalPoint = state.totalPoint,
                         )
-                    )
+                    ) {
+                        popUpTo(GuessGameDestination::class) {
+                            inclusive = true
+                        }
+                    }
                 }
             }
         }
@@ -110,7 +115,7 @@ fun GuessTheGameScreen(
     AnimatedVisibility(
         enter = fadeIn(),
         exit = fadeOut(),
-        visible = !state.loading&&state.questions.isNotEmpty()
+        visible = !state.loading && state.questions.isNotEmpty()
     ) {
         GuessTheGameContent(
             state,
