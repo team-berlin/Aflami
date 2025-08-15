@@ -199,7 +199,6 @@ private fun ListsContent(
             exit = fadeOut(),
             visible = favouriteLists.loadState.refresh !is LoadState.Loading && listScreenState.isUserLoggedIn == true && favouriteLists.loadState.refresh is LoadState.Error,
         ) {
-            Log.d("Khairy", "error message = ${listScreenState.errorMessage}")
             NoInternetConnectionPlaceholder(
                 onClick = interactionListener::onClickRetryFetchList
             )
@@ -229,7 +228,6 @@ private fun ListsContent(
                     && listScreenState.isUserLoggedIn == true)
                     && favouriteLists.loadState.refresh !is LoadState.Error,
         ) {
-            Log.d("Khairy", "error message = ${listScreenState.errorMessage}")
             CountryTourExploring(
                 modifier = Modifier
                     .fillMaxSize()

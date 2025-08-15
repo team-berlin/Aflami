@@ -9,8 +9,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import repository.UserProfileRepository
 import usecase.profile.GetUserProfileUseCase
-import org.junit.jupiter.api.assertThrows
-import repository.UserRepository
 
 class GetUserProfileUseCaseTest {
 

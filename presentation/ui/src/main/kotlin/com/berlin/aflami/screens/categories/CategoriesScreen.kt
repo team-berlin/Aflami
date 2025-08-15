@@ -33,6 +33,8 @@ import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MoviesByCategoryDestination
 import com.berlin.aflami.navigation.TVShowsByCategoryDestination
+import com.berlin.aflami.screens.search.getMovieGenreName
+import com.berlin.aflami.screens.search.getTvShowGenreName
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.categories.categories.CategoriesInteractionListener
 import com.berlin.aflami.viewmodel.categories.categories.CategoriesScreenEffect
@@ -65,14 +67,10 @@ fun CategoryScreen(
             modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
+    CategoriesContent(
+        state = state, listener = viewModel
+    )
 
-    AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = !state.isLoading
-    ) {
-        CategoriesContent(
-            state = state, listener = viewModel
-        )
-    }
 }
 
 private fun categoriesReceiveEffect(navController: NavController, effect: CategoriesScreenEffect) {
@@ -179,7 +177,8 @@ private fun ResultGrid(
     mediaType: MediaType,
 ) {
     LazyVerticalGrid(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .navigationBarsPadding(),
         columns = Adaptive(minSize = 160.dp),
         contentPadding = PaddingValues(
@@ -198,7 +197,11 @@ private fun ResultGrid(
                         genre.id.toLong(), mediaType
                     )
                 },
-                text = genre.name.replace(Regex("\\s*&\\s*|\\s+"), " &\n"),
+                text = if (mediaType == MediaType.MOVIE) stringResource(getMovieGenreName(genre.id))
+                else stringResource(getTvShowGenreName(genre.id)).replace(
+                    Regex("\\s*&\\s*|\\s+"),
+                    " &\n"
+                ),
                 image = if (mediaType == MediaType.MOVIE) painterResource(getMovieCategoryIcon(genre.id))
                 else painterResource(getTvShowCategoryIcon(genre.id)),
             )

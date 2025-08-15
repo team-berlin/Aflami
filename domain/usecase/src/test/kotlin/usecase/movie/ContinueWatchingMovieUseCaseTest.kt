@@ -9,7 +9,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.MovieRepository
-import usecase.movie.AddContinueWatchingMovieUseCaseTest.Companion.DB_ERROR
 
 class ContinueWatchingMovieUseCaseTest {
 

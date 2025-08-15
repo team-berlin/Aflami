@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.profile
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.entity.AppLanguage
@@ -218,9 +217,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val selectRestriction = ContentRestriction.valueOf(state.value.tempSelectedRestriction)
             val percentage = getContentRestrictionPercentage(selectRestriction.name)
-            Log.d("FireBaseModelManager", "onSaveContentRestriction: ${selectRestriction.name}")
             setContentRestrictionUseCase(selectRestriction)
-            Log.d("FireBaseModelManager", "onSaveContentRestriction: ${selectRestriction.name}")
             updateState {
                 it.copy(
                     selectedRestriction = it.tempSelectedRestriction,

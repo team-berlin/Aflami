@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.times
 import coil3.compose.AsyncImage
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
-import com.berlin.safeimageviewer.SafeImageViewer
 
 @Composable
 fun GallerySection(

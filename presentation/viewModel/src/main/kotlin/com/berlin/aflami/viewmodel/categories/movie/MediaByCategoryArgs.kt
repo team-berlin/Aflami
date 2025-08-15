@@ -1,10 +1,7 @@
 package com.berlin.aflami.viewmodel.categories.movie
 
 import androidx.lifecycle.SavedStateHandle
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.util.CATEGORY_ID
-import com.berlin.aflami.viewmodel.util.MEDIA_TYPE
-import com.berlin.aflami.viewmodel.util.MOVIE_ID
 import javax.inject.Inject
 
 class MediaByCategoryArgs @Inject constructor(

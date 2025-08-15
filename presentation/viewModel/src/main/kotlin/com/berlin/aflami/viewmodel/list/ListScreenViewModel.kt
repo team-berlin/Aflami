@@ -103,8 +103,6 @@ class ListScreenViewModel @Inject constructor(
 
     private fun updateScreenStateWithUserFavouriteLists(userFavouriteLists: Flow<PagingData<FavouriteListItemUiState>>) {
         updateState { screenState ->
-            Log.d("Khairy", "Success}")
-
             screenState.copy(
                 favouriteList = userFavouriteLists, isScreenLoading = false, errorMessage = null
             )
@@ -113,7 +111,6 @@ class ListScreenViewModel @Inject constructor(
 
     private fun updateScreenStateWithErrorMessage(errorUiState: ErrorUiState) {
         updateState { screenState ->
-            Log.d("Khairy", "error message in viewModel = ${errorUiState.message}")
             screenState.copy(
                 errorMessage = errorUiState.message, isScreenLoading = false
             )

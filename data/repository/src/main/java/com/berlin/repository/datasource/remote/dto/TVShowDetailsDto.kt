@@ -1,6 +1,7 @@
 package com.berlin.repository.datasource.remote.dto
 
 
+import com.berlin.repository.datasource.remote.dto.details.EpisodeDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -37,7 +38,7 @@ data class TVShowDetailsDto(
     @SerialName("networks")
     val networks: List<NetworkDto>? = null,
     @SerialName("next_episode_to_air")
-    val nextEpisodeToAir: String? = null,
+    val nextEpisodeToAir: EpisodeDto? = null,
     @SerialName("number_of_episodes")
     val numberOfEpisodes: Int? = null,
     @SerialName("number_of_seasons")

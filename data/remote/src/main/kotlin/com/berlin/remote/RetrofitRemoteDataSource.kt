@@ -165,7 +165,6 @@ class RetrofitRemoteDataSource @Inject constructor(
     }
 
     override suspend fun getUserFavouriteLists(page: Int): List<FavouriteListDto> {
-        Log.d("Khairy", "remote DS$page")
         return wrapApiResponse {
             apiService.getUserLists(
                 accountId = authenticationLocalDataSource.getUserAccountId(),
@@ -214,7 +213,6 @@ class RetrofitRemoteDataSource @Inject constructor(
 
     override suspend fun createNewFavouriteList(title: String): Int {
         return wrapApiResponse {
-            Log.d("khairy", "try to createNewFavouriteList called $title")
             apiService.createNewFavouriteList(
                 sessionId = authenticationLocalDataSource.getUserSessionId()
                     ?: throw IllegalStateException("userSessionID == null"),
@@ -224,8 +222,6 @@ class RetrofitRemoteDataSource @Inject constructor(
                     language = "en"
                 )
             )
-        }.also {
-            Log.d("khairy", "createNewFavouriteList return $it")
         }.listId
     }
 
@@ -242,7 +238,6 @@ class RetrofitRemoteDataSource @Inject constructor(
 
     override suspend fun addMovieToFavouriteList(listId: Int, movieId: Long) {
         wrapApiResponse {
-            Log.d("AddMovieToFavouriteListUseCase", "listId = $listId, movieId = $movieId")
             apiService.addMovieToList(
                 listId = listId,
                 sessionId = authenticationLocalDataSource.getUserSessionId()

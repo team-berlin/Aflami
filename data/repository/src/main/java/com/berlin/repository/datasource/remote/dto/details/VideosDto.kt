@@ -1,7 +1,7 @@
 package com.berlin.repository.datasource.remote.dto.details
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class VideosResponse(

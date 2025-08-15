@@ -1,6 +1,5 @@
 package com.berlin.repository
 
-import android.util.Log
 import com.berlin.exception.NotFoundException
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
@@ -37,7 +36,6 @@ class AuthenticationRepositoryImpl @Inject constructor(
                 createSession(it.requestToken ?: throw NotFoundException("Token not found"))
             val accountDetails = authenticationRemoteDataSource.getUserAccountDetails(session)
             authenticationLocalDataSource.saveUserAccountId(accountDetails.id!!)
-            Log.d("khairy", "account details = $accountDetails")
             authenticationLocalDataSource.saveUserSessionId(session)
         }
     }

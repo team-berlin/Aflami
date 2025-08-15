@@ -1,6 +1,5 @@
 package com.berlin.local.datasource
 
-import android.util.Log
 import com.berlin.local.dao.CategoriesPreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource

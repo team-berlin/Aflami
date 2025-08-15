@@ -38,7 +38,7 @@ class FireBaseModelManager @Inject constructor(
                 STRICT_MODERATION -> STRICT_MODERATION
                 MODERATE_MODERATION -> MODERATE_MODERATION
                 else -> NO_RESTRICTION_MODERATION
-            }.also { Log.d("FireBaseModelManager", "contentRestriction: ${it}") }
+            }
         }
         .distinctUntilChanged()
 

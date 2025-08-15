@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -53,7 +54,8 @@ import com.berlin.designsystem.R
 fun FilterDialog(
     filterListener: FilterInteractionListener,
     state: FilterMediaSelected,
-    getIcon: (Int) -> Int
+    getIcon: (Int) -> Int,
+    getGenreName: (Int) -> Int
 ) {
     Dialog(
         onDismissRequest = filterListener::onCancelClicked,
@@ -136,7 +138,7 @@ fun FilterDialog(
                             items = state.genreUiStates
                         ) { filterGenre ->
                             Chips(
-                                title = filterGenre.name,
+                                title = stringResource(getGenreName(filterGenre.id)),
                                 icon = painterResource(
                                     getIcon(filterGenre.id)
                                 ),
@@ -252,7 +254,7 @@ fun RatingBar(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.Center
     ) {
         for (i in 1..10) {
             Icon(
@@ -269,7 +271,9 @@ fun RatingBar(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
-                    ) { onValueChange(i.toFloat()) })
+                    ) { onValueChange(i.toFloat()) }
+            )
+            if (i < 10) Spacer(modifier = Modifier.width(6.dp))
         }
     }
 }

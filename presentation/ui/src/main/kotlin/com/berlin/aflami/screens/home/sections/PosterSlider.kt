@@ -26,7 +26,6 @@ import com.berlin.aflami.component.PlayButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
-import com.berlin.safeimageviewer.SafeImageViewer
 import kotlinx.coroutines.delay
 
 @Composable

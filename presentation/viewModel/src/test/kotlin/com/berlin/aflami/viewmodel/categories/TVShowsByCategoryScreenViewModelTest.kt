@@ -1,14 +1,11 @@
 package com.berlin.aflami.viewmodel.categories
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.paging.PagingData
 import app.cash.turbine.test
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryArgs
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryScreenEffect
-import com.berlin.aflami.viewmodel.categories.movie.MoviesByCategoryScreenViewModel
 import com.berlin.aflami.viewmodel.categories.tvshow.TVShowByCategoryScreenViewModel
 import com.berlin.aflami.viewmodel.search.GenreUiState
-import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.entity.Genre
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -25,8 +22,6 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import usecase.movie.GetMovieGenresUseCase
-import usecase.movie.GetMoviesByCategoryUseCase
 import usecase.tvshow.GetTVShowGenresUseCase
 import usecase.tvshow.GetTVShowsByCategoryUseCase
 
