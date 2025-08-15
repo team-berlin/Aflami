@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.color.ExtraColors.black50
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
+import com.berlin.safeimageviewer.SafeImageViewer
 
 
 @Composable
