@@ -1,7 +1,6 @@
 package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -28,7 +27,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -73,8 +71,8 @@ import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.login.FormUiState
-import com.berlin.aflami.viewmodel.login.LoginScreenEffect
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
+import com.berlin.aflami.viewmodel.login.LoginScreenEffect
 import com.berlin.aflami.viewmodel.login.LoginScreenState
 import com.berlin.aflami.viewmodel.login.LoginViewmodel
 import com.berlin.ui.R

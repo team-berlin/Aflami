@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.login
 
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.input.TextFieldValue
 
 data class LoginScreenState(

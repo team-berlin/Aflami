@@ -22,9 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +32,6 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.berlin.aflami.component.CharacterCard
 import com.berlin.aflami.component.CircularProgressIndicator
-import com.berlin.aflami.component.PrimaryButton
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.GameResultDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
@@ -47,7 +43,6 @@ import com.berlin.aflami.screens.games.components.Score
 import com.berlin.aflami.screens.games.components.SelectionItem
 import com.berlin.aflami.screens.onBoarding.Indicator
 import com.berlin.aflami.ui.color.ExtraColors.gameBackgroundGradient
-import com.berlin.aflami.ui.color.ExtraColors.primaryGredient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.quizgame.QuestionType
 import com.berlin.aflami.viewmodel.quizgame.QuizGameEffect

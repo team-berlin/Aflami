@@ -1,6 +1,5 @@
 package com.berlin.aflami.utils
 
-import android.annotation.SuppressLint
 import java.util.Locale
 
 fun formatRating(rating: Double): String {

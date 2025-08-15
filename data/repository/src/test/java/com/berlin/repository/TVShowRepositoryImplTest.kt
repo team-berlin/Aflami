@@ -10,8 +10,6 @@ import com.berlin.repository.fake.dummydata.DummyData.mediaPreferencesList
 import com.berlin.repository.fake.dummydata.DummyData.recentlyWatchedTvShowEntity
 import com.berlin.repository.fake.dummydata.DummyData.tvShowEntity
 import com.berlin.repository.fake.dummydata.DummyData.tvShowHomeEntity
-import com.berlin.repository.fake.dummydata.DummyData.tvShowHomeEntityPopular
-import com.berlin.repository.fake.dummydata.DummyData.tvShowHomeEntityTopRated
 import com.berlin.repository.mapper.toDomain
 import io.mockk.Runs
 import io.mockk.coEvery

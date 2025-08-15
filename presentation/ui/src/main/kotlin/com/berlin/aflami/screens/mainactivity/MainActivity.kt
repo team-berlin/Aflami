@@ -1,12 +1,8 @@
 package com.berlin.aflami.screens.mainactivity
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.graphics.drawable.Animatable
 import android.os.Bundle
-import android.view.View
-import android.view.animation.AnticipateInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -23,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.berlin.aflami.navigation.AflamiNavGraph
-import com.berlin.aflami.screens.games.GuessTheGameScreen
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.main.MainActivityViewModel

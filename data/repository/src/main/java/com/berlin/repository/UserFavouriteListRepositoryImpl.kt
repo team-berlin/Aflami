@@ -1,6 +1,5 @@
 package com.berlin.repository
 
-import android.util.Log
 import com.berlin.entity.FavouriteList
 import com.berlin.entity.Movie
 import com.berlin.repository.datasource.remote.RemoteDataSource
@@ -13,11 +12,9 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
 ) : UserFavouriteListRepository {
     override suspend fun getUserFavouriteLists(pageNumber: Int): List<FavouriteList> {
-        Log.d("Khairy", "fav list page = $pageNumber")
         return remoteDataSource.getUserFavouriteLists(page = pageNumber)
             .ifEmpty { return emptyList() }
             .map { favouriteListDto ->
-                Log.d("Khairy", "repository $favouriteListDto")
                 favouriteListDto.toDomain()
             }
     }
@@ -29,8 +26,6 @@ class UserFavouriteListRepositoryImpl @Inject constructor(
         return remoteDataSource.getUserFavouriteListItems(pageNumber, favouriteListId)
             .map { favouriteListItem ->
                 favouriteListItem.toMovie()
-            }.also {
-                Log.d("Khairy", "getUserFavouriteList Item from repository returned $it")
             }
     }
 

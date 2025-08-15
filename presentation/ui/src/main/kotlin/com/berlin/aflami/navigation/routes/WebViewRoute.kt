@@ -1,6 +1,5 @@
 package com.berlin.aflami.navigation.routes
 
-import android.util.Log
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute

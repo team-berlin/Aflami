@@ -3,10 +3,10 @@ package com.berlin.aflami.viewmodel.game
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import usecase.game.GetPointsUseCase
 import usecase.profile.ObserveUserProfileUseCase
+import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(

@@ -4,8 +4,8 @@ import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Genre
 import com.berlin.entity.Movie
 import com.berlin.entity.Review
-import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.local.dto.MovieEntity
+import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.remote.dto.GenreDto
 import com.berlin.repository.datasource.remote.dto.ProductionCompanyDto
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto

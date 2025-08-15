@@ -4,7 +4,6 @@ import com.berlin.aflami.viewmodel.base.BasePagingSource
 import com.berlin.aflami.viewmodel.mapper.toMovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import usecase.movie.GetSearchMoviesUseCase
-import kotlin.collections.filter
 
 class MovieSearchPagingSource(
     private val searchMoviesUseCase: GetSearchMoviesUseCase,

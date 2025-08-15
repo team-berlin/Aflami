@@ -14,14 +14,12 @@ abstract class PagedResultPagingSource<T : Any> : PagingSource<Int, T>() {
 
         val prev = if (page > 1) page - 1 else null
         val next = if (page < res.totalPages) page + 1 else null
-        android.util.Log.d("MyRatingPaging", "load(page=$page) start")
         LoadResult.Page(
             data = res.results,
             prevKey = prev,
             nextKey = next
         )
     } catch (t: Throwable) {
-        android.util.Log.e("MyRatingPaging", "load error", t)
         LoadResult.Error(t)
     }
 

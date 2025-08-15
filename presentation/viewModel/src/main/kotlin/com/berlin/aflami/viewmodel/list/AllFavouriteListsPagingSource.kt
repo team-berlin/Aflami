@@ -12,7 +12,6 @@ class AllFavouriteListsPagingSource(
 
     override suspend fun fetchData(page: Int): List<FavouriteListItemUiState> {
         return getAllFavouriteListsUseCase.invoke(pageNumber = page).ifEmpty {
-            Log.d("Khairy", "empty lists")
             return emptyList()
         }
             .map { favouriteList ->

@@ -3,8 +3,8 @@ package com.berlin.local.datasource
 import com.berlin.local.dao.HomeMovieDao
 import com.berlin.local.dao.HomeTVShowDao
 import com.berlin.repository.datasource.local.HomeLocalDataSource
-import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
+import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 import javax.inject.Inject
 

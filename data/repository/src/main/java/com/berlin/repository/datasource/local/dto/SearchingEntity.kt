@@ -3,8 +3,8 @@ package com.berlin.repository.datasource.local.dto
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.berlin.entity.Genre
 import com.berlin.entity.CompanyProduction
+import com.berlin.entity.Genre
 import com.berlin.entity.Review
 import com.berlin.entity.Season
 

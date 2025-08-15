@@ -8,7 +8,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 import repository.AppEntryRepository
-import usecase.movie.GetMovieDetailsUseCaseTest
 
 class GetFirstEntryUseCaseTest {
     private val appEntryRepository: AppEntryRepository = mockk()

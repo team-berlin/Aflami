@@ -5,8 +5,8 @@ import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryArgs
 import com.berlin.aflami.viewmodel.details.cast.CastDetailsArgs
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsArgs
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsArgs
-import com.berlin.aflami.viewmodel.listDetails.FavouriteListDetailsArgs
 import com.berlin.aflami.viewmodel.list.FavouriteListArgs
+import com.berlin.aflami.viewmodel.listDetails.FavouriteListDetailsArgs
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

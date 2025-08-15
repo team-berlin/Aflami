@@ -2,8 +2,8 @@ package com.berlin.repository.mapper
 
 import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
-import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
+import com.berlin.repository.datasource.local.dto.SectionHome
 import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 
 fun Movie.toPopularMovieEntity(): MovieHomeEntity {
