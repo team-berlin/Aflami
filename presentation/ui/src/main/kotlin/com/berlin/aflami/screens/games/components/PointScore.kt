@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
@@ -35,7 +36,7 @@ fun PointScore(
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(
-            text = "$userPoints pts.",
+            text = stringResource( R.string.pts,userPoints),
             style = Theme.textStyle.label.small,
             color = Theme.color.textColors.onPrimary,
         )
