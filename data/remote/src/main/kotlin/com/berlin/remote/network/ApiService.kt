@@ -127,7 +127,7 @@ interface ApiService {
 
     @GET(ApiConstants.DISCOVER_MOVIE)
     suspend fun getUpcomingMovies(
-        @Query(ApiConstants.WITH_GENRES) selectedGenres: Int? = null,
+        @Query(ApiConstants.WITH_GENRES) genreId: Long? = null,
 
         @Query(ApiConstants.QUERY_SORT_BY) sortBy: String = ApiConstants.SORT_BY_POPULARITY_DESC,
         @Query(ApiConstants.QUERY_INCLUDE_ADULT) includeAdult: Boolean = ApiConstants.INCLUDE_ADULT_DEFAULT,

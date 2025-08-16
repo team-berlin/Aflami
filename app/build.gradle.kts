@@ -85,12 +85,11 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.androidxUi)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.bundles.koin)
     implementation(libs.bundles.retrofit)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.datastore.preferences.core.android)
-    implementation(libs.androidx.hilt.work)
+
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
@@ -102,10 +101,14 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.security.crypto)
 
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.hilt.android)
 
-    implementation ("androidx.work:work-runtime-ktx:2.10.3")
+    implementation(libs.androidx.worker.runtime.ktx)
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.work)
+
+    ksp(libs.hilt.android.compiler)
+    ksp(libs.androidx.hilt.compiler)
+
 
     api(project(":presentation:ui"))
     implementation(project(":presentation:safeImageViewer"))

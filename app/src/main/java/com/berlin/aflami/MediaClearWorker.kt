@@ -1,29 +1,33 @@
-package com.berlin.repository
+package com.berlin.aflami
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import repository.MovieRepository
+import repository.TVShowRepository
+import usecase.movie.GetTopRatedMoviesUseCase
 
 @HiltWorker
 class MediaClearWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
 
-    private val movieRepository: MovieRepository
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+    private val tvShowRepository: TVShowRepository
 
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        Log.d("WOWTEST", "doWork: repo = $movieRepository")
         movieRepository.getPopularMovies()
+        tvShowRepository.getPopularTVShows()
+
         movieRepository.getTopRatedMovies(1)
-        movieRepository.getUpComingMovies()
-        Log.d("WOWTEST", "doWork: ")
+        tvShowRepository.getTopRatedTVShows(1)
+
+        //movieRepository.getUpComingMovies()
         return Result.success()
     }
 }

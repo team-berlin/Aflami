@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.home
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PAGE_SIZE
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -15,6 +16,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import usecase.movie.ContinueWatchingMovieUseCase
 import usecase.movie.GetMovieGenresUseCase
@@ -46,6 +50,7 @@ class HomeScreenViewModel @Inject constructor(
 
     init {
         loadGenresTVShow()
+        loadGenresMovies()
         viewModelScope.launch {
             updateState { it.copy(isLoading = true) }
 
@@ -54,16 +59,22 @@ class HomeScreenViewModel @Inject constructor(
             val topRatedJob = async { getTopRatingMovieAndTvShows() }
             val movieGenreJob = async { loadGenresMovies() }
             val tvShowGenreJob = async { loadGenresTVShow() }
-            val upcomingJob = async { getUpComingMoviesByGenre() }
 
             popularJob.await()
             continueWatchingJob.await()
             topRatedJob.await()
             movieGenreJob.await()
             tvShowGenreJob.await()
-            upcomingJob.await()
-
             updateState { it.copy(isLoading = false) }
+            state.map {uistate->
+                Log.d("WOWTEST", "selectedGenres: ${uistate.selectedGenres}")
+                uistate.selectedGenres
+            }.collectLatest {genreId->
+                    Log.d("WOWTEST", "collectLatest: $genreId")
+                    getUpComingMoviesByGenre(genreId)
+                }
+
+
         }
     }
 
@@ -77,6 +88,7 @@ class HomeScreenViewModel @Inject constructor(
                     val tvShow = async { popularTVShowsUseCase() }
                     val movieList = movie.await().map { it.toMediaUiState() }
                     val tvShowList = tvShow.await().map { it.toMediaUiState() }
+
                     interleaveMoviesAndTvShowsEqually(movieList, tvShowList)
                 }
             },
@@ -110,9 +122,11 @@ class HomeScreenViewModel @Inject constructor(
                 )
             )
         }
+
     }
 
     private fun updatePopularUiStateWithError(errorUiState: ErrorUiState) {
+
         updateState {
             it.copy(
                 popularMediaUiState = it.popularMediaUiState.copy(
@@ -171,6 +185,7 @@ class HomeScreenViewModel @Inject constructor(
 
     //region topRatingSection
     private fun getTopRatingMovieAndTvShows() {
+
         tryToCall(
             call = {
                 coroutineScope {
@@ -331,17 +346,17 @@ class HomeScreenViewModel @Inject constructor(
             }
             screenState.copy(
                 selectedGenres = newGenreId,
-
                 movieGenres = selected,
                 isLoading = false
             )
         }
-        getUpComingMoviesByGenre()
+
     }
 
-    private fun getUpComingMoviesByGenre() {
+    private fun getUpComingMoviesByGenre(genreId:Int) {
+        Log.d("WOWTEST", "getUpComingMoviesByGenre: $genreId")
         tryToCall(
-            call = { getUpComingMoviesUseCase().map { movie -> movie.toMovieUiState() } },
+            call = { getUpComingMoviesUseCase(genreId.toLong()).map { movie -> movie.toMovieUiState() } },
             onSuccess = ::updateScreenWithNewUpComingMovies,
             onError = ::updateUpComingSectionWithError,
             dispatcher = coroutineDispatcher
@@ -359,6 +374,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenWithNewUpComingMovies(movies: List<MovieUiState>) {
+
         val genreId = state.value.selectedGenres
         val filteredMovies = if (genreId == -1) {
             movies

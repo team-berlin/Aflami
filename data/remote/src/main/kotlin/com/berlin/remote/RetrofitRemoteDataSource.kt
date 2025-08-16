@@ -1,6 +1,5 @@
 package com.berlin.remote
 
-import android.util.Log
 import com.berlin.remote.network.ApiService
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.UserProfileLocalDataSource
@@ -61,8 +60,8 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse { apiService.getMovieReviews(movieId) }
     }
 
-    override suspend fun getUpComingMovies(): BaseResponse<MovieDetailsDto> {
-        return wrapApiResponse { apiService.getUpcomingMovies() }
+    override suspend fun getUpComingMovies(genreId: Long): BaseResponse<MovieDetailsDto> {
+        return wrapApiResponse { apiService.getUpcomingMovies(genreId) }
     }
 
     override suspend fun getTVShowDetailsById(seriesId: Long): TVShowDetailsDto {

@@ -35,7 +35,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
-    implementation(libs.bundles.koin)
     testImplementation(libs.bundles.test)
     implementation(libs.kotlin.datex)
 
