@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,6 +28,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,6 +38,7 @@ import com.berlin.aflami.extension.dropShadow
 import com.berlin.aflami.ui.color.ExtraColors
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.game.GameType
 import com.berlin.ui.R
 
 @Composable
@@ -44,11 +49,12 @@ fun GameCard(
     isLocked: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    backgroundColor: Color ,
+    backgroundColor: Color,
     borderGradient: Brush,
     shadowColor: Color,
     circleShadowColor: Color,
-    avatarPainter: Painter
+    avatarPainter: Painter,
+    gameType: GameType
 ) {
     Box(
         modifier = Modifier
@@ -59,10 +65,20 @@ fun GameCard(
                 borderGradient,
                 RoundedCornerShape(16),
             )
+            .dropShadow(
+                color = shadowColor,
+                blur = 12.dp,
+                offsetY = 4.dp,
+                offsetX = 0.dp,
+                spread = 0.dp,
+                shape =  RoundedCornerShape(16.dp),
+                alpha = 0.0f
+            )
     ) {
         Column(
             modifier = modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (isLocked) {
                 Column(
@@ -173,28 +189,72 @@ fun GameCard(
                         }
                     }
                 }
-
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
+                Column (
+                    modifier =  Modifier.height(140.dp)
                 ) {
-                    Image(
-                        modifier = Modifier.scale(-1f),
-                        painter =painterResource( com.berlin.designsystem.R.drawable.diagonal_stripe),
-                        contentDescription = null,
-                    )
-                    Image(
-                        modifier = Modifier.scale(3f),
-                        painter = painterResource( com.berlin.designsystem.R.drawable.diagonal_stripe),
-                        contentDescription = null,
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
 
-                    Image(
-                        painter = avatarPainter,
-                        contentDescription = "Character",
-                        modifier = Modifier.size(100.dp)
-                    )
+                        Image(
+                            painter = painterResource(R.drawable.spot_light),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.TopEnd),
+
+                            )
+                        Image(
+                            painter = painterResource(R.drawable.spot_light_small),
+                            contentDescription = "",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .padding(top = 30.dp)
+                                .align(Alignment.BottomEnd)
+                        )
+                        when (gameType) {
+                            GameType.CHARACTER ->
+                                Image(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomEnd),
+                                    painter = avatarPainter,
+                                    contentScale = ContentScale.FillHeight,
+                                    contentDescription = ""
+                                )
+
+                            GameType.POSTER -> Image(
+                                modifier = Modifier
+                                    .padding(end = 25.dp, top = 20.dp)
+                                    .align(Alignment.BottomEnd)
+                                    .offset(y = 40.dp)
+                                    .scale(scaleY = 1.5f, scaleX = 1.5f)
+                                    .clip(RoundedCornerShape(12.dp)),
+                                painter = avatarPainter,
+                                contentDescription = "",
+                            )
+
+
+                            GameType.RELEASE -> Image(
+                                painter = avatarPainter,
+                                contentDescription = "Character",
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .align(Alignment.BottomEnd)
+                            )
+
+                            GameType.GENRE -> Image(
+                                painter = avatarPainter,
+                                contentDescription = "Character",
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .align(Alignment.BottomEnd)
+                            )
+
+                        }
+
+                    }
                 }
+
             }
         }
     }
@@ -211,13 +271,27 @@ fun GameCardPreview() {
                 title = "Guess the Character",
                 description = "Can you tell who this character?",
                 points = 400,
-                isLocked = true,
+                isLocked = false,
                 onClick = {},
                 borderGradient = ExtraColors.guessMovieByGenreGradient,
                 shadowColor = ExtraColors.shadowGuessMovieByGenre,
                 circleShadowColor = Theme.color.statusColors.navyCard,
-                avatarPainter = painterResource(R.drawable.avatar),
-                backgroundColor = Theme.color.statusColors.navyCard
+                avatarPainter = painterResource(R.drawable.game_clown),
+                backgroundColor = Theme.color.statusColors.navyCard,
+                gameType = GameType.CHARACTER
+            )
+            GameCard(
+                title = "Guess the Character",
+                description = "Can you tell who this character?",
+                points = 400,
+                isLocked = false,
+                onClick = {},
+                borderGradient = ExtraColors.guessMovieByGenreGradient,
+                shadowColor = ExtraColors.shadowGuessMovieByGenre,
+                circleShadowColor = Theme.color.statusColors.navyCard,
+                avatarPainter = painterResource(R.drawable.game_poster),
+                backgroundColor = Theme.color.statusColors.navyCard,
+                        gameType =GameType.POSTER
             )
             GameCard(
                 title = "Guess the Character",
@@ -228,8 +302,10 @@ fun GameCardPreview() {
                 borderGradient = ExtraColors.guessMovieByGenreGradient,
                 shadowColor = ExtraColors.shadowGuessMovieByGenre,
                 circleShadowColor = Theme.color.statusColors.navyCard,
-                avatarPainter = painterResource(R.drawable.avatar),
-                backgroundColor =Theme.color.statusColors.navyCard
+                avatarPainter = painterResource(R.drawable.game_release_date),
+                backgroundColor = Theme.color.statusColors.navyCard,
+                gameType = GameType.RELEASE
+
             )
             GameCard(
                 title = "Guess the Character",
@@ -240,20 +316,9 @@ fun GameCardPreview() {
                 borderGradient = ExtraColors.guessMovieByGenreGradient,
                 shadowColor = ExtraColors.shadowGuessMovieByGenre,
                 circleShadowColor = Theme.color.statusColors.navyCard,
-                avatarPainter = painterResource(R.drawable.avatar),
-                backgroundColor = Theme.color.statusColors.navyCard
-            )
-            GameCard(
-                title = "Guess the Character",
-                description = "Can you tell who this character?",
-                points = 400,
-                isLocked = true,
-                onClick = {},
-                borderGradient = ExtraColors.guessMovieByGenreGradient,
-                shadowColor = ExtraColors.shadowGuessMovieByGenre,
-                circleShadowColor = Theme.color.statusColors.navyCard,
-                avatarPainter = painterResource(R.drawable.avatar),
-                backgroundColor = Theme.color.statusColors.navyCard
+                avatarPainter = painterResource(R.drawable.genre),
+                backgroundColor = Theme.color.statusColors.navyCard,
+                gameType = GameType.GENRE
             )
         }
 
