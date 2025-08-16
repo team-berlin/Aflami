@@ -4,6 +4,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 
 interface EditListInteractionListener {
     fun onCancelEditingListClicked()
-    fun onOldListTitleChanged(editedListTitle: String)
+    fun onOldListTitleChanged(editedListTitle: TextFieldValue)
     fun onSaveOldListTitleToNewTitleClicked(listId: Int, editedListTitle: TextFieldValue)
 }

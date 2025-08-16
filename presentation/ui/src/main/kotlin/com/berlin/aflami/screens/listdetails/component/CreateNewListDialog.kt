@@ -24,7 +24,6 @@ import com.berlin.ui.R
 @Composable
 fun CreateNewListDialog(
     modifier: Modifier = Modifier,
-    isCreateButtonEnabled: Boolean = false,
     listName: TextFieldValue = TextFieldValue(""),
     onListNameChanged: (TextFieldValue) -> Unit = {},
     onCreateListClick: (TextFieldValue) -> Unit = {},
