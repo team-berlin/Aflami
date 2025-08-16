@@ -224,9 +224,11 @@ private fun ListsContent(
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
-            visible = (favouriteLists.loadState.refresh !is LoadState.Loading
-                    && listScreenState.isUserLoggedIn == true)
-                    && favouriteLists.loadState.refresh !is LoadState.Error,
+            visible = !listScreenState.isScreenLoading &&
+                    listScreenState.isUserLoggedIn == true &&
+                    favouriteLists.loadState.refresh !is LoadState.Loading &&
+                    favouriteLists.loadState.refresh !is LoadState.Error &&
+                    favouriteLists.itemCount == 0
         ) {
             CountryTourExploring(
                 modifier = Modifier

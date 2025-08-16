@@ -6,21 +6,32 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.movie.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.FavouriteListItemUiState
+import com.berlin.aflami.viewmodel.util.ListCountEventBus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginUseCase
 import usecase.favouritelist.CreateNewFavouriteListUseCase
 import usecase.favouritelist.EditListTitleUseCase
 import usecase.favouritelist.GetAllFavouriteListsUseCase
 import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.collections.plus
 
 @HiltViewModel
 class ListScreenViewModel @Inject constructor(
@@ -28,6 +39,7 @@ class ListScreenViewModel @Inject constructor(
     private val getAllFavouriteListsUseCase: GetAllFavouriteListsUseCase,
     private val getIsUserLoggedInUseCase: GetLoginUseCase,
     private val editListTitleUseCase: EditListTitleUseCase,
+    private val listCountEventBus: ListCountEventBus,
     favouriteListArgs: FavouriteListArgs,
 ) : BaseViewModel<ListScreenState, ListScreenEffect>(ListScreenState()),
     ListScreenInteractionListener {
@@ -42,6 +54,8 @@ class ListScreenViewModel @Inject constructor(
     val isLoggedIn: StateFlow<Boolean?> = getIsUserLoggedInUseCase().stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), null
     )
+    private val countDeltas = MutableStateFlow<Map<Int, Int>>(emptyMap())
+
 
     init {
         shouldShowEditSheet?.let {
@@ -69,8 +83,19 @@ class ListScreenViewModel @Inject constructor(
             }
         }
         observeLoginStatus()
+        observeCountDeltas()
     }
 
+    private fun observeCountDeltas() {
+        viewModelScope.launch {
+            listCountEventBus.events.collectLatest { (listId, delta) ->
+                countDeltas.update { current ->
+                    val next = (current[listId] ?: 0) + delta
+                    current + (listId to next)
+                }
+            }
+        }
+    }
     private fun observeLoginStatus() {
         viewModelScope.launch {
             isLoggedIn.collect { loggedIn ->
@@ -96,15 +121,29 @@ class ListScreenViewModel @Inject constructor(
         )
     }
 
-    private fun getAllFavouriteListsAsFlow(): Flow<PagingData<FavouriteListItemUiState>> = Pager(
-        config = defaultPageConfigurations(), pagingSourceFactory = {
-            AllFavouriteListsPagingSource(getAllFavouriteListsUseCase)
-        }).flow.cachedIn(viewModelScope)
+    private fun getAllFavouriteListsAsFlow(): Flow<PagingData<FavouriteListItemUiState>> =
+        Pager(
+            config = defaultPageConfigurations(),
+            pagingSourceFactory = { AllFavouriteListsPagingSource(getAllFavouriteListsUseCase) }
+        ).flow.cachedIn(viewModelScope)
 
-    private fun updateScreenStateWithUserFavouriteLists(userFavouriteLists: Flow<PagingData<FavouriteListItemUiState>>) {
+    private fun updateScreenStateWithUserFavouriteLists(
+        userFavouriteLists: Flow<PagingData<FavouriteListItemUiState>>
+    ) {
+        val newList = combine(userFavouriteLists, countDeltas) { paging, deltas ->
+            paging.map { item ->
+                val id = item.listId ?: -1
+                val d = deltas[id] ?: 0
+                item.copy(
+                    numberOfFavouriteMovies = (item.numberOfFavouriteMovies + d).coerceAtLeast(0)
+                )
+            }
+        }.cachedIn(viewModelScope)
+
         updateState { screenState ->
             screenState.copy(
-                favouriteList = userFavouriteLists, isScreenLoading = false, errorMessage = null
+                favouriteList = newList,
+                isScreenLoading = false,
             )
         }
     }
@@ -273,3 +312,4 @@ class ListScreenViewModel @Inject constructor(
             })
     }
 }
+
