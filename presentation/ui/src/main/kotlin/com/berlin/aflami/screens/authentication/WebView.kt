@@ -42,13 +42,17 @@ fun WebView(url: String) {
                         onPageFinished = {
                             isLoading = false
                         },
-                        onError = { onErrorReceived(navController) }
+                        onError = { onErrorReceived(navController) },
+                        initialUrl = url
                     )
                     settings.javaScriptEnabled = true
                     settings.setSupportZoom(true)
+                    clearCache(true)
+                    clearHistory()
                 }
             },
             update = { webView ->
+                webView.clearCache(true)
                 webView.loadUrl(url)
             }
         )
@@ -75,7 +79,8 @@ private fun onErrorReceived(navController: NavController) {
 private class CustomWebViewClient(
     private val onPageStarted: () -> Unit,
     private val onPageFinished: () -> Unit,
-    private val onError: () -> Unit
+    private val onError: () -> Unit,
+    private val initialUrl: String
 ) : WebViewClient() {
     override fun onReceivedError(
         view: WebView?,
@@ -94,5 +99,20 @@ private class CustomWebViewClient(
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
         onPageStarted
+    }
+
+    @SuppressLint("WebViewClientOnReceivedSslError")
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest): Boolean {
+        val url = request.url.toString()
+        val allowedDomains = listOf(
+            "https://www.themoviedb.org/authenticate",
+            "https://www.themoviedb.org/reset-password"
+        )
+        return if (allowedDomains.any { url.startsWith(it) } || url == initialUrl) {
+            view?.loadUrl(url)
+            false
+        } else {
+            true
+        }
     }
 }
