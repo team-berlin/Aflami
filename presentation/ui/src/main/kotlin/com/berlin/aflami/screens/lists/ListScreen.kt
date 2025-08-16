@@ -187,7 +187,7 @@ private fun ListsContent(
                 listName = listScreenState.editListSheetState.currentListTitle,
                 onListNameChanged = {
                     interactionListener.onOldListTitleChanged(
-                        it.text
+                        it
                     )
                 },
                 onSaveClick = interactionListener::onSaveOldListTitleToNewTitleClicked,

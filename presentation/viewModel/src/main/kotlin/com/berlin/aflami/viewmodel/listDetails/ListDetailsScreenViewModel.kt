@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.listDetails
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
@@ -78,11 +79,11 @@ class ListDetailsScreenViewModel @Inject constructor(
     //region renameAndDeleteListInteraction interactionListeners
     override fun onBackClicked() = sendNewEffect(ListDetailsScreenEffect.NavigateBack)
 
-    override fun onRenameClicked(listId: Int, listTitle: String) =
+    override fun onRenameClicked(listId: Int, listTitle: TextFieldValue) =
         sendNewEffect(
             ListDetailsScreenEffect.NavigateToAllListsScreenAndShowEditListSheet(
                 listId,
-                listTitle = listTitle
+                listTitle = listTitle.text
             )
         )
 

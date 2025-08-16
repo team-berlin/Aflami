@@ -237,12 +237,10 @@ class ListScreenViewModel @Inject constructor(
         )
     }
 
-    override fun onOldListTitleChanged(editedListTitle: String) = updateState { screenState ->
+    override fun onOldListTitleChanged(editedListTitle: TextFieldValue) = updateState { screenState ->
         screenState.copy(
             editListSheetState = screenState.editListSheetState.copy(
-                currentListTitle = TextFieldValue(
-                    editedListTitle
-                )
+                currentListTitle = editedListTitle
             )
         )
     }

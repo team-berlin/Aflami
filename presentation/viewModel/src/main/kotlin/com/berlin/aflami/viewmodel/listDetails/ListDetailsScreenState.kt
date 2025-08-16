@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.listDetails
 
 //data class ListDetailsScreenState()
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.paging.PagingData
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import kotlinx.coroutines.flow.Flow
