@@ -58,16 +58,11 @@ fun MovieBackdropPager(state: MovieDetailsUiState, onPlayClick: () -> Unit) {
                 val painter = rememberAsyncImagePainter(model)
                 val imageState by painter.state.collectAsState()
 
-                val contentScale = when (imageState) {
-                    is AsyncImagePainter.State.Success,
-                    is AsyncImagePainter.State.Loading -> ContentScale.Crop
-                    else -> ContentScale.Inside
-                }
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     AsyncImage(
-                        model= model?:"",
+                        model= model,
                         contentDescription = null,
-                        contentScale = contentScale,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize(),
                         error = painterResource(R.drawable.place_holder),
                         fallback = painterResource(R.drawable.place_holder),
@@ -149,7 +144,7 @@ fun TVShowBackdropPager(state: TVShowDetailsUiState, onPlayClick: () -> Unit) {
                 }
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     AsyncImage(
-                        model= model?:"",
+                        model= model,
                         contentDescription = null,
                         contentScale = contentScale,
                         modifier = Modifier.fillMaxSize(),
