@@ -303,7 +303,6 @@ private fun HomeContent(
                                                        GenersChip(label = stringResource(getTvShowGenreName(tVShowGenre.id)))
                                                    }
                                                }
-                                               null -> TODO()
                                            }
 
                                         }

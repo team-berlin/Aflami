@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.listDetails
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
@@ -7,19 +8,20 @@ import androidx.paging.cachedIn
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
+import com.berlin.aflami.viewmodel.util.ListCountEventBus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import usecase.favouritelist.DeleteMovieFromUserFavouriteListUseCase
 import usecase.favouritelist.DeleteUserFavouriteListUseCase
-import usecase.favouritelist.GetFavouriteListItemsUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class ListDetailsScreenViewModel @Inject constructor(
-    private val getAllFavouriteListItemsUseCase: GetFavouriteListItemsUseCase,
     private val deleteMovieFromUserFavouriteListUseCase: DeleteMovieFromUserFavouriteListUseCase,
     private val deleteUserFavouriteListUseCase: DeleteUserFavouriteListUseCase,
     private val favouriteMoviesPagingSourceFactory: FavouriteMoviesPagingSource.Factory,
+    private val listCountEventBus: ListCountEventBus,
     favouriteListDetailsArgs: FavouriteListDetailsArgs,
 ) : BaseViewModel<ListDetailsScreenState, ListDetailsScreenEffect>(
     ListDetailsScreenState()
@@ -29,6 +31,7 @@ class ListDetailsScreenViewModel @Inject constructor(
         ?: throw IllegalArgumentException("list id is null")
     private val favouriteListTitle: String = favouriteListDetailsArgs.favouriteListTitle
         ?: throw IllegalArgumentException("list title is null")
+    private var latestPagingSource: FavouriteMoviesPagingSource? = null
 
     init {
         updateState { screenState ->
@@ -78,11 +81,11 @@ class ListDetailsScreenViewModel @Inject constructor(
     //region renameAndDeleteListInteraction interactionListeners
     override fun onBackClicked() = sendNewEffect(ListDetailsScreenEffect.NavigateBack)
 
-    override fun onRenameClicked(listId: Int, listTitle: String) =
+    override fun onRenameClicked(listId: Int, listTitle: TextFieldValue) =
         sendNewEffect(
             ListDetailsScreenEffect.NavigateToAllListsScreenAndShowEditListSheet(
                 listId,
-                listTitle = listTitle
+                listTitle = listTitle.text
             )
         )
 
@@ -105,12 +108,18 @@ class ListDetailsScreenViewModel @Inject constructor(
     override fun onMovieCardClicked(movieId: Long) =
         sendNewEffect(ListDetailsScreenEffect.NavigateToMovieDetailsScreen(movieId = movieId))
 
+
     override fun onRemoveMovieClicked(listId: Int, movieId: Long) {
         tryToCall(
             call = { deleteMovieFromUserFavouriteListUseCase(listId = listId, movieId = movieId) },
             onSuccess = {
+                latestPagingSource?.invalidate()
+                updateState { screenState ->
+                    screenState.copy(numberOfFavouriteMovies = (screenState.numberOfFavouriteMovies - 1).coerceAtLeast(0))
+                }
+                viewModelScope.launch { listCountEventBus.emit(listId, -1) }
                 getAllFavoriteListItems(favouriteListId = favouriteListId)
-                ListDetailsScreenEffect.ShowDeleteMovieFromListSucceededSnackBar
+                sendNewEffect(ListDetailsScreenEffect.ShowDeleteMovieFromListSucceededSnackBar)
             },
             onError = { sendNewEffect(ListDetailsScreenEffect.ShowDeleteMovieFromListFailedSnackBar) },
         )

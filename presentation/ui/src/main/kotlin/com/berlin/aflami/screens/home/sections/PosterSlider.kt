@@ -14,6 +14,8 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,8 +23,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.component.PlayButton
 import com.berlin.aflami.component.RatingCard
+import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.safeimageviewer.SafeImageViewer
@@ -107,6 +113,8 @@ fun SliderCard(
                 ) ,
         contentAlignment = Alignment.BottomCenter
     ) {
+        val painter = rememberAsyncImagePainter(posterImageUrl)
+        val imageState by painter.state.collectAsState()
 
         SafeImageViewer(
             model = posterImageUrl,
@@ -118,6 +126,13 @@ fun SliderCard(
                 .clip(RoundedCornerShape(24.dp))
             ,
         )
+        if (imageState is AsyncImagePainter.State.Loading) {
+            ShimmerBox(modifier = Modifier
+                .width(cardWidth)
+                .height(cardHeight)
+                .clip(RoundedCornerShape(24.dp))
+            )
+        }
         if (isCentered) {
             RatingCard(
                 modifier = Modifier.align(Alignment.TopEnd),

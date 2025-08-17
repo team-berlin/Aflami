@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -36,7 +37,7 @@ import com.berlin.aflami.viewmodel.game.GameViewModel
 import com.berlin.ui.R
 
 data class GameCardData(
-    val gameType: GameType?,
+    val gameType: GameType,
     val title: String,
     val description: String,
     val points: Int,
@@ -95,7 +96,7 @@ fun GamesContent(
             circleShadowColor = Theme.color.primaryVariant,
             avatarPainter = painterResource(R.drawable.game_clown),
             gameType = GameType.CHARACTER,
-            backgroundColor = Theme.color.primaryVariant
+            backgroundColor = Theme.color.primaryVariant,
         ),
         GameCardData(
             title = stringResource(R.string.game_guess_poster_title),
@@ -137,10 +138,9 @@ fun GamesContent(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .background(Theme.color.surface)
             .statusBarsPadding()
-            .padding(top = 13.dp)
+        .padding(top = 13.dp)
     ) {
         TopBar(
             title = {
@@ -154,8 +154,8 @@ fun GamesContent(
         )
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
+                .navigationBarsPadding()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -173,7 +173,8 @@ fun GamesContent(
                     shadowColor = card.shadowColor,
                     circleShadowColor = card.circleShadowColor,
                     avatarPainter = card.avatarPainter,
-                    backgroundColor = card.backgroundColor
+                    backgroundColor = card.backgroundColor,
+                    gameType = card.gameType
                 )
             }
 

@@ -182,6 +182,9 @@
     <string name="game_genre_title">Which Genre?</string>
     <string name="game_genre_desc">Which one is the real action movie?</string>
     <string name="pts">%1$s pts.</string>
+    <string name="play_now">play now</string>
+    <string name="pts_to_unlock">%1$s Pts. to unlock</string>
+    <string name="s">%1$ss</string>
 
 
 </resources>
