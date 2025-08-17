@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.imageLoader
-import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.allowHardware
@@ -76,11 +75,7 @@ fun SafeImageViewer(
     var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
     if (!isModelDownloaded) {
         AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(model)
-                .diskCachePolicy(CachePolicy.READ_ONLY) // ✅ load from disk if offline
-                .memoryCachePolicy(CachePolicy.ENABLED)
-                .build(),
+            model =model,
             contentDescription = contentDescription,
             error = error,
             fallback = fallback,
@@ -180,20 +175,29 @@ suspend fun classifyImage(
     val drawable = (result as? SuccessResult)?.image ?: return@withContext null
     val bitmap = drawable.toBitmap()
     return@withContext try {
-        when (classifyNSFW(bitmap, modelManager, contentRestrictions)) {
-            true -> ImageClassificationResult(
+        when {
+            classifyGender(bitmap, modelManager, contentRestrictions) -> ImageClassificationResult(
                 bitmap,
                 isSafe = true,
+                isFemale = false
             )
 
-            false -> ImageClassificationResult(bitmap, isSafe = false)
+            classifyNSFW(bitmap, modelManager, contentRestrictions) == true -> ImageClassificationResult(
+                bitmap,
+                isSafe = false,
+                isFemale = true
+            )
+
+            else -> ImageClassificationResult(bitmap, isSafe = true, isFemale = false)
         }
-    } catch (e: Exception) {
+    }catch(e: Exception) {
         ImageClassificationResult(
             bitmap,
             isSafe = false,
+            isFemale = true
         )
     }
+
 }
 
 fun classifyNSFW(
@@ -218,6 +222,27 @@ fun classifyNSFW(
         else -> true
     }
     return isSafe
+}
+fun classifyGender(
+    bitmap: Bitmap,
+    modelManager: FireBaseModelManager,
+    contentRestrictions: String?
+): Boolean {
+    val genderBuffer = bitmap.toModelByteBuffer(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
+    val genderInput = TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
+    genderInput.loadBuffer(genderBuffer)
+
+    val genderOutput = TensorBuffer.createFixedSize(intArrayOf(1, 2), DataType.FLOAT32)
+
+    modelManager.genderInterpreter?.run(genderInput.buffer, genderOutput.buffer.rewind())
+    val genderModelScore = genderOutput.floatArray[1]
+
+    val isFemale = when (contentRestrictions) {
+        STRICT_MODERATION -> genderModelScore > DEFAULT_IMAGE_MODERATION_THRESHOLD
+        MODERATE_MODERATION -> genderModelScore > 0.5f
+        else -> false
+    }
+    return isFemale
 }
 
 fun Bitmap.toModelByteBuffer(
@@ -258,6 +283,7 @@ fun Bitmap.toModelByteBuffer(
 data class ImageClassificationResult(
     val bitmap: Bitmap,
     val isSafe: Boolean,
+    val isFemale: Boolean,
 )
 
 const val DEFAULT_IMAGE_MODERATION_THRESHOLD = 0.5f
