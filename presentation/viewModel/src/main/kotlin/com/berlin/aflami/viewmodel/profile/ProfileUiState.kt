@@ -22,7 +22,7 @@ data class ProfileUiState(
     val isEnglishSelected: Boolean = selectedLanguage == AppLanguage.EN.name,
     val isArabicSelected: Boolean = selectedLanguage == AppLanguage.AR.name,
     val activeDialog: ProfileDialogType = ProfileDialogType.NONE,
-    val isLoggedIn: Boolean = false,
+    val isLoggedIn: Boolean? = null,
     val isStrictSelected: Boolean = true,
     val isModeratedSelected: Boolean = false,
     val isOffSelected: Boolean = false,
