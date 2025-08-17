@@ -1,6 +1,9 @@
 package com.berlin.aflami.screens.profile
 
 import androidx.activity.ComponentActivity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,18 +54,30 @@ fun ProfileScreen(
 ) {
     val profileScreenState by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
-    when (profileScreenState.isLoggedIn) {
-        null -> {
-            CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize(),
-                text = stringResource(R.string.loading)
-            )
-        }
-        true -> ProfileContent(profileScreenState, viewModel)
-        false -> RequiredLoggedInPlaceholder {
-            navController.navigate(LoginDestination)
-        }
+
+    AnimatedVisibility(
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
+        visible = profileScreenState.isLoggedIn==null
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
     }
+
+    AnimatedVisibility(
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
+        visible = profileScreenState.isLoggedIn==true
+    ) { ProfileContent(profileScreenState, viewModel) }
+
+    AnimatedVisibility(
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
+        visible = profileScreenState.isLoggedIn==false
+    ) { RequiredLoggedInPlaceholder { navController.navigate(LoginDestination) } }
+
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
             watchHistoryReceiveEffect(navController = navController, effect = newEffect)
