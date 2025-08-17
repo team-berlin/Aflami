@@ -1,6 +1,9 @@
 package com.berlin.aflami.screens.home
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -85,8 +88,8 @@ fun HomeScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = homeScreenState.isLoading
     ) {
         CircularProgressIndicator(
@@ -95,16 +98,16 @@ fun HomeScreen(
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = homeScreenState.error != null
     ) {
         NoInternetConnectionPlaceholder()
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = !homeScreenState.isLoading
     ) {
         HomeContent(
@@ -174,11 +177,12 @@ private fun HomeContent(
 
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
+
     val pagerState = rememberPagerState(
         initialPage = 1, pageCount = { homeScreenState.popularMediaUiState.popularMedia.size })
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = homeScreenState.isLoading
     ) {
         CircularProgressIndicator(
@@ -186,18 +190,21 @@ private fun HomeContent(
             text = stringResource(R.string.loading)
         )
     }
-    val mediaList: List<MediaUiState> =
+    val continueWatchingMediaList: List<MediaUiState> =
         homeScreenState.continueWatchingUiState.continueWatchingMediaList
-    val currentMedia =
+    val topRatedMediaList: List<MediaUiState> =
+        homeScreenState.topRatedMediaUiState.topRatedMedia
+    val popularMedia =
         homeScreenState.popularMediaUiState.popularMedia.getOrNull(pagerState.currentPage)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
     ) {
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
             visible = homeScreenState.isLoading.not()
         ) {
             LazyColumn(
@@ -213,7 +220,7 @@ private fun HomeContent(
                     ) {
                         Box {
                             BlurredPosterBackground(
-                                imageUrl = currentMedia?.poster ?: "",
+                                imageUrl = popularMedia?.poster ?: "",
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(390.dp)
@@ -256,7 +263,7 @@ private fun HomeContent(
                                     }
                                 )
 
-                                currentMedia?.let { media ->
+                                popularMedia?.let { media ->
                                     Text(
                                         media.title,
                                         modifier = Modifier
@@ -305,14 +312,14 @@ private fun HomeContent(
                         }
                     }
                 }
-                if (mediaList.isNotEmpty()) {
+                if (continueWatchingMediaList.isNotEmpty()) {
                     item {
                         ContinueWatchingHomeSections(
                             modifier = Modifier.background(Theme.color.surface),
                             seeAllOnClick = {
                                 homeScreenInteractionListener.onShowAllContinueWatchingClicked()
                             },
-                            state = mediaList.take(10),
+                            state = continueWatchingMediaList.take(10),
                             sectionTitleId = R.string.continue_watching,
                             onMovieItemClicked = {
                                 homeScreenInteractionListener.onMovieCardClicked(
@@ -327,18 +334,28 @@ private fun HomeContent(
                         )
                     }
                 }
-                item {
-                    TopRatingHomeSections(
-                        modifier = Modifier
-                            .background(Theme.color.surface)
-                            .padding(top = 24.dp, bottom = 24.dp)
-                            .background(Theme.color.surface),
-                        seeAllOnClick = { homeScreenInteractionListener.onShowAllTopRatingClicked() },
-                        state = homeScreenState.topRatedMediaUiState.topRatedMedia,
-                        sectionTitleId = R.string.top_rating,
-                        onMovieItemClicked = { homeScreenInteractionListener.onMovieCardClicked(it) },
-                        onTVShowItemClicked = { homeScreenInteractionListener.onTVShowCardClicked(it) }
-                    )
+                if (topRatedMediaList.isNotEmpty()) {
+                    item {
+                        TopRatingHomeSections(
+                            modifier = Modifier
+                                .background(Theme.color.surface)
+                                .padding(top = 24.dp, bottom = 24.dp)
+                                .background(Theme.color.surface),
+                            seeAllOnClick = { homeScreenInteractionListener.onShowAllTopRatingClicked() },
+                            state = topRatedMediaList,
+                            sectionTitleId = R.string.top_rating,
+                            onMovieItemClicked = {
+                                homeScreenInteractionListener.onMovieCardClicked(
+                                    it
+                                )
+                            },
+                            onTVShowItemClicked = {
+                                homeScreenInteractionListener.onTVShowCardClicked(
+                                    it
+                                )
+                            }
+                        )
+                    }
                 }
                 item {
                     MoodPickerSection(

@@ -3,5 +3,6 @@ package com.berlin.repository.datasource.local.dto
 enum class SectionHome {
     POPULAR,
     TOP_RATING,
-    UPCOMING
+    UPCOMING,
+    BY_MOOD
 }

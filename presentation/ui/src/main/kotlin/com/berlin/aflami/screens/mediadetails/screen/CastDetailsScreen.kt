@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -49,8 +51,8 @@ fun CastDetailsScreen(
         }
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = castState.isScreenLoading
     ) {
         CircularProgressIndicator(
@@ -65,8 +67,8 @@ fun CastDetailsScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = !castState.isScreenLoading
     ) {
         CastContent(

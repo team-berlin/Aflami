@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.categories
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
@@ -72,8 +74,8 @@ fun TVShowByCategoryScreen(
         }
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = state.isLoading
     ) {
         CircularProgressIndicator(
@@ -83,8 +85,8 @@ fun TVShowByCategoryScreen(
     }
     val tvShows = state.tvShowsPagingDataFlow.collectAsLazyPagingItems()
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = !state.isLoading
     ) {
         TVShowByCategoryContent(

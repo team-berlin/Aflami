@@ -64,7 +64,7 @@ class AuthenticationRepositoryImplTest {
             coVerifySequence {
                 remoteDataSource.requestToken()
                 remoteDataSource.login("testUser", "testPass", dummyLoginLoginDto.requestToken!!)
-                remoteDataSource.createSession(dummyLoginLoginDto.requestToken)
+                remoteDataSource.createSession(dummyLoginLoginDto.requestToken!!)
             }
         }
 
@@ -75,7 +75,7 @@ class AuthenticationRepositoryImplTest {
 
         // When / Then
         assertThrows<UnauthorizedException> {
-            runTest { authenticationRepository.login("testUser", "testPass") }
+            authenticationRepository.login("testUser", "testPass")
         }
     }
 

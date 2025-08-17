@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.listdetails.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -59,8 +61,8 @@ fun AddToListDialog(
     ) {
         Box() {
             AnimatedVisibility(
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter =  EnterTransition.None ,
+                exit = ExitTransition.None ,
                 visible = addToListUiState.isLoading &&
                         addToListUiState.errorMessage.isNullOrEmpty()
             ) {
@@ -72,8 +74,8 @@ fun AddToListDialog(
                 )
             }
             AnimatedVisibility(
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter =  EnterTransition.None ,
+                exit = ExitTransition.None ,
                 visible = addToListUiState.errorMessage != null
                         && addToListUiState.isLoading.not()
             ) {
@@ -85,8 +87,8 @@ fun AddToListDialog(
                 )
             }
             AnimatedVisibility(
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter =  EnterTransition.None ,
+                exit = ExitTransition.None ,
                 visible = addToListUiState.isLoading.not() &&
                         addToListUiState.errorMessage == null
             ) {

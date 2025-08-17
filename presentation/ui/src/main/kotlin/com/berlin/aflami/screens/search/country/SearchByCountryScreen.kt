@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.search.country
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -60,8 +62,8 @@ fun SearchByCountryScreen(
         }
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = state.isLoading
     ) {
         com.berlin.aflami.component.CircularProgressIndicator(
@@ -70,16 +72,16 @@ fun SearchByCountryScreen(
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = state.errorMessage != null && state.countryName.text.isNotEmpty()
     ) {
         NoInternetConnectionPlaceholder()
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = !state.isLoading
     ) {
 

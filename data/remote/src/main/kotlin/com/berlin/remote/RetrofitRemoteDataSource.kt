@@ -1,6 +1,5 @@
 package com.berlin.remote
 
-import android.util.Log
 import com.berlin.remote.network.ApiService
 import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.local.UserProfileLocalDataSource
@@ -61,8 +60,8 @@ class RetrofitRemoteDataSource @Inject constructor(
         return wrapApiResponse { apiService.getMovieReviews(movieId) }
     }
 
-    override suspend fun getUpComingMovies(): BaseResponse<MovieDetailsDto> {
-        return wrapApiResponse { apiService.getUpcomingMovies() }
+    override suspend fun getUpComingMovies(genreId: Long): BaseResponse<MovieDetailsDto> {
+        return wrapApiResponse { apiService.getUpcomingMovies(if (genreId<0) null else genreId) }
     }
 
     override suspend fun getTVShowDetailsById(seriesId: Long): TVShowDetailsDto {
@@ -172,7 +171,7 @@ class RetrofitRemoteDataSource @Inject constructor(
                 sessionId = authenticationLocalDataSource.getUserSessionId()
                     ?: throw IllegalStateException("userSessionID == null"),
             )
-        }.results ?: emptyList()
+        }.results.orEmpty()
     }
 
     override suspend fun getUserFavouriteListItems(
@@ -184,7 +183,7 @@ class RetrofitRemoteDataSource @Inject constructor(
                 listId = favouriteListId,
                 pageNumber = pageNumber
             )
-        }.favouriteListItems ?: emptyList()
+        }.favouriteListItems .orEmpty()
     }
 
     override suspend fun deleteUserFavouriteList(listId: Int) {

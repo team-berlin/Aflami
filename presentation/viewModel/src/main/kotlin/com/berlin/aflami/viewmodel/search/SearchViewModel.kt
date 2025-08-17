@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.search
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager

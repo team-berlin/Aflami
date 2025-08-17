@@ -47,7 +47,7 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 
     override suspend fun getMovieDetails(id: Long): Movie {
         val review =
-            remoteDataSource.getMovieReviews(id).results?.map { it.toDomain() } ?: emptyList()
+            remoteDataSource.getMovieReviews(id).results?.map { it.toDomain() }.orEmpty()
         return try {
             remoteDataSource.getMovieDetails(id).toDomain(review)
         } catch (exception: AflamiException) {
@@ -60,12 +60,12 @@ class MovieDetailsRepositoryImpl @Inject constructor(
             movieId
         ).cast?.mapNotNull { castItemDto ->
             castItemDto.toDomain()
-        } ?: emptyList()
+        } .orEmpty()
     }
 
     override suspend fun getSimilarMovies(movieId: Long): List<Movie> {
         val review =
-            remoteDataSource.getMovieReviews(movieId).results?.map { it.toDomain() } ?: emptyList()
+            remoteDataSource.getMovieReviews(movieId).results?.map { it.toDomain() } .orEmpty()
         val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference()
             .associate { it.categoryId to it.count }
         return remoteDataSource.getSimilarMovies(movieId).results?.mapNotNull { movieDto ->
@@ -74,13 +74,12 @@ class MovieDetailsRepositoryImpl @Inject constructor(
             movie.genres.sumOf { genre ->
                 genreScoresMap[genre.id] ?: 0
             }
-        }
-            ?: emptyList()
+        }.orEmpty()
     }
 
     override suspend fun getMovieReviews(movieId: Long): List<Review> {
         return remoteDataSource.getMovieReviews(movieId).results?.filterNotNull()
-            ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
+            ?.map { reviewDto -> reviewDto.toDomain() }.orEmpty()
     }
 
 
@@ -99,7 +98,7 @@ class MovieDetailsRepositoryImpl @Inject constructor(
     override suspend fun getMovieVideos(id: Long): List<Video> {
         return remoteDataSource.getMovieVideos(id).results?.mapNotNull {
             it?.toDomain()
-        } ?: emptyList()
+        }.orEmpty()
 
     }
 

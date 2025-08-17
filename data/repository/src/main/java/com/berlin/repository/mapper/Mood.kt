@@ -4,15 +4,15 @@ import com.berlin.entity.Movie
 import com.berlin.repository.datasource.local.dto.MovieHomeEntity
 import com.berlin.repository.datasource.local.dto.SectionHome
 
-fun Movie.toUpComingMovieEntity(genreId: Long?): MovieHomeEntity {
+fun Movie.toMovieByMoodEntity(): MovieHomeEntity {
     return MovieHomeEntity(
         id = id,
         title = title,
         rating = rating.toString(),
         releaseYear = releaseDate,
-        genre = listOf(genreId?.toInt()?:-1),
+        genre = genres.map { it.id },
         poster = posterURL,
         addedAt = System.currentTimeMillis(),
-        sectionHome = SectionHome.UPCOMING
+        sectionHome = SectionHome.BY_MOOD
     )
 }

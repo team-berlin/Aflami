@@ -115,7 +115,7 @@ class MovieRepositoryImplTest {
         val movieList = baseResponseMovieDetails
 
         coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.UPCOMING) } returns emptyList()
-        coEvery { remoteDataSource.getUpComingMovies() } returns movieList
+        coEvery { remoteDataSource.getUpComingMovies(genreId) } returns movieList
         coEvery { homeLocalDataSource.clearHomeScreenMovies(any()) } just Runs
         coEvery { homeLocalDataSource.addMovies(any()) } just Runs
 
