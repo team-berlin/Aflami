@@ -45,7 +45,7 @@ import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.component.SearchSuggestionHub
+import com.berlin.aflami.screens.search.components.SearchSuggestionHub
 import com.berlin.aflami.component.TabBar
 import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TextField

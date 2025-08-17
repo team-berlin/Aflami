@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.home
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -363,6 +364,7 @@ private fun HomeContent(
                     )
                 }
                 item {
+                    Log.d("WOWTEST", "HomeContent: ${homeScreenState.upcomingMoviesUiState.upcomingMovies}")
                     UpcomingMoviesSection(
                         movies = homeScreenState.upcomingMoviesUiState.upcomingMovies,
                         genres = homeScreenState.movieGenres,

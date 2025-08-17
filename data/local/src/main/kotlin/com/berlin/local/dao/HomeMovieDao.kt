@@ -21,4 +21,14 @@ interface HomeMovieDao {
     @Query("DELETE FROM Movie_Home")
     suspend fun clearAllMovies()
 
+    @Query(
+        """
+    SELECT * 
+    FROM Movie_Home 
+    WHERE sectionHome = :home 
+      AND CAST(substr(genre, 1, instr(genre || ',', ',') - 1) AS INTEGER) = :genreId
+"""
+    )
+    fun getUpcomingMoviesByGenre(home: SectionHome, genreId: Long?): List<MovieHomeEntity>
+
 }

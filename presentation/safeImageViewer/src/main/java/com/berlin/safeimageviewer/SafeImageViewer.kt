@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.imageLoader
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.allowHardware
@@ -75,7 +76,11 @@ fun SafeImageViewer(
     var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
     if (!isModelDownloaded) {
         AsyncImage(
-            model = model,
+            model = ImageRequest.Builder(context)
+                .data(model)
+                .diskCachePolicy(CachePolicy.READ_ONLY) // ✅ load from disk if offline
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .build(),
             contentDescription = contentDescription,
             error = error,
             fallback = fallback,

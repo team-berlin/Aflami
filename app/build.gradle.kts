@@ -109,6 +109,7 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
 
+    implementation(libs.coil.compose)
 
     api(project(":presentation:ui"))
     implementation(project(":presentation:safeImageViewer"))

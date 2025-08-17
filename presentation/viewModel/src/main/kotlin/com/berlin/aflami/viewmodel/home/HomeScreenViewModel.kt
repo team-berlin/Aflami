@@ -66,11 +66,10 @@ class HomeScreenViewModel @Inject constructor(
             movieGenreJob.await()
             tvShowGenreJob.await()
             updateState { it.copy(isLoading = false) }
+
             state.map {uistate->
-                Log.d("WOWTEST", "selectedGenres: ${uistate.selectedGenres}")
                 uistate.selectedGenres
             }.collectLatest {genreId->
-                    Log.d("WOWTEST", "collectLatest: $genreId")
                     getUpComingMoviesByGenre(genreId)
                 }
 
@@ -354,7 +353,6 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun getUpComingMoviesByGenre(genreId:Int) {
-        Log.d("WOWTEST", "getUpComingMoviesByGenre: $genreId")
         tryToCall(
             call = { getUpComingMoviesUseCase(genreId.toLong()).map { movie -> movie.toMovieUiState() } },
             onSuccess = ::updateScreenWithNewUpComingMovies,
@@ -374,19 +372,11 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenWithNewUpComingMovies(movies: List<MovieUiState>) {
-
-        val genreId = state.value.selectedGenres
-        val filteredMovies = if (genreId == -1) {
-            movies
-        } else {
-            movies.filter { movieUiState ->
-                movieUiState.genre.any { it.id == genreId }
-            }
-        }
+        Log.d("WOWTEST", "updateScreenWithNewUpComingMovies: $movies")
         updateState { state ->
             state.copy(
                 upcomingMoviesUiState = state.upcomingMoviesUiState.copy(
-                    isLoading = false, upcomingMovies = filteredMovies
+                    isLoading = false, upcomingMovies = movies
                 ),
             )
         }
