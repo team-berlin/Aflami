@@ -35,7 +35,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
-
         splashScreen.setKeepOnScreenCondition {
             mainActivityViewModel.state.value.isLoading
         }
@@ -43,6 +42,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val profileState by profileViewModel.state.collectAsState()
+            val mainState by mainActivityViewModel.state.collectAsState()
             val isDarkTheme = profileState.isDarkThemeEnabled
             LaunchedEffect(Unit) {
                 profileViewModel.effect.collect { effect ->
@@ -57,8 +57,6 @@ class MainActivity : ComponentActivity() {
                 isDarkTheme = isDarkTheme,
                 selectedLanguage = profileState.selectedLanguage
             ) {
-                val mainState by mainActivityViewModel.state.collectAsState()
-
                 if (!mainState.isLoading) {
                     AflamiNavGraph(
                         navController = Theme.navController,

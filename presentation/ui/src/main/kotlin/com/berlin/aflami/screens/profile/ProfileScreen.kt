@@ -1,6 +1,9 @@
 package com.berlin.aflami.screens.profile
 
 import androidx.activity.ComponentActivity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,10 +19,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.MyRatingDestination
@@ -49,13 +54,30 @@ fun ProfileScreen(
 ) {
     val profileScreenState by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
-    if (profileScreenState.isLoggedIn) {
-        ProfileContent(profileScreenState, viewModel)
-    } else {
-        RequiredLoggedInPlaceholder() {
-            navController.navigate(LoginDestination)
-        }
+
+    AnimatedVisibility(
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
+        visible = profileScreenState.isLoggedIn==null
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(R.string.loading)
+        )
     }
+
+    AnimatedVisibility(
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
+        visible = profileScreenState.isLoggedIn==true
+    ) { ProfileContent(profileScreenState, viewModel) }
+
+    AnimatedVisibility(
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
+        visible = profileScreenState.isLoggedIn==false
+    ) { RequiredLoggedInPlaceholder { navController.navigate(LoginDestination) } }
+
     LaunchedEffect(Unit) {
         viewModel.effect.collect { newEffect ->
             watchHistoryReceiveEffect(navController = navController, effect = newEffect)

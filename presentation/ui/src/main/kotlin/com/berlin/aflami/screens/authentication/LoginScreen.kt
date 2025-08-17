@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,6 +53,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -242,9 +244,10 @@ private fun FormLogin(
             trailingIcon = R.drawable.eye,
             onTrailingIconClicked = onTrailingIconClicked,
             modifier = Modifier.fillMaxWidth(),
-            maxCharacters = 32
+            maxCharacters = 32,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
 
-        )
+            )
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(

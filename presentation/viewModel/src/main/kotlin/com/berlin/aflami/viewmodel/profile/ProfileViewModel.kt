@@ -64,7 +64,6 @@ class ProfileViewModel @Inject constructor(
     private fun checkLoginStatus() {
         viewModelScope.launch {
             getLoginStatus().collect { loggedIn ->
-
                 updateState { it.copy(isLoggedIn = loggedIn) }
             }
         }
