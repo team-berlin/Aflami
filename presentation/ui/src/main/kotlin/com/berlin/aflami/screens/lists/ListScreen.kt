@@ -1,9 +1,10 @@
 package com.berlin.aflami.screens.lists
 
-import android.util.Log
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -79,6 +80,11 @@ private fun ListsContent(
     val favouriteLists: LazyPagingItems<FavouriteListItemUiState> =
         listScreenState.favouriteList.collectAsLazyPagingItems()
 
+    val isPagingLoading = favouriteLists.loadState.refresh is LoadState.Loading
+    val pagingError = (favouriteLists.loadState.refresh as? LoadState.Error)
+    val isLoading = listScreenState.isScreenLoading || isPagingLoading
+    val hasError = listScreenState.errorMessage != null || pagingError != null
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -100,71 +106,68 @@ private fun ListsContent(
                             text = stringResource(R.string.list_edit_successfully),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
                             modifier = Modifier.align(Alignment.TopCenter),
-                            onDismiss = {
-                                interactionListener.dismissSnackBar()
-                            })
+                            onDismiss = interactionListener::dismissSnackBar
+                        )
                     } else {
                         SnackBar(
                             isVisible = listScreenState.snackBar.isVisible,
                             status = SnackBarStatus.ERROR,
-                            text = stringResource(
-                                R.string.list_failed_to_edit
-                            ),
+                            text = stringResource(R.string.list_failed_to_edit),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
                             modifier = Modifier.align(Alignment.TopCenter),
-                            onDismiss = {
-                                interactionListener.dismissSnackBar()
-                            })
+                            onDismiss = interactionListener::dismissSnackBar
+                        )
                     }
                 }
 
-                SNACK_BAR_STATUS.LIST_DELETED ->
+                SNACK_BAR_STATUS.LIST_DELETED -> {
                     if (listScreenState.snackBar.isOperationSucceeded) {
                         SnackBar(
                             isVisible = listScreenState.snackBar.isVisible,
                             status = SnackBarStatus.SUCCESS,
-                            text = stringResource(com.berlin.ui.R.string.list_deleted_successfully),
+                            text = stringResource(R.string.list_deleted_successfully),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
                             modifier = Modifier.align(Alignment.TopCenter),
-                            onDismiss = { interactionListener.dismissSnackBar() })
+                            onDismiss = interactionListener::dismissSnackBar
+                        )
                     } else {
                         SnackBar(
                             isVisible = listScreenState.snackBar.isVisible,
                             status = SnackBarStatus.ERROR,
-                            text = stringResource(com.berlin.ui.R.string.list_failed_to_deleted),
+                            text = stringResource(R.string.list_failed_to_deleted),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
                             modifier = Modifier.align(Alignment.TopCenter),
-                            onDismiss = {
-                                interactionListener.dismissSnackBar()
-                            })
+                            onDismiss = interactionListener::dismissSnackBar
+                        )
                     }
+                }
 
                 SNACK_BAR_STATUS.CREATE_NEW_LIST -> {
                     if (listScreenState.snackBar.isOperationSucceeded) {
                         SnackBar(
                             isVisible = listScreenState.snackBar.isVisible,
                             status = SnackBarStatus.SUCCESS,
-                            text = stringResource(com.berlin.ui.R.string.new_list_created),
+                            text = stringResource(R.string.new_list_created),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
                             modifier = Modifier.align(Alignment.TopCenter),
-                            onDismiss = { interactionListener.dismissSnackBar() })
+                            onDismiss = interactionListener::dismissSnackBar
+                        )
                     } else {
                         SnackBar(
                             isVisible = listScreenState.snackBar.isVisible,
                             status = SnackBarStatus.ERROR,
-                            text = stringResource(com.berlin.ui.R.string.create_new_list_failed),
+                            text = stringResource(R.string.create_new_list_failed),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
                             modifier = Modifier.align(Alignment.TopCenter),
-                            onDismiss = {
-                                interactionListener.dismissSnackBar()
-                            })
+                            onDismiss = interactionListener::dismissSnackBar
+                        )
                     }
                 }
 
-                SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST -> {}
-                null -> {}
+                SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST, null -> Unit
             }
         }
+
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
@@ -177,6 +180,7 @@ private fun ListsContent(
                 onDismiss = interactionListener::onCancelCreatingNewListClicked,
             )
         }
+
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
@@ -185,31 +189,12 @@ private fun ListsContent(
             EditListDialog(
                 listId = listScreenState.editListSheetState.requiredListIdToEdit!!,
                 listName = listScreenState.editListSheetState.currentListTitle,
-                onListNameChanged = {
-                    interactionListener.onOldListTitleChanged(
-                        it
-                    )
-                },
+                onListNameChanged = interactionListener::onOldListTitleChanged,
                 onSaveClick = interactionListener::onSaveOldListTitleToNewTitleClicked,
                 onDismiss = interactionListener::onCancelEditingListClicked,
             )
         }
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = favouriteLists.loadState.refresh !is LoadState.Loading && listScreenState.isUserLoggedIn == true && favouriteLists.loadState.refresh is LoadState.Error,
-        ) {
-            NoInternetConnectionPlaceholder(
-                onClick = interactionListener::onClickRetryFetchList
-            )
-        }
-        AnimatedVisibility(
-            enter = fadeIn(), exit = fadeOut(), visible = listScreenState.isScreenLoading
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
-            )
-        }
+
         AnimatedVisibility(
             enter = fadeIn(),
             exit = fadeOut(),
@@ -221,28 +206,9 @@ private fun ListsContent(
                 onDismiss = interactionListener::onBackClicked,
             )
         }
+
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = !listScreenState.isScreenLoading &&
-                    listScreenState.isUserLoggedIn == true &&
-                    favouriteLists.loadState.refresh !is LoadState.Loading &&
-                    favouriteLists.loadState.refresh !is LoadState.Error &&
-                    favouriteLists.itemCount == 0
-        ) {
-            CountryTourExploring(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center),
-                image = painterResource(R.drawable.no_items_found),
-                R.string.no_lists_yet,
-                R.string.our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love
-            )
-        }
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = favouriteLists.itemCount != 0 && listScreenState.isUserLoggedIn == true
+            visible = listScreenState.isUserLoggedIn == true, enter = fadeIn(), exit = fadeOut()
         ) {
             Column(
                 modifier = modifier
@@ -260,29 +226,66 @@ private fun ListsContent(
                     optionContainerColor = Theme.color.surfaceHigh,
                     onLastOptionClicked = interactionListener::onClickAddList,
                 )
-                LazyVerticalGrid(
+
+                AnimatedContent(
                     modifier = Modifier.fillMaxSize(),
-                    columns = GridCells.Adaptive(minSize = 156.dp),
-                    state = rememberLazyGridState(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 64.dp),
-                ) {
-                    items(
-                        favouriteLists.itemCount,
-                        key = { index -> favouriteLists[index]?.listId!! }) { index ->
-                        val item = favouriteLists[index]
-                        item?.let {
-                            ListCard(
-                                title = it.listTitle,
-                                count = it.numberOfFavouriteMovies,
-                                modifier = modifier
-                                    .size(156.dp, 147.dp)
-                                    .clickable {
-                                        interactionListener.onClickListCard(
-                                            it.listId!!, it.listTitle
+                    targetState = Triple(isLoading, hasError, favouriteLists.itemCount),
+                    transitionSpec = {
+                        fadeIn() togetherWith fadeOut()
+                    },
+                    label = "ListsStateSwitch"
+                ) { (loading, error, count) ->
+                    when {
+                        loading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier.fillMaxSize(),
+                                text = stringResource(R.string.loading)
+                            )
+                        }
+
+                        error -> {
+                            NoInternetConnectionPlaceholder(
+                                onClick = interactionListener::onClickRetryFetchList
+                            )
+                        }
+
+                        count == 0 -> {
+                            CountryTourExploring(
+                                modifier = Modifier.fillMaxSize(),
+                                image = painterResource(R.drawable.no_items_found),
+                                R.string.no_lists_yet,
+                                R.string.our_brain_is_still_empty_click_on_and_start_saving_your_favorite_items_and_shows_you_love
+                            )
+                        }
+
+                        else -> {
+                            LazyVerticalGrid(
+                                modifier = Modifier.fillMaxSize(),
+                                columns = GridCells.Adaptive(minSize = 156.dp),
+                                state = rememberLazyGridState(),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                contentPadding = PaddingValues(top = 16.dp, bottom = 64.dp),
+                            ) {
+                                items(
+                                    favouriteLists.itemCount,
+                                    key = { index -> favouriteLists[index]?.listId!! }) { index ->
+                                    val item = favouriteLists[index]
+                                    if (item != null) {
+                                        ListCard(
+                                            title = item.listTitle,
+                                            count = item.numberOfFavouriteMovies,
+                                            modifier = modifier
+                                                .size(156.dp, 147.dp)
+                                                .clickable {
+                                                    interactionListener.onClickListCard(
+                                                        item.listId!!, item.listTitle
+                                                    )
+                                                },
                                         )
-                                    })
+                                    }
+                                }
+                            }
                         }
                     }
                 }
