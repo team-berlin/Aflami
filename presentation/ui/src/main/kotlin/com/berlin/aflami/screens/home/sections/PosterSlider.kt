@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.berlin.aflami.component.PlayButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.viewmodel.shareduistate.MediaType

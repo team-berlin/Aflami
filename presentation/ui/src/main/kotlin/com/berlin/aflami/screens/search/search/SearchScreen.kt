@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.search.search
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -44,8 +46,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.MediaCard
-import com.berlin.aflami.screens.search.components.SearchSuggestionHub
 import com.berlin.aflami.component.TabBar
 import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TextField
@@ -57,6 +59,7 @@ import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.NoDataSearch
 import com.berlin.aflami.screens.search.components.SearchData
+import com.berlin.aflami.screens.search.components.SearchSuggestionHub
 import com.berlin.aflami.screens.search.getMovieGenreIcon
 import com.berlin.aflami.screens.search.getMovieGenreName
 import com.berlin.aflami.screens.search.getTvShowGenreIcon
@@ -86,26 +89,26 @@ fun SearchScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = state.isLoading
     ) {
-        com.berlin.aflami.component.CircularProgressIndicator(
+        CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
             text = stringResource(com.berlin.ui.R.string.loading)
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = state.errorMessage != null && state.searchQuery.text.isNotEmpty()
     ) {
         NoInternetConnectionPlaceholder()
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = !state.isLoading
     ) {
         SearchScreenContent(
@@ -423,7 +426,7 @@ private fun SearchScreenContent(
                                                                 tvShows.id
                                                             )
                                                         },
-                                                        typeOfMedia =MediaType.TV_SHOW.name,
+                                                        typeOfMedia = MediaType.TV_SHOW.name,
                                                         date = tvShows.releaseDate,
                                                         rating = tvShows.rating
                                                     )

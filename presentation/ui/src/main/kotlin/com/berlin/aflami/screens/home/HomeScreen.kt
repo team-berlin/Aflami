@@ -2,6 +2,8 @@ package com.berlin.aflami.screens.home
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -86,8 +88,8 @@ fun HomeScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = homeScreenState.isLoading
     ) {
         CircularProgressIndicator(
@@ -96,16 +98,16 @@ fun HomeScreen(
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = homeScreenState.error != null
     ) {
         NoInternetConnectionPlaceholder()
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = !homeScreenState.isLoading
     ) {
         HomeContent(
@@ -179,8 +181,8 @@ private fun HomeContent(
     val pagerState = rememberPagerState(
         initialPage = 1, pageCount = { homeScreenState.popularMediaUiState.popularMedia.size })
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = homeScreenState.isLoading
     ) {
         CircularProgressIndicator(
@@ -201,8 +203,8 @@ private fun HomeContent(
             .background(Theme.color.surface)
     ) {
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
             visible = homeScreenState.isLoading.not()
         ) {
             LazyColumn(
@@ -364,7 +366,6 @@ private fun HomeContent(
                     )
                 }
                 item {
-                    Log.d("WOWTEST", "HomeContent: ${homeScreenState.upcomingMoviesUiState.upcomingMovies}")
                     UpcomingMoviesSection(
                         movies = homeScreenState.upcomingMoviesUiState.upcomingMovies,
                         genres = homeScreenState.movieGenres,

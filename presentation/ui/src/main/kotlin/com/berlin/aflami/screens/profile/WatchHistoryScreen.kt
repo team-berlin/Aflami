@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.profile
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -63,8 +65,8 @@ fun WatchHistoryScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = state.isLoading
     ) {
         CircularProgressIndicator(
@@ -74,8 +76,8 @@ fun WatchHistoryScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = !state.isLoading
     ) {
         WatchHistoryContent(

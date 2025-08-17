@@ -17,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import usecase.movie.ContinueWatchingMovieUseCase
@@ -372,7 +371,6 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenWithNewUpComingMovies(movies: List<MovieUiState>) {
-        Log.d("WOWTEST", "updateScreenWithNewUpComingMovies: $movies")
         updateState { state ->
             state.copy(
                 upcomingMoviesUiState = state.upcomingMoviesUiState.copy(

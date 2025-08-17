@@ -239,7 +239,6 @@ class SearchViewModel @Inject constructor(
     // endregion
     private fun updateScreenStateToError(errorUiState: ErrorUiState) =
         updateState { screenState ->
-            Log.d("WOWTEST", "${errorUiState.message}")
             screenState.copy(
                 errorMessage = errorUiState.message,
                 isLoading = false
@@ -253,7 +252,6 @@ class SearchViewModel @Inject constructor(
         onSearchQueryChanged(state.value.searchQuery)
         tryToCall(
             call = {
-                Log.d("WOWTEST", "onSearchActionClicked called")
                 saveRecentMoviesHistoryUseCase(state.value.searchQuery.text)
                 saveRecentTVShowHistoryUseCase(state.value.searchQuery.text)
             },
@@ -462,7 +460,6 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun loadRecentSearch() {
-        Log.d("WOWTEST", "loadRecentSearch called")
         viewModelScope.launch {
             _recentSearchState.value = recentMoviesHistoryUseCase() + recentTvShowHistoryUseCase()
         }

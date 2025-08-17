@@ -28,7 +28,7 @@ fun TVShowDetailsDto.toDomain(
         hasVideo = hasVideo,
         companyProductions = this.productionCompanies?.map {
             it.toDomain()
-        } ?: emptyList(),
+        }.orEmpty(),
         originCountry = this.originCountry?.firstOrNull() ?: "",
         galleryUrl = galleryImages,
         numberOfSeasons = this.numberOfSeasons?:0,

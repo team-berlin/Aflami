@@ -1,13 +1,9 @@
 package com.berlin.aflami
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import coil3.ImageLoader
-import coil3.request.CachePolicy
-import coil3.request.ImageRequest
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import usecase.movie.ContinueWatchingMovieUseCase

@@ -171,7 +171,7 @@ class RetrofitRemoteDataSource @Inject constructor(
                 sessionId = authenticationLocalDataSource.getUserSessionId()
                     ?: throw IllegalStateException("userSessionID == null"),
             )
-        }.results ?: emptyList()
+        }.results.orEmpty()
     }
 
     override suspend fun getUserFavouriteListItems(
@@ -183,7 +183,7 @@ class RetrofitRemoteDataSource @Inject constructor(
                 listId = favouriteListId,
                 pageNumber = pageNumber
             )
-        }.favouriteListItems ?: emptyList()
+        }.favouriteListItems .orEmpty()
     }
 
     override suspend fun deleteUserFavouriteList(listId: Int) {

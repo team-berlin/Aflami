@@ -96,9 +96,8 @@ class MovieRepositoryImpl @Inject constructor(
                 movie.genres.sumOf { genre ->
                     genreScoresMap[genre.id] ?: 0
                 }
-            }
+            }.orEmpty()
 
-            ?: emptyList()
     }
 
     override suspend fun getMoviesByActorName(actorName: String, page: Int): List<Movie> {
@@ -109,12 +108,12 @@ class MovieRepositoryImpl @Inject constructor(
             actorName,
             page
         ).results?.filter { it.knownForDepartment == ACTING_DEPARTMENT }?.flatMap { personDto ->
-            personDto.knownFor?.filter { it.mediaType == MOVIE_MEDIA_TYPE } ?: emptyList()
+            personDto.knownFor?.filter { it.mediaType == MOVIE_MEDIA_TYPE } .orEmpty()
         }?.map { it.toDomain() }?.sortedByDescending { movie ->
             movie.genres.sumOf { genre ->
                 genreScoresMap[genre.id] ?: 0
             }
-        } ?: emptyList()
+        }.orEmpty()
     }
 
     override suspend fun getMovieByKeyWord(
@@ -122,7 +121,7 @@ class MovieRepositoryImpl @Inject constructor(
         page: Int,
     ): List<Movie> {
         return remoteDataSource.getMoviesByKeyword(query, page).results?.map { it.toDomain() }
-            ?: emptyList()
+            .orEmpty()
 
     }
 
@@ -157,7 +156,7 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getMovieGame(): List<Movie> {
         return remoteDataSource.getMovieGame().results?.map {
             it.toDomain()
-        } ?: emptyList()
+        }.orEmpty()
     }
 
 }
