@@ -16,10 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.MyRatingDestination
@@ -49,10 +51,15 @@ fun ProfileScreen(
 ) {
     val profileScreenState by viewModel.state.collectAsStateWithLifecycle()
     val navController = Theme.navController
-    if (profileScreenState.isLoggedIn) {
-        ProfileContent(profileScreenState, viewModel)
-    } else {
-        RequiredLoggedInPlaceholder() {
+    when (profileScreenState.isLoggedIn) {
+        null -> {
+            CircularProgressIndicator(
+                modifier = Modifier.fillMaxSize(),
+                text = stringResource(R.string.loading)
+            )
+        }
+        true -> ProfileContent(profileScreenState, viewModel)
+        false -> RequiredLoggedInPlaceholder {
             navController.navigate(LoginDestination)
         }
     }
