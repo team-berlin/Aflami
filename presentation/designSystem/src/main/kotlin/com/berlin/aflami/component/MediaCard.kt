@@ -55,15 +55,12 @@ fun MediaCard(
                 onClick?.invoke()
             }
     ) {
-        val contentScale = when (imageState) {
-            is AsyncImagePainter.State.Success, is AsyncImagePainter.State.Loading -> ContentScale.Crop
-            else -> ContentScale.Inside
-        }
+
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             SafeImageViewer(
                 model = mediaImg,
                 contentDescription = null,
-                contentScale = contentScale,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
                 error = painterResource(R.drawable.place_holder),
                 fallback = painterResource(R.drawable.place_holder),
