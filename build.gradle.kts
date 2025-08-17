@@ -16,11 +16,10 @@ plugins {
 subprojects {
     configurations.all {
         resolutionStrategy {
-
+            // Force metadata version
             force("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.7.0")
 
-            force("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.7.0")
-
+            // Make sure Compose compiler matches Kotlin version
             force("androidx.compose.compiler:compiler:2.0.21")
         }
     }

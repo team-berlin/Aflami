@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.listdetails
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -94,8 +96,8 @@ private fun ListDetailsContent(
                 onNavigateBackClicked = listener::onBackClicked
             )
             AnimatedVisibility(
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter =  EnterTransition.None ,
+                exit = ExitTransition.None ,
                 visible = listDetailsScreenState.isScreenLoading || movies.loadState.refresh is LoadState.Loading
             ) {
                 CircularProgressIndicator(
@@ -103,15 +105,15 @@ private fun ListDetailsContent(
                 )
             }
             AnimatedVisibility(
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter =  EnterTransition.None ,
+                exit = ExitTransition.None ,
                 visible = movies.loadState.refresh is LoadState.Error
             ) {
                 NoInternetConnectionPlaceholder()
             }
             AnimatedVisibility(
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter =  EnterTransition.None ,
+                exit = ExitTransition.None ,
                 visible = movies.itemCount == 0 && movies.loadState.refresh is LoadState.NotLoading
             ) {
                 CountryTourExploring(
@@ -123,8 +125,8 @@ private fun ListDetailsContent(
                 )
             }
             AnimatedVisibility(
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter =  EnterTransition.None ,
+                exit = ExitTransition.None ,
                 visible = movies.itemCount != 0 && movies.loadState.refresh is LoadState.NotLoading
             ) {
                 MoviesListItem(

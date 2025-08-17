@@ -66,7 +66,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
             seriesId
         ).cast?.mapNotNull { castItemDto ->
             castItemDto.toDomain()
-        } ?: emptyList()
+        }.orEmpty()
     }
 
     override suspend fun getTVShowsSimilar(seriesId: Long): List<TVShow> {
@@ -85,13 +85,12 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
             tvShow.genres.sumOf { genre ->
                 genreScoresMap[genre.id] ?: 0
             }
-        }
-            ?: emptyList()
+        }.orEmpty()
     }
 
     override suspend fun getTVShowReviews(seriesId: Long): List<Review> {
         return remoteDataSource.getTVShowReviewsById(seriesId).results?.filterNotNull()
-            ?.map { reviewDto -> reviewDto.toDomain() } ?: emptyList()
+            ?.map { reviewDto -> reviewDto.toDomain() } .orEmpty()
     }
 
 
@@ -103,7 +102,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
             tvShowId,
             seasonNumber
         ).episodes?.map { it.toDomain() }
-            ?: emptyList()
+            .orEmpty()
     }
 
     override suspend fun getTVShowsGenres(): List<Genre> {
@@ -120,7 +119,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
     override suspend fun getTVShowVideos(seriesId: Long): List<Video> {
         return remoteDataSource.getTVShowVideos(seriesId).results?.mapNotNull {
             it?.toDomain()
-        } ?: emptyList()
+        }.orEmpty()
     }
 
     private fun isExpiredOrEmpty(list: List<TVShowGenreEntity>): Boolean {
@@ -128,5 +127,4 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
             System.currentTimeMillis() - it.time > Constants.CACHE_TIMEOUT
         }
     }
-
 }

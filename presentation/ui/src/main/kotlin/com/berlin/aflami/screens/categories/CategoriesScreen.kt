@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.categories
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -61,7 +63,8 @@ fun CategoryScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = state.isLoading
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None , visible = state.isLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)

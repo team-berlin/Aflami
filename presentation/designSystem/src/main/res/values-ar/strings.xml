@@ -86,7 +86,7 @@
     <string name="action_adventure"><![CDATA[أكشن و مغامرة]]></string>
     <string name="news">News</string>
     <string name="reality">Reailty</string>
-    <string name="sci_fi_fantasy"><![CDATA[خيال علمي و فانتازيا]]></string>
+    <string name="sci_fi_fantasy"><![CDATA[خيال علمي و\n فانتازيا]]></string>
     <string name="soap">Soap</string>
     <string name="talk">برامج حوارية</string>
     <string name="war_politics"><![CDATA[حرب و سياسة]]></string>

@@ -2,6 +2,8 @@ package com.berlin.aflami.screens.categories
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -76,14 +78,16 @@ fun MoviesByCategoryScreen(
     val movies = state.moviesPagingDataFlow.collectAsLazyPagingItems()
 
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = state.isScreenLoading
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None , visible = state.isScreenLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = !state.isScreenLoading
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None , visible = !state.isScreenLoading
     ) {
         MediaByCategoryContent(
             movies, state = state, listener = viewModel

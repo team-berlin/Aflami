@@ -1,4 +1,4 @@
-package com.berlin.aflami.component
+package com.berlin.aflami.screens.search.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -11,9 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.berlin.aflami.component.SearchSuggestionItem
+import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.ui.color.ExtraColors.blueLinearGradient
 import com.berlin.aflami.ui.color.ExtraColors.darkPurpleLinearGradient
 import com.berlin.designsystem.R
+import com.berlin.ui.R.drawable
 
 @Composable
 fun SearchSuggestionHub(
@@ -43,7 +46,7 @@ fun SearchSuggestionHub(
             subtitle = stringResource(R.string.search_by_favorite_actor),
             contentDescription = stringResource(R.string.icon_cd),
             gradientBackground = blueLinearGradient,
-            painter = painterResource(R.drawable.news_category),
+            painter = painterResource(drawable.find_by_actor),
             onClick = onSearchByActorClick
         )
     }

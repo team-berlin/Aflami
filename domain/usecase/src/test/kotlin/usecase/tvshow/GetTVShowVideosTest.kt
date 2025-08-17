@@ -23,7 +23,7 @@ class GetTVShowVideosTest {
         val result = getTVShowVideos(TV_SHOW_ID)
 
         // Assert
-        assertThat(result).isEqualTo(VIDEOS)
+        assertThat(result).isEqualTo(VIDEOS[0])
         coVerify(exactly = 1) { tvShowDetailsRepository.getTVShowVideos(TV_SHOW_ID) }
     }
 

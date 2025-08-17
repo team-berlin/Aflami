@@ -1,7 +1,8 @@
 package com.berlin.aflami.screens.lists
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -166,8 +167,8 @@ private fun ListsContent(
             }
         }
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
             visible = listScreenState.createNewListSheetState.isCreateNewListDialogVisible
         ) {
             CreateNewListDialog(
@@ -178,8 +179,8 @@ private fun ListsContent(
             )
         }
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
             visible = listScreenState.editListSheetState.isEditNewListDialogVisible
         ) {
             EditListDialog(
@@ -195,8 +196,8 @@ private fun ListsContent(
             )
         }
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
             visible = favouriteLists.loadState.refresh !is LoadState.Loading && listScreenState.isUserLoggedIn == true && favouriteLists.loadState.refresh is LoadState.Error,
         ) {
             NoInternetConnectionPlaceholder(
@@ -204,15 +205,16 @@ private fun ListsContent(
             )
         }
         AnimatedVisibility(
-            enter = fadeIn(), exit = fadeOut(), visible = listScreenState.isScreenLoading
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None , visible = listScreenState.isScreenLoading
         ) {
             CircularProgressIndicator(
                 modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
             )
         }
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
             visible = listScreenState.isLoginRequiredDialogVisible
         ) {
             LoginRequiredDialog(
@@ -222,13 +224,11 @@ private fun ListsContent(
             )
         }
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = !listScreenState.isScreenLoading &&
-                    listScreenState.isUserLoggedIn == true &&
-                    favouriteLists.loadState.refresh !is LoadState.Loading &&
-                    favouriteLists.loadState.refresh !is LoadState.Error &&
-                    favouriteLists.itemCount == 0
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
+            visible = (favouriteLists.loadState.refresh !is LoadState.Loading
+                    && listScreenState.isUserLoggedIn == true)
+                    && favouriteLists.loadState.refresh !is LoadState.Error,
         ) {
             CountryTourExploring(
                 modifier = Modifier
@@ -240,8 +240,8 @@ private fun ListsContent(
             )
         }
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
             visible = favouriteLists.itemCount != 0 && listScreenState.isUserLoggedIn == true
         ) {
             Column(

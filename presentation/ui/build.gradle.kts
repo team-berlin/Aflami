@@ -21,7 +21,6 @@ dependencies {
     implementation(libs.bundles.composeUiDebug)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
-    implementation(libs.bundles.koin)
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 

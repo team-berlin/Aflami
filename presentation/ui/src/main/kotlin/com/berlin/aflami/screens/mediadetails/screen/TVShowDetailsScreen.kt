@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -72,8 +74,8 @@ fun TvShowDetailsScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = uiState.errorMessage != null
     ) {
         NoInternetConnectionPlaceholder(
@@ -84,8 +86,8 @@ fun TvShowDetailsScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = uiState.isScreenLoading
     ) {
         CircularProgressIndicator(
@@ -94,8 +96,8 @@ fun TvShowDetailsScreen(
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = uiState.isNotSupportedFeatureDialogVisible
     ) {
         NotSupportedFeatureDialog(
@@ -104,8 +106,8 @@ fun TvShowDetailsScreen(
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = !uiState.isScreenLoading&&uiState.errorMessage==null
     ) {
         TvShowDetailsContent(
@@ -125,8 +127,8 @@ fun TvShowDetailsScreen(
 
     AnimatedVisibility(
         visible = uiState.snackBarMessage != null,
-        enter = fadeIn(),
-        exit = fadeOut()
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
     ) {
         val status =
             when(uiState.isSnackBarStatusSuccess){
@@ -149,8 +151,8 @@ fun TvShowDetailsScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = uiState.showLoginDialog
     ) {
         LoginRequiredDialog(
