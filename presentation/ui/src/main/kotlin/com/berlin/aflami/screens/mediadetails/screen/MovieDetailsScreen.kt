@@ -1,7 +1,8 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -78,8 +79,8 @@ fun MovieDetailsScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = uiState.errorMessage!=null
     ) {
         NoInternetConnectionPlaceholder(
@@ -90,14 +91,16 @@ fun MovieDetailsScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = uiState.isScreenLoading
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None , visible = uiState.isScreenLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(), text = stringResource(com.berlin.ui.R.string.loading)
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = !uiState.isScreenLoading&&uiState.errorMessage==null
+        enter = EnterTransition.None,
+        exit = ExitTransition.None, visible = !uiState.isScreenLoading&&uiState.errorMessage==null
     ) {
         MovieDetailsContent(
             state = uiState,
@@ -116,8 +119,8 @@ fun MovieDetailsScreen(
 
     AnimatedVisibility(
         visible = uiState.snackBarMessage != null,
-        enter = fadeIn(),
-        exit = fadeOut()
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
     ) {
         val status =
             when(uiState.isSnackBarStatusSuccess){
@@ -140,7 +143,8 @@ fun MovieDetailsScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(), exit = fadeOut(), visible = uiState.showLoginDialog
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None , visible = uiState.showLoginDialog
     ) {
         LoginRequiredDialog(
             onLoginClick = {
@@ -152,8 +156,8 @@ fun MovieDetailsScreen(
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = uiState.createNewListDialog.isCreateNewListDialogVisible
     ) {
         CreateNewListDialog(
@@ -164,8 +168,8 @@ fun MovieDetailsScreen(
         )
     }
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = uiState.addToListDialog.isAddToListDialogVisible
     ) {
         AddToListDialog(

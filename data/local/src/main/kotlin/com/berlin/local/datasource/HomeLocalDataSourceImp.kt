@@ -18,6 +18,13 @@ class HomeLocalDataSourceImp @Inject constructor(
         return homeMovieDao.getMoviesBySection(sectionHome)
     }
 
+    override suspend fun getUpcomingMoviesByGenre(
+        sectionHome: SectionHome,
+        genreId: Long?
+    ): List<MovieHomeEntity> {
+       return homeMovieDao.getUpcomingMoviesByGenre(sectionHome,genreId)
+    }
+
     override suspend fun addMovies(movies: List<MovieHomeEntity>) {
         homeMovieDao.insertMovies(movies)
     }

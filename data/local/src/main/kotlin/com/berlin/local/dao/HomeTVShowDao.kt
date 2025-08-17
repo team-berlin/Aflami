@@ -17,4 +17,7 @@ interface HomeTVShowDao {
 
     @Query("DELETE FROM TVShow_Home  WHERE sectionHome = :sectionHome")
     suspend fun clearHomeScreenTVShows(sectionHome: SectionHome)
+
+    @Query("DELETE FROM TVShow_Home")
+    suspend fun clearAllTVShows()
 }

@@ -1,6 +1,8 @@
 package com.berlin.aflami.screens.games
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -90,8 +92,8 @@ fun GuessTheGameScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = state.error != null
     ) {
         NoInternetConnectionPlaceholder(
@@ -102,8 +104,8 @@ fun GuessTheGameScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = state.loading
     ) {
         CircularProgressIndicator(
@@ -113,8 +115,8 @@ fun GuessTheGameScreen(
     }
 
     AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
         visible = !state.loading && state.questions.isNotEmpty()
     ) {
         GuessTheGameContent(

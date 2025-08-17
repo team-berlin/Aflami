@@ -1,7 +1,9 @@
 package com.berlin.aflami.screens.lists
 
-import androidx.compose.animation.AnimatedContent
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -169,8 +171,8 @@ private fun ListsContent(
         }
 
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
             visible = listScreenState.createNewListSheetState.isCreateNewListDialogVisible
         ) {
             CreateNewListDialog(
@@ -182,8 +184,8 @@ private fun ListsContent(
         }
 
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
             visible = listScreenState.editListSheetState.isEditNewListDialogVisible
         ) {
             EditListDialog(
@@ -196,8 +198,8 @@ private fun ListsContent(
         }
 
         AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
+            enter =  EnterTransition.None ,
+            exit = ExitTransition.None ,
             visible = listScreenState.isLoginRequiredDialogVisible
         ) {
             LoginRequiredDialog(

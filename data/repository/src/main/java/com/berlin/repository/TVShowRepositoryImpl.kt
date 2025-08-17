@@ -42,7 +42,7 @@ class TVShowRepositoryImpl @Inject constructor(
 
         val remoteTVShows = remoteDataSource.getTopRatedTV(page).results?.map { seriesDto ->
             seriesDto.toDomain()
-        } ?: emptyList()
+        } .orEmpty()
         if (remoteTVShows.isNotEmpty()) {
             homeLocalDataSource.clearHomeScreenTVShows(SectionHome.TOP_RATING)
             homeLocalDataSource.addTVShows(remoteTVShows.map { it.toTopRateTVShowEntity() })
@@ -58,7 +58,7 @@ class TVShowRepositoryImpl @Inject constructor(
         }
 
         val remoteTVShows = remoteDataSource.getPopularTVShows().results
-            ?.map { it.toDomain() } ?: emptyList()
+            ?.map { it.toDomain() } .orEmpty()
         if (remoteTVShows.isNotEmpty()) {
             homeLocalDataSource.clearHomeScreenTVShows(SectionHome.POPULAR)
             homeLocalDataSource.addTVShows(remoteTVShows.map { it.toPopularTVShowEntity() })
@@ -81,7 +81,7 @@ class TVShowRepositoryImpl @Inject constructor(
             tvShow.genres.sumOf { genre ->
                 genreScoresMap[genre.id] ?:0
             }
-        } ?: emptyList()
+        } .orEmpty()
     }
 
     override suspend fun getRecentTVShowsSearchQueries(): List<String> {
@@ -116,7 +116,7 @@ class TVShowRepositoryImpl @Inject constructor(
     override suspend fun getTVShowGame(): List<TVShow> {
        return remoteDataSource.getTVShow().results?.map {
             it.toDomain()
-        }?: emptyList()
+        }.orEmpty()
     }
 
     private fun isExpiredOrEmpty(list: List<TVShowHomeEntity>): Boolean {

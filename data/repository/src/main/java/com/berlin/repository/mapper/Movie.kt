@@ -23,7 +23,7 @@ fun MovieDetailsDto.toDomain(
         rating = (this.voteAverage ?: 0.0),
         releaseDate = this.releaseDate.orEmpty(),
         genres = this.genres?.map { it.toDomain() } ?: genresId?.map { it.toDomainGenre() }
-        ?: emptyList(),
+            .orEmpty(),
         posterURL = tmdbImageUrl(posterPath, MediaUrls.TmdbImageSize.W500).orEmpty(),
         screenShot = this.backdropPath ?: "",
         description = this.overview ?: "Description not available",
@@ -31,7 +31,7 @@ fun MovieDetailsDto.toDomain(
         hasVideo = this.video == true,
         companyProductions = this.productionCompanies?.map {
             it.toDomain()
-        } ?: emptyList(),
+        } .orEmpty(),
         originCountry = this.originCountry?.firstOrNull() ?: "",
         galleryUrl = galleryImages,
         reviews = reviews,

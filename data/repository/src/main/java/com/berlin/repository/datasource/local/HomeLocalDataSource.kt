@@ -6,6 +6,7 @@ import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
 
 interface HomeLocalDataSource {
     suspend fun getMoviesBySection(sectionHome: SectionHome): List<MovieHomeEntity>
+    suspend fun getUpcomingMoviesByGenre(sectionHome: SectionHome,genreId: Long?): List<MovieHomeEntity>
     suspend fun addMovies(movies: List<MovieHomeEntity>)
     suspend fun clearHomeScreenMovies(sectionHome: SectionHome)
     suspend fun getTVShowsBySection(sectionHome: SectionHome): List<TVShowHomeEntity>
