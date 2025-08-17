@@ -1,6 +1,6 @@
 package com.berlin.aflami.screens.lists
 
-import android.util.Log
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -210,7 +210,9 @@ private fun ListsContent(
         }
 
         AnimatedVisibility(
-            visible = listScreenState.isUserLoggedIn == true, enter = fadeIn(), exit = fadeOut()
+            visible = listScreenState.isUserLoggedIn == true,
+            enter = EnterTransition.None,
+            exit = ExitTransition.None,
         ) {
             Column(
                 modifier = modifier
