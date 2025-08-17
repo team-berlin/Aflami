@@ -1,11 +1,13 @@
 package com.berlin.aflami.screens.search.actor
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -34,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TextField
@@ -47,6 +50,7 @@ import com.berlin.aflami.viewmodel.searchactor.SearchByActorInteractionListener
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenEffect
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorScreenState
 import com.berlin.aflami.viewmodel.searchactor.SearchByActorViewModel
+import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.ui.R
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -58,34 +62,17 @@ fun SearchByActorNameScreen(
     val uiState by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect {effect->
+        viewModel.effect.collect { effect ->
             onReceiveSearchByActorEffect(
                 navController = navController,
                 searchByActorScreenEffect = effect
             )
         }
     }
-    AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = uiState.isLoading
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(R.string.loading)
-        )
-    }
-    AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = uiState.errorMessage!=null&&uiState.actorName.text.isNotEmpty()
-    ) {
-        NoInternetConnectionPlaceholder()
-    }
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
         visible = !uiState.isLoading
     ) {
 
@@ -99,8 +86,8 @@ fun SearchByActorNameScreen(
 
 private fun onReceiveSearchByActorEffect(
     navController: NavController,
-    searchByActorScreenEffect:SearchByActorScreenEffect
-){
+    searchByActorScreenEffect: SearchByActorScreenEffect
+) {
     when (searchByActorScreenEffect) {
         is SearchByActorScreenEffect.NavigatedBack -> {
             navController.popBackStack()
@@ -122,12 +109,24 @@ private fun SearchByActorNameContent(
     state: SearchByActorScreenState,
     listener: SearchByActorInteractionListener,
 ) {
+
+    val searchResult: LazyPagingItems<MediaUiState> =
+        state.mediaPagingDataFlow.collectAsLazyPagingItems()
+
+    val isPagingLoading = searchResult.loadState.refresh is LoadState.Loading
+    val pagingError = (searchResult.loadState.refresh as? LoadState.Error)
+    val isLoading = state.isLoading || isPagingLoading
+    val hasError = state.errorMessage != null || pagingError != null
+    val isSearchEmpty = state.actorName.text.isBlank()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
     ) {
-        TopBar(modifier = Modifier.statusBarsPadding().padding(vertical = 8.dp), title = {
+        TopBar(modifier = Modifier
+            .statusBarsPadding()
+            .padding(vertical = 8.dp), title = {
             Text(
                 text = stringResource(R.string.find_by_actor),
                 style = Theme.textStyle.title.large,
@@ -170,41 +169,46 @@ private fun SearchByActorNameContent(
         Box(
             modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
         ) {
-            val pagedMovies = state.mediaPagingDataFlow.collectAsLazyPagingItems()
 
-            when (pagedMovies.loadState.refresh) {
-                is LoadState.Loading -> {
-                    if (state.actorName.text.isBlank()) {
-                        InitContent()
-                    } else {
-                        CircularProgressIndicator(
-                            text = stringResource(R.string.loading)
-                        )
+            AnimatedContent(
+                modifier = Modifier.fillMaxSize(),
+                targetState = Triple(isLoading, hasError, searchResult.itemCount),
+                transitionSpec = {
+                    fadeIn() togetherWith fadeOut()
+                },
+            ) { (loading, error, count) ->
+                when {
+                    loading -> {
+                        if (isSearchEmpty) {
+                            InitContent()
+                        } else {
+                            CircularProgressIndicator(
+                                text = stringResource(R.string.loading)
+                            )
+                        }
                     }
-                }
-                is LoadState.NotLoading -> {
-                    if (state.actorName.text.isBlank()) {
-                        InitContent()
-                    } else if (pagedMovies.itemCount == 0 && state.actorName.text.isNotBlank()) {
-                        CircularProgressIndicator(
-                            text = stringResource(R.string.loading)
-                        )
-                    } else {
-                        MediaGridList(
-                            media = pagedMovies,
-                            onMovieClick = listener::onMediaCardClicked,
-                        )
-                    }
-                }
 
-                is LoadState.Error -> {
-                    ErrorContent()
-                    if ((pagedMovies.loadState.refresh as LoadState.Error).error.message.equals("No internet connection")) {
+                    error -> {
                         NoInternetConnectionPlaceholder(
-                            onClick = { pagedMovies.retry()}
+                            onClick = {
+                                searchResult.retry()
+                            }
                         )
-                    } else {
+                    }
+
+                    count == 0 && !isSearchEmpty -> {
                         ErrorContent()
+                    }
+
+                    else -> {
+                        if (isSearchEmpty) {
+                            InitContent()
+                        } else {
+                            MediaGridList(
+                                media = searchResult,
+                                onMovieClick = listener::onMediaCardClicked,
+                            )
+                        }
                     }
                 }
             }
