@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.berlin.aflami.ui.color.ExtraColors.moodPickerGradient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenState
@@ -189,7 +190,7 @@ private fun BlurredIcon(modifier: Modifier = Modifier) {
                 .background(color = Theme.color.onPrimaryButton, shape = CircleShape)
                 .border(
                     width = 0.5.dp,
-                    brush = Brush.linearGradient(colors = Theme.color.gradientColors.overly),
+                    brush = moodPickerGradient,
                     shape = CircleShape
                 )
                 .blur(8.dp)
