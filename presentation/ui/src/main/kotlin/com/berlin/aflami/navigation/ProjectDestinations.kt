@@ -8,9 +8,7 @@ import kotlinx.serialization.Serializable
 sealed interface NavigationBarDestinations {
 
     @Serializable
-    object HomeScreen : NavigationBarDestinations{
-        val route = "home"
-    }
+    object HomeScreen : NavigationBarDestinations
 
     @Serializable
     object ListsScreenNoArgs : NavigationBarDestinations
