@@ -246,7 +246,7 @@ fun TvShowDetailsContent(
             item {
                 TVShowBackdropPager(
                     state = state,
-                    onPlayClick = { listener.onPlayClicked(state.videoUrl) })
+                    onPlayClick = { state.videoUrl?.let { listener.onPlayClicked(it) } })
             }
 
             item {

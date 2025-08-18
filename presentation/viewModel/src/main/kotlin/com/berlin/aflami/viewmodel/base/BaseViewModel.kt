@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.base
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
@@ -45,7 +46,7 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
             } catch (e: NetworkException) {
                 onError(NetworkErrorState(e.message.toString()))
             } catch (e: NotFoundException) {
-                onError(ErrorUiState(e.message.toString()))
+                onError(ErrorUiState())
             } catch (e: ServerException) {
                 onError(ErrorUiState(e.message.toString()))
             } catch (e: AlreadyExistsException) {
