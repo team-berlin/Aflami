@@ -1,10 +1,12 @@
 package com.berlin.aflami.screens.search.country
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -34,7 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
@@ -47,6 +51,7 @@ import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenInteractionListener
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenState
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenViewModel
+import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.ui.R
 
 @Composable
@@ -61,27 +66,10 @@ fun SearchByCountryScreen(
             onReceiveSearchByCountryEffect(effect = effect, navController = navController)
         }
     }
-    AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = state.isLoading
-    ) {
-        com.berlin.aflami.component.CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(R.string.loading)
-        )
-    }
-    AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = state.errorMessage != null && state.countryName.text.isNotEmpty()
-    ) {
-        NoInternetConnectionPlaceholder()
-    }
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
         visible = !state.isLoading
     ) {
 
@@ -117,6 +105,17 @@ private fun SearchByCountryContent(
     state: SearchByCountryScreenState,
     listener: SearchByCountryScreenInteractionListener,
 ) {
+
+    val searchResult: LazyPagingItems<MovieUiState> =
+        state.moviesOfCountryFlow.collectAsLazyPagingItems()
+
+    val isPagingLoading = searchResult.loadState.refresh is LoadState.Loading
+    val pagingError = (searchResult.loadState.refresh as? LoadState.Error)
+    val isLoading = state.isLoading || isPagingLoading
+    val hasError = state.errorMessage != null || pagingError != null
+    val isSearchEmpty = state.countryName.text.isBlank()
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -176,54 +175,55 @@ private fun SearchByCountryContent(
                 .fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
-            val movies = state.moviesOfCountryFlow.collectAsLazyPagingItems()
 
-            when (movies.loadState.refresh) {
-
-                is LoadState.Loading -> {
-                    if (state.countryName.text.isBlank()) {
-                        InitContent()
-                    } else {
-                        com.berlin.aflami.component.CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
-                            text = stringResource(R.string.loading)
-                        )
+            AnimatedContent(
+                modifier = Modifier.fillMaxSize(),
+                targetState = Triple(isLoading, hasError, searchResult.itemCount),
+                transitionSpec = {
+                    fadeIn() togetherWith fadeOut()
+                },
+            ) { (loading, error, count) ->
+                when {
+                    loading -> {
+                        if (isSearchEmpty) {
+                            InitContent()
+                        } else {
+                            CircularProgressIndicator(
+                                text = stringResource(R.string.loading)
+                            )
+                        }
                     }
-                }
 
-                is LoadState.NotLoading -> {
-                    if (state.countryName.text.isBlank()) {
-                        InitContent()
-                    } else if (movies.itemCount == 0 && state.countryName.text.isNotBlank()) {
-                        com.berlin.aflami.component.CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
-                            text = stringResource(R.string.loading)
-                        )
-                    } else {
-                        MoviesList(
-                            onMovieClick = listener::onMovieClicked,
-                            movies = movies,
-                        )
-                    }
-                }
-
-                is LoadState.Error -> {
-                    ErrorContent()
-                    if ((movies.loadState.refresh as LoadState.Error).error.message.equals("No internet connection")) {
+                    error -> {
                         NoInternetConnectionPlaceholder(
-                            onClick = { movies.retry() }
+                            onClick = {
+                                searchResult.retry()
+                            }
                         )
-                    } else {
+                    }
+
+                    count == 0 && !isSearchEmpty -> {
                         ErrorContent()
+                    }
+
+                    else -> {
+                        if (isSearchEmpty) {
+                            InitContent()
+                        } else {
+                            MoviesList(
+                                onMovieClick = listener::onMovieClicked,
+                                movies = searchResult,
+                            )
+                        }
                     }
                 }
             }
+
             AnimatedCountriesList(
                 visible = state.dropDownExpanded && state.filteredCountries.isNotEmpty(),
                 filteredCountries = state.filteredCountries,
                 onCountryNameChanged = listener::onCountryNameChanged,
-                onCountryClick = {
-                        selectedCountry ->
+                onCountryClick = { selectedCountry ->
                     listener.onCountryNameChanged(TextFieldValue(selectedCountry))
                     listener.onCountryClicked(countryName = selectedCountry)
                 }
