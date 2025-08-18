@@ -260,7 +260,7 @@ fun MovieDetailsContent(
         LazyColumn(modifier = Modifier.zIndex(0f), state = listState) {
             item {
                 MovieBackdropPager(
-                    state = state, onPlayClick = { listener.onPlayClicked(state.videoUrl) })
+                    state = state, onPlayClick = { state.videoUrl?.let { listener.onPlayClicked(it) } })
             }
 
             item {

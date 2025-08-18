@@ -80,19 +80,22 @@ class MovieDetailsViewModel @Inject constructor(
         onShowMoreMediaLikeThisClicked(mediaId = movieId)
     }
     private fun isMovieHasVideo(movieId: Long) {
-        updateState { screenState ->
-            screenState.copy(isScreenLoading = true, errorMessage = null)
-        }
+        updateState { it.copy(isScreenLoading = true, errorMessage = null) }
+
         tryToCall(
-            call = {
-                getMovieVideos(movieId).videoUrl
-            }, onSuccess = { videoUrl ->
-                updateState { screenState ->
-                    screenState.copy(isMovieHasVideo = true, videoUrl = videoUrl)
+            call = { getMovieVideos(movieId) }, // returns String?
+            onSuccess = { videoUrl ->
+                updateState {
+                    it.copy(
+                        isMovieHasVideo = videoUrl != null,
+                        videoUrl = videoUrl.orEmpty()
+                    )
                 }
-            }, onError = ::updateScreenStateToError
+            },
+            onError = ::updateScreenStateToError
         )
     }
+
 
     private fun getMovieDetails(movieId: Long) {
         updateState { screenState ->

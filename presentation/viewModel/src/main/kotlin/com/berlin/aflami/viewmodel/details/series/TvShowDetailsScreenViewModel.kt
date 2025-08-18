@@ -69,21 +69,24 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     private fun isTVShowHasVideo(tvShowId: Long) {
-        updateState { screenState ->
-            screenState.copy(isScreenLoading = true, errorMessage = null)
-        }
+        updateState { it.copy(isScreenLoading = true, errorMessage = null) }
+
         tryToCall(
             call = {
-                getTVShowVideos(tvShowId).videoUrl
+                getTVShowVideos(tvShowId)?.videoUrl
             },
             onSuccess = { videoUrl ->
-                updateState { screenState ->
-                    screenState.copy(isTVShowHasVideo = true, videoUrl = videoUrl)
+                updateState {
+                    it.copy(
+                        isTVShowHasVideo = videoUrl != null,
+                        videoUrl = videoUrl.orEmpty()
+                    )
                 }
             },
             onError = ::updateScreenStateToError
         )
     }
+
 
     private fun getTVShowDetails(tvShowId: Long) {
         updateState { screenState ->
