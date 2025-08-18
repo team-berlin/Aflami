@@ -60,7 +60,7 @@ import com.berlin.aflami.utils.AsteriskVisualTransformation
 fun TextField(
     text: TextFieldValue,
     modifier: Modifier = Modifier,
-    style: TextStyle = Theme.textStyle.body.medium,
+    style: TextStyle = Theme.textStyle.body.medium.copy(color = Theme.color.textColors.hint),
     cursorBrush: Brush = SolidColor(Theme.color.textColors.hint),
     hintText: String = "",
     isEnabled: Boolean = true,
@@ -143,7 +143,7 @@ fun TextField(
                     .defaultMinSize(minHeight = 56.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .onFocusChanged { focusState -> isFocused = focusState.isFocused },
-                textStyle = style.copy(color = Theme.color.textColors.hint),
+                textStyle = style,
                 singleLine = maxLines == 1,
                 visualTransformation = if (isObscured) AsteriskVisualTransformation() else VisualTransformation.None,
                 decorationBox = { innerTextField ->
