@@ -1,6 +1,7 @@
 package com.berlin.repository
 
 import com.berlin.entity.TVShow
+import com.berlin.exception.NetworkException
 import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
@@ -35,36 +36,47 @@ class TVShowRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedTVShows(page: Int): List<TVShow> {
-        val localTVShows = homeLocalDataSource.getTVShowsBySection(SectionHome.TOP_RATING)
-        if (!isExpiredOrEmpty(localTVShows)&&localTVShows.isNotEmpty()) {
-            return localTVShows.map { it.toDomain() }
-        }
+        return try {
+            val remoteTVShows = remoteDataSource.getTopRatedTV(page)
+                .results?.map { it.toDomain() }.orEmpty()
 
-        val remoteTVShows = remoteDataSource.getTopRatedTV(page).results?.map { seriesDto ->
-            seriesDto.toDomain()
-        } .orEmpty()
-        if (remoteTVShows.isNotEmpty()) {
-            homeLocalDataSource.clearHomeScreenTVShows(SectionHome.TOP_RATING)
-            homeLocalDataSource.addTVShows(remoteTVShows.map { it.toTopRateTVShowEntity() })
-        }
+            if (remoteTVShows.isNotEmpty()) {
+                homeLocalDataSource.addTVShows(
+                    remoteTVShows.map { it.toTopRateTVShowEntity() }
+                )
+            }
 
-        return remoteTVShows
+            remoteTVShows.ifEmpty {
+                homeLocalDataSource.getTVShowsBySection(SectionHome.TOP_RATING)
+                    .map { it.toDomain() }
+            }
+        } catch (e: NetworkException) {
+            homeLocalDataSource.getTVShowsBySection(SectionHome.TOP_RATING)
+                .map { it.toDomain() }
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
     override suspend fun getPopularTVShows(): List<TVShow> {
-        val localTVShows = homeLocalDataSource.getTVShowsBySection(SectionHome.POPULAR)
-        if (!isExpiredOrEmpty(localTVShows)&&localTVShows.isNotEmpty()) {
-            return localTVShows.map { it.toDomain() }
-        }
+        return try {
+            val remoteTVShows = remoteDataSource.getPopularTVShows()
+                .results?.map { it.toDomain() }.orEmpty()
 
-        val remoteTVShows = remoteDataSource.getPopularTVShows().results
-            ?.map { it.toDomain() } .orEmpty()
-        if (remoteTVShows.isNotEmpty()) {
-            homeLocalDataSource.clearHomeScreenTVShows(SectionHome.POPULAR)
-            homeLocalDataSource.addTVShows(remoteTVShows.map { it.toPopularTVShowEntity() })
-        }
+            if (remoteTVShows.isNotEmpty()) {
+                homeLocalDataSource.addTVShows(remoteTVShows.map { it.toPopularTVShowEntity() })
+            }
 
-        return remoteTVShows
+            remoteTVShows.ifEmpty {
+                homeLocalDataSource.getTVShowsBySection(SectionHome.POPULAR)
+                    .map { it.toDomain() }
+            }
+        } catch (e: NetworkException) {
+            homeLocalDataSource.getTVShowsBySection(SectionHome.POPULAR)
+                .map { it.toDomain() }
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
     override suspend fun searchTVShow(
@@ -119,9 +131,4 @@ class TVShowRepositoryImpl @Inject constructor(
         }.orEmpty()
     }
 
-    private fun isExpiredOrEmpty(list: List<TVShowHomeEntity>): Boolean {
-        return list.isEmpty() || list.any {
-            System.currentTimeMillis() - it.addedAt > Constants.HOME_CACHE_TIMEOUT_MILLIS
-        }
-    }
 }

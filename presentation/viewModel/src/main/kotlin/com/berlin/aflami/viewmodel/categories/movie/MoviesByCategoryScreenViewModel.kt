@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.categories.movie
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
@@ -67,7 +68,8 @@ class MoviesByCategoryScreenViewModel @Inject constructor(
                 getMoviesByCategoryAsFlow(
                     getMovieByGenresUseCase, state.value.selectedCategoryId
                 )
-            }, onSuccess = ::updateScreenStateWithMovies, onError = ::updateScreenStateToError
+            }, onSuccess = ::updateScreenStateWithMovies,
+            onError = ::updateScreenStateToError
         )
     }
 
@@ -84,7 +86,6 @@ class MoviesByCategoryScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenStateWithMovies(topRatingMediaFlow: Flow<PagingData<MovieUiState>>) {
-
         updateState {
             it.copy(
                 moviesPagingDataFlow = topRatingMediaFlow,
@@ -113,6 +114,7 @@ class MoviesByCategoryScreenViewModel @Inject constructor(
     }
 
     fun updateScreenWithNewMovieGenres(movieGenres: List<GenreUiState>) {
+
         updateState { state ->
             state.copy(
                 moviesGenres = movieGenres, isScreenLoading = false

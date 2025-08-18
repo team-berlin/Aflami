@@ -124,7 +124,6 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updatePopularUiStateWithError(errorUiState: ErrorUiState) {
-
         updateState {
             it.copy(
                 popularMediaUiState = it.popularMediaUiState.copy(

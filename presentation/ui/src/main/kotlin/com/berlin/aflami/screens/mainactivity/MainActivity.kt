@@ -62,7 +62,6 @@ class MainActivity : ComponentActivity() {
                         navController = Theme.navController,
                         isLoggedIn = mainState.isLoggedIn,
                         isFirsTime = mainState.isFirstEntry,
-                        selectedLanguage = profileState.selectedLanguage,
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Theme.color.surface)

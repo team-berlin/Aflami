@@ -1,6 +1,8 @@
 package com.berlin.repository
 
+import android.util.Log
 import com.berlin.entity.Movie
+import com.berlin.exception.NetworkException
 import com.berlin.repository.datasource.local.HomeLocalDataSource
 import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
@@ -44,46 +46,83 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopRatedMovies(page: Int): List<Movie> {
-        val remoteMovies =
-            remoteDataSource.getTopRatedMovies(page).results?.map { it.toDomain() }.orEmpty()
-        if (remoteMovies.isNotEmpty()) {
-            homeLocalDataSource.addMovies(remoteMovies.map { it.toTopRateMovieEntity() })
+        return try {
+            val remoteMovies = remoteDataSource.getTopRatedMovies(page)
+                .results?.map { it.toDomain() }.orEmpty()
+
+            if (remoteMovies.isNotEmpty()) {
+                homeLocalDataSource.addMovies(
+                    remoteMovies.map { it.toTopRateMovieEntity() }
+                )
+            }
+
+            remoteMovies.ifEmpty {
+                homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING)
+                    .map { it.toDomain() }
+            }
+        } catch (e: NetworkException) {
+            homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING)
+                .map { it.toDomain() }
+        } catch (e: Exception) {
+            throw e
         }
-        val movies = homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING)
-        return movies.map { it.toDomain() }
     }
 
+
     override suspend fun getUpComingMovies(genreId: Long): List<Movie> {
-        val remoteMovies =
-            remoteDataSource.getUpComingMovies(genreId).results?.map { it.toDomain() }.orEmpty()
-        if (remoteMovies.isNotEmpty()) {
-            homeLocalDataSource.addMovies(remoteMovies.map { it.toUpComingMovieEntity(genreId) })
+        return try {
+            val remoteMovies = remoteDataSource.getUpComingMovies(genreId)
+                .results?.map { it.toDomain() }.orEmpty()
+            if (remoteMovies.isNotEmpty()) {
+                homeLocalDataSource.addMovies(
+                    remoteMovies.map { it.toUpComingMovieEntity(genreId) }
+                )
+            }
+            remoteMovies.ifEmpty {
+                homeLocalDataSource.getUpcomingMoviesByGenre(SectionHome.UPCOMING, genreId)
+                    .map { it.toDomain() }
+            }
+        }  catch (e: NetworkException) {
+            homeLocalDataSource.getUpcomingMoviesByGenre(SectionHome.UPCOMING, genreId)
+                .map { it.toDomain() }
+        } catch (e: Exception) {
+            throw e
         }
-        val movies = homeLocalDataSource.getUpcomingMoviesByGenre(SectionHome.UPCOMING,genreId)
-        return movies.map { it.toDomain() }
     }
 
 
     override suspend fun getPopularMovies(): List<Movie> {
-        val remoteMovies =
-            remoteDataSource.getPopularMovies().results?.map { it.toDomain() }.orEmpty()
-        if (remoteMovies.isNotEmpty()) {
-            homeLocalDataSource.addMovies(remoteMovies.map { it.toPopularMovieEntity() })
-        }
-        val movies = homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR)
-        return movies.map { it.toDomain() }
-    }
+        return try {
+            val remoteMovies = remoteDataSource.getPopularMovies()
+                .results?.map { it.toDomain() }.orEmpty()
 
+            if (remoteMovies.isNotEmpty()) {
+                homeLocalDataSource.addMovies(remoteMovies.map { it.toPopularMovieEntity() })
+            }
+            remoteMovies.ifEmpty {
+                homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR)
+                    .map { it.toDomain() }
+            }
+        }  catch (e: NetworkException) {
+            homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR)
+                .map { it.toDomain() }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
     override suspend fun getMoviesByMoods(moods: List<Int>): List<Movie> {
-        val remoteMovies =
-            remoteDataSource.getMoviesByMoodIds(moods).results?.map { it.toDomain() }.orEmpty()
-        if (remoteMovies.isNotEmpty()) {
-            homeLocalDataSource.addMovies(remoteMovies.map { it.toMovieByMoodEntity() })
+        return try {
+            val remoteMovies =
+                remoteDataSource.getMoviesByMoodIds(moods).results?.map { it.toDomain() }.orEmpty()
+            if (remoteMovies.isNotEmpty()) {
+                homeLocalDataSource.addMovies(remoteMovies.map { it.toMovieByMoodEntity() })
+            }
+            remoteMovies
+        }catch (e: Exception) {
+            val movies = homeLocalDataSource.getMoviesBySection(SectionHome.BY_MOOD)
+             movies.map { it.toDomain() }
         }
-        val movies = homeLocalDataSource.getMoviesBySection(SectionHome.BY_MOOD)
-        return movies.map { it.toDomain() }
     }
-
 
     override suspend fun getMoviesByCountry(
         query: String,

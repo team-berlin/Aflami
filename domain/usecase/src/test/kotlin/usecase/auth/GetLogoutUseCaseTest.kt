@@ -11,7 +11,7 @@ import repository.AuthenticationRepository
 
 class GetLogoutUseCaseTest {
     private val authenticationRepository: AuthenticationRepository = mockk()
-    private val getLogoutUseCase: GetLogoutUseCase = GetLogoutUseCase(authenticationRepository)
+    private val logoutUseCase: LogoutUseCase = LogoutUseCase(authenticationRepository)
 
 
     @Test
@@ -20,7 +20,7 @@ class GetLogoutUseCaseTest {
         coEvery { authenticationRepository.logout() } returns Unit
 
         // Act
-        val result = getLogoutUseCase()
+        val result = logoutUseCase()
 
         // Assert
         assertThat(result).isEqualTo(Unit)
@@ -33,7 +33,7 @@ class GetLogoutUseCaseTest {
         coEvery { authenticationRepository.logout() } throws Exception(LOGOUT_FAILED)
 
         // Act
-        val exception = assertThrows<Exception> { getLogoutUseCase() }
+        val exception = assertThrows<Exception> { logoutUseCase() }
 
         // Assert
         assertThat(exception.message).isEqualTo(LOGOUT_FAILED)

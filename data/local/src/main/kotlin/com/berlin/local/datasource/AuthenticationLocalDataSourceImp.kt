@@ -22,7 +22,7 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
 
     override fun observeLoginStatus(): Flow<Boolean> {
         return dataStore.data
-            .catch { emit(emptyPreferences()) } // optional: handle IOExceptions safely
+            .catch { emit(emptyPreferences()) }
             .map { preferences ->
                 preferences[DataStoreKeys.USER_SESSION_ID]?.isNotBlank() == true
             }
@@ -100,6 +100,7 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
     override suspend fun deleteUserSessionId(): Boolean {
         return try {
             dataStore.edit { it.remove(DataStoreKeys.USER_SESSION_ID) }
+            dataStore.edit { it.remove(DataStoreKeys.USER_ACCOUNT_ID) }
             true
         } catch (e: Exception) {
             false

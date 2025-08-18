@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.navigation.LoginDestination
@@ -110,14 +111,9 @@ private fun watchHistoryReceiveEffect(
         }
 
         ProfileScreenEffect.NavigateToLoginScreen -> {
-            navController.navigate(route = LoginDestination) {
-                popUpTo(NavigationBarDestinations.HomeScreen) {
-                    inclusive = true
-                }
-            }
-
-        }
+            navController.navigate(LoginDestination)
     }
+}
 }
 
 @Composable
