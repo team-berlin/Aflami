@@ -3,8 +3,6 @@ package com.berlin.aflami.screens.categories
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,13 +30,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -49,6 +46,7 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.TVShowDetailsDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.search.Chips
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryInteractionListener
@@ -74,8 +72,8 @@ fun TVShowByCategoryScreen(
         }
     }
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
         visible = state.isLoading
     ) {
         CircularProgressIndicator(
@@ -85,8 +83,8 @@ fun TVShowByCategoryScreen(
     }
     val tvShows = state.tvShowsPagingDataFlow.collectAsLazyPagingItems()
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
         visible = !state.isLoading
     ) {
         TVShowByCategoryContent(
@@ -189,9 +187,8 @@ private fun TvShowsByCategoryResultGrid(
         {
             LazyVerticalGrid(
                 modifier = Modifier
-                    .fillMaxSize()
-                ,
-                columns = Adaptive(minSize =242.dp),
+                    .fillMaxSize(),
+                columns = Adaptive(minSize = 242.dp),
                 contentPadding = PaddingValues(end = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -211,16 +208,6 @@ private fun TvShowsByCategoryResultGrid(
                     }
                 }
             }
-            val isEmpty by remember(
-                mediaList.itemCount,
-                mediaList.loadState.refresh
-            ) {
-                mutableStateOf(
-                    mediaList.itemCount == 0 &&
-                            mediaList.loadState.refresh !is LoadState.Loading &&
-                            mediaList.loadState.refresh !is LoadState.Error
-                )
-            }
             when {
                 mediaList.loadState.refresh is LoadState.Loading -> CircularProgressIndicator(
                     modifier = Modifier
@@ -229,8 +216,17 @@ private fun TvShowsByCategoryResultGrid(
                     text = stringResource(R.string.loading)
                 )
 
-                isEmpty -> {
-                    NoItemsFound()
+                mediaList.loadState.refresh is LoadState.Error -> {
+                    NoInternetConnectionPlaceholder(
+                        modifier = Modifier.align(Alignment.Center),
+                        onClick = { mediaList.retry() }
+                    )
+                }
+
+                mediaList.itemCount == 0 && mediaList.loadState.refresh !is LoadState.Error -> {
+                    NoItemsFound(
+                        modifier = Modifier.align(Alignment.Center),
+                    )
                 }
             }
         }
@@ -238,19 +234,20 @@ private fun TvShowsByCategoryResultGrid(
 }
 
 @Composable
-fun NoItemsFound() {
+fun NoItemsFound(modifier: Modifier) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
     ) {
         Image(
             painter = painterResource(R.drawable.no_items_found),
             contentDescription = stringResource(R.string.no_items_found),
-            modifier = Modifier
+            modifier = modifier
                 .align(Alignment.CenterHorizontally)
         )
         Text(
             text = stringResource(R.string.no_items_found),
             style = Theme.textStyle.body.medium,
+            textAlign = TextAlign.Center,
             color = Theme.color.textColors.title
         )
     }

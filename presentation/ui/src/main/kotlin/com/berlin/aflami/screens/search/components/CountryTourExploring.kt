@@ -41,6 +41,7 @@ fun CountryTourExploring(
             text = stringResource(titleId),
             style = Theme.textStyle.title.medium,
             color = Theme.color.textColors.title,
+            textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
         )
         if (messageId != null) {

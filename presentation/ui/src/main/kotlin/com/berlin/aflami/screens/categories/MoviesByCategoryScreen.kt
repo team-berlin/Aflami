@@ -1,11 +1,10 @@
 package com.berlin.aflami.screens.categories
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,8 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +45,7 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.getMovieGenreIcon
 import com.berlin.aflami.screens.search.getMovieGenreName
 import com.berlin.aflami.screens.search.search.Chips
@@ -78,16 +76,16 @@ fun MoviesByCategoryScreen(
     val movies = state.moviesPagingDataFlow.collectAsLazyPagingItems()
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None , visible = state.isScreenLoading
+        enter = EnterTransition.None,
+        exit = ExitTransition.None, visible = state.isScreenLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None , visible = !state.isScreenLoading
+        enter = EnterTransition.None,
+        exit = ExitTransition.None, visible = !state.isScreenLoading
     ) {
         MediaByCategoryContent(
             movies, state = state, listener = viewModel
@@ -166,70 +164,68 @@ private fun MediaByCategoryResultGrid(
     onCategoryCardClicked: (Long) -> Unit,
     mediaList: LazyPagingItems<MovieUiState>,
     onMediaCardClicked: (Long) -> Unit,
-) {   Row(
-    modifier = modifier
-        .fillMaxSize()
-        .background(Theme.color.surface)
-)
-{
-    GenreChipsColumn(
-        genres = categories,
-        onGenreClick = {
-            onCategoryCardClicked(it)
-        },
-        modifier = Modifier
-            .fillMaxHeight()
-            .padding(horizontal = 16.dp),
+) {
+    Row(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Theme.color.surface)
     )
-    Box(Modifier.fillMaxSize())
     {
-        LazyVerticalGrid(
+        GenreChipsColumn(
+            genres = categories,
+            onGenreClick = {
+                onCategoryCardClicked(it)
+            },
             modifier = Modifier
-                .fillMaxSize()
-              ,
-            columns = Adaptive(minSize =242.dp),
-            contentPadding = PaddingValues(end = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(mediaList.itemCount) { index ->
-                val media = mediaList[index]
-                if (media != null) {
-                    MediaCard(
-                        modifier = Modifier.height(196.dp),
-                        mediaImg = media.posterUrl,
-                        title = media.title,
-                        typeOfMedia = MediaType.MOVIE.name,
-                        date = media.releaseDate,
-                        rating = media.rating,
-                        onClick = { onMediaCardClicked(media.id) }
+                .fillMaxHeight()
+                .padding(horizontal = 16.dp),
+        )
+        Box(Modifier.fillMaxSize())
+        {
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxSize(),
+                columns = Adaptive(minSize = 242.dp),
+                contentPadding = PaddingValues(end = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(mediaList.itemCount) { index ->
+                    val media = mediaList[index]
+                    if (media != null) {
+                        MediaCard(
+                            modifier = Modifier.height(196.dp),
+                            mediaImg = media.posterUrl,
+                            title = media.title,
+                            typeOfMedia = MediaType.MOVIE.name,
+                            date = media.releaseDate,
+                            rating = media.rating,
+                            onClick = { onMediaCardClicked(media.id) }
+                        )
+                    }
+                }
+            }
+            when {
+                mediaList.loadState.refresh is LoadState.Loading -> CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.Center),
+                    text = stringResource(R.string.loading)
+                )
+                mediaList.loadState.refresh is LoadState.Error -> {
+                    NoInternetConnectionPlaceholder(
+                        modifier = Modifier.align(Alignment.Center),
+                        onClick = {mediaList.retry()}
+                    )
+                }
+                mediaList.itemCount == 0 && mediaList.loadState.refresh !is LoadState.Error  -> {
+                    NoItemsFound(
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
             }
         }
-        val isEmpty by remember(
-            mediaList.itemCount,
-            mediaList.loadState.refresh
-        ) {
-            mutableStateOf(
-                mediaList.itemCount == 0 &&
-                        mediaList.loadState.refresh !is LoadState.Loading &&
-                        mediaList.loadState.refresh !is LoadState.Error
-            )
-        }
-        when {
-            mediaList.loadState.refresh is LoadState.Loading -> CircularProgressIndicator(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center),
-                text = stringResource(R.string.loading)
-            )
-            isEmpty -> {
-                NoItemsFound()
-            }
-        }
     }
-}
 }
 
 

@@ -104,6 +104,6 @@ fun BlurredPosterBackground(
             .fillMaxWidth()
             .background(black50)
             .blur(16.dp),
-        blurCheck = false
+        checkIsSafeImage = false
     )
 }

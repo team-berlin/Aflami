@@ -8,6 +8,7 @@ import com.berlin.entity.ContentRestriction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginUseCase
+import usecase.auth.LogoutUseCase
 import usecase.game.GetPointsUseCase
 import usecase.profile.ClearUserProfileUseCase
 import usecase.profile.GetContentRestrictionUseCase
@@ -26,6 +27,7 @@ class ProfileViewModel @Inject constructor(
     val setLanguageUseCase: SetLanguageUseCase,
     val setThemeUseCase: SetThemeUseCase,
     val getLoginStatus: GetLoginUseCase,
+    val logoutUseCase: LogoutUseCase,
     val setContentRestrictionUseCase: SetContentRestrictionUseCase,
     val getContentRestrictionUseCase: GetContentRestrictionUseCase,
     private val observeUserProfileUseCase: ObserveUserProfileUseCase,
@@ -96,10 +98,8 @@ class ProfileViewModel @Inject constructor(
                 isDarkThemeSelected = true,
                 isLightThemeSelected = false,
                 tempSelectedTheme = AppTheme.DARK.name,
-
-                )
+            )
         }
-
     }
 
     override fun onLightThemeSelected() {
@@ -168,9 +168,11 @@ class ProfileViewModel @Inject constructor(
 
     override fun onDialogLogoutClicked() {
         viewModelScope.launch {
+            logoutUseCase()
             clearUserProfileUseCase()
             updateState { it.copy(isLoggedIn = false) }
         }
+
         sendNewEffect(ProfileScreenEffect.NavigateToLoginScreen)
     }
 
@@ -291,8 +293,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun collectUserProfile() {
         viewModelScope.launch {
-            observeUserProfileUseCase()
-                .collect { user ->
+            observeUserProfileUseCase().collect { user ->
                     val points = if (user != null) {
                         getUserScoreUseCase(user.id)
                     } else {
@@ -303,7 +304,7 @@ class ProfileViewModel @Inject constructor(
                             userAvatarUrl = user?.avatarUrl?.takeIf { it.isNotBlank() },
                             userName = user?.username.orEmpty(),
                             isLoggedIn = user != null,
-                            userPoints =points
+                            userPoints = points
                         )
                     }
                 }

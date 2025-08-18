@@ -51,7 +51,6 @@ import com.berlin.aflami.navigation.routes.webView
 @Composable
 fun AflamiNavGraph(
     modifier: Modifier = Modifier,
-    selectedLanguage: String,
     isLoggedIn: Boolean,
     isFirsTime: Boolean,
     navController: NavHostController,
@@ -91,13 +90,6 @@ private fun ShowNavigationBar(
     selectedRoute: NavigationBarDestinations,
     navController: NavHostController,
 ) {
-
-    val currentNavBarScreen = getCurrentNavBarScreen(navController)
-    val context = LocalContext.current
-
-//    BackHandler(enabled = currentNavBarScreen != null) {
-//        (context as? Activity)?.finish()
-//    }
 
     NavBar(
         currentRoute = selectedRoute,

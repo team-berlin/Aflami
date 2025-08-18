@@ -5,16 +5,20 @@ import com.berlin.local.dataStore.SettingsPreferencesDataStore
 import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions
 import com.google.firebase.ml.modeldownloader.DownloadType
 import com.google.firebase.ml.modeldownloader.FirebaseModelDownloader
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.tensorflow.lite.Interpreter
@@ -26,7 +30,7 @@ import javax.inject.Inject
 
 class FireBaseModelManager @Inject constructor(
     private val networkConnectivityObserver: NetworkConnectivityObserver,
-    private val settingsPreferencesDataStore : SettingsPreferencesDataStore
+    private val settingsPreferencesDataStore: SettingsPreferencesDataStore
 ) {
     val models = mutableMapOf<String, MappedByteBuffer>()
     private val _isModelDownloaded = MutableStateFlow(false)
@@ -38,9 +42,19 @@ class FireBaseModelManager @Inject constructor(
                 STRICT_MODERATION -> STRICT_MODERATION
                 MODERATE_MODERATION -> MODERATE_MODERATION
                 else -> NO_RESTRICTION_MODERATION
-            }.also { Log.d("WOWTEST", "FireBaseModelManager: ${it}") }
+            }
+
         }
         .distinctUntilChanged()
+        .shareIn(
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            started = SharingStarted.Eagerly,
+            replay = 1
+        )
+
+    suspend fun getCurrentRestriction(): String {
+        return contentRestriction.first()
+    }
 
     internal var nsfwInterpreter: Interpreter? = null
     internal var genderInterpreter: Interpreter? = null
@@ -88,8 +102,9 @@ class FireBaseModelManager @Inject constructor(
     }
 
 }
-const val STRICT_MODERATION="STRICT"
-const val MODERATE_MODERATION="MODERATE"
-const val NO_RESTRICTION_MODERATION="OFF"
+
+const val STRICT_MODERATION = "STRICT"
+const val MODERATE_MODERATION = "MODERATE"
+const val NO_RESTRICTION_MODERATION = "OFF"
 const val NSFW_MODEL = "nsfw"
 const val GENDER_MODEL = "gender_not_quantized"

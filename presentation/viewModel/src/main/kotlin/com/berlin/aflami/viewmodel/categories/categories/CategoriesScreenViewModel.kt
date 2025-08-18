@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.categories.categories
 
+import android.util.Log
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.search.TabOption
@@ -64,6 +65,7 @@ class CategoriesScreenViewModel @Inject constructor(
 
     private fun updateScreenStateToError(errorUiState: ErrorUiState) =
         updateState { screenState ->
+
             screenState.copy(
                 errorMessage = errorUiState.message,
                 isLoading = false

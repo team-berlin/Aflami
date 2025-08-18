@@ -111,7 +111,6 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updateScreenWithNewPopularMedia(newPopularMedia: List<MediaUiState>) {
-        Log.d("HomeScreenViewModel", "updateScreenWithNewPopularMedia: $newPopularMedia")
         updateState { screenState ->
             screenState.copy(
                 screenState.popularMediaUiState.copy(
@@ -125,8 +124,6 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updatePopularUiStateWithError(errorUiState: ErrorUiState) {
-        Log.d("HomeScreenViewModel", "updateScreenWithNewPopularMedia: ${errorUiState.message}")
-
         updateState {
             it.copy(
                 popularMediaUiState = it.popularMediaUiState.copy(
