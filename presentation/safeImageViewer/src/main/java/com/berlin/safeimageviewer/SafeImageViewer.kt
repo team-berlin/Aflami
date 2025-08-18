@@ -8,6 +8,7 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -207,7 +208,8 @@ fun classifyNSFW(
         MODERATE_MODERATION -> inappropriateScore <= DEFAULT_IMAGE_MODERATION_THRESHOLD
         else -> true
     }
-    return isSafe
+
+    return !isSafe
 }
 
 fun classifyGender(
