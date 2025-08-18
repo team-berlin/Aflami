@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.search
 
-import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -167,6 +166,10 @@ class SearchViewModel @Inject constructor(
             TabOption.MOVIES -> fetchMoviesByQuery(query)
             TabOption.TV_SHOWS -> fetchTvShowsByQuery(query)
         }
+        viewModelScope.launch {
+            saveRecentMoviesHistoryUseCase(query)
+            saveRecentTVShowHistoryUseCase(query)
+        }
     }
 
     //region TVShow Search
@@ -256,6 +259,7 @@ class SearchViewModel @Inject constructor(
                 saveRecentTVShowHistoryUseCase(state.value.searchQuery.text)
             },
             onSuccess = {
+                loadRecentSearch()
                 updateState { it.copy(isLoading = false) }
             },
             onError = ::updateScreenStateToError
