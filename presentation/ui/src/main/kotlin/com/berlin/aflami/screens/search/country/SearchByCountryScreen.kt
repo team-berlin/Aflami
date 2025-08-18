@@ -127,7 +127,7 @@ private fun SearchByCountryContent(
                 .padding(vertical = 8.dp),
             title = {
                 Text(
-                    text = stringResource(R.string.country_tour),
+                    text = stringResource(R.string.world_tour),
                     style = Theme.textStyle.title.large,
                     color = Theme.color.textColors.title,
                 )

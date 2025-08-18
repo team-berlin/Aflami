@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
@@ -174,12 +175,18 @@ private fun SearchScreenContent(
                     )
                 },
                 leadingIcon = {
-                    IconButton(onClick = { listenerSearch.onBackClicked() }) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Theme.color.surfaceHigh)
+                            .clickable { listenerSearch.onBackClicked() }
+                            .padding(10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.arrow_left),
-                            contentDescription = stringResource(R.string.icon_cd),
-                            tint = Theme.color.textColors.title,
-                            modifier = Modifier.size(20.dp)
+                            painter = painterResource(com.berlin.ui.R.drawable.arrow_left),
+                            contentDescription = stringResource(com.berlin.ui.R.string.arrow_back),
+                            tint = Theme.color.textColors.title
                         )
                     }
                 }

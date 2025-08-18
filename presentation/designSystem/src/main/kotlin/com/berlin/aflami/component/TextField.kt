@@ -143,7 +143,7 @@ fun TextField(
                     .defaultMinSize(minHeight = 56.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .onFocusChanged { focusState -> isFocused = focusState.isFocused },
-                textStyle = style.copy(color = Theme.color.textColors.title),
+                textStyle = style.copy(color = Theme.color.textColors.hint),
                 singleLine = maxLines == 1,
                 visualTransformation = if (isObscured) AsteriskVisualTransformation() else VisualTransformation.None,
                 decorationBox = { innerTextField ->
