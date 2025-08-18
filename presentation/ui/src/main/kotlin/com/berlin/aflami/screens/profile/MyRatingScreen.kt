@@ -1,8 +1,8 @@
 package com.berlin.aflami.screens.profile
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -63,14 +63,22 @@ fun MyRatingScreen(
         }
     }
 
-    AnimatedVisibility(visible = state.isLoading, enter = fadeIn(), exit = fadeOut()) {
+    AnimatedVisibility(
+        visible = state.isLoading,
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
+    ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
             text = stringResource(R.string.loading)
         )
     }
 
-    AnimatedVisibility(visible = !state.isLoading, enter = fadeIn(), exit = fadeOut()) {
+    AnimatedVisibility(
+        visible = !state.isLoading,
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None ,
+    ) {
         MyRatingContent(
             state = state,
             listener = viewModel

@@ -42,14 +42,12 @@ fun HistoryInfoCard(
                 .clip(RoundedCornerShape(16.dp))
                 .background(Theme.color.surfaceHigh)
                 .border(1.dp, Theme.color.stroke, RoundedCornerShape(16.dp))
-                .padding(end = 64.dp)
+                .padding(end = 64.dp, start = 8.dp, top = 16.dp, bottom = 16.dp)
         ) {
             Text(
                 text = title,
                 style = Theme.textStyle.label.medium,
                 color = Theme.color.textColors.title,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
             )
         }
 

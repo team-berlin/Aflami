@@ -154,6 +154,7 @@ fun GamesContent(
         )
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState()),
@@ -166,7 +167,7 @@ fun GamesContent(
                     points = card.points,
                     isLocked = card.isLocked,
                     onClick = {
-                        card.gameType?.let { gameInteractionListener.onSelectGameType(it) }
+                        card.gameType.let { gameInteractionListener.onSelectGameType(it) }
                         gameInteractionListener.onShowLevelDialog()
                     },
                     borderGradient = card.borderGradient,
