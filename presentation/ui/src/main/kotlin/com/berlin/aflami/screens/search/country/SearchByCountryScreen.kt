@@ -156,7 +156,7 @@ private fun SearchByCountryContent(
             hintText = stringResource(R.string.country_name),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 4.dp),
+                .padding(start = 16.dp, end = 16.dp),
             onValueChange = listener::onCountryNameChanged,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done

@@ -195,7 +195,7 @@ private fun SearchScreenContent(
             TextField(
                 text = state.searchQuery,
                 modifier = Modifier
-                    .padding(vertical = 8.dp, horizontal = 16.dp)
+                    .padding( horizontal = 16.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
                     .background(Theme.color.surfaceHigh),
