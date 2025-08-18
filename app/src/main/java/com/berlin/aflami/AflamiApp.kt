@@ -28,6 +28,7 @@ class AflamiApp : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         scheduleNextSync(this)
+        clearSearchHistory(this)
         CoroutineScope(Dispatchers.IO).launch {
             modelManager.downloadModelsOnce()
         }
@@ -52,6 +53,20 @@ class AflamiApp : Application(), Configuration.Provider {
                 "MediaClearWorker",
                 ExistingPeriodicWorkPolicy.KEEP,
                 mediaClearWork
+            )
+    }
+
+    private fun clearSearchHistory(context: Context) {
+        val recentSearchClearWorker = PeriodicWorkRequestBuilder<RecentSearchClearWorker>(
+            1, TimeUnit.HOURS
+        )
+            .build()
+
+        WorkManager.getInstance(context)
+            .enqueueUniquePeriodicWork(
+                "RecentSearchClearWorker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                recentSearchClearWorker
             )
     }
 }

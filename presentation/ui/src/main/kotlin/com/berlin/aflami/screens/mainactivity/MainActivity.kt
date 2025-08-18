@@ -32,7 +32,6 @@ class MainActivity : ComponentActivity() {
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition {
@@ -54,8 +53,7 @@ class MainActivity : ComponentActivity() {
             }
             UpdateLocale(profileState.selectedLanguage)
             AflamiTheme(
-                isDarkTheme = isDarkTheme,
-                selectedLanguage = profileState.selectedLanguage
+                isDarkTheme = isDarkTheme, selectedLanguage = profileState.selectedLanguage
             ) {
                 if (!mainState.isLoading) {
                     AflamiNavGraph(
