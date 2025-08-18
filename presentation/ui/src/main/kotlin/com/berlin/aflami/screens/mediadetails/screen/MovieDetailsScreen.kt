@@ -275,17 +275,21 @@ fun MovieDetailsContent(
                     )
                 }
             }
-            item {
-                DescriptionSection(
-                    state.movieUiState.description,
-                    isExpanded = isDescriptionExpanded,
-                    onToggleExpand = onToggleDescriptionExpand
-                )
+            if(state.movieUiState.description.isNotEmpty()) {
+                item {
+                    DescriptionSection(
+                        state.movieUiState.description,
+                        isExpanded = isDescriptionExpanded,
+                        onToggleExpand = onToggleDescriptionExpand
+                    )
+                }
             }
-            item {
-                CastSection(
-                    cast = state.castList,
-                    onShowAllClicked = { listener.onShowCastClicked(state.movieUiState.id) })
+            if(state.castList.isNotEmpty()) {
+                item {
+                    CastSection(
+                        cast = state.castList,
+                        onShowAllClicked = { listener.onShowCastClicked(state.movieUiState.id) })
+                }
             }
             item {
                 HorizontalDivider(
