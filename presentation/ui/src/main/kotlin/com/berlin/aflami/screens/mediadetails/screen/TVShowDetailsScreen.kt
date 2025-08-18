@@ -261,17 +261,21 @@ fun TvShowDetailsContent(
                     )
                 }
             }
-            item {
-                DescriptionSection(
-                    state.tvShowUiState.description, isExpanded = isDescriptionExpanded,
-                    onToggleExpand = onToggleDescriptionExpand
-                )
+            if(state.tvShowUiState.description.isNotEmpty()) {
+                item {
+                    DescriptionSection(
+                        state.tvShowUiState.description, isExpanded = isDescriptionExpanded,
+                        onToggleExpand = onToggleDescriptionExpand
+                    )
+                }
             }
-            item {
-                CastSection(
-                    cast = state.castList,
-                    onShowAllClicked = { listener.onShowCastClicked(state.tvShowUiState.id) }
-                )
+            if(state.castList.isNotEmpty()) {
+                item {
+                    CastSection(
+                        cast = state.castList,
+                        onShowAllClicked = { listener.onShowCastClicked(state.tvShowUiState.id) }
+                    )
+                }
             }
             item {
                 HorizontalDivider(
