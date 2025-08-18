@@ -17,17 +17,10 @@ suspend fun <T> wrapApiResponse(request: suspend () -> Response<T>): T {
         if (response.isSuccessful) {
             return response.body() ?: throw ApiException("Response body is null")
         } else {
-            when (response.code()) {
-                401 -> throw UnauthorizedException("Unauthorized request")
-                403 -> throw UnauthorizedException("Forbidden request")
-                404 -> throw NotFoundException("Resource not found")
-                409 -> throw AlreadyExistsException("Movie already exists")
-                else -> {
-                    val errorBody = response.errorBody()?.string()
-                    throw ApiException("API error: ${response.code()} - $errorBody")
-                }
-            }
+            if (response.code() == 403) throw AlreadyExistsException("Movie already exists")
+            throw ApiException("API error: ${response.code()} - ${response.message()}")
         }
+
     } catch (ioException: IOException) {
         throw NetworkException("Network error: ${ioException.message}")
     } catch (e: UnknownHostException) {
@@ -36,8 +29,7 @@ suspend fun <T> wrapApiResponse(request: suspend () -> Response<T>): T {
         throw NetworkException("Network error: ${e.message}")
     } catch (e: AlreadyExistsException) {
         throw e
+    } catch (e: Exception) {
+        throw UnknownException("Unexpected error: ${e.message}")
     }
-//    } catch (e: Exception) {
-//        throw UnknownException("Unexpected error: ${e.message}")
-//    }
 }

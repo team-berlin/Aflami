@@ -83,7 +83,7 @@ class MovieDetailsViewModel @Inject constructor(
         updateState { it.copy(isScreenLoading = true, errorMessage = null) }
 
         tryToCall(
-            call = { getMovieVideos(movieId) }, // returns String?
+            call = { getMovieVideos(movieId) },
             onSuccess = { videoUrl ->
                 updateState {
                     it.copy(
