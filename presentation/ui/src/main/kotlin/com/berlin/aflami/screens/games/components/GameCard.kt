@@ -27,10 +27,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.berlin.aflami.component.ThemeAndLocalePreviews
@@ -56,6 +59,8 @@ fun GameCard(
     avatarPainter: Painter,
     gameType: GameType
 ) {
+
+    val layoutDirection=LocalLayoutDirection.current
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(16))
@@ -137,7 +142,9 @@ fun GameCard(
                         text = description,
                         style = Theme.textStyle.body.small,
                         color = Theme.color.textColors.body,
-                        modifier = Modifier.width(175.dp)
+                        maxLines = 2,
+                        modifier = Modifier.fillMaxWidth(0.5f)
+
                     )
 
                     if (!isLocked) {
@@ -201,7 +208,12 @@ fun GameCard(
                             painter = painterResource(R.drawable.spot_light),
                             contentDescription = "",
                             modifier = Modifier
-                                .align(Alignment.TopEnd),
+                                .align(Alignment.TopEnd)
+                                .graphicsLayer {
+                                    if (layoutDirection == LayoutDirection.Rtl) {
+                                        scaleX = -1f
+                                    }
+                                }
 
                             )
                         Image(
@@ -211,6 +223,11 @@ fun GameCard(
                             modifier = Modifier
                                 .padding(top = 30.dp)
                                 .align(Alignment.BottomEnd)
+                                .graphicsLayer {
+                                    if (layoutDirection == LayoutDirection.Rtl) {
+                                        scaleX = -1f
+                                    }
+                                }
                         )
                         when (gameType) {
                             GameType.CHARACTER ->
