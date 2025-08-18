@@ -155,6 +155,7 @@ fun GamesContent(
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(bottom = 60.dp)
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
