@@ -122,9 +122,9 @@ class QuizGameViewModel @Inject constructor(
             castList.addAll(cast)
             index++
         }
-
-        updateState { it.copy(cast = castList.shuffled()) }
-        val questions = createCharacterQuestions(castList)
+        val castListCustom = castList.take(numberOfQuestion)
+        updateState { it.copy(cast = castListCustom.shuffled()) }
+        val questions = createCharacterQuestions(castListCustom)
         updateGameState(questions, QuestionType.Image)
     }
 
@@ -210,7 +210,7 @@ class QuizGameViewModel @Inject constructor(
 
     private fun handleTimeFinished() {
         val currentState = state.value
-        if (currentState.currentQuestionIndex < currentState.questions.size - 1) {
+        if (currentState.currentQuestionIndex < currentState.questions.size -1 ) {
             nextQuestionClicked()
         } else {
             navigateToResult()
@@ -236,7 +236,7 @@ class QuizGameViewModel @Inject constructor(
             state.copy(
                 currentQuestionIndex = minOf(
                     state.currentQuestionIndex + 1,
-                    state.questions.size - 1
+                    state.questions.size -1
                 ),
                 selectedAnswer = "",
                 showScore = false,
@@ -245,7 +245,7 @@ class QuizGameViewModel @Inject constructor(
                 isAnswerCorrect = null
             )
         }
-        if (state.value.currentQuestionIndex < state.value.questions.size - 1) {
+        if (state.value.currentQuestionIndex < state.value.questions.size ) {
             startTimer()
         }
     }
