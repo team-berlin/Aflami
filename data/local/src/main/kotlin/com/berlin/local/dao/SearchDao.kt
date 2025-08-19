@@ -5,12 +5,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.berlin.repository.datasource.local.dto.QueryType
-import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.RecentSearchHistoryEntity
 
 @Dao
 interface SearchDao {
     @Query(
-        """SELECT * FROM search_cache 
+        """SELECT * FROM recent_search_history 
         WHERE `query` = :query AND `type` = :type 
         LIMIT :pageSize OFFSET :skip"""
     )
@@ -19,10 +19,10 @@ interface SearchDao {
         type: QueryType,
         pageSize: Int,
         skip: Int
-    ): List<SearchingEntity>
+    ): List<RecentSearchHistoryEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun cacheSearch(searchCaching: List<SearchingEntity>)
+    suspend fun cacheSearch(searchCaching: List<RecentSearchHistoryEntity>)
 
 
 }

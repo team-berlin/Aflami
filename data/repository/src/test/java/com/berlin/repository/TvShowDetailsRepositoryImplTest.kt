@@ -2,8 +2,8 @@ import com.berlin.repository.TvShowDetailsRepositoryImpl
 import com.berlin.repository.datasource.remote.dto.details.EpisodeDto
 import com.berlin.exception.AflamiException
 import com.berlin.repository.POSTER_PREFIX
-import com.berlin.repository.datasource.local.GenreLocalDataSource
-import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.datasource.GenreLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
 import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource

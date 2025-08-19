@@ -1,4 +1,4 @@
-package com.berlin.aflami
+package com.berlin.aflami.workers
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker
@@ -7,16 +7,7 @@ import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import usecase.movie.ClearMoviesSearchHistoryUseCase
-import usecase.movie.ContinueWatchingMovieUseCase
-import usecase.movie.GetMovieGenresUseCase
-import usecase.movie.GetPopularMoviesUseCase
-import usecase.movie.GetTopRatedMoviesUseCase
-import usecase.movie.GetUpComingMoviesUseCase
 import usecase.tvshow.ClearTVShowSearchHistoryUseCase
-import usecase.tvshow.ContinueWatchingTVShowUseCase
-import usecase.tvshow.GetPopularTVShowsUseCase
-import usecase.tvshow.GetTVShowGenresUseCase
-import usecase.tvshow.GetTopRatedTVShowUseCase
 
 @HiltWorker
 class RecentSearchClearWorker @AssistedInject constructor(
