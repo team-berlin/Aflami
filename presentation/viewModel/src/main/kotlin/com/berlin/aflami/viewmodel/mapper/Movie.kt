@@ -13,7 +13,7 @@ fun Movie.toMovieUiState(): MovieUiState {
     return MovieUiState(
         id = id,
         title = title,
-        rating = convertArabicToEnglish(DecimalFormat("#.#").format(rating).toString().replace('٫', '.')) ,
+        rating = DecimalFormat("#.#").format(rating).toString(),
         releaseDate = releaseDate,
         genre = genres.map { it.toGenreUiState() },
         posterUrl = posterURL,
