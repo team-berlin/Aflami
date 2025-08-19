@@ -15,7 +15,7 @@ class TVShowSearchPagingSource(
         return searchTVShowsUseCase(tvShowNameQuery, page)
             .map { it.toUiState() }
             .filter { tvShowUiState ->
-                val rating = convertArabicToEnglish(tvShowUiState.rating.replace('٫', '.'))
+                val rating = parseRating(tvShowUiState.rating.replace('٫', '.'))
                     .toFloatOrNull() ?: return@filter false
                 val matchesRating = rating > selectedRating
                 val matchesGenre =

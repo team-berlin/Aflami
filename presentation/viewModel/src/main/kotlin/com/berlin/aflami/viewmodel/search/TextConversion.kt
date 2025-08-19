@@ -1,7 +1,7 @@
 package com.berlin.aflami.viewmodel.search
 
-fun convertArabicToEnglish(rate: String): String {
-    val arabicDigits = "٠١٢٣٤٥٦٧٨٩".toCharArray()
+fun parseRating(rate: String): String {
+    val arabicDigits = "٠١٢٣٤٥٦٧٨٩"
     val englishDigits = "0123456789"
 
     return rate.map { char ->
@@ -9,3 +9,4 @@ fun convertArabicToEnglish(rate: String): String {
         if (index != -1) englishDigits[index] else char
     }.joinToString("")
 }
+

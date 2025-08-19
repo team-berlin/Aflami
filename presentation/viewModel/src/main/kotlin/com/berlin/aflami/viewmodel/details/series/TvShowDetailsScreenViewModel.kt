@@ -62,7 +62,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         loadData()
     }
 
-    private fun loadData(){
+    private fun loadData() {
         isTVShowHasVideo(tvShowId = tvShowId)
         getTVShowActors(tvShowId = tvShowId)
         getTVShowDetails(tvShowId = tvShowId)
@@ -445,8 +445,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                     }
                     //showSnackBar("Successfully submitted rating.",true)
                 },
-                onError = {
-                        stateError ->
+                onError = { stateError ->
                     updateState {
                         it.copy(
                             showRatingDialog = false,

@@ -1,6 +1,6 @@
 package com.berlin.aflami.viewmodel.mapper
 
-import com.berlin.aflami.viewmodel.search.convertArabicToEnglish
+import com.berlin.aflami.viewmodel.search.parseRating
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
@@ -13,7 +13,7 @@ fun Movie.toMovieUiState(): MovieUiState {
     return MovieUiState(
         id = id,
         title = title,
-        rating = convertArabicToEnglish(DecimalFormat("#.#").format(rating).toString().replace('٫', '.')) ,
+        rating = parseRating(DecimalFormat("#.#").format(rating).toString().replace('٫', '.')) ,
         releaseDate = releaseDate,
         genre = genres.map { it.toGenreUiState() },
         posterUrl = posterURL,
