@@ -168,6 +168,7 @@ fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) 
         modifier = Modifier
             .align(Alignment.TopCenter)
             .statusBarsPadding()
+            .padding(top = 16.dp)
         ,
         isSnackBarVisible = uiState.isError
     )
@@ -224,6 +225,7 @@ private fun FormLogin(
     Column(modifier = modifier) {
         TextField(
             text = uiState.username,
+            style = Theme.textStyle.body.medium.copy(Theme.color.textColors.title),
             leadingIcon = R.drawable.user_square,
             hintText = stringResource(R.string.username),
             onValueChange = { onUsernameChanged(it) },
@@ -235,6 +237,7 @@ private fun FormLogin(
 
         TextField(
             text = uiState.password,
+            style = Theme.textStyle.body.medium.copy(Theme.color.textColors.title),
             hintText = stringResource(R.string.password),
             leadingIcon = R.drawable.door_lock,
             isError = passwordError,
@@ -252,7 +255,7 @@ private fun FormLogin(
 
         Text(
             text = stringResource(R.string.forgot_password),
-            style = Theme.textStyle.body.small,
+            style = Theme.textStyle.label.medium,
             color = Theme.color.primary,
             modifier = Modifier
                 .align(Alignment.End)

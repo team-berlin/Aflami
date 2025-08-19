@@ -7,7 +7,7 @@ data class TVShowDetailsUiState(
     val isFavorite: Boolean = false,
     val posters: List<String> = emptyList(),
     val isTVShowHasVideo: Boolean = false,
-    val videoUrl: String = "",
+    val videoUrl: String?= null ,
     val tvShowUiState: TVShowUiState = TVShowUiState(),
     val isDescriptionExpanded: Boolean = false,
     val castList: List<ActorUiState> = emptyList(),

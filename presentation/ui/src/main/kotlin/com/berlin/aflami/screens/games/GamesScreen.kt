@@ -138,6 +138,7 @@ fun GamesContent(
 
     Column(
         modifier = Modifier
+            .fillMaxSize()
             .background(Theme.color.surface)
             .statusBarsPadding()
         .padding(top = 13.dp)
@@ -156,6 +157,7 @@ fun GamesContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(bottom = 60.dp)
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)

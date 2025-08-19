@@ -304,12 +304,12 @@ class SearchViewModel @Inject constructor(
         onSearchQueryChanged(state.value.searchQuery)
     }
 
-    override fun onMediaCardClicked(mediaId: Long) {
-        val mediaType = when (state.value.selectedTabOption) {
-            TabOption.MOVIES -> MediaType.MOVIE.name
-            TabOption.TV_SHOWS -> MediaType.TV_SHOW.name
-        }
-        sendNewEffect(SearchScreenEffect.NavigatedToMovieDetailsScreen(id = mediaId, mediaType))
+    override fun onMoviesCardClicked(movieId: Long) {
+        sendNewEffect(SearchScreenEffect.NavigatedToMovieDetailsScreen(id = movieId))
+    }
+
+    override fun onTVShowsCardClicked(tvShowId: Long) {
+        sendNewEffect(SearchScreenEffect.NavigatedToTVShowDetailsScreen(id = tvShowId,))
     }
 
     override fun onFilterButtonClicked() {

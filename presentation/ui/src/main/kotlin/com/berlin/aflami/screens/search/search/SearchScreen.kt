@@ -3,8 +3,6 @@ package com.berlin.aflami.screens.search.search
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -25,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.MediaCard
@@ -55,6 +55,7 @@ import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.SearchByActorDestination
 import com.berlin.aflami.navigation.SearchByCountryDestination
+import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.NoDataSearch
@@ -72,6 +73,8 @@ import com.berlin.aflami.viewmodel.search.SearchUiState
 import com.berlin.aflami.viewmodel.search.SearchViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
+import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.designsystem.R
 
 @Composable
@@ -80,7 +83,7 @@ fun SearchScreen(
 ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val recentSearchState = viewModel.recentSearchState.collectAsState()
+    val recentSearchState by viewModel.recentSearchState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -89,33 +92,15 @@ fun SearchScreen(
     }
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = state.isLoading
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(com.berlin.ui.R.string.loading)
-        )
-    }
-    AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = state.errorMessage != null && state.searchQuery.text.isNotEmpty()
-    ) {
-        NoInternetConnectionPlaceholder()
-    }
-
-    AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
         visible = !state.isLoading
     ) {
         SearchScreenContent(
             state = state,
             listenerSearch = viewModel,
             filterSearch = viewModel,
-            recentSearchState = recentSearchState.value,
+            recentSearchState = recentSearchState,
             onDeleteItem = viewModel::deleteQueryFromHistory,
             onClearAll = viewModel::clearSearchHistory,
             onItemClick = viewModel::onItemClicked
@@ -123,35 +108,30 @@ fun SearchScreen(
     }
 }
 
-private fun onReceiveSearchEffect(
-    navController: NavController,
-    effect: SearchScreenEffect,
-) {
+private fun onReceiveSearchEffect(navController: NavController, effect: SearchScreenEffect) {
     when (effect) {
         is SearchScreenEffect.NavigatedBack -> navController.popBackStack()
-
         is SearchScreenEffect.NavigatedToMovieDetailsScreen -> {
+            navController.navigate(MovieDetailsDestination(movieId = effect.id))
+        }
 
+        is SearchScreenEffect.NavigatedToTVShowDetailsScreen -> {
             navController.navigate(
-                MovieDetailsDestination(
-                    movieId = effect.id,
+                TVShowDetailsDestination(
+                    tvShowId = effect.id
                 )
             )
+
         }
 
         is SearchScreenEffect.NavigateToActorSearchScreen -> {
-            navController.navigate(
-                SearchByActorDestination
-            )
+            navController.navigate(SearchByActorDestination)
         }
 
         is SearchScreenEffect.NavigateToWorldSearchScreen -> {
-            navController.navigate(
-                SearchByCountryDestination
-            )
+            navController.navigate(SearchByCountryDestination)
         }
     }
-
 }
 
 @Composable
@@ -165,299 +145,216 @@ private fun SearchScreenContent(
     onClearAll: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val moviesSearchResult = state.movies.collectAsLazyPagingItems()
+    val tvShowsSearchResult = state.tvShows.collectAsLazyPagingItems()
+
+    val isSearchEmpty = state.searchQuery.text.isBlank()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
             .statusBarsPadding()
             .clickable(
-                indication = null, interactionSource = remember { MutableInteractionSource() }) {
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
                 focusManager.clearFocus()
             }
             .focusable(),
     ) {
         Column {
-            TopBar(modifier = Modifier.padding(vertical = 8.dp), title = {
-                Text(
-                    text = stringResource(R.string.search),
-                    style = Theme.textStyle.title.large,
-                    color = Theme.color.textColors.title
-                )
-            }, leadingIcon = {
-                Box(
-                    Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Theme.color.surfaceHigh)
-                        .clickable {
-                            listenerSearch.onBackClicked()
-                        },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        painter = painterResource(R.drawable.arrow_left),
-                        contentDescription = stringResource(R.string.icon_cd),
-                        tint = Theme.color.textColors.title
+            TopBar(
+                modifier = Modifier.padding(vertical = 8.dp),
+                title = {
+                    Text(
+                        text = stringResource(R.string.search),
+                        style = Theme.textStyle.title.large,
+                        color = Theme.color.textColors.title
                     )
+                },
+                leadingIcon = {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Theme.color.surfaceHigh)
+                            .clickable { listenerSearch.onBackClicked() }
+                            .padding(10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(com.berlin.ui.R.drawable.arrow_left),
+                            contentDescription = stringResource(com.berlin.ui.R.string.arrow_back),
+                            tint = Theme.color.textColors.title
+                        )
+                    }
                 }
-            })
+            )
 
-            val keyboardController = LocalSoftwareKeyboardController.current
             TextField(
                 text = state.searchQuery,
                 modifier = Modifier
-                    .padding(vertical = 8.dp, horizontal = 16.dp)
+                    .padding( horizontal = 16.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
                     .background(Theme.color.surfaceHigh),
-
                 hintText = stringResource(R.string.search_hint_text),
-                isEnabled = true,
                 maxLines = 1,
                 borderColor = Theme.color.stroke,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = { keyboardController?.hide() },
-                    onSearch = {
-                        listenerSearch.onSearchActionClicked()
-                    }),
+                    onSearch = { listenerSearch.onSearchActionClicked() }
+                ),
                 onValueChange = listenerSearch::onSearchQueryChanged,
                 trailingIcon = R.drawable.filter_vertical,
                 onTrailingIconClicked = listenerSearch::onFilterButtonClicked
             )
 
             when {
-                state.searchQuery.text.isBlank() -> {
-                    Text(
-                        stringResource(R.string.search_suggestions_hub),
-                        color = Theme.color.textColors.title,
-                        style = Theme.textStyle.title.medium,
-                        modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
+                isSearchEmpty -> {
+                    SearchEmptyContent(
+                        recentSearchState = recentSearchState,
+                        onDeleteItem = onDeleteItem,
+                        onItemClick = onItemClick,
+                        onClearAll = onClearAll,
+                        listenerSearch = listenerSearch
                     )
-                    SearchSuggestionHub(
-                        Modifier.padding(horizontal = 16.dp),
-                        onSearchByActorClick = {
-                            listenerSearch.onActorSearchCardClicked()
-                        },
-                        onSearchByCountryClick = {
-                            listenerSearch.onWorldSearchCardClicked()
-                        },
-                    )
-                    if (recentSearchState.isNotEmpty()) {
-                        SearchData(
-                            recentSearch = recentSearchState,
-                            onDeleteItem = onDeleteItem,
-                            onItemClick = onItemClick,
-                            onClearAll = onClearAll,
-                        )
-
-                    } else {
-                        NoDataSearch()
-                    }
                 }
 
-                state.searchQuery.text.isNotBlank() -> {
-                    TabBar(
-                        selectedTabIndex = state.selectedTabOption.index,
-                        containerColor = Theme.color.surface,
-                        items = listOf(
-                            TabBarItem(
-                                text = stringResource(R.string.movies),
-                                isSelected = state.selectedTabOption == TabOption.MOVIES,
-                            ), TabBarItem(
-                                text = stringResource(R.string.tv_shows),
-                                isSelected = state.selectedTabOption == TabOption.TV_SHOWS,
-                            )
-                        ),
-                        onTabChange = {
-                            listenerSearch.onTabOptionClicked(
-                                when (it) {
-                                    0 -> TabOption.MOVIES
-                                    1 -> TabOption.TV_SHOWS
-                                    else -> throw IllegalArgumentException("Invalid tab index")
-                                }
-                            )
-                        },
+                else -> {
+                    SearchResultTabs(
+                        state = state,
+                        movies = moviesSearchResult,
+                        tvShows = tvShowsSearchResult,
+                        listenerSearch = listenerSearch
                     )
-
-                    when {
-                        state.isLoading -> {
-                            com.berlin.aflami.component.CircularProgressIndicator(
-                                modifier = Modifier.fillMaxSize(),
-                                text = stringResource(com.berlin.ui.R.string.loading)
-                            )
-                        }
-
-                        else -> {
-                            val movies = state.movies.collectAsLazyPagingItems()
-                            val moviesLoadState = movies.loadState
-                            val tvShows = state.tvShows.collectAsLazyPagingItems()
-                            val tvShowsLoadState = tvShows.loadState
-                            when (state.selectedTabOption) {
-
-                                TabOption.MOVIES -> {
-
-                                    val isEmpty =
-                                        movies.itemCount == 0 && moviesLoadState.refresh is LoadState.NotLoading && moviesLoadState.append is LoadState.NotLoading
-                                    if (isEmpty) {
-                                        CountryTourExploring(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .align(Alignment.CenterHorizontally),
-                                            painterResource(com.berlin.ui.R.drawable.no_search_result),
-                                            com.berlin.ui.R.string.no_search_result,
-                                            com.berlin.ui.R.string.please_try_with_another_keyword
-                                        )
-                                    } else if (LoadState.Loading == moviesLoadState.refresh) {
-                                        com.berlin.aflami.component.CircularProgressIndicator(
-                                            modifier = Modifier.fillMaxSize(),
-                                            text = stringResource(com.berlin.ui.R.string.loading)
-                                        )
-                                    } else {
-                                        when (val error = moviesLoadState.refresh) {
-                                            is LoadState.Error -> {
-                                                val isNoInternet = error.error.message?.contains(
-                                                    "No internet connection",
-                                                    ignoreCase = true
-                                                ) == true
-                                                if (isNoInternet) {
-                                                    NoInternetConnectionPlaceholder(
-                                                        onClick = { movies.retry() }
-                                                    )
-                                                } else {
-                                                    ErrorContent()
-                                                }
-                                            }
-
-                                            LoadState.Loading -> {}
-                                            is LoadState.NotLoading -> {}
-                                        }
-
-                                        Box(modifier = Modifier.fillMaxSize()) {
-
-                                            LazyVerticalGrid(
-                                                modifier = Modifier.fillMaxSize(),
-                                                columns = GridCells.Adaptive(minSize = 160.dp),
-                                                contentPadding = PaddingValues(
-                                                    start = 16.dp, end = 16.dp, top = 8.dp
-                                                ),
-                                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                            ) {
-                                                items(
-                                                    count = movies.itemCount
-                                                ) { index ->
-                                                    val movie = movies[index]
-                                                    if (movie != null) {
-                                                        MediaCard(
-                                                            modifier = Modifier.height(222.dp),
-                                                            onClick = {
-                                                                listenerSearch.onMediaCardClicked(
-                                                                    mediaId = movie.id
-                                                                )
-                                                            },
-                                                            mediaImg = movie.posterUrl,
-                                                            title = movie.title,
-                                                            typeOfMedia = MediaType.MOVIE.name,
-                                                            date = movie.releaseDate,
-                                                            rating = movie.rating
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                TabOption.TV_SHOWS -> {
-                                    val isEmpty =
-                                        tvShows.itemCount == 0 && tvShowsLoadState.refresh is LoadState.NotLoading && tvShowsLoadState.append is LoadState.NotLoading
-                                    if (isEmpty) {
-                                        CountryTourExploring(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .align(Alignment.CenterHorizontally),
-                                            painterResource(com.berlin.ui.R.drawable.no_search_result),
-                                            com.berlin.ui.R.string.no_search_result,
-                                            com.berlin.ui.R.string.please_try_with_another_keyword
-                                        )
-                                    } else {
-                                        when (val error = moviesLoadState.refresh) {
-                                            is LoadState.Error -> {
-                                                val isNoInternet = error.error.message?.contains(
-                                                    "No internet connection",
-                                                    ignoreCase = true
-                                                ) == true
-                                                if (isNoInternet) {
-                                                    NoInternetConnectionPlaceholder(
-                                                        onClick = { movies.retry() }
-                                                    )
-                                                } else {
-                                                    ErrorContent()
-                                                }
-                                            }
-
-                                            LoadState.Loading -> {}
-                                            is LoadState.NotLoading -> {}
-                                        }
-                                        LazyVerticalGrid(
-                                            modifier = Modifier.fillMaxSize(),
-                                            columns = GridCells.Adaptive(minSize = 160.dp),
-                                            contentPadding = PaddingValues(
-                                                start = 16.dp, end = 16.dp, top = 8.dp
-                                            ),
-                                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                        ) {
-                                            items(
-                                                count = tvShows.itemCount
-                                            ) { index ->
-                                                val tvShows = tvShows[index]
-                                                if (tvShows != null) {
-                                                    MediaCard(
-                                                        modifier = Modifier.height(222.dp),
-                                                        mediaImg = tvShows.posterUrl,
-                                                        title = tvShows.title,
-                                                        onClick = {
-                                                            listenerSearch.onMediaCardClicked(
-                                                                tvShows.id
-                                                            )
-                                                        },
-                                                        typeOfMedia = MediaType.TV_SHOW.name,
-                                                        date = tvShows.releaseDate,
-                                                        rating = tvShows.rating
-                                                    )
-
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
+
             if (state.isDialogVisible) {
-                when (state.selectedTabOption) {
-                    TabOption.MOVIES -> {
-                        FilterDialog(
-                            state = state.filterItemUiState.filterMovieSelected,
-                            filterListener = filterSearch,
-                            getIcon = ::getMovieGenreIcon,
-                            getGenreName = ::getMovieGenreName
+                FilterDialogContent(state, filterSearch)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SearchEmptyContent(
+    recentSearchState: List<String>,
+    onDeleteItem: (String) -> Unit,
+    onItemClick: (TextFieldValue) -> Unit,
+    onClearAll: () -> Unit,
+    listenerSearch: SearchScreenInteractionListener
+) {
+    Text(
+        stringResource(R.string.search_suggestions_hub),
+        color = Theme.color.textColors.title,
+        style = Theme.textStyle.title.medium,
+        modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 16.dp)
+    )
+    SearchSuggestionHub(
+        Modifier.padding(horizontal = 16.dp),
+        onSearchByActorClick = { listenerSearch.onActorSearchCardClicked() },
+        onSearchByCountryClick = { listenerSearch.onWorldSearchCardClicked() },
+    )
+    if (recentSearchState.isNotEmpty()) {
+        SearchData(
+            recentSearch = recentSearchState,
+            onDeleteItem = onDeleteItem,
+            onItemClick = onItemClick,
+            onClearAll = onClearAll,
+        )
+    } else {
+        NoDataSearch()
+    }
+}
+
+@Composable
+private fun SearchResultTabs(
+    state: SearchUiState,
+    movies: LazyPagingItems<MovieUiState>,
+    tvShows: LazyPagingItems<TVShowUiState>,
+    listenerSearch: SearchScreenInteractionListener
+) {
+    TabBar(
+        selectedTabIndex = state.selectedTabOption.index,
+        containerColor = Theme.color.surface,
+        items = listOf(
+            TabBarItem(
+                text = stringResource(R.string.movies),
+                isSelected = state.selectedTabOption == TabOption.MOVIES,
+            ),
+            TabBarItem(
+                text = stringResource(R.string.tv_shows),
+                isSelected = state.selectedTabOption == TabOption.TV_SHOWS,
+            )
+        ),
+        onTabChange = {
+            listenerSearch.onTabOptionClicked(
+                when (it) {
+                    0 -> TabOption.MOVIES
+                    1 -> TabOption.TV_SHOWS
+                    else -> throw IllegalArgumentException("Invalid tab index")
+                }
+            )
+        },
+    )
+
+    when (state.selectedTabOption) {
+        TabOption.MOVIES -> MediaGrid(movies, MediaType.MOVIE, listenerSearch)
+        TabOption.TV_SHOWS -> MediaGrid(tvShows, MediaType.TV_SHOW, listenerSearch)
+    }
+}
+
+@Composable
+private fun <T : Any> MediaGrid(
+    items: LazyPagingItems<T>,
+    mediaType: MediaType,
+    listenerSearch: SearchScreenInteractionListener
+) {
+    val isLoading = items.loadState.refresh is LoadState.Loading
+    val hasError = items.loadState.refresh is LoadState.Error
+
+    when {
+        isLoading -> CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize(),
+            text = stringResource(com.berlin.ui.R.string.loading)
+        )
+        hasError -> NoInternetConnectionPlaceholder(onClick = { items.retry() })
+        items.itemCount == 0 -> ErrorContent()
+        else -> LazyVerticalGrid(
+            modifier = Modifier.fillMaxSize(),
+            columns = GridCells.Adaptive(minSize = 160.dp),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(items.itemCount) { index ->
+                val media = items[index]
+                when (mediaType) {
+                    MediaType.MOVIE -> (media as? MovieUiState)?.let {
+                        MediaCard(
+                            modifier = Modifier.height(222.dp),
+                            onClick = { listenerSearch.onMoviesCardClicked(it.id) },
+                            mediaImg = it.posterUrl,
+                            title = it.title,
+                            typeOfMedia = MediaType.MOVIE.name,
+                            date = it.releaseDate,
+                            rating = it.rating
                         )
                     }
 
-                    TabOption.TV_SHOWS -> {
-                        FilterDialog(
-                            state = state.filterItemUiState.filterTvShowSelected,
-                            filterListener = filterSearch,
-                            getIcon = ::getTvShowGenreIcon,
-                            getGenreName = ::getTvShowGenreName
+                    MediaType.TV_SHOW -> (media as? TVShowUiState)?.let {
+                        MediaCard(
+                            modifier = Modifier.height(222.dp),
+                            onClick = { listenerSearch.onTVShowsCardClicked(it.id) },
+                            mediaImg = it.posterUrl,
+                            title = it.title,
+                            typeOfMedia = MediaType.TV_SHOW.name,
+                            date = it.releaseDate,
+                            rating = it.rating
                         )
                     }
                 }
@@ -466,6 +363,27 @@ private fun SearchScreenContent(
     }
 }
 
+@Composable
+private fun FilterDialogContent(
+    state: SearchUiState,
+    filterSearch: FilterInteractionListener
+) {
+    when (state.selectedTabOption) {
+        TabOption.MOVIES -> FilterDialog(
+            state = state.filterItemUiState.filterMovieSelected,
+            filterListener = filterSearch,
+            getIcon = ::getMovieGenreIcon,
+            getGenreName = ::getMovieGenreName
+        )
+
+        TabOption.TV_SHOWS -> FilterDialog(
+            state = state.filterItemUiState.filterTvShowSelected,
+            filterListener = filterSearch,
+            getIcon = ::getTvShowGenreIcon,
+            getGenreName = ::getTvShowGenreName
+        )
+    }
+}
 
 @Composable
 fun ErrorContent() {

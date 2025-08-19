@@ -154,7 +154,7 @@ private fun SearchByActorNameContent(
             hintText = stringResource(R.string.actor_name),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 4.dp),
+                .padding(start = 16.dp, end = 16.dp),
             onValueChange = { listener.onActorNameChanged(it) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Search

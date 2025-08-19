@@ -315,7 +315,7 @@ private fun HomeContent(
                 if (continueWatchingMediaList.isNotEmpty()) {
                     item {
                         ContinueWatchingHomeSections(
-                            modifier = Modifier.background(Theme.color.surface),
+                            modifier = Modifier.background(Theme.color.surface).padding(bottom = 24.dp),
                             seeAllOnClick = {
                                 homeScreenInteractionListener.onShowAllContinueWatchingClicked()
                             },
@@ -339,7 +339,7 @@ private fun HomeContent(
                         TopRatingHomeSections(
                             modifier = Modifier
                                 .background(Theme.color.surface)
-                                .padding(top = 24.dp, bottom = 24.dp)
+                                .padding( bottom = 24.dp)
                                 .background(Theme.color.surface),
                             seeAllOnClick = { homeScreenInteractionListener.onShowAllTopRatingClicked() },
                             state = topRatedMediaList,

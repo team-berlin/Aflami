@@ -12,7 +12,7 @@ data class MovieDetailsUiState(
     val isFavorite: Boolean = false,
     val posters: List<String> = emptyList(),
     val isMovieHasVideo: Boolean = false,
-    val videoUrl: String = "",
+    val videoUrl: String? = null,
     val movieUiState: MovieUiState = MovieUiState(),
     val isDescriptionExpanded: Boolean = false,
     val castList: List<ActorUiState> = emptyList(),

@@ -222,7 +222,6 @@ fun TvShowDetailsContent(
     onToggleDescriptionExpand: () -> Unit,
     movieDetailsTabs: TVShowDetailsTabs,
     onChipClick: (TVShowDetailsTabs) -> Unit,
-//
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
@@ -246,7 +245,7 @@ fun TvShowDetailsContent(
             item {
                 TVShowBackdropPager(
                     state = state,
-                    onPlayClick = { listener.onPlayClicked(state.videoUrl) })
+                    onPlayClick = { state.videoUrl?.let { listener.onPlayClicked(it) } })
             }
 
             item {
@@ -261,17 +260,21 @@ fun TvShowDetailsContent(
                     )
                 }
             }
-            item {
-                DescriptionSection(
-                    state.tvShowUiState.description, isExpanded = isDescriptionExpanded,
-                    onToggleExpand = onToggleDescriptionExpand
-                )
+            if(state.tvShowUiState.description.isNotEmpty()) {
+                item {
+                    DescriptionSection(
+                        state.tvShowUiState.description, isExpanded = isDescriptionExpanded,
+                        onToggleExpand = onToggleDescriptionExpand
+                    )
+                }
             }
-            item {
-                CastSection(
-                    cast = state.castList,
-                    onShowAllClicked = { listener.onShowCastClicked(state.tvShowUiState.id) }
-                )
+            if(state.castList.isNotEmpty()) {
+                item {
+                    CastSection(
+                        cast = state.castList,
+                        onShowAllClicked = { listener.onShowCastClicked(state.tvShowUiState.id) }
+                    )
+                }
             }
             item {
                 HorizontalDivider(
