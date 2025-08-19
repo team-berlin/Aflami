@@ -280,7 +280,6 @@ private fun ListsContent(
                                             title = item.listTitle,
                                             count = item.numberOfFavouriteMovies,
                                             modifier = modifier
-                                                .size(156.dp, 147.dp)
                                                 .clickable {
                                                     interactionListener.onClickListCard(
                                                         item.listId!!, item.listTitle
