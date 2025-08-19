@@ -38,9 +38,9 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
             false
         }
         return remoteDataSource.getTVShowDetailsById(tvShowId).toDomain(
-                galleryImages = galleryImages,
-                hasVideo = hasVideo,
-            )
+            galleryImages = galleryImages,
+            hasVideo = hasVideo,
+        )
     }
 
     override suspend fun getTVShowsImages(id: Long): MediaImage {
@@ -48,20 +48,20 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
             val imagesResponse = remoteDataSource.getTVImagesById(id)
 
             val backdrops = imagesResponse.backdrops?.mapNotNull {
-                    it.filePath?.let { path ->
-                        tmdbImageUrl(
-                            path = path, MediaUrls.TmdbImageSize.W500
-                        )
-                    }
+                it.filePath?.let { path ->
+                    tmdbImageUrl(
+                        path = path, MediaUrls.TmdbImageSize.W500
+                    )
                 }
+            }
 
             val posters = imagesResponse.posters?.mapNotNull {
-                    it.filePath?.let { path ->
-                        tmdbImageUrl(
-                            path = path, MediaUrls.TmdbImageSize.W500
-                        )
-                    }
+                it.filePath?.let { path ->
+                    tmdbImageUrl(
+                        path = path, MediaUrls.TmdbImageSize.W500
+                    )
                 }
+            }
 
             MediaImage(backdrops = backdrops.orEmpty(), posters = posters.orEmpty())
         } catch (e: Exception) {
@@ -84,14 +84,14 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
             .associate { it.categoryId to it.count }
 
         return remoteDataSource.getSimilarTVById(seriesId).results?.mapNotNull { tvShowDto ->
-                tvShowDto.toDomain(
-                    galleryImages = galleryImages, hasVideo = hasVideo
-                )
-            }?.sortedByDescending { tvShow ->
-                tvShow.genres.sumOf { genre ->
-                    genreScoresMap[genre.id] ?: 0
-                }
-            }.orEmpty()
+            tvShowDto.toDomain(
+                galleryImages = galleryImages, hasVideo = hasVideo
+            )
+        }?.sortedByDescending { tvShow ->
+            tvShow.genres.sumOf { genre ->
+                genreScoresMap[genre.id] ?: 0
+            }
+        }.orEmpty()
     }
 
     override suspend fun getTVShowReviews(seriesId: Long): List<Review> {
@@ -121,12 +121,9 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
         }
     }
 
-
     override suspend fun getTVShowVideos(seriesId: Long): List<Video> {
         return remoteDataSource.getTVShowVideos(seriesId).results?.mapNotNull {
             it?.toDomain()
         }.orEmpty()
     }
-
-
 }
