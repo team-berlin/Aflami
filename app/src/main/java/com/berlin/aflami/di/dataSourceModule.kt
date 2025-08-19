@@ -9,7 +9,6 @@ import com.berlin.local.datasource.GenreLocalDataSourceImpl
 import com.berlin.local.datasource.HomeLocalDataSourceImp
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
 import com.berlin.local.datasource.RecentlyWatchedLocalDataSourceImpl
-import com.berlin.local.datasource.SearchLocalDataSourceImpl
 import com.berlin.local.datasource.UserProfileLocalDataSourceImp
 import com.berlin.remote.AuthenticationRemoteDataSourceImpl
 import com.berlin.remote.RetrofitRemoteDataSource
@@ -22,7 +21,6 @@ import com.berlin.repository.datasource.local.datasource.GenreLocalDataSource
 import com.berlin.repository.datasource.local.datasource.HomeLocalDataSource
 import com.berlin.repository.datasource.local.datasource.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
-import com.berlin.repository.datasource.local.datasource.SearchLocalDataSource
 import com.berlin.repository.datasource.local.datasource.UserProfileLocalDataSource
 import com.berlin.repository.datasource.local.dataStore.SettingsLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
@@ -38,11 +36,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class DataSourceModule {
 
-    @Binds
-    @Singleton
-    abstract fun bindSearchLocalDataSource(
-        impl: SearchLocalDataSourceImpl,
-    ): SearchLocalDataSource
 
     @Binds
     @Singleton

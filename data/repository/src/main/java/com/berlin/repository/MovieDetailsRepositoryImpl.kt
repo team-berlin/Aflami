@@ -88,7 +88,6 @@ class MovieDetailsRepositoryImpl @Inject constructor(
         if (!isExpiredOrEmpty(cachedGenres)) {
             return cachedGenres.map { it.toDomain() }
         }
-
         val remoteGenres = remoteDataSource.getMovieGenres().genres
         val genreEntities = remoteGenres.map { it.toMoviesGenreEntity() }
         genreLocalDataSource.cacheMovieGenres(genreEntities)
