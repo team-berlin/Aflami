@@ -43,7 +43,7 @@ import com.berlin.repository.datasource.local.dto.UserProfileEntity
         UserProfileEntity::class,
        UserPointsEntity::class
 
-    ], version =0, exportSchema = false
+    ], version =1, exportSchema = false
 )
 abstract class AflamiDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
