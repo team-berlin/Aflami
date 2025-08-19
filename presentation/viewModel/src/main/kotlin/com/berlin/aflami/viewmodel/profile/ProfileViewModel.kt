@@ -1,5 +1,7 @@
 package com.berlin.aflami.viewmodel.profile
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.entity.AppLanguage
@@ -12,19 +14,15 @@ import usecase.auth.LogoutUseCase
 import usecase.game.GetPointsUseCase
 import usecase.profile.ClearUserProfileUseCase
 import usecase.profile.GetContentRestrictionUseCase
-import usecase.profile.GetLanguageUseCase
 import usecase.profile.GetThemeUseCase
 import usecase.profile.ObserveUserProfileUseCase
 import usecase.profile.SetContentRestrictionUseCase
-import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    val getLanguageUseCase: GetLanguageUseCase,
     val getThemeUseCase: GetThemeUseCase,
-    val setLanguageUseCase: SetLanguageUseCase,
     val setThemeUseCase: SetThemeUseCase,
     val getLoginStatus: GetLoginUseCase,
     val logoutUseCase: LogoutUseCase,
@@ -38,7 +36,6 @@ class ProfileViewModel @Inject constructor(
 
     init {
         collectTheme()
-        collectLanguage()
         collectUserProfile()
         collectContentRestriction()
         checkLoginStatus()
@@ -50,8 +47,8 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 activeDialog = ProfileDialogType.NONE,
                 tempSelectedLanguage = it.selectedLanguage,
-                isArabicSelected = it.selectedLanguage == AppLanguage.AR.name,
-                isEnglishSelected = it.selectedLanguage == AppLanguage.EN.name,
+                isArabicSelected = it.selectedLanguage == AppLanguage.AR,
+                isEnglishSelected = it.selectedLanguage == AppLanguage.EN,
                 tempSelectedTheme = it.selectedTheme,
                 isDarkThemeSelected = it.selectedTheme == AppTheme.DARK.name,
                 isLightThemeSelected = it.selectedTheme == AppTheme.LIGHT.name,
@@ -130,7 +127,7 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 isEnglishSelected = false,
                 isArabicSelected = true,
-                tempSelectedLanguage = AppLanguage.AR.name,
+                tempSelectedLanguage = AppLanguage.AR,
             )
         }
     }
@@ -140,22 +137,20 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 isEnglishSelected = true,
                 isArabicSelected = false,
-                tempSelectedLanguage = AppLanguage.EN.name,
+                tempSelectedLanguage = AppLanguage.EN,
             )
         }
     }
 
     override fun onApplyLanguageOption() {
-        viewModelScope.launch {
-            val selectedLanguage = AppLanguage.valueOf(state.value.tempSelectedLanguage)
-            setLanguageUseCase(selectedLanguage)
-            updateState {
-                it.copy(
-                    selectedLanguage = it.tempSelectedLanguage,
-                    activeDialog = ProfileDialogType.NONE
-                )
-            }
-            sendNewEffect(ProfileScreenEffect.RefreshActivity)
+        val appLocale: LocaleListCompat =
+            LocaleListCompat.forLanguageTags(state.value.tempSelectedLanguage.name.lowercase())
+        AppCompatDelegate.setApplicationLocales(appLocale)
+        updateState {
+            it.copy(
+                selectedLanguage = it.tempSelectedLanguage,
+                activeDialog = ProfileDialogType.NONE
+            )
         }
     }
 
@@ -254,22 +249,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun collectLanguage() {
-        viewModelScope.launch {
-            getLanguageUseCase().collect { currentLanguage ->
-                val appLanguage =
-                    currentLanguage ?: AppLanguage.valueOf(state.value.selectedLanguage).name
-                updateState {
-                    it.copy(
-                        selectedLanguage = appLanguage,
-                        isArabicSelected = appLanguage == AppLanguage.AR.name,
-                        isEnglishSelected = appLanguage == AppLanguage.EN.name,
-                        isEnglishEnabled = appLanguage == AppLanguage.EN.name,
-                    )
-                }
-            }
-        }
-    }
 
     private fun collectContentRestriction() {
         viewModelScope.launch {
@@ -294,20 +273,20 @@ class ProfileViewModel @Inject constructor(
     private fun collectUserProfile() {
         viewModelScope.launch {
             observeUserProfileUseCase().collect { user ->
-                    val points = if (user != null) {
-                        getUserScoreUseCase(user.id)
-                    } else {
-                        0
-                    }
-                    updateState { s ->
-                        s.copy(
-                            userAvatarUrl = user?.avatarUrl?.takeIf { it.isNotBlank() },
-                            userName = user?.username.orEmpty(),
-                            isLoggedIn = user != null,
-                            userPoints = points
-                        )
-                    }
+                val points = if (user != null) {
+                    getUserScoreUseCase(user.id)
+                } else {
+                    0
                 }
+                updateState { s ->
+                    s.copy(
+                        userAvatarUrl = user?.avatarUrl?.takeIf { it.isNotBlank() },
+                        userName = user?.username.orEmpty(),
+                        isLoggedIn = user != null,
+                        userPoints = points
+                    )
+                }
+            }
         }
     }
 }

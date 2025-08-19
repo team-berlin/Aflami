@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.Locale
 import javax.inject.Inject
 
 private const val PREFERENCES_NAME = "settings_preferences"
@@ -17,7 +16,6 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
 
     companion object {
         val APP_THEME = stringPreferencesKey("app_theme")
-        val APP_LANGUAGE = stringPreferencesKey("app_language")
         val App_CONTENT_RESTRICTION = stringPreferencesKey("app_content_restriction")
 
     }
@@ -32,18 +30,6 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
         return context.dataStore.data.map { prefs ->
             prefs[APP_THEME] ?: "DARK"
         }
-    }
-
-    suspend fun setLanguage(lang: String) {
-        context.dataStore.edit { prefs ->
-            prefs[APP_LANGUAGE] = lang
-        }
-    }
-    fun getLanguage(): Flow<String?> {
-        return context.dataStore.data.map { prefs ->
-            prefs[APP_LANGUAGE] ?: Locale.getDefault().language.uppercase()
-        }
-
     }
 
     suspend fun setContentRestriction(contentRestrictionLevel: String) {
