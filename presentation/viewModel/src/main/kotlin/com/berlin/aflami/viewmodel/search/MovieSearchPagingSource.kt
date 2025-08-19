@@ -15,7 +15,7 @@ class MovieSearchPagingSource(
         return searchMoviesUseCase(query, page)
             .map { it.toMovieUiState() }
             .filter { movieUiState ->
-                val rating = convertArabicToEnglish(movieUiState.rating.replace('٫', '.'))
+                val rating = parseRating(movieUiState.rating.replace('٫', '.'))
                     .toFloatOrNull() ?: return@filter false
                 val matchesRating = rating >= selectedRating
                 val matchesGenre =
