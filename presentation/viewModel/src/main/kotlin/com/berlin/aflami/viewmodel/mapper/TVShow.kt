@@ -11,7 +11,7 @@ import com.berlin.entity.TVShow
 fun TVShow.toUiState(): TVShowUiState {
     return TVShowUiState(
         id = id,
-        rating = convertArabicToEnglish(DecimalFormat("#.#").format(rating).toString().replace('٫', '.')),
+        rating = DecimalFormat("#.#").format(rating).toString(),
         title = title,
         genre = genres.map { it.toGenreUiState() },
         releaseDate = releaseDate,
