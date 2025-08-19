@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.screens.mediadetails.components.CircularDot
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.utils.swapYearAndDay
 import com.berlin.aflami.viewmodel.shareduistate.GenreUiState
 import com.berlin.ui.R
 
@@ -52,11 +53,13 @@ fun MediaOverviewSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                releaseDate.format(),
+                releaseDate.swapYearAndDay(),
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.hint
             )
-            duration?.takeIf { it.isNotEmpty() }?.let {
+
+            duration.takeIf { it.isNotEmpty() }?.let {
+
                 CircularDot()
                 Text(it, style = Theme.textStyle.label.small, color = Theme.color.textColors.hint)
             }
