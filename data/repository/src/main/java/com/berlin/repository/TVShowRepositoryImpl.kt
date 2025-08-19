@@ -5,7 +5,6 @@ import com.berlin.exception.NetworkException
 import com.berlin.repository.datasource.local.datasource.HomeLocalDataSource
 import com.berlin.repository.datasource.local.datasource.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
-import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.HomeSection
 import com.berlin.repository.datasource.local.dto.RecentSearchHistoryEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
@@ -13,6 +12,7 @@ import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toLocalEntity
 import com.berlin.repository.mapper.toPopularTVShowEntity
 import com.berlin.repository.mapper.toTopRateTVShowEntity
+import com.berlin.repository.util.QueryType
 import repository.TVShowRepository
 import javax.inject.Inject
 

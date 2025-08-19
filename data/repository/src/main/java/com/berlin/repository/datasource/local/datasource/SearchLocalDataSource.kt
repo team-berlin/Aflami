@@ -1,8 +1,8 @@
 package com.berlin.repository.datasource.local.datasource
 
-import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.RecentSearchHistoryEntity
 import com.berlin.repository.util.Constants.DEFAULT_PAGE_SIZE
+import com.berlin.repository.util.QueryType
 
 interface SearchLocalDataSource {
     suspend fun getCachedSearch(

@@ -5,7 +5,6 @@ import com.berlin.exception.NetworkException
 import com.berlin.repository.datasource.local.datasource.HomeLocalDataSource
 import com.berlin.repository.datasource.local.datasource.RecentHistoryLocalDataSource
 import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
-import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.HomeSection
 import com.berlin.repository.datasource.local.dto.RecentSearchHistoryEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
@@ -17,6 +16,7 @@ import com.berlin.repository.mapper.toTopRateMovieEntity
 import com.berlin.repository.mapper.toUpComingMovieEntity
 import com.berlin.repository.util.Constants.ACTING_DEPARTMENT
 import com.berlin.repository.util.Constants.MOVIE_MEDIA_TYPE
+import com.berlin.repository.util.QueryType
 import repository.MovieRepository
 import javax.inject.Inject
 

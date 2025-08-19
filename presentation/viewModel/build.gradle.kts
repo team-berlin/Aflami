@@ -39,6 +39,10 @@ dependencies {
     // Navigation
     implementation(libs.navigation.compose)
 
+    // Utilities
+    implementation(libs.kotlin.datex)
+
+
     // Paging
     implementation(libs.androidx.paging.runtime)
 

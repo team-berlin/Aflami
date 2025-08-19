@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.berlin.repository.datasource.local.dto.QueryType
 import com.berlin.repository.datasource.local.dto.RecentSearchHistoryEntity
+import com.berlin.repository.util.QueryType
 
 @Dao
 interface SearchDao {
