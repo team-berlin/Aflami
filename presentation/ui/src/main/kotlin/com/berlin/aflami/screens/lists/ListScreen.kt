@@ -165,8 +165,7 @@ private fun ListsContent(
                         )
                     }
                 }
-
-                SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST, null -> Unit
+                else -> {}
             }
         }
 

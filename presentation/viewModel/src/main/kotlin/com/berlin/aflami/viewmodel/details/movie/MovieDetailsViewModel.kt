@@ -26,7 +26,6 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginUseCase
@@ -137,13 +136,13 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
-    private fun showSnackBar(message: String, isSuccess: Boolean) {
-        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
-        viewModelScope.launch {
-            delay(3000)
-            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
-        }
-    }
+//    private fun showSnackBar(message: String, isSuccess: Boolean) {
+//        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
+//        viewModelScope.launch {
+//            delay(3000)
+//            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
+//        }
+//    }
 
 
     private fun getMovieActors(movieId: Long) {
@@ -415,19 +414,30 @@ class MovieDetailsViewModel @Inject constructor(
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMovieId = null,
+                            snackBar = SnackBarUiState(
+                                isVisible = true,
+                                snackBarStatus = SNACK_BAR_STATUS.RATING_ADDED,
+                                isOperationSucceeded = true
+                            )
                         )
                     }
-                    showSnackBar("Successfully submitted rating.", isSuccess = true)
+                    //showSnackBar("Successfully submitted rating.", isSuccess = true)
                 },
                 onError = { stateError ->
                     updateState {
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMovieId = null,
-                            errorMessage = stateError.message
+                            errorMessage = stateError.message,
+                            snackBar = SnackBarUiState(
+                                isVisible = true,
+                                snackBarStatus = SNACK_BAR_STATUS.RATING_ADDED,
+                                isOperationSucceeded = false
+                            )
+
                         )
                     }
-                    showSnackBar("Failed to submit rating.", isSuccess = false)
+                    //showSnackBar("Failed to submit rating.", isSuccess = false)
                 }
             )
         }

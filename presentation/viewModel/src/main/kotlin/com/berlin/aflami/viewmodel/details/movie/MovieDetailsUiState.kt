@@ -1,8 +1,6 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 import androidx.annotation.StringRes
-import androidx.compose.runtime.Immutable
-import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.common.SnackBarUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListUiState
@@ -28,8 +26,6 @@ data class MovieDetailsUiState(
     val selectedRatingMovieId: Long? = null,
     val selectedAddToListMovieId: Long? = null,
     val selectedFavouriteListId: Int? = null,
-    val snackBarMessage: String? = null,
-    val isSnackBarStatusSuccess: Boolean? = null,
     val addToListDialog: AddToListSheetState = AddToListSheetState(),
     val selectedRatingMediaId: Long? = null,
     val createNewListDialog: CreateNewListUiState = CreateNewListUiState(),

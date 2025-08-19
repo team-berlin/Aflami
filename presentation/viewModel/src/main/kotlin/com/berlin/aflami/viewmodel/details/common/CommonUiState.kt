@@ -36,6 +36,7 @@ enum class SNACK_BAR_STATUS {
     CREATE_NEW_LIST,
     LIST_DELETED,
     LIST_RENAMED,
+    RATING_ADDED,
 }
 
 fun <T> Set<T>.toggle(item: T): Set<T> =
