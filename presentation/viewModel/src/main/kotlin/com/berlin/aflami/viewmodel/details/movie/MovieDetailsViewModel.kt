@@ -13,6 +13,8 @@ import com.berlin.aflami.viewmodel.details.common.NO_GALLERY
 import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
 import com.berlin.aflami.viewmodel.details.common.NO_REVIEWS
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
+import com.berlin.aflami.viewmodel.details.common.SnackBarUiState
 import com.berlin.aflami.viewmodel.details.common.toggle
 import com.berlin.aflami.viewmodel.list.AllFavouriteListsPagingSource
 import com.berlin.aflami.viewmodel.mapper.parseRuntime
@@ -485,7 +487,6 @@ class MovieDetailsViewModel @Inject constructor(
             }
         }
         )
-
     }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {

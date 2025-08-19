@@ -25,7 +25,7 @@ fun WatchHistoryRatingSection(
     ) {
         HistoryInfoCard(
             title = stringResource(R.string.watch_history),
-            image = painterResource(R.drawable.watch_history), // ⏰ (or use painter if using actual image)
+            image = painterResource(R.drawable.watch_history),
             modifier = Modifier.weight(1f)
         ){
             onWatchHistoryClick()
@@ -33,7 +33,7 @@ fun WatchHistoryRatingSection(
         }
         HistoryInfoCard(
             title = stringResource(R.string.my_rating),
-            image = painterResource(R.drawable.my_rating), // ⏰ (or use painter if using actual image)
+            image = painterResource(R.drawable.my_rating),
             modifier = Modifier.weight(1f)
         ){
             onMyRatingClick()

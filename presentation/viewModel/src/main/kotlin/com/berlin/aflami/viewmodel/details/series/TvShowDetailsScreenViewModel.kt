@@ -43,7 +43,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
     private val getTVShowGalleryUseCase: GetTVShowGalleryUseCase,
     private val getSimilarTVShowsUseCase: GetSimilarTVShowsUseCase,
-    private val getLoginStatusUseCase: GetLoginUseCase,
+    private val getIsUserLoggedInUseCase: GetLoginUseCase,
     private val tvShowReviewUseCase: GetTVShowReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
@@ -403,9 +403,9 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     override fun onLoginDialogDismissed() {
         updateState { it.copy(showLoginDialog = false) }
     }
+
     override fun dismissSnackBar() {
-
-
+        updateState { it.copy(snackBar = it.snackBar.copy(isVisible = false)) }
     }
 
     override fun onRateIconClicked(id: Long) {
@@ -457,7 +457,10 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     override fun onCancelRatingClicked() {
         updateState {
-            it.copy()
+            it.copy(
+                showRatingDialog = false,
+                selectedRatingMediaId = null
+            )
         }
     }
 
@@ -550,9 +553,10 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     private fun checkLoginThen(actionIfLoggedIn: () -> Unit) {
         viewModelScope.launch {
-            getLoginStatusUseCase().collect { loggedIn ->
-                if (loggedIn) actionIfLoggedIn.invoke()
-//                updateState { it.copy(isLoggedIn = loggedIn) }
+            getIsUserLoggedInUseCase().collect { isUserloggedIn ->
+                if (isUserloggedIn) actionIfLoggedIn() else updateState { screenState ->
+                    screenState.copy(showLoginDialog = true)
+                }
             }
         }
     }

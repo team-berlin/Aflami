@@ -3,6 +3,7 @@ package com.berlin.aflami.viewmodel.details.movie
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.details.common.SnackBarUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
@@ -34,22 +35,6 @@ data class MovieDetailsUiState(
     val createNewListDialog: CreateNewListUiState = CreateNewListUiState(),
     val snackBar: SnackBarUiState = SnackBarUiState(),
 )
-
-@Immutable
-data class SnackBarUiState(
-    val isVisible: Boolean = false,
-    val isOperationSucceeded: Boolean = false,
-    val errorUiState: ErrorUiState = ErrorUiState(),
-    val snackBarStatus: SNACK_BAR_STATUS? = null,
-)
-
-enum class SNACK_BAR_STATUS {
-    ADD_MOVIE_TO_LIST,
-    CREATE_NEW_LIST,
-    LIST_DELETED,
-    LIST_RENAMED,
-}
-
 
 data class MovieDetailsTabsUiState(
     val tab: MovieDetailsTabs = MovieDetailsTabs.MORE_LIKE_THIS,

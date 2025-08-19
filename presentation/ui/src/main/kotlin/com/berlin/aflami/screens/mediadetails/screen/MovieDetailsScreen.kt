@@ -52,12 +52,12 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.MovieTab
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.base.MovieAlreadyExistInList
 import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
+import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsViewModel
 import com.berlin.aflami.viewmodel.details.movie.MoviesRowSectionUiState
-import com.berlin.aflami.viewmodel.details.movie.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -118,7 +118,7 @@ fun MovieDetailsScreen(
     }
 
     AnimatedVisibility(
-        visible = uiState.snackBarMessage != null,
+        visible = true,
         enter =  EnterTransition.None ,
         exit = ExitTransition.None ,
     ) {
@@ -134,10 +134,10 @@ fun MovieDetailsScreen(
         }
         Box(Modifier.statusBarsPadding()) {
             SnackBar(
-                status = status,
+                status = SnackBarStatus.SUCCESS,
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 text = uiState.snackBarMessage.orEmpty(),
-                iconPainter = icon
+                iconPainter = painterResource(id = R.drawable.success)
             )
         }
     }
