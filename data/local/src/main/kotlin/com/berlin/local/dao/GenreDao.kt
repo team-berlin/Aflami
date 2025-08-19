@@ -9,10 +9,10 @@ import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 
 @Dao
 interface GenreDao {
-    @Query("SELECT * FROM tVShow_genre")
+    @Query("SELECT * FROM TV_SHOW_GENRE")
     suspend fun getCachedTVGenres(): List<TVShowGenreEntity>
 
-    @Query("SELECT * FROM movies_genre")
+    @Query("SELECT * FROM MOVIE_GENRE")
     suspend fun getCachedMovieGenres(): List<MoviesGenreEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -21,9 +21,9 @@ interface GenreDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun cacheMovieGenres(genres: List<MoviesGenreEntity>)
 
-    @Query("DELETE FROM tVShow_genre")
+    @Query("DELETE FROM TV_SHOW_GENRE")
     suspend fun clearCachedTVGenres()
 
-    @Query("DELETE FROM movies_genre")
+    @Query("DELETE FROM MOVIE_GENRE")
     suspend fun clearCachedMovieGenres()
 }

@@ -3,6 +3,8 @@ package com.berlin.remote
 import com.berlin.exception.AlreadyExistsException
 import com.berlin.exception.ApiException
 import com.berlin.exception.NetworkException
+import com.berlin.exception.NotFoundException
+import com.berlin.exception.UnauthorizedException
 import com.berlin.exception.UnknownException
 import okio.IOException
 import retrofit2.Response

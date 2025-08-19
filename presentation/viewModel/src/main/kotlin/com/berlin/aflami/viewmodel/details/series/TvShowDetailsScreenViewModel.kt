@@ -11,6 +11,7 @@ import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
 import com.berlin.aflami.viewmodel.details.common.NO_REVIEWS
 import com.berlin.aflami.viewmodel.details.common.NO_SEASON
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.common.toggle
 import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.mapper.parseRuntime
@@ -23,7 +24,6 @@ import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.TVShow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginUseCase
 import usecase.tvshow.AddContinueWatchingTVShowUseCase
@@ -43,7 +43,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     private val getTVShowCastUseCase: GetTVShowCastUseCase,
     private val getTVShowGalleryUseCase: GetTVShowGalleryUseCase,
     private val getSimilarTVShowsUseCase: GetSimilarTVShowsUseCase,
-    private val getLoginStatusUseCase: GetLoginUseCase,
+    private val getIsUserLoggedInUseCase: GetLoginUseCase,
     private val tvShowReviewUseCase: GetTVShowReviewUseCase,
     private val getSeasonEpisodesUseCase: GetSeasonEpisodesUseCase,
     private val addContinueWatchingTVShowUseCase: AddContinueWatchingTVShowUseCase,
@@ -69,21 +69,24 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     private fun isTVShowHasVideo(tvShowId: Long) {
-        updateState { screenState ->
-            screenState.copy(isScreenLoading = true, errorMessage = null)
-        }
+        updateState { it.copy(isScreenLoading = true, errorMessage = null) }
+
         tryToCall(
             call = {
-                getTVShowVideos(tvShowId).videoUrl
+                getTVShowVideos(tvShowId)?.videoUrl
             },
             onSuccess = { videoUrl ->
-                updateState { screenState ->
-                    screenState.copy(isTVShowHasVideo = true, videoUrl = videoUrl)
+                updateState {
+                    it.copy(
+                        isTVShowHasVideo = videoUrl != null,
+                        videoUrl = videoUrl.orEmpty()
+                    )
                 }
             },
             onError = ::updateScreenStateToError
         )
     }
+
 
     private fun getTVShowDetails(tvShowId: Long) {
         updateState { screenState ->
@@ -341,14 +344,14 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         }
     }
 
-    private fun showSnackBar(message: String, isSuccess: Boolean) {
-        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
-
-        viewModelScope.launch {
-            delay(3000)
-            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
-        }
-    }
+//    private fun showSnackBar(message: String, isSuccess: Boolean) {
+//        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
+//
+//        viewModelScope.launch {
+//            delay(3000)
+//            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
+//        }
+//    }
 
     private fun updateCompanyProductionWithNoDataFound() {
         updateState { screenState ->
@@ -400,9 +403,9 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     override fun onLoginDialogDismissed() {
         updateState { it.copy(showLoginDialog = false) }
     }
+
     override fun dismissSnackBar() {
-
-
+        updateState { it.copy(snackBar = it.snackBar.copy(isVisible = false)) }
     }
 
     override fun onRateIconClicked(id: Long) {
@@ -433,9 +436,14 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMediaId = null,
+                            snackBar = it.snackBar.copy(
+                                isVisible = true,
+                                snackBarStatus = SNACK_BAR_STATUS.RATING_ADDED,
+                                isOperationSucceeded = true
+                            )
                         )
                     }
-                    showSnackBar("Successfully submitted rating.",true)
+                    //showSnackBar("Successfully submitted rating.",true)
                 },
                 onError = {
                         stateError ->
@@ -443,10 +451,15 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMediaId = null,
-                            errorMessage = stateError.message
+                            errorMessage = stateError.message,
+                            snackBar = it.snackBar.copy(
+                                isVisible = true,
+                                snackBarStatus = SNACK_BAR_STATUS.RATING_ADDED,
+                                isOperationSucceeded = false
+                            )
                         )
                     }
-                    showSnackBar("Failed to submit rating.",false)
+                    //showSnackBar("Failed to submit rating.",false)
                 }
             )
         }
@@ -454,7 +467,10 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     override fun onCancelRatingClicked() {
         updateState {
-            it.copy()
+            it.copy(
+                showRatingDialog = false,
+                selectedRatingMediaId = null
+            )
         }
     }
 
@@ -547,9 +563,10 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     private fun checkLoginThen(actionIfLoggedIn: () -> Unit) {
         viewModelScope.launch {
-            getLoginStatusUseCase().collect { loggedIn ->
-                if (loggedIn) actionIfLoggedIn.invoke()
-//                updateState { it.copy(isLoggedIn = loggedIn) }
+            getIsUserLoggedInUseCase().collect { isUserloggedIn ->
+                if (isUserloggedIn) actionIfLoggedIn() else updateState { screenState ->
+                    screenState.copy(showLoginDialog = true)
+                }
             }
         }
     }

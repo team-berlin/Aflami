@@ -22,5 +22,5 @@ data class SeasonDto(
     @SerialName("season_number")
     val seasonNumber: Int? ,
     @SerialName("vote_average")
-    val voteAverage: Double? 
+    val voteAverage: Double?
 )

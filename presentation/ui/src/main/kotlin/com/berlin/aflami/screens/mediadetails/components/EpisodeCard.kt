@@ -49,15 +49,17 @@ fun EpisodeCard(
                 rating = episode.voteAverage.toString()
             )
 
-            EpisodeDetails(
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .weight(1f),
-                episodeNumber = episode.episodeNumber,
-                title = episode.name,
-                time = episode.runtime.toString(),
-                date = episode.airDate
-            )
+            episode.airDate?.let {
+                EpisodeDetails(
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .weight(1f),
+                    episodeNumber = episode.episodeNumber,
+                    title = episode.name,
+                    time = episode.runtime.toString(),
+                    date = it
+                )
+            }
 
             CircularIconButton(
                 painter = painterResource(R.drawable.play),
@@ -143,7 +145,7 @@ private fun EpisodeDetails(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = time,
+                text = "$time m",
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.hint
             )

@@ -1,7 +1,7 @@
 package com.berlin.local.datasource
 
 import com.berlin.local.dao.UserProfileDao
-import com.berlin.repository.datasource.local.UserProfileLocalDataSource
+import com.berlin.repository.datasource.local.datasource.UserProfileLocalDataSource
 import com.berlin.repository.datasource.local.dto.UserProfileEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

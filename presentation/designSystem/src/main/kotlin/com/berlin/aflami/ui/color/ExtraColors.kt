@@ -103,6 +103,9 @@ object ExtraColors {
         listOf(Color(0x3DD95997),Color(0x00D85895)),
 
         )
+    val moodPickerGradient=Brush.verticalGradient(
+        listOf(Color(0x14FFFFFF),Color(0x3DFFFFFF)),
+    )
 
 
 }

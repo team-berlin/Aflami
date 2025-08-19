@@ -13,6 +13,8 @@ import com.berlin.aflami.viewmodel.details.common.NO_GALLERY
 import com.berlin.aflami.viewmodel.details.common.NO_MORE_MEDIA
 import com.berlin.aflami.viewmodel.details.common.NO_REVIEWS
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
+import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
+import com.berlin.aflami.viewmodel.details.common.SnackBarUiState
 import com.berlin.aflami.viewmodel.details.common.toggle
 import com.berlin.aflami.viewmodel.list.AllFavouriteListsPagingSource
 import com.berlin.aflami.viewmodel.mapper.parseRuntime
@@ -24,7 +26,6 @@ import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.toDomain
 import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import usecase.auth.GetLoginUseCase
@@ -80,19 +81,22 @@ class MovieDetailsViewModel @Inject constructor(
         onShowMoreMediaLikeThisClicked(mediaId = movieId)
     }
     private fun isMovieHasVideo(movieId: Long) {
-        updateState { screenState ->
-            screenState.copy(isScreenLoading = true, errorMessage = null)
-        }
+        updateState { it.copy(isScreenLoading = true, errorMessage = null) }
+
         tryToCall(
-            call = {
-                getMovieVideos(movieId).videoUrl
-            }, onSuccess = { videoUrl ->
-                updateState { screenState ->
-                    screenState.copy(isMovieHasVideo = true, videoUrl = videoUrl)
+            call = { getMovieVideos(movieId) },
+            onSuccess = { videoUrl ->
+                updateState {
+                    it.copy(
+                        isMovieHasVideo = videoUrl != null,
+                        videoUrl = videoUrl.orEmpty()
+                    )
                 }
-            }, onError = ::updateScreenStateToError
+            },
+            onError = ::updateScreenStateToError
         )
     }
+
 
     private fun getMovieDetails(movieId: Long) {
         updateState { screenState ->
@@ -132,13 +136,13 @@ class MovieDetailsViewModel @Inject constructor(
         )
     }
 
-    private fun showSnackBar(message: String, isSuccess: Boolean) {
-        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
-        viewModelScope.launch {
-            delay(3000)
-            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
-        }
-    }
+//    private fun showSnackBar(message: String, isSuccess: Boolean) {
+//        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
+//        viewModelScope.launch {
+//            delay(3000)
+//            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
+//        }
+//    }
 
 
     private fun getMovieActors(movieId: Long) {
@@ -410,19 +414,30 @@ class MovieDetailsViewModel @Inject constructor(
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMovieId = null,
+                            snackBar = SnackBarUiState(
+                                isVisible = true,
+                                snackBarStatus = SNACK_BAR_STATUS.RATING_ADDED,
+                                isOperationSucceeded = true
+                            )
                         )
                     }
-                    showSnackBar("Successfully submitted rating.", isSuccess = true)
+                    //showSnackBar("Successfully submitted rating.", isSuccess = true)
                 },
                 onError = { stateError ->
                     updateState {
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMovieId = null,
-                            errorMessage = stateError.message
+                            errorMessage = stateError.message,
+                            snackBar = SnackBarUiState(
+                                isVisible = true,
+                                snackBarStatus = SNACK_BAR_STATUS.RATING_ADDED,
+                                isOperationSucceeded = false
+                            )
+
                         )
                     }
-                    showSnackBar("Failed to submit rating.", isSuccess = false)
+                    //showSnackBar("Failed to submit rating.", isSuccess = false)
                 }
             )
         }
@@ -482,7 +497,6 @@ class MovieDetailsViewModel @Inject constructor(
             }
         }
         )
-
     }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {

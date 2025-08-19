@@ -10,14 +10,22 @@ android {
 }
 
 dependencies {
-    implementation(platform(libs.androidx.compose.bom))
+    // Core
     implementation(libs.androidx.core.ktx)
-    implementation(libs.bundles.androidxUi)
-    debugImplementation(libs.bundles.composeUiDebug)
-    implementation(libs.navigation.compose)
-    implementation(libs.bundles.coil)
-    implementation(libs.androidx.material3)
     implementation(libs.androidx.core.splashscreen)
 
+    // UI / Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.androidxUi)
+    implementation(libs.androidx.material3)
+    implementation(libs.navigation.compose)
+
+    // Images
+    implementation(libs.bundles.coil)
+
+    // Debug
+    debugImplementation(libs.bundles.composeUiDebug)
+
+    // Project Modules
     implementation(project(":presentation:safeImageViewer"))
 }

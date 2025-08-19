@@ -57,6 +57,12 @@ fun FilterDialog(
     getIcon: (Int) -> Int,
     getGenreName: (Int) -> Int
 ) {
+    val isApplyEnabled = state.selectedRating > 0f || state.genreUiStates.any { it.isSelected&&it.name!="All"}
+
+    val containerColor=if(isApplyEnabled)Theme.color.primary else Theme.color.disable
+    val gradientColor=if(isApplyEnabled)Theme.color.primaryButton else Theme.color.disable
+    val textColor=if(isApplyEnabled)Theme.color.textColors.onPrimary else Theme.color.stroke
+
     Dialog(
         onDismissRequest = filterListener::onCancelClicked,
         properties = DialogProperties(
@@ -155,17 +161,17 @@ fun FilterDialog(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     PrimaryButton(
-                        onClick = { filterListener.onApplyButtonClicked() },
+                        onClick ={if(isApplyEnabled) { filterListener.onApplyButtonClicked() }},
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
-                        containerColor = Theme.color.primary,
-                        gradientColor = Theme.color.primaryButton
+                        containerColor = containerColor,
+                        gradientColor = gradientColor
                     ) {
                         Text(
                             stringResource(com.berlin.ui.R.string.apply),
                             style = Theme.textStyle.label.large,
-                            color = Theme.color.textColors.onPrimary
+                            color = textColor
                         )
                     }
                     PrimaryButton(

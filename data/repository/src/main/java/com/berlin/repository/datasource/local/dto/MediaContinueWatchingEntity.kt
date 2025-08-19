@@ -2,8 +2,10 @@ package com.berlin.repository.datasource.local.dto
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.berlin.repository.util.Constants.MOVIE_CONTINUE_WATCHING_TABLE
+import com.berlin.repository.util.Constants.TVSHOW_CONTINUE_WATCHING_TABLE
 
-@Entity(tableName = "Movie_Continue_Watching")
+@Entity(tableName = MOVIE_CONTINUE_WATCHING_TABLE)
 data class RecentlyWatchedMovieEntity(
     @PrimaryKey
     val id: Long,
@@ -22,7 +24,7 @@ data class RecentlyWatchedMovieEntity(
     val reviews: List<String>,
 )
 
-@Entity(tableName = "TVShow_Continue_Watching")
+@Entity(tableName = TVSHOW_CONTINUE_WATCHING_TABLE)
 data class RecentlyWatchedTvShowEntity(
     @PrimaryKey
     val id: Long,

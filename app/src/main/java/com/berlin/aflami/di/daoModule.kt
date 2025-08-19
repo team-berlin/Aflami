@@ -2,7 +2,7 @@ package com.berlin.aflami.di
 
 import com.berlin.local.AflamiDatabase
 import com.berlin.local.dao.AppEntryDao
-import com.berlin.local.dao.CategoriesPreferencesDao
+import com.berlin.local.dao.GenrePreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
 import com.berlin.local.dao.HomeMovieDao
@@ -35,7 +35,7 @@ object DaoModule {
 
     @Provides
     @Singleton
-    fun provideCategoriesPreferencesDao(db: AflamiDatabase): CategoriesPreferencesDao {
+    fun provideCategoriesPreferencesDao(db: AflamiDatabase): GenrePreferencesDao {
         return db.categoriesPreferencesDao()
     }
 

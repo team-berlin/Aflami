@@ -14,27 +14,32 @@ android {
 }
 
 dependencies {
+    // Core
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
+
+    // UI / Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.androidxUi)
-    implementation(libs.bundles.coil)
     implementation(libs.bundles.composeUiDebug)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
+    implementation(libs.bundles.coil)
+
+    // Paging
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
-    implementation(libs.androidx.appcompat)
+
+    // Serialization
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.androidx.core.splashscreen)
+
+    // Dependency Injection
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.android.compiler)
+
+    // Project Modules
     implementation(project(":presentation:designSystem"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:viewModel"))
-
-
-    ksp(libs.hilt.android.compiler)
-
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-
-
 }

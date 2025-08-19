@@ -1,4 +1,4 @@
-package com.berlin.aflami
+package com.berlin.aflami.workers
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker

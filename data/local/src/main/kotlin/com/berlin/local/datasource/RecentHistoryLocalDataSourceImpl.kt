@@ -1,8 +1,8 @@
 package com.berlin.local.datasource
 
 import com.berlin.local.dao.RecentHistoryDao
-import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
-import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.datasource.RecentHistoryLocalDataSource
+import com.berlin.repository.datasource.local.dto.RecentSearchHistoryEntity
 import javax.inject.Inject
 
 class RecentHistoryLocalDataSourceImpl @Inject constructor
@@ -12,7 +12,7 @@ class RecentHistoryLocalDataSourceImpl @Inject constructor
        return recentHistoryDao.getRecentSearchQueries()
     }
 
-    override suspend fun insertQueryOnly(searchingEntity: SearchingEntity) {
+    override suspend fun insertQueryOnly(searchingEntity: RecentSearchHistoryEntity) {
         recentHistoryDao.insertQueryOnly(searchingEntity)
     }
 

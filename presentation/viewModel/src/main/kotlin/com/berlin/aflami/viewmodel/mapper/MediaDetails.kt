@@ -8,6 +8,9 @@ import com.berlin.entity.Actor
 import com.berlin.entity.CompanyProduction
 import com.berlin.entity.Episode
 import com.berlin.entity.Review
+import kotlinx.datetime.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 fun CompanyProduction.toCompanyProductionUiState() = CompanyProductionUiState(
     id = id.toString(),
@@ -16,10 +19,23 @@ fun CompanyProduction.toCompanyProductionUiState() = CompanyProductionUiState(
     country = originCountry
 )
 
+
+
 fun Episode.toEpisodeUiState(): EpisodeUiState {
+    val formattedDate = try {
+        this.airDate.let {
+            val parsedDate = LocalDate.parse(it)
+            val formatter = DateTimeFormatter.ofPattern("yyyy MMM dd", Locale.US)
+            java.time.LocalDate.of(parsedDate.year, parsedDate.monthNumber, parsedDate.dayOfMonth)
+                .format(formatter)
+        }
+    } catch (e: Exception) {
+        null
+    }
+
     return EpisodeUiState(
         id = this.episodeId,
-        airDate = this.airDate,
+        airDate = formattedDate,
         episodeNumber = this.episodeNumber,
         episodeType = this.episodeType,
         name = this.name,

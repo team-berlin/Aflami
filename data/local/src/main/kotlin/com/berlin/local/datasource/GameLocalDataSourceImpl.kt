@@ -1,7 +1,7 @@
 package com.berlin.local.datasource
 
 import com.berlin.local.dao.UserPointsDao
-import com.berlin.repository.datasource.local.GameLocalDataSource
+import com.berlin.repository.datasource.local.datasource.GameLocalDataSource
 import com.berlin.repository.datasource.local.dto.UserPointsEntity
 import javax.inject.Inject
 

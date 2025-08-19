@@ -2,9 +2,9 @@ package com.berlin.repository.mapper
 
 import com.berlin.entity.Genre
 import com.berlin.entity.Movie
-import com.berlin.repository.datasource.local.dto.MovieHomeEntity
+import com.berlin.repository.datasource.local.dto.HomeMovieEntity
 
-fun MovieHomeEntity.toDomain(): Movie {
+fun HomeMovieEntity.toDomain(): Movie {
     return Movie(
         id = id,
         title = title,

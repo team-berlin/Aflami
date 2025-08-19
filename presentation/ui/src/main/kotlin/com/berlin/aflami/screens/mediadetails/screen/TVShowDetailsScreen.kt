@@ -4,8 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,12 +18,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -49,6 +49,7 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOve
 import com.berlin.aflami.screens.mediadetails.components.screensections.TVShowTabSection
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
+import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsTabs
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsUiState
 import com.berlin.aflami.viewmodel.details.series.TvShowDetailsScreenEffect
@@ -125,30 +126,30 @@ fun TvShowDetailsScreen(
         )
     }
 
-    AnimatedVisibility(
-        visible = uiState.snackBarMessage != null,
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-    ) {
-        val status =
-            when(uiState.isSnackBarStatusSuccess){
-                true -> SnackBarStatus.SUCCESS
-                false -> SnackBarStatus.ERROR
-                else -> SnackBarStatus.ERROR
-            }
-        val icon = when (status) {
-            SnackBarStatus.SUCCESS -> painterResource(id = R.drawable.success)
-            SnackBarStatus.ERROR -> painterResource(id = R.drawable.error)
-        }
-        Box(Modifier.statusBarsPadding()) {
-            SnackBar(
-                status = status,
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                text = uiState.snackBarMessage.orEmpty(),
-                iconPainter = icon
-            )
-        }
-    }
+//    AnimatedVisibility(
+//        visible = uiState.snackBarMessage != null,
+//        enter =  EnterTransition.None ,
+//        exit = ExitTransition.None ,
+//    ) {
+//        val status =
+//            when(uiState.isSnackBarStatusSuccess){
+//                true -> SnackBarStatus.SUCCESS
+//                false -> SnackBarStatus.ERROR
+//                else -> SnackBarStatus.ERROR
+//            }
+//        val icon = when (status) {
+//            SnackBarStatus.SUCCESS -> painterResource(id = R.drawable.success)
+//            SnackBarStatus.ERROR -> painterResource(id = R.drawable.error)
+//        }
+//        Box(Modifier.statusBarsPadding()) {
+//            SnackBar(
+//                status = status,
+//                modifier = Modifier.fillMaxWidth().padding(16.dp),
+//                text = uiState.snackBarMessage.orEmpty(),
+//                iconPainter = icon
+//            )
+//        }
+//    }
 
     AnimatedVisibility(
         enter =  EnterTransition.None ,
@@ -222,7 +223,6 @@ fun TvShowDetailsContent(
     onToggleDescriptionExpand: () -> Unit,
     movieDetailsTabs: TVShowDetailsTabs,
     onChipClick: (TVShowDetailsTabs) -> Unit,
-//
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }
@@ -246,7 +246,7 @@ fun TvShowDetailsContent(
             item {
                 TVShowBackdropPager(
                     state = state,
-                    onPlayClick = { listener.onPlayClicked(state.videoUrl) })
+                    onPlayClick = { state.videoUrl?.let { listener.onPlayClicked(it) } })
             }
 
             item {
@@ -322,6 +322,37 @@ fun TvShowDetailsContent(
             onDismiss = { listener.onCancelRatingClicked() },
             onRate = { rating -> listener.onSubmitRateClicked(rating) }
         )
+    }
+
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 40.dp)
+            .zIndex(10f)
+    ) {
+        when (state.snackBar.snackBarStatus) {
+
+            SNACK_BAR_STATUS.RATING_ADDED -> if (state.snackBar.isOperationSucceeded) {
+                SnackBar(
+                    isVisible = state.snackBar.isVisible,
+                    status = SnackBarStatus.SUCCESS,
+                    text = "Successfully submitted rating.",
+                    iconPainter = painterResource(id = R.drawable.success),
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    onDismiss = { listener.dismissSnackBar() })
+            } else {
+                SnackBar(
+                    isVisible = state.snackBar.isVisible,
+                    status = SnackBarStatus.ERROR,
+                    text = "Failed to submit rating.",
+                    iconPainter = painterResource(id = R.drawable.error),
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    onDismiss = {
+                        listener.dismissSnackBar()
+                    })
+            }
+            else -> {}
+        }
     }
 
 }
