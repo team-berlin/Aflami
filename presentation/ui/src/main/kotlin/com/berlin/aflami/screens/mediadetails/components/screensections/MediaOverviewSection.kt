@@ -58,8 +58,7 @@ fun MediaOverviewSection(
                 color = Theme.color.textColors.hint
             )
 
-            duration.takeIf { it.isNotEmpty() }?.let {
-
+        duration.takeIf { it?.isNotEmpty() == true }?.let {
                 CircularDot()
                 Text(it, style = Theme.textStyle.label.small, color = Theme.color.textColors.hint)
             }
