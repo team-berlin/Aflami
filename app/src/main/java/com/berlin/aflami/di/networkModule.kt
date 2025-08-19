@@ -1,7 +1,7 @@
 package com.berlin.aflami.di
 
 import com.berlin.aflami.BuildConfig
-import com.berlin.aflami.util.LanguageInterceptor
+import com.berlin.aflami.util.interceptors.LanguageInterceptor
 import com.berlin.aflami.util.interceptors.ApiKeyInterceptor
 import com.berlin.remote.network.ApiService
 import com.berlin.remote.network.AuthenticationApiService
