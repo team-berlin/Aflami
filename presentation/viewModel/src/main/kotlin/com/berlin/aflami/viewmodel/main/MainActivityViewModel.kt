@@ -46,19 +46,5 @@ class MainActivityViewModel @Inject constructor(
                 }
             }
         }
-        collectTheme()
     }
-    private fun collectTheme() {
-        viewModelScope.launch {
-            getThemeUseCase().collect { collectedTheme ->
-                _state.update {
-                    it.copy(
-                        isDarkThemeEnabled = collectedTheme == AppTheme.DARK.name
-                    )
-                }
-            }
-        }
-    }
-
-
 }
