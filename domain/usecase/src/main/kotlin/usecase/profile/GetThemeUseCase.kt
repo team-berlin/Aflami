@@ -7,5 +7,5 @@ import javax.inject.Inject
 class GetThemeUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
-    suspend operator fun invoke(): Flow<String> = settingsRepository.getTheme()
+    operator fun invoke(): Flow<String> = settingsRepository.getTheme()
 }

@@ -10,7 +10,7 @@ import javax.inject.Inject
 class SettingsRepositoryImpl @Inject constructor(
     private val settingsDataStore: SettingsLocalDataSource
 ) : SettingsRepository {
-    override suspend fun getTheme(): Flow<String> {
+    override fun getTheme(): Flow<String> {
         return settingsDataStore.getTheme()
     }
 
@@ -18,7 +18,7 @@ class SettingsRepositoryImpl @Inject constructor(
         settingsDataStore.setTheme(theme.name)
     }
 
-    override suspend fun getLanguage(): Flow<String> {
+    override fun getLanguage(): Flow<String> {
         return settingsDataStore.getLanguage()
     }
 
@@ -29,7 +29,7 @@ class SettingsRepositoryImpl @Inject constructor(
         settingsDataStore.setContentRestriction(contentRestrictionLevel)
     }
 
-    override suspend fun getContentRestriction(): Flow<String?> {
+    override fun getContentRestriction(): Flow<String?> {
         return settingsDataStore.getContentRestriction()
     }
 

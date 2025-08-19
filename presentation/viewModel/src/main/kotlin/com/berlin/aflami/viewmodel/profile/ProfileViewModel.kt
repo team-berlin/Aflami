@@ -52,7 +52,6 @@ class ProfileViewModel @Inject constructor(
                     tempSelectedLanguage = it.languageOption.selectedLanguage,
                     isEnglishEnabled = it.languageOption.selectedLanguage == AppLanguage.EN.name,
                 ),
-
                 themeOption = ThemeOption(
                     tempSelectedTheme = it.themeOption.selectedTheme,
                     isDarkThemeEnabled = it.themeOption.selectedTheme == AppTheme.DARK.name,
@@ -64,7 +63,7 @@ class ProfileViewModel @Inject constructor(
                     isOffSelected = it.contentRestrictionOption.selectedRestriction == ContentRestriction.OFF.name,
                 ),
 
-            )
+                )
         }
     }
 
@@ -139,7 +138,7 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 languageOption = LanguageOption(
                     isEnglishEnabled = false,
-                tempSelectedLanguage = AppLanguage.AR.name,
+                    tempSelectedLanguage = AppLanguage.AR.name,
                 )
             )
         }
@@ -150,7 +149,7 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 languageOption = LanguageOption(
                     isEnglishEnabled = true,
-                tempSelectedLanguage = AppLanguage.EN.name,
+                    tempSelectedLanguage = AppLanguage.EN.name,
                 )
             )
         }
@@ -172,7 +171,6 @@ class ProfileViewModel @Inject constructor(
             sendNewEffect(ProfileScreenEffect.RefreshActivity)
         }
     }
-
 
     override fun onChangePasswordClicked() =
         sendNewEffect(ProfileScreenEffect.NavigateToChangePasswordScreen)
@@ -203,7 +201,6 @@ class ProfileViewModel @Inject constructor(
                     isOffSelected = false,
                     tempSelectedRestriction = ContentRestriction.STRICT.name
                 ),
-
             )
         }
     }
@@ -212,10 +209,10 @@ class ProfileViewModel @Inject constructor(
         updateState {
             it.copy(
                 contentRestrictionOption = ContentRestrictionOption(
-                isStrictSelected = false,
-                isModeratedSelected = true,
-                isOffSelected = false,
-                tempSelectedRestriction = ContentRestriction.MODERATE.name
+                    isStrictSelected = false,
+                    isModeratedSelected = true,
+                    isOffSelected = false,
+                    tempSelectedRestriction = ContentRestriction.MODERATE.name
                 )
             )
         }
@@ -225,10 +222,10 @@ class ProfileViewModel @Inject constructor(
         updateState {
             it.copy(
                 contentRestrictionOption = ContentRestrictionOption(
-                isStrictSelected = false,
-                isModeratedSelected = false,
-                isOffSelected = true,
-                tempSelectedRestriction = ContentRestriction.OFF.name
+                    isStrictSelected = false,
+                    isModeratedSelected = false,
+                    isOffSelected = true,
+                    tempSelectedRestriction = ContentRestriction.OFF.name
                 )
             )
         }
@@ -252,6 +249,7 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
+
     private fun getContentRestrictionPercentage(restriction: String): Int {
         return when (restriction.uppercase()) {
             "STRICT" -> 100
@@ -263,14 +261,12 @@ class ProfileViewModel @Inject constructor(
 
     private fun collectTheme() {
         viewModelScope.launch {
-            getThemeUseCase().collect { theme ->
-                val appTheme = theme
-
+            getThemeUseCase().collect { collectedTheme ->
                 updateState {
                     it.copy(
                         themeOption = ThemeOption(
-                            selectedTheme = appTheme,
-                            isDarkThemeEnabled = theme == AppTheme.DARK.name
+                            selectedTheme = collectedTheme,
+                            isDarkThemeEnabled = collectedTheme == AppTheme.DARK.name
                         ),
 
                         )
@@ -281,14 +277,12 @@ class ProfileViewModel @Inject constructor(
 
     private fun collectLanguage() {
         viewModelScope.launch {
-            getLanguageUseCase().collect { currentLanguage ->
-                val appLanguage =
-                    currentLanguage
+            getLanguageUseCase().collect { collectedLanguage ->
                 updateState {
                     it.copy(
                         languageOption = LanguageOption(
-                        selectedLanguage = appLanguage,
-                        isEnglishEnabled = appLanguage == AppLanguage.EN.name,
+                            selectedLanguage = collectedLanguage,
+                            isEnglishEnabled = collectedLanguage == AppLanguage.EN.name,
                         )
                     )
                 }
@@ -305,12 +299,12 @@ class ProfileViewModel @Inject constructor(
                 updateState {
                     it.copy(
                         contentRestrictionOption = ContentRestrictionOption(
-                        selectedRestriction = appContentRestriction,
-                        isStrictSelected = contentRestriction == ContentRestriction.STRICT.name,
-                        isModeratedSelected = contentRestriction == ContentRestriction.MODERATE.name,
-                        isOffSelected = contentRestriction == ContentRestriction.OFF.name,
-                        contentRestrictionPercentage = percentage
-                    )
+                            selectedRestriction = appContentRestriction,
+                            isStrictSelected = contentRestriction == ContentRestriction.STRICT.name,
+                            isModeratedSelected = contentRestriction == ContentRestriction.MODERATE.name,
+                            isOffSelected = contentRestriction == ContentRestriction.OFF.name,
+                            contentRestrictionPercentage = percentage
+                        )
                     )
                 }
 
