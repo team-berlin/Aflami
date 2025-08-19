@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.quizgame
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -134,9 +135,20 @@ class QuizGameViewModel @Inject constructor(
     }
 
     private fun createReleaseQuestions(mediaList: List<MediaUiState>) = mediaList.map { media ->
-        val options = createMediaOptions(mediaList, media.id) { it.releaseYear } + media.releaseYear
-        Question(media.title, options.shuffled(), media.releaseYear)
+        val correctYear = media.releaseYear.take(4)
+        val wrongYears = mediaList
+            .map { it.releaseYear.take(4) }
+            .filter { it != correctYear }
+            .distinct()
+            .take(3)
+
+        val options = (wrongYears + correctYear).shuffled()
+        options.also {   Log.e("nour",it.toString())}
+        Log.e("nour2",correctYear)
+
+        Question(media.title, options, correctYear)
     }
+
 
     private fun createGenreQuestions(genreList: List<GenreUiState>, mediaList: List<MediaUiState>) =
         mediaList.map { media ->

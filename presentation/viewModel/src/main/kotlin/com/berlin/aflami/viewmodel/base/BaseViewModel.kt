@@ -44,6 +44,7 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
             } catch (e: UnauthorizedException) {
                 onError(InvalidationErrorState(e.message.toString()))
             } catch (e: NetworkException) {
+                Log.e("Error",e.toString())
                 onError(NetworkErrorState(e.message.toString()))
             } catch (e: NotFoundException) {
                 onError(ErrorUiState())
@@ -52,6 +53,7 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
             } catch (e: AlreadyExistsException) {
                 onError(MovieAlreadyExistInList(e.message.toString()))
             } catch (e: Exception) {
+                Log.e("Error",e.toString())
                 onError(ErrorUiState(e.message.toString()))
             }
         }

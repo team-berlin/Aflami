@@ -1,6 +1,5 @@
-package usecase.mediadetails
+package usecase.movie
 
-import com.berlin.entity.Video
 import repository.MovieDetailsRepository
 import javax.inject.Inject
 
