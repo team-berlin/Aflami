@@ -1,4 +1,4 @@
-package com.berlin.repository.datasource.local
+package com.berlin.repository.datasource.local.datasource
 
 interface GameLocalDataSource {
     suspend fun getPoints(userID: Int): Int

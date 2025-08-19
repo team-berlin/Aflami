@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import com.berlin.local.utils.DataStoreKeys
 import com.berlin.local.utils.EncryptionUtils
-import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
+import com.berlin.repository.datasource.local.datasource.AuthenticationLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged

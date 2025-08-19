@@ -1,18 +1,17 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.Movie
-import com.berlin.repository.datasource.local.dto.MovieHomeEntity
-import com.berlin.repository.datasource.local.dto.SectionHome
+import com.berlin.repository.datasource.local.dto.HomeMovieEntity
+import com.berlin.repository.datasource.local.dto.HomeSection
 
-fun Movie.toUpComingMovieEntity(genreId: Long?): MovieHomeEntity {
-    return MovieHomeEntity(
+fun Movie.toUpComingMovieEntity(genreId: Long?): HomeMovieEntity {
+    return HomeMovieEntity(
         id = id,
         title = title,
         rating = rating.toString(),
         releaseYear = releaseDate,
         genre = listOf(genreId?.toInt()?:-1),
         poster = posterURL,
-        addedAt = System.currentTimeMillis(),
-        sectionHome = SectionHome.UPCOMING
+        homeSection = HomeSection.UPCOMING
     )
 }

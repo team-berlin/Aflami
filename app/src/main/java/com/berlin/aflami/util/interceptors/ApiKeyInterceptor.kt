@@ -1,4 +1,4 @@
-package com.berlin.aflami.util
+package com.berlin.aflami.util.interceptors
 
 import com.berlin.aflami.BuildConfig
 import okhttp3.Interceptor
@@ -8,7 +8,7 @@ class ApiKeyInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
         val url = original.url.newBuilder()
-            .addQueryParameter("api_key", BuildConfig.API_KEY)
+            .addQueryParameter(API_KEY, BuildConfig.API_KEY)
             .build()
 
         val request = original.newBuilder().url(url).build()

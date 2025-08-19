@@ -29,17 +29,19 @@ kover {
     }
 }
 dependencies {
+    // Data
     implementation(libs.bundles.room)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlin.datex)
-    testImplementation(libs.bundles.test)
-    implementation(libs.javax.inject)
 
-    implementation ("androidx.work:work-runtime-ktx:2.10.3")
-    implementation ("androidx.hilt:hilt-work:1.2.0")
+    // Dependency Injection
+    implementation(libs.javax.inject)
+    implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
 
-    implementation(libs.hilt.android)
+    // Project Modules
     implementation(project(":domain:usecase"))
-    implementation(libs.firebase.ml.modeldownloader)
+
+    // Testing
+    testImplementation(libs.bundles.test)
 }

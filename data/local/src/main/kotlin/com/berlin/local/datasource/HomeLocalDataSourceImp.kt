@@ -2,10 +2,10 @@ package com.berlin.local.datasource
 
 import com.berlin.local.dao.HomeMovieDao
 import com.berlin.local.dao.HomeTVShowDao
-import com.berlin.repository.datasource.local.HomeLocalDataSource
-import com.berlin.repository.datasource.local.dto.MovieHomeEntity
-import com.berlin.repository.datasource.local.dto.SectionHome
-import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
+import com.berlin.repository.datasource.local.datasource.HomeLocalDataSource
+import com.berlin.repository.datasource.local.dto.HomeMovieEntity
+import com.berlin.repository.datasource.local.dto.HomeSection
+import com.berlin.repository.datasource.local.dto.HomeTVShowEntity
 import javax.inject.Inject
 
 
@@ -14,34 +14,34 @@ class HomeLocalDataSourceImp @Inject constructor(
     private val homeTVShowDao: HomeTVShowDao
 ) : HomeLocalDataSource {
 
-    override suspend fun getMoviesBySection(sectionHome: SectionHome): List<MovieHomeEntity> {
-        return homeMovieDao.getMoviesBySection(sectionHome)
+    override suspend fun getMoviesBySection(homeSection: HomeSection): List<HomeMovieEntity> {
+        return homeMovieDao.getMoviesBySection(homeSection)
     }
 
     override suspend fun getUpcomingMoviesByGenre(
-        sectionHome: SectionHome,
+        homeSection: HomeSection,
         genreId: Long?
-    ): List<MovieHomeEntity> {
-       return homeMovieDao.getUpcomingMoviesByGenre(sectionHome,genreId)
+    ): List<HomeMovieEntity> {
+       return homeMovieDao.getUpcomingMoviesByGenre(homeSection,genreId)
     }
 
-    override suspend fun addMovies(movies: List<MovieHomeEntity>) {
+    override suspend fun addMovies(movies: List<HomeMovieEntity>) {
         homeMovieDao.insertMovies(movies)
     }
 
-    override suspend fun  clearHomeScreenMovies(sectionHome: SectionHome) {
-        homeMovieDao.clearHomeScreenMovies(sectionHome)
+    override suspend fun  clearHomeScreenMovies(homeSection: HomeSection) {
+        homeMovieDao.clearHomeScreenMovies(homeSection)
     }
 
-    override suspend fun getTVShowsBySection(sectionHome: SectionHome): List<TVShowHomeEntity> {
-        return homeTVShowDao.getTVShowsBySection(sectionHome)
+    override suspend fun getTVShowsBySection(homeSection: HomeSection): List<HomeTVShowEntity> {
+        return homeTVShowDao.getTVShowsBySection(homeSection)
     }
 
-    override suspend fun addTVShows(tvShows: List<TVShowHomeEntity>) {
+    override suspend fun addTVShows(tvShows: List<HomeTVShowEntity>) {
         homeTVShowDao.insertTVShows(tvShows)
     }
 
-    override suspend fun clearHomeScreenTVShows(sectionHome: SectionHome) {
-        homeTVShowDao.clearHomeScreenTVShows(sectionHome)
+    override suspend fun clearHomeScreenTVShows(homeSection: HomeSection) {
+        homeTVShowDao.clearHomeScreenTVShows(homeSection)
     }
 }

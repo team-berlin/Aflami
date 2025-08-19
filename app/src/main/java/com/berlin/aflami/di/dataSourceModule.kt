@@ -9,21 +9,19 @@ import com.berlin.local.datasource.GenreLocalDataSourceImpl
 import com.berlin.local.datasource.HomeLocalDataSourceImp
 import com.berlin.local.datasource.RecentHistoryLocalDataSourceImpl
 import com.berlin.local.datasource.RecentlyWatchedLocalDataSourceImpl
-import com.berlin.local.datasource.SearchLocalDataSourceImpl
 import com.berlin.local.datasource.UserProfileLocalDataSourceImp
 import com.berlin.remote.AuthenticationRemoteDataSourceImpl
 import com.berlin.remote.RetrofitRemoteDataSource
 import com.berlin.remote.UserRemoteDataSourceImpl
-import com.berlin.repository.datasource.local.AppEntryLocalDataSource
-import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
-import com.berlin.repository.datasource.local.CategoriesPreferencesDataSource
-import com.berlin.repository.datasource.local.GameLocalDataSource
-import com.berlin.repository.datasource.local.GenreLocalDataSource
-import com.berlin.repository.datasource.local.HomeLocalDataSource
-import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
-import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
-import com.berlin.repository.datasource.local.SearchLocalDataSource
-import com.berlin.repository.datasource.local.UserProfileLocalDataSource
+import com.berlin.repository.datasource.local.datasource.AppEntryLocalDataSource
+import com.berlin.repository.datasource.local.datasource.AuthenticationLocalDataSource
+import com.berlin.repository.datasource.local.datasource.CategoriesPreferencesDataSource
+import com.berlin.repository.datasource.local.datasource.GameLocalDataSource
+import com.berlin.repository.datasource.local.datasource.GenreLocalDataSource
+import com.berlin.repository.datasource.local.datasource.HomeLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentHistoryLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.datasource.UserProfileLocalDataSource
 import com.berlin.repository.datasource.local.dataStore.SettingsLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
@@ -38,11 +36,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class DataSourceModule {
 
-    @Binds
-    @Singleton
-    abstract fun bindSearchLocalDataSource(
-        impl: SearchLocalDataSourceImpl,
-    ): SearchLocalDataSource
 
     @Binds
     @Singleton

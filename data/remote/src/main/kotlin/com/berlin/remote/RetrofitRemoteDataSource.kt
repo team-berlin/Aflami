@@ -1,8 +1,8 @@
 package com.berlin.remote
 
 import com.berlin.remote.network.ApiService
-import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
-import com.berlin.repository.datasource.local.UserProfileLocalDataSource
+import com.berlin.repository.datasource.local.datasource.AuthenticationLocalDataSource
+import com.berlin.repository.datasource.local.datasource.UserProfileLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.datasource.remote.dto.FavouriteListDto
 import com.berlin.repository.datasource.remote.dto.FavouriteListItem

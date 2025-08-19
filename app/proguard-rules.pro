@@ -1,23 +1,3 @@
-# ======== General Android/Kotlin ========
-#-keep class kotlinx.coroutines.** { *; }
-#-dontwarn kotlinx.coroutines.**
-#-keepclassmembers class kotlin.Metadata { *; }
-#-keepclassmembers class **$WhenMappings { *; }
-#-keepclassmembers class kotlin.coroutines.** { *; }
-#-dontwarn kotlin.Unit
-#-dontwarn kotlin.jvm.internal.**
-
-
-# Keep enums & annotations
-#-keepclassmembers enum * { *; }
-#-keepclassmembers class * {
-#    @androidx.annotation.Keep *;
-#}
-
-# Keep MainActivity & Application
-#-keep class * extends android.app.Application { *; }
-#-keep class * extends android.app.Activity { *; }
-
 # ======== Hilt DI ========
 # Core Hilt
 -keep class dagger.hilt.** { *; }
@@ -36,63 +16,6 @@
 -keep class * {
     @dagger.hilt.android.lifecycle.HiltViewModel *;
 }
-#-keep class * extends androidx.lifecycle.ViewModel
-
-# Required for dagger
-#-dontwarn javax.inject.**
-
-# ======== Retrofit ========
-#-keep class retrofit2.** { *; }
-#-dontwarn retrofit2.**
-#-keep interface retrofit2.Call
-
-
-# Retrofit Models (with Serialization)
-#-keepclassmembers class * {
-#    @retrofit2.http.* <methods>;
-#}
-
-# ======== Kotlin Serialization ========
-#-keep class kotlinx.serialization.** { *; }
-#-dontwarn kotlinx.serialization.**
-
-# Required for default enum serialization
-#-keep @kotlinx.serialization.Serializable class ** {
-#    *;
-#}
-#-keepclasseswithmembers class ** {
-#    @kotlinx.serialization.SerialName <fields>;
-#}
-#-keepclassmembers class ** {
-#    @kotlinx.serialization.SerialName <fields>;
-#}
-
-# If you're using polymorphic serialization:
-#-keepclassmembers class * {
-#    @kotlinx.serialization.Serializable *;
-#}
-
-# ======== Room ========
-#-keep class androidx.room.** { *; }
-#-dontwarn androidx.room.**
-
-# Keep DAOs and Entities
-#-keep @androidx.room.Dao class * { *; }
-#-keep @androidx.room.Database class * { *; }
-#-keep @androidx.room.Entity class * { *; }
-#-keep @androidx.room.Relation class * { *; }
-
-# ======== Coil (image loading) ========
-#-keep class coil.** { *; }
-#-dontwarn coil.**
-
-# ======== Jetpack Compose (minimal required) ========
-#-keep class androidx.compose.** { *; }
-#-dontwarn androidx.compose.**
-
-# ======== Firebase ========
-#-keep class com.google.firebase.** { *; }
-#-dontwarn com.google.firebase.**
 
 # ======== Prevent R8 from removing Keep-annotated things ========
 #-keepattributes *Annotation*, InnerClasses, EnclosingMethod, Signature, Exceptions, LineNumberTable, LocalVariableTable, LocalVariableTypeTable, SourceFile, RuntimeVisibleAnnotations, RuntimeInvisibleAnnotations, RuntimeVisibleParameterAnnotations, RuntimeInvisibleParameterAnnotations, AnnotationDefault

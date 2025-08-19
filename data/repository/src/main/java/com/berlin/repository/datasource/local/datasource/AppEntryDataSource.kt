@@ -1,4 +1,4 @@
-package com.berlin.repository.datasource.local
+package com.berlin.repository.datasource.local.datasource
 
 import com.berlin.repository.datasource.local.dto.AppEntryEntity
 

@@ -1,8 +1,8 @@
 package com.berlin.aflami.di
 
 import com.berlin.aflami.BuildConfig
-import com.berlin.aflami.util.ApiKeyInterceptor
 import com.berlin.aflami.util.LanguageInterceptor
+import com.berlin.aflami.util.interceptors.ApiKeyInterceptor
 import com.berlin.remote.network.ApiService
 import com.berlin.remote.network.AuthenticationApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -16,7 +16,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import usecase.profile.GetLanguageUseCase
 import javax.inject.Singleton
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -31,13 +30,10 @@ object NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
-
     @Provides
     @Singleton
-    fun provideLanguageInterceptor(
-        getLanguageUseCase: GetLanguageUseCase
-    ): LanguageInterceptor {
-        return LanguageInterceptor(getLanguageUseCase)
+    fun provideLanguageInterceptor(): LanguageInterceptor {
+        return LanguageInterceptor()
     }
 
     @Provides

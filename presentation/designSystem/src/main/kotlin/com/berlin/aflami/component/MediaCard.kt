@@ -106,14 +106,16 @@ fun MediaCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Box(
-                    modifier = Modifier
-                        .size(3.dp)
-                        .background(
-                            Theme.color.textColors.onPrimaryBody,
-                            RoundedCornerShape(3.dp)
-                        )
-                )
+                if (date.isNotEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .size(3.dp)
+                            .background(
+                                Theme.color.textColors.onPrimaryBody,
+                                RoundedCornerShape(3.dp)
+                            )
+                    )
+                }
                 Text(
                     text = date.take(4),
                     style = Theme.textStyle.label.small,

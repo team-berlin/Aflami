@@ -104,7 +104,7 @@ fun AddToListDialog(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(320.dp)
+                            .height(192.dp)
                             .nestedScroll(rememberNestedScrollInteropConnection()),
                     ) {
                         items(favouriteLists.itemCount) { index ->

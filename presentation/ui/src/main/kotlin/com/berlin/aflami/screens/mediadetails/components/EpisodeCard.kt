@@ -147,7 +147,7 @@ private fun EpisodeDetails(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = time,
+                text = "$time m",
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.hint
             )

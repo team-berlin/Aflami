@@ -10,16 +10,12 @@ class SettingsLocalDataSourceImpl @Inject constructor(
 
     override suspend fun setTheme(theme: String) = preferences.setTheme(theme)
 
-    override suspend fun getTheme(): Flow<String?> = preferences.getTheme()
+    override fun getTheme(): Flow<String?> = preferences.getTheme()
 
-    override suspend fun setLanguage(language: String) = preferences.setLanguage(language)
-
-
-    override suspend fun getLanguage(): Flow<String?> = preferences.getLanguage()
     override suspend fun setContentRestriction(contentRestrictionLevel: String) =
         preferences.setContentRestriction(contentRestrictionLevel)
 
-    override suspend fun getContentRestriction(): Flow<String?> =
+    override fun getContentRestriction(): Flow<String?> =
         preferences.getContentRestriction()
 }
 

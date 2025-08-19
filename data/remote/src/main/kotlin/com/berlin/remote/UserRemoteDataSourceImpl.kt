@@ -1,7 +1,7 @@
 package com.berlin.remote
 
 import com.berlin.remote.network.ApiService
-import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
+import com.berlin.repository.datasource.local.datasource.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.UserRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.account.UserProfileDto
 import javax.inject.Inject
