@@ -30,7 +30,6 @@ object NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
-
     @Provides
     @Singleton
     fun provideLanguageInterceptor(): LanguageInterceptor {
