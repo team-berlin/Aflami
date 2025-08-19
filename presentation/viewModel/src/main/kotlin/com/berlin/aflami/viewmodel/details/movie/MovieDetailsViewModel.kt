@@ -32,12 +32,12 @@ import usecase.auth.GetLoginUseCase
 import usecase.favouritelist.AddMovieToFavouriteListUseCase
 import usecase.favouritelist.CreateNewFavouriteListUseCase
 import usecase.favouritelist.GetAllFavouriteListsUseCase
-import usecase.mediadetails.GetMovieVideos
 import usecase.movie.AddContinueWatchingMovieUseCase
 import usecase.movie.GetMovieCastUseCase
 import usecase.movie.GetMovieDetailsUseCase
 import usecase.movie.GetMovieGalleryUseCase
 import usecase.movie.GetMovieReviewUseCase
+import usecase.movie.GetMovieVideos
 import usecase.movie.GetSimilarMoviesUseCase
 import usecase.movie.RateMovieUseCase
 import javax.inject.Inject

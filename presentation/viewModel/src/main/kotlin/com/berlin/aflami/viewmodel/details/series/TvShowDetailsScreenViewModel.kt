@@ -73,7 +73,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
         tryToCall(
             call = {
-                getTVShowVideos(tvShowId)?.videoUrl
+                getTVShowVideos(tvShowId)
             },
             onSuccess = { videoUrl ->
                 updateState {
