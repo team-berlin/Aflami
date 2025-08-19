@@ -52,7 +52,7 @@ fun MediaOverviewSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                releaseDate,
+                releaseDate.format(),
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.hint
             )
