@@ -44,21 +44,26 @@ class ProfileViewModel @Inject constructor(
         checkLoginStatus()
     }
 
-
     override fun onDialogDismissed() {
         updateState {
             it.copy(
                 activeDialog = ProfileDialogType.NONE,
-                tempSelectedLanguage = it.selectedLanguage,
-                isArabicSelected = it.selectedLanguage == AppLanguage.AR.name,
-                isEnglishSelected = it.selectedLanguage == AppLanguage.EN.name,
-                tempSelectedTheme = it.selectedTheme,
-                isDarkThemeSelected = it.selectedTheme == AppTheme.DARK.name,
-                isLightThemeSelected = it.selectedTheme == AppTheme.LIGHT.name,
-                tempSelectedRestriction = it.selectedRestriction,
-                isStrictSelected = it.selectedRestriction == ContentRestriction.STRICT.name,
-                isModeratedSelected = it.selectedRestriction == ContentRestriction.MODERATE.name,
-                isOffSelected = it.selectedRestriction == ContentRestriction.OFF.name,
+                languageOption = LanguageOption(
+                    tempSelectedLanguage = it.languageOption.selectedLanguage,
+                    isEnglishEnabled = it.languageOption.selectedLanguage == AppLanguage.EN.name,
+                ),
+
+                themeOption = ThemeOption(
+                    tempSelectedTheme = it.themeOption.selectedTheme,
+                    isDarkThemeEnabled = it.themeOption.selectedTheme == AppTheme.DARK.name,
+                ),
+                contentRestrictionOption = ContentRestrictionOption(
+                    tempSelectedRestriction = it.contentRestrictionOption.selectedRestriction,
+                    isStrictSelected = it.contentRestrictionOption.selectedRestriction == ContentRestriction.STRICT.name,
+                    isModeratedSelected = it.contentRestrictionOption.selectedRestriction == ContentRestriction.MODERATE.name,
+                    isOffSelected = it.contentRestrictionOption.selectedRestriction == ContentRestriction.OFF.name,
+                ),
+
             )
         }
     }
@@ -95,9 +100,10 @@ class ProfileViewModel @Inject constructor(
     override fun onDarkThemeSelected() {
         updateState {
             it.copy(
-                isDarkThemeSelected = true,
-                isLightThemeSelected = false,
-                tempSelectedTheme = AppTheme.DARK.name,
+                themeOption = ThemeOption(
+                    isDarkThemeEnabled = true,
+                    tempSelectedTheme = AppTheme.DARK.name,
+                )
             )
         }
     }
@@ -105,21 +111,24 @@ class ProfileViewModel @Inject constructor(
     override fun onLightThemeSelected() {
         updateState {
             it.copy(
-                isDarkThemeSelected = false,
-                isLightThemeSelected = true,
-                tempSelectedTheme = AppTheme.LIGHT.name,
+                themeOption = ThemeOption(
+                    isDarkThemeEnabled = false,
+                    tempSelectedTheme = AppTheme.LIGHT.name,
+                )
             )
         }
     }
 
     override fun onApplyThemeOption() {
         viewModelScope.launch {
-            val selectedTheme = AppTheme.valueOf(state.value.tempSelectedTheme)
+            val selectedTheme = AppTheme.valueOf(state.value.themeOption.tempSelectedTheme)
             setThemeUseCase(selectedTheme)
             updateState {
                 it.copy(
                     activeDialog = ProfileDialogType.NONE,
-                    selectedTheme = it.tempSelectedTheme,
+                    themeOption = ThemeOption(
+                        selectedTheme = it.themeOption.tempSelectedTheme,
+                    )
                 )
             }
         }
@@ -128,9 +137,10 @@ class ProfileViewModel @Inject constructor(
     override fun onArabicSelected() {
         updateState {
             it.copy(
-                isEnglishSelected = false,
-                isArabicSelected = true,
+                languageOption = LanguageOption(
+                    isEnglishEnabled = false,
                 tempSelectedLanguage = AppLanguage.AR.name,
+                )
             )
         }
     }
@@ -138,20 +148,24 @@ class ProfileViewModel @Inject constructor(
     override fun onEnglishSelected() {
         updateState {
             it.copy(
-                isEnglishSelected = true,
-                isArabicSelected = false,
+                languageOption = LanguageOption(
+                    isEnglishEnabled = true,
                 tempSelectedLanguage = AppLanguage.EN.name,
+                )
             )
         }
     }
 
     override fun onApplyLanguageOption() {
         viewModelScope.launch {
-            val selectedLanguage = AppLanguage.valueOf(state.value.tempSelectedLanguage)
+            val selectedLanguage =
+                AppLanguage.valueOf(state.value.languageOption.tempSelectedLanguage)
             setLanguageUseCase(selectedLanguage)
             updateState {
                 it.copy(
-                    selectedLanguage = it.tempSelectedLanguage,
+                    languageOption = LanguageOption(
+                        selectedLanguage = it.languageOption.tempSelectedLanguage,
+                    ),
                     activeDialog = ProfileDialogType.NONE
                 )
             }
@@ -183,10 +197,13 @@ class ProfileViewModel @Inject constructor(
     override fun onStrictSelected() {
         updateState {
             it.copy(
-                isStrictSelected = true,
-                isModeratedSelected = false,
-                isOffSelected = false,
-                tempSelectedRestriction = ContentRestriction.STRICT.name
+                contentRestrictionOption = ContentRestrictionOption(
+                    isStrictSelected = true,
+                    isModeratedSelected = false,
+                    isOffSelected = false,
+                    tempSelectedRestriction = ContentRestriction.STRICT.name
+                ),
+
             )
         }
     }
@@ -194,10 +211,12 @@ class ProfileViewModel @Inject constructor(
     override fun onModerateSelected() {
         updateState {
             it.copy(
+                contentRestrictionOption = ContentRestrictionOption(
                 isStrictSelected = false,
                 isModeratedSelected = true,
                 isOffSelected = false,
                 tempSelectedRestriction = ContentRestriction.MODERATE.name
+                )
             )
         }
     }
@@ -205,29 +224,34 @@ class ProfileViewModel @Inject constructor(
     override fun onOffRestrictionSelected() {
         updateState {
             it.copy(
+                contentRestrictionOption = ContentRestrictionOption(
                 isStrictSelected = false,
                 isModeratedSelected = false,
                 isOffSelected = true,
                 tempSelectedRestriction = ContentRestriction.OFF.name
+                )
             )
         }
     }
 
     override fun onSaveContentRestriction() {
         viewModelScope.launch {
-            val selectRestriction = ContentRestriction.valueOf(state.value.tempSelectedRestriction)
+            val selectRestriction = ContentRestriction.valueOf(
+                state.value.contentRestrictionOption.tempSelectedRestriction
+            )
             val percentage = getContentRestrictionPercentage(selectRestriction.name)
             setContentRestrictionUseCase(selectRestriction)
             updateState {
                 it.copy(
-                    selectedRestriction = it.tempSelectedRestriction,
-                    contentRestrictionPercentage = percentage,
+                    contentRestrictionOption = ContentRestrictionOption(
+                        selectedRestriction = it.contentRestrictionOption.tempSelectedRestriction,
+                        contentRestrictionPercentage = percentage,
+                    ),
                     activeDialog = ProfileDialogType.NONE,
                 )
             }
         }
     }
-
     private fun getContentRestrictionPercentage(restriction: String): Int {
         return when (restriction.uppercase()) {
             "STRICT" -> 100
@@ -244,11 +268,12 @@ class ProfileViewModel @Inject constructor(
 
                 updateState {
                     it.copy(
-                        selectedTheme = appTheme,
-                        isDarkThemeSelected = theme == AppTheme.DARK.name,
-                        isLightThemeSelected = theme == AppTheme.LIGHT.name,
-                        isDarkThemeEnabled = theme == AppTheme.DARK.name
-                    )
+                        themeOption = ThemeOption(
+                            selectedTheme = appTheme,
+                            isDarkThemeEnabled = theme == AppTheme.DARK.name
+                        ),
+
+                        )
                 }
             }
         }
@@ -258,13 +283,15 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             getLanguageUseCase().collect { currentLanguage ->
                 val appLanguage =
-                    currentLanguage ?: AppLanguage.valueOf(state.value.selectedLanguage).name
+                    currentLanguage ?: AppLanguage.valueOf(
+                        state.value.languageOption.selectedLanguage
+                    ).name
                 updateState {
                     it.copy(
+                        languageOption = LanguageOption(
                         selectedLanguage = appLanguage,
-                        isArabicSelected = appLanguage == AppLanguage.AR.name,
-                        isEnglishSelected = appLanguage == AppLanguage.EN.name,
                         isEnglishEnabled = appLanguage == AppLanguage.EN.name,
+                        )
                     )
                 }
             }
@@ -279,11 +306,13 @@ class ProfileViewModel @Inject constructor(
 
                 updateState {
                     it.copy(
+                        contentRestrictionOption = ContentRestrictionOption(
                         selectedRestriction = appContentRestriction,
                         isStrictSelected = contentRestriction == ContentRestriction.STRICT.name,
                         isModeratedSelected = contentRestriction == ContentRestriction.MODERATE.name,
                         isOffSelected = contentRestriction == ContentRestriction.OFF.name,
                         contentRestrictionPercentage = percentage
+                    )
                     )
                 }
 
@@ -294,20 +323,20 @@ class ProfileViewModel @Inject constructor(
     private fun collectUserProfile() {
         viewModelScope.launch {
             observeUserProfileUseCase().collect { user ->
-                    val points = if (user != null) {
-                        getUserScoreUseCase(user.id)
-                    } else {
-                        0
-                    }
-                    updateState { s ->
-                        s.copy(
-                            userAvatarUrl = user?.avatarUrl?.takeIf { it.isNotBlank() },
-                            userName = user?.username.orEmpty(),
-                            isLoggedIn = user != null,
-                            userPoints = points
-                        )
-                    }
+                val points = if (user != null) {
+                    getUserScoreUseCase(user.id)
+                } else {
+                    0
                 }
+                updateState { s ->
+                    s.copy(
+                        userAvatarUrl = user?.avatarUrl?.takeIf { it.isNotBlank() },
+                        userName = user?.username.orEmpty(),
+                        isLoggedIn = user != null,
+                        userPoints = points
+                    )
+                }
+            }
         }
     }
 }

@@ -24,12 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.MyRatingDestination
-import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.RequiredLoggedInPlaceholder
@@ -132,8 +130,8 @@ private fun ProfileContent(
                 secondOptionTitleRes = R.string.light,
                 firstOptionIconRes = com.berlin.designsystem.R.drawable.dark,
                 secondOptionIconRes = com.berlin.designsystem.R.drawable.light,
-                isFirstOptionSelected = profileScreenState.isDarkThemeSelected,
-                isSecondOptionSelected = profileScreenState.isLightThemeSelected,
+                isFirstOptionSelected = profileScreenState.themeOption.isDarkThemeEnabled,
+                isSecondOptionSelected = profileScreenState.themeOption.isDarkThemeEnabled.not(),
                 onFirstOptionClick = { profileScreenInteractionListener.onDarkThemeSelected() },
                 onSecondOptionClick = { profileScreenInteractionListener.onLightThemeSelected() },
                 isThemeDialog = true
@@ -149,13 +147,12 @@ private fun ProfileContent(
                 secondOptionTitleRes = R.string.language_dialog_arabic,
                 firstOptionIconRes = com.berlin.designsystem.R.drawable.english,
                 secondOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
-                isFirstOptionSelected = profileScreenState.isEnglishSelected,
-                isSecondOptionSelected = profileScreenState.isArabicSelected,
+                isFirstOptionSelected = profileScreenState.languageOption.isEnglishEnabled,
+                isSecondOptionSelected = profileScreenState.languageOption.isEnglishEnabled.not(),
                 onFirstOptionClick = { profileScreenInteractionListener.onEnglishSelected() },
                 onSecondOptionClick = { profileScreenInteractionListener.onArabicSelected() },
                 isThemeDialog = false
             )
-
         }
 
         ProfileDialogType.SETTINGS -> {
@@ -174,9 +171,9 @@ private fun ProfileContent(
                 firstOptionTitleRes = R.string.strict,
                 secondOptionTitleRes = R.string.moderate,
                 thirdOptionTitleRes = R.string.off,
-                isFirstOptionSelected = profileScreenState.isStrictSelected,
-                isSecondOptionSelected = profileScreenState.isModeratedSelected,
-                isThirdOptionSelected = profileScreenState.isOffSelected,
+                isFirstOptionSelected = profileScreenState.contentRestrictionOption.isStrictSelected,
+                isSecondOptionSelected = profileScreenState.contentRestrictionOption.isModeratedSelected,
+                isThirdOptionSelected = profileScreenState.contentRestrictionOption.isOffSelected,
                 onFirstOptionClick = { profileScreenInteractionListener.onStrictSelected() },
                 onSecondOptionClick = { profileScreenInteractionListener.onModerateSelected() },
                 onThirdOptionClick = { profileScreenInteractionListener.onOffRestrictionSelected() },
@@ -209,7 +206,7 @@ private fun ProfileContent(
             userAvatar = profileScreenState.userAvatarUrl?:"",
             userName = profileScreenState.userName,
             userScore = profileScreenState.userPoints,
-            if (profileScreenState.isDarkThemeEnabled)
+            if (profileScreenState.themeOption.isDarkThemeEnabled)
                 painterResource(R.drawable.profile_cover_night)
             else painterResource(R.drawable.profile_cover),
 
@@ -223,8 +220,8 @@ private fun ProfileContent(
         HorizontalDivider(thickness = 1.dp, color = Theme.color.stroke)
         Spacer(modifier = Modifier.height(24.dp))
         SettingSection(
-            isLanguageEN = profileScreenState.isEnglishEnabled,
-            isDarkThemeEnabled = profileScreenState.isDarkThemeEnabled,
+            isLanguageEN = profileScreenState.languageOption.isEnglishEnabled,
+            isDarkThemeEnabled = profileScreenState.themeOption.isDarkThemeEnabled,
             onThemeClick = { profileScreenInteractionListener.onAppThemeClick() },
             onLanguageClick = { profileScreenInteractionListener.onLanguageClick() },
             onSettingsClick = { profileScreenInteractionListener.onSettingsClick() },

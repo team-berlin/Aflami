@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val profileState by profileViewModel.state.collectAsState()
             val mainState by mainActivityViewModel.state.collectAsState()
-            val isDarkTheme = profileState.isDarkThemeEnabled
+            val isDarkTheme = profileState.themeOption.isDarkThemeEnabled
             LaunchedEffect(Unit) {
                 profileViewModel.effect.collect { effect ->
                     when (effect) {
@@ -52,10 +52,10 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-            UpdateLocale(profileState.selectedLanguage)
+            UpdateLocale(profileState.languageOption.selectedLanguage)
             AflamiTheme(
                 isDarkTheme = isDarkTheme,
-                selectedLanguage = profileState.selectedLanguage
+                selectedLanguage = profileState.languageOption.selectedLanguage
             ) {
                 if (!mainState.isLoading) {
                     AflamiNavGraph(
