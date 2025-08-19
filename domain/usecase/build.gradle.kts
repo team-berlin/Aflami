@@ -32,12 +32,16 @@ kover {
     }
 }
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    testImplementation(libs.bundles.test)
-    implementation(libs.kotlin.datex)
-    implementation(libs.javax.inject)
-    implementation(libs.kotlinx.coroutines.core) // or latest stable
+    // Concurrency
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    // Dependency Injection
+    implementation(libs.javax.inject)
+
+    // Project Modules
     api(project(":domain:entity"))
+
+    // Testing
+    testImplementation(libs.bundles.test)
 }

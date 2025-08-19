@@ -32,19 +32,24 @@ kover {
     }
 }
 dependencies {
+    // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.navigation.compose)
-    testImplementation(libs.bundles.test)
-    implementation(libs.kotlin.datex)
 
+    // Navigation
+    implementation(libs.navigation.compose)
+
+    // Paging
+    implementation(libs.androidx.paging.runtime)
+
+    // Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
 
-    testImplementation ("app.cash.turbine:turbine:1.1.0")
-    val paging_version = "3.3.6"
-    implementation("androidx.paging:paging-runtime:$paging_version")
-
-    implementation(libs.androidx.paging.runtime)
+    // Project Modules
     implementation(project(":domain:usecase"))
+
+    // Testing
+    testImplementation(libs.bundles.test)
+    testImplementation(libs.turbine)
 }
