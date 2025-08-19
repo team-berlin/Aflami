@@ -264,7 +264,7 @@ class ProfileViewModel @Inject constructor(
     private fun collectTheme() {
         viewModelScope.launch {
             getThemeUseCase().collect { theme ->
-                val appTheme = theme ?: AppTheme.DARK.name
+                val appTheme = theme
 
                 updateState {
                     it.copy(
@@ -283,9 +283,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             getLanguageUseCase().collect { currentLanguage ->
                 val appLanguage =
-                    currentLanguage ?: AppLanguage.valueOf(
-                        state.value.languageOption.selectedLanguage
-                    ).name
+                    currentLanguage
                 updateState {
                     it.copy(
                         languageOption = LanguageOption(
