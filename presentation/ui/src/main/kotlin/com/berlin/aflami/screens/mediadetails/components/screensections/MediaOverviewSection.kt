@@ -24,7 +24,7 @@ fun MediaOverviewSection(
     title: String,
     generes: List<GenreUiState>,
     releaseDate: String,
-    duration: String,
+    duration: String? = null,
     originalCountry: String?,
     numberOfSeasons: Int? = null,
 ) {
@@ -56,7 +56,7 @@ fun MediaOverviewSection(
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.hint
             )
-            duration.takeIf { it.isNotEmpty() }?.let {
+            duration?.takeIf { it.isNotEmpty() }?.let {
                 CircularDot()
                 Text(it, style = Theme.textStyle.label.small, color = Theme.color.textColors.hint)
             }

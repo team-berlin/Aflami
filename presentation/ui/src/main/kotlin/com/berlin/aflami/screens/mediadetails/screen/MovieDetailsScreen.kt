@@ -269,7 +269,6 @@ fun MovieDetailsContent(
                         releaseDate = releaseDate,
                         duration = duration,
                         originalCountry = originCountry,
-                        numberOfSeasons = null
                     )
                 }
             }

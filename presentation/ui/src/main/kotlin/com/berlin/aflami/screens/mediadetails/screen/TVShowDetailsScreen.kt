@@ -255,9 +255,8 @@ fun TvShowDetailsContent(
                         title = title,
                         generes = genre,
                         releaseDate = releaseDate,
-                        duration = duration,
                         originalCountry = originCountry,
-                        numberOfSeasons = null
+                        numberOfSeasons = numberOfSeasons
                     )
                 }
             }
