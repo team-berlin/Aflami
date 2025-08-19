@@ -115,7 +115,7 @@ fun MediaCard(
                         )
                 )
                 Text(
-                    text = date,
+                    text = date.take(4),
                     style = Theme.textStyle.label.small,
                     color = Theme.color.textColors.onPrimaryBody,
                     maxLines = 1,

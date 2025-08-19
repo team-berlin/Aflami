@@ -29,7 +29,7 @@ fun TVShow.toMediaUiState(): MediaUiState {
         id = id,
         title = title,
         rating = java.text.DecimalFormat("#.#").format(rating).toString(),
-        releaseYear = releaseDate.take(4),
+        releaseYear = releaseDate,
         genre = genres.map { it.id },
         poster = posterURL,
         companyProductionUiState = companyProductions.map { it.toCompanyProductionUiState() },
