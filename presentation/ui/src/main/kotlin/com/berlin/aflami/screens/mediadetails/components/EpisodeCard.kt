@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.utils.formatDate
+import com.berlin.aflami.utils.swapYearAndDay
 import com.berlin.aflami.viewmodel.details.series.EpisodeUiState
 import com.berlin.designsystem.R
 import com.berlin.safeimageviewer.SafeImageViewer
@@ -57,7 +59,7 @@ fun EpisodeCard(
                     episodeNumber = episode.episodeNumber,
                     title = episode.name,
                     time = episode.runtime.toString(),
-                    date = it
+                    date = it.formatDate()
                 )
             }
 
