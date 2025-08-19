@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.berlin.local.dao.AppEntryDao
-import com.berlin.local.dao.CategoriesPreferencesDao
+import com.berlin.local.dao.GenrePreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
 import com.berlin.local.dao.GenreDao
 import com.berlin.local.dao.HomeMovieDao
@@ -18,30 +18,28 @@ import com.berlin.local.dao.UserProfileDao
 import com.berlin.repository.datasource.Converters
 import com.berlin.repository.datasource.local.dto.AppEntryEntity
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
-import com.berlin.repository.datasource.local.dto.MovieHomeEntity
+import com.berlin.repository.datasource.local.dto.HomeMovieEntity
 import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
-import com.berlin.repository.datasource.local.dto.RecentHistoryEntity
+import com.berlin.repository.datasource.local.dto.RecentSearchHistoryEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
-import com.berlin.repository.datasource.local.dto.SearchingEntity
 import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
-import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
+import com.berlin.repository.datasource.local.dto.HomeTVShowEntity
 import com.berlin.repository.datasource.local.dto.UserPointsEntity
 import com.berlin.repository.datasource.local.dto.UserProfileEntity
 
 @TypeConverters(Converters::class)
 @Database(
     entities = [
-        SearchingEntity::class,
-        RecentHistoryEntity::class,
+        RecentSearchHistoryEntity::class,
         CategoriesPreferencesEntity::class,
         RecentlyWatchedMovieEntity::class,
         RecentlyWatchedTvShowEntity::class,
         AppEntryEntity::class,
         TVShowGenreEntity::class,
         MoviesGenreEntity::class,
-        MovieHomeEntity::class,
-        TVShowHomeEntity::class,
+        HomeMovieEntity::class,
+        HomeTVShowEntity::class,
         UserProfileEntity::class,
        UserPointsEntity::class
 
@@ -50,7 +48,7 @@ import com.berlin.repository.datasource.local.dto.UserProfileEntity
 abstract class AflamiDatabase : RoomDatabase() {
     abstract fun searchDao(): SearchDao
     abstract fun recentHistoryDao(): RecentHistoryDao
-    abstract fun categoriesPreferencesDao(): CategoriesPreferencesDao
+    abstract fun categoriesPreferencesDao(): GenrePreferencesDao
     abstract fun continueWatchingDao(): ContinueWatchingDao
     abstract fun genreDao(): GenreDao
     abstract fun appEntryDao():AppEntryDao

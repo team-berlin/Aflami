@@ -1,6 +1,6 @@
 package com.berlin.repository
 
-import com.berlin.repository.datasource.local.GameLocalDataSource
+import com.berlin.repository.datasource.local.datasource.GameLocalDataSource
 import repository.GameRepository
 import javax.inject.Inject
 

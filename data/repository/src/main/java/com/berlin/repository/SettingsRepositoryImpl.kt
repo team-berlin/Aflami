@@ -1,6 +1,5 @@
 package com.berlin.repository
 
-import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import com.berlin.repository.datasource.local.dataStore.SettingsLocalDataSource
 import kotlinx.coroutines.flow.Flow
@@ -18,13 +17,6 @@ class SettingsRepositoryImpl @Inject constructor(
         settingsDataStore.setTheme(theme.name)
     }
 
-    override fun getLanguage(): Flow<String> {
-        return settingsDataStore.getLanguage()
-    }
-
-    override suspend fun setLanguage(language: AppLanguage) {
-        settingsDataStore.setLanguage(language.name)
-    }
     override suspend fun setContentRestriction(contentRestrictionLevel: String) {
         settingsDataStore.setContentRestriction(contentRestrictionLevel)
     }
@@ -32,7 +24,5 @@ class SettingsRepositoryImpl @Inject constructor(
     override fun getContentRestriction(): Flow<String?> {
         return settingsDataStore.getContentRestriction()
     }
-
-
 
 }

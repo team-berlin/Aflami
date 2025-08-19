@@ -1,7 +1,7 @@
 package com.berlin.repository
 
 import com.berlin.exception.UnauthorizedException
-import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
+import com.berlin.repository.datasource.local.datasource.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
 import com.berlin.repository.datasource.remote.dto.auth.LoginDto
 import com.berlin.repository.datasource.remote.dto.auth.SessionDto

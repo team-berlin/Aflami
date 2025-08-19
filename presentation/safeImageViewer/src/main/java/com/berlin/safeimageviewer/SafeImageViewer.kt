@@ -8,7 +8,6 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -189,7 +188,7 @@ suspend fun classifyImage(
 
 }
 
-fun classifyNSFW(
+private fun classifyNSFW(
     bitmap: Bitmap, modelManager: FireBaseModelManager, contentRestrictions: String?
 ): Boolean {
     val nsfwBuffer = bitmap.toModelByteBuffer(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
@@ -212,7 +211,7 @@ fun classifyNSFW(
     return !isSafe
 }
 
-fun classifyGender(
+private fun classifyGender(
     bitmap: Bitmap, modelManager: FireBaseModelManager, contentRestrictions: String?
 ): Boolean {
     val genderBuffer = bitmap.toModelByteBuffer(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)

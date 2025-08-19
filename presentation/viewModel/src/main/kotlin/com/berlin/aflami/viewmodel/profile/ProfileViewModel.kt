@@ -1,5 +1,7 @@
 package com.berlin.aflami.viewmodel.profile
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.entity.AppLanguage
@@ -12,15 +14,15 @@ import usecase.auth.LogoutUseCase
 import usecase.game.GetPointsUseCase
 import usecase.profile.ClearUserProfileUseCase
 import usecase.profile.GetContentRestrictionUseCase
+import usecase.profile.GetThemeUseCase
 import usecase.profile.ObserveUserProfileUseCase
 import usecase.profile.SetContentRestrictionUseCase
-import usecase.profile.SetLanguageUseCase
 import usecase.profile.SetThemeUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    val setLanguageUseCase: SetLanguageUseCase,
+    val getThemeUseCase: GetThemeUseCase,
     val setThemeUseCase: SetThemeUseCase,
     val getLoginStatus: GetLoginUseCase,
     val logoutUseCase: LogoutUseCase,
@@ -33,6 +35,7 @@ class ProfileViewModel @Inject constructor(
     ProfileInteractionListener {
 
     init {
+        collectTheme()
         collectUserProfile()
         collectContentRestriction()
         checkLoginStatus()
@@ -44,7 +47,7 @@ class ProfileViewModel @Inject constructor(
                 activeDialog = ProfileDialogType.NONE,
                 languageOption = LanguageOption(
                     tempSelectedLanguage = it.languageOption.selectedLanguage,
-                    isEnglishEnabled = it.languageOption.selectedLanguage == AppLanguage.EN.name,
+                    isEnglishEnabled = it.languageOption.selectedLanguage == AppLanguage.EN,
                 ),
                 themeOption = ThemeOption(
                     tempSelectedTheme = it.themeOption.selectedTheme,
@@ -132,7 +135,7 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 languageOption = LanguageOption(
                     isEnglishEnabled = false,
-                    tempSelectedLanguage = AppLanguage.AR.name,
+                    tempSelectedLanguage = AppLanguage.AR,
                 )
             )
         }
@@ -143,26 +146,23 @@ class ProfileViewModel @Inject constructor(
             it.copy(
                 languageOption = LanguageOption(
                     isEnglishEnabled = true,
-                    tempSelectedLanguage = AppLanguage.EN.name,
+                    tempSelectedLanguage = AppLanguage.EN
                 )
             )
         }
     }
 
     override fun onApplyLanguageOption() {
-        viewModelScope.launch {
-            val selectedLanguage =
-                AppLanguage.valueOf(state.value.languageOption.tempSelectedLanguage)
-            setLanguageUseCase(selectedLanguage)
-            updateState {
-                it.copy(
-                    languageOption = LanguageOption(
-                        selectedLanguage = it.languageOption.tempSelectedLanguage,
-                    ),
-                    activeDialog = ProfileDialogType.NONE
-                )
-            }
-            sendNewEffect(ProfileScreenEffect.RefreshActivity)
+        val appLocale: LocaleListCompat =
+            LocaleListCompat.forLanguageTags(state.value.languageOption.tempSelectedLanguage.name.lowercase())
+        AppCompatDelegate.setApplicationLocales(appLocale)
+        updateState {
+            it.copy(
+                languageOption = LanguageOption(
+                    selectedLanguage = it.languageOption.tempSelectedLanguage,
+                ),
+                activeDialog = ProfileDialogType.NONE
+            )
         }
     }
 
@@ -252,6 +252,24 @@ class ProfileViewModel @Inject constructor(
             else -> 100
         }
     }
+
+    private fun collectTheme() {
+        viewModelScope.launch {
+            getThemeUseCase().collect { theme ->
+                val appTheme = theme ?: AppTheme.DARK.name
+
+                updateState {
+                    it.copy(
+                        selectedTheme = appTheme,
+                        isDarkThemeSelected = theme == AppTheme.DARK.name,
+                        isLightThemeSelected = theme == AppTheme.LIGHT.name,
+                        isDarkThemeEnabled = theme == AppTheme.DARK.name
+                    )
+                }
+            }
+        }
+    }
+
 
     private fun collectContentRestriction() {
         viewModelScope.launch {

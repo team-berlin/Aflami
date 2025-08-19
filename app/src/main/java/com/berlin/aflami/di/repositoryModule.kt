@@ -34,7 +34,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
-
     @Binds
     @Singleton
     abstract fun bindMovieDetailsRepository(
@@ -107,6 +106,4 @@ abstract class RepositoryModule {
     abstract fun bindGameRepository(
         impl: GameRepositoryImpl
     ): GameRepository
-
-
 }

@@ -1,9 +1,9 @@
 package com.berlin.aflami.viewmodel.profile
 
+import androidx.appcompat.app.AppCompatDelegate
 import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import com.berlin.entity.ContentRestriction
-import java.util.Locale
 
 
 data class ProfileUiState(
@@ -11,26 +11,27 @@ data class ProfileUiState(
     val userAvatarUrl: String? = null,
     val userName: String = "",
     val userPoints: Int = 0,
-    val themeOption: ThemeOption = ThemeOption(),
-    val languageOption: LanguageOption = LanguageOption(),
-    val contentRestrictionOption: ContentRestrictionOption = ContentRestrictionOption(),
     val activeDialog: ProfileDialogType = ProfileDialogType.NONE,
     val isLoggedIn: Boolean? = null,
-    val appVersion: String = "v1.0.0",
-    )
+    val themeOption: ThemeOption = ThemeOption(),
+    val languageOption: LanguageOption = LanguageOption(),
+    val contentRestrictionOption: ContentRestrictionOption = ContentRestrictionOption(),    val appVersion: String = "v1.0.0",
 
+    )
 data class ThemeOption(
     val selectedTheme: String = AppTheme.DARK.name,
     val tempSelectedTheme: String = selectedTheme,
     val isDarkThemeEnabled: Boolean = AppTheme.DARK.name == selectedTheme,
 )
-
 data class LanguageOption(
-    val selectedLanguage: String = Locale.getDefault().language.uppercase(),
-    val tempSelectedLanguage: String = selectedLanguage,
-    val isEnglishEnabled: Boolean = selectedLanguage == AppLanguage.EN.name,
+    val selectedLanguage: AppLanguage =
+        if (AppCompatDelegate
+            .getApplicationLocales()
+            .toLanguageTags() == "ar"
+    ) AppLanguage.AR else AppLanguage.EN,
+    val tempSelectedLanguage: AppLanguage = selectedLanguage,
+    val isEnglishEnabled: Boolean = selectedLanguage == AppLanguage.EN,
 )
-
 data class ContentRestrictionOption(
     val isStrictSelected: Boolean = true,
     val isModeratedSelected: Boolean = false,

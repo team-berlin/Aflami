@@ -101,7 +101,7 @@ fun MovieEntity.toDomain(): Movie {
         originCountry = this.originCountry,
         galleryUrl = this.galleryUrl,
         reviews = this.reviews,
-        isFavourite = false, // Assuming isFavourite is not stored in MovieEntity
+        isFavourite = false,
     )
 }
 

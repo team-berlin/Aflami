@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.performance)
     alias(libs.plugins.ksp)
-
     alias(libs.plugins.hilt)
 }
 
@@ -28,10 +27,17 @@ android {
             keyPassword = System.getenv("KEYSTORE_PASSWORD")
         }
     }
-
-        lint {
-            disable += "FlowOperatorInvokedInComposition"
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+            isUniversalApk = false
         }
+    }
+    lint {
+        disable += "FlowOperatorInvokedInComposition"
+    }
 
     buildTypes {
         release {
@@ -43,7 +49,6 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
-
 
     defaultConfig {
         applicationId = "com.berlin.aflami"
@@ -61,7 +66,6 @@ android {
         buildConfigField("String", "BASE_URL", "\"${properties["BASE_URL"]}\"")
         buildConfigField("String", "API_KEY", "\"${properties["API_KEY"]}\"")
     }
-
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -81,36 +85,42 @@ android {
 }
 
 dependencies {
+// Core
     implementation(libs.androidx.core.ktx)
+
+// UI / Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.androidxUi)
+    implementation(libs.androidx.core.splashscreen)
+
+// Lifecycle & Workers
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.worker.runtime.ktx)
+
+// Dependency Injection
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.work)
+    ksp(libs.hilt.android.compiler)
+    ksp(libs.androidx.hilt.compiler)
+
+// Data Layer
+    implementation(libs.bundles.room)
+    ksp(libs.roomCompiler)
+
     implementation(libs.bundles.retrofit)
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.datastore.preferences.core.android)
-
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
     implementation(libs.firebase.crashlytics.ktx)
-    implementation(libs.bundles.room)
-    ksp(libs.roomCompiler)
-    implementation(libs.androidx.core.splashscreen)
     implementation(libs.firebase.ml.modeldownloader)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.security.crypto)
 
-
-    implementation(libs.androidx.worker.runtime.ktx)
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.work)
-
-    ksp(libs.hilt.android.compiler)
-    ksp(libs.androidx.hilt.compiler)
-
-    implementation(libs.coil.compose)
-
+// Project Modules
     api(project(":presentation:ui"))
     implementation(project(":presentation:safeImageViewer"))
     implementation(project(":presentation:designSystem"))
@@ -119,4 +129,7 @@ dependencies {
     implementation(project(":data:repository"))
     implementation(project(":data:local"))
     implementation(project(":data:remote"))
+
+// Testing
+    testImplementation(libs.bundles.test)
 }

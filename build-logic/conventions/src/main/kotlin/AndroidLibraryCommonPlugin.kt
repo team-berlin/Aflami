@@ -11,11 +11,11 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 class AndroidLibraryCommonPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+            val libs = extensions.getByType<VersionCatalogsExtension>().named(LIBS)
 
             with(pluginManager) {
-                apply(libs.findPlugin("android.library").get().get().pluginId)
-                apply(libs.findPlugin("kotlin.android").get().get().pluginId)
+                apply(libs.findPlugin(ANDROID_LIBRARY).get().get().pluginId)
+                apply(libs.findPlugin(KOTLIN_ANDROID).get().get().pluginId)
             }
 
             extensions.configure<KotlinAndroidProjectExtension> {
@@ -30,16 +30,16 @@ class AndroidLibraryCommonPlugin : Plugin<Project> {
                 defaultConfig {
                     minSdk = 26
 
-                    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                    consumerProguardFiles("consumer-rules.pro")
+                    testInstrumentationRunner = JUNIT_RUNNER
+                    consumerProguardFiles(CONSUMER_RULES)
                 }
 
                 buildTypes {
                     release {
                         isMinifyEnabled = false
                         proguardFiles(
-                            getDefaultProguardFile("proguard-android-optimize.txt"),
-                            "proguard-rules.pro"
+                            getDefaultProguardFile(DEFAULT_PROGUARD_FILE),
+                            CUSTOM_PROGUARD_FILE
                         )
                     }
                 }

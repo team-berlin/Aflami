@@ -1,15 +1,15 @@
 package com.berlin.repository
 
-import com.berlin.repository.datasource.local.HomeLocalDataSource
-import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
-import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
-import com.berlin.repository.datasource.local.dto.SectionHome
+import com.berlin.repository.datasource.local.datasource.HomeLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentHistoryLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.dto.HomeSection
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.fake.dummydata.DummyData.baseResponseTVShowDetails
 import com.berlin.repository.fake.dummydata.DummyData.mediaPreferencesList
 import com.berlin.repository.fake.dummydata.DummyData.recentlyWatchedTvShowEntity
 import com.berlin.repository.fake.dummydata.DummyData.tvShowEntity
-import com.berlin.repository.fake.dummydata.DummyData.tvShowHomeEntity
+import com.berlin.repository.fake.dummydata.DummyData.homeTVShowEntity
 import com.berlin.repository.mapper.toDomain
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -71,9 +71,9 @@ class TVShowRepositoryImplTest {
     fun `getTopRatedTVShows returns local data if not expired`() = runTest {
 
         val localTVShows = listOf(
-            tvShowHomeEntity.copy(addedAt = System.currentTimeMillis())
+            homeTVShowEntity.copy()
         )
-        coEvery { homeLocalDataSource.getTVShowsBySection(SectionHome.TOP_RATING) } returns localTVShows
+        coEvery { homeLocalDataSource.getTVShowsBySection(HomeSection.TOP_RATING) } returns localTVShows
 
         val result = tvShowRepository.getTopRatedTVShows(1)
 
@@ -86,7 +86,7 @@ class TVShowRepositoryImplTest {
 
         val tvShowList = baseResponseTVShowDetails
 
-        coEvery { homeLocalDataSource.getTVShowsBySection(SectionHome.TOP_RATING) } returns emptyList()
+        coEvery { homeLocalDataSource.getTVShowsBySection(HomeSection.TOP_RATING) } returns emptyList()
         coEvery { remoteDataSource.getTopRatedTV(1) } returns tvShowList
         coEvery { homeLocalDataSource.clearHomeScreenTVShows(any()) } just Runs
         coEvery { homeLocalDataSource.addTVShows(any()) } just Runs
@@ -100,9 +100,9 @@ class TVShowRepositoryImplTest {
     fun `getPopularTVShow returns local data if not expired`() = runTest {
 
         val localTVShows = listOf(
-            tvShowHomeEntity.copy(addedAt = System.currentTimeMillis())
+            homeTVShowEntity.copy(addedAt = System.currentTimeMillis())
         )
-        coEvery { homeLocalDataSource.getTVShowsBySection(SectionHome.POPULAR) } returns localTVShows
+        coEvery { homeLocalDataSource.getTVShowsBySection(HomeSection.POPULAR) } returns localTVShows
 
         val result = tvShowRepository.getPopularTVShows()
 
@@ -113,7 +113,7 @@ class TVShowRepositoryImplTest {
     fun `getPopularTVShow returns remote data when local is empty`() = runTest {
 
         val remoteTVShows = baseResponseTVShowDetails
-        coEvery { homeLocalDataSource.getTVShowsBySection(SectionHome.POPULAR) } returns emptyList()
+        coEvery { homeLocalDataSource.getTVShowsBySection(HomeSection.POPULAR) } returns emptyList()
         coEvery { remoteDataSource.getPopularTVShows() } returns remoteTVShows
         coEvery { homeLocalDataSource.clearHomeScreenTVShows(any()) } just Runs
         coEvery { homeLocalDataSource.addTVShows(any()) } just Runs
