@@ -81,11 +81,6 @@ class SearchViewModel @Inject constructor(
     }
 
     override fun onRecentSearchClicked(query: String) {
-        updateState {
-            it.copy(
-                isLoading = true,
-            )
-        }
         onSearchQueryChanged(
             TextFieldValue(
                 text = query,
