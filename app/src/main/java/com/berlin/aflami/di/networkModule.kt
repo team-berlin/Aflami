@@ -16,7 +16,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import usecase.profile.GetLanguageUseCase
 import javax.inject.Singleton
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -34,10 +33,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideLanguageInterceptor(
-        getLanguageUseCase: GetLanguageUseCase
-    ): LanguageInterceptor {
-        return LanguageInterceptor(getLanguageUseCase)
+    fun provideLanguageInterceptor(): LanguageInterceptor {
+        return LanguageInterceptor()
     }
 
     @Provides
