@@ -22,6 +22,7 @@ import com.berlin.aflami.viewmodel.mapper.toUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.aflami.viewmodel.shareduistate.toDomain
+import com.berlin.aflami.viewmodel.util.toDoubleSafe
 import com.berlin.entity.TVShow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -114,7 +115,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                 saveTVShowToContinueWatching(
                     TVShow(
                         id = tvShowId,
-                        rating = tvShowUiState.rating.toDouble(),
+                        rating = tvShowUiState.rating.toDoubleSafe(),
                         title = tvShowUiState.title,
                         releaseDate = tvShowUiState.releaseDate,
                         posterURL = tvShowUiState.posterUrl,

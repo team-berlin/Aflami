@@ -24,6 +24,7 @@ import com.berlin.aflami.viewmodel.mapper.toReviewUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.toDomain
+import com.berlin.aflami.viewmodel.util.toDoubleSafe
 import com.berlin.entity.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.emptyFlow
@@ -63,7 +64,6 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieId = movieDetailsArgs.movieId ?: throw IllegalStateException(
         "movie id is null in movie details view model"
     )
-
 
     init {
         updateState {
@@ -116,7 +116,7 @@ class MovieDetailsViewModel @Inject constructor(
                 saveMovieToContinueWatching(
                     Movie(
                         id = movieId,
-                        rating = movieUiState.rating.toDouble(),
+                        rating = movieUiState.rating.toDoubleSafe(),
                         title = movieUiState.title,
                         releaseDate = movieUiState.releaseDate,
                         posterURL = movieUiState.posterUrl,
@@ -135,15 +135,6 @@ class MovieDetailsViewModel @Inject constructor(
             }, onError = ::updateScreenStateToError
         )
     }
-
-//    private fun showSnackBar(message: String, isSuccess: Boolean) {
-//        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
-//        viewModelScope.launch {
-//            delay(3000)
-//            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
-//        }
-//    }
-
 
     private fun getMovieActors(movieId: Long) {
         updateState { screenState ->
