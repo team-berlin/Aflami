@@ -50,7 +50,7 @@ import com.berlin.aflami.screens.lists.component.ListCard
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.aflami.viewmodel.details.movie.SNACK_BAR_STATUS
+import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.list.ListScreenEffect
 import com.berlin.aflami.viewmodel.list.ListScreenInteractionListener
 import com.berlin.aflami.viewmodel.list.ListScreenState
@@ -165,8 +165,7 @@ private fun ListsContent(
                         )
                     }
                 }
-
-                SNACK_BAR_STATUS.ADD_MOVIE_TO_LIST, null -> Unit
+                else -> {}
             }
         }
 
