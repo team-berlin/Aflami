@@ -29,9 +29,9 @@ android {
         }
     }
 
-        lint {
-            disable += "FlowOperatorInvokedInComposition"
-        }
+    lint {
+        disable += "FlowOperatorInvokedInComposition"
+    }
 
     buildTypes {
         release {
@@ -75,6 +75,12 @@ android {
         buildConfig = true
     }
 
+    bundle {
+        language {
+            enableSplit = true
+        }
+    }
+
     configurations {
         implementation.get().exclude(mapOf("group" to "org.jetbrains", "module" to "annotations"))
     }
@@ -89,7 +95,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.datastore.preferences.core.android)
-
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)

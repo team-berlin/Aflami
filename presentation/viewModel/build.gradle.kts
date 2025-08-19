@@ -37,7 +37,7 @@ dependencies {
     implementation(libs.navigation.compose)
     testImplementation(libs.bundles.test)
     implementation(libs.kotlin.datex)
-
+    implementation(libs.androidx.appcompat)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
 
