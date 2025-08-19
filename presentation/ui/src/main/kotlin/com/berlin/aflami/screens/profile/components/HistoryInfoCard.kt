@@ -48,8 +48,6 @@ fun HistoryInfoCard(
                 text = title,
                 style = Theme.textStyle.label.medium,
                 color = Theme.color.textColors.title,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 16.dp),
                 maxLines = 2,
             )
         }

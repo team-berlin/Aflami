@@ -27,11 +27,6 @@ import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
 import com.berlin.repository.datasource.remote.response.rating.SubmitRatingResponse
-import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -133,8 +128,8 @@ interface ApiService {
         @Query(ApiConstants.QUERY_INCLUDE_ADULT) includeAdult: Boolean = ApiConstants.INCLUDE_ADULT_DEFAULT,
         @Query(ApiConstants.QUERY_INCLUDE_VIDEO) includeVideo: Boolean = ApiConstants.INCLUDE_VIDEO_DEFAULT,
         @Query(ApiConstants.QUERY_WITH_RELEASE_TYPE) releaseType: String = ApiConstants.RELEASE_TYPE_THEATRICAL_AND_LIMITED,
-        @Query(ApiConstants.RELEASE_DATE_GTE) releaseDateRangeStart: String = DEFAULT_GTE,
-        @Query(ApiConstants.RELEASE_DATE_LTE) releaseDateRangeEnd: String = DEFAULT_LTE
+        @Query(ApiConstants.RELEASE_DATE_GTE) releaseDateRangeStart: String = DEFAULT_START_DATE,
+        @Query(ApiConstants.RELEASE_DATE_LTE) releaseDateRangeEnd: String = DEFAULT_END_DATE
     ): Response<BaseResponse<MovieDetailsDto>>
 
     @GET(ApiConstants.POPULAR_MOVIES)
@@ -270,14 +265,3 @@ interface ApiService {
 
 }
 
-val DEFAULT_GTE: String =
-    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.plus(
-            1,
-            DateTimeUnit.DAY
-        ).toString()
-
-val DEFAULT_LTE: String =
-    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.plus(
-            21,
-            DateTimeUnit.DAY
-        ).toString()

@@ -23,7 +23,7 @@ fun CompanyProduction.toCompanyProductionUiState() = CompanyProductionUiState(
 
 fun Episode.toEpisodeUiState(): EpisodeUiState {
     val formattedDate = try {
-        this.airDate?.let {
+        this.airDate.let {
             val parsedDate = LocalDate.parse(it)
             val formatter = DateTimeFormatter.ofPattern("yyyy MMM dd", Locale.US)
             java.time.LocalDate.of(parsedDate.year, parsedDate.monthNumber, parsedDate.dayOfMonth)

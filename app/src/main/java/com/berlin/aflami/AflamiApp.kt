@@ -9,6 +9,8 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.berlin.aflami.workers.HomeClearWorker
+import com.berlin.aflami.workers.RecentSearchClearWorker
 import com.berlin.safeimageviewer.FireBaseModelManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +30,7 @@ class AflamiApp : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         scheduleNextSync(this)
+        clearSearchHistory(this)
         CoroutineScope(Dispatchers.IO).launch {
             modelManager.downloadModelsOnce()
         }
@@ -52,6 +55,20 @@ class AflamiApp : Application(), Configuration.Provider {
                 "MediaClearWorker",
                 ExistingPeriodicWorkPolicy.KEEP,
                 mediaClearWork
+            )
+    }
+
+    private fun clearSearchHistory(context: Context) {
+        val recentSearchClearWorker = PeriodicWorkRequestBuilder<RecentSearchClearWorker>(
+            1, TimeUnit.HOURS
+        )
+            .build()
+
+        WorkManager.getInstance(context)
+            .enqueueUniquePeriodicWork(
+                "RecentSearchClearWorker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                recentSearchClearWorker
             )
     }
 }

@@ -4,8 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.aflami.custom.plugin)
-
-
 }
 
 android {
@@ -13,11 +11,19 @@ android {
 }
 
 dependencies {
+    // Core
     implementation(libs.androidx.core.ktx)
+
+    // Networking
     implementation(libs.bundles.retrofit)
-    implementation(project(":domain:entity"))
-    implementation(project(":data:repository"))
-    implementation(libs.javax.inject)
+
+    // Utilities
     implementation(libs.kotlin.datex)
 
+    // Dependency Injection
+    implementation(libs.javax.inject)
+
+    // Project Modules
+    implementation(project(":domain:entity"))
+    implementation(project(":data:repository"))
 }

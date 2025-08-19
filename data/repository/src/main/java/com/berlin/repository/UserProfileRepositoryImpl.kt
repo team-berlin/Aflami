@@ -1,7 +1,7 @@
 package com.berlin.repository
 
 import com.berlin.entity.UserProfile
-import com.berlin.repository.datasource.local.UserProfileLocalDataSource
+import com.berlin.repository.datasource.local.datasource.UserProfileLocalDataSource
 import com.berlin.repository.datasource.remote.UserRemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toEntity

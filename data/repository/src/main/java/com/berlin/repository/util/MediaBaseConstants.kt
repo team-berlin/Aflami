@@ -9,6 +9,5 @@ object MediaUrls {
     enum class TmdbImageSize(val path: String) {
         W185("/w185"),
         W500("/w500"),
-        ORIGINAL("/original")
     }
 }

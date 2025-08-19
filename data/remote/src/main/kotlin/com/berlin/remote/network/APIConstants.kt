@@ -1,5 +1,6 @@
 package com.berlin.remote.network
 
+
 object ApiConstants {
     // Query parameters
     const val QUERY = "query"
@@ -17,9 +18,6 @@ object ApiConstants {
     const val QUERY_INCLUDE_VIDEO = "include_video"
     const val QUERY_WITH_RELEASE_TYPE = "with_release_type"
     const val SESSION_ID = "session_id"
-    const val REQUEST_TOKEN = "request_token"
-    const val LOGIN_USERNAME = "username"
-    const val LOGIN_PASSWORD = "password"
 
     // Search endpoints
     const val SEARCH_BY_COUNTRY = "discover/movie"
@@ -35,11 +33,10 @@ object ApiConstants {
     const val MOVIE_REVIEW = "movie/{$MOVIE_ID}/reviews"
     const val MOVIE_VIDEO_DETAILS = "movie/{$MOVIE_ID}/videos"
     const val MOVIE_GENRES = "genre/movie/list"
-    const val MOVIE_UPCOMING = "movie/upcoming"
     const val POPULAR_MOVIES = "movie/popular"
     const val DISCOVER_MOVIE = "discover/movie"
     const val TOP_RATED_MOVIES = "movie/top_rated"
-    const val MOVIE="discover/movie"
+    const val MOVIE = "discover/movie"
 
     // TV show endpoints
     const val SERIES_DETAILS = "tv/{$SERIES_ID}"
@@ -52,7 +49,7 @@ object ApiConstants {
     const val POPULAR_TV_SHOWS = "tv/popular"
     const val TOP_RATED_SERIES = "tv/top_rated"
     const val TV_VIDEO_DETAILS = "tv/{$SERIES_ID}/videos"
-    const val TV_SHOW="discover/tv"
+    const val TV_SHOW = "discover/tv"
     const val DISCOVER_SERIES = "discover/tv"
 
     // Authentication endpoints
@@ -70,7 +67,6 @@ object ApiConstants {
     const val RELEASE_TYPE_THEATRICAL_AND_LIMITED = "2|3"
     const val ARRANGE_DESCENDING = "created_at.desc"
 
-
     // Rating endpoints
     const val RATE_MOVIE = "movie/{$MOVIE_ID}/rating"
     const val RATE_TV_SHOW = "tv/{$SERIES_ID}/rating"
@@ -83,5 +79,4 @@ object ApiConstants {
     const val LIST_LISTID = "list/{list_id}"
     const val DELETE_MOVIE_FROM_LIST = "list/{list_id}/remove_item"
     const val ADD_MOVIE_TO_LIST = "list/{list_id}/add_item"
-    const val API_KEY = "api_key"
 }
