@@ -1,7 +1,6 @@
 package com.berlin.aflami.viewmodel.mapper
 
 import android.icu.text.DecimalFormat
-import com.berlin.aflami.viewmodel.search.convertArabicToEnglish
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState

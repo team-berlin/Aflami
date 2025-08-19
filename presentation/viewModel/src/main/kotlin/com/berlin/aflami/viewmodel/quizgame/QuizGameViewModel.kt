@@ -143,8 +143,7 @@ class QuizGameViewModel @Inject constructor(
             .take(3)
 
         val options = (wrongYears + correctYear).shuffled()
-        options.also {   Log.e("nour",it.toString())}
-        Log.e("nour2",correctYear)
+        options
 
         Question(media.title, options, correctYear)
     }

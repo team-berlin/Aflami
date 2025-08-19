@@ -81,7 +81,6 @@ class FireBaseModelManager @Inject constructor(
                 }
 
             } catch (e: Exception) {
-                Log.e("FireBaseModelManager", "Error downloading models: ${e.message}", e)
             }
         }
     }

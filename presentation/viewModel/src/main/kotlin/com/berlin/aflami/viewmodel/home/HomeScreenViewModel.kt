@@ -224,8 +224,8 @@ class HomeScreenViewModel @Inject constructor(
     }
     //endregion
 
-    private fun List<String>.toGenreIds(): List<Int> {
-        return state.value.movieGenres.filter { this.contains(it.name) }
+    private fun List<Int>.toGenreIds(): List<Int> {
+        return state.value.movieGenres.filter {this.contains(it.id) }
             .map { it.id }
     }
 

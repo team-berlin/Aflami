@@ -115,31 +115,6 @@ fun MovieDetailsScreen(
         )
     }
 
-//    AnimatedVisibility(
-//        visible = uiState.snackBarMessage != null,
-//        enter =  EnterTransition.None ,
-//        exit = ExitTransition.None ,
-//    ) {
-//        val status =
-//            when(uiState.isSnackBarStatusSuccess){
-//                true -> SnackBarStatus.SUCCESS
-//                false -> SnackBarStatus.ERROR
-//                else -> SnackBarStatus.ERROR
-//            }
-//        val icon = when (status) {
-//            SnackBarStatus.SUCCESS -> painterResource(id = R.drawable.success)
-//            SnackBarStatus.ERROR -> painterResource(id = R.drawable.error)
-//        }
-//        Box(Modifier.statusBarsPadding()) {
-//            SnackBar(
-//                status = SnackBarStatus.SUCCESS,
-//                modifier = Modifier.fillMaxWidth().padding(16.dp),
-//                text = uiState.snackBarMessage.orEmpty(),
-//                iconPainter = icon
-//            )
-//        }
-//    }
-
     AnimatedVisibility(
         enter =  EnterTransition.None ,
         exit = ExitTransition.None , visible = uiState.showLoginDialog
@@ -236,7 +211,6 @@ fun MovieDetailsContent(
     onToggleDescriptionExpand: () -> Unit,
     movieDetailsTabs: MovieDetailsTabs,
     onChipClick: (MovieDetailsTabs) -> Unit,
-//    mediaType: MediaType,
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }

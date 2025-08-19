@@ -345,15 +345,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         }
     }
 
-//    private fun showSnackBar(message: String, isSuccess: Boolean) {
-//        updateState { it.copy(snackBarMessage = message, isSnackBarStatusSuccess = isSuccess) }
-//
-//        viewModelScope.launch {
-//            delay(3000)
-//            updateState { it.copy(snackBarMessage = null, isSnackBarStatusSuccess = null) }
-//        }
-//    }
-
     private fun updateCompanyProductionWithNoDataFound() {
         updateState { screenState ->
             screenState.copy(

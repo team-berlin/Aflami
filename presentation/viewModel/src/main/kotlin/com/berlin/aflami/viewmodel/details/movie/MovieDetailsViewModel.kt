@@ -428,7 +428,6 @@ class MovieDetailsViewModel @Inject constructor(
 
                         )
                     }
-                    //showSnackBar("Failed to submit rating.", isSuccess = false)
                 }
             )
         }

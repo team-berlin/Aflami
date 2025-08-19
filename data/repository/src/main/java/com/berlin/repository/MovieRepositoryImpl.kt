@@ -1,5 +1,6 @@
 package com.berlin.repository
 
+import android.util.Log
 import com.berlin.entity.Movie
 import com.berlin.exception.NetworkException
 import com.berlin.repository.datasource.local.datasource.HomeLocalDataSource
@@ -119,7 +120,7 @@ class MovieRepositoryImpl @Inject constructor(
             remoteMovies
         }catch (e: Exception) {
             val movies = homeLocalDataSource.getMoviesBySection(HomeSection.BY_MOOD)
-             movies.map { it.toDomain() }
+            movies.map { it.toDomain() }
         }
     }
 
