@@ -7,13 +7,12 @@ import com.berlin.entity.MediaImage
 import com.berlin.entity.Review
 import com.berlin.entity.TVShow
 import com.berlin.entity.Video
+import com.berlin.exception.NetworkException
 import com.berlin.repository.datasource.local.datasource.GenreLocalDataSource
 import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
-import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toTVShowGenreEntity
-import com.berlin.repository.util.Constants
 import com.berlin.repository.util.MediaUrls
 import com.berlin.repository.util.tmdbImageUrl
 import repository.TVShowDetailsRepository
@@ -38,8 +37,7 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             false
         }
-        return remoteDataSource.getTVShowDetailsById(tvShowId)
-            .toDomain(
+        return remoteDataSource.getTVShowDetailsById(tvShowId).toDomain(
                 galleryImages = galleryImages,
                 hasVideo = hasVideo,
             )
@@ -49,11 +47,21 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
         return try {
             val imagesResponse = remoteDataSource.getTVImagesById(id)
 
-            val backdrops = imagesResponse.backdrops
-                ?.mapNotNull { it.filePath?.let { path -> tmdbImageUrl(path = path,MediaUrls.TmdbImageSize.W500)} }
+            val backdrops = imagesResponse.backdrops?.mapNotNull {
+                    it.filePath?.let { path ->
+                        tmdbImageUrl(
+                            path = path, MediaUrls.TmdbImageSize.W500
+                        )
+                    }
+                }
 
-            val posters = imagesResponse.posters
-                ?.mapNotNull { it.filePath?.let { path -> tmdbImageUrl(path = path,MediaUrls.TmdbImageSize.W500) } }
+            val posters = imagesResponse.posters?.mapNotNull {
+                    it.filePath?.let { path ->
+                        tmdbImageUrl(
+                            path = path, MediaUrls.TmdbImageSize.W500
+                        )
+                    }
+                }
 
             MediaImage(backdrops = backdrops.orEmpty(), posters = posters.orEmpty())
         } catch (e: Exception) {
@@ -75,22 +83,20 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
         val genreScoresMap = recentlyWatchedLocalDataSource.getCategoryAsPreference()
             .associate { it.categoryId to it.count }
 
-        return remoteDataSource.getSimilarTVById(seriesId)
-            .results?.mapNotNull { tvShowDto ->
-            tvShowDto.toDomain(
-                galleryImages = galleryImages,
-                hasVideo = hasVideo
-            )
-        }?.sortedByDescending { tvShow ->
-            tvShow.genres.sumOf { genre ->
-                genreScoresMap[genre.id] ?: 0
-            }
-        }.orEmpty()
+        return remoteDataSource.getSimilarTVById(seriesId).results?.mapNotNull { tvShowDto ->
+                tvShowDto.toDomain(
+                    galleryImages = galleryImages, hasVideo = hasVideo
+                )
+            }?.sortedByDescending { tvShow ->
+                tvShow.genres.sumOf { genre ->
+                    genreScoresMap[genre.id] ?: 0
+                }
+            }.orEmpty()
     }
 
     override suspend fun getTVShowReviews(seriesId: Long): List<Review> {
         return remoteDataSource.getTVShowReviewsById(seriesId).results?.filterNotNull()
-            ?.map { reviewDto -> reviewDto.toDomain() } .orEmpty()
+            ?.map { reviewDto -> reviewDto.toDomain() }.orEmpty()
     }
 
 
@@ -99,32 +105,28 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
         seasonNumber: Int,
     ): List<Episode> {
         return remoteDataSource.getEpisodeSeasonTV(
-            tvShowId,
-            seasonNumber
-        ).episodes?.map { it.toDomain() }
-            .orEmpty()
+            tvShowId, seasonNumber
+        ).episodes?.map { it.toDomain() }.orEmpty()
     }
 
     override suspend fun getTVShowsGenres(): List<Genre> {
-        val cachedGenres = genreLocalDataSource.getCachedTVGenres()
-        if (!isExpiredOrEmpty(cachedGenres)) {
-            return cachedGenres.map { it.toDomain() }
+        return try {
+            val remoteGenres = remoteDataSource.getTVGenres().genres
+            genreLocalDataSource.cacheTVGenres(remoteGenres.map { it.toTVShowGenreEntity() })
+            remoteGenres.map { it.toDomain() }
+        } catch (e: NetworkException) {
+            return genreLocalDataSource.getCachedTVGenres().map { it.toDomain() }
+        } catch (e: Exception) {
+            throw e
         }
-
-        val remoteGenres = remoteDataSource.getTVGenres().genres
-        val genreEntities = remoteGenres.map { it.toTVShowGenreEntity() }
-        genreLocalDataSource.cacheTVGenres(genreEntities)
-        return remoteGenres.map { it.toDomain() }
     }
+
+
     override suspend fun getTVShowVideos(seriesId: Long): List<Video> {
         return remoteDataSource.getTVShowVideos(seriesId).results?.mapNotNull {
             it?.toDomain()
         }.orEmpty()
     }
 
-    private fun isExpiredOrEmpty(list: List<TVShowGenreEntity>): Boolean {
-        return list.isEmpty() || list.any {
-            System.currentTimeMillis() - it.time > Constants.CACHE_TIMEOUT
-        }
-    }
+
 }
