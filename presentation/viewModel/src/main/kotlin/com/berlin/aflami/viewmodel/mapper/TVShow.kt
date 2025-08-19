@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.mapper
 
 import android.icu.text.DecimalFormat
+import com.berlin.aflami.viewmodel.search.convertArabicToEnglish
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
@@ -10,7 +11,7 @@ import com.berlin.entity.TVShow
 fun TVShow.toUiState(): TVShowUiState {
     return TVShowUiState(
         id = id,
-        rating = DecimalFormat("#.#").format(rating).toString(),
+        rating = convertArabicToEnglish(DecimalFormat("#.#").format(rating).toString().replace('٫', '.')),
         title = title,
         genre = genres.map { it.toGenreUiState() },
         releaseDate = releaseDate,
