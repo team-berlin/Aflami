@@ -92,7 +92,7 @@ class LoginViewmodel @Inject constructor(
     override fun onCreateAccountClicked() =
         sendNewEffect(LoginScreenEffect.NavigateToCreateAccountScreen)
 
-    private fun handleErrorState(message: String) {
+    private fun handleErrorState(message: String?) {
         updateState { screenState ->
             screenState.copy(
                 isError = true,

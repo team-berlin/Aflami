@@ -213,7 +213,7 @@ private fun ProfileContent(
                 painterResource(R.drawable.profile_cover_night)
             else painterResource(R.drawable.profile_cover),
 
-        )
+            )
         Spacer(modifier = Modifier.height(24.dp))
         WatchHistoryRatingSection(
             onWatchHistoryClick = {profileScreenInteractionListener.onWatchHistoryClick()},

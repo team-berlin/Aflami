@@ -4,8 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,12 +50,12 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.MovieTab
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.base.MovieAlreadyExistInList
 import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
+import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsUiState
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsViewModel
 import com.berlin.aflami.viewmodel.details.movie.MoviesRowSectionUiState
-import com.berlin.aflami.viewmodel.details.movie.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.movie.UiText
 import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -117,30 +115,30 @@ fun MovieDetailsScreen(
         )
     }
 
-    AnimatedVisibility(
-        visible = uiState.snackBarMessage != null,
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-    ) {
-        val status =
-            when(uiState.isSnackBarStatusSuccess){
-                true -> SnackBarStatus.SUCCESS
-                false -> SnackBarStatus.ERROR
-                else -> SnackBarStatus.ERROR
-            }
-        val icon = when (status) {
-            SnackBarStatus.SUCCESS -> painterResource(id = R.drawable.success)
-            SnackBarStatus.ERROR -> painterResource(id = R.drawable.error)
-        }
-        Box(Modifier.statusBarsPadding()) {
-            SnackBar(
-                status = status,
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                text = uiState.snackBarMessage.orEmpty(),
-                iconPainter = icon
-            )
-        }
-    }
+//    AnimatedVisibility(
+//        visible = uiState.snackBarMessage != null,
+//        enter =  EnterTransition.None ,
+//        exit = ExitTransition.None ,
+//    ) {
+//        val status =
+//            when(uiState.isSnackBarStatusSuccess){
+//                true -> SnackBarStatus.SUCCESS
+//                false -> SnackBarStatus.ERROR
+//                else -> SnackBarStatus.ERROR
+//            }
+//        val icon = when (status) {
+//            SnackBarStatus.SUCCESS -> painterResource(id = R.drawable.success)
+//            SnackBarStatus.ERROR -> painterResource(id = R.drawable.error)
+//        }
+//        Box(Modifier.statusBarsPadding()) {
+//            SnackBar(
+//                status = SnackBarStatus.SUCCESS,
+//                modifier = Modifier.fillMaxWidth().padding(16.dp),
+//                text = uiState.snackBarMessage.orEmpty(),
+//                iconPainter = icon
+//            )
+//        }
+//    }
 
     AnimatedVisibility(
         enter =  EnterTransition.None ,
@@ -260,7 +258,7 @@ fun MovieDetailsContent(
         LazyColumn(modifier = Modifier.zIndex(0f), state = listState) {
             item {
                 MovieBackdropPager(
-                    state = state, onPlayClick = { listener.onPlayClicked(state.videoUrl) })
+                    state = state, onPlayClick = { state.videoUrl?.let { listener.onPlayClicked(it) } })
             }
 
             item {
@@ -394,13 +392,28 @@ fun MovieDetailsContent(
                         })
                 }
 
-                SNACK_BAR_STATUS.LIST_DELETED -> {}
-                SNACK_BAR_STATUS.LIST_RENAMED -> {}
-                null -> {}
+                SNACK_BAR_STATUS.RATING_ADDED -> if (state.snackBar.isOperationSucceeded) {
+                    SnackBar(
+                        isVisible = state.snackBar.isVisible,
+                        status = SnackBarStatus.SUCCESS,
+                        text = "Successfully submitted rating.",
+                        iconPainter = painterResource(id = R.drawable.success),
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        onDismiss = { listener.dismissSnackBar() })
+                } else {
+                    SnackBar(
+                        isVisible = state.snackBar.isVisible,
+                        status = SnackBarStatus.ERROR,
+                        text = "Failed to submit rating.",
+                        iconPainter = painterResource(id = R.drawable.error),
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        onDismiss = {
+                            listener.dismissSnackBar()
+                        })
+                }
+                else -> {}
             }
         }
-
-
     }
 
 }

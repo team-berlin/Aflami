@@ -3,6 +3,7 @@ package com.berlin.aflami.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,7 +55,8 @@ fun SelectionButton(
     Row(
         modifier = modifier
             .background(backgroundColor, RoundedCornerShape(16.dp))
-            .border(1.dp, borderColor, RoundedCornerShape(16.dp)),
+            .border(1.dp, borderColor, RoundedCornerShape(16.dp))
+            .clickable { onClick() },
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Row(

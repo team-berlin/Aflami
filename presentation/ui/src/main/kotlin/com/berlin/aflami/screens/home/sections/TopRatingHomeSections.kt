@@ -8,17 +8,21 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
@@ -44,14 +48,24 @@ fun TopRatingHomeSections(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 6.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = stringResource(sectionTitleId),
-                style = Theme.textStyle.headline.small,
-                color = Theme.color.textColors.title
-            )
+
+                Text(
+                    text = stringResource(sectionTitleId),
+                    style = Theme.textStyle.headline.small,
+                    color = Theme.color.textColors.title,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Icon(
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(20.dp),
+                    painter = painterResource(com.berlin.designsystem.R.drawable.trending),
+                    tint = Theme.color.secondary,
+                    contentDescription = stringResource(com.berlin.designsystem.R.string.trending)
+                )
+            Spacer(Modifier.weight(1f))
             Text(
                 text = stringResource(R.string.all),
                 style = Theme.textStyle.label.medium,
@@ -74,22 +88,23 @@ fun TopRatingHomeSections(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state) {item->
+                items(state) { item ->
                     MediaCard(
                         Modifier
                             .height(222.dp)
                             .width(cardWidth),
                         mediaImg = item.poster,
                         title = item.title,
-                        typeOfMedia = item.mediaType?.name ?: MediaType.MOVIE.name,
+                        typeOfMedia = item.mediaType.name,
                         date = item.releaseYear,
                         rating = item.rating,
                     ) {
-                        when(item.mediaType){
+                        when (item.mediaType) {
                             MediaType.MOVIE -> onMovieItemClicked(item.id)
                             MediaType.TV_SHOW -> onTVShowItemClicked(item.id)
                             else -> throw IllegalArgumentException("Unknown media type")
-                        }                    }
+                        }
+                    }
                 }
 
             }
