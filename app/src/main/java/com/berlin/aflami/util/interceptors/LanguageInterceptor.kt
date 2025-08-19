@@ -1,34 +1,22 @@
-package com.berlin.aflami.util.interceptors
+package com.berlin.aflami.util
 
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import androidx.appcompat.app.AppCompatDelegate
 import okhttp3.Interceptor
 import okhttp3.Response
-import usecase.profile.GetLanguageUseCase
-import java.util.Locale
 
 class LanguageInterceptor(
-    val getLanguageUseCase: GetLanguageUseCase
+
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val original = chain.request()
-        val originalUrl = original.url
+        val request = chain.request()
 
-        val shouldSkipLanguage = originalUrl.encodedPath.endsWith(IMAGES_PATH) ||
-                originalUrl.encodedPath.endsWith(VIDEOS_PATH)
-
-        val newUrlBuilder = originalUrl.newBuilder()
-        if (!shouldSkipLanguage) {
-            val tmdbLanguageParam = runBlocking {
-                val lang = getLanguageUseCase().first().orEmpty().lowercase(Locale.ROOT)
-                if (lang == AR) AR_EG else "${lang}-US"
-            }
-
-            newUrlBuilder.addQueryParameter(LANGUAGE, tmdbLanguageParam)
-        }
-        val newRequest = original.newBuilder()
-            .url(newUrlBuilder.build())
+        val url = request.url.newBuilder()
+            .setQueryParameter(
+                "language",
+                AppCompatDelegate.getApplicationLocales().toLanguageTags()
+            )
             .build()
-        return chain.proceed(newRequest)
+
+        return chain.proceed(request.newBuilder().url(url).build())
     }
 }

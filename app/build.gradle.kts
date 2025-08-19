@@ -113,9 +113,8 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.datastore.preferences.core.android)
-    implementation(libs.androidx.security.crypto)
-
-// Firebase
+    implementation(libs.androidx.appcompat)
+    testImplementation(libs.bundles.test)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
     implementation(libs.firebase.crashlytics.ktx)
