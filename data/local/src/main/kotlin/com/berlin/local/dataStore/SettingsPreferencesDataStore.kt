@@ -26,7 +26,7 @@ class SettingsPreferencesDataStore @Inject constructor(private val context: Cont
         }
     }
 
-    fun getTheme(): Flow<String?> {
+    fun getTheme(): Flow<String> {
         return context.dataStore.data.map { prefs ->
             prefs[APP_THEME] ?: "DARK"
         }

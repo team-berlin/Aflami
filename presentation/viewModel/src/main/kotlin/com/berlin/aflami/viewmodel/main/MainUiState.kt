@@ -4,5 +4,5 @@ data class MainUiState(
     val isLoading: Boolean = true,
     val isLoggedIn: Boolean = false,
     val isFirstEntry: Boolean = false,
-    val isDark: Boolean = false
+    val isDark: Boolean = false,
 )

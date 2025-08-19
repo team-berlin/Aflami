@@ -1,12 +1,12 @@
 package com.berlin.aflami.viewmodel.mapper
 
 import com.berlin.aflami.viewmodel.search.parseRating
+import android.icu.text.DecimalFormat
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.aflami.viewmodel.shareduistate.toGenreUiState
 import com.berlin.entity.TVShow
-import java.text.DecimalFormat
 
 fun TVShow.toUiState(): TVShowUiState {
     return TVShowUiState(

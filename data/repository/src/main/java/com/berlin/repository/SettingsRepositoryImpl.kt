@@ -9,7 +9,7 @@ import javax.inject.Inject
 class SettingsRepositoryImpl @Inject constructor(
     private val settingsDataStore: SettingsLocalDataSource
 ) : SettingsRepository {
-    override fun getTheme(): Flow<String?> {
+    override fun getTheme(): Flow<String> {
         return settingsDataStore.getTheme()
     }
 
