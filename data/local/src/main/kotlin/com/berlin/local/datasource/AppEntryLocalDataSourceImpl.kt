@@ -1,7 +1,7 @@
 package com.berlin.local.datasource
 
 import com.berlin.local.dao.AppEntryDao
-import com.berlin.repository.datasource.local.AppEntryLocalDataSource
+import com.berlin.repository.datasource.local.datasource.AppEntryLocalDataSource
 import com.berlin.repository.datasource.local.dto.AppEntryEntity
 import javax.inject.Inject
 

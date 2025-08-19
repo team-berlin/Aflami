@@ -1,9 +1,9 @@
 package com.berlin.local.datasource
 
 import com.berlin.local.dao.SearchDao
-import com.berlin.repository.datasource.local.SearchLocalDataSource
+import com.berlin.repository.datasource.local.datasource.SearchLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
-import com.berlin.repository.datasource.local.dto.SearchingEntity
+import com.berlin.repository.datasource.local.dto.RecentSearchHistoryEntity
 import javax.inject.Inject
 
 class SearchLocalDataSourceImpl  @Inject constructor (
@@ -14,7 +14,7 @@ class SearchLocalDataSourceImpl  @Inject constructor (
         type: QueryType,
         pageSize: Int,
         page: Int
-    ): List<SearchingEntity> {
+    ): List<RecentSearchHistoryEntity> {
         return searchDao.getCachedSearch(
             query = query,
             type = type,
@@ -22,7 +22,7 @@ class SearchLocalDataSourceImpl  @Inject constructor (
             skip = (page - 1) * 20
         )
     }
-    override suspend fun cacheSearch(movies: List<SearchingEntity>) {
+    override suspend fun cacheSearch(movies: List<RecentSearchHistoryEntity>) {
         searchDao.cacheSearch(movies)
     }
 }

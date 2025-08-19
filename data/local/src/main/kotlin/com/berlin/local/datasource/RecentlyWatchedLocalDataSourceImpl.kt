@@ -1,8 +1,8 @@
 package com.berlin.local.datasource
 
-import com.berlin.local.dao.CategoriesPreferencesDao
+import com.berlin.local.dao.GenrePreferencesDao
 import com.berlin.local.dao.ContinueWatchingDao
-import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class RecentlyWatchedLocalDataSourceImpl @Inject constructor(
     private val continueWatchingDao: ContinueWatchingDao,
-    private val categoriesPreferencesDao: CategoriesPreferencesDao
+    private val genrePreferencesDao: GenrePreferencesDao
 ) : RecentlyWatchedLocalDataSource {
     override suspend fun getRecentlyWatchedMovie(
         pageSize: Int, page: Int
@@ -25,7 +25,7 @@ class RecentlyWatchedLocalDataSourceImpl @Inject constructor(
             addCategoryAsPreference(
                 CategoriesPreferencesEntity(
                     categoryId = it.toInt(),
-                    count = categoriesPreferencesDao.getCount(it.toInt())?.plus(1) ?: 1
+                    count = genrePreferencesDao.getCount(it.toInt())?.plus(1) ?: 1
                 )
             )
         }
@@ -47,10 +47,10 @@ class RecentlyWatchedLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun addCategoryAsPreference(categories: CategoriesPreferencesEntity) {
-        categoriesPreferencesDao.insert(categories)
+        genrePreferencesDao.insert(categories)
     }
 
     override suspend fun getCategoryAsPreference(): List<CategoriesPreferencesEntity> {
-        return categoriesPreferencesDao.getAll()
+        return genrePreferencesDao.getAll()
     }
 }
