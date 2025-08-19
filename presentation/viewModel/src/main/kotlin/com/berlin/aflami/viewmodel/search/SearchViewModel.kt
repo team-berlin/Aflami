@@ -7,13 +7,10 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.entity.Genre
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -67,21 +64,7 @@ class SearchViewModel @Inject constructor(
     }
 
     // region Recent Searches
-    private fun loadRecentSearches() {
-        updateUiStateWithLoading()
-        tryToCall(
-            call = {
-                coroutineScope {
-                    val movies = async { recentMoviesHistoryUseCase() }
-                    val tvShows = async { recentTvShowHistoryUseCase() }
-                    val recentSearches = movies.await() + tvShows.await()
-                    recentSearches.distinct()
-                }
-            },
-            onSuccess = ::onLoadRecentSearchesSuccess,
-            onError = ::updateRecentSearchesWithError
-        )
-    }
+
 
     private fun updateRecentSearchesWithError(error: ErrorUiState) {
         updateState { screenState ->
@@ -92,15 +75,17 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun onLoadRecentSearchesSuccess(recentSearches: List<String>) {
-        updateState { it.copy(recentSearches = recentSearches, errorMessage = null) }
-    }
 
     private fun onClearAllRecentSearchesSuccess() {
         updateState { it.copy(recentSearches = emptyList()) }
     }
 
     override fun onRecentSearchClicked(query: String) {
+        updateState {
+            it.copy(
+                isLoading = true,
+            )
+        }
         onSearchQueryChanged(
             TextFieldValue(
                 text = query,
@@ -115,7 +100,7 @@ class SearchViewModel @Inject constructor(
                 deleteQueryFromMoviesHistoryUseCase(query)
                 deleteQueryFromTVShowHistoryUseCase(query)
             },
-            onSuccess = { loadRecentSearches() },
+            onSuccess = { loadRecentSearch() },
             onError = ::updateRecentSearchClearedWithError,
         )
     }
@@ -465,7 +450,7 @@ class SearchViewModel @Inject constructor(
 
     private fun loadRecentSearch() {
         viewModelScope.launch {
-            _recentSearchState.value = recentMoviesHistoryUseCase() + recentTvShowHistoryUseCase()
+            _recentSearchState.value = recentMoviesHistoryUseCase()
         }
     }
 
