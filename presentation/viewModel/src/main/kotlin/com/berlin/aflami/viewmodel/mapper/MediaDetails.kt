@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.mapper
 
+import android.icu.text.DecimalFormat
 import com.berlin.aflami.viewmodel.details.common.CompanyProductionUiState
 import com.berlin.aflami.viewmodel.details.common.ReviewUiState
 import com.berlin.aflami.viewmodel.details.series.EpisodeUiState
@@ -41,7 +42,7 @@ fun Episode.toEpisodeUiState(): EpisodeUiState {
         name = this.name,
         overview = this.description,
         runtime = this.duration.toString(),
-        voteAverage = this.rating,
+        voteAverage = DecimalFormat("#.#").format(rating).toString(),
         stillPath = this.stillPath
     )
 }
