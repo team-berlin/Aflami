@@ -25,7 +25,7 @@ interface AuthenticationApiService {
     @POST(ApiConstants.DELETE_SESSION_ENDPOINT)
     suspend fun logout(@Body sessionRequest: RequestTokenDTO): Response<Unit>
 
-    @GET("account")
+    @GET(ApiConstants.ACCOUNT)
     suspend fun getAccountDetails(
         @Query(SESSION_ID) sessionId: String,
     ): Response<UserProfileDto>

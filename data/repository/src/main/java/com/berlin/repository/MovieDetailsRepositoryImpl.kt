@@ -7,8 +7,8 @@ import com.berlin.entity.Movie
 import com.berlin.entity.Review
 import com.berlin.entity.Video
 import com.berlin.exception.AflamiException
-import com.berlin.repository.datasource.local.GenreLocalDataSource
-import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.datasource.GenreLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain

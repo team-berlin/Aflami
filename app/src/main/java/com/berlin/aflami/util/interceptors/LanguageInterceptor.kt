@@ -1,4 +1,4 @@
-package com.berlin.aflami.util
+package com.berlin.aflami.util.interceptors
 
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -14,16 +14,17 @@ class LanguageInterceptor(
         val original = chain.request()
         val originalUrl = original.url
 
-        val shouldSkipLanguage = originalUrl.encodedPath.endsWith("/images") ||
-                originalUrl.encodedPath.endsWith("/videos")
+        val shouldSkipLanguage = originalUrl.encodedPath.endsWith(IMAGES_PATH) ||
+                originalUrl.encodedPath.endsWith(VIDEOS_PATH)
 
         val newUrlBuilder = originalUrl.newBuilder()
         if (!shouldSkipLanguage) {
             val tmdbLanguageParam = runBlocking {
                 val lang = getLanguageUseCase().first().orEmpty().lowercase(Locale.ROOT)
-                if (lang == "ar") "ar-EG" else "${lang}-US"
+                if (lang == AR) AR_EG else "${lang}-US"
             }
-            newUrlBuilder.addQueryParameter("language", tmdbLanguageParam)
+
+            newUrlBuilder.addQueryParameter(LANGUAGE, tmdbLanguageParam)
         }
         val newRequest = original.newBuilder()
             .url(newUrlBuilder.build())

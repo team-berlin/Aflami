@@ -1,9 +1,8 @@
 package com.berlin.repository
 
-import com.berlin.entity.*
 import com.berlin.exception.AflamiException
-import com.berlin.repository.datasource.local.GenreLocalDataSource
-import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.datasource.GenreLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
 import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
@@ -11,23 +10,18 @@ import com.berlin.repository.datasource.remote.dto.*
 import com.berlin.repository.datasource.remote.dto.details.VideoDto
 import com.berlin.repository.datasource.remote.dto.details.VideosResponse
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
-import com.berlin.repository.datasource.remote.dto.movie.MovieDto
 import com.berlin.repository.datasource.remote.response.BaseResponse
 import com.berlin.repository.datasource.remote.response.GenreResponse
 import com.berlin.repository.datasource.remote.response.MediaCastResponse
 import com.berlin.repository.datasource.remote.response.MediaImagesResponse
-import com.berlin.repository.mapper.toDomain
-import com.berlin.repository.mapper.toMoviesGenreEntity
 import com.berlin.repository.util.Constants
 import com.google.common.truth.Truth.assertThat
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test

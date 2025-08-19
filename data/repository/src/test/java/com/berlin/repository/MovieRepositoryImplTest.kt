@@ -1,15 +1,15 @@
 package com.berlin.repository
 
-import com.berlin.repository.datasource.local.HomeLocalDataSource
-import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
-import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
-import com.berlin.repository.datasource.local.dto.SectionHome
+import com.berlin.repository.datasource.local.datasource.HomeLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentHistoryLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.dto.HomeSection
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.fake.dummydata.DummyData.baseResponseMovieDetails
 import com.berlin.repository.fake.dummydata.DummyData.baseResponsePersonDto
 import com.berlin.repository.fake.dummydata.DummyData.mediaPreferencesList
 import com.berlin.repository.fake.dummydata.DummyData.movieEntity
-import com.berlin.repository.fake.dummydata.DummyData.movieHomeEntity
+import com.berlin.repository.fake.dummydata.DummyData.homeMovieEntity
 import com.berlin.repository.fake.dummydata.DummyData.recentlyWatchedMovieEntity
 import com.berlin.repository.mapper.toDomain
 import io.mockk.Runs
@@ -70,11 +70,11 @@ class MovieRepositoryImplTest {
 
     @Test
     fun `getTopRatedMovies returns local data if not expired`() = runTest {
-
         val localMovie = listOf(
-            movieHomeEntity.copy(addedAt = System.currentTimeMillis())
+
+                homeMovieEntity.copy()
         )
-        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING) } returns localMovie
+        coEvery { homeLocalDataSource.getMoviesBySection(HomeSection.TOP_RATING) } returns localMovie
 
         val result = movieRepository.getTopRatedMovies(1)
 
@@ -86,7 +86,7 @@ class MovieRepositoryImplTest {
 
         val movieList = baseResponseMovieDetails
 
-        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING) } returns emptyList()
+        coEvery { homeLocalDataSource.getMoviesBySection(HomeSection.TOP_RATING) } returns emptyList()
         coEvery { remoteDataSource.getTopRatedMovies(1) } returns movieList
         coEvery { homeLocalDataSource.clearHomeScreenMovies(any()) } just Runs
         coEvery { homeLocalDataSource.addMovies(any()) } just Runs
@@ -100,9 +100,9 @@ class MovieRepositoryImplTest {
     fun `getUpComingMovies returns local data if not expired`() = runTest {
 
         val localMovie = listOf(
-            movieHomeEntity.copy(addedAt = System.currentTimeMillis())
+            homeMovieEntity.copy()
         )
-        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.UPCOMING) } returns localMovie
+        coEvery { homeLocalDataSource.getMoviesBySection(HomeSection.UPCOMING) } returns localMovie
 
         val result = movieRepository.getUpComingMovies()
 
@@ -114,7 +114,7 @@ class MovieRepositoryImplTest {
 
         val movieList = baseResponseMovieDetails
 
-        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.UPCOMING) } returns emptyList()
+        coEvery { homeLocalDataSource.getMoviesBySection(HomeSection.UPCOMING) } returns emptyList()
         coEvery { remoteDataSource.getUpComingMovies(genreId) } returns movieList
         coEvery { homeLocalDataSource.clearHomeScreenMovies(any()) } just Runs
         coEvery { homeLocalDataSource.addMovies(any()) } just Runs
@@ -129,9 +129,9 @@ class MovieRepositoryImplTest {
     fun `getPopularMovie returns local data if not expired`() = runTest {
 
         val localMovie = listOf(
-            movieHomeEntity.copy(addedAt = System.currentTimeMillis())
+            homeMovieEntity.copy()
         )
-        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR) } returns localMovie
+        coEvery { homeLocalDataSource.getMoviesBySection(HomeSection.POPULAR) } returns localMovie
 
         val result = movieRepository.getPopularMovies()
 
@@ -142,7 +142,7 @@ class MovieRepositoryImplTest {
     fun `getPopularMovie returns remote data when local is empty`() = runTest {
 
         val remoteMovie = baseResponseMovieDetails
-        coEvery { homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR) } returns emptyList()
+        coEvery { homeLocalDataSource.getMoviesBySection(HomeSection.POPULAR) } returns emptyList()
         coEvery { remoteDataSource.getPopularMovies() } returns remoteMovie
         coEvery { homeLocalDataSource.clearHomeScreenMovies(any()) } just Runs
         coEvery { homeLocalDataSource.addMovies(any()) } just Runs

@@ -9,6 +9,8 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.berlin.aflami.workers.HomeClearWorker
+import com.berlin.aflami.workers.RecentSearchClearWorker
 import com.berlin.safeimageviewer.FireBaseModelManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope

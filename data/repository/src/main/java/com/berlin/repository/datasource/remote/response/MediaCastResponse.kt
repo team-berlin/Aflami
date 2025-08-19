@@ -9,7 +9,6 @@ data class MediaCastResponse(
 
     @SerialName("cast")
     val cast: List<CastItemDto>? = null,
-
     @SerialName("id")
     val id: Int? = null
 

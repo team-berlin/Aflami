@@ -43,6 +43,7 @@ javaxInject = "1"
 datastoreCoreAndroid = "1.1.7"
 datastorePreferencesCoreAndroid = "1.1.7"
 
+turbine = "1.1.0"
 workerRuntimeKtx = "2.10.0"
 hilt = "2.55"
 hilt-work = "1.2.0"
@@ -106,6 +107,7 @@ jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", v
 firebase-ml-modeldownloader = { module = "com.google.firebase:firebase-ml-modeldownloader", version.ref = "firebaseMlModeldownloader" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 androidx-datastore-preferences-core-android = { group = "androidx.datastore", name = "datastore-preferences-core-android", version.ref = "datastorePreferencesCoreAndroid" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -137,14 +139,10 @@ coil = [
     "coil-network"
 ]
 
-
-
-
 composeUiDebug = [
     "androidx-ui-tooling",
     "androidx-ui-test-manifest"
 ]
-
 
 test = [
     "junit",

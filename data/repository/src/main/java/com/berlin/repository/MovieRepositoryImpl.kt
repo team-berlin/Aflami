@@ -1,14 +1,13 @@
 package com.berlin.repository
 
-import android.util.Log
 import com.berlin.entity.Movie
 import com.berlin.exception.NetworkException
-import com.berlin.repository.datasource.local.HomeLocalDataSource
-import com.berlin.repository.datasource.local.RecentHistoryLocalDataSource
-import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.repository.datasource.local.datasource.HomeLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentHistoryLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.QueryType
-import com.berlin.repository.datasource.local.dto.SearchingEntity
-import com.berlin.repository.datasource.local.dto.SectionHome
+import com.berlin.repository.datasource.local.dto.HomeSection
+import com.berlin.repository.datasource.local.dto.RecentSearchHistoryEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toMovieByMoodEntity
@@ -57,11 +56,11 @@ class MovieRepositoryImpl @Inject constructor(
             }
 
             remoteMovies.ifEmpty {
-                homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING)
+                homeLocalDataSource.getMoviesBySection(HomeSection.TOP_RATING)
                     .map { it.toDomain() }
             }
         } catch (e: NetworkException) {
-            homeLocalDataSource.getMoviesBySection(SectionHome.TOP_RATING)
+            homeLocalDataSource.getMoviesBySection(HomeSection.TOP_RATING)
                 .map { it.toDomain() }
         } catch (e: Exception) {
             throw e
@@ -79,11 +78,11 @@ class MovieRepositoryImpl @Inject constructor(
                 )
             }
             remoteMovies.ifEmpty {
-                homeLocalDataSource.getUpcomingMoviesByGenre(SectionHome.UPCOMING, genreId)
+                homeLocalDataSource.getUpcomingMoviesByGenre(HomeSection.UPCOMING, genreId)
                     .map { it.toDomain() }
             }
         }  catch (e: NetworkException) {
-            homeLocalDataSource.getUpcomingMoviesByGenre(SectionHome.UPCOMING, genreId)
+            homeLocalDataSource.getUpcomingMoviesByGenre(HomeSection.UPCOMING, genreId)
                 .map { it.toDomain() }
         } catch (e: Exception) {
             throw e
@@ -100,11 +99,11 @@ class MovieRepositoryImpl @Inject constructor(
                 homeLocalDataSource.addMovies(remoteMovies.map { it.toPopularMovieEntity() })
             }
             remoteMovies.ifEmpty {
-                homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR)
+                homeLocalDataSource.getMoviesBySection(HomeSection.POPULAR)
                     .map { it.toDomain() }
             }
         }  catch (e: NetworkException) {
-            homeLocalDataSource.getMoviesBySection(SectionHome.POPULAR)
+            homeLocalDataSource.getMoviesBySection(HomeSection.POPULAR)
                 .map { it.toDomain() }
         } catch (e: Exception) {
             throw e
@@ -119,7 +118,7 @@ class MovieRepositoryImpl @Inject constructor(
             }
             remoteMovies
         }catch (e: Exception) {
-            val movies = homeLocalDataSource.getMoviesBySection(SectionHome.BY_MOOD)
+            val movies = homeLocalDataSource.getMoviesBySection(HomeSection.BY_MOOD)
              movies.map { it.toDomain() }
         }
     }
@@ -169,10 +168,10 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveRecentMoviesHistory(query: String) {
-        val entity = SearchingEntity(
+        val entity = RecentSearchHistoryEntity(
             query = query,
-            type = QueryType.HISTORY.name,
-            queryType = QueryType.MOVIE,
+            type = QueryType.MOVIE,
+            time = System.currentTimeMillis(),
         )
         recentHistoryLocalDataSource.insertQueryOnly(entity)
     }

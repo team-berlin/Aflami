@@ -1,8 +1,8 @@
 package com.berlin.aflami.di
 
 import com.berlin.aflami.BuildConfig
-import com.berlin.aflami.util.ApiKeyInterceptor
-import com.berlin.aflami.util.LanguageInterceptor
+import com.berlin.aflami.util.interceptors.ApiKeyInterceptor
+import com.berlin.aflami.util.interceptors.LanguageInterceptor
 import com.berlin.remote.network.ApiService
 import com.berlin.remote.network.AuthenticationApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory

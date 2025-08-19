@@ -7,11 +7,11 @@ import com.berlin.entity.Review
 import com.berlin.entity.Season
 import com.berlin.entity.TVShow
 import com.berlin.repository.datasource.local.dto.CategoriesPreferencesEntity
-import com.berlin.repository.datasource.local.dto.MovieHomeEntity
+import com.berlin.repository.datasource.local.dto.HomeMovieEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedMovieEntity
 import com.berlin.repository.datasource.local.dto.RecentlyWatchedTvShowEntity
-import com.berlin.repository.datasource.local.dto.SectionHome
-import com.berlin.repository.datasource.local.dto.TVShowHomeEntity
+import com.berlin.repository.datasource.local.dto.HomeSection
+import com.berlin.repository.datasource.local.dto.HomeTVShowEntity
 import com.berlin.repository.datasource.remote.dto.PersonDto
 import com.berlin.repository.datasource.remote.dto.TVShowDetailsDto
 import com.berlin.repository.datasource.remote.dto.movie.MovieDetailsDto
@@ -130,28 +130,27 @@ object DummyData {
     )
 
     //===== Movie =====
-    val movieHomeEntity = MovieHomeEntity(
+    val homeMovieEntity = HomeMovieEntity(
         id = 1,
         title = "Local Movie",
-        addedAt = System.currentTimeMillis(),
-        sectionHome = SectionHome.TOP_RATING,
+        homeSection = HomeSection.TOP_RATING,
         rating = "8.9",
         releaseYear = "2022",
         genre = listOf(1,2),
         poster = "/poster_top.jpg"
     )
-    val movieHomeEntityTopRated = movieHomeEntity.copy(
-        sectionHome = SectionHome.TOP_RATING,
+    val movieHomeEntityTopRated = homeMovieEntity.copy(
+        homeSection = HomeSection.TOP_RATING,
         title = "Top Rated Movie"
     )
 
-    val movieHomeEntityUpcoming = movieHomeEntity.copy(
-        sectionHome = SectionHome.UPCOMING,
+    val movieHomeEntityUpcoming = homeMovieEntity.copy(
+        homeSection = HomeSection.UPCOMING,
         title = "Upcoming Movie"
     )
 
-    val movieHomeEntityPopular = movieHomeEntity.copy(
-        sectionHome = SectionHome.POPULAR,
+    val movieHomeEntityPopular = homeMovieEntity.copy(
+        homeSection = HomeSection.POPULAR,
         title = "Popular Movie"
     )
 
@@ -187,29 +186,28 @@ object DummyData {
 
     //==== TVShow =====
 
-    val tvShowHomeEntity = TVShowHomeEntity(
+    val homeTVShowEntity = HomeTVShowEntity(
         id = 1,
         title = "Local TV Show",
-        addedAt = System.currentTimeMillis(),
-        sectionHome = SectionHome.TOP_RATING,
+        homeSection = HomeSection.TOP_RATING,
         rating = "9.0",
         releaseYear = "2023",
         genre = listOf(1, 2),
         poster = "/poster_top_tv.jpg"
     )
 
-    val tvShowHomeEntityTopRated = tvShowHomeEntity.copy(
-        sectionHome = SectionHome.TOP_RATING,
+    val tvShowHomeEntityTopRated = homeTVShowEntity.copy(
+        homeSection = HomeSection.TOP_RATING,
         title = "Top Rated TV Show"
     )
 
-    val tvShowHomeEntityUpcoming = tvShowHomeEntity.copy(
-        sectionHome = SectionHome.UPCOMING,
+    val tvShowHomeEntityUpcoming = homeTVShowEntity.copy(
+        homeSection = HomeSection.UPCOMING,
         title = "Upcoming TV Show"
     )
 
-    val tvShowHomeEntityPopular = tvShowHomeEntity.copy(
-        sectionHome = SectionHome.POPULAR,
+    val tvShowHomeEntityPopular = homeTVShowEntity.copy(
+        homeSection = HomeSection.POPULAR,
         title = "Popular TV Show"
     )
 
