@@ -12,8 +12,6 @@ import usecase.auth.LogoutUseCase
 import usecase.game.GetPointsUseCase
 import usecase.profile.ClearUserProfileUseCase
 import usecase.profile.GetContentRestrictionUseCase
-import usecase.profile.GetLanguageUseCase
-import usecase.profile.GetThemeUseCase
 import usecase.profile.ObserveUserProfileUseCase
 import usecase.profile.SetContentRestrictionUseCase
 import usecase.profile.SetLanguageUseCase
@@ -22,8 +20,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    val getLanguageUseCase: GetLanguageUseCase,
-    val getThemeUseCase: GetThemeUseCase,
     val setLanguageUseCase: SetLanguageUseCase,
     val setThemeUseCase: SetThemeUseCase,
     val getLoginStatus: GetLoginUseCase,
@@ -37,8 +33,6 @@ class ProfileViewModel @Inject constructor(
     ProfileInteractionListener {
 
     init {
-        collectTheme()
-        collectLanguage()
         collectUserProfile()
         collectContentRestriction()
         checkLoginStatus()
@@ -256,37 +250,6 @@ class ProfileViewModel @Inject constructor(
             "MODERATE" -> 50
             "OFF" -> 0
             else -> 100
-        }
-    }
-
-    private fun collectTheme() {
-        viewModelScope.launch {
-            getThemeUseCase().collect { collectedTheme ->
-                updateState {
-                    it.copy(
-                        themeOption = ThemeOption(
-                            selectedTheme = collectedTheme,
-                            isDarkThemeEnabled = collectedTheme == AppTheme.DARK.name
-                        ),
-
-                        )
-                }
-            }
-        }
-    }
-
-    private fun collectLanguage() {
-        viewModelScope.launch {
-            getLanguageUseCase().collect { collectedLanguage ->
-                updateState {
-                    it.copy(
-                        languageOption = LanguageOption(
-                            selectedLanguage = collectedLanguage,
-                            isEnglishEnabled = collectedLanguage == AppLanguage.EN.name,
-                        )
-                    )
-                }
-            }
         }
     }
 
