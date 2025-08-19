@@ -222,7 +222,6 @@ fun TvShowDetailsContent(
     onToggleDescriptionExpand: () -> Unit,
     movieDetailsTabs: TVShowDetailsTabs,
     onChipClick: (TVShowDetailsTabs) -> Unit,
-//
 ) {
     val listState = rememberLazyListState()
     val appBarFadeHeightPx = with(LocalDensity.current) { 50.dp.roundToPx() }

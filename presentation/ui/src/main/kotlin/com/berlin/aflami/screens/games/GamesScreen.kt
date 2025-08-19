@@ -138,6 +138,7 @@ fun GamesContent(
 
     Column(
         modifier = Modifier
+            .fillMaxSize()
             .background(Theme.color.surface)
             .statusBarsPadding()
         .padding(top = 13.dp)
