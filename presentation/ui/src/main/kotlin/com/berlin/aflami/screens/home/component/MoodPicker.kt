@@ -128,11 +128,12 @@ private fun MoodPickerContent(
             modifier = Modifier.padding(12.dp)
         )
         Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+     horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             moodIcons.forEach { iconRes ->
                 MoodIcon(
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .weight(1f) ,
                     iconRes = iconRes,
                     isSelected = selectedMood == iconRes,
                     onClick = {
