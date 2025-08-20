@@ -25,7 +25,7 @@ fun DefaultBar(
     lastOptionContentDescription: String? = null,
     containerColor: Color = Color.Unspecified,
     firstOptionIconTint: Color = Theme.color.textColors.body,
-    lastOptionIconTint: Color =  Theme.color.textColors.body,
+    lastOptionIconTint: Color = Theme.color.textColors.body,
     optionContainerColor: Color = Theme.color.primaryVariant,
     onFirstOptionClicked: () -> Unit = {},
     onLastOptionClicked: () -> Unit = {},
@@ -49,8 +49,10 @@ fun DefaultBar(
                     painter = painterResource(R.drawable.arrow_left),
                     tint = Theme.color.textColors.title,
                     contentDescription = null,
-                    onClick = onNavigateBackClicked
-                )
+                    onClick = onNavigateBackClicked,
+                    paddingValues = PaddingValues(10.dp),
+
+                    )
             }
         } else null,
         middleIcon = firstOption?.let { painter ->
@@ -59,9 +61,8 @@ fun DefaultBar(
                     painter = painter,
                     contentDescription = firstOptionContentDescription,
                     containerColor = optionContainerColor,
-                    tint = firstOptionIconTint,
-                    paddingValues = PaddingValues(8.dp),
-                    withBorder = true,
+                    tint = Theme.color.textColors.title,
+                    paddingValues = PaddingValues(10.dp),
                     onClick = onFirstOptionClicked
                 )
             }
@@ -72,9 +73,8 @@ fun DefaultBar(
                     painter = painter,
                     contentDescription = lastOptionContentDescription,
                     containerColor = optionContainerColor,
-                    tint = lastOptionIconTint,
-                    paddingValues = PaddingValues(8.dp),
-                    withBorder = true,
+                    tint = Theme.color.textColors.title,
+                    paddingValues = PaddingValues(10.dp),
                     onClick = onLastOptionClicked
                 )
             }

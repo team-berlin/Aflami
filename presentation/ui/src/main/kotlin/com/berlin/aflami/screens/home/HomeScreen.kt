@@ -171,7 +171,7 @@ private fun onReceiveHomeScreenEffect(
             )
         }
 
-        HomeScreenEffect.NavigateToMoodPickerDialog -> TODO()
+        HomeScreenEffect.NavigateToMoodPickerDialog -> {}
 
 
         is HomeScreenEffect.NavigateToMovieDetailsScreen -> {
