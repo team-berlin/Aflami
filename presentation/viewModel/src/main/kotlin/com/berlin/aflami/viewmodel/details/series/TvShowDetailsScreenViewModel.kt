@@ -361,11 +361,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         sendNewEffect(TvShowDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
 
     override fun onAddMovieToFavouriteClicked() {
-        updateState { showDetailsUiState ->
-            showDetailsUiState.copy(
-                isNotSupportedFeatureDialogVisible = true
-            )
-        }
+
     }
 
     override fun onReadMoreDescriptionClicked() = updateState { screenState ->
@@ -469,13 +465,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     override fun onAddMediaToFavouriteButtomClicked(
         mediaId: Long,
         favouriteListId: Int,
-    ) {
-        updateState { showDetailsUiState ->
-            showDetailsUiState.copy(
-                isNotSupportedFeatureDialogVisible = true
-            )
-        }
-    }
+    ) {}
 
     override fun onSelectFavouriteList(favouriteListId: Int) {
         updateState {
@@ -484,23 +474,17 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     override fun onCreateNewFavouriteListClicked() {
-        TODO("Not yet implemented")
     }
 
-    override fun onCancelAddingToFavouriteClicked() {
-        updateState { screenState -> screenState.copy(isNotSupportedFeatureDialogVisible = false) }
-    }
+    override fun onCancelAddingToFavouriteClicked() {}
 
     override fun onUpdateNewListTitle(newListTitle: TextFieldValue) {
-        TODO("Not yet implemented")
     }
 
     override fun onCreateNewListClicked(listTitle: TextFieldValue) {
-        TODO("Not yet implemented")
     }
 
     override fun onCancelCreatingNewListClicked() {
-        TODO("Not yet implemented")
     }
 
     fun toggleTvShowDetailsTab(
