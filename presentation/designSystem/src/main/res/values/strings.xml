@@ -94,4 +94,6 @@
     <string name="war_politics"><![CDATA[War & Politics]]></string>
     <string name="item_count">%1$d item</string>
     <string name="television_movie">TV movie</string>
+    <string name="rating_added">تم التقييم بنجاح</string>
+    <string name="rating_added_failed">فشل التقييم</string>
 </resources>

@@ -93,5 +93,7 @@
     <string name="kids">أطفال</string>
     <string name="item_count">%1$d عنصر</string>
     <string name="television_movie">فيلم تلفزيوني</string>
+    <string name="rating_added">Successfully submitted rating.</string>
+    <string name="rating_added_failed">Failed to submit rating.</string>
 
 </resources>
