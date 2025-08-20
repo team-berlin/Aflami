@@ -53,7 +53,7 @@ fun GenersChip(
             Text(
                 text = label,
                 color = if(isSelected) selectedLabelColor else unselectedLabelColor,
-                style = Theme.textStyle.label.small.copy(fontSize = clampedTextSize),
+                style = Theme.textStyle.label.medium.copy(fontSize = clampedTextSize),
                 textAlign = TextAlign.Center,
                 maxLines =1
             )

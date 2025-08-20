@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -57,7 +58,7 @@ import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.navigation.TopRatingMediaDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
-import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
+import com.berlin.aflami.screens.home.sections.RecentlyWatchedHomeSections
 import com.berlin.aflami.screens.home.sections.MoodPickerSection
 import com.berlin.aflami.screens.home.sections.PosterSlider
 import com.berlin.aflami.screens.home.sections.TopRatingHomeSections
@@ -349,7 +350,7 @@ private fun HomeContent(
                 }
                 if (continueWatchingMediaList.isNotEmpty()) {
                     item {
-                        ContinueWatchingHomeSections(
+                        RecentlyWatchedHomeSections(
                             modifier = Modifier
                                 .background(Theme.color.surface)
                                 .padding(bottom = 24.dp),
@@ -418,6 +419,7 @@ private fun HomeContent(
         AnimatedVisibility(homeScreenState.moodPickerUiState.openMovieDialog) {
             with(homeScreenState.moodPickerUiState.selectedMovie) {
                 MoodPickerDialog(
+                    modifier = Modifier.width(328.dp),
                     mediaImg = posterUrl,
                     title = title,
                     typeOfMedia = MediaType.MOVIE.name,

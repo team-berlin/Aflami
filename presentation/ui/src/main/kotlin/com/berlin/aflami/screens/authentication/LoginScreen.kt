@@ -182,7 +182,7 @@ fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) 
         AnimatedSnackBar(
             message =  when(uiState.errorType){
                 is InvalidationErrorState->
-                    stringResource(id = R.string.login_error_message)
+                        stringResource(id = R.string.login_error_message)
                 else -> stringResource(id = R.string.internet_error)
             },
             modifier = Modifier
@@ -268,6 +268,7 @@ private fun FormLogin(
             modifier = Modifier.fillMaxWidth(),
             maxCharacters = 32,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            hasDividerBeforeTrailing = false
 
             )
         Spacer(modifier = Modifier.height(8.dp))
@@ -282,7 +283,8 @@ private fun FormLogin(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = { onForgotPasswordClicked() })
-                .padding(top = 4.dp)
+                .padding(top = 4.dp),
+
         )
     }
 }

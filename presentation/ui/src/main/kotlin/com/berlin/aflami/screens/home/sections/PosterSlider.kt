@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,23 +68,23 @@ fun PosterSlider(
             .fillMaxWidth()
             .height(300.dp)
     ) { pageIndex ->
-        val actualIndex = pageIndex % mediaList.size
-        val mediaItem = mediaList.getOrNull(actualIndex)
-        mediaItem?.let {
+
+        val mediaItem=mediaList[pageIndex]
+        key (mediaItem.id){
+        mediaItem.let {
             SliderCard(
                 isCentered = pageIndex == pagerState.currentPage,
                 onClick = {
                     when (it.mediaType) {
                         MediaType.MOVIE -> onMovieItemClicked(it.id)
                         MediaType.TV_SHOW -> onTVShowItemClicked(it.id)
-                        else -> throw IllegalArgumentException("Unknown media type")
                     }
                 },
                 rating = it.rating,
                 posterImageUrl = it.poster
             )
         }
-    }
+    }}
 }
 
 

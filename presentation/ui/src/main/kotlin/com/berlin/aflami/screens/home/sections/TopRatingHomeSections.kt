@@ -77,13 +77,7 @@ fun TopRatingHomeSections(
                     seeAllOnClick()
                 })
         }
-        BoxWithConstraints {
-            val screenWidth = maxWidth
-            val spaceBetween = 8.dp
-            val maxCardsInRow = (screenWidth / (156.dp + spaceBetween)).toInt().coerceAtLeast(2)
 
-            val totalSpacing = spaceBetween * (maxCardsInRow - 1)
-            val cardWidth = (screenWidth - totalSpacing) / maxCardsInRow
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -92,7 +86,7 @@ fun TopRatingHomeSections(
                     MediaCard(
                         Modifier
                             .height(222.dp)
-                            .width(cardWidth),
+                            .width(156.dp),
                         mediaImg = item.poster,
                         title = item.title,
                         typeOfMedia = item.mediaType.name,
@@ -106,8 +100,6 @@ fun TopRatingHomeSections(
                         }
                     }
                 }
-
-            }
         }
     }
 }
