@@ -22,12 +22,15 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
+    private var startTime: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startTime = System.currentTimeMillis()
         val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition {
-            mainActivityViewModel.state.value.isLoading
+            mainActivityViewModel.state.value.isLoading || System.currentTimeMillis() < startTime + 3000
         }
+
 
         super.onCreate(savedInstanceState)
 
