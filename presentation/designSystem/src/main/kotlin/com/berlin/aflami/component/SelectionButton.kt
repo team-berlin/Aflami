@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -54,7 +55,8 @@ fun SelectionButton(
 
     Row(
         modifier = modifier
-            .background(backgroundColor, RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(16.dp))
+            .background(backgroundColor,)
             .border(1.dp, borderColor, RoundedCornerShape(16.dp))
             .clickable { onClick() },
         horizontalArrangement = Arrangement.spacedBy(8.dp)
