@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.search
 
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -80,12 +81,14 @@ class SearchViewModel @Inject constructor(
         updateState { it.copy(recentSearches = emptyList()) }
     }
 
-    override fun onRecentSearchClicked(query: String) {
-        onSearchQueryChanged(
-            TextFieldValue(
-                text = query,
-            )
+
+    override fun onItemClicked(query: TextFieldValue) {
+        val text = query.text
+        val updatedQuery = TextFieldValue(
+            text = text,
+            selection = TextRange(text.length)
         )
+        onSearchQueryChanged(updatedQuery)
     }
 
     override fun onRecentSearchCleared(query: String) {
@@ -521,9 +524,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onItemClicked(query: TextFieldValue) {
-        updateState { it.copy(searchQuery = query, isLoading = true) }
-    }
 
     companion object {
         const val FAILED_RECENT_SEARCHES = "Failed to load recent searches"
