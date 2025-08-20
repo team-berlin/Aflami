@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -43,96 +44,93 @@ fun MoodPickerDialog(
 ) {
 
     Dialog(onDismissRequest = onDismiss) {
-        Box(
-            modifier = modifier.background(
+        Column(
+            modifier = modifier
+                .background(
                 color = Theme.color.surface, shape = RoundedCornerShape(24.dp)
             )
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            Row(
                 modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 12.dp)
-                    .width(328.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp, start = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.mood_picker),
-                        style = Theme.textStyle.title.large,
-                        color = Theme.color.textColors.title,
-                    )
-                    IconButton(
-                        onClick = onDismiss, modifier = Modifier.background(
-                            Theme.color.surfaceHigh, shape = RoundedCornerShape(12.dp)
-                        )
-                    ) {
-                        Icon(
-                            painterResource(R.drawable.cancel_01),
-                            contentDescription = null,
-                            tint = Theme.color.textColors.title
-                        )
-                    }
-                }
                 Text(
-                    text = stringResource(R.string.movie_that_matches_your_mood_is),
-                    style = Theme.textStyle.body.medium,
-                    color = Theme.color.textColors.body,
+                    text = stringResource(R.string.mood_picker),
+                    style = Theme.textStyle.title.large,
+                    color = Theme.color.textColors.title,
                 )
-                MediaCard(
-                    Modifier
-                        .size(width = 304.dp, height = 196.dp)
-                        .padding(top = 12.dp, bottom = 24.dp),
-                    mediaImg = mediaImg,
-                    title = title,
-                    typeOfMedia = typeOfMedia,
-                    date = date,
-                    rating = rate,
-                )
-                Box(
-                    modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .background(
-                            primaryGredient, shape = RoundedCornerShape(16.dp)
-                        )
-                        .clickable {
-                            onClickViewDetails()
-                        },
-                    contentAlignment = Alignment.Center,
-                ) {
-
-                    Text(
-                        text = stringResource(R.string.view_details),
-                        color = Theme.color.textColors.onPrimary,
-                        style = Theme.textStyle.label.large,
+                IconButton(
+                    onClick = onDismiss, modifier = Modifier.background(
+                        Theme.color.surfaceHigh, shape = RoundedCornerShape(12.dp)
                     )
-                }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .background(
-                            Theme.color.primaryVariant, shape = RoundedCornerShape(16.dp)
-                        )
-                        .clickable {
-                            onClickGetAnotherMovie()
-                        },
-                    contentAlignment = Alignment.Center,
                 ) {
-                    Text(
-                        text = stringResource(R.string.get_another_movie),
-                        color = Theme.color.primary,
-                        style = Theme.textStyle.label.large,
+                    Icon(
+                        painterResource(R.drawable.cancel_01),
+                        contentDescription = null,
+                        tint = Theme.color.textColors.title
                     )
                 }
             }
+            Text(
+                text = stringResource(R.string.movie_that_matches_your_mood_is),
+                style = Theme.textStyle.body.medium,
+                color = Theme.color.textColors.body,
+            )
+            MediaCard(
+                Modifier
+                    .size(width = 304.dp, height = 196.dp)
+                    .padding(top = 12.dp, bottom = 24.dp),
+                mediaImg = mediaImg,
+                title = title,
+                typeOfMedia = typeOfMedia,
+                date = date,
+                rating = rate,
+            )
+            Box(
+                modifier = Modifier
+                    .padding(bottom = 12.dp)
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .background(
+                        primaryGredient, shape = RoundedCornerShape(16.dp)
+                    )
+                    .clickable {
+                        onClickViewDetails()
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+
+                Text(
+                    text = stringResource(R.string.view_details),
+                    color = Theme.color.textColors.onPrimary,
+                    style = Theme.textStyle.label.large,
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .background(
+                        Theme.color.primaryVariant, shape = RoundedCornerShape(16.dp)
+                    )
+                    .clickable {
+                        onClickGetAnotherMovie()
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(R.string.get_another_movie),
+                    color = Theme.color.primary,
+                    style = Theme.textStyle.label.large,
+                )
+            }
         }
+
     }
 }
 

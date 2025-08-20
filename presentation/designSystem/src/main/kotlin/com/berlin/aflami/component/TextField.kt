@@ -75,6 +75,7 @@ fun TextField(
     borderErrorColor: Color = Theme.color.statusColors.redAccent,
     borderFocusedColor: Color = Theme.color.primary,
     onTrailingIconClicked: (() -> Unit)? = null,
+    hasDividerBeforeTrailing: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     onValueChange: (TextFieldValue) -> Unit = {},
@@ -153,7 +154,9 @@ fun TextField(
                 val imageColor by animateColorAsState(
                     targetValue = if (text.text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.title
                 )
-                //VerticalDivider()
+                if(hasDividerBeforeTrailing) {
+                    VerticalDivider()
+                }
                 TrailingIcon(trailingIcon, imageColor, onTrailingIconClicked)
             }
         }

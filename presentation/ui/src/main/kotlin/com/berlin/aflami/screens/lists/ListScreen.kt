@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -165,13 +164,14 @@ private fun ListsContent(
                         )
                     }
                 }
+
                 else -> {}
             }
         }
 
         AnimatedVisibility(
-            enter =  EnterTransition.None ,
-            exit = ExitTransition.None ,
+            enter = EnterTransition.None,
+            exit = ExitTransition.None,
             visible = listScreenState.createNewListSheetState.isCreateNewListDialogVisible
         ) {
             CreateNewListDialog(
@@ -183,8 +183,8 @@ private fun ListsContent(
         }
 
         AnimatedVisibility(
-            enter =  EnterTransition.None ,
-            exit = ExitTransition.None ,
+            enter = EnterTransition.None,
+            exit = ExitTransition.None,
             visible = listScreenState.editListSheetState.isEditNewListDialogVisible
         ) {
             EditListDialog(
@@ -197,8 +197,8 @@ private fun ListsContent(
         }
 
         AnimatedVisibility(
-            enter =  EnterTransition.None ,
-            exit = ExitTransition.None ,
+            enter = EnterTransition.None,
+            exit = ExitTransition.None,
             visible = listScreenState.isLoginRequiredDialogVisible
         ) {
             LoginRequiredDialog(

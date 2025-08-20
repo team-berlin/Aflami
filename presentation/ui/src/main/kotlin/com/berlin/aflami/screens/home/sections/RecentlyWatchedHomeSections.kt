@@ -28,7 +28,7 @@ import com.berlin.ui.R
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun ContinueWatchingHomeSections(
+fun RecentlyWatchedHomeSections(
     modifier: Modifier = Modifier,
     seeAllOnClick: () -> Unit,
     onMovieItemClicked: (movieId: Long) -> Unit = {},
@@ -62,15 +62,6 @@ fun ContinueWatchingHomeSections(
                     seeAllOnClick()
                 })
         }
-        BoxWithConstraints {
-            val screenWidth = maxWidth
-            val spaceBetween = 8.dp
-
-            val maxCardsInRow = (screenWidth / (156.dp + spaceBetween)).toInt().coerceAtLeast(2)
-
-
-            val totalSpacing = spaceBetween * (maxCardsInRow - 1)
-            val cardWidth = (screenWidth - totalSpacing) / maxCardsInRow
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -81,7 +72,7 @@ fun ContinueWatchingHomeSections(
                         MediaCard(
                             Modifier
                                 .height(222.dp)
-                                .width(cardWidth),
+                                .width(156.dp),
                             mediaImg = it.poster,
                             title = it.title,
                             typeOfMedia = it.mediaType?.name ?: MediaType.MOVIE.name,
@@ -98,6 +89,5 @@ fun ContinueWatchingHomeSections(
                 }
 
             }
-        }
     }
 }
