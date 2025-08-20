@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.utils.noRippleClickable
 import com.berlin.designsystem.R
 
 @Composable
@@ -54,9 +55,11 @@ fun SelectionButton(
 
     Row(
         modifier = modifier
+            .noRippleClickable(
+                onClick =onClick
+            )
             .background(backgroundColor, RoundedCornerShape(16.dp))
-            .border(1.dp, borderColor, RoundedCornerShape(16.dp))
-            .clickable { onClick() },
+        .border(1.dp, borderColor, RoundedCornerShape(16.dp)),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Row(
