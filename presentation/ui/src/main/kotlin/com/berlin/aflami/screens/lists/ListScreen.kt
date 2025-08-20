@@ -282,10 +282,9 @@ private fun ListsContent(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 contentPadding = PaddingValues(
                                     top = 16.dp,
-                                    bottom = 64.dp,
+                                    bottom = 81.dp,
                                     start = 16.dp,
-                                    end = 16.dp
-                                ),
+                                    end = 16.dp),
                             ) {
                                 items(
                                     favouriteLists.itemCount,
