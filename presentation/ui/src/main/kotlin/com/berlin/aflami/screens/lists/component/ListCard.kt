@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.ui.theme.AflamiTheme
@@ -30,14 +31,12 @@ fun ListCard(
     Box(
         modifier = modifier
             .size(width = 160.dp, height = 147.dp)
-
-
     )
     {
         Box(
             modifier = Modifier
                 .fillMaxWidth(1f)
-                .fillMaxHeight(0.90f)
+                .fillMaxHeight(0.91f)
                 .clip(
                     RoundedCornerShape(
                         bottomEnd = 24.dp,
@@ -61,7 +60,9 @@ fun ListCard(
                 Text(
                     title,
                     color = Theme.color.textColors.title,
-                    style = Theme.textStyle.title.medium
+                    style = Theme.textStyle.title.medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = stringResource(R.string.item_count, count),
