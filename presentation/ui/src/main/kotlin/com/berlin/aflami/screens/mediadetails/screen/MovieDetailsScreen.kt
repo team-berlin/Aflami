@@ -292,7 +292,11 @@ fun MovieDetailsContent(
                 .zIndex(1f),
 
             firstOption = painterResource(R.drawable.ic_rounded_star),
+            lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             onFirstOptionClicked = { listener.onRateIconClicked(state.movieUiState.id) },
+            onLastOptionClicked = {
+                listener.onAddMovieToFavouriteClicked()
+            },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
             containerColor = Color.Unspecified,

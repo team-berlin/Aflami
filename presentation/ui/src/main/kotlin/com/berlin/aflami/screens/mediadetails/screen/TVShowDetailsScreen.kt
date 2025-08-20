@@ -270,11 +270,7 @@ fun TvShowDetailsContent(
                 .statusBarsPadding(),
 
             firstOption = painterResource(R.drawable.ic_rounded_star),
-            lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             onFirstOptionClicked = { listener.onRateIconClicked(state.tvShowUiState.id) },
-            onLastOptionClicked = {
-                listener.onAddMediaToFavouriteButtomClicked(0, 0)
-            },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
             containerColor = Color.Unspecified, // transparent so Modifier.background takes effect
