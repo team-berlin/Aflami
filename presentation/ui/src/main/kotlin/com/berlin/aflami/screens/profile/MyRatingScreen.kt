@@ -194,7 +194,7 @@ fun MyRatingContent(
                         text = stringResource(R.string.loading)
                     )
 
-                    state.errorUiState is NetworkErrorState -> {
+                    moviesLoadState.refresh is LoadState.Error -> {
                         val err = moviesLoadState.refresh as LoadState.Error
                         val isNoInternet = err.error.message?.contains(
                             "No internet connection",
