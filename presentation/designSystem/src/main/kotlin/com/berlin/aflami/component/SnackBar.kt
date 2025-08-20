@@ -1,5 +1,6 @@
 package com.berlin.aflami.component
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -25,11 +26,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.extension.dropShadow
 import com.berlin.aflami.ui.color.ExtraColors.darkReddishGreen12
 import com.berlin.aflami.ui.color.ExtraColors.darkReddishPink12
+import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
 import kotlinx.coroutines.delay
@@ -98,6 +103,7 @@ fun SnackBar(
 
                 Text(
                     text = text,
+                    textAlign = TextAlign.Center,
                     style = Theme.textStyle.body.medium,
                     color = Theme.color.textColors.body
                 )
@@ -111,52 +117,52 @@ enum class SnackBarStatus {
     ERROR
 }
 
-//@Preview(
-//    showBackground = true,
-//    uiMode = Configuration.UI_MODE_NIGHT_YES,
-//    backgroundColor = 0xFF0D090B,
-//)
-//@Composable
-//private fun SnackBarSuccessPreview() {
-//    AflamiTheme {
-//        Box(
-//            Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp)
-//        ) {
-//            SnackBar(
-//                status = SnackBarStatus.SUCCESS,
-//                modifier = Modifier.fillMaxWidth(),
-//                text = stringResource(id = R.string.list_added_success),
-//                iconPainter = painterResource(id = R.drawable.success),
-//                onDismiss = { null }
-//
-//            )
-//        }
-//
-//    }
-//}
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    backgroundColor = 0xFF0D090B,
+)
+@Composable
+private fun SnackBarSuccessPreview() {
+    AflamiTheme {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            SnackBar(
+                status = SnackBarStatus.SUCCESS,
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.list_added_success),
+                iconPainter = painterResource(id = R.drawable.success),
+                onDismiss = { null }
 
-//@Preview(
-//    showBackground = true,
-//    uiMode = Configuration.UI_MODE_NIGHT_YES,
-//    backgroundColor = 0xFF0D090B
-//)
-//@Composable
-//private fun SnackBarErrorPreview() {
-//    AflamiTheme {
-//        Box(
-//            Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp)
-//        ) {
-//            SnackBar(
-//                status = SnackBarStatus.ERROR,
-//                modifier = Modifier.fillMaxWidth(),
-//                text = stringResource(id = R.string.list_error),
-//                iconPainter = painterResource(id = R.drawable.error),
-//                onDismiss = { null }
-//            )
-//        }
-//    }
-//}
+            )
+        }
+
+    }
+}
+
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    backgroundColor = 0xFF0D090B
+)
+@Composable
+private fun SnackBarErrorPreview() {
+    AflamiTheme {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            SnackBar(
+                status = SnackBarStatus.ERROR,
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.list_error),
+                iconPainter = painterResource(id = R.drawable.error),
+                onDismiss = { null }
+            )
+        }
+    }
+}

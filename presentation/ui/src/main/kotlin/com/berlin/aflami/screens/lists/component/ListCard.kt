@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.ThemeAndLocalePreviews
@@ -29,6 +30,7 @@ fun ListCard(
     Box(
         modifier = modifier
             .size(width = 160.dp, height = 147.dp)
+
     ) {
         Box(
             modifier = Modifier
@@ -46,9 +48,10 @@ fun ListCard(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(start = 8.dp)
-                    .align(Alignment.CenterStart)
-                    .offset(y = 20.dp),
+                    .padding(start = 8.dp, bottom = 20.dp)
+                    .align(Alignment.BottomStart)
+                .background(Theme.color.surfaceHigh),
+
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
@@ -67,6 +70,7 @@ fun ListCard(
 
         Box(
             modifier = Modifier
+                .offset(x = (42).dp)
                 .size(width = 80.dp, height = 33.dp)
                 .clip(
                     RoundedCornerShape(

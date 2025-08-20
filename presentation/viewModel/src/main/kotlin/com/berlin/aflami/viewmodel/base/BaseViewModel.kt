@@ -43,8 +43,9 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
                 onSuccess(result)
             } catch (e: UnauthorizedException) {
                 onError(InvalidationErrorState(e.message.toString()))
+                Log.e("Error",e.toString(),e)
             } catch (e: NetworkException) {
-                Log.e("Error",e.toString())
+                Log.e("Error",e.toString(),e)
                 onError(NetworkErrorState(e.message.toString()))
             } catch (e: NotFoundException) {
                 onError(ErrorUiState())

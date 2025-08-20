@@ -26,6 +26,7 @@ sealed interface NavigationBarDestinations {
 
 val bottomNavBarDestinationsMap = mapOf(
     NavigationBarDestinations.HomeScreen::class.qualifiedName to NavigationBarDestinations.HomeScreen,
+    HomeScreenWithArgs::class.qualifiedName to NavigationBarDestinations.HomeScreen,
     ListsScreenWithArgs::class.qualifiedName to NavigationBarDestinations.ListsScreenNoArgs,
     NavigationBarDestinations.ListsScreenNoArgs::class.qualifiedName to NavigationBarDestinations.ListsScreenNoArgs,
     NavigationBarDestinations.CategoriesScreen::class.qualifiedName to NavigationBarDestinations.CategoriesScreen,
@@ -110,3 +111,5 @@ data class ListsScreenWithArgs(
     val showDeletedSnackBar: Boolean? = null,
     val isListDeletedSuccessfully: Boolean? = null,
 )
+@Serializable
+data class HomeScreenWithArgs(val isLoggedIn: Boolean?=false) : NavigationBarDestinations
