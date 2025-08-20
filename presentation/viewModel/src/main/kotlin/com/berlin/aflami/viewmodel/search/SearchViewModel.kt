@@ -80,10 +80,12 @@ class SearchViewModel @Inject constructor(
         updateState { it.copy(recentSearches = emptyList()) }
     }
 
-    override fun onRecentSearchClicked(query: String) {
+
+    override fun onItemClicked(query: TextFieldValue) {
+        val value = query.text.trim()
         onSearchQueryChanged(
             TextFieldValue(
-                text = query,
+                text = value,
             )
         )
     }
@@ -521,9 +523,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onItemClicked(query: TextFieldValue) {
-        updateState { it.copy(searchQuery = query, isLoading = true) }
-    }
 
     companion object {
         const val FAILED_RECENT_SEARCHES = "Failed to load recent searches"

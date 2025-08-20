@@ -13,7 +13,7 @@ interface SearchScreenInteractionListener {
     fun onTabOptionClicked(tabOption: TabOption)
     fun onMoviesCardClicked(movieId: Long)
     fun onTVShowsCardClicked(tvShowId: Long)
-    fun onRecentSearchClicked(query: String)
+    fun onItemClicked(query: TextFieldValue)
     fun onRecentSearchCleared(query: String)
     fun onAllRecentSearchesCleared()
     fun onSearchCleared()
