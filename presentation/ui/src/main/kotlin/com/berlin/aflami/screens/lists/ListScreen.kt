@@ -268,7 +268,7 @@ private fun ListsContent(
                                 state = rememberLazyGridState(),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                contentPadding = PaddingValues(top = 16.dp, bottom = 64.dp),
+                                contentPadding = PaddingValues(top = 16.dp, bottom = 81.dp),
                             ) {
                                 items(
                                     favouriteLists.itemCount,
