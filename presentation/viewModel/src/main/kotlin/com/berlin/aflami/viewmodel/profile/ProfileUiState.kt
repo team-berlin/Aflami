@@ -1,9 +1,9 @@
 package com.berlin.aflami.viewmodel.profile
 
-import androidx.appcompat.app.AppCompatDelegate
 import com.berlin.entity.AppLanguage
 import com.berlin.entity.AppTheme
 import com.berlin.entity.ContentRestriction
+import java.util.Locale
 
 
 data class ProfileUiState(
@@ -15,7 +15,8 @@ data class ProfileUiState(
     val isLoggedIn: Boolean? = null,
     val themeOption: ThemeOption = ThemeOption(),
     val languageOption: LanguageOption = LanguageOption(),
-    val contentRestrictionOption: ContentRestrictionOption = ContentRestrictionOption(),    val appVersion: String = "v1.0.0",
+    val contentRestrictionOption: ContentRestrictionOption = ContentRestrictionOption(),
+    val appVersion: String = "v1.0.0",
 
     )
 data class ThemeOption(
@@ -25,10 +26,8 @@ data class ThemeOption(
 )
 data class LanguageOption(
     val selectedLanguage: AppLanguage =
-        if (AppCompatDelegate
-            .getApplicationLocales()
-            .toLanguageTags() == "ar"
-    ) AppLanguage.AR else AppLanguage.EN,
+        if (Locale.getDefault().language == "ar")
+            AppLanguage.AR else AppLanguage.EN,
     val tempSelectedLanguage: AppLanguage = selectedLanguage,
     val isEnglishEnabled: Boolean = selectedLanguage == AppLanguage.EN,
 )
