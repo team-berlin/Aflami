@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -74,13 +75,15 @@ fun LevelDialog(
             ) {
                 Row(
                     Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
                         text = stringResource(R.string.choose_difficulty_level),
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title,
+                        modifier = Modifier.weight(1f)
                     )
                     IconButton(
                         onClick = onDismiss,

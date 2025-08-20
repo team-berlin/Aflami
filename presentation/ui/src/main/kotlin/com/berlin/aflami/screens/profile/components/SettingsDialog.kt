@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -201,59 +202,56 @@ fun SettingsDialog(
                     }
                 }
                 if (thirdOptionIconRes != null && thirdOptionTitleRes != null) {
-                    Box(
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(vertical = 8.dp, horizontal = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        FlowRow(
-                            modifier = modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp, horizontal = 12.dp)
-                                .wrapContentSize(Alignment.Center),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.Center,
-                            itemVerticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        Theme.color.surfaceHigh,
-                                        shape = RoundedCornerShape(12.dp),
-                                    )
-                                    .border(
-                                        width = 1.dp,
-                                        color = Theme.color.stroke,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .padding(10.dp),
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(24.dp),
-                                    painter = painterResource(id = thirdOptionIconRes),
-                                    contentDescription = null,
-                                    tint = Theme.color.textColors.hint
+
+
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    Theme.color.surfaceHigh,
+                                    shape = RoundedCornerShape(12.dp),
                                 )
-                            }
-                            Text(
-                                text = stringResource(id = thirdOptionTitleRes),
-                                style = Theme.textStyle.title.small,
-                                color = Theme.color.textColors.body,
+                                .border(
+                                    width = 1.dp,
+                                    color = Theme.color.stroke,
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .padding(10.dp),
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = thirdOptionIconRes),
+                                contentDescription = null,
+                                tint = Theme.color.textColors.hint
                             )
+                        }
+                        Text(
+                            text = stringResource(id = thirdOptionTitleRes),
+                            style = Theme.textStyle.title.small,
+                            color = Theme.color.textColors.body,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f).padding(start = 12.dp)
+                        )
 
-                            Spacer(modifier = Modifier.weight(1f))
-
-                            Text(
-                                modifier = Modifier.clickable(
+                        Text(
+                            modifier = Modifier
+                                .clickable(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() }
                                 ) { onThirdOptionClick() },
-                                text = stringResource(id = com.berlin.ui.R.string.setting_dialog_logout),
-                                style = Theme.textStyle.label.medium,
-                                color = Theme.color.primary,
-                            )
-
-                        }
+                            text = stringResource(id = com.berlin.ui.R.string.setting_dialog_logout),
+                            style = Theme.textStyle.label.medium,
+                            color = Theme.color.primary,
+                        )
                     }
+
                 }
             }
         }
@@ -261,7 +259,7 @@ fun SettingsDialog(
 }
 
 @Composable
-@Preview
+@Preview(widthDp = 200)
 fun SettingsDialogPreview() {
     SettingsDialog(
         onDismiss = {}
