@@ -1,6 +1,7 @@
 package com.berlin.aflami.viewmodel.details.movie
 
 import androidx.annotation.StringRes
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.common.SnackBarUiState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.AddToListSheetState
 import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.createnewlist.CreateNewListUiState
@@ -18,7 +19,7 @@ data class MovieDetailsUiState(
     val rowSection: MoviesRowSectionUiState = MoviesRowSectionUiState.Loading,
     val expandedReviewIds: Set<String> = emptySet(),
     val isScreenLoading: Boolean = false,
-    val errorMessage: String? = null,
+    val errorUiState: ErrorUiState? = null,
     val movieDetailsTabsUiState: MovieDetailsTabsUiState = MovieDetailsTabsUiState(),
     val showLoginDialog: Boolean = false,
     val showRatingDialog: Boolean = false,

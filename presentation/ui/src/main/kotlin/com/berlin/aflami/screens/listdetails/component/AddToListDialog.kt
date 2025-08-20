@@ -3,8 +3,6 @@ package com.berlin.aflami.screens.listdetails.component
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -64,7 +62,7 @@ fun AddToListDialog(
                 enter =  EnterTransition.None ,
                 exit = ExitTransition.None ,
                 visible = addToListUiState.isLoading &&
-                        addToListUiState.errorMessage.isNullOrEmpty()
+                        addToListUiState.errorUiState == null,
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier
@@ -76,7 +74,7 @@ fun AddToListDialog(
             AnimatedVisibility(
                 enter =  EnterTransition.None ,
                 exit = ExitTransition.None ,
-                visible = addToListUiState.errorMessage != null
+                visible = addToListUiState.errorUiState != null
                         && addToListUiState.isLoading.not()
             ) {
                 NoInternetConnectionPlaceholder(
@@ -90,7 +88,7 @@ fun AddToListDialog(
                 enter =  EnterTransition.None ,
                 exit = ExitTransition.None ,
                 visible = addToListUiState.isLoading.not() &&
-                        addToListUiState.errorMessage == null
+                        addToListUiState.errorUiState == null
             ) {
                 val favouriteLists = addToListUiState.favouriteLists.collectAsLazyPagingItems()
                 Column(

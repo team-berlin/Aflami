@@ -66,6 +66,7 @@ import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
 import com.berlin.aflami.screens.search.getMovieGenreName
 import com.berlin.aflami.screens.search.getTvShowGenreName
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.home.HomeScreenEffect
 import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenState
@@ -105,7 +106,7 @@ fun HomeScreen(
     AnimatedVisibility(
         enter = EnterTransition.None,
         exit = ExitTransition.None,
-        visible = homeScreenState.error != null
+        visible = homeScreenState.errorUiState is NetworkErrorState
     ) {
         NoInternetConnectionPlaceholder()
     }

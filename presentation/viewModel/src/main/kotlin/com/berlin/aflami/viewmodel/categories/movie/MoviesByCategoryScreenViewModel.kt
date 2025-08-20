@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.categories.movie
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
@@ -125,7 +124,7 @@ class MoviesByCategoryScreenViewModel @Inject constructor(
     fun updateScreenStateToError(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorUiState.message, isScreenLoading = false
+                errorUiState = errorUiState, isScreenLoading = false
             )
         }
     }

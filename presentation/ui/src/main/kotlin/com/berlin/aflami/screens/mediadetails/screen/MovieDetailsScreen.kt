@@ -49,6 +49,7 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOve
 import com.berlin.aflami.screens.mediadetails.components.screensections.MovieTabSection
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.base.MovieAlreadyExistInList
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
 import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsScreenEffect
@@ -79,7 +80,7 @@ fun MovieDetailsScreen(
     AnimatedVisibility(
         enter =  EnterTransition.None ,
         exit = ExitTransition.None ,
-        visible = uiState.errorMessage!=null
+        visible = uiState.errorUiState is NetworkErrorState
     ) {
         NoInternetConnectionPlaceholder(
             onClick = {
@@ -98,7 +99,7 @@ fun MovieDetailsScreen(
     }
     AnimatedVisibility(
         enter = EnterTransition.None,
-        exit = ExitTransition.None, visible = !uiState.isScreenLoading&&uiState.errorMessage==null
+        exit = ExitTransition.None, visible = !uiState.isScreenLoading&&uiState.errorUiState==null
     ) {
         MovieDetailsContent(
             state = uiState,
@@ -149,7 +150,7 @@ fun MovieDetailsScreen(
             movieId = uiState.movieUiState.id,
             addToListUiState = uiState.addToListDialog,
             onSelectedListChange = viewModel::onSelectFavouriteList,
-            onAddToSelectedList = viewModel::onAddMediaToFavouriteButtomClicked,
+            onAddToSelectedList = viewModel::onAddMediaToFavouriteButtonClicked,
             onCreateNewList = viewModel::onCreateNewFavouriteListClicked,
             onDismiss = viewModel::onCancelAddingToFavouriteClicked,
         )

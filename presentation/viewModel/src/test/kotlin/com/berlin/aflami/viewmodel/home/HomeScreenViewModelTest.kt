@@ -194,7 +194,7 @@ class HomeScreenViewModelTest {
         assertTrue(uiState.openMovieDialog)
         assertFalse(uiState.isLoading)
         assertTrue(uiState.movies.isNotEmpty())
-        assertNull(uiState.error)
+        assertNull(uiState.errorUiState)
     }
 
     @Test
@@ -203,7 +203,7 @@ class HomeScreenViewModelTest {
         viewModel.getContinueWatchingMedia()
         advanceUntilIdle()
 
-        assertEquals("Not Found", viewModel.state.value.continueWatchingUiState.errorMessage)
+        assertEquals("Not Found", viewModel.state.value.continueWatchingUiState.errorUiState)
     }
 
     @Test
@@ -211,7 +211,7 @@ class HomeScreenViewModelTest {
         coEvery { getTopRatedMoviesUseCase(any()) } throws NotFoundException("Not Found")
         viewModel
         advanceUntilIdle()
-        assertEquals("Not Found", viewModel.state.value.topRatedMediaUiState.errorMessage)
+        assertEquals("Not Found", viewModel.state.value.topRatedMediaUiState.errorUiState)
     }
 
     @Test
@@ -261,7 +261,7 @@ class HomeScreenViewModelTest {
         val uiState = viewModel.state.value.moodPickerUiState
         assertTrue(uiState.openMovieDialog)
         assertFalse(uiState.isLoading)
-        assertEquals("Failed to load movies", uiState.error?.message)
+        assertEquals("Failed to load movies", uiState.errorUiState?.message)
         assertTrue(uiState.movies.isEmpty())
     }
 
@@ -297,7 +297,7 @@ class HomeScreenViewModelTest {
         advanceUntilIdle()
 
 
-        val errorMessage = viewModel.state.value.upcomingMoviesUiState.errorMessage
+        val errorMessage = viewModel.state.value.upcomingMoviesUiState.errorUiState
         assertEquals("Not Found", errorMessage)
 
 

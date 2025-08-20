@@ -81,7 +81,7 @@ class MovieDetailsViewModel @Inject constructor(
         onShowMoreMediaLikeThisClicked(mediaId = movieId)
     }
     private fun isMovieHasVideo(movieId: Long) {
-        updateState { it.copy(isScreenLoading = true, errorMessage = null) }
+        updateState { it.copy(isScreenLoading = true, errorUiState = null) }
 
         tryToCall(
             call = { getMovieVideos(movieId) },
@@ -100,7 +100,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun getMovieDetails(movieId: Long) {
         updateState { screenState ->
-            screenState.copy(isScreenLoading = true, errorMessage = null)
+            screenState.copy(isScreenLoading = true, errorUiState = null)
         }
         tryToCall(
             call = {
@@ -138,7 +138,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun getMovieActors(movieId: Long) {
         updateState { screenState ->
-            screenState.copy(isScreenLoading = true, errorMessage = null)
+            screenState.copy(isScreenLoading = true, errorUiState = null)
         }
         tryToCall(
             call = {
@@ -313,7 +313,7 @@ class MovieDetailsViewModel @Inject constructor(
             updateState { screenState ->
                 screenState.copy(
                     addToListDialog = screenState.addToListDialog.copy(
-                        isLoading = true, isAddToListDialogVisible = true, errorMessage = null
+                        isLoading = true, isAddToListDialogVisible = true, errorUiState = null
                     ),
                 )
             }
@@ -329,7 +329,7 @@ class MovieDetailsViewModel @Inject constructor(
                             isLoading = false,
                             favouriteLists = it,
                             isAddButtonEnabled = false,
-                            errorMessage = null
+                            errorUiState = null
                         ),
                     )
                 }
@@ -337,7 +337,7 @@ class MovieDetailsViewModel @Inject constructor(
                 updateState { screenState ->
                     screenState.copy(
                         addToListDialog = screenState.addToListDialog.copy(
-                            isLoading = false, errorMessage = it.message, isAddButtonEnabled = false
+                            isLoading = false, errorUiState = it, isAddButtonEnabled = false
                         ),
                     )
                 }
@@ -418,8 +418,7 @@ class MovieDetailsViewModel @Inject constructor(
                     updateState {
                         it.copy(
                             showRatingDialog = false,
-                            selectedRatingMovieId = null,
-                            errorMessage = stateError.message,
+                            selectedRatingMovieId = null, errorUiState = stateError,
                             snackBar = SnackBarUiState(
                                 isVisible = true,
                                 snackBarStatus = SNACK_BAR_STATUS.RATING_ADDED,
@@ -442,7 +441,7 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    override fun onAddMediaToFavouriteButtomClicked(
+    override fun onAddMediaToFavouriteButtonClicked(
         movieId: Long,
         favouriteListId: Int,
     ) {
@@ -460,7 +459,7 @@ class MovieDetailsViewModel @Inject constructor(
                     ),
                     addToListDialog = screenState.addToListDialog.copy(
                         isLoading = false,
-                        errorMessage = null,
+                        errorUiState = null,
                         isAddToListDialogVisible = false,
                         isAddButtonEnabled = false,
                         selectedListId = null
@@ -478,7 +477,7 @@ class MovieDetailsViewModel @Inject constructor(
                     ),
                     addToListDialog = screenState.addToListDialog.copy(
                         isLoading = false,
-                        errorMessage = null,
+                        errorUiState = null,
                         selectedListId = null,
                         isAddToListDialogVisible = false,
                         isAddButtonEnabled = false
@@ -514,7 +513,7 @@ class MovieDetailsViewModel @Inject constructor(
         screenState.copy(
             addToListDialog = screenState.addToListDialog.copy(
                 isLoading = false,
-                errorMessage = null,
+                errorUiState = null,
                 isAddToListDialogVisible = false,
                 selectedListId = null,
                 favouriteLists = emptyFlow(),
@@ -640,7 +639,7 @@ class MovieDetailsViewModel @Inject constructor(
     private fun updateScreenStateToError(errorState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message, isScreenLoading = false
+                errorUiState = errorState, isScreenLoading = false
             )
         }
     }
@@ -657,7 +656,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     override fun retry() {
         updateState {
-            it.copy(errorMessage = null, isScreenLoading = true)
+            it.copy(errorUiState = null, isScreenLoading = true)
         }
         loadData()
     }

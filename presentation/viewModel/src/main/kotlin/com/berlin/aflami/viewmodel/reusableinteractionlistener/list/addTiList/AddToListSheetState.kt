@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList
 
 import androidx.compose.runtime.Immutable
 import androidx.paging.PagingData
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -12,7 +13,7 @@ data class AddToListSheetState(
     val favouriteLists: Flow<PagingData<FavouriteListItemUiState>> = emptyFlow(),
     val isAddToListDialogVisible: Boolean = false,
     val isAddButtonEnabled: Boolean = false,
-    val errorMessage: String? = null,
+    val errorUiState: ErrorUiState? = null,
 )
 
 @Immutable

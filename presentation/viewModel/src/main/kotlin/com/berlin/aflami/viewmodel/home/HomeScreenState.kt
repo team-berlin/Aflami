@@ -20,7 +20,7 @@ data class HomeScreenState(
     val movieGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
     val tVShowGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
     val isLoading: Boolean = false,
-    val error: ErrorUiState? = null,
+    val errorUiState: ErrorUiState? = null,
     val showSuccessSnackBar: Boolean= false,
 )
 
@@ -28,27 +28,27 @@ data class HomeScreenState(
 data class PopularMediaUiState(
     val popularMedia: List<MediaUiState> = emptyList(),
     val isLoading: Boolean = true,
-    val errorMessage: String? = null,
+    val errorUiState: ErrorUiState? = null,
 )
 
 @Immutable
 data class ContinueWatchingUiState(
     val continueWatchingMediaList: List<MediaUiState> = emptyList(),
     val isLoading: Boolean = true,
-    val errorMessage: String? = null,
+    val errorUiState: ErrorUiState? = null,
 )
 
 data class TopRatedMediaUiState(
     val topRatedMedia: List<MediaUiState> = emptyList(),
     val isLoading: Boolean = true,
-    val errorMessage: String? = null,
+    val errorUiState: ErrorUiState? = null,
 )
 
 @Immutable
 data class UpcomingMoviesUiState(
     val upcomingMovies: List<MovieUiState> = emptyList(),
     val isLoading: Boolean = false,
-    val errorMessage: String? = null,
+    val errorUiState: ErrorUiState? = null,
 )
 
 @Immutable
@@ -58,7 +58,7 @@ data class MoodPickerUiState(
     val movies: List<MovieUiState> = emptyList(),
     val openMovieDialog: Boolean = false,
     val isLoading: Boolean = false,
-    val error: ErrorUiState? = null,
+    val errorUiState: ErrorUiState? = null,
 )
 
 @Immutable

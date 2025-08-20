@@ -64,7 +64,7 @@ class CategoriesScreenViewModelTest {
         assertEquals(movieGenres.map { it.toGenreUiState() }, state.moviesGenres)
         assertEquals(tvGenres.map { it.toGenreUiState() }, state.tvShowGenres)
         assertFalse(state.isLoading)
-        assertNull(state.errorMessage)
+        assertNull(state.errorUiState)
     }
 
     @Test
@@ -79,7 +79,7 @@ class CategoriesScreenViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.state.value
-        assertEquals("Not Found", state.errorMessage)
+        assertEquals("Not Found", state.errorUiState)
         assertFalse(state.isLoading)
     }
 

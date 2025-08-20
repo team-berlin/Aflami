@@ -83,7 +83,7 @@ class SearchByActorViewModelTest {
 
             // Assert
             val currentState = viewModel.state.first()
-            assertThat(currentState.errorMessage).isEqualTo(ERROR_MESSAGE)
+            assertThat(currentState.errorUiState).isEqualTo(ERROR_MESSAGE)
             assertThat(currentState.isLoading).isFalse()
         }
 

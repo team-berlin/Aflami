@@ -100,7 +100,7 @@ class LoginViewmodel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 isError = true,
-                errorType = errorUiState
+                errorUiState = errorUiState
             )
         }
 

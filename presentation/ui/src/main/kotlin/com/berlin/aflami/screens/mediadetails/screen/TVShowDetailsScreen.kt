@@ -48,6 +48,7 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.Descript
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.TVShowTabSection
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
 import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsTabs
@@ -77,7 +78,7 @@ fun TvShowDetailsScreen(
     AnimatedVisibility(
         enter =  EnterTransition.None ,
         exit = ExitTransition.None ,
-        visible = uiState.errorMessage != null
+        visible = uiState.errorUiState is NetworkErrorState
     ) {
         NoInternetConnectionPlaceholder(
             onClick = {
@@ -109,7 +110,7 @@ fun TvShowDetailsScreen(
     AnimatedVisibility(
         enter =  EnterTransition.None ,
         exit = ExitTransition.None ,
-        visible = !uiState.isScreenLoading&&uiState.errorMessage==null
+        visible = !uiState.isScreenLoading&&uiState.errorUiState==null
     ) {
         TvShowDetailsContent(
             state = uiState,
@@ -308,7 +309,7 @@ fun TvShowDetailsContent(
             lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             onFirstOptionClicked = { listener.onRateIconClicked(state.tvShowUiState.id) },
             onLastOptionClicked = {
-                listener.onAddMediaToFavouriteButtomClicked(0, 0)
+                listener.onAddMediaToFavouriteButtonClicked(0, 0)
             },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,

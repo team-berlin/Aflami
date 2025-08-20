@@ -78,7 +78,7 @@ class MyRatingViewModel @Inject constructor(
     ).flow
 
     private fun updateToError(e: ErrorUiState) =
-        updateState { it.copy(errorMessage = e.message, isLoading = false) }
+        updateState { it.copy(errorUiState = e, isLoading = false) }
 
 
 }

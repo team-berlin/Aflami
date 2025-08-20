@@ -37,6 +37,7 @@ import com.berlin.aflami.screens.listdetails.component.DeleteListDialog
 import com.berlin.aflami.screens.listdetails.component.MoviesListItem
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.listDetails.ListDetailsScreenEffect
 import com.berlin.aflami.viewmodel.listDetails.ListDetailsScreenInteractionListener
 import com.berlin.aflami.viewmodel.listDetails.ListDetailsScreenState
@@ -107,7 +108,7 @@ private fun ListDetailsContent(
             AnimatedVisibility(
                 enter =  EnterTransition.None ,
                 exit = ExitTransition.None ,
-                visible = movies.loadState.refresh is LoadState.Error
+                visible = listDetailsScreenState.errorUiState is NetworkErrorState
             ) {
                 NoInternetConnectionPlaceholder()
             }

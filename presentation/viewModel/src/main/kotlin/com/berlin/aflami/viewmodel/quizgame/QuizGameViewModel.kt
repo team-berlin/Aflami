@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.quizgame
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
@@ -238,7 +237,7 @@ class QuizGameViewModel @Inject constructor(
 
 
     private fun updateScreenStateToError(errorState: ErrorUiState) {
-        updateState { it.copy(error = errorState, loading = false) }
+        updateState { it.copy(errorUiState = errorState, loading = false) }
     }
 
     override fun nextQuestionClicked() {
@@ -344,7 +343,7 @@ class QuizGameViewModel @Inject constructor(
     override fun retry() {
         updateState {
             it.copy(
-                error = null,
+                errorUiState = null,
                 loading = true
             )
         }

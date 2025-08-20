@@ -42,6 +42,7 @@ import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.profile.myrating.MyRatingInteractionListener
 import com.berlin.aflami.viewmodel.profile.myrating.MyRatingScreenEffect
 import com.berlin.aflami.viewmodel.profile.myrating.MyRatingUiState
@@ -193,7 +194,7 @@ fun MyRatingContent(
                         text = stringResource(R.string.loading)
                     )
 
-                    moviesLoadState.refresh is LoadState.Error -> {
+                    state.errorUiState is NetworkErrorState -> {
                         val err = moviesLoadState.refresh as LoadState.Error
                         val isNoInternet = err.error.message?.contains(
                             "No internet connection",

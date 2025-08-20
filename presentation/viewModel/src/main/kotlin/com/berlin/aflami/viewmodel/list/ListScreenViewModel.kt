@@ -13,12 +13,9 @@ import com.berlin.aflami.viewmodel.reusableinteractionlistener.list.addTiList.Fa
 import com.berlin.aflami.viewmodel.util.ListCountEventBus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -29,8 +26,6 @@ import usecase.favouritelist.CreateNewFavouriteListUseCase
 import usecase.favouritelist.EditListTitleUseCase
 import usecase.favouritelist.GetAllFavouriteListsUseCase
 import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.collections.plus
 
 @HiltViewModel
 class ListScreenViewModel @Inject constructor(
@@ -150,7 +145,7 @@ class ListScreenViewModel @Inject constructor(
     private fun updateScreenStateWithErrorMessage(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorUiState.message, isScreenLoading = false
+                errorUiState = errorUiState, isScreenLoading = false
             )
         }
     }

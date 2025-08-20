@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -75,7 +74,7 @@ fun RecentlyWatchedHomeSections(
                                 .width(156.dp),
                             mediaImg = it.poster,
                             title = it.title,
-                            typeOfMedia = it.mediaType?.name ?: MediaType.MOVIE.name,
+                            typeOfMedia = it.mediaType.name,
                             date = it.releaseYear,
                             rating = it.rating,
                         ) {

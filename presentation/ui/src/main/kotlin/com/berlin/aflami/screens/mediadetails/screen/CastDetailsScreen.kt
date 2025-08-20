@@ -3,8 +3,6 @@ package com.berlin.aflami.screens.mediadetails.screen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -32,6 +30,7 @@ import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.mediadetails.components.MediaCastGrid
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.details.cast.CastDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.cast.CastDetailsScreenListener
 import com.berlin.aflami.viewmodel.details.cast.CastScreenState
@@ -61,7 +60,7 @@ fun CastDetailsScreen(
         )
     }
     AnimatedVisibility(
-        visible = castState.errorMessage != null
+        visible = castState.errorUiState is NetworkErrorState
     ) {
         NoInternetConnectionPlaceholder()
     }

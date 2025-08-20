@@ -41,6 +41,7 @@ import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
+import com.berlin.aflami.screens.search.components.CountryTourExploring
 //import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.profile.watchhistory.WatchHistoryInteractionListener
@@ -176,13 +177,13 @@ fun WatchHistoryContent(
                         val isEmpty =
                             movies.itemCount == 0 && moviesLoadState.refresh is LoadState.NotLoading && moviesLoadState.append is LoadState.NotLoading
                         if (isEmpty) {
-//                            CountryTourExploring(
-//                                modifier = Modifier
-//                                    .fillMaxSize()
-//                                    .align(Alignment.CenterHorizontally),
-//                                painterResource(R.drawable.no_search_result),
-//                                R.string.no_result_found
-//                            )
+                            CountryTourExploring(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .align(Alignment.CenterHorizontally),
+                                painterResource(R.drawable.no_search_result),
+                                R.string.no_result_found
+                            )
                         } else if (LoadState.Loading == moviesLoadState.refresh) {
                             CircularProgressIndicator(
                                 modifier = Modifier.fillMaxSize(),
@@ -200,13 +201,13 @@ fun WatchHistoryContent(
                                             onClick = { movies.retry() }
                                         )
                                     } else {
-//                                        CountryTourExploring(
-//                                            modifier = Modifier
-//                                                .fillMaxSize()
-//                                                .align(Alignment.CenterHorizontally),
-//                                            painterResource(R.drawable.no_search_result),
-//                                            R.string.no_result_found
-//                                        )
+                                        CountryTourExploring(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .align(Alignment.CenterHorizontally),
+                                            painterResource(R.drawable.no_search_result),
+                                            R.string.no_result_found
+                                        )
                                     }
                                 }
 

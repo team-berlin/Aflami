@@ -30,10 +30,9 @@ fun ListCard(
     Box(
         modifier = modifier
             .size(width = 160.dp, height = 147.dp)
-
     ) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .size(width = 160.dp, height = 135.dp)
                 .clip(
                     RoundedCornerShape(

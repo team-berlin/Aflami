@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.lists
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
@@ -49,6 +50,7 @@ import com.berlin.aflami.screens.lists.component.ListCard
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.list.ListScreenEffect
 import com.berlin.aflami.viewmodel.list.ListScreenInteractionListener
@@ -84,7 +86,7 @@ private fun ListsContent(
     val isPagingLoading = favouriteLists.loadState.refresh is LoadState.Loading
     val pagingError = (favouriteLists.loadState.refresh as? LoadState.Error)
     val isLoading = listScreenState.isScreenLoading || isPagingLoading
-    val hasError = listScreenState.errorMessage != null || pagingError != null
+    val hasError = listScreenState.errorUiState is NetworkErrorState || pagingError != null
 
     Box(
         modifier = modifier
@@ -164,7 +166,6 @@ private fun ListsContent(
                         )
                     }
                 }
-
                 else -> {}
             }
         }

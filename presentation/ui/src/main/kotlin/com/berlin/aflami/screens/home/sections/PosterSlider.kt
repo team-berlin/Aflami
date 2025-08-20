@@ -1,5 +1,6 @@
 package com.berlin.aflami.screens.home.sections
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,6 +36,7 @@ import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.safeimageviewer.SafeImageViewer
 import kotlinx.coroutines.delay
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun PosterSlider(
     modifier: Modifier = Modifier,

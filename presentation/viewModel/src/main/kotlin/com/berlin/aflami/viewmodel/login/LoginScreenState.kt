@@ -8,7 +8,7 @@ data class LoginScreenState(
     val isLoginButtonEnabled: Boolean = false,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
-    val errorType: ErrorUiState? = null,
+    val errorUiState: ErrorUiState? = null,
     val success: Boolean = false
 )
 

@@ -53,14 +53,14 @@ class CastViewModelScreen @Inject constructor(
             screenState.copy(
                 castList = mediaActors,
                 isScreenLoading = false,
-                errorMessage = null
+                errorUiState = null
             )
         }
     }
 
     private fun updateScreenStateToLoading() {
         updateState { screenState ->
-            screenState.copy(errorMessage = null, isScreenLoading = true)
+            screenState.copy(errorUiState = null, isScreenLoading = true)
         }
     }
 
@@ -68,7 +68,7 @@ class CastViewModelScreen @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 isScreenLoading = false,
-                errorMessage = errorUiState.message
+                errorUiState = errorUiState
             )
         }
     }

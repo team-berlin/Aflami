@@ -76,7 +76,7 @@ class SearchByCountryScreenViewModel @Inject constructor(
                 isLoading = true,
                 isCountrySelected = true,
                 dropDownExpanded = false,
-                errorMessage = null,
+                errorUiState = null,
             )
         }
     }
@@ -92,7 +92,7 @@ class SearchByCountryScreenViewModel @Inject constructor(
     private fun updateScreenWithError(error: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = error.message, isLoading = false
+                errorUiState = error, isLoading = false
             )
         }
     }

@@ -70,7 +70,6 @@ import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
 import com.berlin.aflami.navigation.HomeScreenWithArgs
 import com.berlin.aflami.navigation.LoginDestination
-import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -180,7 +179,7 @@ fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) 
 
         }
         AnimatedSnackBar(
-            message =  when(uiState.errorType){
+            message =  when(uiState.errorUiState){
                 is InvalidationErrorState->
                         stringResource(id = R.string.login_error_message)
                 else -> stringResource(id = R.string.internet_error)

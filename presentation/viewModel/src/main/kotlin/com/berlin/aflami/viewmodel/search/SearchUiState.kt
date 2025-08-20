@@ -2,6 +2,7 @@ package com.berlin.aflami.viewmodel.search
 
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.paging.PagingData
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import kotlinx.coroutines.flow.Flow
@@ -17,5 +18,5 @@ data class SearchUiState(
     val filterItemUiState: FilterItemUiState = FilterItemUiState(),
     val filterTrigger: Boolean = false,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null,
+    val errorUiState: ErrorUiState? = null,
 )

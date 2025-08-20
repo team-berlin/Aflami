@@ -89,7 +89,7 @@ class SearchByActorViewModel @Inject constructor(
     fun updateScreenStateWithError(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorUiState.message,
+                errorUiState = errorUiState,
                 isLoading = false
             )
         }

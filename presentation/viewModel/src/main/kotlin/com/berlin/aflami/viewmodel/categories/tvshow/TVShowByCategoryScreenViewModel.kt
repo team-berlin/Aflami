@@ -131,7 +131,7 @@ class TVShowByCategoryScreenViewModel @Inject constructor(
     fun updateScreenStateToError(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorUiState.message,
+                errorUiState = errorUiState,
                 isLoading = false
             )
         }

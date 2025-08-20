@@ -53,10 +53,10 @@ class ListDetailsScreenViewModel @Inject constructor(
         )
     }
 
-    private fun updateScreenStateWithErrorMessage(state1: ErrorUiState) {
+    private fun updateScreenStateWithErrorMessage(state: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = state1.message, isScreenLoading = false
+                errorUiState = state, isScreenLoading = false
             )
         }
     }

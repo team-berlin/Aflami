@@ -47,6 +47,7 @@ import com.berlin.aflami.screens.search.components.CountryTourExploring
 import com.berlin.aflami.screens.search.components.MoviesList
 import com.berlin.aflami.screens.search.country.composable.AnimatedCountriesList
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenEffect
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenInteractionListener
 import com.berlin.aflami.viewmodel.searchcountry.SearchByCountryScreenState
@@ -112,7 +113,7 @@ private fun SearchByCountryContent(
     val isPagingLoading = searchResult.loadState.refresh is LoadState.Loading
     val pagingError = (searchResult.loadState.refresh as? LoadState.Error)
     val isLoading = state.isLoading || isPagingLoading
-    val hasError = state.errorMessage != null || pagingError != null
+    val hasError = state.errorUiState != null || pagingError != null
     val isSearchEmpty = state.countryName.text.isBlank()
 
 
@@ -178,7 +179,7 @@ private fun SearchByCountryContent(
 
             AnimatedContent(
                 modifier = Modifier.fillMaxSize(),
-                targetState = Triple(isLoading, hasError, searchResult.itemCount),
+                targetState = Triple(isLoading, state.errorUiState, searchResult.itemCount),
                 transitionSpec = {
                     fadeIn() togetherWith fadeOut()
                 },
@@ -194,7 +195,7 @@ private fun SearchByCountryContent(
                         }
                     }
 
-                    error -> {
+                    error is NetworkErrorState -> {
                         NoInternetConnectionPlaceholder(
                             onClick = {
                                 searchResult.retry()

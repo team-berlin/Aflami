@@ -70,7 +70,7 @@ class SearchViewModel @Inject constructor(
     private fun updateRecentSearchesWithError(error: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = error.message ?: FAILED_RECENT_SEARCHES,
+                errorUiState = error,
                 isLoading = false
             )
         }
@@ -118,7 +118,7 @@ class SearchViewModel @Inject constructor(
     private fun updateRecentSearchClearedWithError(error: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = error.message,
+                errorUiState = error,
                 isLoading = false,
                 isDialogVisible = false
             )
@@ -185,7 +185,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onFetchTvShowsSuccess(tvShowsFlow: Flow<PagingData<TVShowUiState>>) {
-        updateState { it.copy(tvShows = tvShowsFlow, errorMessage = null, isLoading = false) }
+        updateState { it.copy(tvShows = tvShowsFlow, errorUiState = null, isLoading = false) }
     }
     // endregion
 
@@ -219,14 +219,14 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onFetchMoviesSuccess(moviesFlow: Flow<PagingData<MovieUiState>>) {
-        updateState { it.copy(movies = moviesFlow, errorMessage = null, isLoading = false) }
+        updateState { it.copy(movies = moviesFlow, errorUiState = null, isLoading = false) }
     }
 
     // endregion
     private fun updateScreenStateToError(errorUiState: ErrorUiState) =
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorUiState.message,
+                errorUiState = errorUiState,
                 isLoading = false
             )
         }
@@ -269,7 +269,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun updateUiStateWithLoading() {
-        updateState { it.copy(isLoading = true, errorMessage = null) }
+        updateState { it.copy(isLoading = true, errorUiState = null) }
     }
 
     override fun onTabOptionClicked(tabOption: TabOption) {

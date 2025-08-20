@@ -120,7 +120,7 @@ class HomeScreenViewModel @Inject constructor(
                 screenState.popularMediaUiState.copy(
                     popularMedia = newPopularMedia,
                     isLoading = false,
-                    errorMessage = null,
+                    errorUiState = null,
                 )
             )
         }
@@ -131,7 +131,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState {
             it.copy(
                 popularMediaUiState = it.popularMediaUiState.copy(
-                    errorMessage = errorUiState.message, isLoading = false
+                    errorUiState = errorUiState, isLoading = false
                 )
             )
         }
@@ -165,8 +165,7 @@ class HomeScreenViewModel @Inject constructor(
             screenState.copy(
                 continueWatchingUiState = screenState.continueWatchingUiState.copy(
                     continueWatchingMediaList = newContinueWatchingMedia,
-                    isLoading = false,
-                    errorMessage = null
+                    isLoading = false, errorUiState = null
                 ),
             )
         }
@@ -176,7 +175,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 continueWatchingUiState = screenState.continueWatchingUiState.copy(
-                    errorMessage = errorUiState.message,
+                    errorUiState = errorUiState,
                     isLoading = false
                 ),
             )
@@ -211,7 +210,7 @@ class HomeScreenViewModel @Inject constructor(
                 topRatedMediaUiState = screenState.topRatedMediaUiState.copy(
                     topRatedMedia = newTopRatedMedia,
                     isLoading = false,
-                    errorMessage = null,
+                    errorUiState = null,
                 )
             )
         }
@@ -221,7 +220,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 topRatedMediaUiState = screenState.topRatedMediaUiState.copy(
-                    isLoading = false, errorMessage = errorUIState.message
+                    isLoading = false, errorUiState = errorUIState
                 )
             )
         }
@@ -322,7 +321,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 moodPickerUiState = screenState.moodPickerUiState.copy(
-                    isLoading = false, error = ErrorUiState(errorUiState.message)
+                    isLoading = false, errorUiState = ErrorUiState(errorUiState.message)
                 )
             )
         }
@@ -367,7 +366,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 upcomingMoviesUiState = screenState.upcomingMoviesUiState.copy(
-                    errorMessage = errorUiState.message, isLoading = false
+                    errorUiState = errorUiState, isLoading = false
                 ),
             )
         }
@@ -447,7 +446,7 @@ class HomeScreenViewModel @Inject constructor(
         updateState { screenState ->
             screenState.copy(
                 upcomingMoviesUiState = screenState.upcomingMoviesUiState.copy(
-                    errorMessage = errorUiState.message
+                    errorUiState = errorUiState
                 )
             )
         }

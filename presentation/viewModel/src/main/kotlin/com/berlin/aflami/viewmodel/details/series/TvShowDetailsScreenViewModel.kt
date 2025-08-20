@@ -70,7 +70,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     private fun isTVShowHasVideo(tvShowId: Long) {
-        updateState { it.copy(isScreenLoading = true, errorMessage = null) }
+        updateState { it.copy(isScreenLoading = true, errorUiState = null) }
 
         tryToCall(
             call = {
@@ -91,7 +91,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     private fun getTVShowDetails(tvShowId: Long) {
         updateState { screenState ->
-            screenState.copy(isScreenLoading = true, errorMessage = null)
+            screenState.copy(isScreenLoading = true, errorUiState = null)
         }
         tryToCall(
             call = {
@@ -137,7 +137,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     private fun getTVShowActors(tvShowId: Long) {
         updateState { screenState ->
-            screenState.copy(isScreenLoading = true, errorMessage = null)
+            screenState.copy(isScreenLoading = true, errorUiState = null)
         }
         tryToCall(
             call = {
@@ -442,7 +442,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                         it.copy(
                             showRatingDialog = false,
                             selectedRatingMediaId = null,
-                            errorMessage = stateError.message,
+                            errorUiState = stateError,
                             snackBar = it.snackBar.copy(
                                 isVisible = true,
                                 snackBarStatus = SNACK_BAR_STATUS.RATING_ADDED,
@@ -466,7 +466,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
 
-    override fun onAddMediaToFavouriteButtomClicked(
+    override fun onAddMediaToFavouriteButtonClicked(
         mediaId: Long,
         favouriteListId: Int,
     ) {
@@ -547,7 +547,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     private fun updateScreenStateToError(errorState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
-                errorMessage = errorState.message, isScreenLoading = false
+                errorUiState = errorState, isScreenLoading = false
             )
         }
     }
@@ -564,7 +564,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     override fun retry() {
         updateState {
-            it.copy(errorMessage = null, isScreenLoading = true)
+            it.copy(errorUiState = null, isScreenLoading = true)
         }
         loadData()
     }

@@ -3,8 +3,6 @@ package com.berlin.aflami.screens.categories
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,9 +33,11 @@ import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MoviesByCategoryDestination
 import com.berlin.aflami.navigation.TVShowsByCategoryDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.getMovieGenreName
 import com.berlin.aflami.screens.search.getTvShowGenreName
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.categories.categories.CategoriesInteractionListener
 import com.berlin.aflami.viewmodel.categories.categories.CategoriesScreenEffect
 import com.berlin.aflami.viewmodel.categories.categories.CategoriesScreenUiState
@@ -149,6 +149,10 @@ fun CategoriesContent(
                 CircularProgressIndicator(
                     modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
                 )
+            }
+
+            state.errorUiState is NetworkErrorState -> {
+                NoInternetConnectionPlaceholder()
             }
         }
         when (state.selectedTabOption) {

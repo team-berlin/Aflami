@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.details.series
 
+import com.berlin.aflami.viewmodel.base.ErrorUiState
 import com.berlin.aflami.viewmodel.details.common.SnackBarUiState
 import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
@@ -15,7 +16,7 @@ data class TVShowDetailsUiState(
     val rowSection: TVShowRowSectionUiState = TVShowRowSectionUiState.Loading,
     val expandedReviewIds: Set<String> = emptySet(),
     val isScreenLoading: Boolean = false,
-    val errorMessage: String? = null,
+    val errorUiState: ErrorUiState? = null,
     val tvShowDetailsTabsUiState: TVShowDetailsTabsUiState = TVShowDetailsTabsUiState(),
     val showLoginDialog: Boolean = false,
     val showRatingDialog: Boolean = false,
