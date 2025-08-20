@@ -75,7 +75,6 @@ fun RequiredLoggedInPlaceholder(
         Button(
             onClick = { onClick() },
             modifier = modifier
-                .padding(top = 16.dp, start = 111.dp, end = 111.dp)
                 .align(Alignment.CenterHorizontally),
             enabled = enable,
             shape = RoundedCornerShape(16.dp),
