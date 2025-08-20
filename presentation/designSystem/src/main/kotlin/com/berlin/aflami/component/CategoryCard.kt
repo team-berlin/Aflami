@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -57,7 +58,9 @@ fun CategoryCard(
             modifier = Modifier.padding(top = 12.dp, start = 8.dp),
             text = text,
             style = Theme.textStyle.label.medium,
-            color = Theme.color.textColors.title
+            color = Theme.color.textColors.title,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
         Image(
             modifier = Modifier

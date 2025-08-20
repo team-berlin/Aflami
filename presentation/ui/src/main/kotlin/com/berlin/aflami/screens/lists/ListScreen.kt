@@ -108,7 +108,7 @@ private fun ListsContent(
                             status = SnackBarStatus.SUCCESS,
                             text = stringResource(R.string.list_edit_successfully),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
-                            modifier = Modifier.align(Alignment.TopCenter),
+                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     } else {
@@ -117,7 +117,7 @@ private fun ListsContent(
                             status = SnackBarStatus.ERROR,
                             text = stringResource(R.string.list_failed_to_edit),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
-                            modifier = Modifier.align(Alignment.TopCenter),
+                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     }
@@ -130,7 +130,7 @@ private fun ListsContent(
                             status = SnackBarStatus.SUCCESS,
                             text = stringResource(R.string.list_deleted_successfully),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
-                            modifier = Modifier.align(Alignment.TopCenter),
+                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     } else {
@@ -139,7 +139,7 @@ private fun ListsContent(
                             status = SnackBarStatus.ERROR,
                             text = stringResource(R.string.list_failed_to_deleted),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
-                            modifier = Modifier.align(Alignment.TopCenter),
+                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     }
@@ -152,7 +152,7 @@ private fun ListsContent(
                             status = SnackBarStatus.SUCCESS,
                             text = stringResource(R.string.new_list_created),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
-                            modifier = Modifier.align(Alignment.TopCenter),
+                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     } else {
@@ -161,7 +161,7 @@ private fun ListsContent(
                             status = SnackBarStatus.ERROR,
                             text = stringResource(R.string.create_new_list_failed),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
-                            modifier = Modifier.align(Alignment.TopCenter),
+                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     }

@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.mapper
 
+import android.icu.text.DecimalFormat
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.entity.RatedMovie
@@ -9,12 +10,12 @@ fun RatedMovie.toMovieUiStateFromRated() = MovieUiState(
     id = id,
     title = title,
     posterUrl = posterUrl ?: "",
-    rating = userRating.toString(),
+    rating = DecimalFormat("#.#").format(userRating).toString(),
 )
 
 fun RatedTVShow.toTvUiStateFromRated() = TVShowUiState(
     id = id,
     title = name,
     posterUrl = posterUrl ?: "",
-    rating = userRating.toString(),
+    rating = DecimalFormat("#.#").format(userRating).toString(),
 )

@@ -58,6 +58,7 @@ fun OptionsDialog(
     {
         Box(
             modifier = modifier
+                .padding(horizontal = 16.dp)
                 .background(Theme.color.surface, RoundedCornerShape(24.dp))
                 .padding(12.dp)
         ) {
