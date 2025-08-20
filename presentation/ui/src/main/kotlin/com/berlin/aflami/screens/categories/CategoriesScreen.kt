@@ -3,8 +3,6 @@ package com.berlin.aflami.screens.categories
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -185,7 +183,7 @@ private fun ResultGrid(
             .navigationBarsPadding(),
         columns = Adaptive(minSize = 160.dp),
         contentPadding = PaddingValues(
-            start = 16.dp, end = 16.dp, top = 8.dp, bottom = 64.dp
+            start = 16.dp, end = 16.dp, top = 8.dp, bottom = 81.dp
         ),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)

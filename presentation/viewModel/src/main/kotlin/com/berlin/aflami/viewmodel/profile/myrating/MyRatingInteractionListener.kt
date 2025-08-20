@@ -7,5 +7,6 @@ interface MyRatingInteractionListener {
     fun onBackClicked()
     fun onMediaCardClicked(mediaId: Long, mediaType: MediaType)
     fun onTabOptionClicked(tabOption: TabOption)
+    fun retry()
 
 }

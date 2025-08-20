@@ -4,7 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.ThemeAndLocalePreviews
@@ -31,10 +31,13 @@ fun ListCard(
         modifier = modifier
             .size(width = 160.dp, height = 147.dp)
 
-    ) {
+
+    )
+    {
         Box(
             modifier = Modifier
-                .size(width = 160.dp, height = 135.dp)
+                .fillMaxWidth(1f)
+                .fillMaxHeight(0.90f)
                 .clip(
                     RoundedCornerShape(
                         bottomEnd = 24.dp,
@@ -45,12 +48,13 @@ fun ListCard(
                 )
                 .background(Theme.color.surfaceHigh)
                 .align(Alignment.BottomEnd)
-        ) {
+        )
+        {
             Column(
                 modifier = Modifier
                     .padding(start = 8.dp, bottom = 20.dp)
                     .align(Alignment.BottomStart)
-                .background(Theme.color.surfaceHigh),
+                    .background(Theme.color.surfaceHigh),
 
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
@@ -67,10 +71,8 @@ fun ListCard(
             }
 
         }
-
         Box(
             modifier = Modifier
-                .offset(x = (42).dp)
                 .size(width = 80.dp, height = 33.dp)
                 .clip(
                     RoundedCornerShape(
@@ -79,6 +81,7 @@ fun ListCard(
                     )
                 )
                 .background(Theme.color.surfaceHigh)
+                .align(Alignment.TopStart)
         )
     }
 
