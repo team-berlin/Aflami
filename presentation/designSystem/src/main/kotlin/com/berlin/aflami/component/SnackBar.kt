@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.extension.dropShadow
@@ -66,7 +67,7 @@ fun SnackBar(
     ) {
         Box(
             modifier = modifier
-                .fillMaxWidth()
+                .fillMaxWidth(0.95f)
                 .dropShadow(
                     shape = RoundedCornerShape(16.dp),
                     alpha = 0.12f,
@@ -80,7 +81,9 @@ fun SnackBar(
                 )
         ) {
             Row(
-                modifier
+                Modifier
+                    .fillMaxWidth(0.95f)
+                    .align(Alignment.Center)
                     .clip(RoundedCornerShape(16.dp))
                     .border(
                         width = 1.dp,
@@ -105,7 +108,9 @@ fun SnackBar(
                     text = text,
                     textAlign = TextAlign.Center,
                     style = Theme.textStyle.body.medium,
-                    color = Theme.color.textColors.body
+                    color = Theme.color.textColors.body,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

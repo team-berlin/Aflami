@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berlin.aflami.navigation.AflamiNavGraph
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -22,13 +23,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
-    private var startTime: Long = 0L
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        startTime = System.currentTimeMillis()
         val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition {
-            mainActivityViewModel.state.value.isLoading || System.currentTimeMillis() < startTime + 3000
+            mainActivityViewModel.state.value.isLoading
         }
 
 
@@ -36,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContent {
-            val mainState by mainActivityViewModel.state.collectAsState()
+            val mainState by mainActivityViewModel.state.collectAsStateWithLifecycle()
 
             AflamiTheme(
                 isDarkTheme = mainState.isDark
