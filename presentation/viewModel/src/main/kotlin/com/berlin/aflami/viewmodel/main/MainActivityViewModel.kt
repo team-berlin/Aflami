@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berlin.entity.AppTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -38,6 +39,7 @@ class MainActivityViewModel @Inject constructor(
 
             isLoggedInUseCase().collect { loggedIn ->
                 _state.update {
+                    delay(2833)
                     it.copy(
                         isLoading = false,
                         isFirstEntry = isFirstEntry,
