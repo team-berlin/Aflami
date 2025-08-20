@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -48,12 +49,14 @@ fun LogoutDialog(
     ) {
         Box(
             modifier = modifier
+                .padding(horizontal = 16.dp)
                 .background(Theme.color.surface, RoundedCornerShape(24.dp))
+
                 .padding(12.dp)
         ) {
             Column(
                 Modifier
-                    .widthIn(min = 328.dp, max = 360.dp),
+                    .width(328.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {

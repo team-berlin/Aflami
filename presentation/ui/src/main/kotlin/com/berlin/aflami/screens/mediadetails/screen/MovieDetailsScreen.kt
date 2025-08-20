@@ -369,7 +369,7 @@ fun MovieDetailsContent(
                     SnackBar(
                         isVisible = state.snackBar.isVisible,
                         status = SnackBarStatus.SUCCESS,
-                        text = "Successfully submitted rating.",
+                        text = stringResource(R.string.rating_added),
                         iconPainter = painterResource(id = R.drawable.success),
                         modifier = Modifier.align(Alignment.TopCenter),
                         onDismiss = { listener.dismissSnackBar() })
@@ -377,7 +377,7 @@ fun MovieDetailsContent(
                     SnackBar(
                         isVisible = state.snackBar.isVisible,
                         status = SnackBarStatus.ERROR,
-                        text = "Failed to submit rating.",
+                        text = stringResource(R.string.rating_added_failed),
                         iconPainter = painterResource(id = R.drawable.error),
                         modifier = Modifier.align(Alignment.TopCenter),
                         onDismiss = {

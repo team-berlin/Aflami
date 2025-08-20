@@ -17,6 +17,7 @@ import com.berlin.aflami.navigation.routes.gameResult
 import com.berlin.aflami.navigation.routes.gamesRoute
 import com.berlin.aflami.navigation.routes.guessGame
 import com.berlin.aflami.navigation.routes.homeScreenRoute
+import com.berlin.aflami.navigation.routes.homeScreenWithArgsRoute
 import com.berlin.aflami.navigation.routes.listsDetailsRoute
 import com.berlin.aflami.navigation.routes.listsRoute
 import com.berlin.aflami.navigation.routes.listsScreenRouteWithArgs
@@ -117,6 +118,7 @@ fun NavGraphBuilder.bottomNavigationBarGraph() {
     homeScreenRoute()
     listsRoute()
     listsScreenRouteWithArgs()
+    homeScreenWithArgsRoute()
     listsDetailsRoute()
     profileRoute()
     categoriesRoute()

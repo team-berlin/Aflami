@@ -5,6 +5,7 @@ import com.berlin.aflami.viewmodel.categories.movie.MediaByCategoryArgs
 import com.berlin.aflami.viewmodel.details.cast.CastDetailsArgs
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsArgs
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsArgs
+import com.berlin.aflami.viewmodel.home.HomeArgs
 import com.berlin.aflami.viewmodel.list.FavouriteListArgs
 import com.berlin.aflami.viewmodel.listDetails.FavouriteListDetailsArgs
 import dagger.Module
@@ -42,5 +43,9 @@ object ViewModel {
     @Provides
     fun mediaByCategoryArgs(savedStateHandle: SavedStateHandle): MediaByCategoryArgs
     {        return MediaByCategoryArgs(savedStateHandle)
+    }
+    @Provides
+    fun homeArgs(savedStateHandle: SavedStateHandle): HomeArgs
+    {        return HomeArgs(savedStateHandle)
     }
 }

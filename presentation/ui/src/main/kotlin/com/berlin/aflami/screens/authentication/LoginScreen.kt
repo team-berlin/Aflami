@@ -2,6 +2,7 @@ package com.berlin.aflami.screens.authentication
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
@@ -67,11 +68,13 @@ import com.berlin.aflami.component.TextField
 import com.berlin.aflami.component.buttons.ButtonState
 import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
+import com.berlin.aflami.navigation.HomeScreenWithArgs
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.InvalidationErrorState
 import com.berlin.aflami.viewmodel.login.FormUiState
 import com.berlin.aflami.viewmodel.login.LoginInteractionListener
 import com.berlin.aflami.viewmodel.login.LoginScreenEffect
@@ -90,24 +93,35 @@ fun LoginScreen(
     LaunchedEffect(Unit) {
         viewmodel.effect.collect {
             when (it) {
-                LoginScreenEffect.NavigateToHomeScreen -> {
+                is LoginScreenEffect.NavigateToHomeScreen -> {
                     navController.navigate(
-                        NavigationBarDestinations.HomeScreen
-                    ){
-                        popUpTo(LoginDestination){
+                        HomeScreenWithArgs(true)
+                    ) {
+                        popUpTo(LoginDestination) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     }
                 }
 
-                LoginScreenEffect.NavigateToCreateAccountScreen -> {
+                 LoginScreenEffect.NavigateToCreateAccountScreen -> {
 
                     navController.navigate(WebViewDestination(REGISTER_URL))
                 }
 
-                LoginScreenEffect.NavigateToForgotPassword -> {
+                 LoginScreenEffect.NavigateToForgotPassword -> {
                     navController.navigate(WebViewDestination(RESET_PASSWORD_URL))
+                }
+
+                LoginScreenEffect.NavigateToHomeScreenAsGuest -> {
+                    navController.navigate(
+                        HomeScreenWithArgs()
+                    ) {
+                        popUpTo(LoginDestination) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
             }
         }
@@ -120,59 +134,64 @@ fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) 
     Box(
         modifier = Modifier
             .fillMaxSize(),
-    ) { Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Theme.color.surface)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = Theme.color.gradientColors.streakGradient
-                )
-            )
-            .statusBarsPadding()
-            .padding(start = 12.dp, end = 12.dp, bottom = 16.dp, top = 24.dp),
     ) {
-        CirclesBackground()
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            LoginLogo()
-            WelcomeText()
-            FormLogin(
-                modifier = Modifier.padding(bottom = 24.dp),
-                uiState = uiState.formUiState,
-                onUsernameChanged = listener::onUsernameChanged,
-                onPasswordChanged = listener::onPasswordChanged,
-                onTrailingIconClicked = listener::onTrailingIconClicked,
-                onForgotPasswordClicked = listener::onForgotPasswordClicked
-            )
-            LoginButtons(
-                isLoading = uiState.isLoading,
-                isError = uiState.isError,
-                isLoginButtonEnabled = uiState.isLoginButtonEnabled,
-                onLoginClicked = listener::onLoginClicked,
-                onContinueAsGuestClicked = listener::onContinueAsGuestClicked
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            CreateAccount(
-                onCreateAccountClicked = listener::onCreateAccountClicked
-            )
-        }
+                .background(Theme.color.surface)
 
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = Theme.color.gradientColors.streakGradient,
+                    )
+                )
+                .statusBarsPadding()
+                .padding(start = 12.dp, end = 12.dp, bottom = 16.dp, top = 24.dp),
+        ) {
+            CirclesBackground()
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                LoginLogo()
+                WelcomeText()
+                FormLogin(
+                    modifier = Modifier.padding(bottom = 24.dp),
+                    uiState = uiState.formUiState,
+                    onUsernameChanged = listener::onUsernameChanged,
+                    onPasswordChanged = listener::onPasswordChanged,
+                    onTrailingIconClicked = listener::onTrailingIconClicked,
+                    onForgotPasswordClicked = listener::onForgotPasswordClicked
+                )
+                LoginButtons(
+                    isLoading = uiState.isLoading,
+                    isError = uiState.isError,
+                    isLoginButtonEnabled = uiState.isLoginButtonEnabled,
+                    onLoginClicked = listener::onLoginClicked,
+                    onContinueAsGuestClicked = listener::onContinueAsGuestClicked
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                CreateAccount(
+                    onCreateAccountClicked = listener::onCreateAccountClicked
+                )
+            }
+
+        }
+        AnimatedSnackBar(
+            message =  when(uiState.errorType){
+                is InvalidationErrorState->
+                    stringResource(id = R.string.login_error_message)
+                else -> stringResource(id = R.string.internet_error)
+            },
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(top = 16.dp),
+            isSnackBarVisible = uiState.isError
+        )
     }
-    AnimatedSnackBar(
-        message = stringResource(id = R.string.login_error_message),
-        modifier = Modifier
-            .align(Alignment.TopCenter)
-            .statusBarsPadding()
-            .padding(top = 16.dp)
-        ,
-        isSnackBarVisible = uiState.isError
-    )
-}
 }
 
 @Composable
@@ -286,13 +305,17 @@ fun LoginButtons(
                 else -> ButtonState.IDLE
             }
         ) {
+            val loginColor by animateColorAsState(
+                if (isLoginButtonEnabled) Theme.color.textColors.onPrimary
+                else Theme.color.stroke
+            )
             Text(
                 stringResource(R.string.login),
                 modifier = Modifier.wrapContentWidth(),
                 style = Theme.textStyle.label.large.copy(
                     textAlign = TextAlign.Center
                 ),
-                color = Theme.color.textColors.onPrimary
+                color = loginColor
             )
         }
 
@@ -361,7 +384,7 @@ private fun AnimatedSnackBar(
             isVisible = isSnackBarVisible,
             status = SnackBarStatus.ERROR,
             text = message,
-            modifier=modifier,
+            modifier = modifier,
             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
         )
     }

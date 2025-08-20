@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.home
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PAGE_SIZE
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -44,10 +43,15 @@ class HomeScreenViewModel @Inject constructor(
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    homeArgs: HomeArgs
 ) : BaseViewModel<HomeScreenState, HomeScreenEffect>(HomeScreenState()),
     HomeScreenInteractionListener {
+    private val shouldShowSuccessSnackBar: Boolean? =homeArgs.isLoggedIn
 
     init {
+        if (shouldShowSuccessSnackBar == true) updateState {
+            it.copy(showSuccessSnackBar = true)
+        }
         loadGenresTVShow()
         loadGenresMovies()
         viewModelScope.launch {

@@ -3,6 +3,8 @@ package com.berlin.aflami.viewmodel.login
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BaseViewModel
+import com.berlin.aflami.viewmodel.base.ErrorUiState
+import com.berlin.aflami.viewmodel.base.InvalidationErrorState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -58,7 +60,7 @@ class LoginViewmodel @Inject constructor(
                 state.value.formUiState.password.text
             )
         if (!isValidated) {
-            handleErrorState("Invalid username or password")
+            handleErrorState(InvalidationErrorState("invalid input"))
             return
         }
         updateState { screenState -> screenState.copy(isLoading = true) }
@@ -73,32 +75,35 @@ class LoginViewmodel @Inject constructor(
                 tryToCall(
                     call = { getUserProfileUseCase() },
                     onSuccess = {
-                        updateState { it.copy(isLoading = false) }
-                        sendNewEffect(LoginScreenEffect.NavigateToHomeScreen)
+                        updateState { it.copy(isLoading = false, success = true) }
+                        sendNewEffect(LoginScreenEffect.NavigateToHomeScreen(true))
                     },
-                    onError = { e ->
-                        handleErrorState(e.message)
+                    onError = { errorUistate ->
+                        handleErrorState(errorUistate)
                     }
                 )
             },
-            onError = { handleErrorState(it.message) },
+            onError = { errorUistate ->
+                handleErrorState(errorUistate)
+            },
         )
 
     }
 
     override fun onContinueAsGuestClicked() =
-        sendNewEffect(LoginScreenEffect.NavigateToHomeScreen)
+        sendNewEffect(LoginScreenEffect.NavigateToHomeScreenAsGuest)
 
     override fun onCreateAccountClicked() =
         sendNewEffect(LoginScreenEffect.NavigateToCreateAccountScreen)
 
-    private fun handleErrorState(message: String?) {
+    private fun handleErrorState(errorUiState: ErrorUiState) {
         updateState { screenState ->
             screenState.copy(
                 isError = true,
-                errorMessage = message
+                errorType = errorUiState
             )
         }
+
         viewModelScope.launch {
             delay(SNACK_BAR_DURATION)
             updateState { screenState ->
@@ -110,7 +115,8 @@ class LoginViewmodel @Inject constructor(
             }
         }
     }
-    companion object{
+
+    companion object {
         const val SNACK_BAR_DURATION = 3000L
     }
 }
