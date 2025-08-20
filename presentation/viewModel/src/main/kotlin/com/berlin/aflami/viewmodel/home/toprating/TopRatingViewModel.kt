@@ -63,7 +63,7 @@ class TopRatingViewModel @Inject constructor(
     }
 
     private fun updateScreenStateWithError(errorUiState: ErrorUiState) =
-        updateState { it.copy(errorMessage = errorUiState.message) }
+        updateState { it.copy(errorUiState = errorUiState) }
 
     private fun updateScreenStateToLoading() = updateState { it.copy(isLoading = true) }
 

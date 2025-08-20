@@ -113,7 +113,7 @@ private fun SearchByCountryContent(
     val isPagingLoading = searchResult.loadState.refresh is LoadState.Loading
     val pagingError = (searchResult.loadState.refresh as? LoadState.Error)
     val isLoading = state.isLoading || isPagingLoading
-    val hasError = state.errorUiState != null || pagingError != null
+    val hasError = state.errorUiState is NetworkErrorState || pagingError != null
     val isSearchEmpty = state.countryName.text.isBlank()
 
 
@@ -179,7 +179,7 @@ private fun SearchByCountryContent(
 
             AnimatedContent(
                 modifier = Modifier.fillMaxSize(),
-                targetState = Triple(isLoading, state.errorUiState, searchResult.itemCount),
+                targetState = Triple(isLoading, hasError, searchResult.itemCount),
                 transitionSpec = {
                     fadeIn() togetherWith fadeOut()
                 },
@@ -195,7 +195,7 @@ private fun SearchByCountryContent(
                         }
                     }
 
-                    error is NetworkErrorState -> {
+                    error -> {
                         NoInternetConnectionPlaceholder(
                             onClick = {
                                 searchResult.retry()

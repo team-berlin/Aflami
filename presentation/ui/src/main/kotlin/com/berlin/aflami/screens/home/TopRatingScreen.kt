@@ -4,8 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,8 +39,10 @@ import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.TVShowDetailsDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.ui.color.ExtraColors.BackgroundGradient
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingScreenEffect
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -87,6 +87,13 @@ fun TopRatingScreen(
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
+    }
+
+    AnimatedVisibility(
+        enter =  EnterTransition.None ,
+        exit = ExitTransition.None , visible = topRatingScreenState.errorUiState is NetworkErrorState
+    ) {
+        NoInternetConnectionPlaceholder()
     }
 
     val topRatedItems = topRatingScreenState.topRatedMediaFlow.collectAsLazyPagingItems()

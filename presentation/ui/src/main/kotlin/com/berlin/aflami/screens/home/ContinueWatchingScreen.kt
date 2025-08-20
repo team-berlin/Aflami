@@ -32,8 +32,10 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.TVShowDetailsDestination
+import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.search.components.MediaGridList
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingMediaInteractionListener
 import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingMediaViewModel
 import com.berlin.aflami.viewmodel.home.continueWatching.ContinueWatchingScreenEffect
@@ -128,6 +130,10 @@ fun WatchedMediaContent(
                     modifier = Modifier.fillMaxSize(),
                     text = stringResource(R.string.loading)
                 )
+            }
+
+            state.errorUiState is NetworkErrorState -> {
+                NoInternetConnectionPlaceholder()
             }
 
             else -> {

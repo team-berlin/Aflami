@@ -45,6 +45,7 @@ import com.berlin.aflami.screens.games.components.SelectionItem
 import com.berlin.aflami.screens.onBoarding.Indicator
 import com.berlin.aflami.ui.color.ExtraColors.gameBackgroundGradient
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.viewmodel.base.NetworkErrorState
 import com.berlin.aflami.viewmodel.quizgame.QuestionType
 import com.berlin.aflami.viewmodel.quizgame.QuizGameEffect
 import com.berlin.aflami.viewmodel.quizgame.QuizGameInteractionListener
@@ -92,7 +93,7 @@ fun GuessTheGameScreen(
     AnimatedVisibility(
         enter =  EnterTransition.None ,
         exit = ExitTransition.None ,
-        visible = state.errorUiState != null
+        visible = state.errorUiState is NetworkErrorState
     ) {
         NoInternetConnectionPlaceholder(
             onClick = {
