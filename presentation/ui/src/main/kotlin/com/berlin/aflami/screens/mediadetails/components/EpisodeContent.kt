@@ -98,7 +98,6 @@ fun SeasonsHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(24.dp)
             .background(Theme.color.surface)
             .clickable { onToggleExpand() }
             .padding(horizontal = 16.dp),

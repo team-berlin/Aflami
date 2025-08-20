@@ -186,7 +186,7 @@ fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) 
                 else -> stringResource(id = R.string.internet_error)
             },
             modifier = Modifier
-                .align(Alignment.TopCenter)
+                .fillMaxWidth()
                 .statusBarsPadding()
                 .padding(top = 16.dp),
             isSnackBarVisible = uiState.isError

@@ -293,7 +293,7 @@ private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Un
                     if (onClick != null)
                         Modifier.clickable(
                             interactionSource = MutableInteractionSource(),
-                            indication = ripple(color = Theme.color.textColors.hint),
+                            indication = null,
                             onClick = onClick
                         )
                     else

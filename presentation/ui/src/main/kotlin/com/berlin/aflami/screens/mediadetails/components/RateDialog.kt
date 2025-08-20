@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.berlin.aflami.ui.color.ExtraColors.darkPurpleLinearGradient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
@@ -43,7 +44,7 @@ fun RateDialog(
 ) {
     var selectedRating by remember { mutableIntStateOf(0) }
 
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Box(
             modifier = modifier
                 .padding(16.dp)
