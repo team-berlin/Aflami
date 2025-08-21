@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.ui.color.ExtraColors.primaryGredient
 import com.berlin.aflami.ui.theme.AflamiTheme
@@ -43,7 +44,9 @@ fun MoodPickerDialog(
     modifier: Modifier = Modifier,
 ) {
 
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(
+        usePlatformDefaultWidth = false
+    )) {
         Column(
             modifier = modifier
                 .background(

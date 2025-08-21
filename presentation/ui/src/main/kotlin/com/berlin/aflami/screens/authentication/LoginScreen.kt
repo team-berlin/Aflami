@@ -322,7 +322,7 @@ fun LoginButtons(
         }
 
         SecondaryButton(
-            onClick = onContinueAsGuestClicked, modifier = Modifier.fillMaxWidth(), border = null
+            onClick = onContinueAsGuestClicked, modifier = Modifier.fillMaxWidth()
         ) {
             Text(
                 stringResource(R.string.continue_as_guest),

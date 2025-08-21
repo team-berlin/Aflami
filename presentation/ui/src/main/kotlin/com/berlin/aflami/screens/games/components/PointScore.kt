@@ -24,7 +24,7 @@ import com.berlin.ui.R
 fun PointScore(
     userPoints: Int,
 ) {
-    Box(
+    Row(
         modifier = Modifier
             .clip(CircleShape)
             .background(
@@ -33,7 +33,7 @@ fun PointScore(
                 )
             )
             .padding(horizontal = 8.dp, vertical = 4.dp),
-        contentAlignment = Alignment.Center
+       // contentAlignment = Alignment.Center
     ) {
         Text(
             text = stringResource( R.string.pts,userPoints),

@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -106,7 +108,9 @@ private fun ListsContent(
                             status = SnackBarStatus.SUCCESS,
                             text = stringResource(R.string.list_edit_successfully),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
-                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     } else {
@@ -115,7 +119,9 @@ private fun ListsContent(
                             status = SnackBarStatus.ERROR,
                             text = stringResource(R.string.list_failed_to_edit),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
-                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     }
@@ -128,7 +134,9 @@ private fun ListsContent(
                             status = SnackBarStatus.SUCCESS,
                             text = stringResource(R.string.list_deleted_successfully),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
-                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     } else {
@@ -137,7 +145,9 @@ private fun ListsContent(
                             status = SnackBarStatus.ERROR,
                             text = stringResource(R.string.list_failed_to_deleted),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
-                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     }
@@ -150,7 +160,9 @@ private fun ListsContent(
                             status = SnackBarStatus.SUCCESS,
                             text = stringResource(R.string.new_list_created),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
-                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     } else {
@@ -159,7 +171,9 @@ private fun ListsContent(
                             status = SnackBarStatus.ERROR,
                             text = stringResource(R.string.create_new_list_failed),
                             iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.error),
-                            modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.TopCenter),
                             onDismiss = interactionListener::dismissSnackBar
                         )
                     }
@@ -223,7 +237,6 @@ private fun ListsContent(
             ) {
                 DefaultBar(
                     title = stringResource(R.string.lists),
-                    modifier = Modifier.padding(horizontal = 16.dp),
                     showNavigateBackButton = false,
                     lastOption = painterResource(R.drawable.add),
                     optionContainerColor = Theme.color.surfaceHigh,
@@ -266,9 +279,13 @@ private fun ListsContent(
                                 modifier = Modifier.fillMaxSize(),
                                 columns = GridCells.Adaptive(minSize = 156.dp),
                                 state = rememberLazyGridState(),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                contentPadding = PaddingValues(top = 16.dp, bottom = 64.dp),
+                                contentPadding = PaddingValues(
+                                    top = 16.dp,
+                                    bottom = 81.dp,
+                                    start = 16.dp,
+                                    end = 16.dp),
                             ) {
                                 items(
                                     favouriteLists.itemCount,
@@ -279,7 +296,10 @@ private fun ListsContent(
                                             title = item.listTitle,
                                             count = item.numberOfFavouriteMovies,
                                             modifier = modifier
-                                                .clickable {
+                                                .clickable(
+                                                    indication = null,
+                                                    interactionSource = remember { MutableInteractionSource() }
+                                                ) {
                                                     interactionListener.onClickListCard(
                                                         item.listId!!, item.listTitle
                                                     )

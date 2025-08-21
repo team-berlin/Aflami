@@ -141,7 +141,6 @@ fun ResultScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
-                border = null
             ) {
                 Text(
                     text = stringResource(R.string.play_again),

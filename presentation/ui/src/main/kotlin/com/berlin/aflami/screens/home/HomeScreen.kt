@@ -58,9 +58,9 @@ import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.navigation.TopRatingMediaDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
-import com.berlin.aflami.screens.home.sections.RecentlyWatchedHomeSections
 import com.berlin.aflami.screens.home.sections.MoodPickerSection
 import com.berlin.aflami.screens.home.sections.PosterSlider
+import com.berlin.aflami.screens.home.sections.RecentlyWatchedHomeSections
 import com.berlin.aflami.screens.home.sections.TopRatingHomeSections
 import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
 import com.berlin.aflami.screens.search.getMovieGenreName
@@ -171,7 +171,7 @@ private fun onReceiveHomeScreenEffect(
             )
         }
 
-        HomeScreenEffect.NavigateToMoodPickerDialog -> TODO()
+        HomeScreenEffect.NavigateToMoodPickerDialog -> {}
 
 
         is HomeScreenEffect.NavigateToMovieDetailsScreen -> {

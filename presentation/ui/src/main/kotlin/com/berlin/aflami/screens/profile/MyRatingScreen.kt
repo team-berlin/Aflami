@@ -56,7 +56,6 @@ fun MyRatingScreen(
 ) {
     val navController = Theme.navController
     val state by viewModel.state.collectAsState()
-
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             myRatingOnReceiveEffect(navController, effect)
@@ -64,9 +63,9 @@ fun MyRatingScreen(
     }
 
     AnimatedVisibility(
-        visible = state.isLoading,
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
+        visible = state.isLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
@@ -75,9 +74,9 @@ fun MyRatingScreen(
     }
 
     AnimatedVisibility(
-        visible = !state.isLoading,
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
+        visible = !state.isLoading
     ) {
         MyRatingContent(
             state = state,
@@ -97,6 +96,7 @@ private fun myRatingOnReceiveEffect(
                 MediaType.MOVIE -> navController.navigate(
                     MovieDetailsDestination(movieId = effect.mediaId)
                 )
+
                 MediaType.TV_SHOW -> navController.navigate(
                     TVShowDetailsDestination(tvShowId = effect.mediaId)
                 )
@@ -121,7 +121,7 @@ fun MyRatingContent(
                 .padding(vertical = 8.dp),
             title = {
                 Text(
-                    text = stringResource(R.string.my_rating), // make sure this string exists
+                    text = stringResource(R.string.my_rating),
                     style = Theme.textStyle.title.large,
                     color = Theme.color.textColors.title,
                 )
@@ -143,7 +143,6 @@ fun MyRatingContent(
                 }
             }
         )
-
         TabBar(
             selectedTabIndex = state.selectedTabOption.index,
             containerColor = Theme.color.surface,
@@ -170,46 +169,48 @@ fun MyRatingContent(
 
         val movies = state.movies.collectAsLazyPagingItems()
         val tvShows = state.tvShows.collectAsLazyPagingItems()
-        val moviesLoadState = movies.loadState
-        val tvShowsLoadState = tvShows.loadState
+
+        LaunchedEffect(state.selectedTabOption) {
+            when (state.selectedTabOption) {
+                TabOption.MOVIES -> {
+                    val refresh = movies.loadState.refresh
+                    if (refresh is LoadState.NotLoading && movies.itemCount == 0) {
+                        movies.refresh()
+                    }
+                }
+
+                TabOption.TV_SHOWS -> {
+                    val refresh = tvShows.loadState.refresh
+                    if (refresh is LoadState.NotLoading && tvShows.itemCount == 0) {
+                        tvShows.refresh()
+                    }
+                }
+            }
+        }
 
         when (state.selectedTabOption) {
             TabOption.MOVIES -> {
-                val isEmpty = movies.itemCount == 0 &&
-                        moviesLoadState.refresh is LoadState.NotLoading &&
-                        moviesLoadState.append is LoadState.NotLoading
-
+                val refresh = movies.loadState.refresh
                 when {
-                    isEmpty -> CountryTourExploring(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .align(Alignment.CenterHorizontally),
-                        image = painterResource(R.drawable.no_search_result),
-                        titleId = R.string.no_result_found
-                    )
+                    refresh is LoadState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.fillMaxSize(),
+                            text = stringResource(R.string.loading)
+                        )
+                    }
 
-                    moviesLoadState.refresh is LoadState.Loading -> CircularProgressIndicator(
-                        modifier = Modifier.fillMaxSize(),
-                        text = stringResource(R.string.loading)
-                    )
+                    refresh is LoadState.Error -> {
+                        NoInternetConnectionPlaceholder(onClick = { movies.retry() })
+                    }
 
-                    moviesLoadState.refresh is LoadState.Error -> {
-                        val err = moviesLoadState.refresh as LoadState.Error
-                        val isNoInternet = err.error.message?.contains(
-                            "No internet connection",
-                            ignoreCase = true
-                        ) == true
-                        if (isNoInternet) {
-                            NoInternetConnectionPlaceholder(onClick = { movies.retry() })
-                        } else {
-                            CountryTourExploring(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .align(Alignment.CenterHorizontally),
-                                image = painterResource(R.drawable.no_search_result),
-                                titleId = R.string.no_result_found
-                            )
-                        }
+                    movies.itemCount == 0 -> {
+                        CountryTourExploring(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .align(Alignment.CenterHorizontally),
+                            image = painterResource(R.drawable.no_search_result),
+                            titleId = R.string.no_result_found
+                        )
                     }
 
                     else -> {
@@ -245,41 +246,27 @@ fun MyRatingContent(
             }
 
             TabOption.TV_SHOWS -> {
-                val isEmpty = tvShows.itemCount == 0 &&
-                        tvShowsLoadState.refresh is LoadState.NotLoading &&
-                        tvShowsLoadState.append is LoadState.NotLoading
-
+                val refresh = tvShows.loadState.refresh
                 when {
-                    isEmpty -> CountryTourExploring(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .align(Alignment.CenterHorizontally),
-                        image = painterResource(R.drawable.no_search_result),
-                        titleId = R.string.no_result_found
-                    )
+                    refresh is LoadState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.fillMaxSize(),
+                            text = stringResource(R.string.loading)
+                        )
+                    }
 
-                    tvShowsLoadState.refresh is LoadState.Loading -> CircularProgressIndicator(
-                        modifier = Modifier.fillMaxSize(),
-                        text = stringResource(R.string.loading)
-                    )
+                    refresh is LoadState.Error -> {
+                        NoInternetConnectionPlaceholder(onClick = { tvShows.retry() })
+                    }
 
-                    tvShowsLoadState.refresh is LoadState.Error -> {
-                        val err = tvShowsLoadState.refresh as LoadState.Error
-                        val isNoInternet = err.error.message?.contains(
-                            "No internet connection",
-                            ignoreCase = true
-                        ) == true
-                        if (isNoInternet) {
-                            NoInternetConnectionPlaceholder(onClick = { tvShows.retry() })
-                        } else {
-                            CountryTourExploring(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .align(Alignment.CenterHorizontally),
-                                image = painterResource(R.drawable.no_search_result),
-                                titleId = R.string.no_result_found
-                            )
-                        }
+                    tvShows.itemCount == 0 -> {
+                        CountryTourExploring(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .align(Alignment.CenterHorizontally),
+                            image = painterResource(R.drawable.no_search_result),
+                            titleId = R.string.no_result_found
+                        )
                     }
 
                     else -> {
