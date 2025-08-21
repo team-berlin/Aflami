@@ -26,11 +26,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -226,300 +232,327 @@ fun TvShowDetailsContent(
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
 
+    var offset by remember { mutableFloatStateOf(0f) }
+    val marginTopInPx = with(LocalDensity.current) { 0.dp.toPx() }
+    val maxOffsetInPx = with(LocalDensity.current) { 80.dp.toPx() }
+    val startScrollThresholdPx = with(LocalDensity.current) { 20.dp.toPx() }
+
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                val delta = -available.y
+
+                if (listState.firstVisibleItemIndex == 0 &&
+                    listState.firstVisibleItemScrollOffset > startScrollThresholdPx
+                ) {
+                    offset = (offset + delta).coerceIn(marginTopInPx, maxOffsetInPx)
+                }
+
+                return Offset.Zero
+            }
+        }
+    }
+
+
 
     Box(
         Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
 
-
     ) {
-        LazyColumn(state = listState)
-        {
-            item {
-                TVShowBackdropPager(
-                    state = state,
-                    onPlayClick = { state.videoUrl?.let { listener.onPlayClicked(it) } })
-            }
+        Box(
+            Modifier
+                .nestedScroll(nestedScrollConnection)
+                .padding(top = with(LocalDensity.current) { offset.toDp() })
+        ) {
+            LazyColumn(state = listState)
+            {
+                item {
+                    TVShowBackdropPager(
+                        state = state,
+                        onPlayClick = { state.videoUrl?.let { listener.onPlayClicked(it) } })
+                }
 
-            item {
-                with(state.tvShowUiState) {
-                    MediaOverviewSection(
-                        title = title,
-                        generes = genre,
-                        releaseDate = releaseDate,
-                        originalCountry = originCountry,
-                        numberOfSeasons = numberOfSeasons
-                    )
-                }
-            }
-            if (state.tvShowUiState.description.isNotEmpty()) {
                 item {
-                    DescriptionSection(
-                        state.tvShowUiState.description, isExpanded = isDescriptionExpanded,
-                        onToggleExpand = onToggleDescriptionExpand
-                    )
-                }
-            }
-            if (state.castList.isNotEmpty()) {
-                item {
-                    CastSection(
-                        cast = state.castList,
-                        onShowAllClicked = { listener.onShowCastClicked(state.tvShowUiState.id) }
-                    )
-                }
-            }
-            item {
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 12.dp),
-                    color = Theme.color.stroke,
-                    thickness = 1.dp
-                )
-            }
-            item {
-                LazyRow(
-                    modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(15.dp)
-                ) {
-                    items(TVShowDetailsTabs.entries, key = { it.name }) { tab ->
-                        Chips(
-                            title = stringResource(tvShowDetailsTabsMapper(tab)),
-                            icon = painterResource(getTVShowDetailsTabsIcon(tab)),
-                            isSelected = tab == movieDetailsTabs,
-                            onClick = { onChipClick(tab) }
+                    with(state.tvShowUiState) {
+                        MediaOverviewSection(
+                            title = title,
+                            generes = genre,
+                            releaseDate = releaseDate,
+                            originalCountry = originCountry,
+                            numberOfSeasons = numberOfSeasons
                         )
                     }
                 }
-            }
-            item {
-                Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                    Box(
+                if (state.tvShowUiState.description.isNotEmpty()) {
+                    item {
+                        DescriptionSection(
+                            state.tvShowUiState.description, isExpanded = isDescriptionExpanded,
+                            onToggleExpand = onToggleDescriptionExpand
+                        )
+                    }
+                }
+                if (state.castList.isNotEmpty()) {
+                    item {
+                        CastSection(
+                            cast = state.castList,
+                            onShowAllClicked = { listener.onShowCastClicked(state.tvShowUiState.id) }
+                        )
+                    }
+                }
+                item {
+                    HorizontalDivider(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .animateContentSize()
+                            .padding(vertical = 12.dp),
+                        color = Theme.color.stroke,
+                        thickness = 1.dp
+                    )
+                }
+                item {
+                    LazyRow(
+                        modifier = Modifier
+                            .padding(bottom = 12.dp)
+                            .fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(15.dp)
                     ) {
-                        when (tvShowRowSectionUiState) {
-                            is TVShowRowSectionUiState.Error,
-                            is TVShowRowSectionUiState.NoDataFound,
-                                -> {
-                                Box(
-                                    Modifier.padding(top = 32.dp, bottom = 82.dp),
+                        items(TVShowDetailsTabs.entries, key = { it.name }) { tab ->
+                            Chips(
+                                title = stringResource(tvShowDetailsTabsMapper(tab)),
+                                icon = painterResource(getTVShowDetailsTabsIcon(tab)),
+                                isSelected = tab == movieDetailsTabs,
+                                onClick = { onChipClick(tab) }
+                            )
+                        }
+                    }
+                }
+                item {
+                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize()
+                        ) {
+                            when (tvShowRowSectionUiState) {
+                                is TVShowRowSectionUiState.Error,
+                                is TVShowRowSectionUiState.NoDataFound,
+                                    -> {
+                                    Box(
+                                        Modifier.padding(top = 32.dp, bottom = 82.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.fillMaxSize(),
+                                            text = tvShowRowSectionUiState.getDisplayMessage(),
+                                            style = Theme.textStyle.label.large,
+                                            color = Theme.color.textColors.body,
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+
+                                else -> {}
+                            }
+                        }
+                    }
+                }
+                item {
+                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize()
+                        ) {
+                            when (tvShowRowSectionUiState) {
+                                is TVShowRowSectionUiState.Loading -> Box(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp, vertical = 32.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(
+                                    CircularProgressIndicator(
                                         modifier = Modifier.fillMaxSize(),
-                                        text = tvShowRowSectionUiState.getDisplayMessage(),
-                                        style = Theme.textStyle.label.large,
-                                        color = Theme.color.textColors.body,
-                                        textAlign = TextAlign.Center
                                     )
                                 }
-                            }
 
-                            else -> {}
+                                else -> {}
+                            }
                         }
                     }
                 }
-            }
-            item {
-                Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize()
-                    ) {
-                        when (tvShowRowSectionUiState) {
-                            is TVShowRowSectionUiState.Loading -> Box(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 32.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.fillMaxSize(),
-                                )
-                            }
+                item {
+                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize()
+                        ) {
+                            when (tvShowRowSectionUiState) {
 
-                            else -> {}
-                        }
-                    }
-                }
-            }
-            item {
-                Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize()
-                    ) {
-                        when (tvShowRowSectionUiState) {
+                                is TVShowRowSectionUiState.Success -> {
+                                    when (val tab = tvShowRowSectionUiState.content) {
+                                        is TVShowTabContent.MoreLikeThis -> TvShowMoreLikeThisSection(
+                                            mediaList = tab.items,
+                                            onMediaClick = { mediaId ->
+                                                listener.onMediaCardClicked(mediaId)
+                                            },
+                                        )
 
-                            is TVShowRowSectionUiState.Success -> {
-                                when (val tab = tvShowRowSectionUiState.content) {
-                                    is TVShowTabContent.MoreLikeThis -> TvShowMoreLikeThisSection(
-                                        mediaList = tab.items,
-                                        onMediaClick = { mediaId ->
-                                            listener.onMediaCardClicked(mediaId)
-                                        },
-                                    )
-
-                                    else -> {}
+                                        else -> {}
+                                    }
                                 }
-                            }
 
-                            else -> {}
+                                else -> {}
+                            }
                         }
                     }
                 }
-            }
-            item {
-                Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize()
-                    ) {
-                        when (tvShowRowSectionUiState) {
+                item {
+                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize()
+                        ) {
+                            when (tvShowRowSectionUiState) {
 
-                            is TVShowRowSectionUiState.Success -> {
-                                when (val tab = tvShowRowSectionUiState.content) {
-                                    is TVShowTabContent.Reviews -> ReviewsSection(
-                                        reviews = tab.reviews,
-                                        isExpanded = { id -> state.expandedReviewIds.contains(id) },
-                                        onToggleExpand = { id ->
-                                            listener.onReadMoreReviewClicked(
-                                                id
-                                            )
-                                        }
-                                    )
-
-                                    else -> {}
-                                }
-                            }
-
-                            else -> {}
-                        }
-                    }
-                }
-            }
-            item {
-                Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize()
-                    ) {
-                        when (tvShowRowSectionUiState) {
-
-                            is TVShowRowSectionUiState.Success -> {
-                                when (val tab = tvShowRowSectionUiState.content) {
-                                    is TVShowTabContent.Gallery -> GallerySection(mediaImages = tab.images)
-                                    else -> {}
-                                }
-                            }
-
-                            else -> {}
-                        }
-                    }
-                }
-            }
-            item {
-                Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize()
-                    ) {
-                        when (tvShowRowSectionUiState) {
-
-                            is TVShowRowSectionUiState.Success -> {
-                                when (val tab = tvShowRowSectionUiState.content) {
-                                    is TVShowTabContent.CompanyProduction -> CompanyProductionSection(
-                                        companyProductions = tab.companyProductionStates
-                                    )
-
-                                    else -> {}
-                                }
-                            }
-
-                            else -> {}
-                        }
-                    }
-                }
-            }
-
-            when (val targetState = state.rowSection) {
-                is TVShowRowSectionUiState.Success -> {
-                    when (val tab = targetState.content) {
-                        is TVShowTabContent.Season -> {
-
-                            tab.seasonToEpisodesMap.forEach { (seasonNumber, episodes) ->
-                                val isExpanded = expandedStates[seasonNumber] ?: false
-
-
-                                stickyHeader(
-                                    key = "season_$seasonNumber",
-
-                                    ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(Theme.color.surface)
-                                    ) {
-                                        SeasonsHeader(
-                                            modifier = Modifier.padding(vertical = 12.dp),
-                                            seasonNumber = seasonNumber.plus(1).toString(),
-                                            episodeCount = episodes.size.toString(),
-                                            isExpanded = isExpanded,
-                                            onToggleExpand = {
-                                                expandedStates[seasonNumber] = !isExpanded
+                                is TVShowRowSectionUiState.Success -> {
+                                    when (val tab = tvShowRowSectionUiState.content) {
+                                        is TVShowTabContent.Reviews -> ReviewsSection(
+                                            reviews = tab.reviews,
+                                            isExpanded = { id -> state.expandedReviewIds.contains(id) },
+                                            onToggleExpand = { id ->
+                                                listener.onReadMoreReviewClicked(
+                                                    id
+                                                )
                                             }
                                         )
 
-                                        HorizontalDivider(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(1.dp),
-                                            color = Theme.color.stroke,
-                                            thickness = 1.dp
-                                        )
+                                        else -> {}
                                     }
                                 }
 
-                                if (isExpanded) {
-                                    items(
-                                        items = episodes,
-                                        key = { episode -> "episode_${seasonNumber}_${episode.id}" }
-                                    ) { episode ->
-                                        EpisodeCard(
-                                            episode = episode,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 16.dp, vertical = 12.dp),
-                                            onClickPlay = {}
-                                        )
-                                    }
-
-                                    item(key = "spacer_$seasonNumber") {
-                                        Box(modifier = Modifier.height(12.dp))
-                                    }
-                                }
+                                else -> {}
                             }
                         }
+                    }
+                }
+                item {
+                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize()
+                        ) {
+                            when (tvShowRowSectionUiState) {
 
-                        else -> {}
+                                is TVShowRowSectionUiState.Success -> {
+                                    when (val tab = tvShowRowSectionUiState.content) {
+                                        is TVShowTabContent.Gallery -> GallerySection(mediaImages = tab.images)
+                                        else -> {}
+                                    }
+                                }
+
+                                else -> {}
+                            }
+                        }
+                    }
+                }
+                item {
+                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize()
+                        ) {
+                            when (tvShowRowSectionUiState) {
+
+                                is TVShowRowSectionUiState.Success -> {
+                                    when (val tab = tvShowRowSectionUiState.content) {
+                                        is TVShowTabContent.CompanyProduction -> CompanyProductionSection(
+                                            companyProductions = tab.companyProductionStates
+                                        )
+
+                                        else -> {}
+                                    }
+                                }
+
+                                else -> {}
+                            }
+                        }
                     }
                 }
 
-                else -> {}
+                when (val targetState = state.rowSection) {
+                    is TVShowRowSectionUiState.Success -> {
+                        when (val tab = targetState.content) {
+                            is TVShowTabContent.Season -> {
+
+                                tab.seasonToEpisodesMap.forEach { (seasonNumber, episodes) ->
+                                    val isExpanded = expandedStates[seasonNumber] ?: false
+
+
+                                    stickyHeader(
+                                        key = "season_$seasonNumber",
+
+                                        ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .background(Theme.color.surface)
+                                        ) {
+                                            SeasonsHeader(
+                                                modifier = Modifier.padding(vertical = 12.dp),
+                                                seasonNumber = seasonNumber.plus(1).toString(),
+                                                episodeCount = episodes.size.toString(),
+                                                isExpanded = isExpanded,
+                                                onToggleExpand = {
+                                                    expandedStates[seasonNumber] = !isExpanded
+                                                }
+                                            )
+
+                                            HorizontalDivider(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(1.dp),
+                                                color = Theme.color.stroke,
+                                                thickness = 1.dp
+                                            )
+                                        }
+                                    }
+
+                                    if (isExpanded) {
+                                        items(
+                                            items = episodes,
+                                            key = { episode -> "episode_${seasonNumber}_${episode.id}" }
+                                        ) { episode ->
+                                            EpisodeCard(
+                                                episode = episode,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                                onClickPlay = {}
+                                            )
+                                        }
+
+                                        item(key = "spacer_$seasonNumber") {
+                                            Box(modifier = Modifier.height(12.dp))
+                                        }
+                                    }
+                                }
+                            }
+
+                            else -> {}
+                        }
+                    }
+
+                    else -> {}
+                }
+
+
             }
-
-
         }
 
         DefaultBar(
