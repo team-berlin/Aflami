@@ -505,7 +505,7 @@ fun TvShowDetailsContent(
                                         ) {
                                             SeasonsHeader(
                                                 modifier = Modifier.padding(vertical = 12.dp),
-                                                seasonNumber = seasonNumber.plus(1).toString(),
+                                                seasonNumber = seasonNumber.toString(),
                                                 episodeCount = episodes.size.toString(),
                                                 isExpanded = isExpanded,
                                                 onToggleExpand = {
