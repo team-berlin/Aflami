@@ -90,13 +90,14 @@ fun EpisodeScreen(
 
 @Composable
 fun SeasonsHeader(
+    modifier: Modifier = Modifier,
     seasonNumber: String,
     episodeCount: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(Theme.color.surface)
             .clickable { onToggleExpand() }

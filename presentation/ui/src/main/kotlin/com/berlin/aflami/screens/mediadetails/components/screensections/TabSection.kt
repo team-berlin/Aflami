@@ -24,20 +24,13 @@ import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSectio
 import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.MovieDetailsMoreLikeThisSection
 import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
-import com.berlin.aflami.screens.mediadetails.components.SeasonsSection
-import com.berlin.aflami.screens.mediadetails.components.TvShowMoreLikeThisSection
 import com.berlin.aflami.screens.mediadetails.components.getMovieDetailsTabsIcon
-import com.berlin.aflami.screens.mediadetails.components.getTVShowDetailsTabsIcon
 import com.berlin.aflami.screens.mediadetails.components.movieDetailsTabsMapper
-import com.berlin.aflami.screens.mediadetails.components.tvShowDetailsTabsMapper
 import com.berlin.aflami.screens.mediadetails.screen.getDisplayMessage
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsTabs
 import com.berlin.aflami.viewmodel.details.movie.MoviesRowSectionUiState
 import com.berlin.aflami.viewmodel.details.movie.MoviesTabContent
-import com.berlin.aflami.viewmodel.details.series.TVShowDetailsTabs
-import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
-import com.berlin.aflami.viewmodel.details.series.TVShowTabContent
 
 @Composable
 fun MovieTabSection(
@@ -117,95 +110,6 @@ fun MovieTabSection(
                         is MoviesTabContent.CompanyProduction -> CompanyProductionSection(
                             companyProductions = tab.companyProductionsList
                         )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun TVShowTabSection(
-    tvShowDetailsTabs: TVShowDetailsTabs ,
-    onChipClick: (TVShowDetailsTabs) -> Unit,
-    rowState: TVShowRowSectionUiState,
-    isReviewExpanded: (String) -> Boolean,
-    onToggleReviewExpand: (String) -> Unit,
-    onTVShowCardClicked: (Long) -> Unit,
-) {
-    LazyRow(
-        modifier = Modifier
-            .padding(bottom = 12.dp)
-            .fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
-        items(TVShowDetailsTabs.entries, key = { it.name }) { tab ->
-            Chips(
-                title = stringResource(tvShowDetailsTabsMapper(tab)),
-                icon = painterResource(getTVShowDetailsTabsIcon(tab)),
-                isSelected = tab == tvShowDetailsTabs,
-                onClick = { onChipClick(tab) }
-            )
-        }
-    }
-
-    Crossfade(targetState = rowState) { tvShowRowSectionUiState ->
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .animateContentSize()
-        ) {
-            when (tvShowRowSectionUiState) {
-                is TVShowRowSectionUiState.Error,
-                is TVShowRowSectionUiState.NoDataFound,
-                    -> {
-                    Box(
-                        Modifier.padding(top = 32.dp, bottom = 82.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxSize(),
-                            text = tvShowRowSectionUiState.getDisplayMessage(),
-                            style = Theme.textStyle.label.large,
-                            color = Theme.color.textColors.body,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                is TVShowRowSectionUiState.Loading -> Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 32.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
-
-                is TVShowRowSectionUiState.Success -> {
-                    when (val tab = tvShowRowSectionUiState.content) {
-                        is TVShowTabContent.MoreLikeThis -> TvShowMoreLikeThisSection(
-                            mediaList = tab.items,
-                            onMediaClick = onTVShowCardClicked
-                        )
-
-                        is TVShowTabContent.Reviews -> ReviewsSection(
-                            reviews = tab.reviews,
-                            isExpanded = isReviewExpanded,
-                            onToggleExpand = onToggleReviewExpand
-                        )
-
-                        is TVShowTabContent.Gallery -> GallerySection(mediaImages = tab.images)
-
-                        is TVShowTabContent.CompanyProduction -> CompanyProductionSection(
-                            companyProductions = tab.companyProductionStates
-                        )
-
-                        is TVShowTabContent.Season -> SeasonsSection(seasonsMap = tab.seasonToEpisodesMap)
-
                     }
                 }
             }
