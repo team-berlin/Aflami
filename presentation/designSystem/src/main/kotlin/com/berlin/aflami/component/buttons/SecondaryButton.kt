@@ -19,10 +19,6 @@ fun SecondaryButton(
     state: ButtonState = ButtonState.IDLE,
     enabled: Boolean = state != ButtonState.DISABLED,
     shape: Shape = ButtonDefaults.defaultShape,
-    border: BorderStroke? = BorderStroke(
-        1.dp,
-        Theme.color.disable
-    ),
     contentPadding: PaddingValues = ButtonDefaults.defaultPadding,
     buttonColors: ButtonColors = ButtonDefaults.colors(),
     content: @Composable RowScope.() -> Unit
@@ -41,7 +37,6 @@ fun SecondaryButton(
             errorBackgroundColor = Color.Transparent,
             errorContentColor = Theme.color.statusColors.redAccent,
         ),
-        border = border,
         shape = shape,
         content = content
     )

@@ -24,7 +24,6 @@ data class TVShowDetailsUiState(
     val selectedRatingMediaId: Long? = null,
     val selectedAddToListMediaId: Long? = null,
     val selectedFavouriteListId: Int? = null,
-    val isNotSupportedFeatureDialogVisible: Boolean = false,
     val snackBar: SnackBarUiState = SnackBarUiState(),
 )
 

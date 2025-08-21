@@ -114,17 +114,20 @@ class QuizGameViewModel @Inject constructor(
     private fun loadCastGame() = executeWithErrorHandling {
         val mediaList = fetchAllMedia()
         val castList = mutableListOf<ActorUiState>()
+        val targetCastCount = numberOfQuestion * 4
 
         var index = 0
-        while (castList.size < numberOfQuestion && index < mediaList.size) {
+        while (castList.size < targetCastCount && index < mediaList.size) {
             val media = mediaList[index]
             val cast = fetchCast(media.id, media.mediaType == MediaType.MOVIE)
             castList.addAll(cast)
             index++
         }
-        val castListCustom = castList.take(numberOfQuestion)
-        updateState { it.copy(cast = castListCustom.shuffled()) }
-        val questions = createCharacterQuestions(castListCustom)
+        val questionsActors = castList.shuffled().take(numberOfQuestion)
+
+        updateState { it.copy(cast = castList.shuffled()) }
+
+        val questions = createCharacterQuestions(questionsActors, castList)
         updateGameState(questions, QuestionType.Image)
     }
 
@@ -161,12 +164,18 @@ class QuizGameViewModel @Inject constructor(
             Question(media.title, (wrongOptions + correctAnswer).shuffled(), correctAnswer)
         }
 
-    private fun createCharacterQuestions(castList: List<ActorUiState>) = castList.map { actor ->
-        val options = castList.asSequence()
-            .filter { it.mediaId == actor.mediaId && it.name != actor.name }
+    private fun createCharacterQuestions(
+        questionsActors: List<ActorUiState>,
+        allCastList: List<ActorUiState>
+    ) = questionsActors.map { actor ->
+        val options = allCastList.asSequence()
+            .filter { it.name != actor.name }
             .map { it.name }
+            .distinct()
+            .shuffled()
             .take(3)
             .toList()
+
         Question(actor.poster, (options + actor.name).shuffled(), actor.name)
     }
 
@@ -220,7 +229,7 @@ class QuizGameViewModel @Inject constructor(
 
     private fun handleTimeFinished() {
         val currentState = state.value
-        if (currentState.currentQuestionIndex < currentState.questions.size -1 ) {
+        if (currentState.currentQuestionIndex < currentState.questions.size - 1) {
             nextQuestionClicked()
         } else {
             navigateToResult()
@@ -246,7 +255,7 @@ class QuizGameViewModel @Inject constructor(
             state.copy(
                 currentQuestionIndex = minOf(
                     state.currentQuestionIndex + 1,
-                    state.questions.size -1
+                    state.questions.size - 1
                 ),
                 selectedAnswer = "",
                 showScore = false,
@@ -255,7 +264,7 @@ class QuizGameViewModel @Inject constructor(
                 isAnswerCorrect = null
             )
         }
-        if (state.value.currentQuestionIndex < state.value.questions.size ) {
+        if (state.value.currentQuestionIndex < state.value.questions.size) {
             startTimer()
         }
     }

@@ -2,12 +2,14 @@ package com.berlin.aflami.screens.home.sections
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -31,6 +33,7 @@ import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.component.PlayButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.component.ShimmerBox
+import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
 import com.berlin.safeimageviewer.SafeImageViewer
@@ -119,26 +122,34 @@ fun SliderCard(
         val painter = rememberAsyncImagePainter(posterImageUrl)
         val imageState by painter.state.collectAsState()
 
-        SafeImageViewer(
-            model = posterImageUrl,
-            contentDescription = "poster Image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .width(cardWidth)
-                .height(cardHeight)
-                .clip(RoundedCornerShape(24.dp))
-            ,
-        )
-        if (imageState is AsyncImagePainter.State.Loading) {
-            ShimmerBox(modifier = Modifier
-                .width(cardWidth)
-                .height(cardHeight)
-                .clip(RoundedCornerShape(24.dp))
+        Box (Modifier
+            .width(cardWidth)
+            .height(cardHeight)
+            .clip(RoundedCornerShape(24.dp))
+            .border(1.dp, Theme.color.stroke, RoundedCornerShape(24.dp))
+
+        ){
+            SafeImageViewer(
+                model = posterImageUrl,
+                contentDescription = "poster Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(cardWidth)
+                    .height(cardHeight)
+                    .clip(RoundedCornerShape(24.dp)),
             )
+            if (imageState is AsyncImagePainter.State.Loading) {
+                ShimmerBox(
+                    modifier = Modifier
+                        .width(cardWidth)
+                        .height(cardHeight)
+                        .clip(RoundedCornerShape(24.dp))
+                )
+            }
         }
         if (isCentered) {
             RatingCard(
-                modifier = Modifier.align(Alignment.TopEnd),
+                modifier = Modifier.align(Alignment.TopEnd).padding(top = 8.dp, end = 8.dp),
                 rating = rating,
             )
             PlayButton(

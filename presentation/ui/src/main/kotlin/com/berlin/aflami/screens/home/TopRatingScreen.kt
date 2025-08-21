@@ -191,7 +191,8 @@ private fun TopRatingContent(
             onNavigateBackClicked = { viewModel.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
             containerColor = Color.Unspecified,
-            title = stringResource(R.string.top_rating)
+            title = stringResource(R.string.top_rating),
+
         )
     }
 

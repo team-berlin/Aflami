@@ -196,7 +196,8 @@ fun FilterDialog(
 
 @Composable
 fun Chips(
-    title: String, icon: Painter, isSelected: Boolean, onClick: () -> Unit
+    title: String, icon: Painter, isSelected: Boolean, onClick: () -> Unit,
+    minimumTextLines: Int = 1
 ) {
     val background by animateColorAsState(
         targetValue = if (isSelected) Theme.color.secondary else Theme.color.surfaceHigh
@@ -247,7 +248,11 @@ fun Chips(
             color = Theme.color.textColors.body,
             style = Theme.textStyle.label.small,
             textAlign = TextAlign.Center,
-            maxLines = if (isSingleWord) 1 else 2
+            minLines = minimumTextLines.coerceIn(
+                minimumValue = 1,
+                maximumValue = 2
+            ),
+            maxLines = if (isSingleWord && minimumTextLines == 1) 1 else 2
         )
     }
 }

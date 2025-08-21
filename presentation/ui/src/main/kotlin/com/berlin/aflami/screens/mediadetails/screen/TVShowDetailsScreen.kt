@@ -97,16 +97,7 @@ fun TvShowDetailsScreen(
             text = stringResource(com.berlin.ui.R.string.loading)
         )
     }
-    AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = uiState.isNotSupportedFeatureDialogVisible
-    ) {
-        NotSupportedFeatureDialog(
-            description = stringResource(com.berlin.ui.R.string.not_supported_feature),
-            onDismiss = { viewModel.onCancelAddingToFavouriteClicked() }
-        )
-    }
+
     AnimatedVisibility(
         enter =  EnterTransition.None ,
         exit = ExitTransition.None ,
@@ -280,11 +271,7 @@ fun TvShowDetailsContent(
                 .statusBarsPadding(),
 
             firstOption = painterResource(R.drawable.ic_rounded_star),
-            lastOption = painterResource(R.drawable.ic_rounded_add_heart),
             onFirstOptionClicked = { listener.onRateIconClicked(state.tvShowUiState.id) },
-            onLastOptionClicked = {
-                listener.onAddMediaToFavouriteButtonClicked(0, 0)
-            },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
             containerColor = Color.Unspecified, // transparent so Modifier.background takes effect
