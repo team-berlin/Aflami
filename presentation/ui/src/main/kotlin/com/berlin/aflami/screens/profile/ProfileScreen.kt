@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,9 +57,9 @@ fun ProfileScreen(
     val navController = Theme.navController
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = profileScreenState.isLoggedIn==null
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
+        visible = profileScreenState.isLoggedIn == null
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
@@ -66,15 +68,15 @@ fun ProfileScreen(
     }
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = profileScreenState.isLoggedIn==true
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
+        visible = profileScreenState.isLoggedIn == true
     ) { ProfileContent(profileScreenState, viewModel) }
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = profileScreenState.isLoggedIn==false
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
+        visible = profileScreenState.isLoggedIn == false
     ) { RequiredLoggedInPlaceholder { navController.navigate(LoginDestination) } }
 
     LaunchedEffect(Unit) {
@@ -94,6 +96,7 @@ private fun watchHistoryReceiveEffect(
                 MyRatingDestination
             )
         }
+
         ProfileScreenEffect.NavigateToWatchHistoryScreen -> {
             navController.navigate(
                 WatchHistoryDestination
@@ -110,8 +113,8 @@ private fun watchHistoryReceiveEffect(
 
         ProfileScreenEffect.NavigateToLoginScreen -> {
             navController.navigate(LoginDestination)
+        }
     }
-}
 }
 
 @Composable
@@ -183,6 +186,7 @@ private fun ProfileContent(
                 thirdOptionSubTitleIdRes = R.string.off_description
             )
         }
+
         ProfileDialogType.LOGOUT -> {
             LogoutDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
@@ -198,23 +202,24 @@ private fun ProfileContent(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxSize()
+
             .background(Theme.color.surface)
             .verticalScroll(rememberScrollState())
+            .padding(bottom = 56.dp)
     )
     {
         ProfileSection(
-            userAvatar = profileScreenState.userAvatarUrl?:"",
+            userAvatar = profileScreenState.userAvatarUrl ?: "",
             userName = profileScreenState.userName,
             userScore = profileScreenState.userPoints,
             if (profileScreenState.themeOption.isDarkThemeEnabled)
                 painterResource(R.drawable.profile_cover_night)
             else painterResource(R.drawable.profile_cover),
-
             )
         Spacer(modifier = Modifier.height(24.dp))
         WatchHistoryRatingSection(
-            onWatchHistoryClick = {profileScreenInteractionListener.onWatchHistoryClick()},
-            onMyRatingClick = {profileScreenInteractionListener.onMyRatingClick()}
+            onWatchHistoryClick = { profileScreenInteractionListener.onWatchHistoryClick() },
+            onMyRatingClick = { profileScreenInteractionListener.onMyRatingClick() }
         )
         Spacer(modifier = Modifier.height(24.dp))
         HorizontalDivider(thickness = 1.dp, color = Theme.color.stroke)
@@ -226,7 +231,15 @@ private fun ProfileContent(
             onLanguageClick = { profileScreenInteractionListener.onLanguageClick() },
             onSettingsClick = { profileScreenInteractionListener.onSettingsClick() },
         )
+        Spacer(modifier = Modifier.weight(1f))
 
+        Text(
+            text = stringResource(R.string.v1_1),
+            style = Theme.textStyle.label.small,
+            color = Theme.color.textColors.hint,
+            modifier = Modifier
+                .padding(bottom = 12.dp)
+        )
     }
 }
 

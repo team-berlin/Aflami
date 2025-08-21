@@ -72,7 +72,13 @@ fun RequiredLoggedInPlaceholder(
             style = Theme.textStyle.body.small,
             color = Theme.color.textColors.body,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp, start = 24.dp, end = 24.dp)
+            modifier = Modifier
+                .padding(
+                    top = 12.dp,
+                    bottom = 8.dp,
+                    start = 48.dp,
+                    end = 48.dp
+                )
         )
 
         Spacer(modifier = Modifier.height(24.dp))
