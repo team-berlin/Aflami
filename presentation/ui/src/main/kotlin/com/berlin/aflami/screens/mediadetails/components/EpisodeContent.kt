@@ -37,7 +37,7 @@ fun SeasonsSection(
     ) {
         for ((seasonNumber, episodes) in seasonsMap) {
             EpisodeScreen(
-                seasonNumber = seasonNumber.plus(1).toString(),
+                seasonNumber = seasonNumber.toString(),
                 episodes = episodes
             )
             HorizontalDivider(

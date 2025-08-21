@@ -163,6 +163,10 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     }
 
     override fun onSeasonsClicked(tvShowId: Long, numberOfSeasons: Int) {
+//        if (numberOfSeasons <= 0) {
+//            updateRowSectionStateToError(NO_SEASON)
+//            return
+//        }
         updateRowSectionToLoading()
         tryToCall(
             call = {
@@ -182,11 +186,12 @@ class TvShowDetailsScreenViewModel @Inject constructor(
         numberOfSeasons: Int,
     ): MutableMap<Int, List<EpisodeUiState>> {
         val seasonToEpisodesMap: MutableMap<Int, List<EpisodeUiState>> = mutableMapOf()
-        repeat(numberOfSeasons) { seasonNumber ->
+        for (season in 1..numberOfSeasons) {
             val episodes: List<EpisodeUiState> = getSeasonEpisodesUseCase(
-                tvShowId, seasonNumber
+                seasonNumber = season,
+                seriesId = tvShowId
             ).map { episode -> episode.toEpisodeUiState() }
-            seasonToEpisodesMap.put(seasonNumber, episodes)
+            seasonToEpisodesMap[season] = episodes
         }
         return seasonToEpisodesMap
     }
