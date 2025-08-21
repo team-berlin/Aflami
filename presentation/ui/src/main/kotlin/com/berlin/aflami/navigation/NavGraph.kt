@@ -17,6 +17,7 @@ import com.berlin.aflami.navigation.routes.gameResult
 import com.berlin.aflami.navigation.routes.gamesRoute
 import com.berlin.aflami.navigation.routes.guessGame
 import com.berlin.aflami.navigation.routes.homeScreenRoute
+import com.berlin.aflami.navigation.routes.homeScreenWithArgsRoute
 import com.berlin.aflami.navigation.routes.listsDetailsRoute
 import com.berlin.aflami.navigation.routes.listsRoute
 import com.berlin.aflami.navigation.routes.listsScreenRouteWithArgs
@@ -51,7 +52,6 @@ import com.berlin.aflami.navigation.routes.webView
 @Composable
 fun AflamiNavGraph(
     modifier: Modifier = Modifier,
-    selectedLanguage: String,
     isLoggedIn: Boolean,
     isFirsTime: Boolean,
     navController: NavHostController,
@@ -92,13 +92,6 @@ private fun ShowNavigationBar(
     navController: NavHostController,
 ) {
 
-    val currentNavBarScreen = getCurrentNavBarScreen(navController)
-    val context = LocalContext.current
-
-//    BackHandler(enabled = currentNavBarScreen != null) {
-//        (context as? Activity)?.finish()
-//    }
-
     NavBar(
         currentRoute = selectedRoute,
         onNavDestinationClicked = { route ->
@@ -125,6 +118,7 @@ fun NavGraphBuilder.bottomNavigationBarGraph() {
     homeScreenRoute()
     listsRoute()
     listsScreenRouteWithArgs()
+    homeScreenWithArgsRoute()
     listsDetailsRoute()
     profileRoute()
     categoriesRoute()

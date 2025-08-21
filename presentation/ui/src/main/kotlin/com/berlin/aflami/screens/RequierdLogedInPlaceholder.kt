@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.extension.dropShadow
@@ -61,19 +63,29 @@ fun RequiredLoggedInPlaceholder(
                 .clip(RoundedCornerShape(24.dp))
                 .clickable { onAvatarClick() },
             contentScale = ContentScale.FillHeight,
-
             )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         Text(
             text = stringResource(R.string.Please_login),
             style = Theme.textStyle.body.small,
             color = Theme.color.textColors.body,
-            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp, start = 24.dp, end = 24.dp)
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(
+                    top = 12.dp,
+                    bottom = 8.dp,
+                    start = 48.dp,
+                    end = 48.dp
+                )
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = { onClick() },
             modifier = modifier
-                .padding(top = 16.dp, start = 111.dp, end = 111.dp)
                 .align(Alignment.CenterHorizontally),
             enabled = enable,
             shape = RoundedCornerShape(16.dp),

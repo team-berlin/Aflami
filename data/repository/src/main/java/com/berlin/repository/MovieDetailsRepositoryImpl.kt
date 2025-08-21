@@ -7,8 +7,9 @@ import com.berlin.entity.Movie
 import com.berlin.entity.Review
 import com.berlin.entity.Video
 import com.berlin.exception.AflamiException
-import com.berlin.repository.datasource.local.GenreLocalDataSource
-import com.berlin.repository.datasource.local.RecentlyWatchedLocalDataSource
+import com.berlin.exception.NetworkException
+import com.berlin.repository.datasource.local.datasource.GenreLocalDataSource
+import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
 import com.berlin.repository.datasource.remote.RemoteDataSource
 import com.berlin.repository.mapper.toDomain
@@ -84,15 +85,16 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 
 
     override suspend fun getMovieGenres(): List<Genre> {
-        val cachedGenres = genreLocalDataSource.getCachedMovieGenres()
-        if (!isExpiredOrEmpty(cachedGenres)) {
-            return cachedGenres.map { it.toDomain() }
+       return try {
+            val remoteGenres = remoteDataSource.getMovieGenres().genres
+            genreLocalDataSource.cacheMovieGenres(remoteGenres.map { it.toMoviesGenreEntity() })
+            remoteGenres.map { it.toDomain() }
+        }catch (e: NetworkException){
+            return genreLocalDataSource.getCachedMovieGenres().map { it.toDomain() }
+        }catch (e: Exception){
+            throw e
         }
 
-        val remoteGenres = remoteDataSource.getMovieGenres().genres
-        val genreEntities = remoteGenres.map { it.toMoviesGenreEntity() }
-        genreLocalDataSource.cacheMovieGenres(genreEntities)
-        return remoteGenres.map { it.toDomain() }
     }
 
     override suspend fun getMovieVideos(id: Long): List<Video> {
@@ -102,9 +104,5 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 
     }
 
-    private fun isExpiredOrEmpty(list: List<MoviesGenreEntity>): Boolean {
-        return list.isEmpty() || list.any {
-            Instant.now().toEpochMilli() - it.time > Constants.CACHE_TIMEOUT
-        }
-    }
+
 }

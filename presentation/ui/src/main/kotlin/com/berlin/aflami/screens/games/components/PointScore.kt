@@ -2,6 +2,7 @@ package com.berlin.aflami.screens.games.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,8 +25,6 @@ fun PointScore(
     userPoints: Int,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier
             .clip(CircleShape)
             .background(
@@ -33,7 +32,8 @@ fun PointScore(
                     colors = Theme.color.gradientColors.pointsOverly,
                 )
             )
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+       // contentAlignment = Alignment.Center
     ) {
         Text(
             text = stringResource( R.string.pts,userPoints),

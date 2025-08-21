@@ -114,17 +114,20 @@ class QuizGameViewModel @Inject constructor(
     private fun loadCastGame() = executeWithErrorHandling {
         val mediaList = fetchAllMedia()
         val castList = mutableListOf<ActorUiState>()
+        val targetCastCount = numberOfQuestion * 4
 
         var index = 0
-        while (castList.size < numberOfQuestion && index < mediaList.size) {
+        while (castList.size < targetCastCount && index < mediaList.size) {
             val media = mediaList[index]
             val cast = fetchCast(media.id, media.mediaType == MediaType.MOVIE)
             castList.addAll(cast)
             index++
         }
+        val questionsActors = castList.shuffled().take(numberOfQuestion)
 
         updateState { it.copy(cast = castList.shuffled()) }
-        val questions = createCharacterQuestions(castList)
+
+        val questions = createCharacterQuestions(questionsActors, castList)
         updateGameState(questions, QuestionType.Image)
     }
 
@@ -134,9 +137,19 @@ class QuizGameViewModel @Inject constructor(
     }
 
     private fun createReleaseQuestions(mediaList: List<MediaUiState>) = mediaList.map { media ->
-        val options = createMediaOptions(mediaList, media.id) { it.releaseYear } + media.releaseYear
-        Question(media.title, options.shuffled(), media.releaseYear)
+        val correctYear = media.releaseYear.take(4)
+        val wrongYears = mediaList
+            .map { it.releaseYear.take(4) }
+            .filter { it != correctYear }
+            .distinct()
+            .take(3)
+
+        val options = (wrongYears + correctYear).shuffled()
+        options
+
+        Question(media.title, options, correctYear)
     }
+
 
     private fun createGenreQuestions(genreList: List<GenreUiState>, mediaList: List<MediaUiState>) =
         mediaList.map { media ->
@@ -151,12 +164,18 @@ class QuizGameViewModel @Inject constructor(
             Question(media.title, (wrongOptions + correctAnswer).shuffled(), correctAnswer)
         }
 
-    private fun createCharacterQuestions(castList: List<ActorUiState>) = castList.map { actor ->
-        val options = castList.asSequence()
-            .filter { it.mediaId == actor.mediaId && it.name != actor.name }
+    private fun createCharacterQuestions(
+        questionsActors: List<ActorUiState>,
+        allCastList: List<ActorUiState>
+    ) = questionsActors.map { actor ->
+        val options = allCastList.asSequence()
+            .filter { it.name != actor.name }
             .map { it.name }
+            .distinct()
+            .shuffled()
             .take(3)
             .toList()
+
         Question(actor.poster, (options + actor.name).shuffled(), actor.name)
     }
 
@@ -245,7 +264,7 @@ class QuizGameViewModel @Inject constructor(
                 isAnswerCorrect = null
             )
         }
-        if (state.value.currentQuestionIndex < state.value.questions.size - 1) {
+        if (state.value.currentQuestionIndex < state.value.questions.size) {
             startTimer()
         }
     }

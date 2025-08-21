@@ -60,7 +60,7 @@ import com.berlin.aflami.utils.AsteriskVisualTransformation
 fun TextField(
     text: TextFieldValue,
     modifier: Modifier = Modifier,
-    style: TextStyle = Theme.textStyle.body.medium,
+    style: TextStyle = Theme.textStyle.body.medium.copy(color = Theme.color.textColors.hint),
     cursorBrush: Brush = SolidColor(Theme.color.textColors.hint),
     hintText: String = "",
     isEnabled: Boolean = true,
@@ -75,6 +75,7 @@ fun TextField(
     borderErrorColor: Color = Theme.color.statusColors.redAccent,
     borderFocusedColor: Color = Theme.color.primary,
     onTrailingIconClicked: (() -> Unit)? = null,
+    hasDividerBeforeTrailing: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     onValueChange: (TextFieldValue) -> Unit = {},
@@ -143,7 +144,7 @@ fun TextField(
                     .defaultMinSize(minHeight = 56.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .onFocusChanged { focusState -> isFocused = focusState.isFocused },
-                textStyle = style.copy(color = Theme.color.textColors.title),
+                textStyle = style,
                 singleLine = maxLines == 1,
                 visualTransformation = if (isObscured) AsteriskVisualTransformation() else VisualTransformation.None,
                 decorationBox = { innerTextField ->
@@ -153,7 +154,9 @@ fun TextField(
                 val imageColor by animateColorAsState(
                     targetValue = if (text.text.isEmpty()) Theme.color.textColors.hint else Theme.color.textColors.title
                 )
-                VerticalDivider()
+                if(hasDividerBeforeTrailing) {
+                    VerticalDivider()
+                }
                 TrailingIcon(trailingIcon, imageColor, onTrailingIconClicked)
             }
         }
@@ -290,7 +293,7 @@ private fun TrailingIcon(leadingIcon: Int, imageColor: Color, onClick: (() -> Un
                     if (onClick != null)
                         Modifier.clickable(
                             interactionSource = MutableInteractionSource(),
-                            indication = ripple(color = Theme.color.textColors.hint),
+                            indication = null,
                             onClick = onClick
                         )
                     else

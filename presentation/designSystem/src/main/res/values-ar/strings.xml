@@ -83,15 +83,17 @@
     <string name="filter_result">فرز النتائج</string>
     <string name="search_discribtion">"ابدا بالتصفح! ابحث عن ممثلك , مسلسلاتك , وبرامجك المفضلة"</string>
     <string name="character_image">صورة الشخصية</string>
-    <string name="action_adventure"><![CDATA[أكشن و مغامرة]]></string>
-    <string name="news">News</string>
-    <string name="reality">Reailty</string>
-    <string name="sci_fi_fantasy"><![CDATA[خيال علمي و\n فانتازيا]]></string>
-    <string name="soap">Soap</string>
+    <string name="action_adventure">أكشن و مغامرة</string>
+    <string name="news">الاخبار</string>
+    <string name="reality">الحياة الواقعية</string>
+    <string name="sci_fi_fantasy">خيال علمي و فانتازيا</string>
+    <string name="soap">اوبرا صابونية</string>
     <string name="talk">برامج حوارية</string>
-    <string name="war_politics"><![CDATA[حرب و سياسة]]></string>
+    <string name="war_politics">حرب و سياسة</string>
     <string name="kids">أطفال</string>
     <string name="item_count">%1$d عنصر</string>
     <string name="television_movie">فيلم تلفزيوني</string>
+    <string name="rating_added">تم التقييم بنجاح.</string>
+    <string name="rating_added_failed"> فشل اضافة التقييم.</string>
 
 </resources>

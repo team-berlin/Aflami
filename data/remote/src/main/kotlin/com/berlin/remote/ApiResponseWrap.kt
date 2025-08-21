@@ -3,6 +3,8 @@ package com.berlin.remote
 import com.berlin.exception.AlreadyExistsException
 import com.berlin.exception.ApiException
 import com.berlin.exception.NetworkException
+import com.berlin.exception.NotFoundException
+import com.berlin.exception.UnauthorizedException
 import com.berlin.exception.UnknownException
 import okio.IOException
 import retrofit2.Response
@@ -16,12 +18,16 @@ suspend fun <T> wrapApiResponse(request: suspend () -> Response<T>): T {
             return response.body() ?: throw ApiException("Response body is null")
         } else {
             if (response.code() == 403) throw AlreadyExistsException("Movie already exists")
-            throw ApiException("API error: ${response.code()} - ${response.message()}")
+            if (response.code() == 401) throw UnauthorizedException("UnauthorizedException error: ${response.code()}")
+            throw ApiException("API error: ${response.code()}")
         }
 
     } catch (ioException: IOException) {
         throw NetworkException("Network error: ${ioException.message}")
-    } catch (e: UnknownHostException) {
+    }catch (unauthorizedException: UnauthorizedException) {
+        throw UnauthorizedException("unauthorizedException error: ${unauthorizedException.message}")
+    }
+    catch (e: UnknownHostException) {
         throw NetworkException("No internet connection: ${e.message}")
     } catch (e: IOException) {
         throw NetworkException("Network error: ${e.message}")

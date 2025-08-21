@@ -70,7 +70,7 @@ private fun SectionTitle(
         style = Theme.textStyle.title.medium,
         color = Theme.color.textColors.title,
         textAlign = TextAlign.Start,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -93,7 +93,8 @@ private fun GenreChipsRow(
                 title = stringResource(getMovieGenreName(genre.id)),
                 icon = painterResource(getMovieGenreIcon(genre.id)),
                 isSelected = genre.isSelected,
-                onClick = { onGenreClick(genre.id) }
+                onClick = { onGenreClick(genre.id) },
+                minimumTextLines = 2
             )
         }
     }

@@ -40,6 +40,7 @@
     <string name="create_account">إنشاء حساب</string>
     <string name="logo">شعار</string>
     <string name="login_error_message">كلمة المرور أو اسم المستخدم غير صحيح</string>
+    <string name="internet_error">خطأ بالشبكة, من فضلك اعد المحاولة مرة اخري</string>
     <string name="loading">جاري التحميل…</string>
 
     <string name="offline_title">عذرًا! يبدو أنك غير متصل بالإنترنت.</string>
@@ -188,6 +189,9 @@
     <string name="play_now">ألعب الان</string>
     <string name="pts_to_unlock">%1$s نقطة للفتح</string>
     <string name="s">%1$s ث</string>
+    <string name="log_in_successful">تم تسجيل الدخول بنجاح</string>
+    <string name="login_dialog">تسجيل الدخول</string>
+    <string name="rate_required_dialog">تقييم</string>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package com.berlin.aflami.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.ui.color.ExtraColors.black50
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -33,7 +35,6 @@ fun RatingCard(
 ) {
     Row(
         modifier = modifier
-            .padding(top = 4.dp, end = 5.dp)
             .clip(
                 RoundedCornerShape(
                     topStart = 4.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 4.dp
@@ -96,14 +97,13 @@ fun PlayButton(
 fun BlurredPosterBackground(
     imageUrl: String, modifier: Modifier = Modifier
 ) {
-    SafeImageViewer(
-        model = imageUrl,
+    Image(
+        painter = rememberAsyncImagePainter(imageUrl) ,
         contentDescription = "Blurred Poster Background",
         contentScale = ContentScale.Crop,
         modifier = modifier
             .fillMaxWidth()
             .background(black50)
             .blur(16.dp),
-        blurCheck = false
     )
 }

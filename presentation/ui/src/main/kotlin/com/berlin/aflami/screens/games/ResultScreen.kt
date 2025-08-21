@@ -72,12 +72,14 @@ fun ResultScreen(
             .padding(top = 8.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
     ) {
         CirclesBackground()
+        ResultHeader(navController = navController, gameType = gameType)
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding( top = 56.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-            ResultHeader(navController = navController, gameType = gameType)
 
             ResultBox(
                 totalPoint = totalPoint,
@@ -139,7 +141,6 @@ fun ResultScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
-                border = null
             ) {
                 Text(
                     text = stringResource(R.string.play_again),

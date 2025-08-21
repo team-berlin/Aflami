@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -25,7 +26,7 @@ fun DefaultBar(
     lastOptionContentDescription: String? = null,
     containerColor: Color = Color.Unspecified,
     firstOptionIconTint: Color = Theme.color.textColors.body,
-    lastOptionIconTint: Color =  Theme.color.textColors.body,
+    lastOptionIconTint: Color = Theme.color.textColors.body,
     optionContainerColor: Color = Theme.color.primaryVariant,
     onFirstOptionClicked: () -> Unit = {},
     onLastOptionClicked: () -> Unit = {},
@@ -39,7 +40,9 @@ fun DefaultBar(
                 Text(
                     text = text,
                     color = Theme.color.textColors.title,
-                    style = Theme.textStyle.title.large
+                    style = Theme.textStyle.title.large,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         },
@@ -49,8 +52,10 @@ fun DefaultBar(
                     painter = painterResource(R.drawable.arrow_left),
                     tint = Theme.color.textColors.title,
                     contentDescription = null,
-                    onClick = onNavigateBackClicked
-                )
+                    onClick = onNavigateBackClicked,
+                    paddingValues = PaddingValues(10.dp),
+
+                    )
             }
         } else null,
         middleIcon = firstOption?.let { painter ->
@@ -59,9 +64,8 @@ fun DefaultBar(
                     painter = painter,
                     contentDescription = firstOptionContentDescription,
                     containerColor = optionContainerColor,
-                    tint = firstOptionIconTint,
-                    paddingValues = PaddingValues(8.dp),
-                    withBorder = true,
+                    tint = Theme.color.textColors.title,
+                    paddingValues = PaddingValues(10.dp),
                     onClick = onFirstOptionClicked
                 )
             }
@@ -72,9 +76,8 @@ fun DefaultBar(
                     painter = painter,
                     contentDescription = lastOptionContentDescription,
                     containerColor = optionContainerColor,
-                    tint = lastOptionIconTint,
-                    paddingValues = PaddingValues(8.dp),
-                    withBorder = true,
+                    tint = Theme.color.textColors.title,
+                    paddingValues = PaddingValues(10.dp),
                     onClick = onLastOptionClicked
                 )
             }

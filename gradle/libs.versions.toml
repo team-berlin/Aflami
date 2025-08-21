@@ -16,6 +16,7 @@ loggingInterceptor = "4.12.0"
 okhttp = "4.12.0"
 pagingRuntime = "3.3.6"
 retrofit = "2.9.0"
+appcompat = "1.7.1"
 retrofit2KotlinxSerializationConverter = "0.8.0"
 securityCrypto = "1.1.0"
 serialization = "1.8.1"
@@ -43,6 +44,7 @@ javaxInject = "1"
 datastoreCoreAndroid = "1.1.7"
 datastorePreferencesCoreAndroid = "1.1.7"
 
+turbine = "1.1.0"
 workerRuntimeKtx = "2.10.0"
 hilt = "2.55"
 hilt-work = "1.2.0"
@@ -106,6 +108,8 @@ jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", v
 firebase-ml-modeldownloader = { module = "com.google.firebase:firebase-ml-modeldownloader", version.ref = "firebaseMlModeldownloader" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 androidx-datastore-preferences-core-android = { group = "androidx.datastore", name = "datastore-preferences-core-android", version.ref = "datastorePreferencesCoreAndroid" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -137,14 +141,10 @@ coil = [
     "coil-network"
 ]
 
-
-
-
 composeUiDebug = [
     "androidx-ui-tooling",
     "androidx-ui-test-manifest"
 ]
-
 
 test = [
     "junit",

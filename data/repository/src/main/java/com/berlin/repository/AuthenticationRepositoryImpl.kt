@@ -1,7 +1,7 @@
 package com.berlin.repository
 
 import com.berlin.exception.NotFoundException
-import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
+import com.berlin.repository.datasource.local.datasource.AuthenticationLocalDataSource
 import com.berlin.repository.datasource.remote.AuthenticationRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import repository.AuthenticationRepository
@@ -46,6 +46,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun logout() {
+        authenticationLocalDataSource.deleteUserSessionId()
     }
 
 }

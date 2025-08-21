@@ -1,6 +1,6 @@
 package com.berlin.aflami.viewmodel.search
 
-import android.util.Log
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -8,13 +8,10 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.berlin.aflami.viewmodel.base.BaseViewModel
 import com.berlin.aflami.viewmodel.base.ErrorUiState
-import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
 import com.berlin.entity.Genre
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -68,21 +65,7 @@ class SearchViewModel @Inject constructor(
     }
 
     // region Recent Searches
-    private fun loadRecentSearches() {
-        updateUiStateWithLoading()
-        tryToCall(
-            call = {
-                coroutineScope {
-                    val movies = async { recentMoviesHistoryUseCase() }
-                    val tvShows = async { recentTvShowHistoryUseCase() }
-                    val recentSearches = movies.await() + tvShows.await()
-                    recentSearches.distinct()
-                }
-            },
-            onSuccess = ::onLoadRecentSearchesSuccess,
-            onError = ::updateRecentSearchesWithError
-        )
-    }
+
 
     private fun updateRecentSearchesWithError(error: ErrorUiState) {
         updateState { screenState ->
@@ -93,20 +76,19 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun onLoadRecentSearchesSuccess(recentSearches: List<String>) {
-        updateState { it.copy(recentSearches = recentSearches, errorMessage = null) }
-    }
 
     private fun onClearAllRecentSearchesSuccess() {
         updateState { it.copy(recentSearches = emptyList()) }
     }
 
-    override fun onRecentSearchClicked(query: String) {
-        onSearchQueryChanged(
-            TextFieldValue(
-                text = query,
-            )
+
+    override fun onItemClicked(query: TextFieldValue) {
+        val text = query.text
+        val updatedQuery = TextFieldValue(
+            text = text,
+            selection = TextRange(text.length)
         )
+        onSearchQueryChanged(updatedQuery)
     }
 
     override fun onRecentSearchCleared(query: String) {
@@ -116,7 +98,7 @@ class SearchViewModel @Inject constructor(
                 deleteQueryFromMoviesHistoryUseCase(query)
                 deleteQueryFromTVShowHistoryUseCase(query)
             },
-            onSuccess = { loadRecentSearches() },
+            onSuccess = { loadRecentSearch() },
             onError = ::updateRecentSearchClearedWithError,
         )
     }
@@ -166,6 +148,10 @@ class SearchViewModel @Inject constructor(
         when (state.value.selectedTabOption) {
             TabOption.MOVIES -> fetchMoviesByQuery(query)
             TabOption.TV_SHOWS -> fetchTvShowsByQuery(query)
+        }
+        viewModelScope.launch {
+            saveRecentMoviesHistoryUseCase(query)
+            saveRecentTVShowHistoryUseCase(query)
         }
     }
 
@@ -256,6 +242,7 @@ class SearchViewModel @Inject constructor(
                 saveRecentTVShowHistoryUseCase(state.value.searchQuery.text)
             },
             onSuccess = {
+                loadRecentSearch()
                 updateState { it.copy(isLoading = false) }
             },
             onError = ::updateScreenStateToError
@@ -300,12 +287,12 @@ class SearchViewModel @Inject constructor(
         onSearchQueryChanged(state.value.searchQuery)
     }
 
-    override fun onMediaCardClicked(mediaId: Long) {
-        val mediaType = when (state.value.selectedTabOption) {
-            TabOption.MOVIES -> MediaType.MOVIE.name
-            TabOption.TV_SHOWS -> MediaType.TV_SHOW.name
-        }
-        sendNewEffect(SearchScreenEffect.NavigatedToMovieDetailsScreen(id = mediaId, mediaType))
+    override fun onMoviesCardClicked(movieId: Long) {
+        sendNewEffect(SearchScreenEffect.NavigatedToMovieDetailsScreen(id = movieId))
+    }
+
+    override fun onTVShowsCardClicked(tvShowId: Long) {
+        sendNewEffect(SearchScreenEffect.NavigatedToTVShowDetailsScreen(id = tvShowId,))
     }
 
     override fun onFilterButtonClicked() {
@@ -461,7 +448,7 @@ class SearchViewModel @Inject constructor(
 
     private fun loadRecentSearch() {
         viewModelScope.launch {
-            _recentSearchState.value = recentMoviesHistoryUseCase() + recentTvShowHistoryUseCase()
+            _recentSearchState.value = recentMoviesHistoryUseCase()
         }
     }
 
@@ -537,9 +524,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onItemClicked(query: TextFieldValue) {
-        updateState { it.copy(searchQuery = query, isLoading = true) }
-    }
 
     companion object {
         const val FAILED_RECENT_SEARCHES = "Failed to load recent searches"

@@ -7,13 +7,13 @@ import com.berlin.entity.Movie
 import com.berlin.entity.TVShow
 import com.berlin.exception.NotFoundException
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -42,7 +42,7 @@ import kotlin.random.Random
 class HomeScreenViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
-    
+
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase = mockk()
     private val getPopularTVShowsUseCase: GetPopularTVShowsUseCase = mockk()
     private val getUpComingMoviesUseCase: GetUpComingMoviesUseCase = mockk()
@@ -58,41 +58,17 @@ class HomeScreenViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
-        
-        coEvery { getPopularMoviesUseCase() } answers {
 
-            List(20) { index ->
-                fakeMovieEntity(
-                    title = "Movie $index"
-                )
-            }
-        }
-        coEvery { getPopularTVShowsUseCase() } answers {
-
-            List(20) { index ->
-                fakeTVShowEntity(
-                    title = "TV $index"
-                )
-            }
-        }
-
-        coEvery { getUpComingMoviesUseCase() } returns listOf(
-            fakeMovieEntity("Upcoming1"), fakeMovieEntity("Upcoming2")
-        )
+        // Mock responses
+        coEvery { getPopularMoviesUseCase() } returns List(20) { fakeMovieEntity(title = "Movie $it") }
+        coEvery { getPopularTVShowsUseCase() } returns List(20) { fakeTVShowEntity(title = "TV Show $it") }
+        coEvery { getUpComingMoviesUseCase(any()) } returns listOf(fakeMovieEntity("Upcoming1"), fakeMovieEntity("Upcoming2"))
         coEvery { getMovieGenresUseCase() } returns listOf(Genre(1, "Action"))
         coEvery { getTVShowGenresUseCase() } returns listOf(Genre(10, "Drama"))
         coEvery { getWatchedMovieUseCase(any()) } returns listOf(fakeMovieEntity("WatchedMovie"))
         coEvery { getWatchedTVShowUseCase(any()) } returns listOf(fakeTVShowEntity("WatchedShow"))
-        coEvery { getTopRatedSeriesUseCase(any()) } returns listOf(
-            fakeTVShowEntity(
-                "TopSeries", rating = 9.0
-            )
-        )
-        coEvery { getTopRatedMoviesUseCase(any()) } returns listOf(
-            fakeMovieEntity(
-                "TopMovie", rating = 8.5
-            )
-        )
+        coEvery { getTopRatedSeriesUseCase(any()) } returns listOf(fakeTVShowEntity("TopSeries", rating = 9.0))
+        coEvery { getTopRatedMoviesUseCase(any()) } returns listOf(fakeMovieEntity("TopMovie", rating = 8.5))
         coEvery { getMoviesByMoodUseCase(any()) } returns listOf(fakeMovieEntity("MoodMovie"))
 
         viewModel = HomeScreenViewModel(
@@ -116,31 +92,6 @@ class HomeScreenViewModelTest {
         Dispatchers.resetMain()
     }
 
-    @Test
-    fun `init loads all sections successfully`() = runTest {
-        viewModel
-        advanceUntilIdle()
-        delay(1000)
-        val state = viewModel.state.value
-        assertEquals(40, state.popularMediaUiState.popularMedia.size)
-        assertTrue(state.continueWatchingUiState.continueWatchingMediaList.isNotEmpty())
-        assertTrue(state.topRatedMediaUiState.topRatedMedia.isNotEmpty())
-        assertTrue(state.upcomingMoviesUiState.upcomingMovies.isNotEmpty())
-        assertEquals(2, state.movieGenres.size)
-        assertEquals(2, state.tVShowGenres.size)
-    }
-
-    @Test
-    fun `onDismissMoodPickerDialog updates moodPickerUiState correctly`() = runTest {
-
-        viewModel.onDismissMoodPickerDialog()
-        advanceUntilIdle()
-
-        val moodState = viewModel.state.value.moodPickerUiState
-        assertFalse(moodState.openMovieDialog)
-        assertTrue(moodState.isLoading)
-    }
-    
     @Test
     fun `onSearchClicked sends NavigateToSearchScreen effect`() = runTest {
         viewModel.effect.test {
@@ -167,11 +118,65 @@ class HomeScreenViewModelTest {
     }
 
     @Test
+    fun `init loads all sections successfully`() = runTest {
+        viewModel
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertEquals(40, state.popularMediaUiState.popularMedia.size)
+        assertTrue(state.continueWatchingUiState.continueWatchingMediaList.isNotEmpty())
+        assertTrue(state.topRatedMediaUiState.topRatedMedia.isNotEmpty())
+        assertTrue(state.upcomingMoviesUiState.upcomingMovies.isNotEmpty())
+        assertEquals(2, state.movieGenres.size)
+        assertEquals(2, state.tVShowGenres.size)
+    }
+
+    @Test
+    fun `onDismissMoodPickerDialog updates moodPickerUiState correctly`() = runTest {
+        viewModel.onDismissMoodPickerDialog()
+        advanceUntilIdle()
+
+        val moodState = viewModel.state.value.moodPickerUiState
+        assertFalse(moodState.openMovieDialog)
+        assertTrue(moodState.isLoading)
+    }
+
+    @Test
+    fun `onChangeUpcomingMovieGenre triggers getUpComingMoviesByGenre with correct ID`() = runTest {
+        // Simulate a genre change
+        val newGenreId = 1
+        viewModel.onChangeUpcomingMovieGenre(newGenreId)
+
+        // Verify that getUpComingMoviesUseCase was called with the correct ID (genre ID)
+        coVerify { getUpComingMoviesUseCase(newGenreId.toLong()) }
+
+        // Assert that the upcoming movies are updated in the state
+        advanceUntilIdle()
+        val state = viewModel.state.value
+        assertTrue(state.upcomingMoviesUiState.upcomingMovies.isNotEmpty())
+    }
+
+    @Test
+    fun `getUpComingMoviesByGenre should throw error`() = runTest {
+        val errorMessage = "Not Found"
+
+        // Mock the error response for upcoming movies
+        coEvery { getUpComingMoviesUseCase(any()) } throws NotFoundException(errorMessage)
+
+        // Trigger the genre change, which should call the getUpComingMoviesUseCase
+        viewModel.onChangeUpcomingMovieGenre(1)
+
+        advanceUntilIdle()
+
+        // Check that the error message is set in the state
+        assertEquals(errorMessage, viewModel.state.value.upcomingMoviesUiState.errorMessage)
+    }
+
+    @Test
     fun `onMoodSelected updates selectedMood in state`() = runTest {
         val sampleMood = UserMood.ANGRY
 
         viewModel.onMoodSelected(sampleMood)
-
 
         val selectedMood = viewModel.state.value.moodPickerUiState.selectedMood?.userMood
         assertEquals(sampleMood, selectedMood)
@@ -180,14 +185,11 @@ class HomeScreenViewModelTest {
     @Test
     fun `onGetNowClicked updates openMovieDialog and loads movies`() = runTest {
         val sampleMood = UserMood.DEPRESSED
-        val moviesFromUseCase = listOf(
-            fakeMovieEntity("MoodMovie1"), fakeMovieEntity("MoodMovie2")
-        )
+        val moviesFromUseCase = listOf(fakeMovieEntity("MoodMovie1"), fakeMovieEntity("MoodMovie2"))
 
         coEvery { getMoviesByMoodUseCase(any()) } returns moviesFromUseCase
 
         viewModel.onGetNowClicked(sampleMood)
-
 
         advanceUntilIdle()
         val uiState = viewModel.state.value.moodPickerUiState
@@ -215,15 +217,6 @@ class HomeScreenViewModelTest {
     }
 
     @Test
-    fun `onSearchClicked sends navigation effect`() = runTest {
-
-        viewModel.effect.test {
-            viewModel.onSearchClicked()
-            assertEquals(HomeScreenEffect.NavigateToSearchScreen, awaitItem())
-        }
-    }
-
-    @Test
     fun `onMovieCardClicked sends navigation effect`() = runTest {
         viewModel.effect.test {
             viewModel.onMovieCardClicked(99L)
@@ -241,10 +234,7 @@ class HomeScreenViewModelTest {
 
                 verify(exactly = 1) { spyViewModel.onDismissMoodPickerDialog() }
 
-                assertEquals(
-                    HomeScreenEffect.NavigateToMovieDetailsScreen(0L), awaitItem()
-                )
-
+                assertEquals(HomeScreenEffect.NavigateToMovieDetailsScreen(0L), awaitItem())
             }
         }
 
@@ -263,45 +253,6 @@ class HomeScreenViewModelTest {
         assertFalse(uiState.isLoading)
         assertEquals("Failed to load movies", uiState.error?.message)
         assertTrue(uiState.movies.isEmpty())
-    }
-
-    @Test
-    fun `onChangeUpcomingMovieGenre updates selectedGenres and movieGenres correctly`() = runTest {
-        viewModel.onChangeUpcomingMovieGenre(1)
-
-        val state = viewModel.state.value
-
-        assertEquals(1, state.selectedGenres)
-
-
-        state.movieGenres.forEach { genre ->
-            if (genre.id == 1) {
-                assertTrue(genre.isSelected)
-            } else {
-                assertFalse(genre.isSelected)
-            }
-        }
-
-        assertFalse(state.isLoading)
-    }
-
-    @Test
-    fun `getUpComingMoviesByGenre should throw error`() = runTest {
-
-        coEvery { getUpComingMoviesUseCase() } throws NotFoundException("Not Found")
-
-
-        viewModel.onChangeUpcomingMovieGenre(1)
-
-
-        advanceUntilIdle()
-
-
-        val errorMessage = viewModel.state.value.upcomingMoviesUiState.errorMessage
-        assertEquals("Not Found", errorMessage)
-
-
-        assertFalse(viewModel.state.value.upcomingMoviesUiState.isLoading)
     }
 
     private fun fakeMovieEntity(
@@ -349,3 +300,4 @@ class HomeScreenViewModelTest {
         galleryUrl = emptyList()
     )
 }
+

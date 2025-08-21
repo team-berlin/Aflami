@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.CircularIconButton
 import com.berlin.aflami.component.RatingCard
 import com.berlin.aflami.ui.theme.Theme
+import com.berlin.aflami.utils.formatDate
+import com.berlin.aflami.utils.swapYearAndDay
 import com.berlin.aflami.viewmodel.details.series.EpisodeUiState
 import com.berlin.designsystem.R
 import com.berlin.safeimageviewer.SafeImageViewer
@@ -49,15 +51,15 @@ fun EpisodeCard(
                 rating = episode.voteAverage.toString()
             )
 
-            EpisodeDetails(
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .weight(1f),
-                episodeNumber = episode.episodeNumber,
-                title = episode.name,
-                time = episode.runtime.toString(),
-                date = episode.airDate
-            )
+                EpisodeDetails(
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .weight(1f),
+                    episodeNumber = episode.episodeNumber,
+                    title = episode.name,
+                    time = episode.runtime.toString(),
+                    date = episode.airDate?.formatDate() ?: ""
+                )
 
             CircularIconButton(
                 painter = painterResource(R.drawable.play),
@@ -143,25 +145,27 @@ private fun EpisodeDetails(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = time,
+                text = "$time m",
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.hint
             )
-
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .size(4.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(Theme.color.stroke)
-            )
-
+            if (date != "") {
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .size(4.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(Theme.color.stroke)
+                )
+            }
             Text(
                 modifier = Modifier.padding(top = 2.dp),
                 text = date,
                 style = Theme.textStyle.label.small,
-                color = Theme.color.textColors.hint
-            )
+                color = Theme.color.textColors.hint,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+                )
         }
     }
 }

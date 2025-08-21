@@ -21,6 +21,7 @@ data class HomeScreenState(
     val tVShowGenres: List<GenreUiState> = listOf(GenreUiState(-1, "All", isSelected = true)),
     val isLoading: Boolean = false,
     val error: ErrorUiState? = null,
+    val showSuccessSnackBar: Boolean= false,
 )
 
 @Immutable

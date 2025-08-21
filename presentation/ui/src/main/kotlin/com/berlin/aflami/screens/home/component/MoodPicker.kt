@@ -7,11 +7,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -30,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.berlin.aflami.ui.color.ExtraColors.moodPickerGradient
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.home.HomeScreenInteractionListener
 import com.berlin.aflami.viewmodel.home.HomeScreenState
@@ -126,10 +130,11 @@ private fun MoodPickerContent(
             style = Theme.textStyle.body.small,
             modifier = Modifier.padding(12.dp)
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        LazyRow(
+             horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues( )
         ) {
-            moodIcons.forEach { iconRes ->
+            items(moodIcons)  { iconRes ->
                 MoodIcon(
                     modifier = Modifier,
                     iconRes = iconRes,
@@ -189,7 +194,7 @@ private fun BlurredIcon(modifier: Modifier = Modifier) {
                 .background(color = Theme.color.onPrimaryButton, shape = CircleShape)
                 .border(
                     width = 0.5.dp,
-                    brush = Brush.linearGradient(colors = Theme.color.gradientColors.overly),
+                    brush = moodPickerGradient,
                     shape = CircleShape
                 )
                 .blur(8.dp)

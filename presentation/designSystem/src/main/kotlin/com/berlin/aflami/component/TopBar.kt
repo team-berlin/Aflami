@@ -38,7 +38,9 @@ fun TopBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             leadingIcon?.invoke()
-            Column {
+            Column(
+                modifier = Modifier.fillMaxWidth(0.70f),
+            ) {
                 title?.invoke()
                 subTitle?.invoke()
             }

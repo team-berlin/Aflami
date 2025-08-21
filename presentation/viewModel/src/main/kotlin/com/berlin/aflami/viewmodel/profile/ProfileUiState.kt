@@ -11,28 +11,41 @@ data class ProfileUiState(
     val userAvatarUrl: String? = null,
     val userName: String = "",
     val userPoints: Int = 0,
+    val activeDialog: ProfileDialogType = ProfileDialogType.NONE,
+    val isLoggedIn: Boolean? = null,
+    val themeOption: ThemeOption = ThemeOption(),
+    val languageOption: LanguageOption = LanguageOption(),
+    val contentRestrictionOption: ContentRestrictionOption = ContentRestrictionOption(),
+    val appVersion: String = "v1.0.0",
+
+    )
+data class ThemeOption(
     val selectedTheme: String = AppTheme.DARK.name,
     val tempSelectedTheme: String = selectedTheme,
     val isDarkThemeEnabled: Boolean = AppTheme.DARK.name == selectedTheme,
-    val isDarkThemeSelected: Boolean = AppTheme.DARK.name == selectedTheme,
-    val isLightThemeSelected: Boolean = AppTheme.LIGHT.name == selectedTheme,
-    val selectedLanguage: String = Locale.getDefault().language.uppercase(),
-    val tempSelectedLanguage: String = selectedLanguage,
-    val isEnglishEnabled: Boolean = selectedLanguage == AppLanguage.EN.name,
-    val isEnglishSelected: Boolean = selectedLanguage == AppLanguage.EN.name,
-    val isArabicSelected: Boolean = selectedLanguage == AppLanguage.AR.name,
-    val activeDialog: ProfileDialogType = ProfileDialogType.NONE,
-    val isLoggedIn: Boolean? = null,
+)
+data class LanguageOption(
+    val selectedLanguage: AppLanguage =
+        if (Locale.getDefault().language == "ar")
+            AppLanguage.AR else AppLanguage.EN,
+    val tempSelectedLanguage: AppLanguage = selectedLanguage,
+    val isEnglishEnabled: Boolean = selectedLanguage == AppLanguage.EN,
+)
+data class ContentRestrictionOption(
     val isStrictSelected: Boolean = true,
     val isModeratedSelected: Boolean = false,
     val isOffSelected: Boolean = false,
     val selectedRestriction: String = ContentRestriction.STRICT.name,
     val tempSelectedRestriction: String = selectedRestriction,
     val contentRestrictionPercentage: Int = 100,
-    val appVersion: String = "v1.0.0",
+)
 
-
-    )
-
-enum class ProfileDialogType { NONE, LANGUAGE, THEME, SETTINGS, CONTENT_RESTRICTION, LOGOUT }
+enum class ProfileDialogType {
+    NONE,
+    LANGUAGE,
+    THEME,
+    SETTINGS,
+    CONTENT_RESTRICTION,
+    LOGOUT
+}
 

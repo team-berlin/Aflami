@@ -4,7 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.ui.theme.AflamiTheme
@@ -29,10 +31,12 @@ fun ListCard(
     Box(
         modifier = modifier
             .size(width = 160.dp, height = 147.dp)
-    ) {
+    )
+    {
         Box(
             modifier = Modifier
-                .size(width = 160.dp, height = 135.dp)
+                .fillMaxWidth(1f)
+                .fillMaxHeight(0.91f)
                 .clip(
                     RoundedCornerShape(
                         bottomEnd = 24.dp,
@@ -43,18 +47,22 @@ fun ListCard(
                 )
                 .background(Theme.color.surfaceHigh)
                 .align(Alignment.BottomEnd)
-        ) {
+        )
+        {
             Column(
                 modifier = Modifier
-                    .padding(start = 8.dp)
-                    .align(Alignment.CenterStart)
-                    .offset(y = 20.dp),
+                    .padding(start = 8.dp, bottom = 20.dp)
+                    .align(Alignment.BottomStart)
+                    .background(Theme.color.surfaceHigh),
+
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
                     title,
                     color = Theme.color.textColors.title,
-                    style = Theme.textStyle.title.medium
+                    style = Theme.textStyle.title.medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = stringResource(R.string.item_count, count),
@@ -64,7 +72,6 @@ fun ListCard(
             }
 
         }
-
         Box(
             modifier = Modifier
                 .size(width = 80.dp, height = 33.dp)
@@ -75,6 +82,7 @@ fun ListCard(
                     )
                 )
                 .background(Theme.color.surfaceHigh)
+                .align(Alignment.TopStart)
         )
     }
 

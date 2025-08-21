@@ -1,6 +1,5 @@
 package com.berlin.aflami.viewmodel.home
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.berlin.aflami.viewmodel.base.BasePagingSource.Companion.PAGE_SIZE
 import com.berlin.aflami.viewmodel.base.BaseViewModel
@@ -44,10 +43,15 @@ class HomeScreenViewModel @Inject constructor(
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     private val getMoviesByMoodUseCase: GetMoviesByMoodUseCase,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    homeArgs: HomeArgs
 ) : BaseViewModel<HomeScreenState, HomeScreenEffect>(HomeScreenState()),
     HomeScreenInteractionListener {
+    private val shouldShowSuccessSnackBar: Boolean? =homeArgs.isLoggedIn
 
     init {
+        if (shouldShowSuccessSnackBar == true) updateState {
+            it.copy(showSuccessSnackBar = true)
+        }
         loadGenresTVShow()
         loadGenresMovies()
         viewModelScope.launch {
@@ -124,7 +128,6 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun updatePopularUiStateWithError(errorUiState: ErrorUiState) {
-
         updateState {
             it.copy(
                 popularMediaUiState = it.popularMediaUiState.copy(
@@ -225,8 +228,8 @@ class HomeScreenViewModel @Inject constructor(
     }
     //endregion
 
-    private fun List<String>.toGenreIds(): List<Int> {
-        return state.value.movieGenres.filter { this.contains(it.name) }
+    private fun List<Int>.toGenreIds(): List<Int> {
+        return state.value.movieGenres.filter {this.contains(it.id) }
             .map { it.id }
     }
 

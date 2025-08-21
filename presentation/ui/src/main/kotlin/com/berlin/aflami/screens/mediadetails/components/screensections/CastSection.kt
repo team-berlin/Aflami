@@ -5,10 +5,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -21,8 +24,7 @@ import com.berlin.aflami.viewmodel.shareduistate.ActorUiState
 
 @Composable
 fun CastSection(
-    cast: List<ActorUiState>,
-    onShowAllClicked: () -> Unit
+    cast: List<ActorUiState>, onShowAllClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier.padding(vertical = 12.dp),
@@ -43,34 +45,23 @@ fun CastSection(
                 text = stringResource(com.berlin.ui.R.string.all),
                 style = Theme.textStyle.label.medium,
                 color = Theme.color.primary,
-                modifier = Modifier
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) { onShowAllClicked() }
-            )
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() }, indication = null
+                ) { onShowAllClicked() })
         }
-
-        BoxWithConstraints {
-            val screenWidth = this.maxWidth
-            val cardSize = 78.dp
-            val spaceBetween = 8.dp
-            val totalCardWidth = cardSize + spaceBetween
-            val maxCardsInRow = (screenWidth / totalCardWidth).toInt()
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(spaceBetween)
-            ) {
-                cast.take(maxCardsInRow).forEach {
-                    MediaCastItem(
-                        modifier = Modifier.size(cardSize),
-                        name = it.name,
-                        poster = it.poster
-                    )
-                }
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                ,
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(cast) {
+                MediaCastItem(
+                    modifier = Modifier.size(78.dp),
+                    name = it.name,
+                    poster = it.poster
+                )
             }
         }
     }

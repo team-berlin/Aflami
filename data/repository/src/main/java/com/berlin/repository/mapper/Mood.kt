@@ -1,18 +1,17 @@
 package com.berlin.repository.mapper
 
 import com.berlin.entity.Movie
-import com.berlin.repository.datasource.local.dto.MovieHomeEntity
-import com.berlin.repository.datasource.local.dto.SectionHome
+import com.berlin.repository.datasource.local.dto.HomeMovieEntity
+import com.berlin.repository.datasource.local.dto.HomeSection
 
-fun Movie.toMovieByMoodEntity(): MovieHomeEntity {
-    return MovieHomeEntity(
+fun Movie.toMovieByMoodEntity(): HomeMovieEntity {
+    return HomeMovieEntity(
         id = id,
         title = title,
         rating = rating.toString(),
         releaseYear = releaseDate,
         genre = genres.map { it.id },
         poster = posterURL,
-        addedAt = System.currentTimeMillis(),
-        sectionHome = SectionHome.BY_MOOD
+        homeSection = HomeSection.BY_MOOD
     )
 }

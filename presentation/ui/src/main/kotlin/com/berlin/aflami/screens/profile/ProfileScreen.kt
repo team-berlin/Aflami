@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,7 +30,6 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.ThemeAndLocalePreviews
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.MyRatingDestination
-import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WatchHistoryDestination
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.screens.RequiredLoggedInPlaceholder
@@ -56,9 +57,9 @@ fun ProfileScreen(
     val navController = Theme.navController
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = profileScreenState.isLoggedIn==null
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
+        visible = profileScreenState.isLoggedIn == null
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(),
@@ -67,15 +68,15 @@ fun ProfileScreen(
     }
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = profileScreenState.isLoggedIn==true
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
+        visible = profileScreenState.isLoggedIn == true
     ) { ProfileContent(profileScreenState, viewModel) }
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
-        visible = profileScreenState.isLoggedIn==false
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
+        visible = profileScreenState.isLoggedIn == false
     ) { RequiredLoggedInPlaceholder { navController.navigate(LoginDestination) } }
 
     LaunchedEffect(Unit) {
@@ -95,6 +96,7 @@ private fun watchHistoryReceiveEffect(
                 MyRatingDestination
             )
         }
+
         ProfileScreenEffect.NavigateToWatchHistoryScreen -> {
             navController.navigate(
                 WatchHistoryDestination
@@ -110,12 +112,7 @@ private fun watchHistoryReceiveEffect(
         }
 
         ProfileScreenEffect.NavigateToLoginScreen -> {
-            navController.navigate(route = LoginDestination) {
-                popUpTo(NavigationBarDestinations.HomeScreen) {
-                    inclusive = true
-                }
-            }
-
+            navController.navigate(LoginDestination)
         }
     }
 }
@@ -136,8 +133,8 @@ private fun ProfileContent(
                 secondOptionTitleRes = R.string.light,
                 firstOptionIconRes = com.berlin.designsystem.R.drawable.dark,
                 secondOptionIconRes = com.berlin.designsystem.R.drawable.light,
-                isFirstOptionSelected = profileScreenState.isDarkThemeSelected,
-                isSecondOptionSelected = profileScreenState.isLightThemeSelected,
+                isFirstOptionSelected = profileScreenState.themeOption.isDarkThemeEnabled,
+                isSecondOptionSelected = profileScreenState.themeOption.isDarkThemeEnabled.not(),
                 onFirstOptionClick = { profileScreenInteractionListener.onDarkThemeSelected() },
                 onSecondOptionClick = { profileScreenInteractionListener.onLightThemeSelected() },
                 isThemeDialog = true
@@ -153,13 +150,12 @@ private fun ProfileContent(
                 secondOptionTitleRes = R.string.language_dialog_arabic,
                 firstOptionIconRes = com.berlin.designsystem.R.drawable.english,
                 secondOptionIconRes = com.berlin.designsystem.R.drawable.arabic,
-                isFirstOptionSelected = profileScreenState.isEnglishSelected,
-                isSecondOptionSelected = profileScreenState.isArabicSelected,
+                isFirstOptionSelected = profileScreenState.languageOption.isEnglishEnabled,
+                isSecondOptionSelected = profileScreenState.languageOption.isEnglishEnabled.not(),
                 onFirstOptionClick = { profileScreenInteractionListener.onEnglishSelected() },
                 onSecondOptionClick = { profileScreenInteractionListener.onArabicSelected() },
                 isThemeDialog = false
             )
-
         }
 
         ProfileDialogType.SETTINGS -> {
@@ -178,9 +174,9 @@ private fun ProfileContent(
                 firstOptionTitleRes = R.string.strict,
                 secondOptionTitleRes = R.string.moderate,
                 thirdOptionTitleRes = R.string.off,
-                isFirstOptionSelected = profileScreenState.isStrictSelected,
-                isSecondOptionSelected = profileScreenState.isModeratedSelected,
-                isThirdOptionSelected = profileScreenState.isOffSelected,
+                isFirstOptionSelected = profileScreenState.contentRestrictionOption.isStrictSelected,
+                isSecondOptionSelected = profileScreenState.contentRestrictionOption.isModeratedSelected,
+                isThirdOptionSelected = profileScreenState.contentRestrictionOption.isOffSelected,
                 onFirstOptionClick = { profileScreenInteractionListener.onStrictSelected() },
                 onSecondOptionClick = { profileScreenInteractionListener.onModerateSelected() },
                 onThirdOptionClick = { profileScreenInteractionListener.onOffRestrictionSelected() },
@@ -190,6 +186,7 @@ private fun ProfileContent(
                 thirdOptionSubTitleIdRes = R.string.off_description
             )
         }
+
         ProfileDialogType.LOGOUT -> {
             LogoutDialog(
                 onDismiss = { profileScreenInteractionListener.onDialogDismissed() },
@@ -205,35 +202,44 @@ private fun ProfileContent(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxSize()
+
             .background(Theme.color.surface)
             .verticalScroll(rememberScrollState())
+            .padding(bottom = 56.dp)
     )
     {
         ProfileSection(
-            userAvatar = profileScreenState.userAvatarUrl?:"",
+            userAvatar = profileScreenState.userAvatarUrl ?: "",
             userName = profileScreenState.userName,
             userScore = profileScreenState.userPoints,
-            if (profileScreenState.isDarkThemeEnabled)
+            if (profileScreenState.themeOption.isDarkThemeEnabled)
                 painterResource(R.drawable.profile_cover_night)
             else painterResource(R.drawable.profile_cover),
-
-        )
+            )
         Spacer(modifier = Modifier.height(24.dp))
         WatchHistoryRatingSection(
-            onWatchHistoryClick = {profileScreenInteractionListener.onWatchHistoryClick()},
-            onMyRatingClick = {profileScreenInteractionListener.onMyRatingClick()}
+            onWatchHistoryClick = { profileScreenInteractionListener.onWatchHistoryClick() },
+            onMyRatingClick = { profileScreenInteractionListener.onMyRatingClick() }
         )
         Spacer(modifier = Modifier.height(24.dp))
         HorizontalDivider(thickness = 1.dp, color = Theme.color.stroke)
         Spacer(modifier = Modifier.height(24.dp))
         SettingSection(
-            isLanguageEN = profileScreenState.isEnglishEnabled,
-            isDarkThemeEnabled = profileScreenState.isDarkThemeEnabled,
+            isLanguageEN = profileScreenState.languageOption.isEnglishEnabled,
+            isDarkThemeEnabled = profileScreenState.themeOption.isDarkThemeEnabled,
             onThemeClick = { profileScreenInteractionListener.onAppThemeClick() },
             onLanguageClick = { profileScreenInteractionListener.onLanguageClick() },
             onSettingsClick = { profileScreenInteractionListener.onSettingsClick() },
         )
+        Spacer(modifier = Modifier.weight(1f))
 
+        Text(
+            text = stringResource(R.string.v1_1),
+            style = Theme.textStyle.label.small,
+            color = Theme.color.textColors.hint,
+            modifier = Modifier
+                .padding(bottom = 12.dp)
+        )
     }
 }
 

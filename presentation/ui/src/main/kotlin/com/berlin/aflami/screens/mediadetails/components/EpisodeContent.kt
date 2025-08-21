@@ -37,7 +37,7 @@ fun SeasonsSection(
     ) {
         for ((seasonNumber, episodes) in seasonsMap) {
             EpisodeScreen(
-                seasonNumber = seasonNumber.plus(1).toString(),
+                seasonNumber = seasonNumber.toString(),
                 episodes = episodes
             )
             HorizontalDivider(
@@ -90,15 +90,15 @@ fun EpisodeScreen(
 
 @Composable
 fun SeasonsHeader(
+    modifier: Modifier = Modifier,
     seasonNumber: String,
     episodeCount: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(24.dp)
             .background(Theme.color.surface)
             .clickable { onToggleExpand() }
             .padding(horizontal = 16.dp),
@@ -128,111 +128,3 @@ fun SeasonsHeader(
         }
     }
 }
-
-//@Preview(showSystemUi = true)
-//@Composable
-//fun SeasonsScreenPreview() {
-//    AflamiTheme(isDarkTheme = false) {
-//        SeasonsScreen(
-//            seasons = sampleSeasons,
-//            modifier = Modifier.background(Theme.color.surface)
-//        )
-//    }
-//}
-//val sampleSeasons = listOf(
-//    MediaDetailsUiState(
-//        seasonNumber = "1",
-//        episodes = listOf(
-//            EpisodeUi(
-//                id = 0,
-//                episodeNumber = 1,
-//                title = "Recovering a Body",
-//                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
-//                imageUrl = "",
-//                time = "58 m",
-//                date = "3 Sep 2020",
-//                rating = "8.2"
-//            ),
-//            EpisodeUi(
-//                id = 1,
-//                episodeNumber = 2,
-//                title = "The Mouse",
-//                description = "A mysterious inmate arrives at The Green Mile.",
-//                imageUrl = "",
-//                time = "60 m",
-//                date = "10 Sep 2020",
-//                rating = "8.5"
-//            )
-//        )
-//    ),
-//    SeasonUiState(
-//        seasonNumber = "2",
-//        episodes = listOf(
-//            EpisodeUi(
-//                id = 0,
-//                episodeNumber = 1,
-//                title = "Recovering a Body",
-//                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
-//                imageUrl = "",
-//                time = "58 m",
-//                date = "3 Sep 2020",
-//                rating = "8.2"
-//            ),
-//            EpisodeUi(
-//                id = 1,
-//                episodeNumber = 2,
-//                title = "The Mouse",
-//                description = "A mysterious inmate arrives at The Green Mile.",
-//                imageUrl = "",
-//                time = "60 m",
-//                date = "10 Sep 2020",
-//                rating = "8.5"
-//            )
-//        )
-//    ),
-//    SeasonUiState(
-//        seasonNumber = "3",
-//        episodes = listOf(
-//            EpisodeUi(
-//                id = 0,
-//                episodeNumber = 1,
-//                title = "Recovering a Body",
-//                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
-//                imageUrl = "",
-//                time = "58 m",
-//                date = "3 Sep 2020",
-//                rating = "8.2"
-//            ),
-//            EpisodeUi(
-//                id = 1,
-//                episodeNumber = 2,
-//                title = "The Mouse",
-//                description = "A mysterious inmate arrives at The Green Mile.",
-//                imageUrl = "",
-//                time = "60 m",
-//                date = "10 Sep 2020",
-//                rating = "8.5"
-//            ),
-//            EpisodeUi(
-//                id = 2,
-//                episodeNumber = 3,
-//                title = "Recovering a Body",
-//                description = "In 1935, corrections officer Paul Edgecomb oversees The Green Mile, the death row",
-//                imageUrl = "",
-//                time = "58 m",
-//                date = "3 Sep 2020",
-//                rating = "8.2"
-//            ),
-//            EpisodeUi(
-//                id = 3,
-//                episodeNumber = 4,
-//                title = "The Mouse",
-//                description = "A mysterious inmate arrives at The Green Mile.",
-//                imageUrl = "",
-//                time = "60 m",
-//                date = "10 Sep 2020",
-//                rating = "8.5"
-//            )
-//        )
-//    )
-//)

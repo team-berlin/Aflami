@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,7 +48,8 @@ fun NoInternetConnectionPlaceholder(
         Button(
             onClick = { onClick() },
             modifier = modifier
-                .padding(top = 16.dp, start = 111.dp, end = 111.dp)
+                .wrapContentSize()
+                .padding(top = 16.dp)
                 .align(Alignment.CenterHorizontally),
             enabled = enable,
             shape = RoundedCornerShape(16.dp),

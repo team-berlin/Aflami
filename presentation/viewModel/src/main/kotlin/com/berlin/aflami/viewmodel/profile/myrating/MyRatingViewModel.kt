@@ -44,6 +44,14 @@ class MyRatingViewModel @Inject constructor(
         }
     }
 
+    override fun retry() {
+        updateState {
+            it.copy(errorMessage = null, isLoading = true)
+        }
+        loadRatedMovies()
+        loadRatedTVShows()
+    }
+
 
     private fun loadRatedMovies() {
         updateState { it.copy(isLoading = true) }

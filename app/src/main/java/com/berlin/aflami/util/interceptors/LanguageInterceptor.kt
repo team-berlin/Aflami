@@ -1,0 +1,33 @@
+package com.berlin.aflami.util.interceptors
+
+import androidx.appcompat.app.AppCompatDelegate
+import okhttp3.Interceptor
+import okhttp3.Response
+import java.util.Locale
+
+class LanguageInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        val originalUrl = request.url
+
+        val shouldSkipLanguage = originalUrl.encodedPath.endsWith(IMAGES_PATH) ||
+                originalUrl.encodedPath.endsWith(VIDEOS_PATH)
+
+        val newUrlBuilder = originalUrl.newBuilder()
+        if (!shouldSkipLanguage) {
+            val appLocales = AppCompatDelegate.getApplicationLocales()
+            val languageTag =
+                if (appLocales.isEmpty) {
+                    Locale.getDefault().toLanguageTag()
+                } else {
+                    appLocales.toLanguageTags()
+                }
+            newUrlBuilder.setQueryParameter(LANGUAGE, languageTag)
+        }
+        val newUrl = newUrlBuilder.build()
+        val newRequest = request.newBuilder()
+            .url(newUrl)
+            .build()
+        return chain.proceed(newRequest)
+    }
+}

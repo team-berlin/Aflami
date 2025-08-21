@@ -1,7 +1,7 @@
 package com.berlin.local.datasource
 
 import com.berlin.local.dao.GenreDao
-import com.berlin.repository.datasource.local.GenreLocalDataSource
+import com.berlin.repository.datasource.local.datasource.GenreLocalDataSource
 import com.berlin.repository.datasource.local.dto.MoviesGenreEntity
 import com.berlin.repository.datasource.local.dto.TVShowGenreEntity
 import javax.inject.Inject

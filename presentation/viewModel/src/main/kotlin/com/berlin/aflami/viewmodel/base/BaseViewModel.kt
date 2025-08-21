@@ -1,5 +1,6 @@
 package com.berlin.aflami.viewmodel.base
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
@@ -42,15 +43,18 @@ abstract class BaseViewModel<SCREEN_STATE, SCREEN_EFFECT>(
                 onSuccess(result)
             } catch (e: UnauthorizedException) {
                 onError(InvalidationErrorState(e.message.toString()))
+                Log.e("Error",e.toString(),e)
             } catch (e: NetworkException) {
+                Log.e("Error",e.toString(),e)
                 onError(NetworkErrorState(e.message.toString()))
             } catch (e: NotFoundException) {
-                onError(ErrorUiState(e.message.toString()))
+                onError(ErrorUiState())
             } catch (e: ServerException) {
                 onError(ErrorUiState(e.message.toString()))
             } catch (e: AlreadyExistsException) {
                 onError(MovieAlreadyExistInList(e.message.toString()))
             } catch (e: Exception) {
+                Log.e("Error",e.toString())
                 onError(ErrorUiState(e.message.toString()))
             }
         }

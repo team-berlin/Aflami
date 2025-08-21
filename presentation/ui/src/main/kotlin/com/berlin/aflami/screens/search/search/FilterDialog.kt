@@ -57,6 +57,12 @@ fun FilterDialog(
     getIcon: (Int) -> Int,
     getGenreName: (Int) -> Int
 ) {
+    val isApplyEnabled = state.selectedRating > 0f || state.genreUiStates.any { it.isSelected&&it.name!="All"}
+
+    val containerColor=if(isApplyEnabled)Theme.color.primary else Theme.color.disable
+    val gradientColor=if(isApplyEnabled)Theme.color.primaryButton else Theme.color.disable
+    val textColor=if(isApplyEnabled)Theme.color.textColors.onPrimary else Theme.color.stroke
+
     Dialog(
         onDismissRequest = filterListener::onCancelClicked,
         properties = DialogProperties(
@@ -155,17 +161,17 @@ fun FilterDialog(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     PrimaryButton(
-                        onClick = { filterListener.onApplyButtonClicked() },
+                        onClick ={if(isApplyEnabled) { filterListener.onApplyButtonClicked() }},
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
-                        containerColor = Theme.color.primary,
-                        gradientColor = Theme.color.primaryButton
+                        containerColor = containerColor,
+                        gradientColor = gradientColor
                     ) {
                         Text(
                             stringResource(com.berlin.ui.R.string.apply),
                             style = Theme.textStyle.label.large,
-                            color = Theme.color.textColors.onPrimary
+                            color = textColor
                         )
                     }
                     PrimaryButton(
@@ -190,7 +196,8 @@ fun FilterDialog(
 
 @Composable
 fun Chips(
-    title: String, icon: Painter, isSelected: Boolean, onClick: () -> Unit
+    title: String, icon: Painter, isSelected: Boolean, onClick: () -> Unit,
+    minimumTextLines: Int = 1
 ) {
     val background by animateColorAsState(
         targetValue = if (isSelected) Theme.color.secondary else Theme.color.surfaceHigh
@@ -241,7 +248,11 @@ fun Chips(
             color = Theme.color.textColors.body,
             style = Theme.textStyle.label.small,
             textAlign = TextAlign.Center,
-            maxLines = if (isSingleWord) 1 else 2
+            minLines = minimumTextLines.coerceIn(
+                minimumValue = 1,
+                maximumValue = 2
+            ),
+            maxLines = if (isSingleWord && minimumTextLines == 1) 1 else 2
         )
     }
 }

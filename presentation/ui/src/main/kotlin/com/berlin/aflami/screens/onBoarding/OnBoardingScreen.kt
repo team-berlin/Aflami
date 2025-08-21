@@ -1,6 +1,5 @@
 package com.berlin.aflami.screens.onBoarding
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -33,23 +32,15 @@ import kotlinx.coroutines.launch
 fun OnBoardingScreen(
     viewModel: OnBoardingViewModel = hiltViewModel()
 ) {
-
-    val onBoardingPageState = rememberPagerState(initialPage = 0) {
-        onBoardingList.size
-    }
-
+    val pagerState = rememberPagerState(initialPage = 0) { onBoardingList.size }
     val navController = Theme.navController
-
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 OnBoardingScreenEffect.NavigateToLogin -> {
                     viewModel.saveFirstEntry()
-                    navController.navigate(
-                        LoginDestination
-                    ) {
+                    navController.navigate(LoginDestination) {
                         popUpTo(OnBoardingDestination) { inclusive = true }
-
                     }
                 }
             }
@@ -59,38 +50,31 @@ fun OnBoardingScreen(
     OnBoardingContent(
         onBoardingList = onBoardingList,
         navigateToLogin = { viewModel.onClickSkip() },
-        pagerState = onBoardingPageState,
+        pagerState = pagerState,
     )
-
 }
-
 @Composable
 fun OnBoardingContent(
     onBoardingList: List<OnBoardingModel>,
     navigateToLogin: () -> Unit,
     pagerState: PagerState,
 ) {
-    val isLastPage by remember {
-        derivedStateOf { pagerState.currentPage == pagerState.pageCount - 1 }
-    }
+    val isLastPage by remember { derivedStateOf { pagerState.currentPage == pagerState.pageCount - 1 } }
     val coroutineScope = rememberCoroutineScope()
-
-    CircleRevealPager(
+    OnBoardingPager(
         pagerState = pagerState,
         data = onBoardingList,
         modifier = Modifier.fillMaxSize(),
     )
-    Box(
-        modifier = Modifier.fillMaxSize()
 
-    ) {
-
-        AnimatedVisibility(visible = !isLastPage) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        androidx.compose.animation.AnimatedVisibility(visible = !isLastPage) {
             TextButton(
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(top = 16.dp, start = 16.dp)
-                    .zIndex(2f), onClick = navigateToLogin
+                    .zIndex(2f),
+                onClick = navigateToLogin
             ) {
                 Text(
                     text = stringResource(R.string.skip),
@@ -99,6 +83,7 @@ fun OnBoardingContent(
                 )
             }
         }
+
         OnBoardingButtonNavigation(
             modifier = Modifier
                 .padding(bottom = 16.dp)
@@ -107,20 +92,20 @@ fun OnBoardingContent(
             onNextClick = {
                 if (pagerState.currentPage != pagerState.pageCount - 1) {
                     coroutineScope.launch {
-                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        pagerState.scrollToPage(pagerState.currentPage + 1)
                     }
                 } else {
                     navigateToLogin()
                 }
-
             },
             onPreviousClick = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                if (pagerState.currentPage > 0) {
+                    coroutineScope.launch {
+                        pagerState.scrollToPage(pagerState.currentPage - 1)
+                    }
                 }
-            })
-
+            }
+        )
     }
-
 }
 

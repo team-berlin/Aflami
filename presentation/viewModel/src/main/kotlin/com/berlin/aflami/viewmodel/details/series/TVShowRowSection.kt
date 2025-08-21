@@ -21,24 +21,16 @@ sealed interface TVShowTabContent {
     data class CompanyProduction(val companyProductionStates: List<CompanyProductionUiState>) : TVShowTabContent
 }
 
-@Immutable
-data class SeasonUiState(
-    val seasonId: Long,
-    val seasonNumber: Int,
-    val name: String,
-    val episodes: List<EpisodeUiState?>,
-    val posterPath: String,
-)
 
 @Immutable
 data class EpisodeUiState(
     val stillPath: String,
-    val airDate: String,
+    val airDate: String?=null,
     val episodeNumber: Int,
     val episodeType: String,
     val id: Long,
     val name: String,
     val overview: String,
     val runtime: String?,
-    val voteAverage: Double,
+    val voteAverage: String,
 )

@@ -7,5 +7,5 @@ import javax.inject.Inject
 class GetContentRestrictionUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
-    suspend operator fun invoke(): Flow<String?> = settingsRepository.getContentRestriction()
+    operator fun invoke(): Flow<String?> = settingsRepository.getContentRestriction()
 }

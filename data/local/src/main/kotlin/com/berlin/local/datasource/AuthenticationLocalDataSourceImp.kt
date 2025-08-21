@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import com.berlin.local.utils.DataStoreKeys
 import com.berlin.local.utils.EncryptionUtils
-import com.berlin.repository.datasource.local.AuthenticationLocalDataSource
+import com.berlin.repository.datasource.local.datasource.AuthenticationLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,7 +22,7 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
 
     override fun observeLoginStatus(): Flow<Boolean> {
         return dataStore.data
-            .catch { emit(emptyPreferences()) } // optional: handle IOExceptions safely
+            .catch { emit(emptyPreferences()) }
             .map { preferences ->
                 preferences[DataStoreKeys.USER_SESSION_ID]?.isNotBlank() == true
             }
@@ -100,6 +100,7 @@ class AuthenticationLocalDataSourceImpl @Inject constructor(
     override suspend fun deleteUserSessionId(): Boolean {
         return try {
             dataStore.edit { it.remove(DataStoreKeys.USER_SESSION_ID) }
+            dataStore.edit { it.remove(DataStoreKeys.USER_ACCOUNT_ID) }
             true
         } catch (e: Exception) {
             false

@@ -1,12 +1,15 @@
 package com.berlin.aflami.screens.home
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -45,6 +49,8 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
+import com.berlin.aflami.component.SnackBar
+import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.navigation.ContinueWatchingDestination
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.SearchDestination
@@ -52,9 +58,9 @@ import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.navigation.TopRatingMediaDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
 import com.berlin.aflami.screens.home.component.MoodPickerDialog
-import com.berlin.aflami.screens.home.sections.ContinueWatchingHomeSections
 import com.berlin.aflami.screens.home.sections.MoodPickerSection
 import com.berlin.aflami.screens.home.sections.PosterSlider
+import com.berlin.aflami.screens.home.sections.RecentlyWatchedHomeSections
 import com.berlin.aflami.screens.home.sections.TopRatingHomeSections
 import com.berlin.aflami.screens.home.sections.UpcomingMoviesSection
 import com.berlin.aflami.screens.search.getMovieGenreName
@@ -88,33 +94,58 @@ fun HomeScreen(
     }
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
         visible = homeScreenState.isLoading
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(R.string.loading)
+            modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
         visible = homeScreenState.error != null
     ) {
         NoInternetConnectionPlaceholder()
     }
 
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
         visible = !homeScreenState.isLoading
     ) {
         HomeContent(
             homeScreenState = homeScreenState, homeScreenInteractionListener = viewModel
         )
     }
+}
 
+@Composable
+private fun AnimatedSnackBar(
+    message: String, isSnackBarVisible: Boolean, modifier: Modifier = Modifier
+) {
+    AnimatedVisibility(
+        visible = isSnackBarVisible, enter = slideInVertically(
+            initialOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
+                stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioMediumBouncy
+            )
+        ) + fadeIn(),
+
+        exit = slideOutVertically(
+            targetOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
+                stiffness = Spring.StiffnessMedium, dampingRatio = Spring.DampingRatioNoBouncy
+            )
+        ) + fadeOut()
+    ) {
+        SnackBar(
+            isVisible = isSnackBarVisible,
+            status = SnackBarStatus.SUCCESS,
+            text = message,
+            modifier = modifier,
+            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
+        )
+    }
 }
 
 private fun onReceiveHomeScreenEffect(
@@ -140,7 +171,7 @@ private fun onReceiveHomeScreenEffect(
             )
         }
 
-        HomeScreenEffect.NavigateToMoodPickerDialog -> TODO()
+        HomeScreenEffect.NavigateToMoodPickerDialog -> {}
 
 
         is HomeScreenEffect.NavigateToMovieDetailsScreen -> {
@@ -181,19 +212,17 @@ private fun HomeContent(
     val pagerState = rememberPagerState(
         initialPage = 1, pageCount = { homeScreenState.popularMediaUiState.popularMedia.size })
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None ,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None,
         visible = homeScreenState.isLoading
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize(),
-            text = stringResource(R.string.loading)
+            modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
         )
     }
     val continueWatchingMediaList: List<MediaUiState> =
         homeScreenState.continueWatchingUiState.continueWatchingMediaList
-    val topRatedMediaList: List<MediaUiState> =
-        homeScreenState.topRatedMediaUiState.topRatedMedia
+    val topRatedMediaList: List<MediaUiState> = homeScreenState.topRatedMediaUiState.topRatedMedia
     val popularMedia =
         homeScreenState.popularMediaUiState.popularMedia.getOrNull(pagerState.currentPage)
 
@@ -203,13 +232,12 @@ private fun HomeContent(
             .background(Theme.color.surface)
     ) {
         AnimatedVisibility(
-            enter =  EnterTransition.None ,
-            exit = ExitTransition.None ,
+            enter = EnterTransition.None,
+            exit = ExitTransition.None,
             visible = homeScreenState.isLoading.not()
         ) {
             LazyColumn(
-                modifier = Modifier.padding(bottom = 64.dp),
-                state = listState
+                modifier = Modifier.padding(bottom = 64.dp), state = listState
             ) {
                 item {
                     Column(
@@ -260,8 +288,7 @@ private fun HomeContent(
                                         homeScreenInteractionListener.onTVShowCardClicked(
                                             it
                                         )
-                                    }
-                                )
+                                    })
 
                                 popularMedia?.let { media ->
                                     Text(
@@ -282,28 +309,37 @@ private fun HomeContent(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         items(items = media.genre) { genreId ->
-                                           when(media.mediaType){
-                                               MediaType.MOVIE ->
-                                                   homeScreenState.movieGenres.forEach {
-                                                       movieGenre->
-                                                   if (movieGenre.id==genreId)
-                                                   Box(
-                                                       modifier = Modifier.padding(horizontal = 4.dp)
-                                                   ) {
-                                                       GenersChip(label = stringResource(getMovieGenreName(movieGenre.id)))
-                                                   }
-                                               }
-                                               MediaType.TV_SHOW ->
-                                                   homeScreenState.tVShowGenres.forEach {
-                                                       tVShowGenre->
-                                                       if (tVShowGenre.id==genreId)
-                                                       Box(
-                                                       modifier = Modifier.padding(horizontal = 4.dp)
-                                                   ) {
-                                                       GenersChip(label = stringResource(getTvShowGenreName(tVShowGenre.id)))
-                                                   }
-                                               }
-                                           }
+                                            when (media.mediaType) {
+                                                MediaType.MOVIE -> homeScreenState.movieGenres.forEach { movieGenre ->
+                                                    if (movieGenre.id == genreId) Box(
+                                                        modifier = Modifier.padding(
+                                                            horizontal = 4.dp
+                                                        )
+                                                    ) {
+                                                        GenersChip(
+                                                            label = stringResource(
+                                                                getMovieGenreName(movieGenre.id)
+                                                            )
+                                                        )
+                                                    }
+                                                }
+
+                                                MediaType.TV_SHOW -> homeScreenState.tVShowGenres.forEach { tVShowGenre ->
+                                                    if (tVShowGenre.id == genreId) Box(
+                                                        modifier = Modifier.padding(
+                                                            horizontal = 4.dp
+                                                        )
+                                                    ) {
+                                                        GenersChip(
+                                                            label = stringResource(
+                                                                getTvShowGenreName(
+                                                                    tVShowGenre.id
+                                                                )
+                                                            )
+                                                        )
+                                                    }
+                                                }
+                                            }
 
                                         }
                                     }
@@ -314,8 +350,10 @@ private fun HomeContent(
                 }
                 if (continueWatchingMediaList.isNotEmpty()) {
                     item {
-                        ContinueWatchingHomeSections(
-                            modifier = Modifier.background(Theme.color.surface),
+                        RecentlyWatchedHomeSections(
+                            modifier = Modifier
+                                .background(Theme.color.surface)
+                                .padding(bottom = 24.dp),
                             seeAllOnClick = {
                                 homeScreenInteractionListener.onShowAllContinueWatchingClicked()
                             },
@@ -330,8 +368,7 @@ private fun HomeContent(
                                 homeScreenInteractionListener.onTVShowCardClicked(
                                     it
                                 )
-                            }
-                        )
+                            })
                     }
                 }
                 if (topRatedMediaList.isNotEmpty()) {
@@ -339,7 +376,7 @@ private fun HomeContent(
                         TopRatingHomeSections(
                             modifier = Modifier
                                 .background(Theme.color.surface)
-                                .padding(top = 24.dp, bottom = 24.dp)
+                                .padding(bottom = 24.dp)
                                 .background(Theme.color.surface),
                             seeAllOnClick = { homeScreenInteractionListener.onShowAllTopRatingClicked() },
                             state = topRatedMediaList,
@@ -353,8 +390,7 @@ private fun HomeContent(
                                 homeScreenInteractionListener.onTVShowCardClicked(
                                     it
                                 )
-                            }
-                        )
+                            })
                     }
                 }
                 item {
@@ -383,6 +419,7 @@ private fun HomeContent(
         AnimatedVisibility(homeScreenState.moodPickerUiState.openMovieDialog) {
             with(homeScreenState.moodPickerUiState.selectedMovie) {
                 MoodPickerDialog(
+                    modifier = Modifier.width(328.dp),
                     mediaImg = posterUrl,
                     title = title,
                     typeOfMedia = MediaType.MOVIE.name,
@@ -399,9 +436,19 @@ private fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appBarBgColor)
-                .statusBarsPadding(), onSearchClicked = {
+                .statusBarsPadding(),
+            onSearchClicked = {
                 homeScreenInteractionListener.onSearchClicked()
-            }, containerColor = Color.Unspecified
+            },
+            containerColor = Color.Unspecified
+        )
+        AnimatedSnackBar(
+            message = stringResource(R.string.log_in_successful),
+            modifier = Modifier
+                .statusBarsPadding()
+                .align(Alignment.TopCenter)
+                .padding(top = 16.dp),
+            isSnackBarVisible = homeScreenState.showSuccessSnackBar
         )
     }
 }
