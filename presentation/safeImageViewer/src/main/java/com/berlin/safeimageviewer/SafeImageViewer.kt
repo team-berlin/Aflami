@@ -42,7 +42,7 @@ import java.nio.ByteOrder
 @SuppressLint("FlowOperatorInvokedInComposition")
 @Composable
 fun SafeImageViewer(
-    model: String,
+    model: String?,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     contentScale: ContentScale? = ContentScale.Crop,
@@ -62,6 +62,21 @@ fun SafeImageViewer(
 
     var result by remember { mutableStateOf<ImageClassificationResult?>(null) }
     var displayBitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+    if (model.isNullOrBlank()) {
+        AsyncImage(
+            model = null,
+            contentDescription = contentDescription,
+            error = error,
+            fallback = fallback,
+            placeholder = placeholder,
+            alignment = alignment,
+            modifier = modifier,
+            contentScale = contentScale ?: ContentScale.Crop
+        )
+        return
+    }
+
     if (!isModelDownloaded) {
         AsyncImage(
             model = model,
@@ -77,7 +92,7 @@ fun SafeImageViewer(
         LaunchedEffect(model) {
             val restrictions = modelManager.getCurrentRestriction()
             if (checkIsSafeImage) {
-                result = classifyImage(context, model, modelManager, restrictions)
+                result = model?.let { classifyImage(context, it, modelManager, restrictions) }
                 displayBitmap = result?.bitmap
             } else {
                 withContext(Dispatchers.IO) {

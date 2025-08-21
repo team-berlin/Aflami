@@ -35,7 +35,6 @@ fun RatingCard(
 ) {
     Row(
         modifier = modifier
-            .padding(top = 4.dp, end = 5.dp)
             .clip(
                 RoundedCornerShape(
                     topStart = 4.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 4.dp
