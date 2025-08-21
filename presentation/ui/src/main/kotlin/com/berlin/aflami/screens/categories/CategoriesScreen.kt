@@ -26,13 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.berlin.aflami.component.CategoryCard
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.TabBar
 import com.berlin.aflami.component.TabBarItem
 import com.berlin.aflami.component.TopBar
 import com.berlin.aflami.navigation.MoviesByCategoryDestination
 import com.berlin.aflami.navigation.TVShowsByCategoryDestination
+import com.berlin.aflami.component.CategoryCard
 import com.berlin.aflami.screens.search.getMovieGenreName
 import com.berlin.aflami.screens.search.getTvShowGenreName
 import com.berlin.aflami.ui.theme.Theme
@@ -198,7 +198,7 @@ private fun ResultGrid(
                         genre.id.toLong(), mediaType
                     )
                 },
-                text = if (mediaType == MediaType.MOVIE) stringResource(getMovieGenreName(genre.id))
+                title = if (mediaType == MediaType.MOVIE) stringResource(getMovieGenreName(genre.id))
                 else stringResource(getTvShowGenreName(genre.id)).replace(
                     Regex("\\s*&\\s*|\\s+"),
                     " &\n"

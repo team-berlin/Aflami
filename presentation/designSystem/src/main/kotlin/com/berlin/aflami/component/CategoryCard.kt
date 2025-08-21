@@ -2,88 +2,65 @@ package com.berlin.aflami.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.berlin.aflami.ui.theme.AflamiTheme
+import androidx.compose.ui.zIndex
 import com.berlin.aflami.ui.theme.Theme
-import com.berlin.designsystem.R
-
 
 @Composable
 fun CategoryCard(
-    modifier: Modifier = Modifier,
-    text: String,
+    title: String,
     image: Painter,
-    onClick: () -> Unit = {}
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
-
-    val strokColor = Theme.color.stroke
-    Row(
-        modifier
-            .background(Theme.color.surfaceHigh, RoundedCornerShape(16.dp))
-            .drawBehind {
-                val stroke = 1.dp.toPx()
-                val radius = 16.dp.toPx()
-                drawRoundRect(
-                    color = strokColor,
-                    size = size,
-                    cornerRadius = CornerRadius(radius, radius),
-                    style = Stroke(width = stroke)
-                )
-            }
-            .clickable {
-                onClick()
-            }
-            ,
-        horizontalArrangement = Arrangement.SpaceBetween
+    Box(modifier = modifier.clickable(
+        indication = null,
+        interactionSource = remember { MutableInteractionSource() }
     ) {
-        Text(
-            modifier = Modifier.padding(top = 12.dp, start = 8.dp),
-            text = text,
-            style = Theme.textStyle.label.medium,
-            color = Theme.color.textColors.title,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Image(
+        onClick()
+    }) {
+
+        Box(
             modifier = Modifier
-                .padding(start = 42.dp)
-                .offset(y = (-8).dp)
-                .size(height = 71.dp, width = 64.dp)
-            ,
+                .matchParentSize()
+                .clip(RoundedCornerShape(16.dp))
+                .background(Theme.color.surfaceHigh)
+                .border(1.dp, Theme.color.stroke, RoundedCornerShape(16.dp))
+                .padding(end = 64.dp, start = 8.dp, top = 16.dp, bottom = 16.dp)
+        ) {
+            Text(
+                text = title,
+                style = Theme.textStyle.label.medium,
+                color = Theme.color.textColors.title,
+                maxLines = 2,
+            )
+        }
+
+        Image(
             painter = image,
-            contentScale = ContentScale.Crop,
-            contentDescription = stringResource(R.string.category_img_content))
-    }
-
-
-}
-
-@ThemeAndLocalePreviews
-@Composable
-fun CategoryCardPreview() {
-    AflamiTheme {
-        CategoryCard(
-            modifier = Modifier,
-            stringResource(R.string.action),
-            painterResource(R.drawable.adventure_category)
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .offset(y = (-8).dp)
+                .size(width = 64.dp, height = 71.dp)
+                .zIndex(1f),
+            contentScale = ContentScale.Inside
         )
     }
 }
