@@ -107,5 +107,6 @@ object ExtraColors {
         listOf(Color(0x14FFFFFF),Color(0x3DFFFFFF)),
     )
 
+    val shadowPink24 = Color(0x3DD85895)
 
 }

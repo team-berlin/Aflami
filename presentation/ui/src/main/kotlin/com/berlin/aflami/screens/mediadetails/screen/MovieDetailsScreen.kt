@@ -124,7 +124,7 @@ fun MovieDetailsScreen(
                 viewModel.onLoginButtonClicked()
             },
             onDismiss = {viewModel.onLoginDialogDismissed() },
-            title = stringResource(com.berlin.ui.R.string.login_required),
+            title = stringResource(com.berlin.ui.R.string.rate_required_dialog),
             description = stringResource(com.berlin.ui.R.string.login_required_warning)
         )
     }

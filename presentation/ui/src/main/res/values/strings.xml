@@ -39,7 +39,7 @@
     <string name="login_error_message">incorrect password or username</string>
     <string name="internet_error">Network Error ,please check internet connection</string>
     <string name="loading">Loading…</string>
-    <string name="login_required_warning">Please login to access your account details\nand other features!</string>
+    <string name="login_required_warning">Please login to access your account details and other features!</string>
     <string name="login_required">Login Required</string>
 
     <string name="more_like_this">More like this</string>
@@ -188,6 +188,7 @@
     <string name="s">%1$ss</string>
     <string name="log_in_successful">Logged In Successfully</string>
     <string name="login_dialog">Login</string>
+    <string name="rate_required_dialog">Rate</string>
 
 
 </resources>
