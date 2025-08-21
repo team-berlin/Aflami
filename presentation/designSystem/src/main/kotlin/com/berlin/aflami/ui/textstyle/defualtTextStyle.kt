@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.sp
 import com.berlin.designsystem.R
 
 
-val loremIpsum = FontFamily(
+val poppins = FontFamily(
     Font(R.font.poppins_regular, weight = FontWeight.Normal),
     Font(R.font.poppins_medium, weight = FontWeight.Medium),
     Font(R.font.poppins_semibold, weight = FontWeight.SemiBold)
@@ -33,69 +33,69 @@ val defaultTextStyle: AflamiTextStyle = AflamiTextStyle(
         large = TextStyle(
             fontSize = 28.sp,
             fontWeight = FontWeight.SemiBold,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 42.sp,
 
             ), medium = TextStyle(
             fontSize = 24.sp,
             fontWeight = FontWeight.SemiBold,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 36.sp,
         ), small = TextStyle(
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 30.sp,
         )
     ), title = SizedTextStyle(
         large = TextStyle(
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 30.sp,
         ), medium = TextStyle(
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 28.sp,
         ), small = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 24.sp,
         )
     ), body = SizedTextStyle(
         large = TextStyle(
             fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 28.sp,
         ), medium = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 24.sp,
         ), small = TextStyle(
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 22.sp,
         )
     ), label = SizedTextStyle(
         large = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 24.sp,
         ), medium = TextStyle(
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 22.sp,
         ), small = TextStyle(
             fontSize = 10.sp,
             fontWeight = FontWeight.Medium,
-            fontFamily = loremIpsum,
+            fontFamily = poppins,
             lineHeight = 16.sp,
         )
     )
