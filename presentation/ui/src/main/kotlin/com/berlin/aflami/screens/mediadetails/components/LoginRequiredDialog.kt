@@ -26,11 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.berlin.aflami.extension.dropShadow
 import com.berlin.aflami.screens.lists.component.Dialog
+import com.berlin.aflami.ui.color.ExtraColors.shadowPink24
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.ui.R
 
@@ -46,8 +50,11 @@ fun LoginRequiredDialog(
     ) {
         Box(
             modifier = Modifier
-                .background(Theme.color.surface, RoundedCornerShape(24.dp))
-                .padding(16.dp)
+                .background(
+                    Theme.color.surface,
+                    RoundedCornerShape(24.dp)
+                )
+                .padding(12.dp)
         ) {
             Column(
                 Modifier
@@ -66,34 +73,49 @@ fun LoginRequiredDialog(
                         style = Theme.textStyle.title.large,
                         color = Theme.color.textColors.title,
                     )
-                    IconButton(onClick = onDismiss, modifier = Modifier.background(Theme.color.surfaceHigh,shape = RoundedCornerShape(12.dp))) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = null, tint = Theme.color.textColors.title)
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.background(
+                            Theme.color.surfaceHigh,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            tint = Theme.color.textColors.title
+                        )
                     }
                 }
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(24.dp))
 
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(80.dp)
+                        .dropShadow(
+                            shape = RoundedCornerShape(24.dp),
+                            color = shadowPink24,
+                            offsetY = 4.dp,
+                            blur = 12.dp
+                        )
                         .clip(RoundedCornerShape(24.dp))
                         .border(1.dp, Theme.color.stroke)
                 ) {
                     Image(
-                        painter = painterResource(id =com.berlin.designsystem.R.drawable.no_review_image),
+                        painter = painterResource(id = com.berlin.designsystem.R.drawable.no_review_image),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-
+                Spacer(Modifier.height(12.dp))
 
                 Text(
                     text = description,
                     style = Theme.textStyle.body.medium,
                     color = Theme.color.textColors.body,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    textAlign = TextAlign.Center,
                 )
-
                 Spacer(Modifier.height(24.dp))
 
                 Box(
