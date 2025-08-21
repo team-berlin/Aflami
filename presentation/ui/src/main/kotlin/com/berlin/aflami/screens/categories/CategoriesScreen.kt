@@ -199,10 +199,7 @@ private fun ResultGrid(
                     )
                 },
                 title = if (mediaType == MediaType.MOVIE) stringResource(getMovieGenreName(genre.id))
-                else stringResource(getTvShowGenreName(genre.id)).replace(
-                    Regex("\\s*&\\s*|\\s+"),
-                    " &\n"
-                ),
+                else stringResource(getTvShowGenreName(genre.id)),
                 image = if (mediaType == MediaType.MOVIE) painterResource(getMovieCategoryIcon(genre.id))
                 else painterResource(getTvShowCategoryIcon(genre.id)),
             )

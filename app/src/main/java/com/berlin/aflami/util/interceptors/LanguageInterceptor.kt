@@ -10,8 +10,8 @@ class LanguageInterceptor : Interceptor {
         val request = chain.request()
         val originalUrl = request.url
 
-        val shouldSkipLanguage = originalUrl.encodedPath.endsWith("/images") ||
-                originalUrl.encodedPath.endsWith("/videos")
+        val shouldSkipLanguage = originalUrl.encodedPath.endsWith(IMAGES_PATH) ||
+                originalUrl.encodedPath.endsWith(VIDEOS_PATH)
 
         val newUrlBuilder = originalUrl.newBuilder()
         if (!shouldSkipLanguage) {
@@ -22,7 +22,7 @@ class LanguageInterceptor : Interceptor {
                 } else {
                     appLocales.toLanguageTags()
                 }
-            newUrlBuilder.setQueryParameter("language", languageTag)
+            newUrlBuilder.setQueryParameter(LANGUAGE, languageTag)
         }
         val newUrl = newUrlBuilder.build()
         val newRequest = request.newBuilder()

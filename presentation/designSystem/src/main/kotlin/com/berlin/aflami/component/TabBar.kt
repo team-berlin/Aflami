@@ -2,18 +2,24 @@ package com.berlin.aflami.component
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -58,7 +64,8 @@ fun TabBar(
             )
         },
         containerColor = containerColor,
-    ) {
+
+        ) {
         items.forEachIndexed { index, status ->
             val isSelected = selectedTabIndex == index
             val titleColor = animatedConditionalColor(
@@ -68,13 +75,24 @@ fun TabBar(
             )
             val titleStyle =
                 if (isSelected) Theme.textStyle.title.medium else Theme.textStyle.title.small
+            val interactionSource = remember { MutableInteractionSource() }
+
+
+           // CompositionLocalProvider(LocalIndication provides null) {
             Tab(
+                modifier= Modifier.indication(
+                    interactionSource = interactionSource,
+                    indication = null
+                ),
                 selected = isSelected,
                 onClick = {
                     if (!isSelected)
                         onTabChange(index)
                 },
-                ) {
+                unselectedContentColor = Color.Unspecified,
+                selectedContentColor = Color.Unspecified,
+
+            ) {
                 Text(
                     text = status.text,
                     style = titleStyle,
@@ -85,9 +103,9 @@ fun TabBar(
                         .animateContentSize(),
                 )
             }
-        }
+        }}
     }
-}
+
 
 
 @Preview(

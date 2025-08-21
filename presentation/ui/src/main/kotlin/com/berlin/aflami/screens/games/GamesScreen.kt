@@ -93,7 +93,7 @@ fun GamesContent(
             isLocked = false,
             borderGradient = ExtraColors.guessMovieByCharacterGradient,
             shadowColor = ExtraColors.shadowGuessMovieByCharacter,
-            circleShadowColor = Theme.color.primaryVariant,
+            circleShadowColor = Theme.color.primary.copy(alpha = 0.32f),
             avatarPainter = painterResource(R.drawable.game_clown),
             gameType = GameType.CHARACTER,
             backgroundColor = Theme.color.primaryVariant,
@@ -106,8 +106,8 @@ fun GamesContent(
             gameType = GameType.POSTER,
             borderGradient = ExtraColors.guessMovieByPosterGradient,
             shadowColor = ExtraColors.shadowGuessMovieByByPoster,
-            circleShadowColor = Theme.color.statusColors.blueCard,
-            avatarPainter = painterResource(R.drawable.game_poster),
+            circleShadowColor = Theme.color.statusColors.blueAccent.copy(alpha = .32f),
+            avatarPainter = painterResource(R.drawable.poster_game),
             backgroundColor = Theme.color.statusColors.blueCard
         ),
         GameCardData(
@@ -118,7 +118,7 @@ fun GamesContent(
             isLocked = gameState.points < 400,
             borderGradient = ExtraColors.guessMovieByReleaseGradient,
             shadowColor = ExtraColors.shadowGuessMovieRelease,
-            circleShadowColor = Theme.color.statusColors.navyCard,
+            circleShadowColor = Theme.color.statusColors.darkBlue.copy(alpha = .32f),
             avatarPainter = painterResource(R.drawable.game_release_date),
             backgroundColor = Theme.color.statusColors.navyCard
         ),
@@ -130,7 +130,7 @@ fun GamesContent(
             isLocked = gameState.points < 400,
             borderGradient = ExtraColors.guessMovieByGenreGradient,
             shadowColor = ExtraColors.shadowGuessMovieByGenre,
-            circleShadowColor = Theme.color.statusColors.yellowCard,
+            circleShadowColor = Theme.color.statusColors.yellowAccent.copy(alpha = .32f),
             avatarPainter = painterResource(R.drawable.genre),
             backgroundColor = Theme.color.statusColors.yellowCard
         )
@@ -157,7 +157,7 @@ fun GamesContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
-                .padding(bottom = 60.dp)
+                .padding(bottom = 64.dp)
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
