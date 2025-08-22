@@ -17,6 +17,7 @@ data class ProfileUiState(
     val languageOption: LanguageOption = LanguageOption(),
     val contentRestrictionOption: ContentRestrictionOption = ContentRestrictionOption(),
     val appVersion: String = "v1.0.0",
+    val isDarkThemeEnabled: Boolean = true
 
     )
 data class ThemeOption(
