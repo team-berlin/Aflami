@@ -138,7 +138,7 @@ fun FilterDialog(
                             .fillMaxWidth()
                             .padding(vertical = 12.dp),
                         contentPadding = PaddingValues(horizontal = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(
                             items = state.genreUiStates
