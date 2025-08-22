@@ -244,7 +244,7 @@ private fun FormLogin(
     Column(modifier = modifier) {
         TextField(
             text = uiState.username,
-            style = Theme.textStyle.body.medium.copy(Theme.color.textColors.title),
+            style = Theme.textStyle.label.medium.copy(Theme.color.textColors.hint),
             leadingIcon = R.drawable.user_square,
             hintText = stringResource(R.string.username),
             onValueChange = { onUsernameChanged(it) },
@@ -256,7 +256,7 @@ private fun FormLogin(
 
         TextField(
             text = uiState.password,
-            style = Theme.textStyle.body.medium.copy(Theme.color.textColors.title),
+            style = Theme.textStyle.label.medium.copy(Theme.color.textColors.hint),
             hintText = stringResource(R.string.password),
             leadingIcon = R.drawable.door_lock,
             isError = passwordError,
