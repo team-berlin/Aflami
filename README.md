@@ -84,10 +84,4 @@ We've built a reusable image viewer module:
 
 ---
 
-## 🏁 Next Goals
-
-- Implement user authentication
-- Implement Home screen
----
-
 > Made with ❤️ by Berlin squad
