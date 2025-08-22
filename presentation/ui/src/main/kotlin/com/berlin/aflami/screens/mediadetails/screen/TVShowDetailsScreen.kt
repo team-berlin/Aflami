@@ -405,25 +405,19 @@ fun TvShowDetailsContent(
                                 .fillMaxWidth()
                                 .animateContentSize()
                         ) {
-                            when (tvShowRowSectionUiState) {
-
-                                is TVShowRowSectionUiState.Success -> {
-                                    when (val tab = tvShowRowSectionUiState.content) {
-                                        is TVShowTabContent.Reviews -> ReviewsSection(
-                                            reviews = tab.reviews,
-                                            isExpanded = { id -> state.expandedReviewIds.contains(id) },
-                                            onToggleExpand = { id ->
-                                                listener.onReadMoreReviewClicked(
-                                                    id
-                                                )
-                                            }
-                                        )
-
-                                        else -> {}
-                                    }
+                            if (tvShowRowSectionUiState is TVShowRowSectionUiState.Success) {
+                                val tab = tvShowRowSectionUiState.content
+                                if (tab is TVShowTabContent.Reviews) {
+                                    ReviewsSection(
+                                        reviews = tab.reviews,
+                                        isExpanded = { id -> state.expandedReviewIds.contains(id) },
+                                        onToggleExpand = { id ->
+                                            listener.onReadMoreReviewClicked(
+                                                id
+                                            )
+                                        }
+                                    )
                                 }
-
-                                else -> {}
                             }
                         }
                     }
