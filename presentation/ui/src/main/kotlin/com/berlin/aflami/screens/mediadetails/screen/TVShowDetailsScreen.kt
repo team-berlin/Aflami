@@ -429,16 +429,11 @@ fun TvShowDetailsContent(
                                 .fillMaxWidth()
                                 .animateContentSize()
                         ) {
-                            when (tvShowRowSectionUiState) {
-
-                                is TVShowRowSectionUiState.Success -> {
-                                    when (val tab = tvShowRowSectionUiState.content) {
-                                        is TVShowTabContent.Gallery -> GallerySection(mediaImages = tab.images)
-                                        else -> {}
-                                    }
+                            if (tvShowRowSectionUiState is TVShowRowSectionUiState.Success) {
+                                val tab = tvShowRowSectionUiState.content
+                                if (tab is TVShowTabContent.Gallery) {
+                                    GallerySection(mediaImages = tab.images)
                                 }
-
-                                else -> {}
                             }
                         }
                     }
