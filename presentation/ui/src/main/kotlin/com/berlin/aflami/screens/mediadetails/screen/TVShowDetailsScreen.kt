@@ -494,7 +494,8 @@ fun TvShowDetailsContent(
                                 items(
                                     items = episodes,
                                     key = { episode -> "episode_${seasonNumber}_${episode.id}" }
-                                ) { episode ->
+                                )
+                                { episode ->
                                     EpisodeCard(
                                         episode = episode,
                                         modifier = Modifier
@@ -502,10 +503,6 @@ fun TvShowDetailsContent(
                                             .padding(horizontal = 16.dp, vertical = 12.dp),
                                         onClickPlay = {}
                                     )
-                                }
-
-                                item(key = "spacer_$seasonNumber") {
-                                    Box(modifier = Modifier.height(12.dp))
                                 }
                             }
                         }
