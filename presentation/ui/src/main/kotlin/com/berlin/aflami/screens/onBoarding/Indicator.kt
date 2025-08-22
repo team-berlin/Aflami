@@ -23,10 +23,13 @@ fun Indicator(
     modifier: Modifier = Modifier,
     pageNumber: Int,
     pageCount: Int,
-    spacing: Dp = 4.dp
+    spacing: Dp = 4.dp,
+    isFullWidth: Boolean = true
 ) {
     BoxWithConstraints(modifier = modifier) {
-        val availableWidth = this.maxWidth * 0.5f - (spacing * (pageCount - 1))
+        val availableWidth = if (isFullWidth)
+            this.maxWidth - (spacing * (pageCount - 1))
+        else this.maxWidth * 0.5f - (spacing * (pageCount - 1))
         val indicatorWidth = availableWidth / pageCount
 
         Row(
