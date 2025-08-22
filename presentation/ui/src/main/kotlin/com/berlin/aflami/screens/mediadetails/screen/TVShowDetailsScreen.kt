@@ -361,19 +361,18 @@ fun TvShowDetailsContent(
                                 .fillMaxWidth()
                                 .animateContentSize()
                         ) {
-                            when (tvShowRowSectionUiState) {
-                                is TVShowRowSectionUiState.Loading -> Box(
+                            if (tvShowRowSectionUiState is TVShowRowSectionUiState.Loading) {
+                                Box(
                                     Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp, vertical = 32.dp),
                                     contentAlignment = Alignment.Center
-                                ) {
+                                )
+                                {
                                     CircularProgressIndicator(
                                         modifier = Modifier.fillMaxSize(),
                                     )
                                 }
-
-                                else -> {}
                             }
                         }
                     }
