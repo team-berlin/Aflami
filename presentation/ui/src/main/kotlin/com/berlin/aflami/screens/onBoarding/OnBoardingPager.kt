@@ -58,6 +58,7 @@ fun OnBoardingPager(
                     modifier = Modifier.padding(end = 0.dp),
                     pageNumber = pagerState.currentPage,
                     pageCount = pagerState.pageCount,
+                    isFullWidth = false
                 )
                 Text(
                     text = stringResource(data[page].title),
