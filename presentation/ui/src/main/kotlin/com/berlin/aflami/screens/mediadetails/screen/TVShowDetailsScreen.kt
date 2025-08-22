@@ -1,19 +1,15 @@
 package com.berlin.aflami.screens.mediadetails.screen
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -40,7 +35,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,27 +51,20 @@ import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
-import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
-import com.berlin.aflami.screens.mediadetails.components.EpisodeCard
-import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.RateDialog
-import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
-import com.berlin.aflami.screens.mediadetails.components.SeasonsHeader
 import com.berlin.aflami.screens.mediadetails.components.TVShowBackdropPager
-import com.berlin.aflami.screens.mediadetails.components.TvShowMoreLikeThisSection
 import com.berlin.aflami.screens.mediadetails.components.getTVShowDetailsTabsIcon
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.DescriptionSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
+import com.berlin.aflami.screens.mediadetails.components.seasonItem
 import com.berlin.aflami.screens.mediadetails.components.tvShowDetailsTabsMapper
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
 import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsTabs
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsUiState
-import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
-import com.berlin.aflami.viewmodel.details.series.TVShowTabContent
 import com.berlin.aflami.viewmodel.details.series.TvShowDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.series.TvShowDetailsScreenViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -328,230 +315,37 @@ fun TvShowDetailsContent(
                         }
                     }
                 }
-                item {
-                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateContentSize()
-                        ) {
-                            when (tvShowRowSectionUiState) {
-                                is TVShowRowSectionUiState.Error,
-                                is TVShowRowSectionUiState.NoDataFound,
-                                    -> {
-                                    Box(
-                                        Modifier.padding(top = 32.dp, bottom = 82.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            modifier = Modifier.fillMaxSize(),
-                                            text = tvShowRowSectionUiState.getDisplayMessage(),
-                                            style = Theme.textStyle.label.large,
-                                            color = Theme.color.textColors.body,
-                                            textAlign = TextAlign.Center
-                                        )
-                                    }
-                                }
 
-                                else -> {}
-                            }
-                        }
-                    }
-                }
-                item {
-                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateContentSize()
-                        ) {
-                            when (tvShowRowSectionUiState) {
-                                is TVShowRowSectionUiState.Loading -> Box(
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 32.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.fillMaxSize(),
-                                    )
-                                }
+                // region TVShowRowSection
+                tvShowRowSectionUiStateError(
+                    state = state.rowSection,
+                    listener = listener
+                )
+                tvShowRowSectionUiStateLoading(
+                    state = state.rowSection,
+                    listener = listener
+                )
+                moreLikeThisSection(
+                    state = state.rowSection,
+                    listener = listener
+                )
+                reviewSection(
+                    state = state.rowSection,
+                    listener = listener,
+                    tvShowDetailsUiState = state
+                )
 
-                                else -> {}
-                            }
-                        }
-                    }
-                }
-                item {
-                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateContentSize()
-                        ) {
-                            when (tvShowRowSectionUiState) {
+                gallerySection(
+                    state = state.rowSection,
+                    listener = listener
+                )
+                companyProductionSection(
+                    state = state.rowSection,
+                    listener = listener
+                )
 
-                                is TVShowRowSectionUiState.Success -> {
-                                    when (val tab = tvShowRowSectionUiState.content) {
-                                        is TVShowTabContent.MoreLikeThis -> TvShowMoreLikeThisSection(
-                                            mediaList = tab.items,
-                                            onMediaClick = { mediaId ->
-                                                listener.onMediaCardClicked(mediaId)
-                                            },
-                                        )
-
-                                        else -> {}
-                                    }
-                                }
-
-                                else -> {}
-                            }
-                        }
-                    }
-                }
-                item {
-                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateContentSize()
-                        ) {
-                            when (tvShowRowSectionUiState) {
-
-                                is TVShowRowSectionUiState.Success -> {
-                                    when (val tab = tvShowRowSectionUiState.content) {
-                                        is TVShowTabContent.Reviews -> ReviewsSection(
-                                            reviews = tab.reviews,
-                                            isExpanded = { id -> state.expandedReviewIds.contains(id) },
-                                            onToggleExpand = { id ->
-                                                listener.onReadMoreReviewClicked(
-                                                    id
-                                                )
-                                            }
-                                        )
-
-                                        else -> {}
-                                    }
-                                }
-
-                                else -> {}
-                            }
-                        }
-                    }
-                }
-                item {
-                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateContentSize()
-                        ) {
-                            when (tvShowRowSectionUiState) {
-
-                                is TVShowRowSectionUiState.Success -> {
-                                    when (val tab = tvShowRowSectionUiState.content) {
-                                        is TVShowTabContent.Gallery -> GallerySection(mediaImages = tab.images)
-                                        else -> {}
-                                    }
-                                }
-
-                                else -> {}
-                            }
-                        }
-                    }
-                }
-                item {
-                    Crossfade(targetState = state.rowSection) { tvShowRowSectionUiState ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateContentSize()
-                        ) {
-                            when (tvShowRowSectionUiState) {
-
-                                is TVShowRowSectionUiState.Success -> {
-                                    when (val tab = tvShowRowSectionUiState.content) {
-                                        is TVShowTabContent.CompanyProduction -> CompanyProductionSection(
-                                            companyProductions = tab.companyProductionStates
-                                        )
-
-                                        else -> {}
-                                    }
-                                }
-
-                                else -> {}
-                            }
-                        }
-                    }
-                }
-
-                when (val targetState = state.rowSection) {
-                    is TVShowRowSectionUiState.Success -> {
-                        when (val tab = targetState.content) {
-                            is TVShowTabContent.Season -> {
-
-                                tab.seasonToEpisodesMap.forEach { (seasonNumber, episodes) ->
-                                    val isExpanded = expandedStates[seasonNumber] ?: false
-
-
-                                    stickyHeader(
-                                        key = "season_$seasonNumber",
-
-                                        ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(Theme.color.surface)
-                                        ) {
-                                            SeasonsHeader(
-                                                modifier = Modifier.padding(vertical = 12.dp),
-                                                seasonNumber = seasonNumber.toString(),
-                                                episodeCount = episodes.size.toString(),
-                                                isExpanded = isExpanded,
-                                                onToggleExpand = {
-                                                    expandedStates[seasonNumber] = !isExpanded
-                                                }
-                                            )
-
-                                            HorizontalDivider(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .height(1.dp),
-                                                color = Theme.color.stroke,
-                                                thickness = 1.dp
-                                            )
-                                        }
-                                    }
-
-                                    if (isExpanded) {
-                                        items(
-                                            items = episodes,
-                                            key = { episode -> "episode_${seasonNumber}_${episode.id}" }
-                                        ) { episode ->
-                                            EpisodeCard(
-                                                episode = episode,
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                                onClickPlay = {}
-                                            )
-                                        }
-
-                                        item(key = "spacer_$seasonNumber") {
-                                            Box(modifier = Modifier.height(12.dp))
-                                        }
-                                    }
-                                }
-                            }
-
-                            else -> {}
-                        }
-                    }
-
-                    else -> {}
-                }
-
-
+                seasonItem(state = state.rowSection, expandedStates = expandedStates)
+                //endregion
             }
         }
 
@@ -560,7 +354,6 @@ fun TvShowDetailsContent(
                 .fillMaxWidth()
                 .background(appBarBgColor)
                 .statusBarsPadding(),
-
             firstOption = painterResource(R.drawable.ic_rounded_star),
             onFirstOptionClicked = { listener.onRateIconClicked(state.tvShowUiState.id) },
             onNavigateBackClicked = { listener.onBackClicked() },

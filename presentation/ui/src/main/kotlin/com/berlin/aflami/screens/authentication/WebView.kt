@@ -31,24 +31,24 @@ fun WebView(url: String) {
     var isLoading by remember { mutableStateOf(true) }
     Box {
         AndroidView(
-
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 WebView(context).apply {
                     webViewClient = CustomWebViewClient(
-                        onPageStarted = {
-                            isLoading = true
-                        },
-                        onPageFinished = {
-                            isLoading = false
-                        },
-                        onError = { onErrorReceived(navController) }
+                        onPageStarted = { isLoading = true },
+                        onPageFinished = { isLoading = false },
+                        onError = { onErrorReceived(navController) },
+                        onLoginRedirect = { navController.popBackStack() },
+                        initialUrl = url
                     )
                     settings.javaScriptEnabled = true
                     settings.setSupportZoom(true)
+                    clearCache(true)
+                    clearHistory()
                 }
             },
             update = { webView ->
+                webView.clearCache(true)
                 webView.loadUrl(url)
             }
         )
@@ -60,9 +60,7 @@ fun WebView(url: String) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CircularProgressIndicator(
-                    text = stringResource(R.string.loading),
-                )
+                CircularProgressIndicator(text = stringResource(R.string.loading))
             }
         }
     }
@@ -75,8 +73,11 @@ private fun onErrorReceived(navController: NavController) {
 private class CustomWebViewClient(
     private val onPageStarted: () -> Unit,
     private val onPageFinished: () -> Unit,
-    private val onError: () -> Unit
+    private val onError: () -> Unit,
+    private val onLoginRedirect: () -> Unit,
+    private val initialUrl: String
 ) : WebViewClient() {
+
     override fun onReceivedError(
         view: WebView?,
         request: WebResourceRequest?,
@@ -90,9 +91,26 @@ private class CustomWebViewClient(
 
     override fun onPageFinished(view: WebView?, url: String?) {
         onPageFinished()
+
+        if (url?.startsWith("https://www.themoviedb.org/login") == true) {
+            view?.postDelayed({
+                onLoginRedirect()
+            }, 2500)
+        }
     }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
-        onPageStarted
+        onPageStarted()
+    }
+
+    @SuppressLint("WebViewClientOnReceivedSslError")
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest): Boolean {
+        val targetUrl = request.url.toString()
+        val allowedDomains = listOf(
+            "https://www.themoviedb.org/authenticate",
+            "https://www.themoviedb.org/reset-password",
+            "https://www.themoviedb.org/login",
+        )
+        return !(allowedDomains.any { targetUrl.startsWith(it) } || targetUrl == initialUrl)
     }
 }
