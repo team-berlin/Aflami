@@ -31,18 +31,14 @@ fun WebView(url: String) {
     var isLoading by remember { mutableStateOf(true) }
     Box {
         AndroidView(
-
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 WebView(context).apply {
                     webViewClient = CustomWebViewClient(
-                        onPageStarted = {
-                            isLoading = true
-                        },
-                        onPageFinished = {
-                            isLoading = false
-                        },
+                        onPageStarted = { isLoading = true },
+                        onPageFinished = { isLoading = false },
                         onError = { onErrorReceived(navController) },
+                        onLoginRedirect = { navController.popBackStack() },
                         initialUrl = url
                     )
                     settings.javaScriptEnabled = true
@@ -64,9 +60,7 @@ fun WebView(url: String) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CircularProgressIndicator(
-                    text = stringResource(R.string.loading),
-                )
+                CircularProgressIndicator(text = stringResource(R.string.loading))
             }
         }
     }
@@ -80,8 +74,10 @@ private class CustomWebViewClient(
     private val onPageStarted: () -> Unit,
     private val onPageFinished: () -> Unit,
     private val onError: () -> Unit,
+    private val onLoginRedirect: () -> Unit,
     private val initialUrl: String
 ) : WebViewClient() {
+
     override fun onReceivedError(
         view: WebView?,
         request: WebResourceRequest?,
@@ -98,18 +94,24 @@ private class CustomWebViewClient(
     }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
-        onPageStarted
+        onPageStarted()
     }
 
     @SuppressLint("WebViewClientOnReceivedSslError")
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest): Boolean {
-        val url = request.url.toString()
+        val targetUrl = request.url.toString()
+
+        if (targetUrl.startsWith("https://www.themoviedb.org/login")) {
+            onLoginRedirect()
+            return true
+        }
+
         val allowedDomains = listOf(
             "https://www.themoviedb.org/authenticate",
             "https://www.themoviedb.org/reset-password"
         )
-        return if (allowedDomains.any { url.startsWith(it) } || url == initialUrl) {
-            view?.loadUrl(url)
+        return if (allowedDomains.any { targetUrl.startsWith(it) } || targetUrl == initialUrl) {
+            view?.loadUrl(targetUrl)
             false
         } else {
             true
