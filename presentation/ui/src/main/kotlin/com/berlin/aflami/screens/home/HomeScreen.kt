@@ -3,13 +3,7 @@ package com.berlin.aflami.screens.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -49,8 +42,6 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.GenersChip
 import com.berlin.aflami.component.HomeBar
 import com.berlin.aflami.component.SectionTitle
-import com.berlin.aflami.component.SnackBar
-import com.berlin.aflami.component.SnackBarStatus
 import com.berlin.aflami.navigation.ContinueWatchingDestination
 import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.SearchDestination
@@ -121,32 +112,32 @@ fun HomeScreen(
     }
 }
 
-@Composable
-private fun AnimatedSnackBar(
-    message: String, isSnackBarVisible: Boolean, modifier: Modifier = Modifier
-) {
-    AnimatedVisibility(
-        visible = isSnackBarVisible, enter = slideInVertically(
-            initialOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
-                stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioMediumBouncy
-            )
-        ) + fadeIn(),
-
-        exit = slideOutVertically(
-            targetOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
-                stiffness = Spring.StiffnessMedium, dampingRatio = Spring.DampingRatioNoBouncy
-            )
-        ) + fadeOut()
-    ) {
-        SnackBar(
-            isVisible = isSnackBarVisible,
-            status = SnackBarStatus.SUCCESS,
-            text = message,
-            modifier = modifier,
-            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
-        )
-    }
-}
+//@Composable
+//private fun AnimatedSnackBar(
+//    message: String, isSnackBarVisible: Boolean, modifier: Modifier = Modifier
+//) {
+//    AnimatedVisibility(
+//        visible = isSnackBarVisible, enter = slideInVertically(
+//            initialOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
+//                stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioMediumBouncy
+//            )
+//        ) + fadeIn(),
+//
+//        exit = slideOutVertically(
+//            targetOffsetY = { fullHeight -> -fullHeight }, animationSpec = spring(
+//                stiffness = Spring.StiffnessMedium, dampingRatio = Spring.DampingRatioNoBouncy
+//            )
+//        ) + fadeOut()
+//    ) {
+//        SnackBar(
+//            isVisible = isSnackBarVisible,
+//            status = SnackBarStatus.SUCCESS,
+//            text = message,
+//            modifier = modifier,
+//            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
+//        )
+//    }
+//}
 
 private fun onReceiveHomeScreenEffect(
     navController: NavController,
@@ -419,7 +410,6 @@ private fun HomeContent(
         AnimatedVisibility(homeScreenState.moodPickerUiState.openMovieDialog) {
             with(homeScreenState.moodPickerUiState.selectedMovie) {
                 MoodPickerDialog(
-                    modifier = Modifier.width(328.dp),
                     mediaImg = posterUrl,
                     title = title,
                     typeOfMedia = MediaType.MOVIE.name,
@@ -441,14 +431,6 @@ private fun HomeContent(
                 homeScreenInteractionListener.onSearchClicked()
             },
             containerColor = Color.Unspecified
-        )
-        AnimatedSnackBar(
-            message = stringResource(R.string.log_in_successful),
-            modifier = Modifier
-                .statusBarsPadding()
-                .align(Alignment.TopCenter)
-                .padding(top = 16.dp),
-            isSnackBarVisible = homeScreenState.showSuccessSnackBar
         )
     }
 }

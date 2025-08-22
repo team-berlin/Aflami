@@ -2,11 +2,14 @@ package com.berlin.aflami.screens.mediadetails.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -16,6 +19,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -58,7 +63,7 @@ fun MovieBackdropPager(state: MovieDetailsUiState, onPlayClick: () -> Unit) {
                 val painter = rememberAsyncImagePainter(model)
                 val imageState by painter.state.collectAsState()
 
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxSize()) {
                     AsyncImage(
                         model= model,
                         contentDescription = null,
@@ -67,6 +72,24 @@ fun MovieBackdropPager(state: MovieDetailsUiState, onPlayClick: () -> Unit) {
                         error = painterResource(R.drawable.place_holder),
                         fallback = painterResource(R.drawable.place_holder),
                     )
+
+                    val statusBarTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+                    val extra = 32.dp
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .fillMaxWidth()
+                            .height(statusBarTop + extra)
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Theme.color.surface,
+                                        Color.Transparent
+                                    )
+                                )
+                            )
+                    )
+
                     if (imageState is AsyncImagePainter.State.Loading) {
                         ShimmerBox(modifier = Modifier.fillMaxSize())
                     }
@@ -142,7 +165,7 @@ fun TVShowBackdropPager(state: TVShowDetailsUiState, onPlayClick: () -> Unit) {
                     is AsyncImagePainter.State.Loading -> ContentScale.Crop
                     else -> ContentScale.Inside
                 }
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxSize()) {
                     AsyncImage(
                         model= model,
                         contentDescription = null,
@@ -151,6 +174,24 @@ fun TVShowBackdropPager(state: TVShowDetailsUiState, onPlayClick: () -> Unit) {
                         error = painterResource(R.drawable.place_holder),
                         fallback = painterResource(R.drawable.place_holder),
                     )
+
+                    val statusBarTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+                    val extra = 32.dp
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .fillMaxWidth()
+                            .height(statusBarTop + extra)
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Theme.color.surface,
+                                        Color.Transparent
+                                    )
+                                )
+                            )
+                    )
+
                     if (imageState is AsyncImagePainter.State.Loading) {
                         ShimmerBox(modifier = Modifier.fillMaxSize())
                     }

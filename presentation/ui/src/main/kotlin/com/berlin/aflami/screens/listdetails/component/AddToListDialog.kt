@@ -3,8 +3,6 @@ package com.berlin.aflami.screens.listdetails.component
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -182,7 +180,7 @@ private fun SelectionListItem(
         ) {
             Text(
                 text = listName,
-                style = Theme.textStyle.title.large,
+                style = Theme.textStyle.label.large,
                 color = Theme.color.textColors.body,
             )
             val context = LocalContext.current
