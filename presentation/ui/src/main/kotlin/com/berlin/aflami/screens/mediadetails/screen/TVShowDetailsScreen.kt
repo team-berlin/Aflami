@@ -335,25 +335,21 @@ fun TvShowDetailsContent(
                                 .fillMaxWidth()
                                 .animateContentSize()
                         ) {
-                            when (tvShowRowSectionUiState) {
-                                is TVShowRowSectionUiState.Error,
-                                is TVShowRowSectionUiState.NoDataFound,
-                                    -> {
-                                    Box(
-                                        Modifier.padding(top = 32.dp, bottom = 82.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            modifier = Modifier.fillMaxSize(),
-                                            text = tvShowRowSectionUiState.getDisplayMessage(),
-                                            style = Theme.textStyle.label.large,
-                                            color = Theme.color.textColors.body,
-                                            textAlign = TextAlign.Center
-                                        )
-                                    }
+                            if (tvShowRowSectionUiState is TVShowRowSectionUiState.Error
+                                || tvShowRowSectionUiState is TVShowRowSectionUiState.NoDataFound
+                            ) {
+                                Box(
+                                    Modifier.padding(top = 32.dp, bottom = 82.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        modifier = Modifier.fillMaxSize(),
+                                        text = tvShowRowSectionUiState.getDisplayMessage(),
+                                        style = Theme.textStyle.label.large,
+                                        color = Theme.color.textColors.body,
+                                        textAlign = TextAlign.Center
+                                    )
                                 }
-
-                                else -> {}
                             }
                         }
                     }
