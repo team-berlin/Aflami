@@ -267,6 +267,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             getThemeUseCase().collect { theme ->
                 val appTheme = theme
+                updateState { it.copy(isDarkThemeEnabled = theme == AppTheme.DARK.name) }
 
                 updateState {
                     it.copy(

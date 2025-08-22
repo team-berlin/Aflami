@@ -212,7 +212,7 @@ private fun ProfileContent(
             userAvatar = profileScreenState.userAvatarUrl ?: "",
             userName = profileScreenState.userName,
             userScore = profileScreenState.userPoints,
-            if (profileScreenState.themeOption.isDarkThemeEnabled)
+            if (profileScreenState.isDarkThemeEnabled)
                 painterResource(R.drawable.profile_cover_night)
             else painterResource(R.drawable.profile_cover),
             )
