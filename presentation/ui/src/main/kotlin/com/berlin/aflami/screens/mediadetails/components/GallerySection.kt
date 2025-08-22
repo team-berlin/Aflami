@@ -1,6 +1,6 @@
 package com.berlin.aflami.screens.mediadetails.components
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -70,10 +70,13 @@ fun GallerySection(
                                 contentDescription = stringResource(com.berlin.ui.R.string.cast),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(Theme.color.stroke)
+                                    .padding(1.dp)
                                     .width(adjustedCellWidth)
                                     .height(cellHeight)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .border(1.dp, Theme.color.stroke),
+                                    .clip(RoundedCornerShape(12.dp)),
+
                                 placeholder = painterResource(R.drawable.place_holder),
                                 error = painterResource(R.drawable.place_holder),
                                 fallback = painterResource(R.drawable.place_holder),
