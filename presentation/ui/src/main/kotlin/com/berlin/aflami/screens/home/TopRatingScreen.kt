@@ -4,14 +4,14 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -60,13 +60,14 @@ fun TopRatingScreen(
         topRatingViewModel.effect.collect { effect ->
             when (effect) {
                 is TopRatingScreenEffect.NavigateToMediaDetailsScreen -> {
-                    when(effect.mediaType){
-                        MediaType.MOVIE ->    navController.navigate(
+                    when (effect.mediaType) {
+                        MediaType.MOVIE -> navController.navigate(
                             MovieDetailsDestination(
                                 effect.mediaId
                             )
                         )
-                        MediaType.TV_SHOW ->navController.navigate(
+
+                        MediaType.TV_SHOW -> navController.navigate(
                             TVShowDetailsDestination(
                                 effect.mediaId
                             )
@@ -81,8 +82,8 @@ fun TopRatingScreen(
         }
     }
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None , visible = topRatingScreenState.isLoading
+        enter = EnterTransition.None,
+        exit = ExitTransition.None, visible = topRatingScreenState.isLoading
     ) {
         CircularProgressIndicator(
             modifier = Modifier.fillMaxSize(), text = stringResource(R.string.loading)
@@ -91,8 +92,8 @@ fun TopRatingScreen(
 
     val topRatedItems = topRatingScreenState.topRatedMediaFlow.collectAsLazyPagingItems()
     AnimatedVisibility(
-        enter =  EnterTransition.None ,
-        exit = ExitTransition.None , visible = !topRatingScreenState.isLoading
+        enter = EnterTransition.None,
+        exit = ExitTransition.None, visible = !topRatingScreenState.isLoading
     ) {
         TopRatingContent(
             topRatedMediaItems = topRatedItems, viewModel = topRatingViewModel
@@ -121,11 +122,19 @@ private fun TopRatingContent(
     val animatedAppBarAlpha by animateFloatAsState(appBarAlpha)
     val appBarBgColor = Theme.color.surface.copy(alpha = animatedAppBarAlpha)
 
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGradient)
-    ) {
+            .background(Theme.color.surface)
+    )
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight(0.5f)
+                .fillMaxWidth()
+                .background(brush = BackgroundGradient),
+        ) {}
         Image(
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -186,8 +195,9 @@ private fun TopRatingContent(
             containerColor = Color.Unspecified,
             title = stringResource(R.string.top_rating),
 
-        )
+            )
     }
+
 
 
 }

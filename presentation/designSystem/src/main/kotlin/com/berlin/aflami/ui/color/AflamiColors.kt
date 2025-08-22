@@ -25,7 +25,8 @@ data class GradientColors(
     val streakGradient: List<Color>,
     val pointsOverly: List<Color>,
     val primaryGradient: List<Color>,
-)
+
+    )
 
 data class TextColors(
     val title: Color,
