@@ -36,11 +36,15 @@ fun HomeBar(
                 lineHeight = 20.sp
             )
         )
-    }, containerColor = containerColor, subTitle = {
+    },
+        containerColor = containerColor,
+        subTitle = {
         Text(
             text = stringResource(R.string.aflami_description),
             color = Theme.color.textColors.body,
-            style = Theme.textStyle.label.small
+            style = Theme.textStyle.label.small,
+            lineHeight = 16.sp,
+            modifier = Modifier.padding(top = 4.dp)
         )
     }, leadingIcon = {
        // AnimatedPlay()
