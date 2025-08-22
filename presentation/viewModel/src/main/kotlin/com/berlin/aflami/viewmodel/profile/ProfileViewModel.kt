@@ -125,7 +125,7 @@ class ProfileViewModel @Inject constructor(
             updateState {
                 it.copy(
                     activeDialog = ProfileDialogType.NONE,
-                    themeOption = ThemeOption(
+                    themeOption = it.themeOption.copy(
                         selectedTheme = it.themeOption.tempSelectedTheme,
                     )
                 )

@@ -192,6 +192,7 @@
     <string name="log_in_successful">تم تسجيل الدخول بنجاح</string>
     <string name="login_dialog">تسجيل الدخول</string>
     <string name="rate_required_dialog">تقييم</string>
+    <string name="Please_login_feature">يرجي تسجيل الدخول لاستخدام هذه الميزة</string>
 
 
 </resources>

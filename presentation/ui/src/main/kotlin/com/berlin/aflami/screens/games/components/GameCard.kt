@@ -69,19 +69,24 @@ fun GameCard(
 
     Box(
         Modifier.fillMaxWidth()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .height(10.dp)
-                .dropShadow(
+            .dropShadow(
                     shape = RectangleShape,
                     color = circleShadowColor,
-                    blur = 8.dp,
+                    blur = 4.dp,
                 )
-            // .background(circleShadowColor)
-        )
+    ) {
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .align(Alignment.BottomCenter)
+//                .height(10.dp)
+//                .dropShadow(
+//                    shape = RectangleShape,
+//                    color = circleShadowColor,
+//                    blur = 8.dp,
+//                )
+//            // .background(circleShadowColor)
+//        )
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)

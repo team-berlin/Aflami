@@ -107,7 +107,9 @@ private fun ImageWithRatingBadge(
         )
 
         RatingCard(
-            modifier = Modifier.align(Alignment.TopEnd),
+            modifier = Modifier
+                .padding(2.dp)
+                .align(Alignment.TopEnd),
             rating = rating
         )
     }

@@ -7,28 +7,40 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,6 +53,7 @@ import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
 import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
+import com.berlin.aflami.extension.dropShadow
 import com.berlin.aflami.navigation.ListDetailsDestination
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.NavigationBarDestinations
@@ -210,18 +223,22 @@ private fun ListsContent(
             )
         }
 
-        AnimatedVisibility(
-            enter = EnterTransition.None,
-            exit = ExitTransition.None,
-            visible = listScreenState.isLoginRequiredDialogVisible
-        ) {
-            LoginRequiredDialog(
-                title = "Lists",
-                onLoginClick = interactionListener::onLoginClicked,
-                onDismiss = interactionListener::onBackClicked,
+//        AnimatedVisibility(
+//            enter = EnterTransition.None,
+//            exit = ExitTransition.None,
+//            visible = listScreenState.isLoginRequiredDialogVisible
+//        ) {
+//            LoginRequiredDialog(
+//                title = "Lists",
+//                onLoginClick = interactionListener::onLoginClicked,
+//                onDismiss = interactionListener::onBackClicked,
+//            )
+//        }
+        if (listScreenState.isScreenLoading==false) {
+            RequiredLoggedInPlaceholder(
+                onClick = interactionListener::onLoginClicked
             )
         }
-
         AnimatedVisibility(
             visible = listScreenState.isUserLoggedIn == true,
             enter = EnterTransition.None,
@@ -311,6 +328,7 @@ private fun ListsContent(
                         }
                     }
                 }
+
             }
         }
     }
@@ -325,5 +343,78 @@ private fun onReceiveNewEffect(effect: ListScreenEffect, navController: NavContr
         )
 
         ListScreenEffect.NavigateToLoginScreen -> navController.navigate(route = LoginDestination)
+    }
+}
+ @Composable
+private fun RequiredLoggedInPlaceholder(
+    modifier: Modifier = Modifier,
+    onAvatarClick: () -> Unit = {},
+    enable: Boolean = true,
+    onClick: () -> Unit = {},
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.color.surface),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(R.drawable.profile_avatar),
+            contentDescription = stringResource(R.string.profile),
+            modifier = Modifier
+                .height(80.dp)
+                .dropShadow(
+                    offsetY = 4.dp,
+                    shape = RoundedCornerShape(24.dp),
+                    blur = 12.dp,
+                    color = Color(0x3DD85895),
+                )
+                .border(
+                    width = 1.dp,
+                    color = Theme.color.stroke,
+                    shape = RoundedCornerShape(24.dp)
+                )
+                .clip(RoundedCornerShape(24.dp))
+                .clickable { onAvatarClick() },
+            contentScale = ContentScale.FillHeight,
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = stringResource(R.string.Please_login_feature),
+            style = Theme.textStyle.body.small,
+            color = Theme.color.textColors.body,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(
+                    top = 12.dp,
+                    bottom = 8.dp,
+                    start = 48.dp,
+                    end = 48.dp
+                )
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = { onClick() },
+            modifier = modifier
+                .align(Alignment.CenterHorizontally),
+            enabled = enable,
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                Theme.color.primaryVariant
+            ),
+            contentPadding = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.login),
+                style = Theme.textStyle.label.large,
+                color = Theme.color.primary
+            )
+        }
+
     }
 }

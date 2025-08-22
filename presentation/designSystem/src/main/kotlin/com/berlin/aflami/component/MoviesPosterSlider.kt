@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -126,8 +127,14 @@ fun BlurredPosterBackground(
             modifier = modifier
                 .fillMaxWidth()
                 .background(black50)
-                .blur(16.dp),
+                .blur(
+                    radiusX = 10.dp,
+                    radiusY = 10.dp,
+                    edgeTreatment = BlurredEdgeTreatment.Unbounded
+                )
+            ,
         )
+
 
         val statusBarTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
         val extra = 32.dp
