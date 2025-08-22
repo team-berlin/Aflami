@@ -36,8 +36,10 @@ fun MediaCastItem(
             modifier = modifier
                 .size(48.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .border(1.dp, color = Theme.color.stroke,
-                    RoundedCornerShape(16.dp)),
+                .border(
+                    1.dp, color = Theme.color.stroke,
+                    RoundedCornerShape(16.dp)
+                ),
             contentAlignment = Alignment.Center
         ){
             SafeImageViewer(
@@ -55,7 +57,7 @@ fun MediaCastItem(
             text = name,
             style = Theme.textStyle.label.small,
             color = Theme.color.textColors.body,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Start,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.width(74.dp)
