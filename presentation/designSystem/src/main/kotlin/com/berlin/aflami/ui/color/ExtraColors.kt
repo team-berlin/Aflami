@@ -109,4 +109,5 @@ object ExtraColors {
 
     val shadowPink24 = Color(0x3DD85895)
 
+    val shadowPink50 = Color(0x80D85895)
 }
