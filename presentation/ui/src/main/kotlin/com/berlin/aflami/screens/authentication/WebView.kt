@@ -91,6 +91,12 @@ private class CustomWebViewClient(
 
     override fun onPageFinished(view: WebView?, url: String?) {
         onPageFinished()
+
+        if (url?.startsWith("https://www.themoviedb.org/login") == true) {
+            view?.postDelayed({
+                onLoginRedirect()
+            }, 3000)
+        }
     }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
@@ -100,18 +106,12 @@ private class CustomWebViewClient(
     @SuppressLint("WebViewClientOnReceivedSslError")
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest): Boolean {
         val targetUrl = request.url.toString()
-
-        if (targetUrl.startsWith("https://www.themoviedb.org/login")) {
-            onLoginRedirect()
-            return true
-        }
-
         val allowedDomains = listOf(
             "https://www.themoviedb.org/authenticate",
-            "https://www.themoviedb.org/reset-password"
+            "https://www.themoviedb.org/reset-password",
+            "https://www.themoviedb.org/login",
         )
         return if (allowedDomains.any { targetUrl.startsWith(it) } || targetUrl == initialUrl) {
-            view?.loadUrl(targetUrl)
             false
         } else {
             true
