@@ -189,6 +189,7 @@
     <string name="log_in_successful">Logged In Successfully</string>
     <string name="login_dialog">Login</string>
     <string name="rate_required_dialog">Rate</string>
+    <string name="Please_login_feature">Please Login To Access This Feature</string>
 
 
 </resources>

@@ -238,11 +238,18 @@ private fun HomeContent(
                             .padding(bottom = 6.dp)
                     ) {
                         Box {
+
                             BlurredPosterBackground(
                                 imageUrl = popularMedia?.poster ?: "",
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(390.dp)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(390.dp)
+                                    .background(Color.Black.copy(alpha = 0.2f))
                             )
                             Column(
                                 modifier = Modifier

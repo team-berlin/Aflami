@@ -73,25 +73,30 @@ fun TabBar(
             }
         }
 
-        HorizontalDivider(thickness = 1.dp, color = borderColor)
+        Column {
 
-        BoxWithConstraints {
-            val tabWidth = maxWidth / items.size
-            val indicatorOffset by animateDpAsState(
-                targetValue = tabWidth * selectedTabIndex,
-                label = "indicator"
-            )
+            BoxWithConstraints {
+                val tabWidth = maxWidth / items.size
+                val indicatorOffset by animateDpAsState(
+                    targetValue = tabWidth * selectedTabIndex,
+                    label = "indicator"
+                )
 
-            Box(
-                modifier = Modifier
-                    .offset(x = indicatorOffset)
-                    .width(tabWidth)
-                    .height(4.dp)
-                    .padding(horizontal = 24.dp)
-                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                    .background(Theme.color.secondary)
-            )
+                Box(
+                    modifier = Modifier
+                        .offset(x = indicatorOffset)
+                        .width(tabWidth)
+                        .height(4.dp)
+                        .padding(horizontal = 24.dp)
+                        .align(Alignment.BottomStart)
+                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                        .background(Theme.color.secondary)
+                )
+            }
+            HorizontalDivider(thickness = 1.dp, color = borderColor)
+
         }
+
     }
 }
 
