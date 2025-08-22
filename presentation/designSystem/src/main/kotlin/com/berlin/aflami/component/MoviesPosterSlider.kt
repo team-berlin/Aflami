@@ -19,14 +19,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
+import com.berlin.aflami.extension.dropShadow
 import com.berlin.aflami.ui.color.ExtraColors.black50
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
-import com.berlin.safeimageviewer.SafeImageViewer
 
 
 @Composable
@@ -74,12 +75,19 @@ fun PlayButton(
 ) {
     Box(
         modifier
+            .dropShadow(
+                color = Color(0x80D85895),
+                blur = 8.dp,
+                offsetY = 4.dp,
+                shape = CircleShape,
+            )
             .size(64.dp)
             .clip(CircleShape)
             .background(
                 color = Theme.color.textColors.onPrimary.copy(alpha = .87f)
             )
             .border(1.dp, color = Theme.color.stroke)
+
             .clickable {
                 onClick()
             }, contentAlignment = Alignment.Center
