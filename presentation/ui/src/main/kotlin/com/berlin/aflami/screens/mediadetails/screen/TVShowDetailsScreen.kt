@@ -384,22 +384,16 @@ fun TvShowDetailsContent(
                                 .fillMaxWidth()
                                 .animateContentSize()
                         ) {
-                            when (tvShowRowSectionUiState) {
-
-                                is TVShowRowSectionUiState.Success -> {
-                                    when (val tab = tvShowRowSectionUiState.content) {
-                                        is TVShowTabContent.MoreLikeThis -> TvShowMoreLikeThisSection(
-                                            mediaList = tab.items,
-                                            onMediaClick = { mediaId ->
-                                                listener.onMediaCardClicked(mediaId)
-                                            },
-                                        )
-
-                                        else -> {}
-                                    }
+                            if (tvShowRowSectionUiState is TVShowRowSectionUiState.Success) {
+                                val tab = tvShowRowSectionUiState.content
+                                if (tab is TVShowTabContent.MoreLikeThis) {
+                                    TvShowMoreLikeThisSection(
+                                        mediaList = tab.items,
+                                        onMediaClick = { mediaId ->
+                                            listener.onMediaCardClicked(mediaId)
+                                        },
+                                    )
                                 }
-
-                                else -> {}
                             }
                         }
                     }
