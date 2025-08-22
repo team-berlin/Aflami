@@ -456,74 +456,61 @@ fun TvShowDetailsContent(
                         }
                     }
                 }
+                val targetState = state.rowSection
+                if (targetState is TVShowRowSectionUiState.Success) {
+                    val tab = targetState.content
+                    if (tab is TVShowTabContent.Season) {
+                        tab.seasonToEpisodesMap.forEach { (seasonNumber, episodes) ->
+                            val isExpanded = expandedStates[seasonNumber] ?: false
 
-                when (val targetState = state.rowSection) {
-                    is TVShowRowSectionUiState.Success -> {
-                        when (val tab = targetState.content) {
-                            is TVShowTabContent.Season -> {
-
-                                tab.seasonToEpisodesMap.forEach { (seasonNumber, episodes) ->
-                                    val isExpanded = expandedStates[seasonNumber] ?: false
-
-
-                                    stickyHeader(
-                                        key = "season_$seasonNumber",
-
-                                        ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(Theme.color.surface)
-                                        ) {
-                                            SeasonsHeader(
-                                                modifier = Modifier.padding(vertical = 12.dp),
-                                                seasonNumber = seasonNumber.toString(),
-                                                episodeCount = episodes.size.toString(),
-                                                isExpanded = isExpanded,
-                                                onToggleExpand = {
-                                                    expandedStates[seasonNumber] = !isExpanded
-                                                }
-                                            )
-
-                                            HorizontalDivider(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .height(1.dp),
-                                                color = Theme.color.stroke,
-                                                thickness = 1.dp
-                                            )
+                            stickyHeader(key = "season_$seasonNumber")
+                            {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Theme.color.surface)
+                                )
+                                {
+                                    SeasonsHeader(
+                                        modifier = Modifier.padding(vertical = 12.dp),
+                                        seasonNumber = seasonNumber.toString(),
+                                        episodeCount = episodes.size.toString(),
+                                        isExpanded = isExpanded,
+                                        onToggleExpand = {
+                                            expandedStates[seasonNumber] = !isExpanded
                                         }
-                                    }
+                                    )
 
-                                    if (isExpanded) {
-                                        items(
-                                            items = episodes,
-                                            key = { episode -> "episode_${seasonNumber}_${episode.id}" }
-                                        ) { episode ->
-                                            EpisodeCard(
-                                                episode = episode,
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                                onClickPlay = {}
-                                            )
-                                        }
-
-                                        item(key = "spacer_$seasonNumber") {
-                                            Box(modifier = Modifier.height(12.dp))
-                                        }
-                                    }
+                                    HorizontalDivider(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(1.dp),
+                                        color = Theme.color.stroke,
+                                        thickness = 1.dp
+                                    )
                                 }
                             }
+                            if (isExpanded) {
+                                items(
+                                    items = episodes,
+                                    key = { episode -> "episode_${seasonNumber}_${episode.id}" }
+                                ) { episode ->
+                                    EpisodeCard(
+                                        episode = episode,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                                        onClickPlay = {}
+                                    )
+                                }
 
-                            else -> {}
+                                item(key = "spacer_$seasonNumber") {
+                                    Box(modifier = Modifier.height(12.dp))
+                                }
+                            }
                         }
                     }
-
-                    else -> {}
                 }
-
-
             }
         }
 
@@ -532,7 +519,6 @@ fun TvShowDetailsContent(
                 .fillMaxWidth()
                 .background(appBarBgColor)
                 .statusBarsPadding(),
-
             firstOption = painterResource(R.drawable.ic_rounded_star),
             onFirstOptionClicked = { listener.onRateIconClicked(state.tvShowUiState.id) },
             onNavigateBackClicked = { listener.onBackClicked() },
