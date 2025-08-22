@@ -111,10 +111,6 @@ private class CustomWebViewClient(
             "https://www.themoviedb.org/reset-password",
             "https://www.themoviedb.org/login",
         )
-        return if (allowedDomains.any { targetUrl.startsWith(it) } || targetUrl == initialUrl) {
-            false
-        } else {
-            true
-        }
+        return !(allowedDomains.any { targetUrl.startsWith(it) } || targetUrl == initialUrl)
     }
 }
