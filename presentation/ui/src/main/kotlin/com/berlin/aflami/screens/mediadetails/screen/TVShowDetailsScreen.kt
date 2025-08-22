@@ -3,7 +3,6 @@ package com.berlin.aflami.screens.mediadetails.screen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,12 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -38,7 +35,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,14 +51,9 @@ import com.berlin.aflami.navigation.MovieDetailsDestination
 import com.berlin.aflami.navigation.TVShowDetailsDestination
 import com.berlin.aflami.navigation.VideoWebViewDestination
 import com.berlin.aflami.screens.NoInternetConnectionPlaceholder
-import com.berlin.aflami.screens.mediadetails.components.CompanyProductionSection
-import com.berlin.aflami.screens.mediadetails.components.GallerySection
 import com.berlin.aflami.screens.mediadetails.components.LoginRequiredDialog
 import com.berlin.aflami.screens.mediadetails.components.RateDialog
-import com.berlin.aflami.screens.mediadetails.components.ReviewsSection
 import com.berlin.aflami.screens.mediadetails.components.TVShowBackdropPager
-import com.berlin.aflami.screens.mediadetails.components.TVShowRowSection
-import com.berlin.aflami.screens.mediadetails.components.TvShowMoreLikeThisSection
 import com.berlin.aflami.screens.mediadetails.components.getTVShowDetailsTabsIcon
 import com.berlin.aflami.screens.mediadetails.components.screensections.CastSection
 import com.berlin.aflami.screens.mediadetails.components.screensections.DescriptionSection
@@ -74,8 +65,6 @@ import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionL
 import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsTabs
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsUiState
-import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
-import com.berlin.aflami.viewmodel.details.series.TVShowTabContent
 import com.berlin.aflami.viewmodel.details.series.TvShowDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.series.TvShowDetailsScreenViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
@@ -412,195 +401,4 @@ fun TvShowDetailsContent(
         }
     }
 
-}
-
-fun LazyListScope.tvShowRowSectionUiStateError(
-    state: TVShowRowSectionUiState,
-    listener: MediaDetailsScreenInteractionListener
-) {
-    item {
-        TVShowRowSection(
-            state = state,
-            listener = listener
-        ) { tvShowRowSectionUiState, listener ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize()
-            )
-            {
-                if (tvShowRowSectionUiState is TVShowRowSectionUiState.Error
-                    || tvShowRowSectionUiState is TVShowRowSectionUiState.NoDataFound
-                ) {
-                    Box(
-                        Modifier.padding(top = 32.dp, bottom = 82.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxSize(),
-                            text = tvShowRowSectionUiState.getDisplayMessage(),
-                            style = Theme.textStyle.label.large,
-                            color = Theme.color.textColors.body,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-fun LazyListScope.tvShowRowSectionUiStateLoading(
-    state: TVShowRowSectionUiState,
-    listener: MediaDetailsScreenInteractionListener
-) {
-    item {
-        TVShowRowSection(
-            state = state,
-            listener = listener
-        ) { tvShowRowSectionUiState, listener ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize()
-            )
-            {
-                if (tvShowRowSectionUiState is TVShowRowSectionUiState.Loading) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 32.dp),
-                        contentAlignment = Alignment.Center
-                    )
-                    {
-                        CircularProgressIndicator(
-                            modifier = Modifier.fillMaxSize(),
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-fun LazyListScope.moreLikeThisSection(
-    state: TVShowRowSectionUiState,
-    listener: MediaDetailsScreenInteractionListener
-) {
-    item {
-        TVShowRowSection(
-            state = state,
-            listener = listener
-        )
-        { tvShowRowSectionUiState, listener ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize()
-            )
-            {
-                if (tvShowRowSectionUiState is TVShowRowSectionUiState.Success) {
-                    val tab = tvShowRowSectionUiState.content
-                    if (tab is TVShowTabContent.MoreLikeThis) {
-                        TvShowMoreLikeThisSection(
-                            mediaList = tab.items,
-                            onMediaClick = { mediaId ->
-                                listener.onMediaCardClicked(mediaId)
-                            },
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-fun LazyListScope.reviewSection(
-    state: TVShowRowSectionUiState,
-    tvShowDetailsUiState: TVShowDetailsUiState,
-    listener: MediaDetailsScreenInteractionListener
-) {
-    item {
-        TVShowRowSection(
-            state = state,
-            listener = listener
-        ) { tvShowRowSectionUiState, listener ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize()
-            )
-            {
-                if (tvShowRowSectionUiState is TVShowRowSectionUiState.Success) {
-                    val tab = tvShowRowSectionUiState.content
-                    if (tab is TVShowTabContent.Reviews) {
-                        ReviewsSection(
-                            reviews = tab.reviews,
-                            isExpanded = { id -> tvShowDetailsUiState.expandedReviewIds.contains(id) },
-                            onToggleExpand = { id ->
-                                listener.onReadMoreReviewClicked(
-                                    id
-                                )
-                            }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-fun LazyListScope.gallerySection(
-    state: TVShowRowSectionUiState,
-    listener: MediaDetailsScreenInteractionListener
-) {
-    item {
-        TVShowRowSection(
-            state = state,
-            listener = listener
-        ) { tvShowRowSectionUiState, listener ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize()
-            )
-            {
-                if (tvShowRowSectionUiState is TVShowRowSectionUiState.Success) {
-                    val tab = tvShowRowSectionUiState.content
-                    if (tab is TVShowTabContent.Gallery) {
-                        GallerySection(mediaImages = tab.images)
-                    }
-                }
-            }
-        }
-    }
-}
-
-fun LazyListScope.companyProductionSection(
-    state: TVShowRowSectionUiState,
-    listener: MediaDetailsScreenInteractionListener
-) {
-    item {
-
-        TVShowRowSection(
-            state = state,
-            listener = listener
-        ) { tvShowRowSectionUiState, listener ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize()
-            )
-            {
-                if (tvShowRowSectionUiState is TVShowRowSectionUiState.Success) {
-                    val tab = tvShowRowSectionUiState.content
-                    if (tab is TVShowTabContent.CompanyProduction) {
-                        CompanyProductionSection(
-                            companyProductions = tab.companyProductionStates
-                        )
-                    }
-                }
-            }
-        }
-    }
 }
