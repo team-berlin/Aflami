@@ -95,7 +95,7 @@ private class CustomWebViewClient(
         if (url?.startsWith("https://www.themoviedb.org/login") == true) {
             view?.postDelayed({
                 onLoginRedirect()
-            }, 3000)
+            }, 2500)
         }
     }
 
