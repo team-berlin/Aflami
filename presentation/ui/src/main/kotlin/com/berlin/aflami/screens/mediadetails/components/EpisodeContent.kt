@@ -35,7 +35,8 @@ import com.berlin.aflami.viewmodel.details.series.TVShowRowSectionUiState
 import com.berlin.aflami.viewmodel.details.series.TVShowTabContent
 import com.berlin.designsystem.R
 
-fun LazyListScope.tvShowRowSection(
+@Composable
+fun TVShowRowSection(
     state: TVShowRowSectionUiState,
     listener: MediaDetailsScreenInteractionListener,
     content: @Composable BoxScope
@@ -44,17 +45,16 @@ fun LazyListScope.tvShowRowSection(
         listener: MediaDetailsScreenInteractionListener
     ) -> Unit
 ) {
-    item {
-        Crossfade(targetState = state) { tvShowRowSectionUiState ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize()
-            ) {
-                content(tvShowRowSectionUiState, listener)
-            }
 
+    Crossfade(targetState = state) { tvShowRowSectionUiState ->
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize()
+        ) {
+            content(tvShowRowSectionUiState, listener)
         }
+
     }
 }
 
@@ -114,6 +114,7 @@ fun LazyListScope.seasonItem(
         }
     }
 }
+
 @Composable
 fun SeasonsSection(
     seasonsMap: MutableMap<Int, List<EpisodeUiState>>,
@@ -162,7 +163,7 @@ fun EpisodeScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
-                    episodes.forEach{ episode->
+                    episodes.forEach { episode ->
                         EpisodeCard(
                             episode = episode,
                             modifier = Modifier.fillMaxWidth(),
