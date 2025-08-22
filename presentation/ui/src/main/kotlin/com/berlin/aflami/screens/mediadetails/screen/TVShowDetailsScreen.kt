@@ -445,19 +445,13 @@ fun TvShowDetailsContent(
                                 .fillMaxWidth()
                                 .animateContentSize()
                         ) {
-                            when (tvShowRowSectionUiState) {
-
-                                is TVShowRowSectionUiState.Success -> {
-                                    when (val tab = tvShowRowSectionUiState.content) {
-                                        is TVShowTabContent.CompanyProduction -> CompanyProductionSection(
-                                            companyProductions = tab.companyProductionStates
-                                        )
-
-                                        else -> {}
-                                    }
+                            if (tvShowRowSectionUiState is TVShowRowSectionUiState.Success) {
+                                val tab = tvShowRowSectionUiState.content
+                                if (tab is TVShowTabContent.CompanyProduction) {
+                                    CompanyProductionSection(
+                                        companyProductions = tab.companyProductionStates
+                                    )
                                 }
-
-                                else -> {}
                             }
                         }
                     }
