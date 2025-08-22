@@ -44,8 +44,8 @@ object ExtraColors {
     )
     val BackgroundGradient=Brush.linearGradient(
         listOf(
-            Color(0xCC63163A),
-            Color(0x0063163A),
+            Color(0xCC64163B),
+            Color(0x0064163B),
         ),
         end = Offset(0f, Float.POSITIVE_INFINITY)
 
