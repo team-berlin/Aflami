@@ -83,7 +83,7 @@ private fun GenreChipsRow(
     LazyRow(
         modifier = modifier.padding(bottom = 12.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(22.dp)
     ) {
         items(
             items = genres,
