@@ -7,9 +7,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -19,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -26,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
 import com.berlin.aflami.extension.dropShadow
 import com.berlin.aflami.ui.color.ExtraColors.black50
-import com.berlin.aflami.ui.color.ExtraColors.shadowPink24
 import com.berlin.aflami.ui.color.ExtraColors.shadowPink50
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.designsystem.R
@@ -113,13 +118,32 @@ fun PlayButton(
 fun BlurredPosterBackground(
     imageUrl: String, modifier: Modifier = Modifier
 ) {
-    Image(
-        painter = rememberAsyncImagePainter(imageUrl) ,
-        contentDescription = "Blurred Poster Background",
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(black50)
-            .blur(16.dp),
-    )
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Image(
+            painter = rememberAsyncImagePainter(imageUrl),
+            contentDescription = "Blurred Poster Background",
+            contentScale = ContentScale.Crop,
+            modifier = modifier
+                .fillMaxWidth()
+                .background(black50)
+                .blur(16.dp),
+        )
+
+        val statusBarTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+        val extra = 32.dp
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .height(statusBarTop + extra)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Theme.color.surface,
+                            Color.Transparent
+                        )
+                    )
+                )
+        )
+    }
 }

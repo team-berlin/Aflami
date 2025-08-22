@@ -70,7 +70,6 @@ import com.berlin.aflami.component.buttons.PrimaryButton
 import com.berlin.aflami.component.buttons.SecondaryButton
 import com.berlin.aflami.navigation.HomeScreenWithArgs
 import com.berlin.aflami.navigation.LoginDestination
-import com.berlin.aflami.navigation.NavigationBarDestinations
 import com.berlin.aflami.navigation.WebViewDestination
 import com.berlin.aflami.ui.theme.AflamiTheme
 import com.berlin.aflami.ui.theme.Theme
@@ -189,7 +188,8 @@ fun LoginContent(uiState: LoginScreenState, listener: LoginInteractionListener) 
                 .fillMaxWidth()
                 .statusBarsPadding()
                 .padding(top = 16.dp),
-            isSnackBarVisible = uiState.isError
+            isSnackBarVisible = uiState.isError,
+            isSuccess = false
         )
     }
 }
@@ -366,7 +366,8 @@ private fun CreateAccount(modifier: Modifier = Modifier, onCreateAccountClicked:
 private fun AnimatedSnackBar(
     message: String,
     isSnackBarVisible: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isSuccess: Boolean = true
 ) {
     AnimatedVisibility(
         visible = isSnackBarVisible, enter = slideInVertically(
@@ -384,10 +385,12 @@ private fun AnimatedSnackBar(
 
         SnackBar(
             isVisible = isSnackBarVisible,
-            status = SnackBarStatus.ERROR,
+            status = if (isSuccess) SnackBarStatus.SUCCESS else SnackBarStatus.ERROR,
             text = message,
             modifier = modifier,
-            iconPainter = painterResource(id = com.berlin.designsystem.R.drawable.success),
+            iconPainter = if (isSuccess)
+                painterResource(id = com.berlin.designsystem.R.drawable.success)
+            else painterResource(id = com.berlin.designsystem.R.drawable.error),
         )
     }
 }
