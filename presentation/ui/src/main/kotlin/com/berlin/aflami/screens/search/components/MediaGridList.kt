@@ -14,6 +14,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 
 @Composable
 fun MediaGridList(
@@ -51,7 +52,7 @@ fun MediaGridList(
                             MediaType.MOVIE -> MediaType.MOVIE.name
                         },
                         date = movie.releaseYear,
-                        rating = movie.rating
+                        rating = movie.rating.toEnglishDigits()
                     )
                 }
             }

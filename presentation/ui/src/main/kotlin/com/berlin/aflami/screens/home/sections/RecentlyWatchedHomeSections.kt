@@ -24,6 +24,7 @@ import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.ui.R
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -75,9 +76,9 @@ fun RecentlyWatchedHomeSections(
                                 .width(156.dp),
                             mediaImg = it.poster,
                             title = it.title,
-                            typeOfMedia = it.mediaType?.name ?: MediaType.MOVIE.name,
+                            typeOfMedia = it.mediaType.name,
                             date = it.releaseYear,
-                            rating = it.rating,
+                            rating = it.rating.toEnglishDigits(),
                         ) {
                             when(it.mediaType){
                                 MediaType.MOVIE -> onMovieItemClicked(it.id)

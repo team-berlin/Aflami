@@ -223,17 +223,6 @@ private fun ListsContent(
             )
         }
 
-//        AnimatedVisibility(
-//            enter = EnterTransition.None,
-//            exit = ExitTransition.None,
-//            visible = listScreenState.isLoginRequiredDialogVisible
-//        ) {
-//            LoginRequiredDialog(
-//                title = "Lists",
-//                onLoginClick = interactionListener::onLoginClicked,
-//                onDismiss = interactionListener::onBackClicked,
-//            )
-//        }
         if (listScreenState.isScreenLoading==false) {
             RequiredLoggedInPlaceholder(
                 onClick = interactionListener::onLoginClicked
@@ -278,7 +267,7 @@ private fun ListsContent(
 
                         error -> {
                             NoInternetConnectionPlaceholder(
-                                onClick = interactionListener::onClickRetryFetchList
+                                onClick = {favouriteLists.retry()}
                             )
                         }
 

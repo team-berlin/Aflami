@@ -27,6 +27,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.utils.formatDate
 import com.berlin.aflami.utils.swapYearAndDay
 import com.berlin.aflami.viewmodel.details.series.EpisodeUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.designsystem.R
 import com.berlin.safeimageviewer.SafeImageViewer
 
@@ -48,7 +49,7 @@ fun EpisodeCard(
             ImageWithRatingBadge(
                 modifier = Modifier,
                 imageUrl = "https://image.tmdb.org/t/p/w342".plus(episode.stillPath),
-                rating = episode.voteAverage.toString()
+                rating = episode.voteAverage.toEnglishDigits()
             )
 
                 EpisodeDetails(
@@ -147,7 +148,7 @@ private fun EpisodeDetails(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "$time m",
+                text = stringResource(com.berlin.ui.R.string.m, time),
                 style = Theme.textStyle.label.small,
                 color = Theme.color.textColors.hint
             )

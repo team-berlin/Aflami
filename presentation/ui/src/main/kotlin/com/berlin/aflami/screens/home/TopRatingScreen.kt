@@ -47,6 +47,7 @@ import com.berlin.aflami.viewmodel.home.toprating.TopRatingScreenEffect
 import com.berlin.aflami.viewmodel.home.toprating.TopRatingViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.ui.R
 
 @Composable
@@ -179,9 +180,9 @@ private fun TopRatingContent(
                                 mediaType = topRatedMedia.mediaType ?: MediaType.MOVIE
                             )
                         },
-                        typeOfMedia = topRatedMedia.mediaType?.name ?: MediaType.MOVIE.name,
+                        typeOfMedia = topRatedMedia.mediaType.name,
                         date = topRatedMedia.releaseYear,
-                        rating = topRatedMedia.rating
+                        rating = topRatedMedia.rating.toEnglishDigits()
                     )
                 }
             }

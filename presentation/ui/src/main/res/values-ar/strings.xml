@@ -196,5 +196,6 @@
     <string name="no_trailer_for_episode">لا يوجد عرض تشويقي لهذه الحلقة</string>
     <string name="rating_added">تم التقييم بنجاح.</string>
     <string name="rating_added_failed"> فشل اضافة التقييم.</string>
+    <string name="m">%1$s د</string>
 
 </resources>
