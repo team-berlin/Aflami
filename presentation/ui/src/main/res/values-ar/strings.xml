@@ -193,6 +193,8 @@
     <string name="login_dialog">تسجيل الدخول</string>
     <string name="rate_required_dialog">تقييم</string>
     <string name="Please_login_feature">يرجي تسجيل الدخول لاستخدام هذه الميزة</string>
-
+    <string name="no_trailer_for_episode">لا يوجد عرض تشويقي لهذه الحلقة</string>
+    <string name="rating_added">تم التقييم بنجاح.</string>
+    <string name="rating_added_failed"> فشل اضافة التقييم.</string>
 
 </resources>

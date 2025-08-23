@@ -2,6 +2,8 @@ package com.berlin.remote.network
 
 
 object ApiConstants {
+
+
     // Query parameters
     const val QUERY = "query"
     const val PAGE = "page"
@@ -18,6 +20,7 @@ object ApiConstants {
     const val QUERY_INCLUDE_VIDEO = "include_video"
     const val QUERY_WITH_RELEASE_TYPE = "with_release_type"
     const val SESSION_ID = "session_id"
+    const val EPISODE_NUMBER="episode_number"
 
     // Search endpoints
     const val SEARCH_BY_COUNTRY = "discover/movie"
@@ -51,6 +54,7 @@ object ApiConstants {
     const val TV_VIDEO_DETAILS = "tv/{$SERIES_ID}/videos"
     const val TV_SHOW = "discover/tv"
     const val DISCOVER_SERIES = "discover/tv"
+    const val EPISODE_TRAILER = "tv/{$SERIES_ID}/season/{$SEASON_NUMBER}/episode/{$EPISODE_NUMBER}/videos"
 
     // Authentication endpoints
     const val NEW_TOKEN_ENDPOINT = "authentication/token/new"

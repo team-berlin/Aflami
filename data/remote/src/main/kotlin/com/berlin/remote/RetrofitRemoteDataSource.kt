@@ -246,6 +246,16 @@ class RetrofitRemoteDataSource @Inject constructor(
         }
     }
 
+    override suspend fun getEpisodeTrailer(
+        tvShowId: Long,
+        seasonNumber: Int,
+        episodeNumber :Int,
+    ): VideosResponse {
+       return wrapApiResponse {
+           apiService.getEpisodeTrailer(tvShowId,seasonNumber,episodeNumber)
+        }
+    }
+
     override suspend fun getTvShowsByCategory(
         tvShowId: Long,
         page: Int,

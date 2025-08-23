@@ -3,38 +3,55 @@ package com.berlin.aflami.screens.mediadetails.screen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,8 +60,8 @@ import androidx.navigation.NavController
 import com.berlin.aflami.component.Chips
 import com.berlin.aflami.component.CircularProgressIndicator
 import com.berlin.aflami.component.DefaultBar
-import com.berlin.aflami.component.SnackBar
 import com.berlin.aflami.component.SnackBarStatus
+import com.berlin.aflami.extension.dropShadow
 import com.berlin.aflami.navigation.CastDestination
 import com.berlin.aflami.navigation.LoginDestination
 import com.berlin.aflami.navigation.MovieDetailsDestination
@@ -60,6 +77,8 @@ import com.berlin.aflami.screens.mediadetails.components.screensections.Descript
 import com.berlin.aflami.screens.mediadetails.components.screensections.MediaOverviewSection
 import com.berlin.aflami.screens.mediadetails.components.seasonItem
 import com.berlin.aflami.screens.mediadetails.components.tvShowDetailsTabsMapper
+import com.berlin.aflami.ui.color.ExtraColors.darkReddishGreen12
+import com.berlin.aflami.ui.color.ExtraColors.darkReddishPink12
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.common.MediaDetailsScreenInteractionListener
 import com.berlin.aflami.viewmodel.details.common.SNACK_BAR_STATUS
@@ -69,6 +88,7 @@ import com.berlin.aflami.viewmodel.details.series.TvShowDetailsScreenEffect
 import com.berlin.aflami.viewmodel.details.series.TvShowDetailsScreenViewModel
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.designsystem.R
+import kotlinx.coroutines.delay
 
 @Composable
 fun TvShowDetailsScreen(
@@ -143,6 +163,7 @@ fun TvShowDetailsScreen(
             description = stringResource(com.berlin.ui.R.string.login_required_warning)
         )
     }
+
 
 }
 
@@ -241,13 +262,13 @@ fun TvShowDetailsContent(
     }
 
 
-
     Box(
         Modifier
             .fillMaxSize()
             .background(Theme.color.surface)
 
     ) {
+
         Box(
             Modifier
                 .nestedScroll(nestedScrollConnection)
@@ -344,7 +365,11 @@ fun TvShowDetailsContent(
                     listener = listener
                 )
 
-                seasonItem(state = state.rowSection, expandedStates = expandedStates)
+                seasonItem(
+                    state = state.rowSection,
+                    expandedStates = expandedStates,
+                    listener = listener
+                )
                 //endregion
             }
         }
@@ -358,8 +383,19 @@ fun TvShowDetailsContent(
             onFirstOptionClicked = { listener.onRateIconClicked(state.tvShowUiState.id) },
             onNavigateBackClicked = { listener.onBackClicked() },
             optionContainerColor = Theme.color.surfaceHigh,
-            containerColor = Color.Unspecified, // transparent so Modifier.background takes effect
+            containerColor = Color.Unspecified,
         )
+            SnackBar(
+                isVisible =state.noTrailerForEpisode
+                ,
+                text = stringResource(com.berlin.ui.R.string.no_trailer_for_episode),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter),
+                status = SnackBarStatus.ERROR,
+                iconPainter = painterResource(id = R.drawable.error),
+                onDismiss = {
+                    listener.dismissSnackBar()
+                })
     }
 
     if (state.showRatingDialog && state.selectedRatingMediaId != null) {
@@ -381,7 +417,7 @@ fun TvShowDetailsContent(
                 SnackBar(
                     isVisible = state.snackBar.isVisible,
                     status = SnackBarStatus.SUCCESS,
-                    text = "Successfully submitted rating.",
+                    text = stringResource(com.berlin.ui.R.string.rating_added),
                     iconPainter = painterResource(id = R.drawable.success),
                     modifier = Modifier.align(Alignment.TopCenter),
                     onDismiss = { listener.dismissSnackBar() })
@@ -389,7 +425,7 @@ fun TvShowDetailsContent(
                 SnackBar(
                     isVisible = state.snackBar.isVisible,
                     status = SnackBarStatus.ERROR,
-                    text = "Failed to submit rating.",
+                    text = stringResource(com.berlin.ui.R.string.rating_added_failed),
                     iconPainter = painterResource(id = R.drawable.error),
                     modifier = Modifier.align(Alignment.TopCenter),
                     onDismiss = {
@@ -401,4 +437,81 @@ fun TvShowDetailsContent(
         }
     }
 
+}
+@Composable
+private fun SnackBar(
+    isVisible: Boolean = false,
+    status: SnackBarStatus,
+    text: String,
+    iconPainter: Painter,
+    modifier: Modifier = Modifier,
+    durationMillis: Long = 2000,
+    onDismiss: () -> Unit = {},
+) {
+    var visible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isVisible) {
+        if (isVisible) {
+            visible = true
+            delay(durationMillis)
+            visible = false
+            onDismiss()
+        }
+    }
+    AnimatedVisibility(
+        visible = visible,
+        modifier=modifier,
+        enter = fadeIn() + slideInVertically(initialOffsetY = {  it }),
+        exit = fadeOut() + slideOutVertically(targetOffsetY = { it })
+    ) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth(0.95f)
+                .dropShadow(
+                    shape = RoundedCornerShape(16.dp),
+                    alpha = 0.12f,
+                    offsetX = 0.dp,
+                    offsetY = (4).dp,
+                    blur = 6.dp,
+                    color = when (status) {
+                        SnackBarStatus.SUCCESS -> darkReddishGreen12
+                        SnackBarStatus.ERROR -> darkReddishPink12
+                    },
+                )
+        ) {
+            Row(
+                modifier
+                    .fillMaxWidth(0.95f)
+                    .align(Alignment.Center)
+                    .clip(RoundedCornerShape(16.dp))
+                    .border(
+                        width = 1.dp,
+                        color = Theme.color.stroke,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .background(Theme.color.surfaceHigh)
+                    .padding(vertical = 16.dp, horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    painter = iconPainter,
+                    contentDescription = stringResource(R.string.icon_cd),
+                    tint = when (status) {
+                        SnackBarStatus.SUCCESS -> Theme.color.statusColors.greenAccent
+                        SnackBarStatus.ERROR -> Theme.color.statusColors.redAccent
+                    },
+                )
+
+                Text(
+                    text = text,
+                    textAlign = TextAlign.Center,
+                    style = Theme.textStyle.body.medium,
+                    color = Theme.color.textColors.body,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
 }

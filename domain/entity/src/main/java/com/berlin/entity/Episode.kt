@@ -11,4 +11,5 @@ data class Episode(
     val tvShowId: Int,
     val rating: Double,
     val stillPath:String,
+    val trailer:String
 )

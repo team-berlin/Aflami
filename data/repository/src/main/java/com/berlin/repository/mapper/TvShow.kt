@@ -128,7 +128,7 @@ fun SeasonDto.toDomain(
     seasonNumber = this.seasonNumber ?: 0
 )
 
-fun EpisodeDto.toDomain(): Episode {
+fun EpisodeDto.toDomain(trailer:String): Episode {
     return Episode(
         airDate = this.airDate ?: "",
         episodeNumber = this.episodeNumber ?: 0,
@@ -139,7 +139,8 @@ fun EpisodeDto.toDomain(): Episode {
         duration = this.runtime ?: 0,
         tvShowId = this.showId ?: 0,
         rating = this.voteAverage ?: 0.0,
-        stillPath = this.stillPath?:""
+        stillPath = this.stillPath?:"",
+        trailer=trailer
     )
 }
 

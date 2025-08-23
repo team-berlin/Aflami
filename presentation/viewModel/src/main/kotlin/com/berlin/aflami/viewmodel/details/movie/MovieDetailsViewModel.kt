@@ -308,6 +308,10 @@ class MovieDetailsViewModel @Inject constructor(
     override fun onPlayClicked(videoUrl: String) =
         sendNewEffect(MovieDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
 
+    override fun onEpisodePlayClicked(videoUrl: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun onAddMovieToFavouriteClicked() {
         checkLoginThen {
             updateState { screenState ->

@@ -61,7 +61,8 @@ fun TVShowRowSection(
 fun LazyListScope.seasonItem(
     state: TVShowRowSectionUiState,
     expandedStates: SnapshotStateMap<Int, Boolean>,
-) {
+    listener: MediaDetailsScreenInteractionListener,
+    ) {
     if (state is TVShowRowSectionUiState.Success) {
         val tab = state.content
         if (tab is TVShowTabContent.Season) {
@@ -106,8 +107,11 @@ fun LazyListScope.seasonItem(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 12.dp),
-                            onClickPlay = {}
+                            onClickPlay = {
+                                episode.trailer?.let { listener.onEpisodePlayClicked(it) }
+                            }
                         )
+
                     }
                 }
             }

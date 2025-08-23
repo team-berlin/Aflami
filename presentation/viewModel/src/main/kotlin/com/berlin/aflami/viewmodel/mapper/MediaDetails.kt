@@ -43,7 +43,8 @@ fun Episode.toEpisodeUiState(): EpisodeUiState {
         overview = this.description,
         runtime = this.duration.toString(),
         voteAverage = DecimalFormat("#.#").format(rating).toString(),
-        stillPath = this.stillPath
+        stillPath = this.stillPath,
+        trailer = this.trailer
     )
 }
 

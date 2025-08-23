@@ -190,6 +190,7 @@
     <string name="login_dialog">Login</string>
     <string name="rate_required_dialog">Rate</string>
     <string name="Please_login_feature">Please Login To Access This Feature</string>
-
-
+    <string name="no_trailer_for_episode">No Trailer Available for this Episode</string>
+    <string name="rating_added">Evaluation Successful</string>
+    <string name="rating_added_failed">Evaluation failed</string>
 </resources>

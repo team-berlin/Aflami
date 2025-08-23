@@ -11,6 +11,7 @@ import com.berlin.exception.NetworkException
 import com.berlin.repository.datasource.local.datasource.GenreLocalDataSource
 import com.berlin.repository.datasource.local.datasource.RecentlyWatchedLocalDataSource
 import com.berlin.repository.datasource.remote.RemoteDataSource
+import com.berlin.repository.datasource.remote.dto.details.VideoDto
 import com.berlin.repository.mapper.toDomain
 import com.berlin.repository.mapper.toTVShowGenreEntity
 import com.berlin.repository.util.MediaUrls
@@ -104,11 +105,18 @@ class TvShowDetailsRepositoryImpl @Inject constructor(
         tvShowId: Long,
         seasonNumber: Int,
     ): List<Episode> {
-        return remoteDataSource.getEpisodeSeasonTV(
-            tvShowId, seasonNumber
-        ).episodes?.map { it.toDomain() }.orEmpty()
-    }
+        val episodes = remoteDataSource.getEpisodeSeasonTV(tvShowId, seasonNumber).episodes.orEmpty()
 
+        return episodes.map { episodeDto ->
+            val trailers = getEpisodeTrailer(tvShowId, seasonNumber, episodeDto.episodeNumber?:-1)
+            episodeDto.toDomain(trailers.firstOrNull()?.videoUrl?:"")
+        }
+
+    }
+    private suspend fun getEpisodeTrailer(tvShowId: Long, seasonNumber: Int, episodeNumber:Int): List<Video> {
+        return remoteDataSource.getEpisodeTrailer(tvShowId,seasonNumber, episodeNumber )
+            .results?.map { it.toDomain()  }?:emptyList()
+    }
     override suspend fun getTVShowsGenres(): List<Genre> {
         return try {
             val remoteGenres = remoteDataSource.getTVGenres().genres

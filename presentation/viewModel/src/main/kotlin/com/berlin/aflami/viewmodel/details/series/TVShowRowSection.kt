@@ -33,4 +33,5 @@ data class EpisodeUiState(
     val overview: String,
     val runtime: String?,
     val voteAverage: String,
+    val trailer: String?
 )

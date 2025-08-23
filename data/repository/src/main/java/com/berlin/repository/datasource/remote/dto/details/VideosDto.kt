@@ -10,7 +10,7 @@ data class VideosResponse(
 	val id: Int? = null,
 
 	@SerialName("results")
-	val results: List<VideoDto?>? = null
+	val results: List<VideoDto>? = null
 )
 
 @Serializable

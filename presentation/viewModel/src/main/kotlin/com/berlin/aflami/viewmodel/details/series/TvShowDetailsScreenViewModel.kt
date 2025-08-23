@@ -362,8 +362,33 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     override fun onBackClicked() = sendNewEffect(TvShowDetailsScreenEffect.NavigateBack)
 
-    override fun onPlayClicked(videoUrl: String) =
-        sendNewEffect(TvShowDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
+    override fun onPlayClicked(videoUrl: String) {
+        if (videoUrl.isNotEmpty()) {
+            sendNewEffect(TvShowDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
+        } else {
+            updateState { screenUiState ->
+                screenUiState.copy(
+                    snackBar = screenUiState.snackBar.copy(
+                        isVisible = true
+                    )
+                )
+            }
+        }
+    }
+
+    override fun onEpisodePlayClicked(videoUrl: String) {
+        if (videoUrl.isNotEmpty()) {
+            sendNewEffect(TvShowDetailsScreenEffect.PlayMedia(videoUrl = videoUrl))
+        } else {
+            updateState { screenUiState ->
+                screenUiState.copy(
+                    noTrailerForEpisode =
+                        true
+
+                )
+            }
+        }
+    }
 
     override fun onAddMovieToFavouriteClicked() {
 
@@ -399,6 +424,7 @@ class TvShowDetailsScreenViewModel @Inject constructor(
 
     override fun dismissSnackBar() {
         updateState { it.copy(snackBar = it.snackBar.copy(isVisible = false)) }
+        updateState { it.copy(noTrailerForEpisode = false) }
     }
 
     override fun onRateIconClicked(id: Long) {
@@ -436,7 +462,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                             )
                         )
                     }
-                    //showSnackBar("Successfully submitted rating.",true)
                 },
                 onError = { stateError ->
                     updateState {
@@ -451,7 +476,6 @@ class TvShowDetailsScreenViewModel @Inject constructor(
                             )
                         )
                     }
-                    //showSnackBar("Failed to submit rating.",false)
                 }
             )
         }
@@ -470,7 +494,8 @@ class TvShowDetailsScreenViewModel @Inject constructor(
     override fun onAddMediaToFavouriteButtomClicked(
         mediaId: Long,
         favouriteListId: Int,
-    ) {}
+    ) {
+    }
 
     override fun onSelectFavouriteList(favouriteListId: Int) {
         updateState {

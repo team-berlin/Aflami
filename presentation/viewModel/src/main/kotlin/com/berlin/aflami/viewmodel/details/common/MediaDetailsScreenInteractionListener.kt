@@ -12,6 +12,7 @@ interface MediaDetailsScreenInteractionListener :
 
     fun onBackClicked()
     fun onPlayClicked(videoUrl: String)
+    fun onEpisodePlayClicked(videoUrl: String)
     fun onAddMovieToFavouriteClicked()
     fun onReadMoreDescriptionClicked()
     fun onReadMoreReviewClicked(reviewId: String)

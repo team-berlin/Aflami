@@ -263,5 +263,13 @@ interface ApiService {
         @Query(ApiConstants.PAGE) page: Int
     ): Response<BaseResponse<TVShowDetailsDto>>
 
+    @GET(ApiConstants.EPISODE_TRAILER)
+    suspend fun getEpisodeTrailer(
+        @Path (ApiConstants.SERIES_ID) tvShowId:Long,
+        @Path (ApiConstants.SEASON_NUMBER) seasonNumber:Int,
+        @Path (ApiConstants.EPISODE_NUMBER) episodeNumber:Int
+
+    ): Response<VideosResponse>
+
 }
 

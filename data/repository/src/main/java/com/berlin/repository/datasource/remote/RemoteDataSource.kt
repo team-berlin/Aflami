@@ -66,4 +66,5 @@ interface RemoteDataSource {
     suspend fun createNewFavouriteList(title: String): Int
     suspend fun editListTitle(listId: Int, newListTitle: String)
     suspend fun addMovieToFavouriteList(listId: Int, movieId: Long)
+    suspend fun getEpisodeTrailer(tvShowId: Long, seasonNumber: Int,episodeNumber :Int):VideosResponse
 }

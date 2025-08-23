@@ -93,7 +93,6 @@
     <string name="kids">أطفال</string>
     <string name="item_count">%1$d عنصر</string>
     <string name="television_movie">فيلم تلفزيوني</string>
-    <string name="rating_added">تم التقييم بنجاح.</string>
-    <string name="rating_added_failed"> فشل اضافة التقييم.</string>
+
 
 </resources>
