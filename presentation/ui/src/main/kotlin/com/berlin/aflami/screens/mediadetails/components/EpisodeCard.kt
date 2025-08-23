@@ -81,8 +81,6 @@ fun EpisodeCard(
                     },
                 painter = painterResource(R.drawable.play),
                 onClick = {},
-                enabled = episode.trailer?.isEmpty() == true,
-
             )
         }
 

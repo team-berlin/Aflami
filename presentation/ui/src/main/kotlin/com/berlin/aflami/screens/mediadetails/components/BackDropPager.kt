@@ -125,9 +125,14 @@ fun MovieBackdropPager(state: MovieDetailsUiState, onPlayClick: () -> Unit) {
             CircularIconButton(
                 modifier = Modifier.align(Alignment.Center)
                     .clickable {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.videoUrl))
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(intent)
+                        if(state.videoUrl?.isNotEmpty() == true) {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.videoUrl))
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(intent)
+                        }
+                        else{
+                            onPlayClick()
+                        }
                     }
                 ,
                 painter = painterResource(R.drawable.play_arrow),
@@ -230,11 +235,16 @@ fun TVShowBackdropPager(state: TVShowDetailsUiState, onPlayClick: () -> Unit) {
         ) {
             CircularIconButton(
                 modifier = Modifier.align(Alignment.Center)
-                        .clickable {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.videoUrl))
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .clickable {
+                        if(state.videoUrl?.isNotEmpty() == true) {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.videoUrl))
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             context.startActivity(intent)
-                }
+                        }
+                        else{
+                            onPlayClick()
+                        }
+                    }
                 ,
                 painter = painterResource(R.drawable.play_arrow),
                 onClick = {},

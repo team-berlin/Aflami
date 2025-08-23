@@ -37,7 +37,7 @@ fun CircularIconButton(
     enabled: Boolean = true
 ) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .size(size.dp)
             .then(
                 if (hasDropShadow)
