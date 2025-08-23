@@ -51,7 +51,9 @@ fun CircularIconButton(
                 else Modifier
             )
             .clip(RoundedCornerShape(50))
-            .then(if (enabled) Modifier.clickable { onClick() } else Modifier)
+            .then(if (enabled) modifier
+                //.clickable { onClick() }
+            else Modifier)
             .background(backgroundColor)
             .border(
                 width = borderWidth.dp,

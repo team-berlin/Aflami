@@ -72,10 +72,13 @@ fun GameCard(
     Box(
         Modifier
             .fillMaxWidth()
+
             .dropShadow(
-                shape = RectangleShape,
+                shape = RoundedCornerShape(16.dp),
                 color = circleShadowColor,
                 blur = 4.dp,
+                offsetY = 4.dp,
+                offsetX = -2.dp
             )
     ) {
         Box(

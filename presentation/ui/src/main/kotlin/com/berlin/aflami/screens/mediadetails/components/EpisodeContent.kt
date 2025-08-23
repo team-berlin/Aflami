@@ -119,67 +119,8 @@ fun LazyListScope.seasonItem(
     }
 }
 
-@Composable
-fun SeasonsSection(
-    seasonsMap: MutableMap<Int, List<EpisodeUiState>>,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.background(Theme.color.surface),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        for ((seasonNumber, episodes) in seasonsMap) {
-            EpisodeScreen(
-                seasonNumber = seasonNumber.toString(),
-                episodes = episodes
-            )
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp),
-                color = Theme.color.stroke,
-                thickness = 1.dp
-            )
-        }
-    }
-}
 
-@Composable
-fun EpisodeScreen(
-    seasonNumber: String,
-    episodes: List<EpisodeUiState>,
-) {
-    var isExpanded by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier.background(Theme.color.surface),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        SeasonsHeader(
-            seasonNumber = seasonNumber,
-            episodeCount = episodes.size.toString(),
-            isExpanded = isExpanded,
-            onToggleExpand = { isExpanded = !isExpanded }
-        )
-        if (isExpanded) {
-            Column {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    episodes.forEach { episode ->
-                        EpisodeCard(
-                            episode = episode,
-                            modifier = Modifier.fillMaxWidth(),
-                            onClickPlay = {}
-                        )
-
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun SeasonsHeader(

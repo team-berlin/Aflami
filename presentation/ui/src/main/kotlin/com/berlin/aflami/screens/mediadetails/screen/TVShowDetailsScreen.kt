@@ -186,6 +186,7 @@ private fun onReceiveTVShowDetailsEffect(
         }
 
         is TvShowDetailsScreenEffect.PlayMedia -> {
+
             navController.navigate(
                 VideoWebViewDestination(tvShowDetailsScreenEffect.videoUrl)
             )
@@ -279,7 +280,13 @@ fun TvShowDetailsContent(
                 item {
                     TVShowBackdropPager(
                         state = state,
-                        onPlayClick = { state.videoUrl?.let { listener.onPlayClicked(it) } })
+                        onPlayClick = {
+                            state.videoUrl?.let {
+                                listener.onPlayClicked(it)
+                            }
+                        }
+
+                    )
                 }
 
                 item {

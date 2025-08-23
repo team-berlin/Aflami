@@ -1,6 +1,9 @@
 package com.berlin.aflami.screens.mediadetails.components
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -22,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -40,7 +44,7 @@ import kotlinx.coroutines.delay
 fun MovieBackdropPager(state: MovieDetailsUiState, onPlayClick: () -> Unit) {
     val posterList = state.posters.take(4)
     val pagerState = rememberPagerState(pageCount = { posterList.size })
-
+    val context = LocalContext.current
     LaunchedEffect(pagerState) {
         while (posterList.size > 1) {
             delay(4000)
@@ -120,7 +124,13 @@ fun MovieBackdropPager(state: MovieDetailsUiState, onPlayClick: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             CircularIconButton(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(Alignment.Center)
+                    .clickable {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.videoUrl))
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(intent)
+                    }
+                ,
                 painter = painterResource(R.drawable.play_arrow),
                 onClick = onPlayClick,
                 hasDropShadow = true,
@@ -137,7 +147,7 @@ fun MovieBackdropPager(state: MovieDetailsUiState, onPlayClick: () -> Unit) {
 fun TVShowBackdropPager(state: TVShowDetailsUiState, onPlayClick: () -> Unit) {
     val posterList = state.posters.take(4)
     val pagerState = rememberPagerState(pageCount = { posterList.size })
-
+    val context = LocalContext.current
     LaunchedEffect(pagerState) {
         while (posterList.size > 1) {
             delay(4000)
@@ -222,9 +232,15 @@ fun TVShowBackdropPager(state: TVShowDetailsUiState, onPlayClick: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             CircularIconButton(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(Alignment.Center)
+                        .clickable {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.videoUrl))
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(intent)
+                }
+                ,
                 painter = painterResource(R.drawable.play_arrow),
-                onClick = onPlayClick,
+                onClick = {},
                 hasDropShadow = true,
                 dropShadowAlpha = 0.09f,
                 borderWidth = 2,
