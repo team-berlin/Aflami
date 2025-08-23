@@ -57,6 +57,7 @@ import com.berlin.aflami.viewmodel.categories.movie.MoviesByCategoryUiState
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.ui.R
 
 
@@ -199,7 +200,7 @@ private fun MediaByCategoryResultGrid(
                             title = media.title,
                             typeOfMedia = MediaType.MOVIE.name,
                             date = media.releaseDate,
-                            rating = media.rating,
+                            rating = media.rating.toEnglishDigits(),
                             onClick = { onMediaCardClicked(media.id) }
                         )
                     }

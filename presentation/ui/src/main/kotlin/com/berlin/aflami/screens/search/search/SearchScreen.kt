@@ -75,6 +75,7 @@ import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.designsystem.R
 
 @Composable
@@ -342,7 +343,7 @@ private fun <T : Any> MediaGrid(
                             title = it.title,
                             typeOfMedia = MediaType.MOVIE.name,
                             date = it.releaseDate,
-                            rating = it.rating
+                            rating = it.rating.toEnglishDigits()
                         )
                     }
 
@@ -354,7 +355,7 @@ private fun <T : Any> MediaGrid(
                             title = it.title,
                             typeOfMedia = MediaType.TV_SHOW.name,
                             date = it.releaseDate,
-                            rating = it.rating
+                            rating = it.rating.toEnglishDigits()
                         )
                     }
                 }

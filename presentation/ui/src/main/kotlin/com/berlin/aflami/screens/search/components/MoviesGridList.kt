@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.ui.R
 
 @Composable
@@ -43,7 +44,7 @@ fun MoviesList(
                         title = movie.title,
                         typeOfMedia = stringResource(R.string.movie),
                         date = movie.releaseDate,
-                        rating = movie.rating,
+                        rating = movie.rating.toEnglishDigits(),
                         onClick = { onMovieClick(movie.id) }
                     )
                 }

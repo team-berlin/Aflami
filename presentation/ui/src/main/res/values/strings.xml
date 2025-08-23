@@ -193,4 +193,5 @@
     <string name="no_trailer_for_episode">No Trailer Available for this Episode</string>
     <string name="rating_added">Evaluation Successful</string>
     <string name="rating_added_failed">Evaluation failed</string>
+    <string name="m">%1$s m</string>
 </resources>
