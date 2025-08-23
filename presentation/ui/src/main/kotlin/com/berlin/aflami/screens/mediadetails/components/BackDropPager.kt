@@ -37,6 +37,7 @@ import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.details.movie.MovieDetailsUiState
 import com.berlin.aflami.viewmodel.details.series.TVShowDetailsUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.designsystem.R
 import kotlinx.coroutines.delay
 
@@ -110,9 +111,7 @@ fun MovieBackdropPager(state: MovieDetailsUiState, onPlayClick: () -> Unit) {
                     .align(Alignment.BottomStart)
                     .padding(4.dp)
             ) {
-                Rating(rating = state.movieUiState.rating
-//                    .formatRatingForUi()
-                )
+                Rating(rating = state.movieUiState.rating.toEnglishDigits())
             }
         }
 
@@ -218,9 +217,7 @@ fun TVShowBackdropPager(state: TVShowDetailsUiState, onPlayClick: () -> Unit) {
                     .align(Alignment.BottomStart)
                     .padding(4.dp)
             ) {
-                Rating(rating = state.tvShowUiState.rating
-//                    .formatRatingForUi()
-                )
+                Rating(rating = state.tvShowUiState.rating.toEnglishDigits())
             }
         }
 

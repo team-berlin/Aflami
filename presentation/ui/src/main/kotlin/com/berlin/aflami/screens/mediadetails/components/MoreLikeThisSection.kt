@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
 import com.berlin.aflami.viewmodel.shareduistate.TVShowUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.ui.R
 
 @Composable
@@ -34,7 +35,7 @@ fun MovieDetailsMoreLikeThisSection(
                 title = media.title,
                 typeOfMedia = stringResource(R.string.movie),
                 date = media.releaseDate.substringBefore("-"),
-                rating = media.rating,
+                rating = media.rating.toEnglishDigits(),
                 onClick = {
                     onMediaClick(media.id)
                 }
@@ -64,7 +65,7 @@ fun TvShowMoreLikeThisSection(
                 title = media.title,
                 typeOfMedia ="TV_SHOW",
                 date = media.releaseDate.substringBefore("-"),
-                rating = media.rating,
+                rating = media.rating.toEnglishDigits(),
                 onClick =  {
                     onMediaClick(media.id)
                 }

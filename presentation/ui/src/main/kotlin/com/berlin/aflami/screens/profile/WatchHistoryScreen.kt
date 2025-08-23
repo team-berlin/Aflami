@@ -48,6 +48,7 @@ import com.berlin.aflami.viewmodel.profile.watchhistory.WatchHistoryUiState
 import com.berlin.aflami.viewmodel.profile.watchhistory.WatchHistoryViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.ui.R
 
 @Composable
@@ -220,7 +221,7 @@ fun WatchHistoryContent(
                                         title = item.title,
                                         typeOfMedia = MediaType.MOVIE.name,
                                         date = item.releaseDate,
-                                        rating = item.rating
+                                        rating = item.rating.toEnglishDigits()
                                     )
                                 }
                             }
