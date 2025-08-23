@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,6 +37,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -68,25 +70,14 @@ fun GameCard(
     val density = LocalDensity.current
 
     Box(
-        Modifier.fillMaxWidth()
+        Modifier
+            .fillMaxWidth()
             .dropShadow(
-                    shape = RectangleShape,
-                    color = circleShadowColor,
-                    blur = 4.dp,
-                )
+                shape = RectangleShape,
+                color = circleShadowColor,
+                blur = 4.dp,
+            )
     ) {
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .align(Alignment.BottomCenter)
-//                .height(10.dp)
-//                .dropShadow(
-//                    shape = RectangleShape,
-//                    color = circleShadowColor,
-//                    blur = 8.dp,
-//                )
-//            // .background(circleShadowColor)
-//        )
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -135,7 +126,7 @@ fun GameCard(
                             offsetY = 4.dp,
                             offsetX = 0.dp,
                             spread = 12.dp,
-                            shape = CircleShape,
+                            shape = RoundedCornerShape(16.dp),
                             alpha = 0.0f
                         )
                 ) {
@@ -372,6 +363,5 @@ fun GameCardPreview() {
                 gameType = GameType.GENRE
             )
         }
-
     }
 }
