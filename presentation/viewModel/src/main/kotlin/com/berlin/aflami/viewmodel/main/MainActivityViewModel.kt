@@ -39,7 +39,6 @@ class MainActivityViewModel @Inject constructor(
 
             isLoggedInUseCase().collect { loggedIn ->
                 _state.update {
-                    delay(2833)
                     it.copy(
                         isLoading = false,
                         isFirstEntry = isFirstEntry,

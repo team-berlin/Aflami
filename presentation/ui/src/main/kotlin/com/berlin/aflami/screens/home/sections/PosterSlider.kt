@@ -35,6 +35,7 @@ import com.berlin.aflami.component.ShimmerBox
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.safeimageviewer.SafeImageViewer
 import kotlinx.coroutines.delay
 
@@ -83,7 +84,7 @@ fun PosterSlider(
                         MediaType.TV_SHOW -> onTVShowItemClicked(it.id)
                     }
                 },
-                rating = it.rating,
+                rating = it.rating.toEnglishDigits(),
                 posterImageUrl = it.poster
             )
         }

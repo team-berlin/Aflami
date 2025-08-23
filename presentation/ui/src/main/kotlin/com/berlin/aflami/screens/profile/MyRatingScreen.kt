@@ -48,6 +48,7 @@ import com.berlin.aflami.viewmodel.profile.myrating.MyRatingUiState
 import com.berlin.aflami.viewmodel.profile.myrating.MyRatingViewModel
 import com.berlin.aflami.viewmodel.search.TabOption
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.ui.R
 
 @Composable
@@ -236,7 +237,7 @@ fun MyRatingContent(
                                         title = item.title,
                                         typeOfMedia = MediaType.MOVIE.name,
                                         date = item.releaseDate,
-                                        rating = item.rating
+                                        rating = item.rating.toEnglishDigits()
                                     )
                                 }
                             }

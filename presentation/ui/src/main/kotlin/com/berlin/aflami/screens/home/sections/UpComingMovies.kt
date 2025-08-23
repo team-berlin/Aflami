@@ -24,6 +24,7 @@ import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.search.GenreUiState
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MovieUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.ui.R
 
 @Composable
@@ -116,7 +117,7 @@ private fun MoviesColumn(
                 mediaImg = movie.posterUrl,
                 title = movie.title,
                 date = movie.releaseDate,
-                rating = movie.rating,
+                rating = movie.rating.toEnglishDigits(),
                 typeOfMedia = MediaType.MOVIE.name,
                 onClick = {
                     onMovieClick(movie.id)

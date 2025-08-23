@@ -29,6 +29,7 @@ import com.berlin.aflami.component.MediaCard
 import com.berlin.aflami.ui.theme.Theme
 import com.berlin.aflami.viewmodel.shareduistate.MediaType
 import com.berlin.aflami.viewmodel.shareduistate.MediaUiState
+import com.berlin.aflami.viewmodel.util.toEnglishDigits
 import com.berlin.ui.R
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -91,7 +92,7 @@ fun TopRatingHomeSections(
                         title = item.title,
                         typeOfMedia = item.mediaType.name,
                         date = item.releaseYear,
-                        rating = item.rating,
+                        rating = item.rating.toEnglishDigits(),
                     ) {
                         when (item.mediaType) {
                             MediaType.MOVIE -> onMovieItemClicked(item.id)
