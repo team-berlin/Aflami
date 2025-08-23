@@ -16,5 +16,6 @@ class AllFavouriteListsPagingSource(
             .map { favouriteList ->
                 favouriteList.toFavourListItemUiState()
             }
+            .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.listTitle })
     }
 }
